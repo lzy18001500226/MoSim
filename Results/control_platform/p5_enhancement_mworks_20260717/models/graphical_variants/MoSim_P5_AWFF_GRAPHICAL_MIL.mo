@@ -1,0 +1,41 @@
+model MoSim_P5_AWFF_GRAPHICAL_MIL "P5 representative native graphical x-axis structure: awff"
+  extends ModelWorkspace;
+  import SysplorerEmbeddedCoder.Types.*;
+  import BaseWorkspace.*;
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true),OutputInterval=0.01),SysblockVersion="1.0"),experiment(Algorithm=Euler,Interval=0.01,IntegratorStep=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-520,-220},{520,220}},grid={2,2})));
+  SysplorerEmbeddedCoder.Sources.Constant position_error_x(k=0.8) annotation(Placement(transformation(origin={-450,100},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Sources.Constant velocity_error_x(k=0.4) annotation(Placement(transformation(origin={-450,40},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Sources.Constant measured_acceleration_x(k=0.1) annotation(Placement(transformation(origin={-450,-80},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain position_feedback(k=11.0) annotation(Placement(transformation(origin={-350,100},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain velocity_feedback(k=6.5) annotation(Placement(transformation(origin={-350,40},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Sum nominal_acceleration(inputs="++") annotation(Placement(transformation(origin={-250,70},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.MathOperation.Gain drag_feedforward(k=0.12) annotation(Placement(transformation(origin={-260,-40},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.Discrete.UnitDelay disturbance_observer(initCond=0.0) annotation(Placement(transformation(origin={-170,-110},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Sum observer_residual(inputs="+-") annotation(Placement(transformation(origin={-350,-110},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.MathOperation.Gain observer_bandwidth_dt(k=0.05) annotation(Placement(transformation(origin={-260,-110},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Sum awff_compensation(inputs="+-") annotation(Placement(transformation(origin={-60,-60},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.MathOperation.Sum enhanced_command(inputs="++") annotation(Placement(transformation(origin={100,30},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation acceleration_limit(lowLimit=-4.0,upLimit=4.0) annotation(Placement(transformation(origin={220,30},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.Port.Outport command_x annotation(Placement(transformation(origin={400,30},extent={{-14,-12},{14,12}})));
+  SysplorerEmbeddedCoder.Port.Outport compensation_x annotation(Placement(transformation(origin={400,-60},extent={{-14,-12},{14,12}})));
+  model ModelWorkspace
+    annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
+  end ModelWorkspace;
+equation
+  connect(position_error_x.y,position_feedback.u) annotation(Line(points={{-434,100},{-368,100}},color={0,0,0}));
+  connect(velocity_error_x.y,velocity_feedback.u) annotation(Line(points={{-434,40},{-368,40}},color={0,0,0}));
+  connect(position_feedback.y,nominal_acceleration.u1) annotation(Line(points={{-332,100},{-286,100},{-286,78},{-268,78}},color={0,0,0}));
+  connect(velocity_feedback.y,nominal_acceleration.u2) annotation(Line(points={{-332,40},{-286,40},{-286,62},{-268,62}},color={0,0,0}));
+  connect(velocity_error_x.y,drag_feedforward.u) annotation(Line(points={{-434,40},{-300,40},{-300,-40},{-278,-40}},color={0,0,0}));
+  connect(measured_acceleration_x.y,observer_residual.u1) annotation(Line(points={{-434,-80},{-390,-80},{-390,-102},{-368,-102}},color={0,0,0}));
+  connect(disturbance_observer.y,observer_residual.u2) annotation(Line(points={{-152,-110},{-152,-160},{-390,-160},{-390,-118},{-368,-118}},color={0,0,0}));
+  connect(observer_residual.y,observer_bandwidth_dt.u) annotation(Line(points={{-332,-110},{-278,-110}},color={0,0,0}));
+  connect(observer_bandwidth_dt.y,disturbance_observer.u1) annotation(Line(points={{-242,-110},{-188,-110}},color={0,0,0}));
+  connect(drag_feedforward.y,awff_compensation.u1) annotation(Line(points={{-242,-40},{-100,-40},{-100,-52},{-78,-52}},color={0,0,0}));
+  connect(disturbance_observer.y,awff_compensation.u2) annotation(Line(points={{-152,-110},{-100,-110},{-100,-68},{-78,-68}},color={0,0,0}));
+  connect(nominal_acceleration.y,enhanced_command.u1) annotation(Line(points={{-232,70},{60,70},{60,38},{82,38}},color={0,0,0}));
+  connect(awff_compensation.y,enhanced_command.u2) annotation(Line(points={{-42,-60},{60,-60},{60,22},{82,22}},color={0,0,0}));
+  connect(enhanced_command.y,acceleration_limit.u) annotation(Line(points={{118,30},{202,30}},color={0,0,0}));
+  connect(acceleration_limit.y,command_x) annotation(Line(points={{238,30},{386,30}},color={0,0,0}));
+  connect(awff_compensation.y,compensation_x) annotation(Line(points={{-42,-60},{386,-60}},color={0,0,0}));
+end MoSim_P5_AWFF_GRAPHICAL_MIL;

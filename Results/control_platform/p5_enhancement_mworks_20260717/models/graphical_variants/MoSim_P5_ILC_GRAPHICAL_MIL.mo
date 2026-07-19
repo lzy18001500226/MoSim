@@ -1,0 +1,40 @@
+model MoSim_P5_ILC_GRAPHICAL_MIL "P5 representative native graphical x-axis structure: ilc"
+  extends ModelWorkspace;
+  import SysplorerEmbeddedCoder.Types.*;
+  import BaseWorkspace.*;
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true),OutputInterval=0.01),SysblockVersion="1.0"),experiment(Algorithm=Euler,Interval=0.01,IntegratorStep=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-520,-220},{520,220}},grid={2,2})));
+  SysplorerEmbeddedCoder.Sources.Constant position_error_x(k=0.8) annotation(Placement(transformation(origin={-450,100},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Sources.Constant velocity_error_x(k=0.4) annotation(Placement(transformation(origin={-450,40},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Sources.Constant measured_acceleration_x(k=0.1) annotation(Placement(transformation(origin={-450,-80},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain position_feedback(k=11.0) annotation(Placement(transformation(origin={-350,100},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain velocity_feedback(k=6.5) annotation(Placement(transformation(origin={-350,40},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Sum nominal_acceleration(inputs="++") annotation(Placement(transformation(origin={-250,70},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.MathOperation.Gain learning_gain(k=0.08) annotation(Placement(transformation(origin={-240,-80},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.Discrete.UnitDelay phase_memory(initCond=0.0) annotation(Placement(transformation(origin={-140,-80},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain forgetting_factor(k=0.995) annotation(Placement(transformation(origin={-140,-140},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Sum memory_update(inputs="++") annotation(Placement(transformation(origin={-20,-100},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation memory_limit(lowLimit=-1.5,upLimit=1.5) annotation(Placement(transformation(origin={90,-100},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Sum ilc_command(inputs="++") annotation(Placement(transformation(origin={190,30},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation acceleration_limit(lowLimit=-4.0,upLimit=4.0) annotation(Placement(transformation(origin={300,30},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.Port.Outport command_x annotation(Placement(transformation(origin={430,30},extent={{-14,-12},{14,12}})));
+  SysplorerEmbeddedCoder.Port.Outport learned_compensation_x annotation(Placement(transformation(origin={430,-100},extent={{-14,-12},{14,12}})));
+  model ModelWorkspace
+    annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
+  end ModelWorkspace;
+equation
+  connect(position_error_x.y,position_feedback.u) annotation(Line(points={{-434,100},{-368,100}},color={0,0,0}));
+  connect(velocity_error_x.y,velocity_feedback.u) annotation(Line(points={{-434,40},{-368,40}},color={0,0,0}));
+  connect(position_feedback.y,nominal_acceleration.u1) annotation(Line(points={{-332,100},{-286,100},{-286,78},{-268,78}},color={0,0,0}));
+  connect(velocity_feedback.y,nominal_acceleration.u2) annotation(Line(points={{-332,40},{-286,40},{-286,62},{-268,62}},color={0,0,0}));
+  connect(position_error_x.y,learning_gain.u) annotation(Line(points={{-434,100},{-300,100},{-300,-80},{-258,-80}},color={0,0,0}));
+  connect(phase_memory.y,forgetting_factor.u) annotation(Line(points={{-122,-80},{-110,-80},{-110,-140},{-122,-140}},color={0,0,0}));
+  connect(learning_gain.y,memory_update.u1) annotation(Line(points={{-222,-80},{-60,-80},{-60,-92},{-38,-92}},color={0,0,0}));
+  connect(forgetting_factor.y,memory_update.u2) annotation(Line(points={{-122,-140},{-60,-140},{-60,-108},{-38,-108}},color={0,0,0}));
+  connect(memory_update.y,memory_limit.u) annotation(Line(points={{-2,-100},{72,-100}},color={0,0,0}));
+  connect(memory_limit.y,phase_memory.u1) annotation(Line(points={{108,-100},{130,-100},{130,-180},{-180,-180},{-180,-80},{-158,-80}},color={0,0,0}));
+  connect(nominal_acceleration.y,ilc_command.u1) annotation(Line(points={{-232,70},{150,70},{150,38},{172,38}},color={0,0,0}));
+  connect(phase_memory.y,ilc_command.u2) annotation(Line(points={{-122,-80},{150,-80},{150,22},{172,22}},color={0,0,0}));
+  connect(ilc_command.y,acceleration_limit.u) annotation(Line(points={{208,30},{282,30}},color={0,0,0}));
+  connect(acceleration_limit.y,command_x) annotation(Line(points={{318,30},{416,30}},color={0,0,0}));
+  connect(phase_memory.y,learned_compensation_x) annotation(Line(points={{-122,-80},{-100,-80},{-100,-200},{390,-200},{390,-100},{416,-100}},color={0,0,0}));
+end MoSim_P5_ILC_GRAPHICAL_MIL;

@@ -6,8 +6,8 @@
 - 路线数：`67`
 - 状态计数：`{"accepted": 27, "executed_blocked": 33, "not_run": 7}`
 - 已有模型源码：`60`
-- 已有图形模型截图：`44`
-- 已有结果查看器截图：`33`
+- 已有图形模型截图：`50`
+- 已有结果查看器截图：`39`
 - 已有数值结果或指标：`62`
 - 仓库内可见Result.msr：`4`
 - 实现阻塞：`2`
@@ -46,12 +46,12 @@
 | P4_MPC | explicit_gain_scheduled_mpc | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P4_MPC | ilqr | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P4_MPC | mppi | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
-| P5_ENHANCEMENT | l1_adaptive | executed_blocked | 有 | 缺 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P5_ENHANCEMENT | awff | executed_blocked | 有 | 缺 | 缺 | 有 | 有 | capture_missing_mworks_screenshots |
-| P5_ENHANCEMENT | complete_adrc | executed_blocked | 有 | 缺 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P5_ENHANCEMENT | standardized_indi | accepted | 有 | 缺 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P5_ENHANCEMENT | parameter_scheduling | accepted | 有 | 缺 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P5_ENHANCEMENT | ilc | accepted | 有 | 缺 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
+| P5_ENHANCEMENT | l1_adaptive | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P5_ENHANCEMENT | awff | executed_blocked | 有 | 有 | 有 | 有 | 有 | document_ready_static_audit |
+| P5_ENHANCEMENT | complete_adrc | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P5_ENHANCEMENT | standardized_indi | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P5_ENHANCEMENT | parameter_scheduling | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P5_ENHANCEMENT | ilc | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | G9_CORE_COMPARISON | official_pid | executed_blocked | 有 | 有 | 缺 | 有 | 有 | capture_missing_mworks_screenshots |
 | G9_CORE_COMPARISON | se3_basic | not_run | 缺 | 缺 | 缺 | 缺 | 待确认 | repair_or_rerun_required |
 | G9_CORE_COMPARISON | dfbc_basic | not_run | 缺 | 缺 | 缺 | 缺 | 待确认 | repair_or_rerun_required |

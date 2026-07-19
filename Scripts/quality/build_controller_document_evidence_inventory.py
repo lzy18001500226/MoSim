@@ -128,16 +128,28 @@ def files_under(roots: tuple[Path, ...]) -> tuple[Path, ...]:
     return tuple(sorted(set(files), key=lambda path: rel(path).lower()))
 
 
-def matches_route(path: Path, aliases: list[str]) -> bool:
+def matches_route(
+    path: Path, aliases: list[str], *, include_parent_path: bool = False
+) -> bool:
+    if include_parent_path and path.is_relative_to(DEFAULT_OUTPUT_DIR):
+        parent_components = {normalize(part) for part in path.parent.parts}
+        return any(alias in parent_components for alias in aliases)
     value = normalize(path.stem)
     return any(alias in value for alias in aliases)
 
 
-def pick(files: list[Path], aliases: list[str], suffixes: set[str]) -> list[Path]:
+def pick(
+    files: list[Path],
+    aliases: list[str],
+    suffixes: set[str],
+    *,
+    include_parent_path: bool = False,
+) -> list[Path]:
     return [
         path
         for path in files
-        if path.suffix.lower() in suffixes and matches_route(path, aliases)
+        if path.suffix.lower() in suffixes
+        and matches_route(path, aliases, include_parent_path=include_parent_path)
     ]
 
 
@@ -151,7 +163,7 @@ def is_graphical_model_image(path: Path) -> bool:
     return any(
         token in value
         for token in ("graphical", "diagram", "diagrams", "live_gui", "sysplorer")
-    ) and not is_result_viewer(path)
+    ) and "wrapper" not in value and not is_result_viewer(path)
 
 
 def evidence_paths_from_matrix(row: dict[str, Any]) -> list[Path]:
@@ -175,7 +187,11 @@ def inventory_row(row: dict[str, Any]) -> dict[str, Any]:
         if path.is_file()
     )
     models = sorted(set(models), key=lambda path: rel(path).lower())
-    images = pick(files, aliases, IMAGE_SUFFIXES)
+    # Captured Sysplorer windows can retain a stale title while the selected
+    # result tree and plot belong to the current route. Route directories are
+    # therefore used to bind images, while model/numeric matching remains
+    # filename-only to avoid broad cross-route matches.
+    images = pick(files, aliases, IMAGE_SUFFIXES, include_parent_path=True)
     graphical = [path for path in images if is_graphical_model_image(path)]
     result_images = [path for path in images if is_result_viewer(path)]
     native_results = pick(files, aliases, NATIVE_RESULT_SUFFIXES)

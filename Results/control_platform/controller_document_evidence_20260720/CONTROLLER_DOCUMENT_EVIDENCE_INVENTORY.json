@@ -17,16 +17,16 @@
       "not_run": 7
     },
     "model_source_present_count": 60,
-    "graphical_screenshot_present_count": 44,
-    "result_screenshot_present_count": 33,
+    "graphical_screenshot_present_count": 50,
+    "result_screenshot_present_count": 39,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 27,
-      "confirm_native_result_msr_in_live_session": 32,
-      "document_ready_static_audit": 1,
+      "capture_missing_mworks_screenshots": 21,
+      "confirm_native_result_msr_in_live_session": 37,
+      "document_ready_static_audit": 2,
       "repair_or_rerun_required": 5
     }
   },
@@ -499,7 +499,6 @@
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.png"
       ],
       "result_viewer_screenshots": [
-        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/nonsingular_terminal_smc/result/51472_0x3520E24_MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png",
         "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/terminal_smc/result/51472_0x3520E24_MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
@@ -978,13 +977,19 @@
         "l1_adaptive"
       ],
       "search_roots": [
-        "Results/control_platform/p5_enhancement_mworks_20260717"
+        "Results/control_platform/p5_enhancement_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT"
       ],
       "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_L1_ADAPTIVE_GRAPHICAL_MIL.mo",
         "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_L1_ADAPTIVE_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/l1_adaptive/diagram/MoSim_P5_L1_ADAPTIVE_GRAPHICAL_MIL_structure.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/l1_adaptive/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p5_enhancement_runtime_20260717/l1_adaptive_retry1/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
         "Results/control_platform/p5_enhancement_runtime_20260717/l1_adaptive_retry1/PX4CTRL_BASIC_MISSION_METRICS.json"
@@ -995,12 +1000,10 @@
         "Results/control_platform/p5_enhancement_runtime_20260717/l1_adaptive_retry1/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P5_ENHANCEMENT",
@@ -1012,13 +1015,19 @@
         "awff"
       ],
       "search_roots": [
-        "Results/control_platform/p5_enhancement_mworks_20260717"
+        "Results/control_platform/p5_enhancement_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT"
       ],
       "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_AWFF_GRAPHICAL_MIL.mo",
         "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_AWFF_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/awff/diagram/MoSim_P5_AWFF_GRAPHICAL_MIL_structure.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/awff/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p5_enhancement_runtime_20260717/awff/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
         "Results/control_platform/p5_enhancement_runtime_20260717/awff/PX4CTRL_BASIC_MISSION_METRICS.json"
@@ -1030,12 +1039,9 @@
         "Results/control_platform/p5_enhancement_runtime_20260717/awff/PX4CTRL_BASIC_MISSION_METRICS.json",
         "Results/control_platform/p5_enhancement_runtime_20260717/awff/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
       ],
-      "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot"
-      ],
+      "missing_evidence": [],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "document_ready_static_audit"
     },
     {
       "cohort": "P5_ENHANCEMENT",
@@ -1047,13 +1053,19 @@
         "complete_adrc"
       ],
       "search_roots": [
-        "Results/control_platform/p5_enhancement_mworks_20260717"
+        "Results/control_platform/p5_enhancement_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT"
       ],
       "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_COMPLETE_ADRC_GRAPHICAL_MIL.mo",
         "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_COMPLETE_ADRC_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/complete_adrc/diagram/MoSim_P5_COMPLETE_ADRC_GRAPHICAL_MIL_structure.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/complete_adrc/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p5_enhancement_runtime_20260717/complete_adrc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
         "Results/control_platform/p5_enhancement_runtime_20260717/complete_adrc/PX4CTRL_BASIC_MISSION_METRICS.json"
@@ -1064,12 +1076,10 @@
         "Results/control_platform/p5_enhancement_runtime_20260717/complete_adrc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P5_ENHANCEMENT",
@@ -1081,13 +1091,19 @@
         "standardized_indi"
       ],
       "search_roots": [
-        "Results/control_platform/p5_enhancement_mworks_20260717"
+        "Results/control_platform/p5_enhancement_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT"
       ],
       "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_STANDARDIZED_INDI_GRAPHICAL_MIL.mo",
         "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_STANDARDIZED_INDI_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/standardized_indi/diagram/MoSim_P5_STANDARDIZED_INDI_GRAPHICAL_MIL_structure.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/standardized_indi/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p5_enhancement_runtime_20260717/standardized_indi/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
         "Results/control_platform/p5_enhancement_runtime_20260717/standardized_indi/PX4CTRL_BASIC_MISSION_METRICS.json"
@@ -1098,12 +1114,10 @@
         "Results/control_platform/p5_enhancement_runtime_20260717/standardized_indi/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P5_ENHANCEMENT",
@@ -1115,13 +1129,19 @@
         "parameter_scheduling"
       ],
       "search_roots": [
-        "Results/control_platform/p5_enhancement_mworks_20260717"
+        "Results/control_platform/p5_enhancement_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT"
       ],
       "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_PARAMETER_SCHEDULING_GRAPHICAL_MIL.mo",
         "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_PARAMETER_SCHEDULING_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/parameter_scheduling/diagram/MoSim_P5_PARAMETER_SCHEDULING_GRAPHICAL_MIL_structure.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/parameter_scheduling/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p5_enhancement_runtime_20260717/parameter_scheduling/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
         "Results/control_platform/p5_enhancement_runtime_20260717/parameter_scheduling/PX4CTRL_BASIC_MISSION_METRICS.json"
@@ -1132,12 +1152,10 @@
         "Results/control_platform/p5_enhancement_runtime_20260717/parameter_scheduling/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P5_ENHANCEMENT",
@@ -1149,13 +1167,20 @@
         "ilc"
       ],
       "search_roots": [
-        "Results/control_platform/p5_enhancement_mworks_20260717"
+        "Results/control_platform/p5_enhancement_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT"
       ],
       "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_ILC_GRAPHICAL_MIL.mo",
         "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_ILC_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/ilc/diagram/MoSim_P5_ILC_GRAPHICAL_MIL_structure.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/ilc/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/ilc/result/51472_0x3520E24_MoSim_P5_ILC_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p5_enhancement_runtime_20260717/ilc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
         "Results/control_platform/p5_enhancement_runtime_20260717/ilc/PX4CTRL_BASIC_MISSION_METRICS.json"
@@ -1166,12 +1191,10 @@
         "Results/control_platform/p5_enhancement_runtime_20260717/ilc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "G9_CORE_COMPARISON",

@@ -1,0 +1,23 @@
+{
+  "schema": "mosim.control_platform.p5_enhancement_graphical_structure.v1",
+  "status": "passed",
+  "live_check": {
+    "source": "MWORKS_MCP_LIVE",
+    "sysplorer_port": 49155,
+    "check_model": "passed_6_of_6",
+    "simulation": "passed_6_of_6",
+    "result_variable": "command_x",
+    "sample_count_per_case": 21,
+    "time_end_s": 0.2,
+    "command_x_end": 4.0
+  },
+  "models": {
+    "l1_adaptive": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_L1_ADAPTIVE_GRAPHICAL_MIL.mo",
+    "awff": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_AWFF_GRAPHICAL_MIL.mo",
+    "complete_adrc": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_COMPLETE_ADRC_GRAPHICAL_MIL.mo",
+    "standardized_indi": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_STANDARDIZED_INDI_GRAPHICAL_MIL.mo",
+    "parameter_scheduling": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_PARAMETER_SCHEDULING_GRAPHICAL_MIL.mo",
+    "ilc": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_ILC_GRAPHICAL_MIL.mo"
+  },
+  "claim_boundary": "Readable x-axis native graphical structure fixtures derived from the frozen P5 C core. Live CheckModel and representative saturation-fixture simulation passed for all six. They document algorithm topology and are not numerical-equivalence or full-aircraft gates."
+}
