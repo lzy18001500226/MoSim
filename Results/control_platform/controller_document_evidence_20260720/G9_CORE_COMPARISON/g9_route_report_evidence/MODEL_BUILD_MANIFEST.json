@@ -1,0 +1,64 @@
+{
+  "schema": "mosim.g9_report_evidence_models.v1",
+  "source_model": "Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work/g9_family_cfunction_model/G9_Family_CFunction_Sysblock.mo",
+  "source_model_sha256": "10975BD4D3C5354F938A327C0308347EAA3529C76DBAB3008D08D342151A8C64",
+  "input_count": 101,
+  "output_count": 32,
+  "routes": [
+    {
+      "route": "se3_basic",
+      "controller_id": 2,
+      "fixture_model": "MoSim_G9_SE3_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_REPORT_MIL.mo",
+      "fixture_sha256": "C341D9DF66C8F58428ABA79890CE4F7460652000DBAB46CB6F5C300FEE3AD330",
+      "graphical_model": "MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+      "graphical_sha256": "78666C6A531F4631C2013649D4A4B971767D667AF9A8252B68999C624B8C1DCF"
+    },
+    {
+      "route": "dfbc_basic",
+      "controller_id": 3,
+      "fixture_model": "MoSim_G9_DFBC_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_REPORT_MIL.mo",
+      "fixture_sha256": "DE9D4D03245BB48497B61950EB48D41BD3E2C41615597FB6069934F8ABD5208B",
+      "graphical_model": "MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+      "graphical_sha256": "1A7049B323C784C99EA8AFB25B8CBF4577467236B8EC46557950A82E4245D01F"
+    },
+    {
+      "route": "smc_boundary_layer",
+      "controller_id": 4,
+      "fixture_model": "MoSim_G9_SMC_BOUNDARY_LAYER_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_REPORT_MIL.mo",
+      "fixture_sha256": "0CB65CA5F31305353A589530EDC4A349FCD549F49F5DADFA330EB9D45AE88D86",
+      "graphical_model": "MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+      "graphical_sha256": "EF43A192962BC3A2C402E8C6A2E48957952B6F33019376F207003F4F0E1253EB"
+    },
+    {
+      "route": "pid_indi",
+      "controller_id": 5,
+      "fixture_model": "MoSim_G9_PID_INDI_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_REPORT_MIL.mo",
+      "fixture_sha256": "7C03B78CA008C86A1D40CAD531B670AEE1D1D99F39891DABE419BCE6793EE19D",
+      "graphical_model": "MoSim_G9_PID_INDI_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_GRAPHICAL_OVERVIEW.mo",
+      "graphical_sha256": "35DCF7618E0ACD844580ECB6BEC6D783FBFE0E3E0AAA8BC67DDD5E419B75DA5E"
+    },
+    {
+      "route": "nmpc_outer",
+      "controller_id": 6,
+      "fixture_model": "MoSim_G9_NMPC_OUTER_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_REPORT_MIL.mo",
+      "fixture_sha256": "2E40A73AF4EB8EDFC488DB3FA969C98D0DB05C8630C3635378B0A7CFC384D7ED",
+      "graphical_model": "MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+      "graphical_sha256": "8EA486510688A1CEF0C00DCE52266AF610DA986B2F97EBCE57E5547AEF1A802B"
+    }
+  ],
+  "claim_boundary": [
+    "Route MIL fixtures call the frozen shared G9 CFunction model and are the numerical MWORKS authority for this screenshot batch.",
+    "Readable graphical overview models expose algorithm signal topology but are documentation fixtures, not generated-C equivalence authorities.",
+    "Fixed-input 0.20 s MIL evidence is not seven-scenario performance acceptance."
+  ]
+}

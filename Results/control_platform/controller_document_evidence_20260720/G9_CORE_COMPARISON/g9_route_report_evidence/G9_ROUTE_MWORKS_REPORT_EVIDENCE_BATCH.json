@@ -1,0 +1,291 @@
+{
+  "schema": "mosim.g9_route_document_evidence_batch.v1",
+  "batch_id": "g9_route_mworks_report_evidence_20260720",
+  "status": "executed",
+  "source": "MWORKS_MCP_LIVE",
+  "route_count": 5,
+  "routes": [
+    {
+      "route": "se3_basic",
+      "controller_id": 2,
+      "fixture_model": "MoSim_G9_SE3_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_REPORT_MIL.mo",
+      "graphical_model": "MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/se3_graphical.png",
+        "sha256": "5113C521F82A11DE0C3C5FD6ADE99B62E31180477E12E8DF80A2974335A0FCDD",
+        "bytes": 27518,
+        "width": 1708,
+        "height": 921
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/se3_basic/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "B0C44EAFB1492A2F07D9A3EE00FA6FA14112D4952788775066667E4301F42D46",
+        "bytes": 104233,
+        "width": 1708,
+        "height": 921
+      },
+      "native_result_msr": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/se3_basic/Result.msr",
+        "sha256": "FF6A74436246A2E6FA55BD5570280ED92475C3C13495C67A5E60EDAF76EF1711",
+        "bytes": 2446381
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.2,
+        "sample_count": 21,
+        "terminal_metrics": {
+          "normalized_thrust": 0.3809294280090237,
+          "desired_acceleration_x": 0.205,
+          "desired_acceleration_y": 0.22000000000000006,
+          "desired_acceleration_z": 10.085,
+          "position_error_x": 0.15,
+          "position_error_y": 0.15000000000000002,
+          "position_error_z": 0.19999999999999996,
+          "sliding_surface_x": 0.0,
+          "sliding_surface_y": 0.0,
+          "sliding_surface_z": 0.0,
+          "status_code": 0.0
+        }
+      },
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "title_is_stale": true,
+        "plot_heading": "SE3 \u56fa\u5b9a\u8f93\u5165 MWORKS MIL \u7ed3\u679c",
+        "binding_method": "simulate_route_copy_native_result_plot_then_capture_same_window"
+      },
+      "evidence_status": "fixed_input_mworks_mil_executed"
+    },
+    {
+      "route": "dfbc_basic",
+      "controller_id": 3,
+      "fixture_model": "MoSim_G9_DFBC_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_REPORT_MIL.mo",
+      "graphical_model": "MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/dfbc_graphical.png",
+        "sha256": "5DF2A7A79B2ECB405781A3491F0D43A05D9EB3D21F0979E1ED47E737562216CC",
+        "bytes": 25994,
+        "width": 1708,
+        "height": 921
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/dfbc_basic/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "38EC1B7EDB249B35A9BD04A0C82F068F2C96D77D91B751C8E8A6D62062B57447",
+        "bytes": 103986,
+        "width": 1708,
+        "height": 921
+      },
+      "native_result_msr": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/dfbc_basic/Result.msr",
+        "sha256": "F77AEAC1D007A70C83C9ECB599EA95CDDEA94117F7AB098E77D5444936E3290D",
+        "bytes": 2446381
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.2,
+        "sample_count": 21,
+        "terminal_metrics": {
+          "normalized_thrust": 0.3809294280090237,
+          "desired_acceleration_x": 0.205,
+          "desired_acceleration_y": 0.22000000000000006,
+          "desired_acceleration_z": 10.085,
+          "position_error_x": 0.15,
+          "position_error_y": 0.15000000000000002,
+          "position_error_z": 0.19999999999999996,
+          "sliding_surface_x": 0.0,
+          "sliding_surface_y": 0.0,
+          "sliding_surface_z": 0.0,
+          "status_code": 0.0
+        }
+      },
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "title_is_stale": true,
+        "plot_heading": "DFBC \u56fa\u5b9a\u8f93\u5165 MWORKS MIL \u7ed3\u679c",
+        "binding_method": "simulate_route_copy_native_result_plot_then_capture_same_window"
+      },
+      "evidence_status": "fixed_input_mworks_mil_executed"
+    },
+    {
+      "route": "smc_boundary_layer",
+      "controller_id": 4,
+      "fixture_model": "MoSim_G9_SMC_BOUNDARY_LAYER_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_REPORT_MIL.mo",
+      "graphical_model": "MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/smc_boundary_layer_graphical.png",
+        "sha256": "BB4E08C3EE4D21ECD26D0526D28E5C8387F42C6CDCE4434D99865EEE97D68D32",
+        "bytes": 24428,
+        "width": 1708,
+        "height": 921
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/smc_boundary_layer/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "6F133AAE743C4204A70488F1C88379E0B122A6936CE687820A10927BB5235F02",
+        "bytes": 105837,
+        "width": 1708,
+        "height": 921
+      },
+      "native_result_msr": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/smc_boundary_layer/Result.msr",
+        "sha256": "DE98680F05CC8180D7EAB6C39C311C3A0B41AB2793DC9F00F668134C659BB1C4",
+        "bytes": 2446381
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.2,
+        "sample_count": 21,
+        "terminal_metrics": {
+          "normalized_thrust": 0.38295354964431827,
+          "desired_acceleration_x": 0.27499999999999997,
+          "desired_acceleration_y": 0.2975000000000001,
+          "desired_acceleration_z": 10.135000000000002,
+          "position_error_x": 0.15,
+          "position_error_y": 0.15000000000000002,
+          "position_error_z": 0.19999999999999996,
+          "sliding_surface_x": 0.27999999999999997,
+          "sliding_surface_y": 0.31000000000000005,
+          "sliding_surface_z": 0.3899999999999999,
+          "status_code": 0.0
+        }
+      },
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "title_is_stale": true,
+        "plot_heading": "\u8fb9\u754c\u5c42\u6ed1\u6a21\u63a7\u5236\u56fa\u5b9a\u8f93\u5165 MWORKS MIL \u7ed3\u679c",
+        "binding_method": "simulate_route_copy_native_result_plot_then_capture_same_window"
+      },
+      "evidence_status": "fixed_input_mworks_mil_executed"
+    },
+    {
+      "route": "pid_indi",
+      "controller_id": 5,
+      "fixture_model": "MoSim_G9_PID_INDI_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_REPORT_MIL.mo",
+      "graphical_model": "MoSim_G9_PID_INDI_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_GRAPHICAL_OVERVIEW.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/pid_indi_graphical.png",
+        "sha256": "351A3C6F1D968AC1C34A34E5FB9B252AC203AB9056F75211AE4F07D8CBB7DBDC",
+        "bytes": 25980,
+        "width": 1708,
+        "height": 921
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/pid_indi/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "53E247863207B5294EC49629B75C754FCBD79B8B925CBC09639A057D29A398B2",
+        "bytes": 112083,
+        "width": 1708,
+        "height": 921
+      },
+      "native_result_msr": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/pid_indi/Result.msr",
+        "sha256": "42653BDB16F2C4C2FD6C88D287766DC48A490E6B052F4DBFCF935208770C5504",
+        "bytes": 2446381
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.2,
+        "sample_count": 21,
+        "terminal_metrics": {
+          "normalized_thrust": 0.3816958740017746,
+          "desired_acceleration_x": 0.23295454545454544,
+          "desired_acceleration_y": 0.25000000000000006,
+          "desired_acceleration_z": 10.109782608695653,
+          "position_error_x": 0.15,
+          "position_error_y": 0.15000000000000002,
+          "position_error_z": 0.19999999999999996,
+          "sliding_surface_x": 0.23295454545454544,
+          "sliding_surface_y": 0.25000000000000006,
+          "sliding_surface_z": 0.30978260869565233,
+          "status_code": 0.0
+        }
+      },
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "title_is_stale": true,
+        "plot_heading": "PID-INDI \u56fa\u5b9a\u8f93\u5165 MWORKS MIL \u7ed3\u679c",
+        "binding_method": "simulate_route_copy_native_result_plot_then_capture_same_window"
+      },
+      "evidence_status": "fixed_input_mworks_mil_executed"
+    },
+    {
+      "route": "nmpc_outer",
+      "controller_id": 6,
+      "fixture_model": "MoSim_G9_NMPC_OUTER_REPORT_MIL",
+      "fixture_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_REPORT_MIL.mo",
+      "graphical_model": "MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+      "graphical_path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/nmpc_outer_graphical.png",
+        "sha256": "1F6D343E6567CF1E8FF6DA8D7DD42743C034630B51D2CB269918AD4CD27806B9",
+        "bytes": 26745,
+        "width": 1708,
+        "height": 921
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/nmpc_outer/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "CDBEE0EB3F933E4B5651B7C21BC6945418BC3A21FA4B0EC39B33E3119F79318D",
+        "bytes": 110864,
+        "width": 1708,
+        "height": 921
+      },
+      "native_result_msr": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/nmpc_outer/Result.msr",
+        "sha256": "9BC86326061F4B8CCC773C9D3D4F9FDD7F5FDD03779514860146258E505F1C55",
+        "bytes": 2446381
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.2,
+        "sample_count": 21,
+        "terminal_metrics": {
+          "normalized_thrust": 0.42566180758017486,
+          "desired_acceleration_x": 1.0538095238095222,
+          "desired_acceleration_y": 1.172380952380951,
+          "desired_acceleration_z": 11.274285714285712,
+          "position_error_x": 0.15,
+          "position_error_y": 0.15000000000000002,
+          "position_error_z": 0.19999999999999996,
+          "sliding_surface_x": 0.0,
+          "sliding_surface_y": 0.0,
+          "sliding_surface_z": 0.0,
+          "status_code": 0.0
+        }
+      },
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "title_is_stale": false,
+        "plot_heading": "NMPC Outer \u56fa\u5b9a\u8f93\u5165 MWORKS MIL \u7ed3\u679c",
+        "binding_method": "simulate_route_copy_native_result_plot_then_capture_same_window"
+      },
+      "evidence_status": "fixed_input_mworks_mil_executed"
+    }
+  ],
+  "claim_boundary": [
+    "Each route passed CheckModel and a fresh 0.20 s fixed-input MWORKS MIL run.",
+    "Each native Result.msr was copied immediately after its route simulation and is hash-bound here.",
+    "The readable graphical overview is report topology evidence; the shared G9 CFunction fixture is the numerical authority.",
+    "This batch is not seven-scenario, full-plant, Gazebo, or controller-performance acceptance.",
+    "pid_indi is a bounded augmentation in this G9 core, not a complete standalone INDI attitude inner loop."
+  ]
+}

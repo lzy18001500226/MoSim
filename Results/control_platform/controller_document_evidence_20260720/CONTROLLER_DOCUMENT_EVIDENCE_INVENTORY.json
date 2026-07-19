@@ -16,17 +16,17 @@
       "executed_blocked": 33,
       "not_run": 7
     },
-    "model_source_present_count": 60,
-    "graphical_screenshot_present_count": 60,
-    "result_screenshot_present_count": 60,
-    "numeric_result_present_count": 62,
-    "native_result_msr_present_count": 4,
+    "model_source_present_count": 65,
+    "graphical_screenshot_present_count": 65,
+    "result_screenshot_present_count": 65,
+    "numeric_result_present_count": 67,
+    "native_result_msr_present_count": 8,
     "implementation_blocked_count": 2,
+    "terminal_blocker_documented_count": 2,
     "next_action_counts": {
-      "bounded_implementation_gap_review": 2,
       "confirm_native_result_msr_in_live_session": 57,
-      "document_ready_static_audit": 3,
-      "repair_or_rerun_required": 5
+      "document_ready_static_audit": 8,
+      "terminal_implementation_blocker_documented": 2
     }
   },
   "rows": [
@@ -71,6 +71,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -112,6 +113,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -156,6 +158,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -197,6 +200,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -238,6 +242,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -279,6 +284,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -317,6 +323,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -355,6 +362,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -393,6 +401,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -432,6 +441,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -472,6 +482,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -498,6 +509,7 @@
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.png"
       ],
       "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/nonsingular_terminal_smc/result/51472_0x3520E24_MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png",
         "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/terminal_smc/result/51472_0x3520E24_MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
@@ -517,6 +529,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -557,6 +570,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -597,6 +611,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -637,6 +652,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -677,6 +693,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -718,6 +735,7 @@
       ],
       "missing_evidence": [],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "document_ready_static_audit"
     },
     {
@@ -759,6 +777,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -800,6 +819,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -841,6 +861,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -882,6 +903,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -923,6 +945,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -964,6 +987,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1002,6 +1026,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1040,6 +1065,7 @@
       ],
       "missing_evidence": [],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "document_ready_static_audit"
     },
     {
@@ -1078,6 +1104,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1116,6 +1143,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1154,6 +1182,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1177,8 +1206,13 @@
         "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/ilc/diagram/MoSim_P5_ILC_GRAPHICAL_MIL_structure.png"
       ],
       "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/awff/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/complete_adrc/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png",
         "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/ilc/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png",
-        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/ilc/result/51472_0x3520E24_MoSim_P5_ILC_MIL - 结果查看器.png"
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/ilc/result/51472_0x3520E24_MoSim_P5_ILC_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/l1_adaptive/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/parameter_scheduling/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P5_ENHANCEMENT/standardized_indi/result/51472_0x3520E24_MoSim_P5_ILC_GRAPHICAL_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p5_enhancement_runtime_20260717/ilc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
@@ -1193,6 +1227,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1217,6 +1252,7 @@
         "Results/control_platform/g5_mworks_closeout_20260716/official_pid/screenshots/40544_0x11409CE_AWFF_PID_Sysblock_Demo_SIL_Constant_QuadrotorControllerBlocks_ - Sysplorer _教育版_.png"
       ],
       "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/se3_basic/18640_0x93159E_MoSimGenerated_cert_official_pid_20260719_v2 - 结果查看器.png",
         "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/official_pid/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
@@ -1232,6 +1268,7 @@
       ],
       "missing_evidence": [],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "document_ready_static_audit"
     },
     {
@@ -1248,23 +1285,31 @@
         "Results/control_platform/g5_mworks_closeout_20260716",
         "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
-      "model_sources": [],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
-      "numeric_results_or_metrics": [],
-      "native_result_msr": [],
+      "model_sources": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_REPORT_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/se3_graphical.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/se3_basic/18640_0x93159E_MoSimGenerated_cert_official_pid_20260719_v2 - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/se3_basic/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/se3_basic/85144_0x26C1286_FormationTriangleFigure8LinearMPCSysblockClosedLoop_QuadrotorExperiments.FormationScenarios_ - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/G9_ROUTE_MWORKS_REPORT_EVIDENCE_BATCH.json"
+      ],
+      "native_result_msr": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/se3_basic/Result.msr"
+      ],
       "matrix_evidence_existing": [
         "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
       ],
-      "missing_evidence": [
-        "model_source",
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
-        "numeric_result_or_metrics",
-        "native_result_msr_live_confirmation"
-      ],
+      "missing_evidence": [],
       "implementation_blocked": false,
-      "next_action": "repair_or_rerun_required"
+      "terminal_blocker_evidence": [],
+      "next_action": "document_ready_static_audit"
     },
     {
       "cohort": "G9_CORE_COMPARISON",
@@ -1273,29 +1318,36 @@
       "implementation_state": "implemented",
       "claim_ceiling": "offline_equivalence_only",
       "aliases": [
+        "dfbc",
         "dfbc_basic"
       ],
       "search_roots": [
         "Results/control_platform/g5_mworks_closeout_20260716",
         "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
-      "model_sources": [],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
-      "numeric_results_or_metrics": [],
-      "native_result_msr": [],
+      "model_sources": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_REPORT_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/dfbc_graphical.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/dfbc_basic/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/G9_ROUTE_MWORKS_REPORT_EVIDENCE_BATCH.json"
+      ],
+      "native_result_msr": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/dfbc_basic/Result.msr"
+      ],
       "matrix_evidence_existing": [
         "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
       ],
-      "missing_evidence": [
-        "model_source",
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
-        "numeric_result_or_metrics",
-        "native_result_msr_live_confirmation"
-      ],
+      "missing_evidence": [],
       "implementation_blocked": false,
-      "next_action": "repair_or_rerun_required"
+      "terminal_blocker_evidence": [],
+      "next_action": "document_ready_static_audit"
     },
     {
       "cohort": "G9_CORE_COMPARISON",
@@ -1311,23 +1363,29 @@
         "Results/control_platform/g5_mworks_closeout_20260716",
         "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
-      "model_sources": [],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
-      "numeric_results_or_metrics": [],
-      "native_result_msr": [],
+      "model_sources": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_REPORT_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/smc_boundary_layer_graphical.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/smc_boundary_layer/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/G9_ROUTE_MWORKS_REPORT_EVIDENCE_BATCH.json"
+      ],
+      "native_result_msr": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/smc_boundary_layer/Result.msr"
+      ],
       "matrix_evidence_existing": [
         "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
       ],
-      "missing_evidence": [
-        "model_source",
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
-        "numeric_result_or_metrics",
-        "native_result_msr_live_confirmation"
-      ],
+      "missing_evidence": [],
       "implementation_blocked": false,
-      "next_action": "repair_or_rerun_required"
+      "terminal_blocker_evidence": [],
+      "next_action": "document_ready_static_audit"
     },
     {
       "cohort": "G9_CORE_COMPARISON",
@@ -1342,24 +1400,30 @@
         "Results/control_platform/g5_mworks_closeout_20260716",
         "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
-      "model_sources": [],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
-      "numeric_results_or_metrics": [],
+      "model_sources": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_GRAPHICAL_OVERVIEW.mo",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_REPORT_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/pid_indi_graphical.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/pid_indi/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/G9_ROUTE_MWORKS_REPORT_EVIDENCE_BATCH.json"
+      ],
       "native_result_msr": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/pid_indi/Result.msr",
         "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/native_result/MoSimGenerated_cert_pid_indi_20260719_v1/Result.msr"
       ],
       "matrix_evidence_existing": [
         "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
       ],
-      "missing_evidence": [
-        "model_source",
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
-        "numeric_result_or_metrics"
-      ],
+      "missing_evidence": [],
       "implementation_blocked": false,
-      "next_action": "repair_or_rerun_required"
+      "terminal_blocker_evidence": [],
+      "next_action": "document_ready_static_audit"
     },
     {
       "cohort": "G9_CORE_COMPARISON",
@@ -1375,23 +1439,33 @@
         "Results/control_platform/g5_mworks_closeout_20260716",
         "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
-      "model_sources": [],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
-      "numeric_results_or_metrics": [],
-      "native_result_msr": [],
+      "model_sources": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_REPORT_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/nmpc_outer_graphical.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/dfbc_basic/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/nmpc_outer/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/pid_indi/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/se3_basic/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/smc_boundary_layer/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/G9_ROUTE_MWORKS_REPORT_EVIDENCE_BATCH.json"
+      ],
+      "native_result_msr": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/nmpc_outer/Result.msr"
+      ],
       "matrix_evidence_existing": [
         "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
       ],
-      "missing_evidence": [
-        "model_source",
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
-        "numeric_result_or_metrics",
-        "native_result_msr_live_confirmation"
-      ],
+      "missing_evidence": [],
       "implementation_blocked": false,
-      "next_action": "repair_or_rerun_required"
+      "terminal_blocker_evidence": [],
+      "next_action": "document_ready_static_audit"
     },
     {
       "cohort": "P6_SAFETY",
@@ -1413,10 +1487,14 @@
         "Results/control_platform/p6_safety_mworks_20260717/models/MoSim_P6_SAFETY_FILTER_MIL.mo"
       ],
       "graphical_model_screenshots": [
-        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/graphical/safety_supervisor_family_graphical_model.png"
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/graphical/safety_supervisor_family_graphical_model.png",
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/screenshots/graphical/safety_supervisor_family_graphical_model.png",
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/screenshots/result_capture/51472_0x62F0AAC_MoSim_P6_SAFETY_FILTER_MIL - Sysplorer _教育版_.png"
       ],
       "result_viewer_screenshots": [
-        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/result/safety_supervisor_family_result_viewer.png"
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/result/safety_supervisor_family_result_viewer.png",
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/screenshots/result/safety_supervisor_family_result_viewer.png",
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/screenshots/result_capture/51472_0x3520E24_MoSim_P6_SAFETY_FILTER_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json"
@@ -1429,6 +1507,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1475,6 +1554,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1512,6 +1592,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1549,6 +1630,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1586,6 +1668,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1623,6 +1706,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1660,6 +1744,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1697,6 +1782,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1734,6 +1820,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1773,6 +1860,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1810,6 +1898,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1847,6 +1936,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1872,7 +1962,8 @@
         "Results/control_platform/p9_learning_mworks_20260717/screenshots/69844_0xF219B0_MoSim_P9_RL_GAIN_SCHEDULER_MIL - Sysplorer _教育版_.png"
       ],
       "result_viewer_screenshots": [
-        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/rl_gain_scheduler/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - 结果查看器.png"
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/rl_gain_scheduler/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/trained_neural_residual/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
@@ -1885,6 +1976,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1925,6 +2017,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -1967,6 +2060,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2018,6 +2112,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2051,7 +2146,10 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": true,
-      "next_action": "bounded_implementation_gap_review"
+      "terminal_blocker_evidence": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/mu_synthesis/TERMINAL_BLOCKER.json"
+      ],
+      "next_action": "terminal_implementation_blocker_documented"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",
@@ -2093,6 +2191,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2136,6 +2235,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2179,6 +2279,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2222,6 +2323,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2265,6 +2367,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2308,6 +2411,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2352,6 +2456,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2395,6 +2500,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2450,6 +2556,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2483,7 +2590,10 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": true,
-      "next_action": "bounded_implementation_gap_review"
+      "terminal_blocker_evidence": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/neural_smc/TERMINAL_BLOCKER.json"
+      ],
+      "next_action": "terminal_implementation_blocker_documented"
     },
     {
       "cohort": "P11_CLASSIC_ADDITIONS",
@@ -2530,6 +2640,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2581,6 +2692,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2632,6 +2744,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2679,6 +2792,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
@@ -2701,7 +2815,11 @@
         "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/h2_state_feedback.png"
       ],
       "result_viewer_screenshots": [
-        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/h2_state_feedback/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/fopid/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/h2_state_feedback/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/mrac/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/ndi/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/pole_placement_luenberger/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
@@ -2726,6 +2844,7 @@
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
+      "terminal_blocker_evidence": [],
       "next_action": "confirm_native_result_msr_in_live_session"
     }
   ]

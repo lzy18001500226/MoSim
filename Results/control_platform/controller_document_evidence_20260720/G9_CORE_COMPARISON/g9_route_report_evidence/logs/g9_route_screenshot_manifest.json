@@ -1,0 +1,97 @@
+{
+  "schema": "mosim.mworks_phase_screenshot_manifest.v1",
+  "source": "MWORKS_MCP_LIVE",
+  "screenshots": [
+    {
+      "route": "se3_basic",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/se3_graphical.png",
+      "sha256": "5113C521F82A11DE0C3C5FD6ADE99B62E31180477E12E8DF80A2974335A0FCDD",
+      "bytes": 27518,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "se3_basic",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/se3_basic/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "B0C44EAFB1492A2F07D9A3EE00FA6FA14112D4952788775066667E4301F42D46",
+      "bytes": 104233,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "dfbc_basic",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/dfbc_graphical.png",
+      "sha256": "5DF2A7A79B2ECB405781A3491F0D43A05D9EB3D21F0979E1ED47E737562216CC",
+      "bytes": 25994,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "dfbc_basic",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/dfbc_basic/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "38EC1B7EDB249B35A9BD04A0C82F068F2C96D77D91B751C8E8A6D62062B57447",
+      "bytes": 103986,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "smc_boundary_layer",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/smc_boundary_layer_graphical.png",
+      "sha256": "BB4E08C3EE4D21ECD26D0526D28E5C8387F42C6CDCE4434D99865EEE97D68D32",
+      "bytes": 24428,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "smc_boundary_layer",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/smc_boundary_layer/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "6F133AAE743C4204A70488F1C88379E0B122A6936CE687820A10927BB5235F02",
+      "bytes": 105837,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "pid_indi",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/pid_indi_graphical.png",
+      "sha256": "351A3C6F1D968AC1C34A34E5FB9B252AC203AB9056F75211AE4F07D8CBB7DBDC",
+      "bytes": 25980,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "pid_indi",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/pid_indi/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "53E247863207B5294EC49629B75C754FCBD79B8B925CBC09639A057D29A398B2",
+      "bytes": 112083,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "nmpc_outer",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/graphical/nmpc_outer_graphical.png",
+      "sha256": "1F6D343E6567CF1E8FF6DA8D7DD42743C034630B51D2CB269918AD4CD27806B9",
+      "bytes": 26745,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "route": "nmpc_outer",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/screenshots/results/nmpc_outer/51472_0x3520E24_MoSim_G9_NMPC_OUTER_REPORT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "CDBEE0EB3F933E4B5651B7C21BC6945418BC3A21FA4B0EC39B33E3119F79318D",
+      "bytes": 110864,
+      "width": 1708,
+      "height": 921
+    }
+  ],
+  "will_not_click_activation_login": true
+}

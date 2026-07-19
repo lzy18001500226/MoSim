@@ -56,6 +56,12 @@ CLASSIC_RESULT_BATCH = (
     / "Results/control_platform/controller_document_evidence_20260720"
     / "P10_P11_CLASSIC_RESULT_EVIDENCE_BATCH.json"
 )
+G9_ROUTE_BATCH = (
+    ROOT
+    / "Results/control_platform/controller_document_evidence_20260720"
+    / "G9_CORE_COMPARISON/g9_route_report_evidence"
+    / "G9_ROUTE_MWORKS_REPORT_EVIDENCE_BATCH.json"
+)
 
 
 def load_builder():
@@ -90,8 +96,14 @@ def test_known_implementation_gaps_remain_blocked() -> None:
     rows = {row["controller"]: row for row in inventory["rows"]}
     assert rows["mu_synthesis"]["implementation_blocked"] is True
     assert rows["neural_smc"]["implementation_blocked"] is True
-    assert rows["mu_synthesis"]["next_action"] == "bounded_implementation_gap_review"
-    assert rows["neural_smc"]["next_action"] == "bounded_implementation_gap_review"
+    for controller in ("mu_synthesis", "neural_smc"):
+        row = rows[controller]
+        assert row["next_action"] == "terminal_implementation_blocker_documented"
+        assert len(row["terminal_blocker_evidence"]) == 1
+        blocker_path = ROOT / row["terminal_blocker_evidence"][0]
+        blocker = json.loads(blocker_path.read_text(encoding="utf-8"))
+        assert blocker["controller"] == controller
+        assert blocker["status"] == "blocked"
 
 
 def test_missing_native_result_is_not_promoted() -> None:
@@ -102,11 +114,20 @@ def test_missing_native_result_is_not_promoted() -> None:
             assert "native_result_msr_live_confirmation" in row["missing_evidence"]
 
 
-def test_only_exact_certified_profiles_bind_native_results() -> None:
+def test_only_exact_route_bound_profiles_bind_native_results() -> None:
     builder = load_builder()
     inventory = builder.build_inventory(builder.DEFAULT_MATRIX)
     rows = {row["controller"]: row for row in inventory["rows"]}
-    for controller in ("official_pid", "pid_indi", "linear_mpc", "awff"):
+    for controller in (
+        "official_pid",
+        "pid_indi",
+        "linear_mpc",
+        "awff",
+        "se3_basic",
+        "dfbc_basic",
+        "smc_boundary_layer",
+        "nmpc_outer",
+    ):
         assert rows[controller]["native_result_msr"]
     assert not rows["formation_cbf"]["native_result_msr"]
     assert not rows["safety_supervisor_family"]["native_result_msr"]
@@ -401,6 +422,52 @@ def test_classic_result_evidence_matches_manifest() -> None:
     assert all(not value for route, value in native.items() if route != "official_pid")
 
 
+def test_g9_route_report_evidence_is_discoverable() -> None:
+    builder = load_builder()
+    inventory = builder.build_inventory(builder.DEFAULT_MATRIX)
+    rows = {row["controller"]: row for row in inventory["rows"]}
+    for controller in (
+        "se3_basic",
+        "dfbc_basic",
+        "smc_boundary_layer",
+        "pid_indi",
+        "nmpc_outer",
+    ):
+        assert rows[controller]["model_sources"]
+        assert rows[controller]["graphical_model_screenshots"]
+        assert rows[controller]["result_viewer_screenshots"]
+        assert rows[controller]["numeric_results_or_metrics"]
+        assert rows[controller]["native_result_msr"]
+
+
+def test_g9_route_report_evidence_matches_manifest() -> None:
+    batch = json.loads(G9_ROUTE_BATCH.read_text(encoding="utf-8"))
+    assert batch["status"] == "executed"
+    assert len(batch["routes"]) == 5
+    graphical_hashes = set()
+    result_hashes = set()
+    native_hashes = set()
+    for route in batch["routes"]:
+        for key in ("graphical_screenshot", "result_screenshot"):
+            metadata = route[key]
+            payload = (ROOT / metadata["path"]).read_bytes()
+            assert hashlib.sha256(payload).hexdigest().upper() == metadata["sha256"]
+            assert payload[:8] == b"\x89PNG\r\n\x1a\n"
+            assert struct.unpack(">II", payload[16:24]) == (1708, 921)
+        native = route["native_result_msr"]
+        native_payload = (ROOT / native["path"]).read_bytes()
+        assert hashlib.sha256(native_payload).hexdigest().upper() == native["sha256"]
+        assert route["live_mworks_check"]["check_model"] is True
+        assert route["live_mworks_check"]["simulate_model"] is True
+        assert route["live_mworks_check"]["sample_count"] == 21
+        graphical_hashes.add(route["graphical_screenshot"]["sha256"])
+        result_hashes.add(route["result_screenshot"]["sha256"])
+        native_hashes.add(native["sha256"])
+    assert len(graphical_hashes) == 5
+    assert len(result_hashes) == 5
+    assert len(native_hashes) == 5
+
+
 def test_cli_writes_json_and_markdown(tmp_path: Path) -> None:
     completed = subprocess.run(
         [sys.executable, str(BUILDER), "--output-dir", str(tmp_path)],
@@ -422,7 +489,7 @@ if __name__ == "__main__":
     test_current_matrix_inventory_has_67_unique_routes()
     test_known_implementation_gaps_remain_blocked()
     test_missing_native_result_is_not_promoted()
-    test_only_exact_certified_profiles_bind_native_results()
+    test_only_exact_route_bound_profiles_bind_native_results()
     test_pid_result_screenshot_batch_is_discoverable()
     test_pid_result_screenshots_match_manifest_hash_and_dimensions()
     test_linear_robust_result_screenshot_batch_is_discoverable()
@@ -435,4 +502,6 @@ if __name__ == "__main__":
     test_enhancement_evidence_matches_manifest_hash_and_dimensions()
     test_learning_routes_are_discoverable_with_honest_boundaries()
     test_learning_report_evidence_matches_manifest()
+    test_g9_route_report_evidence_is_discoverable()
+    test_g9_route_report_evidence_matches_manifest()
     print("[OK] controller document evidence inventory tests")

@@ -57,7 +57,7 @@ COHORT_ROOTS = {
 ALIASES = {
     "official_pid": ["official_pid", "awff_pid_sysblock_demo"],
     "se3_basic": ["se3_basic", "se3"],
-    "dfbc_basic": ["dfbc_basic"],
+    "dfbc_basic": ["dfbc_basic", "dfbc"],
     "smc_boundary_layer": ["smc_boundary_layer", "boundary_layer_smc"],
     "pid_indi": ["pid_indi"],
     "nmpc_outer": ["nmpc_outer", "nmpc"],
@@ -79,8 +79,36 @@ MODEL_SUFFIXES = {".mo"}
 NATIVE_RESULT_SUFFIXES = {".msr"}
 BLOCKED_IMPLEMENTATIONS = {"mu_synthesis", "neural_smc"}
 
+TERMINAL_BLOCKER_SOURCES = {
+    "mu_synthesis": (
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/"
+        "mu_synthesis/TERMINAL_BLOCKER.json"
+    ),
+    "neural_smc": (
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/"
+        "neural_smc/TERMINAL_BLOCKER.json"
+    ),
+}
+
 EXACT_MODEL_SOURCES = {
     "official_pid": ["Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo"],
+}
+
+G9_ROUTE_EVIDENCE_BATCH = (
+    "Results/control_platform/controller_document_evidence_20260720/"
+    "G9_CORE_COMPARISON/g9_route_report_evidence/"
+    "G9_ROUTE_MWORKS_REPORT_EVIDENCE_BATCH.json"
+)
+
+EXACT_NUMERIC_SOURCES = {
+    route: [G9_ROUTE_EVIDENCE_BATCH]
+    for route in (
+        "se3_basic",
+        "dfbc_basic",
+        "smc_boundary_layer",
+        "pid_indi",
+        "nmpc_outer",
+    )
 }
 
 # These are exact controller/profile bindings from the offline composition
@@ -89,13 +117,26 @@ EXACT_NATIVE_RESULT_ROOTS = {
     "official_pid": [
         "Results/mworks_generated_profiles/cert-official-pid-20260719-v2/native_result"
     ],
-    "pid_indi": [
-        "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/native_result"
-    ],
     "linear_mpc": [
         "Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1/native_result"
     ],
     "awff": ["Results/mworks_generated_profiles/cert-awff-20260719-v1/native_result"],
+    "se3_basic": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/se3_basic"
+    ],
+    "dfbc_basic": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/dfbc_basic"
+    ],
+    "smc_boundary_layer": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/smc_boundary_layer"
+    ],
+    "pid_indi": [
+        "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/native_result",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/pid_indi",
+    ],
+    "nmpc_outer": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/native_results/nmpc_outer"
+    ],
 }
 
 
@@ -137,11 +178,12 @@ def files_under(roots: tuple[Path, ...]) -> tuple[Path, ...]:
 def matches_route(
     path: Path, aliases: list[str], *, include_parent_path: bool = False
 ) -> bool:
+    value = normalize(path.stem)
+    filename_matches = any(alias in value for alias in aliases)
     if include_parent_path and path.is_relative_to(DEFAULT_OUTPUT_DIR):
         parent_components = {normalize(part) for part in path.parent.parts}
-        return any(alias in parent_components for alias in aliases)
-    value = normalize(path.stem)
-    return any(alias in value for alias in aliases)
+        return filename_matches or any(alias in parent_components for alias in aliases)
+    return filename_matches
 
 
 def pick(
@@ -207,6 +249,13 @@ def inventory_row(row: dict[str, Any]) -> dict[str, Any]:
             native_results.extend(native_root.rglob("*.msr"))
     native_results = sorted(set(native_results), key=lambda path: rel(path).lower())
     numeric = pick(files, aliases, NUMERIC_SUFFIXES)
+    numeric.extend(
+        path
+        for path in (
+            repo_path(value) for value in EXACT_NUMERIC_SOURCES.get(controller, [])
+        )
+        if path.is_file()
+    )
 
     matrix_evidence = evidence_paths_from_matrix(row)
     existing_matrix_evidence = [path for path in matrix_evidence if path.exists()]
@@ -218,6 +267,12 @@ def inventory_row(row: dict[str, Any]) -> dict[str, Any]:
     numeric = sorted(set(numeric), key=lambda path: rel(path).lower())
 
     implementation_blocked = controller in BLOCKED_IMPLEMENTATIONS
+    terminal_blocker = repo_path(TERMINAL_BLOCKER_SOURCES[controller]) if implementation_blocked else None
+    terminal_blocker_evidence = (
+        [terminal_blocker]
+        if terminal_blocker is not None and terminal_blocker.is_file()
+        else []
+    )
     missing: list[str] = []
     if not models:
         missing.append("model_source")
@@ -231,7 +286,11 @@ def inventory_row(row: dict[str, Any]) -> dict[str, Any]:
         missing.append("native_result_msr_live_confirmation")
 
     if implementation_blocked:
-        next_action = "bounded_implementation_gap_review"
+        next_action = (
+            "terminal_implementation_blocker_documented"
+            if terminal_blocker_evidence
+            else "bounded_implementation_gap_review"
+        )
     elif not models or not numeric:
         next_action = "repair_or_rerun_required"
     elif not graphical or not result_images:
@@ -257,6 +316,7 @@ def inventory_row(row: dict[str, Any]) -> dict[str, Any]:
         "matrix_evidence_existing": [rel(path) for path in existing_matrix_evidence],
         "missing_evidence": missing,
         "implementation_blocked": implementation_blocked,
+        "terminal_blocker_evidence": [rel(path) for path in terminal_blocker_evidence],
         "next_action": next_action,
     }
 
@@ -300,6 +360,9 @@ def build_inventory(matrix_path: Path) -> dict[str, Any]:
             "implementation_blocked_count": sum(
                 row["implementation_blocked"] for row in inventory_rows
             ),
+            "terminal_blocker_documented_count": sum(
+                bool(row["terminal_blocker_evidence"]) for row in inventory_rows
+            ),
             "next_action_counts": dict(sorted(action_counts.items())),
         },
         "rows": inventory_rows,
@@ -322,6 +385,7 @@ def write_markdown(inventory: dict[str, Any], path: Path) -> None:
         f"- 已有数值结果或指标：`{summary['numeric_result_present_count']}`",
         f"- 仓库内可见Result.msr：`{summary['native_result_msr_present_count']}`",
         f"- 实现阻塞：`{summary['implementation_blocked_count']}`",
+        f"- 已形成终止阻塞证据：`{summary['terminal_blocker_documented_count']}`",
         "",
         "## 边界",
         "",
@@ -352,10 +416,10 @@ def write_markdown(inventory: dict[str, Any], path: Path) -> None:
             )
         )
     lines.extend(["", "## 下一批", ""])
+    lines.append("- 65条已实现路线的模型、图形截图、结果截图和数值证据已齐备；不先重跑七场景。")
     lines.append(
-        "- 优先补齐已有模型和数值结果、但缺少图形或结果查看器截图的路线；不先重跑七场景。"
+        "- `mu_synthesis`与`neural_smc`已有终止阻塞证据；在重开门槛满足前不生成伪模型或替代结果。"
     )
-    lines.append("- `mu_synthesis`与`neural_smc`保持实现阻塞，不阻塞其余65项证据整理。")
     write_text_lf(path, "\n".join(lines) + "\n")
 
 
