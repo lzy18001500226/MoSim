@@ -150,6 +150,10 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert 'completedAction == QStringLiteral("get_telemetry")' in bridge_source
     assert "telemetryRunId == _runId" in bridge_source
     assert 'text: "切换UE视角"' in qml
+    assert 'text: "MWORKS实时曲线（由Model Studio启动）"' in qml
+    assert "自动拉起MWORKS实时模型尚未完成验收" in qml
+    assert 'text: "请求Model Studio打开模型"' in qml
+    assert 'reason = "mworks_result_requires_model_studio_live_session"' in ue_launcher
     assert "injectionVehicle.currentIndex = 0" in qml
     assert "Factory image is the only operator map surface" in plan_qml
     assert 'color: "#d9dde0"' in plan_qml

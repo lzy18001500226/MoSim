@@ -302,8 +302,8 @@ if ($Display -contains "unreal") {
 if ($Display -contains "mworks_result") {
     $results += [pscustomobject]@{
         display = "mworks_result"
-        state = "prepared"
-        reason = "opened_by_model_studio_after_result_packet"
+        state = "blocked"
+        reason = "mworks_result_requires_model_studio_live_session"
     }
 }
 

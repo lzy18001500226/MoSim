@@ -86,6 +86,7 @@ QGC 中显示为可用的任务不能只是界面占位。每个任务必须同�
 - 三机编队 Profile 显示目标中心、编队间距和逐机状态。
 - 实际轨迹、预期轨迹和任务阶段来自当前 `run_id`，不得复用上一任务的数据。
 - RViz 点云和栅格地图从“显示”页按需打开；UE 是展示层，Gazebo/PX4/MAVROS/RViz日志是飞行与规划成功的权威证据。
+- MWORKS 实时曲线当前由 Model Studio 启动。Flight Console 中该显示项保持禁用，直到它能真实拉起 `MworksLive.RTTelemetryScope50Hz`、确认当前 `run_id` 数据并打开原生曲线窗口；不能用 `prepared` 占位冒充窗口已打开。
 
 ## 5. 异常处理
 

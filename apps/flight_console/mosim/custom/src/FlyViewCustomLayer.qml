@@ -1831,7 +1831,18 @@ Item {
                         QGCCheckBox { id: pointCloudDisplay; text: "RViz点云地图"; checked: true }
                         QGCCheckBox { id: gridMapDisplay; text: "RViz栅格地图"; checked: true }
                         QGCCheckBox { id: unrealDisplay; text: "UE三维视图"; checked: true }
-                        QGCCheckBox { id: mworksDisplay; text: "MWORKS结果查看器" }
+                        QGCCheckBox {
+                            id: mworksDisplay
+                            text: "MWORKS实时曲线（由Model Studio启动）"
+                            enabled: false
+                            checked: false
+                        }
+                        QGCLabel {
+                            text: "自动拉起MWORKS实时模型尚未完成验收；当前请在Model Studio启动实时曲线，Flight Console不伪装为已打开。"
+                            color: qgcPal.colorOrange
+                            wrapMode: Text.Wrap
+                            Layout.fillWidth: true
+                        }
                         QGCButton {
                             text: "准备显示窗口"
                             Layout.fillWidth: true
@@ -1916,7 +1927,7 @@ Item {
                     QGCLabel { text: mosimOrchestrator.registryHash || "-"; wrapMode: Text.WrapAnywhere; Layout.fillWidth: true }
                     RowLayout {
                         Layout.fillWidth: true
-                        QGCButton { text: "打开模型上下文"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.openModelContext() }
+                        QGCButton { text: "请求Model Studio打开模型"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.openModelContext() }
                         QGCButton { text: "查看结果包"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.getResultPacket() }
                     }
                     TextArea {
