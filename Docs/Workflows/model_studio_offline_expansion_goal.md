@@ -477,3 +477,24 @@ Results/control_platform/offline_expansion_goal_20260719/P7_BATCH_LIVE_ACCEPTANC
 This proves one real batch path, not all eight Certified Profiles or the full
 APP UI runtime. Remaining P7 work is batch failure/retry/result-management
 coverage and then the broader Certified/Custom Profile batches.
+
+P7 static checkpoint 3 closes the first failure-attribution gap in the batch
+surface. The batch directory is now created before Profile resolution, so an
+unknown, disabled, multi-UAV, or direct-model Profile writes a blocked
+`BATCH_MANIFEST.json` with its exact reason and exits with code `2` without
+starting MWORKS. A child certification failure also remains blocked with its
+return code and logs. Model Studio preserves the expected manifest path on
+both success and failure and exposes that path through the result action.
+This is failure recording and result attribution only; it does not certify an
+additional controller or change any realtime, ROS1, PX4, Gazebo, or QGC asset.
+
+The immediate post-checkpoint read-only Sysplorer `session_manager(probe)` did
+not return within approximately 30 seconds and was terminated under the
+bounded-wait rule. No ensure, reconnect, restart, model load, check, simulation,
+or window action followed. This does not invalidate the completed static P7
+checkpoint, but it keeps the healthy-probe gate closed before the next live
+MWORKS batch. The blocker record is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_MWORKS_PROBE_BLOCKER_V2.json
+```

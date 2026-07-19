@@ -139,6 +139,54 @@ def run_one(
     return run_record
 
 
+def blocked_record(profile_id: str, reason_code: str) -> dict[str, Any]:
+    """Represent a preflight blocker without starting MWORKS."""
+    return {
+        "profile_id": profile_id,
+        "run_id": None,
+        "status": "blocked",
+        "reason_code": reason_code,
+        "return_code": None,
+        "duration_s": 0.0,
+        "certification_record": None,
+    }
+
+
+def write_batch_manifest(
+    output_dir: Path,
+    batch_id: str,
+    requested_profiles: list[str],
+    records: list[dict[str, Any]],
+    *,
+    started: str,
+    reuse_generated: bool,
+    record_only: bool,
+    timeout_s: int,
+) -> dict[str, Any]:
+    accepted = len(records) == len(requested_profiles) and all(
+        item["status"] == "accepted" for item in records
+    )
+    manifest = {
+        "schema": "mosim.model_studio.offline_batch.v1",
+        "batch_id": batch_id,
+        "status": "accepted" if accepted else "blocked",
+        "started_at": started,
+        "completed_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "requested_profiles": requested_profiles,
+        "completed_profiles": [item["profile_id"] for item in records if item.get("run_id")],
+        "records": records,
+        "execution": {
+            "reuse_generated": reuse_generated,
+            "record_only": record_only,
+            "timeout_s": timeout_s,
+            "stop_on_first_blocker": True,
+        },
+        "claim_boundary": "Batch orchestration and run-local offline MWORKS certification only; no PX4, Gazebo, ROS1, online co-simulation, or flight acceptance.",
+    }
+    write_json(output_dir / "BATCH_MANIFEST.json", manifest)
+    return manifest
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile-id", action="append", dest="profile_ids")
@@ -154,14 +202,31 @@ def main() -> int:
     if len(set(args.profile_ids)) != len(args.profile_ids):
         parser.error("duplicate_profile_id")
 
-    catalog = read_json(CATALOG)
-    selected = [(profile_id, resolve_profile(catalog, profile_id)) for profile_id in args.profile_ids]
     output_dir = BATCH_ROOT / args.batch_id
     if output_dir.exists():
         raise SystemExit(f"batch_already_exists:{args.batch_id}")
     output_dir.mkdir(parents=True)
     started = datetime.now().astimezone().isoformat(timespec="seconds")
     records: list[dict[str, Any]] = []
+    selected: list[tuple[str, dict[str, Any]]] = []
+    profile_id = args.profile_ids[0]
+    try:
+        catalog = read_json(CATALOG)
+        for profile_id in args.profile_ids:
+            selected.append((profile_id, resolve_profile(catalog, profile_id)))
+    except (OSError, json.JSONDecodeError, ValueError) as error:
+        manifest = write_batch_manifest(
+            output_dir,
+            args.batch_id,
+            args.profile_ids,
+            [blocked_record(profile_id, str(error))],
+            started=started,
+            reuse_generated=args.reuse_generated,
+            record_only=args.record_only,
+            timeout_s=args.timeout_s,
+        )
+        print(json.dumps(manifest, ensure_ascii=False, indent=2))
+        return 2
     for index, (profile_id, profile) in enumerate(selected, start=1):
         record = run_one(
             profile_id,
@@ -177,27 +242,18 @@ def main() -> int:
         if record["status"] != "accepted":
             break
 
-    accepted = len(records) == len(selected) and all(item["status"] == "accepted" for item in records)
-    manifest = {
-        "schema": "mosim.model_studio.offline_batch.v1",
-        "batch_id": args.batch_id,
-        "status": "accepted" if accepted else "blocked",
-        "started_at": started,
-        "completed_at": datetime.now().astimezone().isoformat(timespec="seconds"),
-        "requested_profiles": args.profile_ids,
-        "completed_profiles": [item["profile_id"] for item in records],
-        "records": records,
-        "execution": {
-            "reuse_generated": args.reuse_generated,
-            "record_only": args.record_only,
-            "timeout_s": args.timeout_s,
-            "stop_on_first_blocker": True,
-        },
-        "claim_boundary": "Batch orchestration and run-local offline MWORKS certification only; no PX4, Gazebo, ROS1, online co-simulation, or flight acceptance.",
-    }
-    write_json(output_dir / "BATCH_MANIFEST.json", manifest)
+    manifest = write_batch_manifest(
+        output_dir,
+        args.batch_id,
+        args.profile_ids,
+        records,
+        started=started,
+        reuse_generated=args.reuse_generated,
+        record_only=args.record_only,
+        timeout_s=args.timeout_s,
+    )
     print(json.dumps(manifest, ensure_ascii=False, indent=2))
-    return 0 if accepted else 2
+    return 0 if manifest["status"] == "accepted" else 2
 
 
 if __name__ == "__main__":

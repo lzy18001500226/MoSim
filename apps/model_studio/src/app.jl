@@ -371,21 +371,26 @@ const OFFLINE_PROFILES = Dict(
         ]; dir=PROJECT_ROOT)
         app.MilButton.Enable = false
         app.ResultButton.Enable = false
+        app.LastOfflineBatchManifest = joinpath(
+            PROJECT_ROOT,
+            "Results",
+            "control_platform",
+            "offline_batches",
+            batch_id,
+            "BATCH_MANIFEST.json",
+        )
         app.StatusLabel.Text = "正在执行离线 MWORKS 批次：" * profile_id
         try
             run(command)
-            app.LastOfflineBatchManifest = joinpath(
-                PROJECT_ROOT,
-                "Results",
-                "control_platform",
-                "offline_batches",
-                batch_id,
-                "BATCH_MANIFEST.json",
-            )
             app.StatusLabel.Text = "离线批次完成：" * app.LastOfflineBatchManifest
             app.ResultButton.Enable = true
         catch error
-            app.StatusLabel.Text = "离线批次阻断：" * sprint(showerror, error)
+            if isfile(app.LastOfflineBatchManifest)
+                app.StatusLabel.Text = "离线批次阻断，manifest：" * app.LastOfflineBatchManifest
+                app.ResultButton.Enable = true
+            else
+                app.StatusLabel.Text = "离线批次阻断：" * sprint(showerror, error)
+            end
         finally
             app.MilButton.Enable = true
         end
@@ -424,7 +429,13 @@ const OFFLINE_PROFILES = Dict(
         end
     end
     function CodegenPressed(app, event); app.ReviewAction("生成 C 代码"); end
-    function ResultPressed(app, event); app.ReviewAction("打开结果"); end
+    function ResultPressed(app, event)
+        if app.CurrentMode == "offline" && !isempty(app.LastOfflineBatchManifest)
+            app.StatusLabel.Text = "离线批次记录：" * app.LastOfflineBatchManifest
+        else
+            app.ReviewAction("打开结果")
+        end
+    end
 
     function configure_dropdown(app, control, label, position, items, value)
         control.Position = position

@@ -1,0 +1,35 @@
+{
+  "schema": "mosim.model_studio.offline_batch_live_blocker.v1",
+  "recorded_at": "2026-07-19T08:19:10.0656180+08:00",
+  "phase": "P7_batch_failure_and_result_management",
+  "status": "blocked_mcp_sysplorer_probe_timeout",
+  "completed_static_checkpoint": {
+    "batch_failure_manifest": "passed",
+    "unknown_profile": "blocked_manifest_written",
+    "disabled_profile": "blocked_manifest_written",
+    "multi_uav_profile": "blocked_manifest_written",
+    "direct_model_profile": "blocked_manifest_written",
+    "child_certification_failure": "blocked_manifest_written",
+    "model_studio_manifest_retention": "implemented",
+    "offline_regression": "passed",
+    "julia_parse": "passed"
+  },
+  "operation": {
+    "name": "session_manager_probe",
+    "mode": "read_only",
+    "result": "no_response_terminated_by_bounded_wait",
+    "wait_seconds_approx": 30
+  },
+  "actions_not_taken": [
+    "session_ensure",
+    "session_restart",
+    "session_force_restart",
+    "sysplorer_click",
+    "model_load",
+    "check_model",
+    "simulation",
+    "result_or_animation_claim"
+  ],
+  "claim_ceiling": "The P7 batch failure and result-attribution code path is statically verified. No new live MWORKS Profile certification was attempted or accepted in this checkpoint.",
+  "next_live_action": "Require a fresh healthy read-only Sysplorer probe before starting another MWORKS certification batch. Do not use ensure, restart, or force_restart without explicit authorization."
+}
