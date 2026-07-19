@@ -81,6 +81,13 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert "_startupRunRecoveryPending = !_runId.isEmpty()" in bridge_source
     assert 'completedAction == QStringLiteral("get_run_state")' in bridge_source
     assert 'invoke({QStringLiteral("get_run_state"), QStringLiteral("--run-id"), _runId})' in bridge_source
+    assert '_continuationAfterDisplayDetach = QStringLiteral("prepare_run")' in bridge_source
+    assert '_continuationAfterDisplayDetach = QStringLiteral("stop_run")' in bridge_source
+    assert 'clearUnrealWindow(QStringLiteral("not_attached"), QStringLiteral("run_changed"))' in bridge_source
+    assert 'completedAction == QStringLiteral("start_run") && _accepted && _autoAttachUnrealAfterStart' in bridge_source
+    assert 'prepareDisplays({QStringLiteral("unreal")})' in bridge_source
+    assert 'completedAction == QStringLiteral("prepare_display_session") && _accepted' in bridge_source
+    assert 'QTimer::singleShot(0, this, &MoSimOrchestratorBridge::attachDisplays)' in bridge_source
     assert "QWindow::fromWinId" in bridge_source
     assert "findLargestVisibleWindow" in bridge_source
     assert "EnumChildWindows(GetDesktopWindow()" in bridge_source

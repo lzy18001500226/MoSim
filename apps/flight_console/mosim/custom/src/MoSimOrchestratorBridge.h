@@ -165,6 +165,13 @@ private:
     double _unrealOrbitRemainderX = 0.0;
     double _unrealOrbitRemainderY = 0.0;
     bool _startupRunRecoveryPending = false;
+    bool _autoAttachUnrealAfterStart = false;
+    QString _continuationAfterDisplayDetach;
+    QString _pendingPrepareProfilePath;
+    QString _pendingPrepareControllerId;
+    int _pendingPrepareVehicleCount = 0;
+    double _pendingPrepareWindSpeedMps = 0.0;
+    bool _pendingPrepareManualControl = false;
     QElapsedTimer _qgcMetricWindow;
     QSet<QObject *> _observedQgcLinks;
     QString _qgcMetricRunId;
