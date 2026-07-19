@@ -11,6 +11,9 @@ import statistics
 import time
 from pathlib import Path
 
+from mission_status_channel import MissionStatusChannel
+from safe_stop_channel import SafeStopChannel
+
 import rospy
 import tf2_ros
 from gazebo_msgs.msg import ModelStates
@@ -25,6 +28,7 @@ from visualization_msgs.msg import Marker, MarkerArray
 
 
 TRAJECTORY_MISSIONS = {"figure8", "spiral", "circle", "step_x", "step_y", "step_z"}
+MANUAL_INPUT_SCHEMA = "mosim.manual_velocity_command.v1"
 
 
 class Px4ctrlBasicMission:
@@ -34,6 +38,7 @@ class Px4ctrlBasicMission:
         self.result_dir.mkdir(parents=True, exist_ok=True)
         self.start_wall = time.time()
         self.phase = "init"
+        self.mission_status = MissionStatusChannel("px4ctrl_basic_mission", ["uav1"])
         self.truth_rows: list[dict] = []
         self.sunray_truth_rows: list[dict] = []
         self.local_rows: list[dict] = []
@@ -73,6 +78,7 @@ class Px4ctrlBasicMission:
         self.tf_broadcaster = tf2_ros.TransformBroadcaster()
         self.disarm_attempts = 0
         self.disarm_success = False
+        self.safe_stop = SafeStopChannel()
         self.pre_takeoff_state_gate: dict = {
             "status": "pending",
             "reason": None,
@@ -102,6 +108,17 @@ class Px4ctrlBasicMission:
     def wall_elapsed(self) -> float:
         return time.time() - self.start_wall
 
+    @property
+    def phase(self) -> str:
+        return self._phase
+
+    @phase.setter
+    def phase(self, value: str) -> None:
+        self._phase = str(value)
+        channel = getattr(self, "mission_status", None)
+        if channel is not None:
+            channel.update_phase(self._phase)
+
     def deadline_reached(self) -> bool:
         return self.args.wall_timeout_s > 0 and self.wall_elapsed() > self.args.wall_timeout_s
 
@@ -126,6 +143,9 @@ class Px4ctrlBasicMission:
 
     def on_state(self, msg: State) -> None:
         self.last_state = msg
+        self.mission_status.update_vehicle(
+            "uav1", connected=msg.connected, armed=msg.armed, mode=msg.mode
+        )
         t = self.now()
         if not self.should_record("state", t, self.args.record_state_hz):
             return
@@ -633,6 +653,8 @@ class Px4ctrlBasicMission:
         end = time.time() + timeout_s
         rate = rospy.Rate(20)
         while not rospy.is_shutdown() and time.time() < end:
+            if self.safe_stop.requested():
+                return False
             if self.deadline_reached():
                 return False
             if self.last_truth is not None and self.last_sunray_truth is not None and self.home is not None:
@@ -645,6 +667,8 @@ class Px4ctrlBasicMission:
         rate = rospy.Rate(20)
         stable_samples = 0
         while not rospy.is_shutdown() and time.time() < end:
+            if self.safe_stop.requested():
+                return False
             if self.deadline_reached():
                 return False
             odom = self.last_control_odom if self.last_control_odom is not None else self.last_local
@@ -682,6 +706,8 @@ class Px4ctrlBasicMission:
         max_attitude_deg = max(0.0, float(self.args.pre_takeoff_max_abs_roll_pitch_deg))
         max_observed_attitude_deg = 0.0
         while not rospy.is_shutdown() and (end is None or time.time() < end):
+            if self.safe_stop.requested():
+                return False
             if self.deadline_reached():
                 self.pre_takeoff_state_gate.update(
                     {
@@ -768,6 +794,8 @@ class Px4ctrlBasicMission:
         end = time.time() + timeout_s
         rate = rospy.Rate(20)
         while not rospy.is_shutdown() and time.time() < end:
+            if self.safe_stop.requested():
+                return False
             if self.deadline_reached():
                 return False
             sample, target_z = self.takeoff_gate_sample()
@@ -784,11 +812,21 @@ class Px4ctrlBasicMission:
             rate.sleep()
         return False
 
-    def publish_cmd_for_duration(self, duration_s: float) -> None:
+    def sleep_until_or_safe_stop(self, duration_s: float) -> bool:
+        deadline = time.time() + max(0.0, duration_s)
+        while not rospy.is_shutdown() and time.time() < deadline:
+            if self.safe_stop.requested():
+                return True
+            time.sleep(min(0.05, max(0.0, deadline - time.time())))
+        return self.safe_stop.requested()
+
+    def publish_cmd_for_duration(self, duration_s: float) -> bool:
         rate = rospy.Rate(self.args.command_rate_hz)
         t0 = self.now()
         self.publish_reference_path()
         while not rospy.is_shutdown():
+            if self.safe_stop.requested():
+                return True
             if self.deadline_reached():
                 break
             mission_t = self.now() - t0
@@ -845,8 +883,9 @@ class Px4ctrlBasicMission:
                 }
             )
             rate.sleep()
+        return False
 
-    def publish_hold_cmd_for_duration(self, duration_s: float) -> None:
+    def publish_hold_cmd_for_duration(self, duration_s: float) -> bool:
         if self.home is None:
             rospy.sleep(duration_s)
             return
@@ -862,6 +901,8 @@ class Px4ctrlBasicMission:
             if odom is not None:
                 ramp_start_z = odom["z"]
         while not rospy.is_shutdown() and self.now() < end_t:
+            if self.safe_stop.requested():
+                return True
             if self.deadline_reached():
                 break
             elapsed = max(0.0, self.now() - start_t)
@@ -911,9 +952,113 @@ class Px4ctrlBasicMission:
                 }
             )
             rate.sleep()
+        return False
+
+    def read_manual_input(self) -> dict:
+        """Read the latest UI command without ever making it a second publisher."""
+        path = Path(self.args.manual_input_file)
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, TypeError):
+            return {}
+        if not isinstance(payload, dict) or payload.get("schema") != MANUAL_INPUT_SCHEMA:
+            return {}
+        if payload.get("run_id") and payload.get("run_id") != self.args.manual_run_id:
+            return {}
+        return payload
+
+    def publish_manual_for_duration(self) -> bool:
+        """Track a bounded body-frame velocity command and hover on timeout."""
+        rate = rospy.Rate(self.args.command_rate_hz)
+        last_t = self.now()
+        end_t = last_t + self.args.manual_duration_s
+        target = None
+        while not rospy.is_shutdown():
+            if self.safe_stop.requested():
+                return True
+            if self.deadline_reached() or self.now() >= end_t:
+                break
+            now = self.now()
+            dt = max(0.0, min(0.1, now - last_t))
+            last_t = now
+            payload = self.read_manual_input()
+            stamp = float(payload.get("timestamp_s", 0.0) or 0.0)
+            fresh = stamp > 0.0 and time.time() - stamp <= self.args.manual_timeout_s
+            enabled = bool(payload.get("enabled", False)) and fresh
+            forward = float(payload.get("forward_mps", 0.0) or 0.0) if enabled else 0.0
+            lateral = float(payload.get("lateral_mps", 0.0) or 0.0) if enabled else 0.0
+            speed = math.hypot(forward, lateral)
+            if speed > self.args.manual_max_speed_mps:
+                scale = self.args.manual_max_speed_mps / speed
+                forward *= scale
+                lateral *= scale
+            odom = self.last_control_odom or self.last_local or self.last_truth
+            if odom is None:
+                rate.sleep()
+                continue
+            if target is None:
+                target = [odom["x"], odom["y"], self.home[2] + self.args.altitude_m, odom["yaw"]]
+            yaw = float(odom.get("yaw", target[3]))
+            world_vx = math.cos(yaw) * forward - math.sin(yaw) * lateral
+            world_vy = math.sin(yaw) * forward + math.cos(yaw) * lateral
+            target[0] += world_vx * dt
+            target[1] += world_vy * dt
+            msg = self.make_position_cmd(
+                target[0], target[1], target[2], world_vx, world_vy, 0.0,
+                0.0, 0.0, 0.0, target[3], 0.0,
+            )
+            self.cmd_pub.publish(msg)
+            self.ref_rows.append({
+                "t": now, "phase": "manual", "x": target[0], "y": target[1], "z": target[2],
+                "cmd_x": target[0], "cmd_y": target[1], "cmd_z": target[2],
+                "vx": world_vx, "vy": world_vy, "vz": 0.0,
+                "cmd_vx": world_vx, "cmd_vy": world_vy, "cmd_vz": 0.0,
+                "input_fresh": fresh, "input_enabled": enabled,
+            })
+            rate.sleep()
+        return False
+
+    def perform_safe_stop(self, takeoff_ok: bool, static_odom_ok: bool) -> dict:
+        self.safe_stop.acknowledge("quiescing", 20)
+        self.phase = "safe_stop_hover"
+        odom = self.last_control_odom or self.last_local or self.last_truth
+        if odom is not None:
+            self.safe_stop.acknowledge("hovering", 40)
+            hold = self.make_position_cmd(
+                odom["x"], odom["y"], odom["z"], 0.0, 0.0, 0.0,
+                0.0, 0.0, 0.0, odom.get("yaw", 0.0), 0.0,
+            )
+            rate = rospy.Rate(self.args.command_rate_hz)
+            hover_deadline = time.time() + 1.0
+            while not rospy.is_shutdown() and time.time() < hover_deadline:
+                self.cmd_pub.publish(hold)
+                rate.sleep()
+        self.safe_stop.acknowledge("landing", 65)
+        self.phase = "land"
+        rospy.sleep(self.args.cmd_timeout_clear_s)
+        self.publish_takeoff_land(TakeoffLand.LAND)
+        self.wait_land_and_optionally_disarm()
+        self.wait_for_final_disarm_state(self.args.final_state_settle_s)
+        disarmed = bool(self.last_state and not self.last_state.armed)
+        if disarmed:
+            self.safe_stop.acknowledge("disarmed", 90)
+        self.safe_stop.acknowledge(
+            "completed" if disarmed else "failed",
+            100,
+            terminal=True,
+            accepted=disarmed,
+            reason_code="safe_stop_completed" if disarmed else "safe_stop_disarm_not_confirmed",
+        )
+        self.phase = "done"
+        metrics = self.metrics(takeoff_ok, static_odom_ok, forced_reason="operator_safe_stop")
+        metrics["status"] = "safe_stopped" if disarmed else "blocked"
+        metrics["safe_stop"] = {"requested": True, "disarmed": disarmed}
+        return metrics
 
     def run(self) -> dict:
         if not self.wait_for_truth(30.0):
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(False, False)
             return {"status": "blocked", "reason": "no_gazebo_truth"}
         assert self.home is not None
         self.phase = "wait_static_odom"
@@ -925,6 +1070,8 @@ class Px4ctrlBasicMission:
                 self.last_control_odom["z"],
             )
         if not static_odom_ok:
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(False, False)
             return self.metrics(
                 False,
                 False,
@@ -933,6 +1080,8 @@ class Px4ctrlBasicMission:
         self.phase = "pre_takeoff_state_stable"
         pre_takeoff_state_ok = self.wait_for_pre_takeoff_state_stable(self.args.pre_takeoff_state_stable_s)
         if not pre_takeoff_state_ok:
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(False, True)
             return self.metrics(
                 False,
                 True,
@@ -941,27 +1090,43 @@ class Px4ctrlBasicMission:
         self.phase = "takeoff"
         self.publish_takeoff_land(TakeoffLand.TAKEOFF, repeats=self.args.takeoff_cmd_repeats)
         takeoff_ok = self.wait_until_altitude(self.args.takeoff_timeout_s)
+        if self.safe_stop.requested():
+            return self.perform_safe_stop(takeoff_ok, static_odom_ok)
         if self.deadline_reached():
             return self.metrics(takeoff_ok, static_odom_ok, forced_reason="wall_timeout_during_takeoff")
 
         self.phase = "hover_before"
         if self.args.hover_hold_command_mode == "position_cmd":
-            self.publish_hold_cmd_for_duration(self.args.initial_hover_s)
+            if self.publish_hold_cmd_for_duration(self.args.initial_hover_s):
+                return self.perform_safe_stop(takeoff_ok, static_odom_ok)
         else:
-            rospy.sleep(self.args.initial_hover_s)
+            if self.sleep_until_or_safe_stop(self.args.initial_hover_s):
+                return self.perform_safe_stop(takeoff_ok, static_odom_ok)
         if self.deadline_reached():
             return self.metrics(takeoff_ok, static_odom_ok, forced_reason="wall_timeout_during_hover_before")
 
         if self.args.mission in TRAJECTORY_MISSIONS:
             self.phase = self.args.mission
-            self.publish_cmd_for_duration(self.trajectory_duration_s())
+            if self.publish_cmd_for_duration(self.trajectory_duration_s()):
+                return self.perform_safe_stop(takeoff_ok, static_odom_ok)
             self.phase = "hover_after"
             if self.args.hover_hold_command_mode == "position_cmd":
-                self.publish_hold_cmd_for_duration(self.args.post_hold_s)
+                if self.publish_hold_cmd_for_duration(self.args.post_hold_s):
+                    return self.perform_safe_stop(takeoff_ok, static_odom_ok)
             else:
-                rospy.sleep(self.args.post_hold_s)
+                if self.sleep_until_or_safe_stop(self.args.post_hold_s):
+                    return self.perform_safe_stop(takeoff_ok, static_odom_ok)
             if self.deadline_reached():
                 return self.metrics(takeoff_ok, static_odom_ok, forced_reason="wall_timeout_during_trajectory")
+        elif self.args.mission == "manual":
+            self.phase = "manual"
+            if self.publish_manual_for_duration():
+                return self.perform_safe_stop(takeoff_ok, static_odom_ok)
+            self.phase = "hover_after"
+            if self.publish_hold_cmd_for_duration(self.args.post_hold_s):
+                return self.perform_safe_stop(takeoff_ok, static_odom_ok)
+            if self.deadline_reached():
+                return self.metrics(takeoff_ok, static_odom_ok, forced_reason="wall_timeout_during_manual")
 
         self.phase = "land"
         rospy.sleep(self.args.cmd_timeout_clear_s)
@@ -1698,7 +1863,7 @@ class Px4ctrlBasicMission:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--result-dir", required=True)
-    parser.add_argument("--mission", choices=["takeoff_hover_land", "figure8", "spiral", "circle", "step_x", "step_y", "step_z"], default="takeoff_hover_land")
+    parser.add_argument("--mission", choices=["takeoff_hover_land", "manual", "figure8", "spiral", "circle", "step_x", "step_y", "step_z"], default="takeoff_hover_land")
     parser.add_argument("--gate-mode", choices=["goal2", "g7"], default="goal2")
     parser.add_argument("--truth-model-name", default="uav1")
     parser.add_argument("--sunray-truth-topic", default="/uav1/sunray/gazebo_pose")
@@ -1739,6 +1904,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--force-disarm-max-z-rel-m", type=float, default=0.18)
     parser.add_argument("--final-state-settle-s", type=float, default=4.0)
     parser.add_argument("--command-rate-hz", type=float, default=50.0)
+    parser.add_argument("--manual-input-file", default="/mnt/c/Users/HP/Desktop/MoSim/Results/ui_platform/manual_control/manual_control.json")
+    parser.add_argument("--manual-run-id", default="")
+    parser.add_argument("--manual-timeout-s", type=float, default=0.30)
+    parser.add_argument("--manual-max-speed-mps", type=float, default=0.50)
+    parser.add_argument("--manual-duration-s", type=float, default=120.0)
     parser.add_argument("--command-x-bias-m", type=float, default=0.0)
     parser.add_argument("--command-y-bias-m", type=float, default=0.0)
     parser.add_argument("--command-z-bias-m", type=float, default=0.0)
@@ -1805,7 +1975,16 @@ def main() -> int:
     node = Px4ctrlBasicMission(parse_args())
     metrics = node.run()
     node.write_outputs(metrics)
-    return 0 if metrics.get("status") == "passed" else 2
+    status = str(metrics.get("status", "blocked"))
+    blockers = list(metrics.get("blockers") or [])
+    if not blockers and metrics.get("reason"):
+        blockers.append(str(metrics["reason"]))
+    node.mission_status.finish(
+        result_status=status,
+        accepted=status in {"passed", "safe_stopped"},
+        blockers=blockers,
+    )
+    return 0 if metrics.get("status") in {"passed", "safe_stopped"} else 2
 
 
 if __name__ == "__main__":

@@ -190,9 +190,19 @@ QGC退出不得导致控制链断开。
 UE视频默认不录制；用户点击`开始UE录制`后显示红色录制状态、已用时间、目标文件和磁盘余量，
 再次点击执行flush并停止。地图、UE、RViz或录像失败只降低显示证据等级，不得阻塞控制和日志。
 
-QGC原生Fly/Mission操作继续拥有解锁、起飞和开始/暂停任务语义。MoSim不复制第二套飞行按钮，
-只增加`准备仿真环境`，负责Profile预检以及Gazebo、PX4、MAVROS、定位、控制器和显示消费者
-进入`ready`；到达`ready`后，飞行操作交还QGC原生流程。
+飞行所有权按任务类型冻结，不允许操作者猜测或同时存在两条命令链：
+
+| 任务类型 | 连接与运行时准备 | 解锁/起飞 | 任务执行 | 结束 |
+| --- | --- | --- | --- | --- |
+| 单机定点/WASD | Orchestrator | QGC原生操作 | QGC `MANUAL_CONTROL`进入PX4 Position模式 | QGC原生降落，落地后停止run |
+| 普通QGC航点任务 | Orchestrator | QGC原生操作 | QGC Mission/MAVLink | QGC暂停/返航/降落 |
+| 8字、FUEL、编队等自动任务 | Orchestrator | 当前任务Adapter自动执行 | 当前任务Adapter唯一接管 | Adapter自动降落；异常走安全停止状态机 |
+
+Flight Console不复制QGC已有的解锁、起飞和普通Mission按钮。对于自动任务，右侧任务按钮
+提交的是结构化Orchestrator Action，不是第二套裸MAVLink飞行按钮；QGC必须逐阶段显示
+`运行时准备 -> 飞机连接 -> 解锁 -> 起飞 -> 任务执行 -> 降落 -> 结束`以及逐机ACK、当前authority
+和失败原因。只有用户不借助终端、仅按界面“下一步”提示即可完成任务并安全结束，才算操作
+闭环通过；后端脚本单独跑通不算Flight Console完成。
 
 ### 4.2 `MoSimMapView`三种状态
 
@@ -711,6 +721,78 @@ FC-Q3  Plan View边界与FUEL/Diff真实闭环        累计7至12个工作日
 
 上述时间不包含重新解决FUEL或Diff算法本身的规划失败、控制器失稳、Gazebo性能或地图坐标
 错误。若运行适配时暴露这些后端问题，必须单独形成blocker，不得通过前端模拟状态缩短工期。
+
+### 11.2 手动定点最小闭环
+
+手动定点飞行复用QGC和PX4原生手动控制链，不经过ROS文件轮询，也不让
+`px4ctrl_basic_mission_node.py`与PX4 Position控制争夺命令权：
+
+```text
+Flight Console选择“单机定点操纵”并验证Profile
+  -> Orchestrator只启动Gazebo/PX4/MAVROS和显示运行时
+  -> QGC发现飞机并显示连接完成
+  -> 用户使用QGC原生解锁/起飞
+  -> 用户切换PX4 Position模式
+  -> Flight Console开放W/A/S/D开关
+  -> QGC以25 Hz发送MAVLink MANUAL_CONTROL
+  -> 松键回中，用户最后使用QGC原生降落
+```
+
+W/A/S/D只在“当前选择与已启动RunManifest一致、单机手动任务、连接完成、已解锁、
+`flightMode == Position`”全部成立时发送。首版水平输入幅值为`0.35`，yaw保持`0.0`；
+MAVLink `MANUAL_CONTROL.z`范围为`0..1000`，因此QGC归一化油门中位固定为`0.5`，不得发送
+`0.0`冒充悬停中位。关闭键盘控制或松键时发送水平中位。飞行中禁止切换控制器、Prepare
+其他任务或自动重启runtime。
+
+该链路通过源码与静态测试后，仍必须在同一Factory run完成人工的连接、解锁、起飞、
+Position、四方向移动、松键悬停和降落验收，才能宣称用户独立操作闭环通过。
+
+### 11.3 自动任务安全结束合同
+
+`请求安全停止`与`停止当前仿真`是两个不同层级的命令，界面和后端不得合并：
+
+| 命令 | 允许时机 | 责任 | 完成证据 |
+| --- | --- | --- | --- |
+| 请求安全停止 | 8字、FUEL或三机编队处于运行中 | 当前Mission Adapter停止未来命令，悬停稳定，发出LAND并确认解除武装 | 同一`run_id/request_id/operation_id`的终态ACK；阶段为`completed`且`accepted=true` |
+| 停止当前仿真 | 全部飞机已确认解除武装后；`starting`也不得推断为尚未起飞 | Orchestrator关闭当前run拥有的Gazebo、PX4、MAVROS、ROS和显示辅助进程 | 任务Adapter终态ACK，或runtime sidecar逐机实时disarm遥测 |
+
+自动任务必须在等待连接、起飞、等待规划器接管、轨迹执行、探索执行和编队目标链阶段轮询
+同一个run-scoped安全停止通道。任务适配器的ACK按
+`requested -> quiescing -> hovering -> landing -> disarmed -> completed`单调推进；重复点击复用
+已有operation。多机任务只有全部成员解除武装后才能进入`completed`。
+
+Orchestrator不得把`starting`生命周期、“遥测缺失”“QGC当前活动飞机未解锁”或“只连接到一架飞机”当作安全落地。
+手动定点任务关闭前，runtime sidecar遥测必须新鲜、车辆数与RunManifest一致、逐机连接且
+`armed=false`。自动任务优先采用Mission Adapter终态ACK。任何证据不完整都拒绝关闭运行时，
+并在Flight Console显示中文原因，引导操作者先降落或请求安全停止。
+
+### 11.4 自动任务的QGC独立操作流程
+
+8字、FUEL单机自主探索和三机固定编队都必须从Flight Console选择并启动，不要求操作者
+另外打开终端输入解锁、起飞或任务命令：
+
+```text
+Flight Console选择已验收任务Profile并点击“验证配置”
+  -> Orchestrator冻结run_id、Profile、控制器和飞机数量
+  -> 操作者点击“启动仿真并连接飞机”
+  -> Orchestrator启动Gazebo/PX4/MAVROS、Sidecar和唯一Mission Adapter
+  -> Mission Adapter独占完成逐机连接检查、解锁、起飞、任务执行和降落
+  -> QGC显示实时阶段、逐机Adapter ACK和独立Sidecar遥测
+  -> Mission Adapter写入通过/未通过终态，Sidecar在清理前镜像到QGC
+  -> 所有飞机解除武装且终态确认后，才允许停止当前仿真
+```
+
+控制权必须按Profile明确显示。`单机定点操纵`由QGC原生链负责，用户手动解锁、起飞和
+降落；`单机8字飞行`、`FUEL单机自主探索`和`三机固定编队避障`由对应Mission Adapter
+独占控制，用户不得再用QGC原生起飞按钮或另一任务节点同时发送飞行命令。UE、地图和
+RViz只负责显示，不能提供解锁或任务成功判据。
+
+自动任务节点通过同一run目录的`mission_status.json`发布
+`mosim.mission_status.v1`，最小字段为`run_id`、`adapter_id`、`phase`、`state`、
+`terminal`、`accepted`、`reason_code`、`blockers`、`vehicles[]`和`updated_at`。
+状态发布失败不得中断飞行。Sidecar只接受同一`run_id`、飞机集合一致且Schema有效的状态；
+运行中状态超过2.5秒标记为过期，终态持久保留。QGC必须把“Sidecar逐机遥测”和
+“Mission Adapter阶段/终态ACK”分开显示，任何一项缺失都不得伪装为任务成功。
 
 ## 12. UE原生子窗口与QGC浮层规则
 

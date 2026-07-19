@@ -11,6 +11,9 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from mission_status_channel import MissionStatusChannel
+from safe_stop_channel import SafeStopChannel
+
 import rospy
 from rospy.msg import AnyMsg
 from gazebo_msgs.msg import ModelStates
@@ -133,6 +136,10 @@ class EgoSwarmMission:
         self.exploration_started_t: float | None = None
         self.exploration_ended_t: float | None = None
         self.phase = "init"
+        self.mission_status = MissionStatusChannel(
+            "goal5_swarm_formation_mission",
+            [f"uav{uid}" for uid in range(1, args.uav_num + 1)],
+        )
         self.uavs: dict[int, UavRuntime] = {}
         self.formation_center_goal_publish_count = 0
         self.min_inter_uav_distance = float("inf")
@@ -148,6 +155,7 @@ class EgoSwarmMission:
         self.trigger_pub = rospy.Publisher("/traj_start_trigger", PoseStamped, queue_size=3)
         self.target_path_pub = rospy.Publisher("/mosim/goal5/target_path", RosPath, queue_size=1, latch=True)
         self.pre_takeoff_settle_summary: dict | None = None
+        self.safe_stop = SafeStopChannel()
 
         for uid in range(1, args.uav_num + 1):
             target = self.target_for(uid)
@@ -223,6 +231,17 @@ class EgoSwarmMission:
     def wall_elapsed(self) -> float:
         return time.time() - self.start_wall
 
+    @property
+    def phase(self) -> str:
+        return self._phase
+
+    @phase.setter
+    def phase(self, value: str) -> None:
+        self._phase = str(value)
+        channel = getattr(self, "mission_status", None)
+        if channel is not None:
+            channel.update_phase(self._phase)
+
     def should_record(self, uav: UavRuntime, key: str, t: float, hz: float) -> bool:
         if hz <= 0:
             return True
@@ -275,6 +294,9 @@ class EgoSwarmMission:
     def on_state(self, uid: int, msg: State) -> None:
         uav = self.uavs[uid]
         uav.state = msg
+        self.mission_status.update_vehicle(
+            f"uav{uid}", connected=msg.connected, armed=msg.armed, mode=msg.mode
+        )
         uav.state_rows.append(
             {
                 "t": self.now(),
@@ -773,6 +795,8 @@ class EgoSwarmMission:
                 continue
             stagger_deadline = time.time() + self.args.takeoff_uav_stagger_s
             while not rospy.is_shutdown() and time.time() < stagger_deadline:
+                if self.safe_stop.requested():
+                    return
                 if self.has_armed_or_started_rising(uav):
                     break
                 self.publish_paths()
@@ -1051,6 +1075,8 @@ class EgoSwarmMission:
         stable_start_wall: float | None = None
         last_snapshots: list[dict] = []
         while not rospy.is_shutdown() and time.time() - start_wall < self.args.pre_takeoff_settle_timeout_s:
+            if self.safe_stop.requested():
+                return False
             self.publish_paths()
             last_snapshots = [self.pre_takeoff_stability_snapshot(uav) for uav in self.uavs.values()]
             if all(snapshot["ok"] for snapshot in last_snapshots):
@@ -1273,6 +1299,30 @@ class EgoSwarmMission:
         }
         return self.landing_summary
 
+    def perform_safe_stop(self, rate: WallRate) -> int:
+        self.safe_stop.acknowledge("quiescing", 20)
+        self.planner_command_quiesce("safe_stop_hover")
+        self.safe_stop.acknowledge("hovering", 45)
+        self.safe_stop.acknowledge("landing", 65)
+        landing = self.run_landing(rate)
+        completed = bool(landing.get("completed"))
+        if completed:
+            self.safe_stop.acknowledge("disarmed", 90)
+        self.safe_stop.acknowledge(
+            "completed" if completed else "failed",
+            100,
+            terminal=True,
+            accepted=completed,
+            reason_code="safe_stop_completed" if completed else "safe_stop_disarm_not_confirmed",
+            detail={"landing": landing},
+        )
+        self.phase = "done"
+        self.write_outputs(
+            "safe_stopped" if completed else "blocked",
+            [] if completed else ["safe_stop_disarm_not_confirmed"],
+        )
+        return 0 if completed else 16
+
     def update_target_hold(self, uav: UavRuntime) -> bool:
         if not uav.odom:
             return False
@@ -1369,6 +1419,8 @@ class EgoSwarmMission:
             output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
             while not rospy.is_shutdown() and time.time() - start_wall < self.args.target_chain_goal_timeout_s:
+                if self.safe_stop.requested():
+                    return False, ["operator_safe_stop_requested"]
                 if (
                     self.args.target_chain_goal_republish_period_s > 0.0
                     and time.time() - last_goal_republish_wall >= self.args.target_chain_goal_republish_period_s
@@ -1443,6 +1495,8 @@ class EgoSwarmMission:
         rate = WallRate(self.args.hover_publish_hz)
         deadline = time.time() + self.args.ready_timeout_s
         while not rospy.is_shutdown() and time.time() < deadline:
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             self.publish_paths()
             if self.all_ready():
                 break
@@ -1452,6 +1506,8 @@ class EgoSwarmMission:
             return 10
         self.set_cmd_adapters_enabled(False)
         if not self.wait_pre_takeoff_settle(rate):
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             self.write_outputs("blocked", ["pre_takeoff_settle_timeout"])
             return 10
         # Latch home only after the odometry stream has settled. With staggered
@@ -1464,6 +1520,8 @@ class EgoSwarmMission:
 
         self.phase = "takeoff"
         self.publish_takeoff_sequence(rate)
+        if self.safe_stop.requested():
+            return self.perform_safe_stop(rate)
         takeoff_start_sim = self.now()
         takeoff_start_wall = time.monotonic()
         last_retry_wall = {uid: time.time() for uid in self.uavs}
@@ -1475,6 +1533,8 @@ class EgoSwarmMission:
         required_stable_s = max(self.args.pre_ego_hover_s, self.args.pre_planner_stable_s)
         takeoff_exit_reason = "ros_shutdown"
         while not rospy.is_shutdown():
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             takeoff_sim_elapsed_s = max(0.0, self.now() - takeoff_start_sim)
             takeoff_wall_elapsed_s = max(0.0, time.monotonic() - takeoff_start_wall)
             if takeoff_sim_elapsed_s >= self.args.takeoff_timeout_s:
@@ -1529,6 +1589,8 @@ class EgoSwarmMission:
             return 11
 
         self.phase = "ego_triggered"
+        if self.safe_stop.requested():
+            return self.perform_safe_stop(rate)
         if self.args.planner_target_mode == "trigger":
             self.publish_trigger()
         else:
@@ -1536,6 +1598,8 @@ class EgoSwarmMission:
         self.set_cmd_adapters_enabled(True)
         deadline = time.time() + self.args.ego_takeover_timeout_s
         while not rospy.is_shutdown() and time.time() < deadline:
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             self.publish_hover_cmds()
             self.publish_paths()
             if all(self.first_planner_takeover_time(uav) is not None for uav in self.uavs.values()):
@@ -1556,6 +1620,8 @@ class EgoSwarmMission:
                 not rospy.is_shutdown()
                 and self.now() - self.exploration_started_t < self.args.exploration_duration_s
             ):
+                if self.safe_stop.requested():
+                    return self.perform_safe_stop(rate)
                 self.publish_paths()
                 emergency_event = self.inter_uav_emergency_snapshot()
                 if emergency_event is not None:
@@ -1581,6 +1647,8 @@ class EgoSwarmMission:
         if self.target_chains:
             passed, chain_blockers = self.run_target_chains(rate)
             if not passed:
+                if self.safe_stop.requested():
+                    return self.perform_safe_stop(rate)
                 blockers = list(chain_blockers)
                 blockers.extend(b for b in self.acceptance_blockers() if b not in blockers)
                 self.write_outputs("blocked", blockers)
@@ -1598,6 +1666,8 @@ class EgoSwarmMission:
             return 0
 
         while not rospy.is_shutdown() and time.time() - execute_start < self.args.execute_timeout_s:
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             self.publish_paths()
             emergency_event = self.inter_uav_emergency_snapshot()
             if emergency_event is not None:
@@ -2030,6 +2100,12 @@ class EgoSwarmMission:
             ),
         }
         (self.result_dir / metrics_filename).write_text(json.dumps(summary, indent=2), encoding="utf-8")
+        if metrics_filename == "EGO_SWARM_METRICS.json" and status in {"passed", "blocked", "safe_stopped"}:
+            self.mission_status.finish(
+                result_status=status,
+                accepted=status in {"passed", "safe_stopped"},
+                blockers=blockers,
+            )
 
     def write_partial_outputs(self, status: str, blockers: list[str]) -> None:
         self.write_outputs(status, blockers, "EGO_SWARM_METRICS_PARTIAL.json")

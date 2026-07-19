@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 
 from src.orchestration.runtime_sidecar_contract import (
     atomic_write_json,
+    evaluate_readiness_status,
     load_contract,
     resolve_gazebo_body_name,
     validate_command,
@@ -37,6 +38,60 @@ def _sample(message: Any = None) -> tuple[Any, float] | None:
     return None if message is None else (message, time.time())
 
 
+def load_mission_status(
+    path: Path,
+    *,
+    expected_run_id: str,
+    expected_vehicle_ids: list[str],
+    now: float,
+    max_age_s: float,
+) -> dict[str, Any]:
+    unavailable = {
+        "transport_state": "unavailable",
+        "fresh": False,
+        "terminal": False,
+        "reason_code": "mission_status_missing",
+    }
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return unavailable
+    except (OSError, json.JSONDecodeError):
+        return {**unavailable, "reason_code": "mission_status_unreadable"}
+
+    vehicles = payload.get("vehicles")
+    vehicle_ids = (
+        [str(item.get("vehicle_id", "")) for item in vehicles if isinstance(item, dict)]
+        if isinstance(vehicles, list)
+        else []
+    )
+    valid = (
+        payload.get("schema") == "mosim.mission_status.v1"
+        and payload.get("run_id") == expected_run_id
+        and isinstance(payload.get("adapter_id"), str)
+        and isinstance(payload.get("phase"), str)
+        and isinstance(payload.get("state"), str)
+        and isinstance(payload.get("terminal"), bool)
+        and (payload.get("accepted") is None or isinstance(payload.get("accepted"), bool))
+        and sorted(vehicle_ids) == sorted(expected_vehicle_ids)
+        and isinstance(payload.get("updated_at"), (int, float))
+    )
+    if not valid:
+        return {**unavailable, "reason_code": "mission_status_contract_invalid"}
+
+    age_s = now - float(payload["updated_at"])
+    if age_s < -1.0:
+        return {**unavailable, "reason_code": "mission_status_clock_invalid"}
+    terminal = bool(payload["terminal"])
+    fresh = age_s <= max_age_s
+    return {
+        **payload,
+        "transport_state": "terminal" if terminal else ("fresh" if fresh else "stale"),
+        "fresh": fresh,
+        "source_age_s": max(0.0, age_s),
+    }
+
+
 class RosRuntimeSidecar:
     def __init__(self, args: argparse.Namespace) -> None:
         import rospy
@@ -44,9 +99,10 @@ class RosRuntimeSidecar:
         from gazebo_msgs.srv import ApplyBodyWrench
         from geometry_msgs.msg import Point, Wrench
         from mavros_msgs.msg import AttitudeTarget, State
-        from nav_msgs.msg import Odometry
+        from nav_msgs.msg import Odometry, Path as RosPath
         from quadrotor_msgs.msg import PositionCommand
         from std_msgs.msg import Float64MultiArray
+        from visualization_msgs.msg import Marker
 
         self.rospy = rospy
         self.ApplyBodyWrench = ApplyBodyWrench
@@ -62,9 +118,11 @@ class RosRuntimeSidecar:
             raise ValueError("sidecar_vehicle_count_manifest_mismatch")
         self.vehicle_ids = [f"uav{index}" for index in range(1, args.vehicle_count + 1)]
         self.started_at = time.time()
+        self.ever_ready = False
         self.model_names: list[str] = []
         self.active_injections: dict[str, dict[str, Any]] = {}
         self.processed_commands: set[str] = set()
+        self.task_paths: dict[str, dict[str, Any]] = {}
         self.vehicles: dict[str, dict[str, Any]] = {
             vehicle_id: {
                 "state": None,
@@ -100,7 +158,46 @@ class RosRuntimeSidecar:
                 (vehicle_id, "actuator"), queue_size=50,
             )
         rospy.Subscriber(args.model_states_topic, ModelStates, self._models_cb, queue_size=10)
+        if args.expected_path_topic:
+            rospy.Subscriber(
+                args.expected_path_topic, RosPath, self._expected_path_cb,
+                callback_args=args.expected_path_topic, queue_size=2,
+            )
+        if args.future_marker_topic:
+            rospy.Subscriber(
+                args.future_marker_topic, Marker, self._future_marker_cb,
+                callback_args=args.future_marker_topic, queue_size=10,
+            )
         self.wrench = rospy.ServiceProxy(args.wrench_service, ApplyBodyWrench)
+
+    @staticmethod
+    def _bounded_points(points: list[Any], max_points: int = 1200) -> list[dict[str, float]]:
+        if not points:
+            return []
+        stride = max(1, math.ceil(len(points) / max_points))
+        return [_vector(point) for point in points[::stride]][:max_points]
+
+    def _expected_path_cb(self, msg: Any, source_topic: str) -> None:
+        self.task_paths["expected"] = {
+            "status": "available",
+            "semantics": "mission_reference_or_targets",
+            "source_topic": source_topic,
+            "frame_id": str(msg.header.frame_id),
+            "updated_at": time.time(),
+            "points": self._bounded_points([pose.pose.position for pose in msg.poses]),
+        }
+
+    def _future_marker_cb(self, msg: Any, source_topic: str) -> None:
+        if msg.action != msg.ADD or msg.ns != "B-Spline" or msg.id >= 50 or not msg.points:
+            return
+        self.task_paths["future"] = {
+            "status": "available",
+            "semantics": "planner_sampled_future_trajectory",
+            "source_topic": source_topic,
+            "frame_id": str(msg.header.frame_id),
+            "updated_at": time.time(),
+            "points": self._bounded_points(list(msg.points)),
+        }
 
     def _topics(self, vehicle_id: str) -> dict[str, str]:
         if self.args.vehicle_count == 1:
@@ -134,11 +231,14 @@ class RosRuntimeSidecar:
         state = vehicle["state"]
         if state is None or not state[0].connected or now - state[1] > 2.0:
             missing.append("mavros_connected")
-        for field, reason in (
+        required_samples = [
             ("odom", "mavros_odom_fresh"),
-            ("target_attitude", "controller_command_fresh"),
-            ("actuator", "actuator_plugin_telemetry_fresh"),
-        ):
+        ]
+        if not self.args.skip_controller_command_readiness:
+            required_samples.append(("target_attitude", "controller_command_fresh"))
+        if not self.args.skip_actuator_telemetry_readiness:
+            required_samples.append(("actuator", "actuator_plugin_telemetry_fresh"))
+        for field, reason in required_samples:
             sample = vehicle[field]
             if sample is None or now - sample[1] > 1.0:
                 missing.append(reason)
@@ -180,7 +280,10 @@ class RosRuntimeSidecar:
             )
         except Exception as exc:
             return False, f"gazebo_apply_body_wrench_failed:{exc}"
-        return bool(response.success), str(response.status_message)
+        reason = str(response.status_message).strip()
+        if response.success and not reason:
+            reason = "wind_wrench_applied"
+        return bool(response.success), reason
 
     def _ack(self, command: dict[str, Any], *, accepted: bool, reason: str, applied_value: Any = None) -> None:
         payload = {
@@ -295,13 +398,15 @@ class RosRuntimeSidecar:
     def _write_status_and_telemetry(self) -> None:
         now = time.time()
         ready, missing = self._ready(now)
-        timed_out = not ready and now - self.started_at >= self.args.ready_timeout_s
-        status = "running" if ready else ("blocked" if timed_out else "starting")
+        status, reason_code, self.ever_ready = evaluate_readiness_status(
+            ready=ready,
+            ever_ready=self.ever_ready,
+            elapsed_s=now - self.started_at,
+            timeout_s=self.args.ready_timeout_s,
+        )
         status_payload = {
             "schema": "mosim.runtime_status.v1", "run_id": self.manifest["run_id"], "status": status,
-            "reason_code": "runtime_ready" if ready else (
-                "runtime_readiness_timeout" if timed_out else "runtime_readiness_pending"
-            ),
+            "reason_code": reason_code,
             "vehicle_count": len(self.vehicle_ids), "missing_readiness": missing, "updated_at": now,
         }
         atomic_write_json(self.run_dir / "RUNTIME_STATUS.json", status_payload)
@@ -309,6 +414,14 @@ class RosRuntimeSidecar:
         telemetry: dict[str, Any] = {
             "schema": "mosim.runtime_telemetry.v2", "run_id": self.manifest["run_id"], "timestamp": now,
             "vehicle_count": len(vehicles), "readiness": status_payload, "vehicles": vehicles,
+            "task_paths": self.task_paths,
+            "mission_status": load_mission_status(
+                self.run_dir / "mission_status.json",
+                expected_run_id=self.manifest["run_id"],
+                expected_vehicle_ids=self.vehicle_ids,
+                now=now,
+                max_age_s=self.args.mission_status_max_age_s,
+            ),
         }
         if len(vehicles) == 1:
             telemetry.update({key: value for key, value in vehicles[0].items() if key != "vehicle_id"})
@@ -334,6 +447,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--vehicle-count", type=int, choices=range(1, 10), default=1)
     parser.add_argument("--rate-hz", type=float, default=20.0)
     parser.add_argument("--ready-timeout-s", type=float, default=90.0)
+    parser.add_argument("--mission-status-max-age-s", type=float, default=2.5)
     parser.add_argument("--wind-force-coefficient", type=float, default=0.025)
     parser.add_argument("--body-name", default=os.environ.get("MOSIM_GAZEBO_BODY_NAME", ""))
     parser.add_argument("--state-topic", default="/uav1/mavros/state")
@@ -342,6 +456,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--position-command-topic", default="/position_cmd")
     parser.add_argument("--actuator-command-topic", default="/uav1/mosim/ftc_actuator_command")
     parser.add_argument("--actuator-telemetry-topic", default="/uav1/mosim/ftc_actuator_telemetry")
+    parser.add_argument("--expected-path-topic", default="")
+    parser.add_argument("--future-marker-topic", default="")
+    parser.add_argument(
+        "--skip-controller-command-readiness",
+        action="store_true",
+        help="Do not require a controller setpoint for operator ground-standby profiles.",
+    )
+    parser.add_argument(
+        "--skip-actuator-telemetry-readiness",
+        action="store_true",
+        help="Do not require FTC plugin telemetry for profiles that do not enable actuator faults.",
+    )
     parser.add_argument("--model-states-topic", default="/gazebo/model_states")
     parser.add_argument("--wrench-service", default="/gazebo/apply_body_wrench")
     return parser.parse_args()
@@ -349,7 +475,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
-    if args.rate_hz <= 0.0 or args.ready_timeout_s <= 0.0:
+    if args.rate_hz <= 0.0 or args.ready_timeout_s <= 0.0 or args.mission_status_max_age_s <= 0.0:
         raise SystemExit("rate and timeout must be positive")
     args.run_dir.mkdir(parents=True, exist_ok=True)
     import rospy

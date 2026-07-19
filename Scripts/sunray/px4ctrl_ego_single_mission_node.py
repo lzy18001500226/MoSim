@@ -10,6 +10,9 @@ import math
 import time
 from pathlib import Path
 
+from mission_status_channel import MissionStatusChannel
+from safe_stop_channel import SafeStopChannel
+
 import rospy
 import sensor_msgs.point_cloud2 as pc2
 from gazebo_msgs.msg import ModelStates
@@ -48,6 +51,7 @@ class EgoSingleMission:
         self.result_dir.mkdir(parents=True, exist_ok=True)
         self.start_wall = time.time()
         self.phase = "init"
+        self.mission_status = MissionStatusChannel("goal4_single_planner_mission", ["uav1"])
         self.home: tuple[float, float, float] | None = None
         self.mission_home_xy: tuple[float, float] | None = None
         self.truth_home: tuple[float, float, float] | None = None
@@ -95,6 +99,7 @@ class EgoSingleMission:
         self.trajectory_vis_marker_count = 0
         self.att_target_count = 0
         self.debug_count = 0
+        self.safe_stop = SafeStopChannel()
 
         self.truth_rows: list[dict] = []
         self.sunray_truth_rows: list[dict] = []
@@ -183,6 +188,17 @@ class EgoSingleMission:
     def wall_elapsed(self) -> float:
         return time.time() - self.start_wall
 
+    @property
+    def phase(self) -> str:
+        return self._phase
+
+    @phase.setter
+    def phase(self, value: str) -> None:
+        self._phase = str(value)
+        channel = getattr(self, "mission_status", None)
+        if channel is not None:
+            channel.update_phase(self._phase)
+
     def should_record(self, key: str, t: float, hz: float) -> bool:
         if hz <= 0:
             return True
@@ -204,6 +220,9 @@ class EgoSingleMission:
 
     def on_state(self, msg: State) -> None:
         self.last_state = msg
+        self.mission_status.update_vehicle(
+            "uav1", connected=msg.connected, armed=msg.armed, mode=msg.mode
+        )
         self.state_rows.append(
             {
                 "t": self.now(),
@@ -1059,6 +1078,8 @@ class EgoSingleMission:
         deadline = time.time() + self.args.ready_timeout_s
         rate = rospy.Rate(20)
         while not rospy.is_shutdown() and time.time() < deadline:
+            if self.safe_stop.requested():
+                return False
             self.publish_paths()
             if self.last_state and self.last_state.connected and self.last_odom and self.last_truth:
                 return True
@@ -1156,6 +1177,38 @@ class EgoSingleMission:
         self.write_outputs(status="passed", blockers=[])
         return 0
 
+    def perform_safe_stop(self, rate: rospy.Rate) -> int:
+        self.safe_stop.acknowledge("quiescing", 20)
+        self.set_cmd_adapter_enabled(False)
+        self.phase = "safe_stop_hover"
+        self.safe_stop.acknowledge("hovering", 40)
+        hover_deadline = time.time() + 1.0
+        while not rospy.is_shutdown() and time.time() < hover_deadline:
+            if self.last_odom:
+                self.publish_hover_cmd(
+                    self.last_odom["x"], self.last_odom["y"], self.last_odom["z"], self.last_odom["yaw"]
+                )
+            self.publish_paths(publish_static_target=False)
+            self.wall_sleep_once()
+        self.safe_stop.acknowledge("landing", 65)
+        self.land_and_finish(rate)
+        disarmed = bool(self.land_metrics and self.land_metrics.get("disarmed"))
+        if disarmed:
+            self.safe_stop.acknowledge("disarmed", 90)
+        self.safe_stop.acknowledge(
+            "completed" if disarmed else "failed",
+            100,
+            terminal=True,
+            accepted=disarmed,
+            reason_code="safe_stop_completed" if disarmed else "safe_stop_disarm_not_confirmed",
+            detail={"landing": self.land_metrics or {}},
+        )
+        self.write_outputs(
+            status="safe_stopped" if disarmed else "blocked",
+            blockers=[] if disarmed else ["safe_stop_disarm_not_confirmed"],
+        )
+        return 0 if disarmed else 16
+
     def takeoff_status_summary(self) -> dict:
         state_rows = self.rows_in_phases(self.state_rows, {"takeoff"})
         odom_rows = self.rows_in_phases(self.odom_rows, {"takeoff"})
@@ -1194,8 +1247,11 @@ class EgoSingleMission:
         return blockers or ["takeoff_height_not_reached"]
 
     def run(self) -> int:
+        rate = rospy.Rate(self.args.hover_publish_hz)
         self.set_interactive_goal_ready(False, repeats=1)
         if not self.wait_for_ready():
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             self.write_outputs(status="blocked", blockers=["ready_timeout"])
             return 10
         if not self.last_odom:
@@ -1213,7 +1269,6 @@ class EgoSingleMission:
 
         self.phase = "takeoff"
         self.publish_takeoff_land(TakeoffLand.TAKEOFF, repeats=self.args.takeoff_cmd_repeats)
-        rate = rospy.Rate(self.args.hover_publish_hz)
         hover_start = time.time()
         last_retry_wall = hover_start
         retry_count = 0
@@ -1223,6 +1278,8 @@ class EgoSingleMission:
         stable_satisfied = False
         required_stable_s = max(self.args.pre_ego_hover_s, self.args.pre_diff_stable_s)
         while not rospy.is_shutdown() and time.time() - hover_start < self.args.takeoff_timeout_s:
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             last_retry_wall, retry_count = self.maybe_retry_takeoff_command(last_retry_wall, retry_count)
             if (
                 self.args.publish_hover_during_takeoff
@@ -1283,6 +1340,9 @@ class EgoSingleMission:
                 not rospy.is_shutdown()
                 and (not review_has_deadline or time.time() - review_start < self.args.interactive_review_hold_s)
             ):
+                if self.safe_stop.requested():
+                    self.set_interactive_goal_ready(False)
+                    return self.perform_safe_stop(rate)
                 if self.forwarded_goal_seq > active_goal_seq:
                     active_goal_seq = self.forwarded_goal_seq
                     reached_since = None
@@ -1365,9 +1425,13 @@ class EgoSingleMission:
             return 0
 
         self.phase = "ego_triggered"
+        if self.safe_stop.requested():
+            return self.perform_safe_stop(rate)
         self.publish_trigger()
         takeover_deadline = time.time() + self.args.ego_takeover_timeout_s
         while not rospy.is_shutdown() and time.time() < takeover_deadline and self.first_planner_takeover_time() is None:
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             self.publish_hover_cmd(home_x, home_y, self.args.takeoff_height)
             self.publish_paths()
             rate.sleep()
@@ -1396,6 +1460,8 @@ class EgoSingleMission:
                 "last_snapshot": None,
             }
             while not rospy.is_shutdown() and self.exploration_elapsed_s(execute_start_ros, execute_start_wall) < execute_duration_s:
+                if self.safe_stop.requested():
+                    return self.perform_safe_stop(rate)
                 self.publish_paths(publish_static_target=False)
                 safety_blockers = self.flight_safety_blockers("exploration")
                 if safety_blockers:
@@ -1437,6 +1503,8 @@ class EgoSingleMission:
             "end_snapshot": None,
         }
         while not rospy.is_shutdown() and time.time() - execute_start < self.args.execute_timeout_s:
+            if self.safe_stop.requested():
+                return self.perform_safe_stop(rate)
             self.publish_paths()
             safety_blockers = self.flight_safety_blockers("execute")
             if safety_blockers:
@@ -1925,6 +1993,11 @@ class EgoSingleMission:
             ),
         }
         (self.result_dir / "EGO_SINGLE_METRICS.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+        self.mission_status.finish(
+            result_status=final_status,
+            accepted=final_status == "passed",
+            blockers=final_blockers,
+        )
 
 
 def parse_args() -> argparse.Namespace:
