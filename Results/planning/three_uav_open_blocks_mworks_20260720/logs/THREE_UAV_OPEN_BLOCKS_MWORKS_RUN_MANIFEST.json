@@ -1,0 +1,151 @@
+{
+  "schema": "mosim.mworks.three_uav_open_blocks.run_manifest.v1",
+  "created_at": "2026-07-20T07:07:39.6499060+08:00",
+  "model_name": "QuadrotorExperiments.PlanningScenarios.ThreeUavOpenBlocksReconfigurableFormationLinearMPC",
+  "model_alias": "QuadrotorExperiments.PlanningScenarios.OpenBlocksThreeUavFormation",
+  "source": "MWORKS_MCP",
+  "runtime": {
+    "check_model": true,
+    "check_time_s_observed_range": [2.48, 4.25],
+    "simulate_model": true,
+    "solver": "Dassl",
+    "start_time_s": 0.0,
+    "stop_time_s": 304.840532932,
+    "authoritative_output_interval_s": 1.0,
+    "sample_count": 306,
+    "last_errors": [],
+    "nan_or_inf_count": 0
+  },
+  "attempts": [
+    {
+      "attempt_id": "initial_schedule",
+      "status": "rejected",
+      "duration_s": 87.90,
+      "schedule_delays_s": [0.0, 4.0, 8.0],
+      "planned_minimum_pair_distance_m": 1.286,
+      "observed_minimum_pair_distance_m": 0.265,
+      "observed_minimum_clearance_lower_bound_m": -1.184,
+      "tracking_rmse_m_approximate": [0.59, 0.63],
+      "reason": "The whole-aircraft tracking error invalidated the planned separation and obstacle-clearance margins.",
+      "evidence_limit": "The negative metrics were recorded from the MWORKS export during the bounded tuning session, but its raw CSV was not retained. These values are diagnostic history, not independently recomputable report authority."
+    },
+    {
+      "attempt_id": "conservative_schedule",
+      "status": "accepted_with_reduced_clearance_margin",
+      "duration_s": 298.8405329316803,
+      "schedule_delays_s": [0.0, 12.0, 24.0],
+      "planned_minimum_pair_distance_m": 1.1990851600402987,
+      "observed_minimum_pair_distance_m": 1.090874152184488,
+      "observed_minimum_clearance_lower_bound_m": 0.09422908297324245,
+      "reason": "Collision, 1.0 m pair-separation and tracking gates passed, but the original 0.35 m planning clearance margin was not preserved."
+    }
+  ],
+  "classification": "accepted_with_reduced_clearance_margin",
+  "claim_boundary": "Offline global A* plus EGO-smoothed references tracked by three MWORKS whole-aircraft Linear-MPC loops with native result-viewer output.",
+  "forbidden_claims": [
+    "online replanning",
+    "unknown-environment exploration",
+    "live MID360 obstacle avoidance",
+    "Gazebo or PX4 runtime validation",
+    "preservation of the original 0.35 m planning clearance margin"
+  ],
+  "artifacts": [
+    {
+      "role": "vehicle_model",
+      "path": "Models/QuadrotorExperiments/PlanningScenarios/OpenBlocksLinearMPCVehicle.mo",
+      "size_bytes": 5628,
+      "sha256": "8E4C67EF755E312B1D2E78A0AD4906786436C61C5F1001D65B70B50DE2CBAC15"
+    },
+    {
+      "role": "three_uav_model",
+      "path": "Models/QuadrotorExperiments/PlanningScenarios/ThreeUavOpenBlocksReconfigurableFormationLinearMPC.mo",
+      "size_bytes": 18376,
+      "sha256": "E74D98CFA743B030ABE1AA1B528544FE80F3120580A54DCA9FBB6794FEA1066C"
+    },
+    {
+      "role": "authoritative_raw_result",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/raw/mworks_full_conservative_304p84s.csv",
+      "size_bytes": 136205,
+      "sha256": "407F6D8AE8E55A66CB3A0F28D51BBFC68D07779957F47D5F0B551D56A3C14842"
+    },
+    {
+      "role": "uav1_planned_path",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav1_path_simplified.csv",
+      "size_bytes": 1720,
+      "sha256": "443B2DCD9FDFB6C56DBD3D1FB2D6F59D4B8263382D000E12C03F1BE9D1E1ADC8"
+    },
+    {
+      "role": "uav1_reference",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav1_reference.csv",
+      "size_bytes": 1306471,
+      "sha256": "4DB3093EB0F432FA701A73E3F74A42AA0A22444A01766CB24ACE6EE5B609E031"
+    },
+    {
+      "role": "uav2_planned_path",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav2_path_simplified.csv",
+      "size_bytes": 1890,
+      "sha256": "3B4E9FB276EBE4E7461DF8FB16723CD4D19870E8E2E176A301011FDB1738D157"
+    },
+    {
+      "role": "uav2_reference",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav2_reference.csv",
+      "size_bytes": 1583380,
+      "sha256": "A99D22BF030D447ED309B019F41BA51EA1C4523CF023CC0AF71793D8227EA0C2"
+    },
+    {
+      "role": "uav3_planned_path",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav3_path_simplified.csv",
+      "size_bytes": 1507,
+      "sha256": "BF1BCA907E164CADFC88C7C38061CE2E965ADD0B44DC6A1FEFA2183458A0FEE8"
+    },
+    {
+      "role": "uav3_reference",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav3_reference.csv",
+      "size_bytes": 1561844,
+      "sha256": "CDD8B0E20853041952F81B03B5C1EF3DCE79CB3D1301F17CDEC37D8175279E69"
+    },
+    {
+      "role": "authoritative_metrics",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/metrics/mworks_full_conservative_metrics.json",
+      "size_bytes": 3069,
+      "sha256": "ECFDB5FCE0FCE8E9B72CA16D82B9E1ED1A443D589625FED9555BD26F46E9FFD3"
+    },
+    {
+      "role": "planning_metrics",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/metrics/three_uav_planning_metrics.json",
+      "size_bytes": 23965,
+      "sha256": "33756E04142B72A87E6C73153716667FAB20B105021ECC10BBC15056770B0CA6"
+    },
+    {
+      "role": "route_preview",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/figures/three_uav_open_blocks_preview.svg",
+      "size_bytes": 621809,
+      "sha256": "8472C7C1B45DE334AE222E43FD13A5213A4D5257A4AB4A0A78F4372F48962064"
+    },
+    {
+      "role": "graphical_model_screenshot",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/screenshots/report_ready/three_uav_open_blocks_graphical_model.png",
+      "size_bytes": 39500,
+      "sha256": "AA6C3AA35A94E4514C8D3191308EB8F1317D38D187D9E5866966C48B30E5A82E"
+    },
+    {
+      "role": "native_animation_screenshot",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/screenshots/final_result_animation/51472_0x3520E24_QuadrotorExperiments - 结果查看器.png",
+      "size_bytes": 169393,
+      "sha256": "2FB9C8864E32F60598C5B0BE527518E2D69EC2A035CF45B285A155B1467731EB"
+    },
+    {
+      "role": "native_result_curve_screenshot",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/screenshots/final_plot/51472_0x3520E24_QuadrotorExperiments - 结果查看器.png",
+      "size_bytes": 171468,
+      "sha256": "179A4B2AAE2E50FFC429559FB5B5ECF9EEDC786D4EC068044A8DC11E521AE58A"
+    },
+    {
+      "role": "native_result_local_only",
+      "path": "Results/planning/three_uav_open_blocks_mworks_20260720/native/review_conservative_304p84s/ThreeUavOpenBlocksReconfigurableFormationLinearMPC/Result.msr",
+      "size_bytes": 120762064,
+      "sha256": "1EA3CEA64A858E2B7248EF76EC0065B08BEB0E887829BE6041DF07DA361E399D",
+      "publication": "local_only_over_100_mb"
+    }
+  ]
+}

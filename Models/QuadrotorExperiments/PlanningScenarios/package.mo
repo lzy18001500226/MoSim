@@ -33,6 +33,12 @@ package PlanningScenarios
     annotation(__MWORKS(hide=false));
   end OpenBlocksColorMapReview;
 
+  model OpenBlocksThreeUavFormation
+    "开放障碍场：三机可重构编队整机闭环"
+    extends QuadrotorExperiments.PlanningScenarios.ThreeUavOpenBlocksReconfigurableFormationLinearMPC;
+    annotation(__MWORKS(hide=false));
+  end OpenBlocksThreeUavFormation;
+
   model CorridorGateAWFF
     "走廊门控场：AWFF 规划闭环"
     extends QuadrotorExperiments.PlanningScenarios.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop;

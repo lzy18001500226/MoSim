@@ -1,0 +1,98 @@
+{
+  "schema": "mosim.mworks.three_uav_open_blocks.metrics.v1",
+  "source": "MWORKS_MCP",
+  "model_name": "QuadrotorExperiments.PlanningScenarios.ThreeUavOpenBlocksReconfigurableFormationLinearMPC",
+  "raw_result": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\planning\\three_uav_open_blocks_mworks_20260720\\raw\\mworks_full_conservative_304p84s.csv",
+  "planning_result": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\planning\\three_uav_open_blocks_mworks_20260720\\metrics\\three_uav_planning_metrics.json",
+  "sample_count": 306,
+  "time_start_s": 0.0,
+  "time_end_s": 304.840532932,
+  "nan_or_inf_count": 0,
+  "thresholds": {
+    "minimum_pair_distance_m": 1.0,
+    "minimum_collision_clearance_m": 0.0,
+    "planning_margin_m": 0.35,
+    "maximum_tracking_rmse_m": 0.2,
+    "maximum_tracking_error_m": 0.5,
+    "maximum_final_tracking_error_m": 0.15
+  },
+  "reference_schedule": {
+    "delays_s": [
+      0.0,
+      12.0,
+      24.0
+    ],
+    "duration_s": 298.8405329316803,
+    "minimum_pair_distance_m": 1.1990851600402987,
+    "minimum_pair": "uav2-uav3",
+    "minimum_pair_distance_time_s": 203.3,
+    "pair_distance_threshold_m": 1.0,
+    "pair_distance_violation_count": 0,
+    "accepted": true,
+    "schedule_search_spacing_s": 12.0
+  },
+  "uav1": {
+    "tracking_rmse_m": 0.13678612187268624,
+    "tracking_max_m": 0.3524073065507575,
+    "tracking_final_m": 0.026271637945147593,
+    "final_position_m": [
+      41.00046140203773,
+      25.999404712235737,
+      0.6537391603150582
+    ],
+    "final_reference_m": [
+      41.0,
+      26.0,
+      0.68
+    ],
+    "accepted": true
+  },
+  "uav2": {
+    "tracking_rmse_m": 0.11620304036438797,
+    "tracking_max_m": 0.2805373516101668,
+    "tracking_final_m": 0.02627202039054628,
+    "final_position_m": [
+      43.00028314916506,
+      25.999242615325123,
+      1.1637404255478907
+    ],
+    "final_reference_m": [
+      43.0,
+      26.0,
+      1.19
+    ],
+    "accepted": true
+  },
+  "uav3": {
+    "tracking_rmse_m": 0.09633207990186893,
+    "tracking_max_m": 0.2845709192405604,
+    "tracking_final_m": 0.026242620814034105,
+    "final_position_m": [
+      40.999831137789684,
+      27.9988689962114,
+      0.8837823062956851
+    ],
+    "final_reference_m": [
+      41.0,
+      28.0,
+      0.91
+    ],
+    "accepted": true
+  },
+  "minimum_actual_pair_distance_m": 1.090874152184488,
+  "minimum_actual_pair_distance_time_s": 206.0,
+  "minimum_clearance_lower_bound_m": 0.09422908297324245,
+  "minimum_clearance_lower_bound_time_s": 206.0,
+  "maximum_formation_distance_error_m": 0.31130251394605635,
+  "formation_distance_error_rmse_m": 0.12829282641104842,
+  "gates": {
+    "finite_values": true,
+    "tracking": true,
+    "pair_separation": true,
+    "collision_clearance": true,
+    "planning_margin_preserved": false
+  },
+  "accepted": true,
+  "status": "accepted_with_reduced_clearance_margin",
+  "claim_boundary": "Offline global A* plus EGO-smoothed references tracked by three MWORKS whole-aircraft Linear-MPC loops; this is not online replanning, unknown-environment exploration, or Gazebo evidence."
+}

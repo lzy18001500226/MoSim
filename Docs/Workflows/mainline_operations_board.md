@@ -46,6 +46,21 @@ C6  Run final QA, license/secret/large-file checks, exact Git publication and
     upstream verification.
 ```
 
+2026-07-20 report-evidence priority update: the 67-route controller evidence
+audit is closed at `65/67` graphical/source/result coverage and `67/67`
+metrics coverage. `mu_synthesis` and `neural_smc` remain explicit terminal
+blockers and are not replaced by adjacent algorithms. The 90 x 60 m OpenBlocks
+three-UAV MWORKS whole-aircraft gate is now accepted with reduced clearance
+margin. The accepted 304.8405 s run has three tracking RMSE values of
+0.1368/0.1162/0.0963 m, 1.0909 m minimum actual pair distance, and 0.0942 m
+minimum clearance lower bound. Collision, 1.0 m separation, and tracking gates
+passed; the original 0.35 m planning margin did not. Authority is:
+`Results/planning/three_uav_open_blocks_mworks_20260720/logs/THREE_UAV_OPEN_BLOCKS_MWORKS_RUN_MANIFEST.json`.
+This is offline global A* plus EGO-smoothed reference tracking in MWORKS, not
+online replanning, live MID360 avoidance, or Gazebo/PX4 evidence. The report
+evidence batch is complete; seven-scenario Cartesian expansion and APP work
+remain deferred.
+
 2026-07-18 C3 A/B execution result: the official PID versus gain-scheduled PID
 seven-scenario matrix is present at
 `Results/control_platform/final_controller_ab_20260718/FINAL_CONTROLLER_SEVEN_SCENARIO_AB.json`.
