@@ -2411,8 +2411,9 @@ EOF
 fi
 
 if [[ "${SWARM_BASELINE_ONLY}" == "true" ]]; then
+  SWARM_BASELINE_MISSION_NODE="${SWARM_BASELINE_MISSION_NODE:-${PROJECT_ROOT}/Scripts/sunray/px4ctrl_swarm_basic_mission_node.py}"
   set +e
-  timeout "${TOTAL_TIMEOUT_S}s" python3 "${PROJECT_ROOT}/Scripts/sunray/px4ctrl_swarm_basic_mission_node.py" \
+  timeout "${TOTAL_TIMEOUT_S}s" python3 "${SWARM_BASELINE_MISSION_NODE}" \
     --result-dir "${RESULT_DIR}" \
     --uav-num "${UAV_NUM}" \
     --start1-x "${START1_X}" --start1-y "${START1_Y}" \

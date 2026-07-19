@@ -151,6 +151,7 @@ param(
     [string]$UnrealPoseTopic = "/uav1/sunray/gazebo_pose",
     [double]$UnrealStateRateHz = 100.0,
     [switch]$NoUnreal,
+    [switch]$ReuseUnrealWindow,
     [switch]$DisableReviewAccumulation,
     [switch]$NoKeepAlive,
     [switch]$Foreground
@@ -323,7 +324,7 @@ function Start-UnrealLiveMirrorWindow {
     } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $ResultDirWin "ue_live_mirror_launch.json") -Encoding UTF8
 }
 
-if (-not $NoUnreal) {
+if (-not $NoUnreal -and -not $ReuseUnrealWindow) {
     Start-UnrealLiveMirrorWindow
 }
 

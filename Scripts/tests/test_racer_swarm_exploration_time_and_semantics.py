@@ -109,7 +109,7 @@ class RacerSwarmExplorationContractTests(unittest.TestCase):
         self.assertIn('blockers.append("pre_land_command_quiesce_timeout")', mission)
         self.assertIn('blockers.append(prefix + "landing_not_completed")', mission)
         self.assertIn('blockers.append(prefix + "still_armed_after_land")', mission)
-        self.assertEqual(mission.count("self.run_landing(rate)"), 3)
+        self.assertEqual(mission.count("self.run_landing(rate)"), 6)
         self.assertNotIn("land_start = time.time()", mission)
 
         runner = (ROOT / "sunray" / "run_px4ctrl_ego_swarm_gate.sh").read_text(

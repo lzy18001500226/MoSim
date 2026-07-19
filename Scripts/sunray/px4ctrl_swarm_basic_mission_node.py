@@ -29,7 +29,9 @@ class Uav:
     truth: dict | None = None
     odom: dict | None = None
     home_truth_xy: tuple[float, float] | None = None
+    home_truth_z: float | None = None
     home_odom_xy: tuple[float, float] | None = None
+    home_odom_z: float | None = None
     raw_lidar_count: int = 0
     raw_lidar_points: int = 0
     target_attitude_count: int = 0
@@ -197,9 +199,12 @@ class SwarmBasicMission:
         msg.trajectory_flag = PositionCommand.TRAJECTORY_STATUS_READY
         msg.position.x = cmd_xy[0]
         msg.position.y = cmd_xy[1]
-        msg.position.z = self.args.takeoff_height
+        msg.position.z = self.takeoff_target_z(uav)
         msg.yaw = self.args.yaw
         return msg
+
+    def takeoff_target_z(self, uav: Uav) -> float:
+        return (uav.home_odom_z or 0.0) + self.args.takeoff_height
 
     def publish_hover_cmds(self) -> None:
         for uav in self.uavs.values():
@@ -274,8 +279,10 @@ class SwarmBasicMission:
         for uav in self.uavs.values():
             if uav.truth:
                 uav.home_truth_xy = (float(uav.truth["x"]), float(uav.truth["y"]))
+                uav.home_truth_z = float(uav.truth["z"])
             if uav.odom:
                 uav.home_odom_xy = (float(uav.odom["x"]), float(uav.odom["y"]))
+                uav.home_odom_z = float(uav.odom["z"])
 
         self.phase = "takeoff"
         self.publish_takeoff_land(TakeoffLand.TAKEOFF, self.args.takeoff_cmd_repeats)
@@ -283,7 +290,7 @@ class SwarmBasicMission:
         takeoff_deadline = time.time() + self.args.takeoff_timeout_s
         while not rospy.is_shutdown() and time.time() < takeoff_deadline:
             self.publish_hover_cmds()
-            if all(uav.odom and abs(uav.odom["z"] - self.args.takeoff_height) <= self.args.takeoff_z_tol for uav in self.uavs.values()):
+            if all(uav.odom and abs(uav.odom["z"] - self.takeoff_target_z(uav)) <= self.args.takeoff_z_tol for uav in self.uavs.values()):
                 reached_since = reached_since or time.time()
                 if time.time() - reached_since >= self.args.takeoff_hold_s:
                     break
@@ -295,8 +302,8 @@ class SwarmBasicMission:
             return 11
 
         self.phase = "hover"
-        hover_start = time.time()
-        while not rospy.is_shutdown() and time.time() - hover_start < self.args.hover_s:
+        hover_start = self.now()
+        while not rospy.is_shutdown() and self.now() - hover_start < self.args.hover_s:
             self.publish_hover_cmds()
             rate.sleep()
 
@@ -305,7 +312,12 @@ class SwarmBasicMission:
         self.publish_takeoff_land(TakeoffLand.LAND, self.args.land_cmd_repeats)
         land_deadline = time.time() + self.args.land_timeout_s
         while not rospy.is_shutdown() and time.time() < land_deadline:
-            if all(uav.truth and uav.truth["z"] <= self.args.landed_z_max for uav in self.uavs.values()):
+            all_landed = all(
+                uav.truth and uav.truth["z"] <= self.args.landed_z_max
+                for uav in self.uavs.values()
+            )
+            all_disarmed = all(uav.state and not uav.state.armed for uav in self.uavs.values())
+            if all_landed and (not self.args.require_disarmed or all_disarmed):
                 break
             rate.sleep()
 
@@ -320,7 +332,8 @@ class SwarmBasicMission:
             rows = [r for r in rows if r["t"] >= t0]
         home_truth_xy = uav.home_truth_xy if uav.home_truth_xy is not None else uav.start_xy
         xy = [math.hypot(r["x"] - home_truth_xy[0], r["y"] - home_truth_xy[1]) for r in rows]
-        z = [abs(r["z"] - self.args.takeoff_height) for r in rows]
+        target_truth_z = (uav.home_truth_z or 0.0) + self.args.takeoff_height
+        z = [abs(r["z"] - target_truth_z) for r in rows]
         return {
             "sample_count": len(rows),
             "xy_rmse_m": self.rmse(xy),
@@ -381,7 +394,10 @@ class SwarmBasicMission:
             per_uav[str(uid)] = {
                 "start_xy": {"x": uav.start_xy[0], "y": uav.start_xy[1]},
                 "home_truth_xy": None if uav.home_truth_xy is None else {"x": uav.home_truth_xy[0], "y": uav.home_truth_xy[1]},
+                "home_truth_z": uav.home_truth_z,
                 "home_odom_xy": None if uav.home_odom_xy is None else {"x": uav.home_odom_xy[0], "y": uav.home_odom_xy[1]},
+                "home_odom_z": uav.home_odom_z,
+                "takeoff_target_odom_z": self.takeoff_target_z(uav),
                 "frame_alignment": self.frame_alignment_summary(uav),
                 "final_truth": uav.truth,
                 "final_odom": uav.odom,
