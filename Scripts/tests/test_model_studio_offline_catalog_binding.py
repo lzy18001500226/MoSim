@@ -296,6 +296,9 @@ def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
     script_text = script.read_text(encoding="utf-8")
     assert '"action": "load_file"' in script_text
     assert '"action": "open"' in script_text
+    assert 'ModelingPy.OpenModel' in script_text
+    assert '"call_code"' in script_text
+    assert '"mode": "run_script"' in script_text
     assert "SimulateModel" not in script_text
 
 

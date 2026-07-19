@@ -82,7 +82,36 @@ def main() -> int:
             "model_manager", {"action": "open", "model_name": model_name}, timeout_s=60
         )
         result["open"] = opened
-        result["opened"] = bool(opened.get("ok"))
+        if not opened.get("ok"):
+            raise RuntimeError(f"model_open_failed: {opened}")
+
+        # model_manager.open can update the session without painting the
+        # Sysplorer diagram. Use the documented ModelingPy GUI call as the
+        # visibility gate, while keeping simulation and result operations out.
+        diagram = client.call_tool(
+            "call_code",
+            {
+                "mode": "run_script",
+                "payload": {
+                    "python_source": (
+                        "import mworks.sysplorer as ModelingPy\n"
+                        "try:\n"
+                        f"    RUN_SCRIPT_RESULT = {{'opened': ModelingPy.OpenModel({model_name!r}, ModelingPy.ModelView.Diagram)}}\n"
+                        "except Exception:\n"
+                        f"    RUN_SCRIPT_RESULT = {{'opened': ModelingPy.OpenModel({model_name!r})}}\n"
+                    )
+                },
+            },
+            timeout_s=60,
+        )
+        result["diagram"] = diagram
+        nested = diagram.get("run_script_result") if isinstance(diagram, dict) else None
+        if isinstance(nested, dict) and "opened" in nested:
+            result["opened"] = bool(nested["opened"])
+        else:
+            result["opened"] = bool(diagram.get("ok"))
+        if not result["opened"]:
+            raise RuntimeError(f"diagram_open_failed: {diagram}")
     finally:
         client.close()
         LOG.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
