@@ -51,6 +51,11 @@ LEARNING_BATCH = (
     / "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING"
     / "P9_LEARNING_MWORKS_EVIDENCE_BATCH.json"
 )
+CLASSIC_RESULT_BATCH = (
+    ROOT
+    / "Results/control_platform/controller_document_evidence_20260720"
+    / "P10_P11_CLASSIC_RESULT_EVIDENCE_BATCH.json"
+)
 
 
 def load_builder():
@@ -350,6 +355,50 @@ def test_learning_report_evidence_matches_manifest() -> None:
         assert route["graphical_live_check"]["simulate_model"] is True
         assert route["numerical_live_check"]["check_model"] is True
         assert route["numerical_live_check"]["simulate_model"] is True
+
+
+def test_classic_result_routes_are_discoverable() -> None:
+    builder = load_builder()
+    inventory = builder.build_inventory(builder.DEFAULT_MATRIX)
+    rows = {row["controller"]: row for row in inventory["rows"]}
+    for controller in (
+        "official_pid",
+        "lqr_baseline",
+        "lqi_baseline",
+        "so3_attitude",
+        "backstepping_baseline",
+        "pole_placement_luenberger",
+        "mrac",
+        "ndi",
+        "fopid",
+        "h2_state_feedback",
+    ):
+        assert rows[controller]["graphical_model_screenshots"]
+        assert rows[controller]["result_viewer_screenshots"]
+        assert rows[controller]["numeric_results_or_metrics"]
+
+
+def test_classic_result_evidence_matches_manifest() -> None:
+    batch = json.loads(CLASSIC_RESULT_BATCH.read_text(encoding="utf-8"))
+    assert batch["status"] == "executed_with_documented_performance_blockers"
+    assert len(batch["routes"]) == 10
+    for route in batch["routes"]:
+        assert route["matrix_status"] == "executed_blocked"
+        for key in ("graphical_screenshot", "result_screenshot"):
+            metadata = route[key]
+            payload = (ROOT / metadata["path"]).read_bytes()
+            assert hashlib.sha256(payload).hexdigest().upper() == metadata["sha256"]
+            assert payload[:8] == b"\x89PNG\r\n\x1a\n"
+            assert struct.unpack(">II", payload[16:24]) == (
+                metadata["width"], metadata["height"]
+            )
+        assert route["result_screenshot"]["width"] == 1708
+        assert route["result_screenshot"]["height"] == 921
+        assert route["live_mworks_check"]["check_model"] is True
+        assert route["live_mworks_check"]["simulate_model"] is True
+    native = {row["route"]: row["native_result_msr"] for row in batch["routes"]}
+    assert native["official_pid"]
+    assert all(not value for route, value in native.items() if route != "official_pid")
 
 
 def test_cli_writes_json_and_markdown(tmp_path: Path) -> None:

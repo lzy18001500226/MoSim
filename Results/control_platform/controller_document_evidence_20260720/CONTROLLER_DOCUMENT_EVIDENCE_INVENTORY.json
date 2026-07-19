@@ -18,15 +18,14 @@
     },
     "model_source_present_count": 60,
     "graphical_screenshot_present_count": 60,
-    "result_screenshot_present_count": 50,
+    "result_screenshot_present_count": 60,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 10,
-      "confirm_native_result_msr_in_live_session": 48,
-      "document_ready_static_audit": 2,
+      "confirm_native_result_msr_in_live_session": 57,
+      "document_ready_static_audit": 3,
       "repair_or_rerun_required": 5
     }
   },
@@ -1207,15 +1206,19 @@
         "official_pid"
       ],
       "search_roots": [
-        "Results/control_platform/g5_mworks_closeout_20260716"
+        "Results/control_platform/g5_mworks_closeout_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
       "model_sources": [
-        "Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo"
+        "Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/official_pid/models/MoSim_OFFICIAL_PID_REPORT_MIL.mo"
       ],
       "graphical_model_screenshots": [
         "Results/control_platform/g5_mworks_closeout_20260716/official_pid/screenshots/40544_0x11409CE_AWFF_PID_Sysblock_Demo_SIL_Constant_QuadrotorControllerBlocks_ - Sysplorer _教育版_.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/official_pid/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/G9_GENERATED_RUNTIME_PROVENANCE.json",
         "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/PX4CTRL_BASIC_MISSION_METRICS.json"
@@ -1227,11 +1230,9 @@
         "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/PX4CTRL_BASIC_MISSION_METRICS.json",
         "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/G9_GENERATED_RUNTIME_PROVENANCE.json"
       ],
-      "missing_evidence": [
-        "result_viewer_screenshot"
-      ],
+      "missing_evidence": [],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "document_ready_static_audit"
     },
     {
       "cohort": "G9_CORE_COMPARISON",
@@ -1244,7 +1245,8 @@
         "se3_basic"
       ],
       "search_roots": [
-        "Results/control_platform/g5_mworks_closeout_20260716"
+        "Results/control_platform/g5_mworks_closeout_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
       "model_sources": [],
       "graphical_model_screenshots": [],
@@ -1274,7 +1276,8 @@
         "dfbc_basic"
       ],
       "search_roots": [
-        "Results/control_platform/g5_mworks_closeout_20260716"
+        "Results/control_platform/g5_mworks_closeout_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
       "model_sources": [],
       "graphical_model_screenshots": [],
@@ -1305,7 +1308,8 @@
         "smc_boundary_layer"
       ],
       "search_roots": [
-        "Results/control_platform/g5_mworks_closeout_20260716"
+        "Results/control_platform/g5_mworks_closeout_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
       "model_sources": [],
       "graphical_model_screenshots": [],
@@ -1335,7 +1339,8 @@
         "pid_indi"
       ],
       "search_roots": [
-        "Results/control_platform/g5_mworks_closeout_20260716"
+        "Results/control_platform/g5_mworks_closeout_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
       "model_sources": [],
       "graphical_model_screenshots": [],
@@ -1367,7 +1372,8 @@
         "nmpc_outer"
       ],
       "search_roots": [
-        "Results/control_platform/g5_mworks_closeout_20260716"
+        "Results/control_platform/g5_mworks_closeout_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON"
       ],
       "model_sources": [],
       "graphical_model_screenshots": [],
@@ -1894,7 +1900,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQR_MIL.mo"
@@ -1902,7 +1909,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_LQR_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/lqr_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/PX4CTRL_BASIC_MISSION_METRICS.json",
         "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
@@ -1913,11 +1922,10 @@
         "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",
@@ -1932,7 +1940,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQI_MIL.mo"
@@ -1940,7 +1949,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_LQI_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/lqi_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json",
         "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
@@ -1953,11 +1964,10 @@
         "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",
@@ -1970,7 +1980,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/models/MoSim_P10_HINF_HOVER_WRENCH_MIL.mo"
@@ -2020,7 +2031,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [],
       "graphical_model_screenshots": [],
@@ -2054,7 +2066,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_SO3_MIL.mo"
@@ -2062,7 +2075,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_SO3_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/so3_attitude/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json",
         "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
@@ -2075,11 +2090,10 @@
         "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",
@@ -2094,7 +2108,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL.mo",
@@ -2103,7 +2118,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_BACKSTEPPING_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/backstepping_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json",
         "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
@@ -2116,11 +2133,10 @@
         "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",
@@ -2133,7 +2149,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL.mo"
@@ -2175,7 +2192,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL.mo"
@@ -2217,7 +2235,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL.mo"
@@ -2259,7 +2278,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL.mo"
@@ -2301,7 +2321,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/models/MoSim_P10_L1_AWFF_Minimal_MIL.mo"
@@ -2344,7 +2365,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL.mo"
@@ -2386,7 +2408,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL.mo",
@@ -2440,7 +2463,8 @@
       ],
       "search_roots": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",
-        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a",
+        "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION"
       ],
       "model_sources": [],
       "graphical_model_screenshots": [],
@@ -2471,7 +2495,8 @@
         "pole_placement_luenberger"
       ],
       "search_roots": [
-        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+        "Results/control_platform/classic_controller_closeout_20260717/mworks",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS"
       ],
       "model_sources": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL.mo"
@@ -2479,7 +2504,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/pole_placement_luenberger.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/pole_placement_luenberger/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/PX4CTRL_BASIC_MISSION_METRICS.json",
@@ -2500,11 +2527,10 @@
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P11_CLASSIC_ADDITIONS",
@@ -2516,7 +2542,8 @@
         "mrac"
       ],
       "search_roots": [
-        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+        "Results/control_platform/classic_controller_closeout_20260717/mworks",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS"
       ],
       "model_sources": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_MRAC_MIL.mo"
@@ -2524,7 +2551,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/mrac.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/mrac/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/PX4CTRL_BASIC_MISSION_METRICS.json",
@@ -2549,11 +2578,10 @@
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P11_CLASSIC_ADDITIONS",
@@ -2565,7 +2593,8 @@
         "ndi"
       ],
       "search_roots": [
-        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+        "Results/control_platform/classic_controller_closeout_20260717/mworks",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS"
       ],
       "model_sources": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_NDI_MIL.mo"
@@ -2573,7 +2602,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/ndi.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/ndi/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi/PX4CTRL_BASIC_MISSION_METRICS.json",
@@ -2598,11 +2629,10 @@
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P11_CLASSIC_ADDITIONS",
@@ -2614,7 +2644,8 @@
         "fopid"
       ],
       "search_roots": [
-        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+        "Results/control_platform/classic_controller_closeout_20260717/mworks",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS"
       ],
       "model_sources": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_FOPID_MIL.mo"
@@ -2622,7 +2653,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/fopid.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/fopid/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/PX4CTRL_BASIC_MISSION_METRICS.json",
@@ -2643,11 +2676,10 @@
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P11_CLASSIC_ADDITIONS",
@@ -2659,7 +2691,8 @@
         "h2_state_feedback"
       ],
       "search_roots": [
-        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+        "Results/control_platform/classic_controller_closeout_20260717/mworks",
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS"
       ],
       "model_sources": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo"
@@ -2667,7 +2700,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/h2_state_feedback.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/h2_state_feedback/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/PX4CTRL_BASIC_MISSION_METRICS.json",
@@ -2688,11 +2723,10 @@
         "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     }
   ]
 }

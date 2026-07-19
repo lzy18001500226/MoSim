@@ -1,0 +1,187 @@
+{
+  "schema": "mosim.mworks_phase_screenshot_manifest.v1",
+  "source": "MWORKS_MCP_LIVE",
+  "screenshots": [
+    {
+      "route": "official_pid",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/g5_mworks_closeout_20260716/official_pid/screenshots/40544_0x11409CE_AWFF_PID_Sysblock_Demo_SIL_Constant_QuadrotorControllerBlocks_ - Sysplorer _\u6559\u80b2\u7248_.png",
+      "sha256": "8BED9CE79A5063C244F3D45EDED38D251B45EF837836786EC8FCC2F00967D468",
+      "width": 2578,
+      "height": 1398,
+      "bytes": 123655
+    },
+    {
+      "route": "official_pid",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/official_pid/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "13CE0A019AB2D857861C2E532EDC836806885E79D383A62F4F0B58D801A94E03",
+      "width": 1708,
+      "height": 921,
+      "bytes": 87821
+    },
+    {
+      "route": "lqr_baseline",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_LQR_MIL.png",
+      "sha256": "3F9D2F859A06E82A230251930BC508556C457304B248722010D0BC996539A5B2",
+      "width": 1800,
+      "height": 1200,
+      "bytes": 87239
+    },
+    {
+      "route": "lqr_baseline",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/lqr_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "BA278F127C155807D94ACA7D2A0F2BDD5F9459C4B9AD7CF7A70169A15AEE5AC4",
+      "width": 1708,
+      "height": 921,
+      "bytes": 101048
+    },
+    {
+      "route": "lqi_baseline",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_LQI_MIL.png",
+      "sha256": "17EECDD2E9A1A894B8936A2D77770AB101283CC0E8E324EC834F1F49D992C472",
+      "width": 1800,
+      "height": 1200,
+      "bytes": 87327
+    },
+    {
+      "route": "lqi_baseline",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/lqi_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "6AF7CDB4FF3B3FE0F4B29F64793C4B3159733DB1AE978D1250BCB3267D1C3A3D",
+      "width": 1708,
+      "height": 921,
+      "bytes": 102087
+    },
+    {
+      "route": "so3_attitude",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_SO3_MIL.png",
+      "sha256": "7B9BE8EDD73CCAABC38338804240CCF9DC6B72359CCBDFDA6D621D7BF3D5E9B9",
+      "width": 1800,
+      "height": 1200,
+      "bytes": 87314
+    },
+    {
+      "route": "so3_attitude",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/so3_attitude/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "E1831C1748A7E942DB38EF4632B5D6D19B744E5726A21E3DA27F6F9ADD0F9906",
+      "width": 1708,
+      "height": 921,
+      "bytes": 101226
+    },
+    {
+      "route": "backstepping_baseline",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_BACKSTEPPING_MIL.png",
+      "sha256": "874738F19E53B10805B40831127675164698F4CE5B81610F05CC41D25EA3283E",
+      "width": 1800,
+      "height": 1200,
+      "bytes": 87303
+    },
+    {
+      "route": "backstepping_baseline",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/backstepping_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "109F238B761CA3A9E3B936422486D7801FE5BC0F94ED16189F355D21B0289A89",
+      "width": 1708,
+      "height": 921,
+      "bytes": 102664
+    },
+    {
+      "route": "pole_placement_luenberger",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/pole_placement_luenberger.png",
+      "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+      "width": 2200,
+      "height": 1600,
+      "bytes": 184254
+    },
+    {
+      "route": "pole_placement_luenberger",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/pole_placement_luenberger/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "8094D9A03F7D0803826A210073396E318207C0AD9AE2C4B935628A1A3085722E",
+      "width": 1708,
+      "height": 921,
+      "bytes": 117175
+    },
+    {
+      "route": "mrac",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/mrac.png",
+      "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+      "width": 2200,
+      "height": 1600,
+      "bytes": 184254
+    },
+    {
+      "route": "mrac",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/mrac/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "30AE77B2BEFF4195F73BA1023B7FB031D2B454A11F0392293085121C5AB170E3",
+      "width": 1708,
+      "height": 921,
+      "bytes": 107351
+    },
+    {
+      "route": "ndi",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/ndi.png",
+      "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+      "width": 2200,
+      "height": 1600,
+      "bytes": 184254
+    },
+    {
+      "route": "ndi",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/ndi/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "AAA8295406D058AD5C0F87151B3C5142166FB9891F4C4DDC8516E609ADC2E689",
+      "width": 1708,
+      "height": 921,
+      "bytes": 101574
+    },
+    {
+      "route": "fopid",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/fopid.png",
+      "sha256": "5FE9817F8544289F4C580CFAB5E3716468D558B8A03BA9F248526422AF80FCB4",
+      "width": 2400,
+      "height": 1900,
+      "bytes": 52154
+    },
+    {
+      "route": "fopid",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/fopid/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "977E8113796AC2ECCAD70FEAE4B7533A17D46381AA061E31509DC1523F172239",
+      "width": 1708,
+      "height": 921,
+      "bytes": 126737
+    },
+    {
+      "route": "h2_state_feedback",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/h2_state_feedback.png",
+      "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+      "width": 2200,
+      "height": 1600,
+      "bytes": 184254
+    },
+    {
+      "route": "h2_state_feedback",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/h2_state_feedback/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "F598C51E4389251DB2C114170FCE614623A584C834BBE58070F5C6027B4A500B",
+      "width": 1708,
+      "height": 921,
+      "bytes": 102935
+    }
+  ],
+  "will_not_click_activation_login": true
+}

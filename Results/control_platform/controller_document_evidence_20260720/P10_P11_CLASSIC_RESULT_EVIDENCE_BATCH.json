@@ -1,0 +1,395 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "classic_result_mworks_evidence_20260720",
+  "status": "executed_with_documented_performance_blockers",
+  "source": "MWORKS_MCP_LIVE",
+  "route_count": 10,
+  "routes": [
+    {
+      "route": "official_pid",
+      "cohort": "G9_CORE_COMPARISON",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "model": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/official_pid/models/MoSim_OFFICIAL_PID_REPORT_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/g5_mworks_closeout_20260716/official_pid/screenshots/40544_0x11409CE_AWFF_PID_Sysblock_Demo_SIL_Constant_QuadrotorControllerBlocks_ - Sysplorer _\u6559\u80b2\u7248_.png",
+        "sha256": "8BED9CE79A5063C244F3D45EDED38D251B45EF837836786EC8FCC2F00967D468",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 123655
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/official_pid/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "13CE0A019AB2D857861C2E532EDC836806885E79D383A62F4F0B58D801A94E03",
+        "width": 1708,
+        "height": 921,
+        "bytes": 87821
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.5,
+        "terminal_variable": "thrust_command",
+        "terminal_value": 1.7025000000000001
+      },
+      "numeric_authority": "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/PX4CTRL_BASIC_MISSION_METRICS.json",
+      "native_result_msr": "Results/mworks_generated_profiles/cert-official-pid-20260719-v2/native_result/MoSimGenerated_cert_official_pid_20260719_v2/Result.msr",
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "official_pid",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "lqr_baseline",
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "model": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQR_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_LQR_MIL.png",
+        "sha256": "3F9D2F859A06E82A230251930BC508556C457304B248722010D0BC996539A5B2",
+        "width": 1800,
+        "height": 1200,
+        "bytes": 87239
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/lqr_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "BA278F127C155807D94ACA7D2A0F2BDD5F9459C4B9AD7CF7A70169A15AEE5AC4",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101048
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.4470204082
+      },
+      "numeric_authority": "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/PX4CTRL_BASIC_MISSION_METRICS.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "lqr_baseline",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "lqi_baseline",
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "model": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQI_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_LQI_MIL.png",
+        "sha256": "17EECDD2E9A1A894B8936A2D77770AB101283CC0E8E324EC834F1F49D992C472",
+        "width": 1800,
+        "height": 1200,
+        "bytes": 87327
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/lqi_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "6AF7CDB4FF3B3FE0F4B29F64793C4B3159733DB1AE978D1250BCB3267D1C3A3D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102087
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.4474281633
+      },
+      "numeric_authority": "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "lqi_baseline",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "so3_attitude",
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "model": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_SO3_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_SO3_MIL.png",
+        "sha256": "7B9BE8EDD73CCAABC38338804240CCF9DC6B72359CCBDFDA6D621D7BF3D5E9B9",
+        "width": 1800,
+        "height": 1200,
+        "bytes": 87314
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/so3_attitude/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "E1831C1748A7E942DB38EF4632B5D6D19B744E5726A21E3DA27F6F9ADD0F9906",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101226
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.3702254036
+      },
+      "numeric_authority": "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "so3_attitude",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "backstepping_baseline",
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "model": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_BACKSTEPPING_MIL.png",
+        "sha256": "874738F19E53B10805B40831127675164698F4CE5B81610F05CC41D25EA3283E",
+        "width": 1800,
+        "height": 1200,
+        "bytes": 87303
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P10_CLASSIC_RECONCILIATION/backstepping_baseline/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "109F238B761CA3A9E3B936422486D7801FE5BC0F94ED16189F355D21B0289A89",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102664
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.4620846939
+      },
+      "numeric_authority": "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "backstepping_baseline",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "pole_placement_luenberger",
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "model": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/pole_placement_luenberger.png",
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "width": 2200,
+        "height": 1600,
+        "bytes": 184254
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/pole_placement_luenberger/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "8094D9A03F7D0803826A210073396E318207C0AD9AE2C4B935628A1A3085722E",
+        "width": 1708,
+        "height": 921,
+        "bytes": 117175
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.324665157
+      },
+      "numeric_authority": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/pole_placement_luenberger_mil_metrics.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "pole_placement_luenberger",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "mrac",
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_hover_passed_figure8_acceptance_blocked",
+      "model": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_MRAC_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/mrac.png",
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "width": 2200,
+        "height": 1600,
+        "bytes": 184254
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/mrac/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "30AE77B2BEFF4195F73BA1023B7FB031D2B454A11F0392293085121C5AB170E3",
+        "width": 1708,
+        "height": 921,
+        "bytes": 107351
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.3290157374
+      },
+      "numeric_authority": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/mrac_mil_metrics.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "mrac",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "ndi",
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_hover_passed_figure8_acceptance_blocked",
+      "model": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_NDI_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/ndi.png",
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "width": 2200,
+        "height": 1600,
+        "bytes": 184254
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/ndi/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "AAA8295406D058AD5C0F87151B3C5142166FB9891F4C4DDC8516E609ADC2E689",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101574
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.3233310226
+      },
+      "numeric_authority": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/ndi_mil_metrics.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "ndi",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "fopid",
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "model": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_FOPID_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/fopid.png",
+        "sha256": "5FE9817F8544289F4C580CFAB5E3716468D558B8A03BA9F248526422AF80FCB4",
+        "width": 2400,
+        "height": 1900,
+        "bytes": 52154
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/fopid/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "977E8113796AC2ECCAD70FEAE4B7533A17D46381AA061E31509DC1523F172239",
+        "width": 1708,
+        "height": 921,
+        "bytes": 126737
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.3468217868
+      },
+      "numeric_authority": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/fopid_mil_metrics.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "fopid",
+        "title_is_stale": true,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    },
+    {
+      "route": "h2_state_feedback",
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "model": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/h2_state_feedback.png",
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "width": 2200,
+        "height": 1600,
+        "bytes": 184254
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P11_CLASSIC_ADDITIONS/h2_state_feedback/screenshots/result_capture/51472_0x3520E24_MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "F598C51E4389251DB2C114170FCE614623A584C834BBE58070F5C6027B4A500B",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102935
+      },
+      "live_mworks_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.03,
+        "terminal_variable": "normalized_thrust",
+        "terminal_value": 0.3244017987
+      },
+      "numeric_authority": "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/h2_state_feedback_mil_metrics.json",
+      "native_result_msr": null,
+      "capture_binding": {
+        "sysplorer_port": 49155,
+        "window_handle_hex": "0x3520E24",
+        "window_title": "MoSim_Classic_H2_STATE_FEEDBACK_MIL - \u7ed3\u679c\u67e5\u770b\u5668",
+        "plot_heading": "h2_state_feedback",
+        "title_is_stale": false,
+        "binding_method": "simulate_route_then_create_plot_then_capture_same_result_window"
+      }
+    }
+  ],
+  "claim_boundary": [
+    "The screenshots show route-specific fixed-input MWORKS MIL results and do not constitute seven-scenario acceptance.",
+    "All ten matrix rows remain executed_blocked at their declared deployment acceptance ceilings.",
+    "The reusable result-viewer window retained a stale H2 title; route identity is bound by the immediately preceding simulation, plot heading, selected result tree, route directory, and screenshot hash.",
+    "Only official_pid retains a separately certified native Result.msr binding; no native result is promoted for the other nine routes."
+  ]
+}

@@ -7,7 +7,7 @@
 - 状态计数：`{"accepted": 27, "executed_blocked": 33, "not_run": 7}`
 - 已有模型源码：`60`
 - 已有图形模型截图：`60`
-- 已有结果查看器截图：`50`
+- 已有结果查看器截图：`60`
 - 已有数值结果或指标：`62`
 - 仓库内可见Result.msr：`4`
 - 实现阻塞：`2`
@@ -52,7 +52,7 @@
 | P5_ENHANCEMENT | standardized_indi | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P5_ENHANCEMENT | parameter_scheduling | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P5_ENHANCEMENT | ilc | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
-| G9_CORE_COMPARISON | official_pid | executed_blocked | 有 | 有 | 缺 | 有 | 有 | capture_missing_mworks_screenshots |
+| G9_CORE_COMPARISON | official_pid | executed_blocked | 有 | 有 | 有 | 有 | 有 | document_ready_static_audit |
 | G9_CORE_COMPARISON | se3_basic | not_run | 缺 | 缺 | 缺 | 缺 | 待确认 | repair_or_rerun_required |
 | G9_CORE_COMPARISON | dfbc_basic | not_run | 缺 | 缺 | 缺 | 缺 | 待确认 | repair_or_rerun_required |
 | G9_CORE_COMPARISON | smc_boundary_layer | not_run | 缺 | 缺 | 缺 | 缺 | 待确认 | repair_or_rerun_required |
@@ -71,12 +71,12 @@
 | P8_FORMATION | distributed_mpc_formation | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P9_LEARNING | trained_neural_residual | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P9_LEARNING | rl_gain_scheduler | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
-| P10_CLASSIC_RECONCILIATION | lqr_baseline | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P10_CLASSIC_RECONCILIATION | lqi_baseline | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
+| P10_CLASSIC_RECONCILIATION | lqr_baseline | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P10_CLASSIC_RECONCILIATION | lqi_baseline | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P10_CLASSIC_RECONCILIATION | hinf_hover_wrench | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P10_CLASSIC_RECONCILIATION | mu_synthesis | not_run | 缺 | 缺 | 缺 | 有 | 待确认 | bounded_implementation_gap_review |
-| P10_CLASSIC_RECONCILIATION | so3_attitude | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P10_CLASSIC_RECONCILIATION | backstepping_baseline | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
+| P10_CLASSIC_RECONCILIATION | so3_attitude | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P10_CLASSIC_RECONCILIATION | backstepping_baseline | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P10_CLASSIC_RECONCILIATION | dfbc_high_order_attitude | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P10_CLASSIC_RECONCILIATION | dfbc_high_order_bodyrate | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P10_CLASSIC_RECONCILIATION | dfbc_smooth_robust_attitude | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
@@ -85,11 +85,11 @@
 | P10_CLASSIC_RECONCILIATION | dfbc_dob_eso_disabled | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P10_CLASSIC_RECONCILIATION | dfbc_dob_eso | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P10_CLASSIC_RECONCILIATION | neural_smc | not_run | 缺 | 缺 | 缺 | 有 | 待确认 | bounded_implementation_gap_review |
-| P11_CLASSIC_ADDITIONS | pole_placement_luenberger | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P11_CLASSIC_ADDITIONS | mrac | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P11_CLASSIC_ADDITIONS | ndi | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P11_CLASSIC_ADDITIONS | fopid | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P11_CLASSIC_ADDITIONS | h2_state_feedback | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
+| P11_CLASSIC_ADDITIONS | pole_placement_luenberger | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P11_CLASSIC_ADDITIONS | mrac | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P11_CLASSIC_ADDITIONS | ndi | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P11_CLASSIC_ADDITIONS | fopid | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P11_CLASSIC_ADDITIONS | h2_state_feedback | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 
 ## 下一批
 
