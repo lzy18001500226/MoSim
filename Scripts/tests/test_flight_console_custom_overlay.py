@@ -30,6 +30,7 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     plugin = (CUSTOM / "src" / "CustomPlugin.cc").read_text(encoding="utf-8")
     qml = (CUSTOM / "src" / "FlyViewCustomLayer.qml").read_text(encoding="utf-8")
     plan_qml = (CUSTOM / "src" / "PlanView.qml").read_text(encoding="utf-8")
+    plan_overlay_qml = (CUSTOM / "src" / "FactoryPlanMapOverlay.qml").read_text(encoding="utf-8")
     bridge_header = (CUSTOM / "src" / "MoSimOrchestratorBridge.h").read_text(encoding="utf-8")
     bridge_source = (CUSTOM / "src" / "MoSimOrchestratorBridge.cc").read_text(encoding="utf-8")
     assert "QGC_CUSTOM_BUILD" in cmake
@@ -148,7 +149,8 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert "MapScale" not in plan_qml
     assert "factoryPlanMap.mapCenter" in plan_qml
     assert "id: factoryPlanMap" in plan_qml
-    assert "resource_url" in plan_qml
+    assert "FactoryPlanMapOverlay" in plan_qml
+    assert "resource_url" in plan_overlay_qml
     assert "PlanMasterController" in plan_qml
     assert "MissionItemMapVisual" in plan_qml
     assert "VehicleMapItem" in plan_qml
@@ -297,6 +299,23 @@ def test_factory_floorplan_is_packaged_for_the_flight_console() -> None:
     assert factory["map_id"] == "factory_l2"
     assert factory["world_bounds_m"]["max_x_m"] - factory["world_bounds_m"]["min_x_m"] > 1100
     assert factory["mission_publication"]["status"] == "blocked_until_runtime_round_trip_gate"
+
+
+def test_plan_view_uses_georeferenced_factory_overlay() -> None:
+    plan_view = (CUSTOM / "src" / "PlanView.qml").read_text(encoding="utf-8")
+    overlay = (CUSTOM / "src" / "FactoryPlanMapOverlay.qml").read_text(encoding="utf-8")
+
+    assert "FactoryPlanMapOverlay {" in plan_view
+    assert "map: editorMap" in plan_view
+    assert "mapConfig: mosimOrchestrator.operatorMap" in plan_view
+    assert "id: factoryPlanMap" in plan_view
+    assert "editorMap.center = factoryPlanMap.mapCenter" in plan_view
+    assert "anchors.fill: parent\n                    source:" not in plan_view
+
+    assert "map.fromCoordinate(northWest, false)" in overlay
+    assert "map.fromCoordinate(southEast, false)" in overlay
+    assert "function coordinateForWorld(worldX, worldY)" in overlay
+    assert "mapCenter.atDistanceAndAzimuth" in overlay
 
 
 def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -> None:

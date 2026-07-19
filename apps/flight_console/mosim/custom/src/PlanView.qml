@@ -375,25 +375,10 @@ Item {
 
             QGCMapPalette { id: mapPal; lightColors: editorMap.isSatelliteMap }
 
-            Item {
+            FactoryPlanMapOverlay {
                 id: factoryPlanMap
-                anchors.fill: parent
-                z: 1
-                readonly property var mapConfig: mosimOrchestrator.operatorMap || ({})
-                readonly property var anchorConfig: mapConfig.simulation_geodetic_anchor || ({})
-                readonly property var mapCenter: QtPositioning.coordinate(
-                    Number(anchorConfig.latitude_deg || 0),
-                    Number(anchorConfig.longitude_deg || 0),
-                    Number(anchorConfig.altitude_m || 0))
-
-                Image {
-                    anchors.fill: parent
-                    source: String(factoryPlanMap.mapConfig.resource_url || "")
-                    fillMode: Image.Stretch
-                    smooth: true
-                    mipmap: true
-                    cache: true
-                }
+                map: editorMap
+                mapConfig: mosimOrchestrator.operatorMap || ({})
             }
 
             onZoomLevelChanged: {
