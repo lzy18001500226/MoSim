@@ -1,0 +1,42 @@
+{
+  "schema": "mosim.mworks_telemetry_scope_transport.v1",
+  "transport_id": "mworks_telemetry_scope_udp_v1",
+  "status": "source_ready_runtime_pending",
+  "read_only_observer": true,
+  "control_authority": false,
+  "transport": "udp_fixed_little_endian",
+  "protocol_version": 1,
+  "default_mworks_host": "127.0.0.1",
+  "default_mworks_port": 49020,
+  "nominal_rate_hz": 50.0,
+  "model": "MworksLive.RTTelemetryScope50Hz",
+  "sender": "Scripts/mworks_live/ros1_telemetry_scope_sender.py",
+  "channels": [
+    "actual_position_enu_m",
+    "actual_velocity_enu_mps",
+    "q_enu_from_flu_xyzw",
+    "body_rate_flu_radps",
+    "reference_position_enu_m",
+    "reference_velocity_enu_mps",
+    "reference_acceleration_enu_mps2",
+    "reference_yaw_enu_rad",
+    "normalized_target_thrust",
+    "position_error_enu_m",
+    "attitude_error_rad",
+    "ros_source_age_ms",
+    "udp_round_trip_ms",
+    "command_age_ms",
+    "ack_sequence_gaps"
+  ],
+  "clock_policy": {
+    "ros_source_age_ms": "ROS clock only",
+    "udp_round_trip_ms": "sender monotonic round trip through MWORKS ACK",
+    "one_way_cross_host_latency": "not claimed without clock synchronization"
+  },
+  "port_ownership": {
+    "mode": "exclusive",
+    "conflicts_with": "mworks_live_rt1_udp_fixed_v1",
+    "rule": "Do not run the read-only telemetry Scope model and RT1 control model at the same time."
+  },
+  "claim_boundary": "This channel proves live telemetry delivery and native MWORKS curve availability. It does not prove that MWORKS controls the aircraft."
+}
