@@ -36,6 +36,7 @@ class MoSimOrchestratorBridge final : public QObject
     Q_PROPERTY(QString unrealEmbedState READ unrealEmbedState NOTIFY unrealWindowChanged)
     Q_PROPERTY(QString unrealEmbedReason READ unrealEmbedReason NOTIFY unrealWindowChanged)
     Q_PROPERTY(QVariantMap operatorMap READ operatorMap CONSTANT)
+    Q_PROPERTY(QVariantMap runManifest READ runManifest NOTIFY responseChanged)
     Q_PROPERTY(QVariantMap runtimeTelemetry READ runtimeTelemetry NOTIFY responseChanged)
     Q_PROPERTY(QString lastResponse READ lastResponse NOTIFY responseChanged)
 
@@ -68,6 +69,7 @@ public:
     QString unrealEmbedState() const { return _unrealEmbedState; }
     QString unrealEmbedReason() const { return _unrealEmbedReason; }
     QVariantMap operatorMap() const { return _operatorMap; }
+    QVariantMap runManifest() const { return _runManifest; }
     QVariantMap runtimeTelemetry() const { return _runtimeTelemetry; }
     QString lastResponse() const { return _lastResponse; }
 
@@ -155,6 +157,7 @@ private:
     QString _unrealEmbedState = QStringLiteral("not_attached");
     QString _unrealEmbedReason;
     QVariantMap _operatorMap;
+    QVariantMap _runManifest;
     QVariantMap _runtimeTelemetry;
     int _unrealDiscoveryAttempt = 0;
     int _unrealContainerReadyAttempt = 0;

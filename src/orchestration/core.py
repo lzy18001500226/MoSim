@@ -327,10 +327,19 @@ class MoSimOrchestrator:
         scenario_id = experiment.get("scenario_profile", "")
         scenario_path_value = experiment.get("scenario_path")
         declared_vehicle_count = experiment.get("vehicle_count")
+        scenario_snapshot: dict[str, Any]
+        scenario_path_relative = ""
         if scenario_path_value is not None:
             scenario_path = _resolve_project_path(str(scenario_path_value))
             if scenario_path is None or not scenario_path.is_file():
                 return self._response(request_id, False, "scenario_path_invalid", scenario_path=scenario_path_value)
+            try:
+                scenario_snapshot = _read_json(scenario_path)
+            except (OSError, ValueError, json.JSONDecodeError):
+                return self._response(request_id, False, "scenario_payload_invalid", scenario_path=scenario_path_value)
+            if not isinstance(scenario_snapshot, dict):
+                return self._response(request_id, False, "scenario_payload_invalid", scenario_path=scenario_path_value)
+            scenario_path_relative = str(scenario_path.relative_to(PROJECT_ROOT)).replace("\\", "/")
             if not isinstance(declared_vehicle_count, int):
                 return self._response(request_id, False, "profile_vehicle_count_missing")
         else:
@@ -338,6 +347,7 @@ class MoSimOrchestrator:
             scenario = catalog.get("scenario_profiles", {}).get(scenario_id)
             if not isinstance(scenario, dict):
                 return self._response(request_id, False, "scenario_profile_not_registered", scenario_profile=scenario_id)
+            scenario_snapshot = scenario
             declared_vehicle_count = scenario.get("vehicle_count")
         if declared_vehicle_count != vehicle_count:
             return self._response(
@@ -368,6 +378,10 @@ class MoSimOrchestrator:
                 .get(experiment.get("frequency_profile", ""), {})
                 .get("controller_rate_hz")
             ),
+            scenario_profile_id=scenario_id,
+            scenario_path=scenario_path_relative,
+            scenario_hash=_canonical_hash(scenario_snapshot),
+            scenario_snapshot=scenario_snapshot,
             vehicle_count=vehicle_count,
         )
 
@@ -544,6 +558,10 @@ class MoSimOrchestrator:
             "parameter_set": parameters,
             "parameter_set_hash": _canonical_hash(parameters),
             "vehicle_count": vehicle_count,
+            "scenario_profile_id": validation.get("scenario_profile_id", ""),
+            "scenario_path": validation.get("scenario_path", ""),
+            "scenario_hash": validation.get("scenario_hash", ""),
+            "scenario_snapshot": validation.get("scenario_snapshot", {}),
             "created_at": time.time(),
             "updated_at": time.time(),
             "display_sessions": [],

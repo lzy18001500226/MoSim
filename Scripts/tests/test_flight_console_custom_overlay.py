@@ -308,6 +308,7 @@ def test_plan_view_uses_georeferenced_factory_overlay() -> None:
     assert "FactoryPlanMapOverlay {" in plan_view
     assert "map: editorMap" in plan_view
     assert "mapConfig: mosimOrchestrator.operatorMap" in plan_view
+    assert "runManifest: mosimOrchestrator.runManifest" in plan_view
     assert "id: factoryPlanMap" in plan_view
     assert "editorMap.center = factoryPlanMap.mapCenter" in plan_view
     assert "anchors.fill: parent\n                    source:" not in plan_view
@@ -316,6 +317,8 @@ def test_plan_view_uses_georeferenced_factory_overlay() -> None:
     assert "map.fromCoordinate(southEast, false)" in overlay
     assert "function coordinateForWorld(worldX, worldY)" in overlay
     assert "mapCenter.atDistanceAndAzimuth" in overlay
+    assert "explorationBoundaryValid" in overlay
+    assert 'border.color: "#20c7b7"' in overlay
 
 
 def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -> None:
@@ -351,6 +354,12 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "model: root.runtimeVehicles()" in qml
     assert 'String(modelData.vehicle_id || "未知飞机")' in qml
     assert "function missionStatusText()" in qml
+    assert "function explorationBoundary()" in qml
+    assert "function paintExplorationBoundary" in qml
+    assert "factoryExplorationBoundaryPreview" in qml
+    assert "factoryExplorationBoundaryExpanded" in qml
+    assert "function frozenScenarioSummary()" in qml
+    assert "场景哈希：" in qml
     assert 'QGCLabel { text: "任务Adapter确认"; font.bold: true }' in qml
     assert 'text: "Adapter：" + String(missionStatus().adapter_id || "-")' in qml
     assert 'root.missionAdapterVehicleText(modelData)' in qml

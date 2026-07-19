@@ -143,6 +143,33 @@ def test_fuel_fixed64_profile_prepares_for_px4ctrl_single_uav(tmp_path: Path) ->
     assert response["accepted"] is True
     assert response["manifest"]["experiment_profile_id"] == "factory_l2_fuel_fixed64_exploration_v1"
     assert response["manifest"]["controller_id"] == "px4ctrl"
+    assert response["manifest"]["scenario_path"] == "Config/scenarios/ui/factory_l2_fuel_fixed64_exploration.json"
+    assert response["manifest"]["scenario_hash"]
+    scenario = response["manifest"]["scenario_snapshot"]
+    assert scenario["exploration_boundary"]["min_x_m"] == -42.575025
+    assert scenario["exploration_boundary"]["max_x_m"] == 21.424975
+    assert scenario["mission"] == {
+        "type": "fuel_single_exploration",
+        "duration_s": 300,
+        "random_seed": 1,
+        "max_velocity_mps": 2.0,
+        "max_acceleration_mps2": 1.5,
+        "px4ctrl_core_profile": "l1_awff",
+    }
+
+
+def test_three_uav_profile_freezes_formation_target_in_run_manifest(tmp_path: Path) -> None:
+    orchestrator = MoSimOrchestrator(run_root=tmp_path, backend=FakeRuntimeBackend())
+    response = orchestrator.prepare_run(
+        request_id="prepare-formation",
+        profile_path=THREE_UAV_PROFILE,
+        controller_id="px4ctrl",
+        vehicle_count=3,
+    )
+    assert response["accepted"] is True
+    scenario = response["manifest"]["scenario_snapshot"]
+    assert scenario["formation"]["target_center_xy_m"] == [-16.679266719908025, -8.0868185505691]
+    assert scenario["formation"]["expected_min_pair_distance_m"] == 1.5
 
 
 def test_prepare_rejects_a_second_run_until_active_runtime_stops(tmp_path: Path) -> None:

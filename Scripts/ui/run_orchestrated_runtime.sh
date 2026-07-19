@@ -431,6 +431,35 @@ PY
 }
 
 run_swarm_formation_gate() {
+  local formation_values=()
+  mapfile -t formation_values < <(python3 - "${ORCHESTRATOR_RUN_DIR}/RUN_MANIFEST.json" <<'PY'
+import json, math, sys
+
+manifest = json.load(open(sys.argv[1], encoding="utf-8"))
+if manifest.get("experiment_profile_id") != "factory_l2_three_uav_swarm_formation_v1":
+    raise SystemExit("formation manifest profile mismatch")
+scenario = manifest.get("scenario_snapshot") or {}
+formation = scenario.get("formation") or {}
+obstacle = scenario.get("obstacle_crossing_contract") or {}
+target = formation.get("target_center_xy_m") or []
+values = [
+    target[0] if len(target) == 2 else None,
+    target[1] if len(target) == 2 else None,
+    formation.get("z_m"),
+    formation.get("scale"),
+    obstacle.get("clearance_margin_m"),
+]
+if not all(isinstance(value, (int, float)) and math.isfinite(float(value)) for value in values):
+    raise SystemExit("formation manifest contains invalid target parameters")
+print("ok")
+for value in values:
+    print(value)
+PY
+  )
+  if [[ "${formation_values[0]:-}" != "ok" || "${#formation_values[@]}" -ne 6 ]]; then
+    echo "formation RunManifest is incomplete; refusing to launch" >&2
+    return 12
+  fi
   sunray_ros1_runtime_lock_acquire
   assert_no_conflicting_runtime
   local plugin_ws="${PROJECT_ROOT}/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2"
@@ -454,11 +483,11 @@ run_swarm_formation_gate() {
   export TOTAL_TIMEOUT_S="600"
   export EGO_GATE_EGO_TAKEOVER_TIMEOUT_S="120"
   export EGO_GATE_EXECUTE_TIMEOUT_S="420"
-  export SWARM_FORMATION_D3_CENTER_X="-16.679266719908025"
-  export SWARM_FORMATION_D3_CENTER_Y="-8.0868185505691"
-  export SWARM_FORMATION_D3_CENTER_Z="1.2"
-  export SWARM_FORMATION_D3_SWARM_SCALE="0.75"
-  export SWARM_FORMATION_D3_SWARM_CLEARANCE="1.0"
+  export SWARM_FORMATION_D3_CENTER_X="${formation_values[1]}"
+  export SWARM_FORMATION_D3_CENTER_Y="${formation_values[2]}"
+  export SWARM_FORMATION_D3_CENTER_Z="${formation_values[3]}"
+  export SWARM_FORMATION_D3_SWARM_SCALE="${formation_values[4]}"
+  export SWARM_FORMATION_D3_SWARM_CLEARANCE="${formation_values[5]}"
   export SWARM_FORMATION_D3_MIN_TRAJ_Z="0.90"
   export SWARM_FORMATION_D3_MAX_TRAJ_Z="1.60"
   export SWARM_FORMATION_D3_WEIGHT_HEIGHT="50000.0"
@@ -482,6 +511,42 @@ run_swarm_formation_gate() {
 }
 
 run_fuel_fixed64_gate() {
+  local fuel_values=()
+  mapfile -t fuel_values < <(python3 - "${ORCHESTRATOR_RUN_DIR}/RUN_MANIFEST.json" <<'PY'
+import json, math, sys
+
+manifest = json.load(open(sys.argv[1], encoding="utf-8"))
+if manifest.get("experiment_profile_id") != "factory_l2_fuel_fixed64_exploration_v1":
+    raise SystemExit("FUEL manifest profile mismatch")
+scenario = manifest.get("scenario_snapshot") or {}
+spawn = scenario.get("spawn") or {}
+boundary = scenario.get("exploration_boundary") or {}
+mission = scenario.get("mission") or {}
+numeric = [
+    spawn.get("x_m"), spawn.get("y_m"), spawn.get("yaw_rad"),
+    boundary.get("min_x_m"), boundary.get("max_x_m"),
+    boundary.get("min_y_m"), boundary.get("max_y_m"),
+    boundary.get("min_z_m"), boundary.get("max_z_m"),
+    mission.get("duration_s"), mission.get("random_seed"),
+    mission.get("max_velocity_mps"), mission.get("max_acceleration_mps2"),
+]
+if not all(isinstance(value, (int, float)) and math.isfinite(float(value)) for value in numeric):
+    raise SystemExit("FUEL manifest contains invalid numeric parameters")
+if not numeric[3] < numeric[4] or not numeric[5] < numeric[6] or not numeric[7] < numeric[8]:
+    raise SystemExit("FUEL manifest boundary is invalid")
+core_profile = mission.get("px4ctrl_core_profile")
+if core_profile != "l1_awff":
+    raise SystemExit("FUEL manifest controller core profile is not accepted")
+print("ok")
+for value in numeric:
+    print(value)
+print(core_profile)
+PY
+  )
+  if [[ "${fuel_values[0]:-}" != "ok" || "${#fuel_values[@]}" -ne 15 ]]; then
+    echo "FUEL RunManifest is incomplete; refusing to launch" >&2
+    return 12
+  fi
   sunray_ros1_runtime_lock_acquire
   assert_no_conflicting_runtime
   start_sidecar 1 "/mosim/goal4/target_path" "/planning_vis/trajectory"
@@ -494,17 +559,31 @@ run_fuel_fixed64_gate() {
   powershell.exe -NoProfile -ExecutionPolicy Bypass -File \
     "${windows_project_root}\\Scripts\\sunray\\start_factory_fuel_single_exploration_review.ps1" \
     -RunId "${RUN_ID}" \
-    -FuelRandomSeed 1 \
-    -ExplorationExecuteS 300 \
+    -FuelRandomSeed "${fuel_values[11]}" \
+    -ExplorationExecuteS "${fuel_values[10]}" \
     -ReviewHoldS 0 \
-    -FuelWindowXYM 64 \
-    -FuelWindowYM 64 \
+    -StartX "${fuel_values[1]}" \
+    -StartY "${fuel_values[2]}" \
+    -StartYaw "${fuel_values[3]}" \
+    -FuelWindowXYM "$(python3 -c "print(float('${fuel_values[5]}') - float('${fuel_values[4]}'))")" \
+    -FuelWindowYM "$(python3 -c "print(float('${fuel_values[7]}') - float('${fuel_values[6]}'))")" \
+    -FuelBoxMinXOverride "${fuel_values[4]}" \
+    -FuelBoxMaxXOverride "${fuel_values[5]}" \
+    -FuelBoxMinYOverride "${fuel_values[6]}" \
+    -FuelBoxMaxYOverride "${fuel_values[7]}" \
+    -FuelBoxMinZM "${fuel_values[8]}" \
+    -FuelBoxMaxZM "${fuel_values[9]}" \
     -FuelFrontierMinCandidateClearance 0.21 \
     -FuelCoverageExpansion \
     -FuelCoverageExpansionAxis -1 \
     -FuelCoverageExpansionScoreCommittedGoal \
     -FuelCoverageExpansionGlobalSelector \
-    -ControllerCoreProfile l1_awff \
+    -ControllerCoreProfile "${fuel_values[14]}" \
+    -FuelPlannerMaxVelMps "${fuel_values[12]}" \
+    -FuelPlannerMaxAccMps2 "${fuel_values[13]}" \
+    -FuelCmdSmoothMaxSpeedMps "${fuel_values[12]}" \
+    -FuelCmdMaxVelocityMps "${fuel_values[12]}" \
+    -FuelCmdMaxAccelerationMps2 "${fuel_values[13]}" \
     -NoRviz \
     -ReuseUnrealWindow \
     -NoKeepAlive \

@@ -23,7 +23,9 @@
     "type": "fuel_single_exploration",
     "duration_s": 300,
     "random_seed": 1,
-    "max_velocity_mps": 2.0
+    "max_velocity_mps": 2.0,
+    "max_acceleration_mps2": 1.5,
+    "px4ctrl_core_profile": "l1_awff"
   },
   "claim_boundary": "This scenario reproduces the accepted fixed-64 FUEL configuration. It does not claim complete 175.66 x 64 m Factory coverage."
 }

@@ -120,7 +120,9 @@ def test_runtime_wrapper_starts_sidecar_and_reuses_ftc_plugin() -> None:
     assert "start_sidecar 3" in wrapper
     assert "factory_l2_three_uav_swarm_formation" in wrapper
     assert 'PLANNER_VARIANT="swarm_formation"' in wrapper
-    assert 'SWARM_FORMATION_D3_CENTER_X="-16.679266719908025"' in wrapper
+    assert 'manifest.get("experiment_profile_id") != "factory_l2_three_uav_swarm_formation_v1"' in wrapper
+    assert 'SWARM_FORMATION_D3_CENTER_X="${formation_values[1]}"' in wrapper
+    assert "formation RunManifest is incomplete; refusing to launch" in wrapper
 
 
 def test_display_helper_uses_argument_safe_shell_entrypoint() -> None:

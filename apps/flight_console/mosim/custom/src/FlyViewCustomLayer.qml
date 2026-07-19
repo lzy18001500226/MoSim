@@ -372,6 +372,66 @@ Item {
                 / (Number(bounds.max_y_m) - Number(bounds.min_y_m)) * imageHeight
     }
 
+    function explorationBoundary() {
+        var manifest = mosimOrchestrator.runManifest || ({})
+        if (manifest.run_id !== mosimOrchestrator.runId
+                || manifest.experiment_profile_id !== profiles[profileBox.currentIndex].id)
+            return null
+        var scenario = manifest.scenario_snapshot || ({})
+        var boundary = scenario.exploration_boundary || null
+        if (!boundary)
+            return null
+        var minX = Number(boundary.min_x_m)
+        var maxX = Number(boundary.max_x_m)
+        var minY = Number(boundary.min_y_m)
+        var maxY = Number(boundary.max_y_m)
+        if (!isFinite(minX) || !isFinite(maxX) || !isFinite(minY) || !isFinite(maxY)
+                || minX >= maxX || minY >= maxY)
+            return null
+        return { min_x_m: minX, max_x_m: maxX, min_y_m: minY, max_y_m: maxY }
+    }
+
+    function paintExplorationBoundary(canvas, imageX, imageY, imageWidth, imageHeight) {
+        var context = canvas.getContext("2d")
+        context.reset()
+        var boundary = explorationBoundary()
+        if (!boundary)
+            return
+        var left = mapPixelX(boundary.min_x_m, imageX, imageWidth)
+        var right = mapPixelX(boundary.max_x_m, imageX, imageWidth)
+        var top = mapPixelY(boundary.max_y_m, imageY, imageHeight)
+        var bottom = mapPixelY(boundary.min_y_m, imageY, imageHeight)
+        context.strokeStyle = "#20c7b7"
+        context.lineWidth = 3
+        context.strokeRect(left, top, right - left, bottom - top)
+    }
+
+    function frozenScenarioSummary() {
+        var manifest = mosimOrchestrator.runManifest || ({})
+        if (manifest.run_id !== mosimOrchestrator.runId || !manifest.scenario_snapshot)
+            return "任务参数尚未冻结"
+        var scenario = manifest.scenario_snapshot
+        var mission = scenario.mission || ({})
+        var boundary = scenario.exploration_boundary || null
+        if (boundary) {
+            return "已冻结：边界 X[" + Number(boundary.min_x_m).toFixed(2) + ", "
+                    + Number(boundary.max_x_m).toFixed(2) + "] m，Y["
+                    + Number(boundary.min_y_m).toFixed(2) + ", "
+                    + Number(boundary.max_y_m).toFixed(2) + "] m；时长 "
+                    + Number(mission.duration_s || 0).toFixed(0) + " s；种子 "
+                    + String(mission.random_seed === undefined ? "-" : mission.random_seed)
+                    + "；最大速度 " + Number(mission.max_velocity_mps || 0).toFixed(1) + " m/s"
+        }
+        var formation = scenario.formation || null
+        if (formation) {
+            var target = formation.target_center_xy_m || []
+            return "已冻结：三机编队；目标中心 (" + Number(target[0]).toFixed(2) + ", "
+                    + Number(target[1]).toFixed(2) + ") m；最小机间距 "
+                    + Number(formation.expected_min_pair_distance_m || 0).toFixed(2) + " m"
+        }
+        return "已冻结场景；场景哈希 " + String(manifest.scenario_hash || "-").slice(0, 12)
+    }
+
     function captureRuntimeTelemetry() {
         var telemetry = mosimOrchestrator.runtimeTelemetry || ({})
         if (!runtimeTelemetryFresh())
@@ -718,11 +778,22 @@ Item {
             }
 
             Canvas {
+                id: factoryExplorationBoundaryPreview
+                anchors.fill: parent
+                anchors.margins: 2
+                visible: !factoryMapExpanded && root.explorationBoundary() !== null
+                z: 1
+                property string scenarioHash: String(mosimOrchestrator.runManifest.scenario_hash || "")
+                onScenarioHashChanged: requestPaint()
+                onPaint: root.paintExplorationBoundary(this, 0, 0, width, height)
+            }
+
+            Canvas {
                 id: factoryTaskPathPreview
                 anchors.fill: parent
                 anchors.margins: 2
                 visible: !factoryMapExpanded && root.runtimeTelemetryFresh()
-                z: 1
+                z: 2
                 property real telemetryTimestamp: Number(mosimOrchestrator.runtimeTelemetry.timestamp || 0)
                 onTelemetryTimestampChanged: requestPaint()
                 onPaint: root.paintTaskPaths(this, 0, 0, width, height)
@@ -733,7 +804,7 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 2
                 visible: !factoryMapExpanded && root.runtimeTelemetryFresh()
-                z: 2
+                z: 3
                 property int trackRevision: root.actualTrackRevision
                 onTrackRevisionChanged: requestPaint()
                 onPaint: root.paintActualTracks(this, 0, 0, width, height)
@@ -748,7 +819,7 @@ Item {
                     visible: root.vehicleMapPositionValid(vehicle)
                     width: 18
                     height: 18
-                    z: 3
+                    z: 4
                     rotation: 90 - root.vehicleYawDegrees(vehicle)
                     x: root.mapPixelX(Number(vehicle.state.position.x), 2, factoryMapPreview.width - 4) - width / 2
                     y: root.mapPixelY(Number(vehicle.state.position.y), 2, factoryMapPreview.height - 4) - height / 2
@@ -841,13 +912,28 @@ Item {
                             }
 
                             Canvas {
+                                id: factoryExplorationBoundaryExpanded
+                                x: factoryMapImage.x
+                                y: factoryMapImage.y
+                                width: factoryMapImage.width
+                                height: factoryMapImage.height
+                                visible: root.explorationBoundary() !== null
+                                z: 1
+                                property string scenarioHash: String(mosimOrchestrator.runManifest.scenario_hash || "")
+                                onScenarioHashChanged: requestPaint()
+                                onWidthChanged: requestPaint()
+                                onHeightChanged: requestPaint()
+                                onPaint: root.paintExplorationBoundary(this, 0, 0, width, height)
+                            }
+
+                            Canvas {
                                 id: factoryTaskPathExpanded
                                 x: factoryMapImage.x
                                 y: factoryMapImage.y
                                 width: factoryMapImage.width
                                 height: factoryMapImage.height
                                 visible: root.runtimeTelemetryFresh()
-                                z: 1
+                                z: 2
                                 property real telemetryTimestamp: Number(mosimOrchestrator.runtimeTelemetry.timestamp || 0)
                                 onTelemetryTimestampChanged: requestPaint()
                                 onWidthChanged: requestPaint()
@@ -862,7 +948,7 @@ Item {
                                 width: factoryMapImage.width
                                 height: factoryMapImage.height
                                 visible: root.runtimeTelemetryFresh()
-                                z: 2
+                                z: 3
                                 property int trackRevision: root.actualTrackRevision
                                 onTrackRevisionChanged: requestPaint()
                                 onWidthChanged: requestPaint()
@@ -879,7 +965,7 @@ Item {
                                     visible: root.vehicleMapPositionValid(vehicle)
                                     width: 20
                                     height: 20
-                                    z: 3
+                                    z: 4
                                     rotation: 90 - root.vehicleYawDegrees(vehicle)
                                     x: root.mapPixelX(Number(vehicle.state.position.x), factoryMapImage.x, factoryMapImage.width) - width / 2
                                     y: root.mapPixelY(Number(vehicle.state.position.y), factoryMapImage.y, factoryMapImage.height) - height / 2
@@ -1221,6 +1307,20 @@ Item {
                             text: profiles[profileBox.currentIndex].disabledReason
                             color: qgcPal.colorOrange
                             wrapMode: Text.Wrap
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            visible: mosimOrchestrator.runId !== "" && selectionMatchesPreparedRun()
+                            text: frozenScenarioSummary()
+                            color: qgcPal.colorGreen
+                            wrapMode: Text.Wrap
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            visible: mosimOrchestrator.runId !== "" && selectionMatchesPreparedRun()
+                            text: "场景哈希：" + String(mosimOrchestrator.runManifest.scenario_hash || "-")
+                            color: qgcPal.text
+                            wrapMode: Text.WrapAnywhere
                         }
                         QGCLabel { text: "控制器Profile" }
                         ComboBox {

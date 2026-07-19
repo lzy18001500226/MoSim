@@ -379,6 +379,7 @@ Item {
                 id: factoryPlanMap
                 map: editorMap
                 mapConfig: mosimOrchestrator.operatorMap || ({})
+                runManifest: mosimOrchestrator.runManifest || ({})
             }
 
             onZoomLevelChanged: {

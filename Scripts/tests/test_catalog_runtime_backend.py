@@ -227,7 +227,11 @@ def test_runtime_catalog_and_runner_expose_fuel_fixed64_gate() -> None:
     assert fuel["experiment_profile_ids"] == ["factory_l2_fuel_fixed64_exploration_v1"]
     runner = Path("Scripts/ui/run_orchestrated_runtime.sh").read_text(encoding="utf-8")
     assert "run_fuel_fixed64_gate" in runner
-    assert "-FuelRandomSeed 1" in runner
+    assert 'manifest.get("experiment_profile_id") != "factory_l2_fuel_fixed64_exploration_v1"' in runner
+    assert '-FuelRandomSeed "${fuel_values[11]}"' in runner
+    assert '-FuelBoxMinXOverride "${fuel_values[4]}"' in runner
+    assert '-FuelPlannerMaxVelMps "${fuel_values[12]}"' in runner
+    assert "FUEL RunManifest is incomplete; refusing to launch" in runner
     assert "-FuelCoverageExpansionGlobalSelector" in runner
     assert "-ReuseUnrealWindow" in runner
 

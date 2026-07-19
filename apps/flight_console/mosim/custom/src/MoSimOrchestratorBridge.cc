@@ -756,6 +756,7 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
     _profileHash = response.value(QStringLiteral("profile_hash")).toString(_profileHash);
     const QJsonObject manifest = response.value(QStringLiteral("manifest")).toObject();
     if (!manifest.isEmpty()) {
+        _runManifest = manifest.toVariantMap();
         _lifecycleState = manifest.value(QStringLiteral("lifecycle_state")).toString(_lifecycleState);
         _experimentProfileId = manifest.value(QStringLiteral("experiment_profile_id")).toString(_experimentProfileId);
         _selectedControllerId = manifest.value(QStringLiteral("controller_id")).toString(_selectedControllerId);
