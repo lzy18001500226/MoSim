@@ -107,81 +107,81 @@ const OFFLINE_PROFILES = Dict(
 )
 
 @oodef mutable struct App
-    UIFigure::TyAppDesigner.Figure = TyAppDesigner.create_figure()
-    TitleLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    SubtitleLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    OfflineModeButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    LiveModeButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    DeployModeButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    ModeStatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
+    UIFigure::Any = nothing
+    TitleLabel::Any = nothing
+    SubtitleLabel::Any = nothing
+    OfflineModeButton::Any = nothing
+    LiveModeButton::Any = nothing
+    DeployModeButton::Any = nothing
+    ModeStatusLabel::Any = nothing
 
-    ConfigSectionLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    ChainSectionLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    InjectionSectionLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
+    ConfigSectionLabel::Any = nothing
+    ChainSectionLabel::Any = nothing
+    InjectionSectionLabel::Any = nothing
 
-    ProfileDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    VehicleCountDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    MapDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    MissionDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    PositionDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    AttitudeDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    AugmentationDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    SafetyDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    FaultDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    FormationDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    OutputDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    ProfileSummaryLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    CapabilityLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
+    ProfileDropDown::Any = nothing
+    VehicleCountDropDown::Any = nothing
+    MapDropDown::Any = nothing
+    MissionDropDown::Any = nothing
+    PositionDropDown::Any = nothing
+    AttitudeDropDown::Any = nothing
+    AugmentationDropDown::Any = nothing
+    SafetyDropDown::Any = nothing
+    FaultDropDown::Any = nothing
+    FormationDropDown::Any = nothing
+    OutputDropDown::Any = nothing
+    ProfileSummaryLabel::Any = nothing
+    CapabilityLabel::Any = nothing
 
-    ChainLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    ContractLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    TimingLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    TargetHostField::TyAppDesigner.EditField = TyAppDesigner.create_editfield()
-    Rt1PortField::TyAppDesigner.NumericEditField = TyAppDesigner.create_numericeditfield()
-    RosMasterField::TyAppDesigner.EditField = TyAppDesigner.create_editfield()
-    LocalIpField::TyAppDesigner.EditField = TyAppDesigner.create_editfield()
-    TargetRateDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    TestConnectionButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    ConnectionStatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
+    ChainLabel::Any = nothing
+    ContractLabel::Any = nothing
+    TimingLabel::Any = nothing
+    TargetHostField::Any = nothing
+    Rt1PortField::Any = nothing
+    RosMasterField::Any = nothing
+    LocalIpField::Any = nothing
+    TargetRateDropDown::Any = nothing
+    TestConnectionButton::Any = nothing
+    ConnectionStatusLabel::Any = nothing
 
-    DeployTargetDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    BuildModeDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
+    DeployTargetDropDown::Any = nothing
+    BuildModeDropDown::Any = nothing
 
-    TargetUavDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
-    WindSlider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
-    Motor1Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
-    Motor2Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
-    Motor3Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
-    Motor4Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
-    InjectionValuesLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
-    ApplyInjectionButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    RestoreInjectionButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    ManifestLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
+    TargetUavDropDown::Any = nothing
+    WindSlider::Any = nothing
+    Motor1Slider::Any = nothing
+    Motor2Slider::Any = nothing
+    Motor3Slider::Any = nothing
+    Motor4Slider::Any = nothing
+    InjectionValuesLabel::Any = nothing
+    ApplyInjectionButton::Any = nothing
+    RestoreInjectionButton::Any = nothing
+    ManifestLabel::Any = nothing
 
-    ValidateButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    PublishButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    PrepareButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    QgcButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    SafeStopButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    OpenModelButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    MilButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    CodegenButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    ResultButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    ConsoleToggleButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    ConsoleClearButton::TyAppDesigner.Button = TyAppDesigner.create_button()
-    StatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
+    ValidateButton::Any = nothing
+    PublishButton::Any = nothing
+    PrepareButton::Any = nothing
+    QgcButton::Any = nothing
+    SafeStopButton::Any = nothing
+    OpenModelButton::Any = nothing
+    MilButton::Any = nothing
+    CodegenButton::Any = nothing
+    ResultButton::Any = nothing
+    ConsoleToggleButton::Any = nothing
+    ConsoleClearButton::Any = nothing
+    StatusLabel::Any = nothing
 
     # ObjectOriented's field parser requires literal defaults; bind source
     # metadata during initApp instead of using macro expressions as defaults.
-    Appname::Module = Main
-    Appfile::String = ""
+    Appname::Any = nothing
+    Appfile::Any = ""
     CurrentMode::String = "live"
     LastOfflineBatchManifest::String = ""
     LastOfflineBatchId::String = ""
     LastOfflineProfile::String = ""
     CurrentOfflineBatchId::String = ""
     OfflineBatchRunning::Bool = false
-    ConsoleLines::Vector{String} = String[]
+    ConsoleLines::Any = nothing
     ConsoleExpanded::Bool = true
 
     function append_console(app, message; level="信息")
@@ -1146,6 +1146,7 @@ const OFFLINE_PROFILES = Dict(
     function initApp(app)
         app.Appname = @__MODULE__
         app.Appfile = @__FILE__
+        app.ConsoleLines = String[]
         app.createComponents()
         TyAppDesigner.registerApp(app, app.UIFigure)
         return app
