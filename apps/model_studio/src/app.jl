@@ -171,8 +171,10 @@ const OFFLINE_PROFILES = Dict(
     ConsoleClearButton::TyAppDesigner.Button = TyAppDesigner.create_button()
     StatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
 
-    Appname::Module = @__MODULE__
-    Appfile::String = @__FILE__
+    # ObjectOriented's field parser requires literal defaults; bind source
+    # metadata during initApp instead of using macro expressions as defaults.
+    Appname::Module = Main
+    Appfile::String = ""
     CurrentMode::String = "live"
     LastOfflineBatchManifest::String = ""
     LastOfflineBatchId::String = ""
@@ -1142,6 +1144,8 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function initApp(app)
+        app.Appname = @__MODULE__
+        app.Appfile = @__FILE__
         app.createComponents()
         TyAppDesigner.registerApp(app, app.UIFigure)
         return app
