@@ -13,7 +13,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.orchestration import CatalogRuntimeBackend, MoSimOrchestrator
-from src.orchestration.service import DEFAULT_REQUEST_DIR, DEFAULT_RESPONSE_DIR, OrchestratorService
+from src.orchestration.service import (
+    DEFAULT_REQUEST_DIR,
+    DEFAULT_RESPONSE_DIR,
+    OrchestratorService,
+    exclusive_service_lock,
+)
 
 
 def main() -> int:
@@ -25,10 +30,16 @@ def main() -> int:
     args = parser.parse_args()
     orchestrator = MoSimOrchestrator(backend=CatalogRuntimeBackend())
     service = OrchestratorService(orchestrator, args.request_dir, args.response_dir)
-    if args.once:
-        print(service.process_once())
-        return 0
-    service.serve(poll_interval_s=args.poll_interval_s)
+    lock_path = args.request_dir.parent / "orchestrator_service.lock"
+    try:
+        with exclusive_service_lock(lock_path):
+            if args.once:
+                print(service.process_once())
+                return 0
+            service.serve(poll_interval_s=args.poll_interval_s)
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 3
     return 0
 
 

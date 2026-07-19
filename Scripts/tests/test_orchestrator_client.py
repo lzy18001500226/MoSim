@@ -6,6 +6,87 @@ from pathlib import Path
 from Scripts.ui import orchestrator_client
 
 
+def _args(**overrides):
+    values = {
+        "action": "list_controllers",
+        "request_id": None,
+        "profile_path": None,
+        "controller_id": None,
+        "vehicle_count": None,
+        "wind_speed_mps": 0.0,
+        "run_id": None,
+        "session_id": None,
+        "operation_id": None,
+        "connection_preflight_id": None,
+        "target_host": "127.0.0.1",
+        "rt1_udp_port": 49020,
+        "ros_master_uri": "http://127.0.0.1:11311",
+        "defer_ros_master": False,
+        "local_advertised_ip": "auto",
+        "requested_rate_hz": 200,
+        "preflight_timeout_s": 0.35,
+        "preflight_sample_count": 5,
+        "target": None,
+        "value": None,
+        "rotor_index": None,
+        "vehicle_id": None,
+        "ramp_s": 0.0,
+        "duration_s": 0.0,
+        "display": [],
+    }
+    values.update(overrides)
+    return type("Args", (), values)()
+
+
+def test_client_builds_catalog_and_operation_requests_without_implicit_fields(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(orchestrator_client, "ACTIVE_RUN", tmp_path / "active.json")
+    assert orchestrator_client.build_payload(_args(request_id="catalog-fixed")) == {
+        "schema": "mosim.orchestrator.request.v1",
+        "action": "list_controllers",
+        "request_id": "catalog-fixed",
+    }
+    operation = orchestrator_client.build_payload(
+        _args(action="get_operation_progress", run_id="run-test", operation_id="op-test")
+    )
+    assert operation["run_id"] == "run-test"
+    assert operation["operation_id"] == "op-test"
+
+
+def test_connection_preflight_can_defer_ros_master_for_orchestrator_cold_start() -> None:
+    payload = orchestrator_client.build_payload(
+        _args(
+            action="preflight_connection",
+            profile_path="profile.json",
+            controller_id="official_pid",
+            vehicle_count=1,
+            defer_ros_master=True,
+        )
+    )
+    assert payload["ros_master_uri"] == ""
+
+
+def test_preflight_payload_carries_endpoint_and_target_rate() -> None:
+    payload = orchestrator_client.build_payload(
+        _args(
+            action="preflight_connection",
+            request_id="preflight-fixed",
+            profile_path="Config/profiles/experiments/mworks_live_official_pid_hover_50hz_v2.json",
+            controller_id="official_pid",
+            vehicle_count=1,
+            target_host="192.168.10.20",
+            ros_master_uri="http://192.168.10.20:11311",
+            local_advertised_ip="192.168.10.5",
+            requested_rate_hz=200,
+            preflight_sample_count=7,
+        )
+    )
+
+    assert payload["action"] == "preflight_connection"
+    assert payload["target_host"] == "192.168.10.20"
+    assert payload["requested_rate_hz"] == 200
+    assert payload["sample_count"] == 7
+
+
 def test_client_writes_request_and_reports_pending_without_service(tmp_path: Path, monkeypatch) -> None:
     request_dir = tmp_path / "requests"
     response_dir = tmp_path / "responses"

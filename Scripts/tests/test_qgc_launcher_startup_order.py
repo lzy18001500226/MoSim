@@ -20,6 +20,21 @@ def test_flight_simulation_and_ground_station_have_separate_owners() -> None:
     assert "Gazebo flight simulation launcher" in ground
 
 
+def test_ground_station_reconciles_duplicate_managed_unreal_processes() -> None:
+    ground = Path("Scripts/ui/run_qgc_with_ue.ps1").read_text(encoding="utf-8")
+
+    assert "Get-TrackedDisplayRecords" in ground
+    assert "DISPLAY_SESSION.json" in ground
+    assert "DISPLAY_PROCESSES.json" in ground
+    assert "Test-TrackedDisplayOwnership" in ground
+    assert "MoSimSceneLibrary.uproject" in ground
+    assert "-MoSimObservabilityRunId=$RunId" in ground
+    assert "launch_ros1_display.sh" in ground
+    assert "PreserveProcessIds" in ground
+    assert "WaitForExit(5000)" in ground
+    assert "stale_display_process_survived" in ground
+
+
 def test_operator_cmd_entrypoints_are_explicit() -> None:
     flight_cmd = Path("\u542f\u52a8Gazebo\u98de\u884c\u4eff\u771f.cmd").read_text(encoding="utf-8")
     ground_cmd = Path("\u542f\u52a8MoSim\u5730\u9762\u7ad9.cmd").read_text(encoding="utf-8")
@@ -37,6 +52,11 @@ def test_stop_script_uses_active_run_and_scoped_process_records() -> None:
 
     assert "Get-MoSimActiveRun" in stopper
     assert "DISPLAY_PROCESSES.json" in stopper
+    assert "DISPLAY_SESSION.json" in stopper
+    assert "Test-ManagedDisplayOwnership" in stopper
+    assert "MoSimSceneLibrary.uproject" in stopper
+    assert "WaitForExit(10000)" in stopper
+    assert "managed_process_survived" in stopper
     assert '"stop_run"' in stopper
     assert "stop_orchestrated_runtime.sh" in stopper
     assert "Stop-Process -Name" not in stopper

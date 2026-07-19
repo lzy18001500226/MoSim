@@ -15,27 +15,77 @@ $runId = [string]$active.run_id
 $runDir = Get-MoSimRunDirectory -RunId $runId
 Write-Output "Stopping managed MoSim run: $runId"
 
-Get-Process -Name "MoSimFlightConsole" -ErrorAction SilentlyContinue |
-    Stop-Process -Force -ErrorAction SilentlyContinue
+function Test-ManagedDisplayOwnership {
+    param($Record, [string]$ExpectedRunId, [string]$ExpectedSessionId)
+    $pidValue = 0
+    if (-not [int]::TryParse([string]$Record.pid, [ref]$pidValue)) { return $false }
+    $process = Get-Process -Id $pidValue -ErrorAction SilentlyContinue
+    if ($null -eq $process) { return $false }
+    try {
+        $commandLine = [string](Get-CimInstance Win32_Process -Filter "ProcessId=$pidValue").CommandLine
+    } catch {
+        throw "managed_display_ownership_unavailable: kind=$($Record.kind) pid=$pidValue"
+    }
+    if ($Record.kind -eq "unreal") {
+        return $process.ProcessName -eq "UnrealEditor" -and
+            $commandLine -like "*MoSimSceneLibrary.uproject*" -and
+            $commandLine -like "*-MoSimObservabilityRunId=$ExpectedRunId*"
+    }
+    if ($Record.kind -eq "unreal_bridge") {
+        return $process.ProcessName -in @("wsl", "wslhost") -and
+            $commandLine -like "*launch_ros1_display.sh*" -and
+            $commandLine -like "*$ExpectedSessionId*"
+    }
+    if ($Record.kind -in @("rviz_pointcloud", "rviz_gridmap")) {
+        return $process.ProcessName -in @("wsl", "wslhost", "rviz") -and
+            $commandLine -like "*$ExpectedSessionId*"
+    }
+    return $false
+}
 
-$displayFiles = @(Get-ChildItem -Path (Join-Path $runDir "displays") `
-    -Recurse -Filter "DISPLAY_PROCESSES.json" -File -ErrorAction SilentlyContinue)
-foreach ($file in $displayFiles) {
-    try { $records = @(Get-Content -Raw -LiteralPath $file.FullName | ConvertFrom-Json) } catch { continue }
+function Stop-ManagedProcessAndWait {
+    param([System.Diagnostics.Process]$Process, [string]$Kind)
+    Stop-Process -Id $Process.Id -Force -ErrorAction Stop
+    if (-not $Process.WaitForExit(10000)) {
+        throw "managed_process_survived: kind=$Kind pid=$($Process.Id)"
+    }
+}
+
+foreach ($process in @(Get-Process -Name "MoSimFlightConsole" -ErrorAction SilentlyContinue)) {
+    Stop-ManagedProcessAndWait -Process $process -Kind "flight_console"
+}
+
+$sessionDirs = @(Get-ChildItem -Path (Join-Path $runDir "displays") -Directory -ErrorAction SilentlyContinue)
+foreach ($sessionDir in $sessionDirs) {
+    $records = @()
+    $processFile = Join-Path $sessionDir.FullName "DISPLAY_PROCESSES.json"
+    $sessionFile = Join-Path $sessionDir.FullName "DISPLAY_SESSION.json"
+    if (Test-Path -LiteralPath $processFile) {
+        try { $records += @(Get-Content -Raw -LiteralPath $processFile | ConvertFrom-Json) } catch {}
+    }
+    if (Test-Path -LiteralPath $sessionFile) {
+        try {
+            $session = Get-Content -Raw -LiteralPath $sessionFile | ConvertFrom-Json
+            foreach ($display in @($session.status.displays)) {
+                $kind = switch ([string]$display.display) {
+                    "unreal" { "unreal" }
+                    "unreal_bridge" { "unreal_bridge" }
+                    "rviz_pointcloud" { "rviz_pointcloud" }
+                    "rviz_gridmap" { "rviz_gridmap" }
+                    default { "" }
+                }
+                if ($kind) { $records += [pscustomobject]@{ kind = $kind; pid = $display.process_id } }
+            }
+        } catch {}
+    }
+    $records = @($records | Sort-Object @{ Expression = { [string]$_.kind } }, @{ Expression = { [int]$_.pid } } -Unique)
     foreach ($record in $records) {
         $pidValue = 0
         if (-not [int]::TryParse([string]$record.pid, [ref]$pidValue)) { continue }
         $process = Get-Process -Id $pidValue -ErrorAction SilentlyContinue
         if ($null -eq $process) { continue }
-        $allowed = switch ([string]$record.kind) {
-            "unreal" { $process.ProcessName -eq "UnrealEditor" }
-            "unreal_bridge" { $process.ProcessName -in @("wsl", "wslhost") }
-            "rviz_pointcloud" { $process.ProcessName -in @("wsl", "wslhost", "rviz") }
-            "rviz_gridmap" { $process.ProcessName -in @("wsl", "wslhost", "rviz") }
-            default { $false }
-        }
-        if ($allowed) {
-            Stop-Process -Id $pidValue -Force -ErrorAction SilentlyContinue
+        if (Test-ManagedDisplayOwnership -Record $record -ExpectedRunId $runId -ExpectedSessionId $sessionDir.Name) {
+            Stop-ManagedProcessAndWait -Process $process -Kind ([string]$record.kind)
         }
     }
 }

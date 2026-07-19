@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 import time
+from contextlib import contextmanager
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -14,6 +16,46 @@ from .core import ORCHESTRATOR_COMMANDS, PROJECT_ROOT, MoSimOrchestrator, _write
 DEFAULT_REQUEST_DIR = PROJECT_ROOT / "Results" / "ui_platform" / "orchestrator_requests"
 DEFAULT_RESPONSE_DIR = PROJECT_ROOT / "Results" / "ui_platform" / "orchestrator_responses"
 MAX_REQUEST_BYTES = 64 * 1024
+
+
+@contextmanager
+def exclusive_service_lock(path: Path):
+    """Hold one OS-level lock for a request queue across the service lifetime."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    stream = path.open("a+b")
+    acquired = False
+    try:
+        if stream.seek(0, os.SEEK_END) == 0:
+            stream.write(b"\0")
+            stream.flush()
+        stream.seek(0)
+        try:
+            if os.name == "nt":
+                import msvcrt
+
+                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+
+                fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            acquired = True
+        except OSError as exc:
+            raise RuntimeError("orchestrator_service_already_running") from exc
+        yield
+    finally:
+        try:
+            stream.seek(0)
+            if acquired and os.name == "nt":
+                import msvcrt
+
+                msvcrt.locking(stream.fileno(), msvcrt.LK_UNLCK, 1)
+            elif acquired:
+                import fcntl
+
+                fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+        except OSError:
+            pass
+        stream.close()
 
 
 @dataclass
@@ -36,13 +78,17 @@ class OrchestratorService:
             return self.orchestrator._response(request_id, False, "request_invalid_json", detail=str(exc))
         if not isinstance(request, dict):
             return self.orchestrator._response(request_id, False, "request_must_be_object")
-        action = request.get("action") or request.get("command")
+        action = request.get("action")
+        legacy_command_action = action is None
+        if legacy_command_action:
+            action = request.get("command")
         request_id = str(request.get("request_id") or request_id)
         if action not in ORCHESTRATOR_COMMANDS:
             return self.orchestrator._response(request_id, False, "unsupported_action")
         arguments = dict(request)
         arguments.pop("action", None)
-        arguments.pop("command", None)
+        if legacy_command_action:
+            arguments.pop("command", None)
         arguments.pop("schema", None)
         arguments["request_id"] = request_id
         try:

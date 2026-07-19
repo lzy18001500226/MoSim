@@ -153,7 +153,16 @@ case "${display_kind}" in
     require_ros_master
     owner_id="${4:-}"
     [[ -n "${owner_id}" ]] || block "display_session_owner_missing"
-    if [[ "${planner_profile}" != "none" ]]; then
+    if [[ "${planner_profile}" == "fuel_single_exploration" ]]; then
+      config_path="${PROJECT_ROOT}/Config/rviz/sunray_ros1_factory_fuel_pointcloud_review.rviz"
+      required_topics="/mosim/goal4/livox_world_accumulated,/mosim/goal4/truth_path,/mosim/goal4/position_cmd_path,/mosim/goal4/body_axes"
+      assert_samples "${config_path}" world "${required_topics}"
+      assert_topic_frame /mosim/goal4/livox_world_accumulated world || \
+        block "fixed_frame_mismatch:/mosim/goal4/livox_world_accumulated" "${config_path}" world "${required_topics}"
+      write_readiness ready display_inputs_ready "${config_path}" world "${required_topics}"
+      export MOSIM_DISPLAY_SESSION_ID="${owner_id}"
+      exec rviz -d "${config_path}"
+    elif [[ "${planner_profile}" != "none" ]]; then
       block "pointcloud_profile_not_supported:${planner_profile}"
     fi
     config_path="${PROJECT_ROOT}/Config/rviz/sunray_ros1_fastlio_accumulated_map_review.rviz"
@@ -169,7 +178,16 @@ case "${display_kind}" in
     require_ros_master
     owner_id="${4:-}"
     [[ -n "${owner_id}" ]] || block "display_session_owner_missing"
-    if [[ "${planner_profile}" != "none" ]]; then
+    if [[ "${planner_profile}" == "fuel_single_exploration" ]]; then
+      config_path="${PROJECT_ROOT}/Config/rviz/sunray_ros1_factory_fuel_grid3d_review.rviz"
+      required_topics="/mosim/goal4/occupancy_object_review,/mosim/goal4/truth_path,/mosim/goal4/position_cmd_path,/mosim/goal4/body_axes"
+      assert_samples "${config_path}" world "${required_topics}"
+      assert_topic_frame /mosim/goal4/occupancy_object_review world || \
+        block "fixed_frame_mismatch:/mosim/goal4/occupancy_object_review" "${config_path}" world "${required_topics}"
+      write_readiness ready display_inputs_ready "${config_path}" world "${required_topics}"
+      export MOSIM_DISPLAY_SESSION_ID="${owner_id}"
+      exec rviz -d "${config_path}"
+    elif [[ "${planner_profile}" != "none" ]]; then
       block "gridmap_profile_not_supported:${planner_profile}"
     fi
     config_path="${PROJECT_ROOT}/Config/rviz/sunray_ros1_fastlio_grid3d_review.rviz"
@@ -201,7 +219,6 @@ case "${display_kind}" in
     exit "${residual}"
     ;;
   unreal_bridge)
-    require_ros_master
     host_address="${2:-}"
     owner_id="${3:-}"
     run_id="${4:-}"
@@ -220,6 +237,8 @@ case "${display_kind}" in
     fi
     stop_project_ue_bridge 5005
     cd "${PROJECT_ROOT}"
+    # rospy will wait for the ROS master. Keep the display bridge alive when
+    # Flight Console starts before Gazebo/ROS instead of requiring a restart.
     exec python3 -u Scripts/UE5/stream_ros1_state_to_ue_udp.py \
       --odom-topic /uav1/sunray/gazebo_pose \
       --position-cmd-topic /position_cmd \

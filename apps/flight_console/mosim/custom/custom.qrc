@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/Custom/qml">
         <file alias="QGroundControl/FlightDisplay/FlyViewCustomLayer.qml">src/FlyViewCustomLayer.qml</file>
+        <file alias="QGroundControl/Controls/PlanView.qml">src/PlanView.qml</file>
+        <file alias="QGroundControl/Controls/FactoryPlanMapOverlay.qml">src/FactoryPlanMapOverlay.qml</file>
+    </qresource>
+    <qresource prefix="/Custom/maps/factory_l2/v1">
+        <file alias="floorplan.png">maps/factory_l2/v1/floorplan.png</file>
     </qresource>
 </RCC>

@@ -66,6 +66,28 @@ def _active_run() -> dict[str, str]:
 
 def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     payload: dict[str, Any] = {"schema": "mosim.orchestrator.request.v1", "action": args.action}
+    if getattr(args, "request_id", None):
+        payload["request_id"] = args.request_id
+    if args.action == "list_controllers":
+        return payload
+    if args.action == "preflight_connection":
+        if not args.profile_path or not args.controller_id or args.vehicle_count is None:
+            raise ValueError("preflight_connection requires profile, controller, and vehicle count")
+        payload.update(
+            {
+                "profile_path": args.profile_path,
+                "controller_id": args.controller_id,
+                "vehicle_count": args.vehicle_count,
+                "target_host": args.target_host,
+                "rt1_udp_port": args.rt1_udp_port,
+                "ros_master_uri": "" if args.defer_ros_master else args.ros_master_uri,
+                "local_advertised_ip": args.local_advertised_ip,
+                "requested_rate_hz": args.requested_rate_hz,
+                "timeout_s": args.preflight_timeout_s,
+                "sample_count": args.preflight_sample_count,
+            }
+        )
+        return payload
     if args.action == "prepare_run":
         if not args.profile_path or not args.controller_id or args.vehicle_count is None:
             raise ValueError("prepare_run requires profile, controller, and vehicle count")
@@ -74,7 +96,11 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
                 "profile_path": args.profile_path,
                 "controller_id": args.controller_id,
                 "vehicle_count": args.vehicle_count,
-                "parameter_set": {"wind_speed_mps": args.wind_speed_mps},
+                "parameter_set": {
+                    "wind_speed_mps": args.wind_speed_mps,
+                    "manual_control": bool(args.manual_control),
+                },
+                "connection_preflight_id": args.connection_preflight_id or "",
             }
         )
         return payload
@@ -90,6 +116,12 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     if not run_id:
         raise ValueError(f"{args.action} requires an active run")
     payload["run_id"] = run_id
+
+    if args.action == "get_operation_progress":
+        if not getattr(args, "operation_id", None):
+            raise ValueError("get_operation_progress requires an operation id")
+        payload["operation_id"] = args.operation_id
+        return payload
 
     if args.action in {"apply_injection", "restore_injection"}:
         if not args.target or args.value is None:
@@ -123,7 +155,9 @@ def main() -> int:
         "action",
         choices=(
             "prepare_run",
+            "preflight_connection",
             "start_run",
+            "request_safe_stop",
             "stop_run",
             "reset_run",
             "apply_injection",
@@ -135,14 +169,39 @@ def main() -> int:
             "get_telemetry",
             "open_model_context",
             "get_result_packet",
+            "run_mil",
+            "generate_code",
+            "get_model_gate_state",
+            "list_controllers",
+            "get_operation_progress",
+            "close_all_rviz",
+            "start_ue_recording",
+            "stop_ue_recording",
         ),
     )
     parser.add_argument("--profile-path")
     parser.add_argument("--controller-id")
     parser.add_argument("--vehicle-count", type=int)
     parser.add_argument("--wind-speed-mps", type=float, default=0.0)
+    parser.add_argument("--manual-control", choices=("true", "false"), default="false",
+                        help="Start the runtime in bounded keyboard-manual mode.")
     parser.add_argument("--run-id")
     parser.add_argument("--session-id")
+    parser.add_argument("--operation-id")
+    parser.add_argument("--request-id")
+    parser.add_argument("--connection-preflight-id")
+    parser.add_argument("--target-host", default="127.0.0.1")
+    parser.add_argument("--rt1-udp-port", type=int, default=49020)
+    parser.add_argument("--ros-master-uri", default="http://127.0.0.1:11311")
+    parser.add_argument(
+        "--defer-ros-master",
+        action="store_true",
+        help="Cold-start prepare: validate MWORKS transport now and require ROS readiness after runtime launch.",
+    )
+    parser.add_argument("--local-advertised-ip", default="auto")
+    parser.add_argument("--requested-rate-hz", type=int, choices=(50, 100, 200), default=200)
+    parser.add_argument("--preflight-timeout-s", type=float, default=0.35)
+    parser.add_argument("--preflight-sample-count", type=int, default=5)
     parser.add_argument("--target", choices=("wind_speed_mps", "wind_direction_deg", "motor_effectiveness"))
     parser.add_argument("--value", type=float)
     parser.add_argument("--rotor-index", type=int, choices=range(1, 5))
@@ -158,6 +217,7 @@ def main() -> int:
     parser.add_argument("--timeout-s", type=float, default=5.0)
     parser.add_argument("--format", choices=("json", "tsv"), default="tsv")
     args = parser.parse_args()
+    args.manual_control = args.manual_control == "true"
     if not 0.0 <= args.timeout_s <= 5.0:
         parser.error("--timeout-s must be between 0 and 5 seconds")
     try:
@@ -166,7 +226,9 @@ def main() -> int:
         parser.error(str(exc))
     response = submit(payload, timeout_s=args.timeout_s)
     if args.format == "json":
-        print(json.dumps(response, ensure_ascii=False, indent=2))
+        # QProcess parses stdout as UTF-8 on Windows. Keep the transport
+        # response ASCII-safe even when a blocker detail contains Chinese text.
+        print(json.dumps(response, ensure_ascii=True, indent=2))
     else:
         print(
             "\t".join(

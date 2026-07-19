@@ -11,6 +11,14 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_VENDOR = PROJECT_ROOT / "apps" / "flight_console" / "vendor" / "qgroundcontrol"
 DEFAULT_MANIFEST = DEFAULT_VENDOR.parent / "qgroundcontrol.SHA256SUMS"
+MAIN_WINDOW = Path("src/UI/MainWindow.qml")
+MOSIM_MAIN_WINDOW_PATCH = (
+    "    // Native child windows (such as the embedded Unreal viewport) cannot be\n"
+    "    // ordered reliably with QML z values. Consumers can use this state to\n"
+    "    // temporarily yield the native viewport to a QGC full-window overlay.\n"
+    "    readonly property bool mosimNativeOverlayVisible: toolDrawer.visible || indicatorDrawer.visible || criticalVehicleMessagePopup.visible\n"
+    "\n"
+)
 
 
 def iter_files(root: Path):
@@ -18,12 +26,21 @@ def iter_files(root: Path):
         relative = path.relative_to(root)
         if relative.parts and relative.parts[0] == "custom":
             continue
+        if ".gradle" in relative.parts:
+            continue
         if path.is_file() and ".git" not in path.parts:
             yield path
 
 
-def digest(path: Path) -> str:
+def digest(path: Path, root: Path | None = None) -> str:
     value = hashlib.sha256()
+    if root is not None and path.relative_to(root) == MAIN_WINDOW:
+        source = path.read_text(encoding="utf-8")
+        patch_count = source.count(MOSIM_MAIN_WINDOW_PATCH)
+        if patch_count > 1 or ("mosimNativeOverlayVisible" in source and patch_count != 1):
+            raise ValueError("unrecognized MoSim MainWindow patch")
+        value.update(source.replace(MOSIM_MAIN_WINDOW_PATCH, "").encode("utf-8"))
+        return value.hexdigest().upper()
     with path.open("rb") as stream:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             value.update(chunk)
@@ -31,7 +48,7 @@ def digest(path: Path) -> str:
 
 
 def render(root: Path) -> str:
-    lines = [f"{digest(path)}  {path.relative_to(root).as_posix()}" for path in iter_files(root)]
+    lines = [f"{digest(path, root)}  {path.relative_to(root).as_posix()}" for path in iter_files(root)]
     return "\n".join(lines) + "\n"
 
 

@@ -2,7 +2,8 @@ param(
     [Parameter(Mandatory = $true)][string]$RunId,
     [Parameter(Mandatory = $true)][string]$SessionId,
     [string]$DisplayCsv = "",
-    [switch]$Detach
+    [switch]$Detach,
+    [switch]$CloseRvizOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -16,6 +17,143 @@ $SessionDir = Join-Path $RunDir "displays\$SessionId"
 $ProcessFile = Join-Path $SessionDir "DISPLAY_PROCESSES.json"
 $StatusFile = Join-Path $SessionDir "DISPLAY_STATUS.json"
 New-Item -ItemType Directory -Force -Path $SessionDir | Out-Null
+
+if ($null -eq ('MoSim.NativeWindow' -as [type])) {
+    Add-Type @'
+using System;
+using System.Runtime.InteropServices;
+
+namespace MoSim {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Rect {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+    }
+
+    public static class NativeWindow {
+        public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+        [DllImport("user32.dll")] public static extern bool EnumWindows(EnumWindowsProc callback, IntPtr lParam);
+        [DllImport("user32.dll")] public static extern bool EnumChildWindows(IntPtr parent, EnumWindowsProc callback, IntPtr lParam);
+        [DllImport("user32.dll")] public static extern IntPtr GetDesktopWindow();
+        [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+        [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr hWnd);
+        [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr hWnd, out Rect rect);
+        [DllImport("user32.dll")] public static extern bool ShowWindow(IntPtr hWnd, int command);
+        public const int SW_HIDE = 0;
+    }
+}
+'@
+}
+
+function Test-ProcessHasUsableWindow {
+    param([int]$ProcessId)
+    $script:mosimTargetWindowProcessId = [uint32]$ProcessId
+    $script:mosimUsableWindowFound = $false
+    $callback = [MoSim.NativeWindow+EnumWindowsProc] {
+        param([IntPtr]$Window, [IntPtr]$Unused)
+        [uint32]$windowProcessId = 0
+        [MoSim.NativeWindow]::GetWindowThreadProcessId($Window, [ref]$windowProcessId) | Out-Null
+        if ($windowProcessId -eq $script:mosimTargetWindowProcessId) {
+            $rect = New-Object MoSim.Rect
+            if ([MoSim.NativeWindow]::GetWindowRect($Window, [ref]$rect)) {
+                $area = ($rect.Right - $rect.Left) * ($rect.Bottom - $rect.Top)
+                if ($area -gt 10000) {
+                    $script:mosimUsableWindowFound = $true
+                    return $false
+                }
+            }
+        }
+        return $true
+    }
+    [MoSim.NativeWindow]::EnumWindows($callback, [IntPtr]::Zero) | Out-Null
+    if (-not $script:mosimUsableWindowFound) {
+        [MoSim.NativeWindow]::EnumChildWindows([MoSim.NativeWindow]::GetDesktopWindow(), $callback, [IntPtr]::Zero) | Out-Null
+    }
+    return $script:mosimUsableWindowFound
+}
+
+function Hide-ProcessWindows {
+    param([int]$ProcessId)
+    $script:mosimHiddenWindowCount = 0
+    $callback = [MoSim.NativeWindow+EnumWindowsProc] {
+        param([IntPtr]$Window, [IntPtr]$Unused)
+        [uint32]$windowProcessId = 0
+        [MoSim.NativeWindow]::GetWindowThreadProcessId($Window, [ref]$windowProcessId) | Out-Null
+        if ($windowProcessId -eq [uint32]$ProcessId -and [MoSim.NativeWindow]::IsWindowVisible($Window)) {
+            [MoSim.NativeWindow]::ShowWindow($Window, [MoSim.NativeWindow]::SW_HIDE) | Out-Null
+            $script:mosimHiddenWindowCount = $script:mosimHiddenWindowCount + 1
+        }
+        return $true
+    }
+    [MoSim.NativeWindow]::EnumWindows($callback, [IntPtr]::Zero) | Out-Null
+    return $script:mosimHiddenWindowCount
+}
+
+function Wait-AndHide-ProcessWindows {
+    param([System.Diagnostics.Process]$Process, [int]$TimeoutSeconds = 45)
+    $deadline = [DateTime]::UtcNow.AddSeconds($TimeoutSeconds)
+    $hiddenAny = $false
+    $windowFound = $false
+    $lastHiddenAt = $null
+    do {
+        $Process.Refresh()
+        $hiddenNow = [int](Hide-ProcessWindows -ProcessId $Process.Id)
+        if ($hiddenNow -gt 0) {
+            $hiddenAny = $true
+            $lastHiddenAt = [DateTime]::UtcNow
+        }
+        # Unreal may create its game window hidden. Count a real client area as
+        # readiness even when it has never been visible on the desktop.
+        $windowFound = Test-ProcessHasUsableWindow -ProcessId $Process.Id
+        # Keep the window hidden briefly after the first appearance so UE's
+        # startup resize/show pass cannot flash a standalone desktop window.
+        if ($windowFound -and (($hiddenAny -and $lastHiddenAt -and ([DateTime]::UtcNow - $lastHiddenAt).TotalSeconds -ge 2) -or -not $hiddenAny)) {
+            break
+        }
+        Start-Sleep -Milliseconds 100
+    } while ([DateTime]::UtcNow -lt $deadline -and -not $Process.HasExited)
+    return $windowFound
+}
+
+if ($CloseRvizOnly) {
+    $stopped = @()
+    & wsl.exe -d Ubuntu-20.04 -- bash $DisplayHelper "rviz_stop" $SessionId 2>$null
+    $wslStopExitCode = $LASTEXITCODE
+    if (Test-Path -LiteralPath $ProcessFile) {
+        $records = @(Get-Content -Raw -LiteralPath $ProcessFile | ConvertFrom-Json)
+        foreach ($record in @($records | Where-Object { $_.kind -in @("rviz_pointcloud", "rviz_gridmap") })) {
+            $process = Get-Process -Id ([int]$record.pid) -ErrorAction SilentlyContinue
+            if ($null -ne $process) {
+                Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+                $stopped += $process.Id
+            }
+        }
+    }
+    Start-Sleep -Milliseconds 250
+    $residual = @()
+    if (Test-Path -LiteralPath $ProcessFile) {
+        $records = @(Get-Content -Raw -LiteralPath $ProcessFile | ConvertFrom-Json)
+        foreach ($record in @($records | Where-Object { $_.kind -in @("rviz_pointcloud", "rviz_gridmap") })) {
+            if ($null -ne (Get-Process -Id ([int]$record.pid) -ErrorAction SilentlyContinue)) {
+                $residual += [int]$record.pid
+            }
+        }
+    }
+    [pscustomobject]@{
+        schema = "mosim.rviz_cleanup.status.v1"
+        run_id = $RunId
+        session_id = $SessionId
+        state = if ($residual.Count -eq 0 -and $wslStopExitCode -eq 0) { "closed" } else { "blocked" }
+        stopped_process_ids = $stopped
+        residual_process_ids = $residual
+        wsl_stop_exit_code = $wslStopExitCode
+        updated_at = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() / 1000.0
+    } | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $SessionDir "RVIZ_CLEANUP_STATUS.json") -Encoding utf8
+    if ($residual.Count -gt 0 -or $wslStopExitCode -ne 0) { exit 4 }
+    exit 0
+}
 
 $PlannerProfile = "unknown"
 $ManifestFile = Join-Path $RunDir "RUN_MANIFEST.json"
@@ -64,6 +202,10 @@ foreach ($item in $Display) {
 
 $records = @()
 $results = @()
+function Save-ProcessRecords {
+    @($script:records) | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $ProcessFile -Encoding utf8
+}
+
 function Start-TrackedProcess {
     param(
         [string]$Kind,
@@ -75,14 +217,32 @@ function Start-TrackedProcess {
     try {
         $stdout = Join-Path $SessionDir ($LogName + ".stdout.log")
         $stderr = Join-Path $SessionDir ($LogName + ".stderr.log")
+        # Unreal's game viewport can fail to create a native window when the
+        # parent process is launched with CREATE_NO_WINDOW/hidden startup
+        # flags. Start it normally, then hide every created window immediately
+        # and keep it hidden until QGC reparents it.
+        $windowStyle = "Normal"
         $process = Start-Process -FilePath $Executable -ArgumentList $Arguments -PassThru `
-            -RedirectStandardOutput $stdout -RedirectStandardError $stderr
-        $script:records += [pscustomobject]@{ kind = $Kind; pid = $process.Id; executable = $Executable }
+            -WindowStyle $windowStyle -RedirectStandardOutput $stdout -RedirectStandardError $stderr
+        $startupVisibility = "normal"
+if ($Kind -eq "unreal") {
+            $startupVisibility = "hidden_until_qgc_embed"
+            $script:records += [pscustomobject]@{ kind = $Kind; pid = $process.Id; executable = $Executable; startup_visibility = $startupVisibility }
+            Save-ProcessRecords
+            $windowReady = Wait-AndHide-ProcessWindows -Process $process -TimeoutSeconds 180
+            if (-not $windowReady) {
+                throw "unreal_window_startup_timeout_pid_$($process.Id)"
+            }
+        } else {
+            $script:records += [pscustomobject]@{ kind = $Kind; pid = $process.Id; executable = $Executable; startup_visibility = $startupVisibility }
+            Save-ProcessRecords
+        }
         $script:results += [pscustomobject]@{
             display = $Kind
             state = "launch_requested"
             process_id = $process.Id
             readiness_path = $ReadinessPath
+            startup_visibility = $startupVisibility
         }
     } catch {
         $script:results += [pscustomobject]@{ display = $Kind; state = "blocked"; reason = $_.Exception.Message }
@@ -94,7 +254,7 @@ if ($Display -contains "rviz_pointcloud") {
     $readinessWsl = "$RootWsl/Results/ui_platform/orchestrator_runs/$RunId/displays/$SessionId/rviz_pointcloud.readiness.json"
     Start-TrackedProcess "rviz_pointcloud" "wsl.exe" @(
         "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper,
-        "rviz_pointcloud", $PlannerProfile, $readinessWsl
+        "rviz_pointcloud", $PlannerProfile, $readinessWsl, $SessionId
     ) "rviz_pointcloud" $readiness
 }
 if ($Display -contains "rviz_gridmap") {
@@ -102,7 +262,7 @@ if ($Display -contains "rviz_gridmap") {
     $readinessWsl = "$RootWsl/Results/ui_platform/orchestrator_runs/$RunId/displays/$SessionId/rviz_gridmap.readiness.json"
     Start-TrackedProcess "rviz_gridmap" "wsl.exe" @(
         "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper,
-        "rviz_gridmap", $PlannerProfile, $readinessWsl
+        "rviz_gridmap", $PlannerProfile, $readinessWsl, $SessionId
     ) "rviz_gridmap" $readiness
 }
 if ($Display -contains "unreal") {
@@ -112,8 +272,12 @@ if ($Display -contains "unreal") {
         $results += [pscustomobject]@{ display = "unreal"; state = "blocked"; reason = "windows_host_address_unavailable" }
     } else {
         $hostAddress = $match.Groups[1].Value
+        $ueMetricsWsl = "$RootWsl/Results/ui_platform/orchestrator_runs/$RunId/observability/gazebo_ue_sender.json"
+        $ueReceiverMetrics = Join-Path $RunDir "observability\gazebo_ue_receiver.json"
+        $ueFrameMetrics = Join-Path $RunDir "observability\ue_frame_timing.json"
         Start-TrackedProcess "unreal_bridge" "wsl.exe" @(
-            "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper, "unreal_bridge", $hostAddress, $SessionId
+            "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper, "unreal_bridge", $hostAddress, $SessionId,
+            $RunId, $ueMetricsWsl
         ) "unreal_bridge"
         $editor = "D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe"
         $project = Join-Path $Root "UE5\MoSimSceneLibrary\MoSimSceneLibrary.uproject"
@@ -125,7 +289,9 @@ if ($Display -contains "unreal") {
                 "-MoSimPlaybackBaseUdpPort=5005", "-MoSimFollowPlaybackCamera",
                 "-MoSimFollowCameraBackCm=231.25", "-MoSimFollowCameraRightCm=0",
                 "-MoSimFollowCameraUpCm=95", "-MoSimFollowCameraLocationInterpSpeed=0",
-                "-MoSimFollowCameraRotationInterpSpeed=0", "-MoSimNoReviewCollision"
+                "-MoSimFollowCameraRotationInterpSpeed=0", "-MoSimNoReviewCollision",
+                "-MoSimEmbeddedViewport", "-MoSimObservabilityRunId=$RunId",
+                "-MoSimUeReceiverMetrics=$ueReceiverMetrics", "-MoSimUeFrameMetrics=$ueFrameMetrics"
             )
             Start-TrackedProcess "unreal" $editor $ueArgs "unreal"
         } else {
@@ -177,8 +343,10 @@ if (@($results | Where-Object state -eq "launch_requested").Count -gt 0) {
     }
 }
 
-@($records) | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $ProcessFile -Encoding utf8
-$state = if (@($results | Where-Object { $_.state -in @("ready", "running") }).Count -gt 0) { "attached" } else { "blocked" }
+Save-ProcessRecords
+$blockedResults = @($results | Where-Object { $_.state -eq "blocked" })
+$readyResults = @($results | Where-Object { $_.state -in @("ready", "running") })
+$state = if ($blockedResults.Count -gt 0) { "blocked" } elseif ($readyResults.Count -gt 0) { "attached" } else { "blocked" }
 [pscustomobject]@{
     schema = "mosim.display_session.status.v1"
     run_id = $RunId

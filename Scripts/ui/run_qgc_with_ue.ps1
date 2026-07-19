@@ -41,18 +41,74 @@ public static class MoSimGroundWindowProbe {
     return [MoSimGroundWindowProbe]::HasUsableWindow([uint32]$ProcessId)
 }
 
+function Get-TrackedDisplayRecords {
+    param([string]$ProcessFile, [string]$SessionFile)
+    $records = @()
+    if (Test-Path -LiteralPath $ProcessFile) {
+        try { $records += @(Get-Content -Raw -LiteralPath $ProcessFile | ConvertFrom-Json) } catch {}
+    }
+    if (Test-Path -LiteralPath $SessionFile) {
+        try {
+            $session = Get-Content -Raw -LiteralPath $SessionFile | ConvertFrom-Json
+            foreach ($display in @($session.status.displays)) {
+                $kind = switch ([string]$display.display) {
+                    "unreal" { "unreal" }
+                    "unreal_bridge" { "unreal_bridge" }
+                    default { "" }
+                }
+                if ($kind) {
+                    $records += [pscustomobject]@{ kind = $kind; pid = $display.process_id }
+                }
+            }
+        } catch {}
+    }
+    return @($records | Sort-Object @{ Expression = { [string]$_.kind } }, @{ Expression = { [int]$_.pid } } -Unique)
+}
+
+function Test-TrackedDisplayOwnership {
+    param($Record, [string]$RunId, [string]$SessionId)
+    $pidValue = 0
+    if (-not [int]::TryParse([string]$Record.pid, [ref]$pidValue)) { return $false }
+    $process = Get-Process -Id $pidValue -ErrorAction SilentlyContinue
+    if ($null -eq $process) { return $false }
+    try {
+        $commandLine = [string](Get-CimInstance Win32_Process -Filter "ProcessId=$pidValue").CommandLine
+    } catch {
+        return $false
+    }
+    if ($Record.kind -eq "unreal") {
+        return $process.ProcessName -eq "UnrealEditor" -and
+            $commandLine -like "*MoSimSceneLibrary.uproject*" -and
+            $commandLine -like "*-MoSimObservabilityRunId=$RunId*"
+    }
+    if ($Record.kind -eq "unreal_bridge") {
+        return $process.ProcessName -in @("wsl", "wslhost") -and
+            $commandLine -like "*launch_ros1_display.sh*" -and
+            $commandLine -like "*$SessionId*"
+    }
+    return $false
+}
+
 function Stop-StaleDisplayProcesses {
-    param([string]$ProcessFile)
-    if (-not (Test-Path -LiteralPath $ProcessFile)) { return }
-    try { $records = @(Get-Content -Raw -LiteralPath $ProcessFile | ConvertFrom-Json) } catch { return }
+    param(
+        [string]$ProcessFile,
+        [string]$SessionFile,
+        [string]$RunId,
+        [string]$SessionId,
+        [int[]]$PreserveProcessIds = @()
+    )
+    $records = @(Get-TrackedDisplayRecords -ProcessFile $ProcessFile -SessionFile $SessionFile)
     foreach ($record in $records) {
         $pidValue = 0
         if (-not [int]::TryParse([string]$record.pid, [ref]$pidValue)) { continue }
+        if ($pidValue -in $PreserveProcessIds) { continue }
         $process = Get-Process -Id $pidValue -ErrorAction SilentlyContinue
         if ($null -eq $process) { continue }
-        if (($record.kind -eq "unreal" -and $process.ProcessName -eq "UnrealEditor") -or
-            ($record.kind -eq "unreal_bridge" -and $process.ProcessName -in @("wsl", "wslhost"))) {
-            Stop-Process -Id $pidValue -Force -ErrorAction SilentlyContinue
+        if (Test-TrackedDisplayOwnership -Record $record -RunId $RunId -SessionId $SessionId) {
+            Stop-Process -Id $pidValue -Force -ErrorAction Stop
+            if (-not $process.WaitForExit(5000)) {
+                throw "stale_display_process_survived: kind=$($record.kind) pid=$pidValue"
+            }
         }
     }
 }
@@ -75,9 +131,11 @@ $sessionId = [string]$display.session.session_id
 $runDir = Get-MoSimRunDirectory -RunId $runId
 $sessionDir = Join-Path $runDir "displays/$sessionId"
 $processFile = Join-Path $sessionDir "DISPLAY_PROCESSES.json"
+$sessionFile = Join-Path $sessionDir "DISPLAY_SESSION.json"
 $statusFile = Join-Path $sessionDir "DISPLAY_STATUS.json"
 
 $unrealReady = $false
+$preservedProcessIds = @()
 if (Test-Path -LiteralPath $processFile) {
     try {
         $records = @(Get-Content -Raw -LiteralPath $processFile | ConvertFrom-Json)
@@ -85,13 +143,25 @@ if (Test-Path -LiteralPath $processFile) {
         if ($null -ne $unrealRecord) {
             $unrealProcess = Get-Process -Id ([int]$unrealRecord.pid) -ErrorAction SilentlyContinue
             $unrealReady = $null -ne $unrealProcess -and (Test-ProcessHasUsableWindow -ProcessId $unrealProcess.Id)
+            if ($unrealReady) { $preservedProcessIds += $unrealProcess.Id }
+        }
+        $bridgeRecord = @($records | Where-Object { $_.kind -eq "unreal_bridge" }) | Select-Object -First 1
+        if ($null -ne $bridgeRecord -and $null -ne (Get-Process -Id ([int]$bridgeRecord.pid) -ErrorAction SilentlyContinue)) {
+            $preservedProcessIds += [int]$bridgeRecord.pid
         }
     } catch { $unrealReady = $false }
 }
 
+# DISPLAY_SESSION.json is written when the display is first attached, while
+# DISPLAY_PROCESSES.json can be replaced by a later launch. Reconcile both so a
+# stale UE instance cannot keep consuming the same run/UDP stream.
+Stop-StaleDisplayProcesses -ProcessFile $processFile -SessionFile $sessionFile `
+    -RunId $runId -SessionId $sessionId -PreserveProcessIds $preservedProcessIds
+
 if (-not $unrealReady) {
     Write-Output "Starting the managed UE display for run $runId..."
-    Stop-StaleDisplayProcesses -ProcessFile $processFile
+    Stop-StaleDisplayProcesses -ProcessFile $processFile -SessionFile $sessionFile `
+        -RunId $runId -SessionId $sessionId
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $displayHelper `
         -RunId $runId -SessionId $sessionId -DisplayCsv "unreal"
     if ($LASTEXITCODE -ne 0) {

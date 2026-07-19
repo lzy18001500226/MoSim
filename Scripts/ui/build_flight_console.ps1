@@ -6,7 +6,8 @@ param(
     [string]$GStreamerDir = "",
     [ValidateSet("Debug", "Release")]
     [string]$Configuration = "Release",
-    [switch]$ConfigureOnly
+    [switch]$ConfigureOnly,
+    [switch]$Incremental
 )
 
 $ErrorActionPreference = "Stop"
@@ -42,11 +43,12 @@ if ($LASTEXITCODE -ne 0) { throw "Failed to materialize the MoSim QGC custom ove
 & python (Join-Path $ProjectRoot "Scripts/ui/generate_qgc_vendor_manifest.py") --verify
 if ($LASTEXITCODE -ne 0) { throw "Frozen QGroundControl source verification failed" }
 
+$freshArgument = if ($Incremental) { "" } else { "--fresh " }
 $configure = "set `"PATH=$NinjaDir;$QtRoot\bin;$GStreamerRoot\bin;%PATH%`" && " +
     "call `"$VsDevCmd`" -arch=x64 -host_arch=x64 >nul && " +
     "set `"QTDIR=$QtRoot`" && set `"CMAKE_PREFIX_PATH=$QtRoot`" && " +
     "set `"GSTREAMER_1_0_ROOT_MSVC_X86_64=$GStreamerRoot`" && " +
-    "cmake --fresh -S `"$VendorRoot`" -B `"$BuildRoot`" -G `"Ninja Multi-Config`""
+    "cmake $freshArgument-S `"$VendorRoot`" -B `"$BuildRoot`" -G `"Ninja Multi-Config`""
 & cmd.exe /d /s /c $configure
 if ($LASTEXITCODE -ne 0) { throw "Flight Console CMake configure failed" }
 if (-not $ConfigureOnly) {

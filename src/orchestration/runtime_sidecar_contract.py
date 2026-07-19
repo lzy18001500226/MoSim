@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,23 @@ COMMAND_ID_PATTERN = re.compile(r"^inj-[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
 
 
 VEHICLE_ID_PATTERN = re.compile(r"^uav([1-9])$")
+
+
+def evaluate_readiness_status(
+    *,
+    ready: bool,
+    ever_ready: bool,
+    elapsed_s: float,
+    timeout_s: float,
+) -> tuple[str, str, bool]:
+    """Keep initial readiness failure separate from transient runtime degradation."""
+    if ready:
+        return "running", "runtime_ready", True
+    if ever_ready:
+        return "running", "runtime_readiness_degraded", True
+    if elapsed_s >= timeout_s:
+        return "blocked", "runtime_readiness_timeout", False
+    return "starting", "runtime_readiness_pending", False
 
 
 def resolve_gazebo_body_name(
@@ -99,4 +117,13 @@ def atomic_write_json(path: Path, value: Any) -> None:
     temporary = path.with_suffix(path.suffix + ".tmp")
     with temporary.open("w", encoding="utf-8", newline="\n") as stream:
         stream.write(json.dumps(value, indent=2, ensure_ascii=False) + "\n")
-    temporary.replace(path)
+    for attempt in range(10):
+        try:
+            temporary.replace(path)
+            return
+        except PermissionError:
+            if attempt == 9:
+                raise
+            # Windows readers can briefly hold the destination while the WSL
+            # sidecar replaces it. Keep this bounded and preserve atomicity.
+            time.sleep(0.05)

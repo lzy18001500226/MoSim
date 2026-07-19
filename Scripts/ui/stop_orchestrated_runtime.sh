@@ -23,7 +23,14 @@ if [[ ! "${PID}" =~ ^[0-9]+$ ]]; then
 fi
 
 if kill -0 "${PID}" 2>/dev/null; then
-  kill -TERM "${PID}"
+  PGID="$(ps -o pgid= -p "${PID}" | tr -d '[:space:]')"
+  if [[ ! "${PGID}" =~ ^[0-9]+$ || "${PGID}" -le 1 ]]; then
+    echo "invalid runtime process group: pid=${PID} pgid=${PGID}" >&2
+    exit 3
+  fi
+  # The WSL launcher creates one process group per managed run. Signalling the
+  # group prevents Bash from deferring TERM while it waits on a child gate.
+  kill -TERM -- "-${PGID}"
 fi
 
 for _ in $(seq 1 60); do
