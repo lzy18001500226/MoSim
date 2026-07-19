@@ -1,0 +1,43 @@
+{
+  "schema": "mosim.offline_expansion_batch_acceptance.v1",
+  "recorded_at": "2026-07-19T09:52:23+08:00",
+  "phase": "P7_batch_live_acceptance",
+  "batch_id": "p7-fault-comp-smoke-20260719-v2",
+  "profile_id": "offline_fault_comp_rotor1_85_v1",
+  "status": "accepted_after_infrastructure_retry",
+  "batch_manifest": "Results/control_platform/offline_batches/p7-fault-comp-smoke-20260719-v2/BATCH_MANIFEST.json",
+  "certification_record": "Results/mworks_generated_profiles/batch-p7-fault-comp-smoke-20260719-v2-01-offline-fault-comp-rotor1-85-v1/CERTIFICATION.json",
+  "retry_lineage": {
+    "root_batch_id": "p7-fault-comp-smoke-20260719-v1",
+    "retry_of": "p7-fault-comp-smoke-20260719-v1",
+    "attempt": 2,
+    "first_attempt_status": "blocked",
+    "first_attempt_reason": "Sysplorer MCP session_manager health timed out before model load or check",
+    "first_attempt_manifest": "Results/control_platform/offline_batches/p7-fault-comp-smoke-20260719-v1/BATCH_MANIFEST.json"
+  },
+  "scenario": {
+    "rotor_effectiveness": [0.85, 1.0, 1.0, 1.0]
+  },
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 5001,
+    "result_msr_present": true,
+    "strict_metrics": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "task_owned_session_shutdown": true
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.2860677620643594,
+    "steady_state_error_m": 0.25106840961531723,
+    "max_position_error_m": 0.9232430675548788,
+    "settling_time_s": null,
+    "max_tilt_rad": 0.23221679132459927,
+    "constraint_violation_count": 18
+  },
+  "claim_ceiling": "Current offline MWORKS model/check/simulation/result/metrics/animation evidence for the 15 percent rotor-1 effectiveness-loss Profile. Acceptance does not claim settling, fault-rejection superiority, PX4, Gazebo, ROS1, mworks_live, code-generation, or flight evidence."
+}

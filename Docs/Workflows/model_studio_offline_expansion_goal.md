@@ -585,6 +585,30 @@ disturbance-rejection superiority claim or PX4/Gazebo/ROS1/online-flight
 acceptance. The runtime index now contains seven accepted single-profile
 batches and no blocked batch.
 
+P7 live checkpoint 9 adds the fault-compensation representative Profile:
+`offline_fault_comp_rotor1_85_v1`, with rotor effectiveness
+`[0.85,1,1,1]`. Its first batch attempt was blocked before model load because
+the Sysplorer MCP `session_manager health` call timed out. A subsequent
+read-only probe succeeded, and the lineage-preserving attempt 2 completed in
+57.906 seconds with current model/check/simulation/`Result.msr`/strict-metric/
+result-window/animation-window/session-shutdown evidence. The canonical
+checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_FAULT_COMP_BATCH_LIVE_ACCEPTANCE.json
+```
+
+The accepted retry reports `position_rmse_m=0.28607`,
+`steady_state_error_m=0.25107`, `max_position_error_m=0.92324`, and
+`max_tilt_rad=0.23222`; settling time remained unavailable under the current
+metric contract. This proves bounded offline execution for the recorded
+15-percent rotor-1 effectiveness-loss case, not fault-rejection superiority.
+The runtime index now contains eight accepted single-profile batches and one
+preserved blocked infrastructure attempt. These eight accepted Profiles close
+the current single-UAV Certified Profile batch set only; three-UAV, Custom
+Profile, APP runtime, code-generation, online co-simulation, and flight gates
+remain separate.
+
 P7 live checkpoint 6 adds the Linear MPC representative combination:
 `offline_linear_mpc_climb_v1`. The batch completed in 74.659 seconds and passed
 the current MWORKS model/check/simulation/`Result.msr`/strict-metric/result-
