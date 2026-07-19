@@ -391,6 +391,14 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "interval: 40" in qml
     assert "QGC原生解锁/起飞" in qml
     assert "下一步：" in qml
+    assert "function operatorChecklist()" in qml
+    assert 'text: "操作进度"' in qml
+    assert "QGC原生飞行操作栏执行解锁和起飞" in qml
+    assert "activeVehicle.initialConnectComplete" in qml
+    assert "activeVehicle.flying" in qml
+    assert "activeVehicle.landing" in qml
+    assert 'if (state === "失败")' in qml
+    assert 'label: "5. 降落、锁定与结束"' in qml
     assert "selectionMatchesPreparedRun()" in qml
     assert "function controllerCompatibleWithTask(moduleId)" in qml
     assert "function vehicleCountCompatibleWithTask(vehicleCount)" in qml

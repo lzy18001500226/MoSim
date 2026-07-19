@@ -760,9 +760,19 @@ Item {
                 return "自动任务已接管：在QGC确认连接、解锁、起飞、执行和降落阶段；异常时请求安全停止。"
             if (!activeVehicle)
                 return "仿真已运行，正在等待 QGC 发现飞机。"
+            if (!activeVehicle.initialConnectComplete)
+                return "QGC已发现飞机，正在同步参数和飞行状态；连接完成前不要解锁。"
+            if (observedArmedDuringRun && !activeVehicle.armed)
+                return "飞机已降落并锁定：确认高度为零后，可以点击“停止当前仿真”。"
             if (!activeVehicle.armed)
-                return "飞机已连接：使用 QGC 原生操作解锁并起飞到悬停高度。"
-            return "飞机已解锁：切换 Position 模式，再点击键盘控制区使用 W/A/S/D。"
+                return "飞机已连接：使用QGC原生飞行操作栏执行解锁和起飞。"
+            if (!activeVehicle.flying)
+                return "飞机已解锁但仍在地面：使用QGC原生飞行操作栏执行起飞。"
+            if (activeVehicle.flightMode !== "Position")
+                return "飞机已起飞：将QGC飞行模式切换为Position。"
+            if (!manualKeyboardEnabled)
+                return "飞机已悬停在Position模式：勾选“启用W/A/S/D定点操纵”。"
+            return "W/A/S/D定点操纵已启用；结束时使用QGC原生降落，落地锁定后再停止仿真。"
         }
         if (mosimOrchestrator.runId !== "" && !selectionMatchesPreparedRun())
             return "当前选择与已验证任务不一致，请重新点击“验证配置”。"
@@ -773,6 +783,62 @@ Item {
         if (mosimOrchestrator.lifecycleState === "completed")
             return "本次任务已结束，可以查看结果包或选择下一个任务重新验证。"
         return "先选择任务和控制器，然后点击“验证配置”。"
+    }
+
+    function operatorChecklist() {
+        var profile = profiles[profileBox.currentIndex]
+        var selected = selectionMatchesPreparedRun()
+        var running = mosimOrchestrator.lifecycleState === "starting"
+                || mosimOrchestrator.lifecycleState === "running"
+        var connected = qgcConnectedVehicleCount() >= profile.count
+        var armed = qgcArmedVehicleCount() >= profile.count
+        var manualAirborne = profile.takeoff === "qgc" && activeVehicle
+                && activeVehicle.initialConnectComplete && activeVehicle.armed && activeVehicle.flying
+        var manualExecuting = manualAirborne && activeVehicle.flightMode === "Position"
+        var mission = missionStatus()
+        var missionPhase = String(mission.phase || "")
+        var automaticExecuting = profile.takeoff !== "qgc"
+                && mission.transport_state !== "unavailable"
+                && mission.transport_state !== "stale"
+                && !mission.terminal
+                && ["hover_before", "figure8", "ego_triggered", "ego_execute",
+                    "exploration_execute", "safe_stop_hover", "land"].indexOf(missionPhase) >= 0
+        var missionFailed = profile.takeoff !== "qgc" && mission.terminal === true
+                && mission.accepted !== true
+        var landed = profile.takeoff === "qgc"
+                ? observedArmedDuringRun && connected && qgcArmedVehicleCount() === 0
+                : mission.terminal === true && mission.accepted === true && qgcArmedVehicleCount() === 0
+        var takeoffComplete = profile.takeoff === "qgc"
+                ? manualAirborne || landed
+                : observedArmedDuringRun || automaticExecuting || mission.terminal === true
+        var executionState = profile.takeoff === "qgc"
+                ? (landed ? "已完成" : (manualExecuting ? "当前" : "等待"))
+                : (missionFailed ? "失败"
+                                 : (mission.terminal === true ? "已完成"
+                                                              : (automaticExecuting ? "当前" : "等待")))
+        var landingActive = profile.takeoff === "qgc"
+                ? activeVehicle && activeVehicle.landing
+                : ["safe_stop_hover", "land"].indexOf(missionPhase) >= 0
+        return [
+            { label: "1. 配置冻结", state: selected ? "已完成" : "当前" },
+            { label: "2. 运行时与飞机连接", state: connected ? "已完成" : (running ? "当前" : "等待") },
+            { label: profile.takeoff === "qgc" ? "3. QGC原生解锁与起飞" : "3. Adapter自动解锁与起飞",
+              state: takeoffComplete ? "已完成" : (connected ? "当前" : "等待") },
+            { label: profile.takeoff === "qgc" ? "4. Position / W/A/S/D" : "4. 自主任务执行",
+              state: executionState },
+            { label: "5. 降落、锁定与结束",
+              state: landed ? "已完成" : (missionFailed ? "失败" : (landingActive ? "当前" : "等待")) }
+        ]
+    }
+
+    function operatorChecklistColor(state) {
+        if (state === "已完成")
+            return qgcPal.colorGreen
+        if (state === "当前")
+            return qgcPal.colorOrange
+        if (state === "失败")
+            return qgcPal.colorRed
+        return qgcPal.text
     }
 
     QGCToolInsets {
@@ -1406,6 +1472,25 @@ Item {
                             font.bold: true
                             wrapMode: Text.Wrap
                             Layout.fillWidth: true
+                        }
+                        QGCLabel { text: "操作进度"; font.bold: true }
+                        Repeater {
+                            model: operatorChecklist()
+                            delegate: RowLayout {
+                                Layout.fillWidth: true
+                                QGCLabel {
+                                    text: modelData.state
+                                    color: operatorChecklistColor(modelData.state)
+                                    font.bold: modelData.state !== "等待"
+                                    Layout.preferredWidth: 56
+                                }
+                                QGCLabel {
+                                    text: modelData.label
+                                    color: operatorChecklistColor(modelData.state)
+                                    wrapMode: Text.Wrap
+                                    Layout.fillWidth: true
+                                }
+                            }
                         }
                         QGCLabel {
                             text: "飞行阶段：" + flightPhaseText()
