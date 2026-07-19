@@ -423,6 +423,12 @@ def test_windows_run_entrypoint_uses_private_runtime_and_reuses_existing_instanc
     assert "detected.gstreamer_root" in script
     assert "Start-Process" in script
     assert "build/flight-console-qgc/Release/MoSimFlightConsole.exe" in script
+    assert "build/flight-console-qgc-candidate/Release/MoSimFlightConsole.exe" in script
+    assert "$candidateItem.LastWriteTimeUtc -gt $formalItem.LastWriteTimeUtc" in script
+    assert "Using newer Flight Console candidate build" in script
+    assert "Flight Console executable:" in script
+    assert "[switch]$ResolveOnly" in script
+    assert "if ($ResolveOnly)" in script
 
 
 def test_private_toolchain_layout_is_supported(tmp_path: Path, monkeypatch) -> None:

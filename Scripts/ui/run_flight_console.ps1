@@ -2,7 +2,8 @@
 param(
     [string]$Preflight = "",
     [string]$Executable = "",
-    [switch]$PassThru
+    [switch]$PassThru,
+    [switch]$ResolveOnly
 )
 
 $ErrorActionPreference = "Stop"
@@ -10,8 +11,32 @@ $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
 if (-not $Preflight) {
     $Preflight = Join-Path $ProjectRoot "Results/ui_platform/flight_console_windows_toolchain_preflight.json"
 }
-if (-not $Executable) {
-    $Executable = Join-Path $ProjectRoot "build/flight-console-qgc/Release/MoSimFlightConsole.exe"
+$ExecutableWasSpecified = [bool]$Executable
+$FormalExecutable = Join-Path $ProjectRoot "build/flight-console-qgc/Release/MoSimFlightConsole.exe"
+$CandidateExecutable = Join-Path $ProjectRoot "build/flight-console-qgc-candidate/Release/MoSimFlightConsole.exe"
+
+if (-not $ExecutableWasSpecified) {
+    $Executable = $FormalExecutable
+    if (Test-Path -LiteralPath $CandidateExecutable) {
+        $candidateItem = Get-Item -LiteralPath $CandidateExecutable
+        $formalItem = if (Test-Path -LiteralPath $FormalExecutable) {
+            Get-Item -LiteralPath $FormalExecutable
+        } else {
+            $null
+        }
+        if ($null -eq $formalItem -or $candidateItem.LastWriteTimeUtc -gt $formalItem.LastWriteTimeUtc) {
+            $Executable = $CandidateExecutable
+            Write-Output "Using newer Flight Console candidate build: $Executable"
+        }
+    }
+}
+
+if ($ResolveOnly) {
+    if (-not (Test-Path -LiteralPath $Executable)) {
+        throw "Flight Console executable is missing: $Executable"
+    }
+    Write-Output (Resolve-Path $Executable).Path
+    exit 0
 }
 
 $existing = Get-Process -Name "MoSimFlightConsole" -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -45,4 +70,5 @@ $process = Start-Process -FilePath (Resolve-Path $Executable).Path `
     -WorkingDirectory (Split-Path -Parent (Resolve-Path $Executable).Path) `
     -PassThru
 Write-Output "Started MoSim Flight Console (PID $($process.Id))."
+Write-Output "Flight Console executable: $((Resolve-Path $Executable).Path)"
 if ($PassThru) { $process }
