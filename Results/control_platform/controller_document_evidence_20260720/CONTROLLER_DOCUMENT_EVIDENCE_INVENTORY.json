@@ -17,15 +17,15 @@
       "not_run": 7
     },
     "model_source_present_count": 60,
-    "graphical_screenshot_present_count": 59,
-    "result_screenshot_present_count": 48,
+    "graphical_screenshot_present_count": 60,
+    "result_screenshot_present_count": 50,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 12,
-      "confirm_native_result_msr_in_live_session": 46,
+      "capture_missing_mworks_screenshots": 10,
+      "confirm_native_result_msr_in_live_session": 48,
       "document_ready_static_audit": 2,
       "repair_or_rerun_required": 5
     }
@@ -1816,13 +1816,20 @@
         "trained_neural_residual"
       ],
       "search_roots": [
-        "Results/control_platform/p9_learning_mworks_20260717"
+        "Results/control_platform/p9_learning_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING",
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING"
       ],
       "model_sources": [
+        "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
         "Results/control_platform/p9_learning_mworks_20260717/models/MoSim_P9_TRAINED_NEURAL_RESIDUAL_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/trained_neural_residual/screenshots/graphical/trained_neural_residual_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/trained_neural_residual/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
       ],
@@ -1831,12 +1838,10 @@
         "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P9_LEARNING",
@@ -1848,15 +1853,21 @@
         "rl_gain_scheduler"
       ],
       "search_roots": [
-        "Results/control_platform/p9_learning_mworks_20260717"
+        "Results/control_platform/p9_learning_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING",
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING"
       ],
       "model_sources": [
+        "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
         "Results/control_platform/p9_learning_mworks_20260717/models/MoSim_P9_RL_GAIN_SCHEDULER_MIL.mo"
       ],
       "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/rl_gain_scheduler/screenshots/graphical/rl_gain_scheduler_graphical_model.png",
         "Results/control_platform/p9_learning_mworks_20260717/screenshots/69844_0xF219B0_MoSim_P9_RL_GAIN_SCHEDULER_MIL - Sysplorer _教育版_.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/rl_gain_scheduler/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
       ],
@@ -1865,11 +1876,10 @@
         "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P10_CLASSIC_RECONCILIATION",

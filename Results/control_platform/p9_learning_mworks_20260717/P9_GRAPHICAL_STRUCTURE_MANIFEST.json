@@ -1,0 +1,10 @@
+{
+  "schema": "mosim.control_platform.p9_learning_graphical_structure.v1",
+  "status": "generated_pending_live_check",
+  "live_check": null,
+  "models": {
+    "trained_neural_residual": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
+    "rl_gain_scheduler": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo"
+  },
+  "claim_boundary": "Readable learning-control signal chains for report topology only. The original P9 CFunction MWORKS MIL remains the numerical authority."
+}

@@ -6,8 +6,8 @@
 - 路线数：`67`
 - 状态计数：`{"accepted": 27, "executed_blocked": 33, "not_run": 7}`
 - 已有模型源码：`60`
-- 已有图形模型截图：`59`
-- 已有结果查看器截图：`48`
+- 已有图形模型截图：`60`
+- 已有结果查看器截图：`50`
 - 已有数值结果或指标：`62`
 - 仓库内可见Result.msr：`4`
 - 实现阻塞：`2`
@@ -69,8 +69,8 @@
 | P8_FORMATION | fault_tolerant_formation | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P8_FORMATION | formation_cbf | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P8_FORMATION | distributed_mpc_formation | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
-| P9_LEARNING | trained_neural_residual | executed_blocked | 有 | 缺 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P9_LEARNING | rl_gain_scheduler | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
+| P9_LEARNING | trained_neural_residual | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P9_LEARNING | rl_gain_scheduler | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P10_CLASSIC_RECONCILIATION | lqr_baseline | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
 | P10_CLASSIC_RECONCILIATION | lqi_baseline | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
 | P10_CLASSIC_RECONCILIATION | hinf_hover_wrench | executed_blocked | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |

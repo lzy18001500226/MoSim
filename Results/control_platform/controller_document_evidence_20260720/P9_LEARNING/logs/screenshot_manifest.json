@@ -1,0 +1,43 @@
+{
+  "schema": "mosim.mworks_phase_screenshot_manifest.v1",
+  "source": "MWORKS_MCP_LIVE",
+  "screenshots": [
+    {
+      "route": "trained_neural_residual",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/trained_neural_residual/screenshots/graphical/trained_neural_residual_graphical_model.png",
+      "sha256": "73412A08FF0E6A65D3F49F446CEE44B5142B5385FB087DCBB29666C362FAD79E",
+      "width": 1800,
+      "height": 1000,
+      "bytes": 32697
+    },
+    {
+      "route": "trained_neural_residual",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/trained_neural_residual/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "7AD51636B016B90AFC9E248C0971708C4488C824B6163314B481687B6244EE7D",
+      "width": 1708,
+      "height": 921,
+      "bytes": 107130
+    },
+    {
+      "route": "rl_gain_scheduler",
+      "phase": "graphical_model",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/rl_gain_scheduler/screenshots/graphical/rl_gain_scheduler_graphical_model.png",
+      "sha256": "6A2C69471A6837ED4F13D5CB7D8B9F3BF4B80B649F5620E6C15DA7914625EEF3",
+      "width": 1800,
+      "height": 1000,
+      "bytes": 32593
+    },
+    {
+      "route": "rl_gain_scheduler",
+      "phase": "result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/rl_gain_scheduler/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+      "sha256": "A348445C41380647CA98EC49E828D868A27B1EC45DBC811346F6637D6A67A99B",
+      "width": 1708,
+      "height": 921,
+      "bytes": 109211
+    }
+  ],
+  "will_not_click_activation_login": true
+}

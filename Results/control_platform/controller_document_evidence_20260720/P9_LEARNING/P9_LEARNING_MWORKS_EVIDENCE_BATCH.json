@@ -1,0 +1,125 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "p9_learning_mworks_evidence_20260720",
+  "status": "executed_with_blocked_performance_acceptance",
+  "source": "MWORKS_MCP_LIVE",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49155,
+  "route_count": 2,
+  "routes": [
+    {
+      "route": "trained_neural_residual",
+      "graphical_model": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p9_learning_mworks_20260717/models/MoSim_P9_TRAINED_NEURAL_RESIDUAL_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/trained_neural_residual/screenshots/graphical/trained_neural_residual_graphical_model.png",
+        "sha256": "73412A08FF0E6A65D3F49F446CEE44B5142B5385FB087DCBB29666C362FAD79E",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 32697
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/trained_neural_residual/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "7AD51636B016B90AFC9E248C0971708C4488C824B6163314B481687B6244EE7D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 107130
+      },
+      "graphical_live_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.4
+      },
+      "numerical_live_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.5
+      },
+      "mworks_mil_summary": {
+        "name": "MoSim_P9_TRAINED_NEURAL_RESIDUAL_MIL",
+        "check_model": "passed",
+        "simulate_model": "passed",
+        "terminal_collective_thrust_n": 7.724513,
+        "terminal_normalized_thrust": 0.345639,
+        "terminal_desired_acceleration_mps2": [
+          2.7120949013,
+          0.4959993824,
+          11.1946069753
+        ],
+        "terminal_learning_action_mps2": [
+          0.0979733058,
+          0.0068081858,
+          0.0694309781
+        ],
+        "fallback_active": 0,
+        "status_code": 0
+      }
+    },
+    {
+      "route": "rl_gain_scheduler",
+      "graphical_model": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p9_learning_mworks_20260717/models/MoSim_P9_RL_GAIN_SCHEDULER_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/rl_gain_scheduler/screenshots/graphical/rl_gain_scheduler_graphical_model.png",
+        "sha256": "6A2C69471A6837ED4F13D5CB7D8B9F3BF4B80B649F5620E6C15DA7914625EEF3",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 32593
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING/rl_gain_scheduler/screenshots/result_capture/51472_0x3520E24_MoSim_P9_RL_GAIN_SCHEDULER_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "A348445C41380647CA98EC49E828D868A27B1EC45DBC811346F6637D6A67A99B",
+        "width": 1708,
+        "height": 921,
+        "bytes": 109211
+      },
+      "graphical_live_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.4
+      },
+      "numerical_live_check": {
+        "check_model": true,
+        "simulate_model": true,
+        "stop_time_s": 0.5
+      },
+      "mworks_mil_summary": {
+        "name": "MoSim_P9_RL_GAIN_SCHEDULER_MIL",
+        "check_model": "passed",
+        "simulate_model": "passed",
+        "terminal_collective_thrust_n": 7.663889,
+        "terminal_normalized_thrust": 0.342926,
+        "terminal_desired_acceleration_mps2": [
+          2.6141215955,
+          0.4891911966,
+          11.1251759972
+        ],
+        "terminal_learning_action": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "terminal_scheduled_gain": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "fallback_active": 0,
+        "status_code": 0,
+        "note": "Zero gain enhancement is a valid bounded policy action for this fixed MIL input."
+      }
+    }
+  ],
+  "numerical_authority": "Results/control_platform/p9_learning_mworks_20260717/MWORKS_MIL_EVIDENCE.json",
+  "codegen_authority": "Results/control_platform/p9_learning_mworks_20260717/MWORKS_MIL_CODEGEN_EVIDENCE.json",
+  "generated_sil_authority": "Results/control_platform/p9_learning_mworks_20260717/sil/P9_GENERATED_SIL_EQUIVALENCE.json",
+  "runtime_authority": "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json",
+  "native_result_msr": null,
+  "claim_boundary": [
+    "Each graphical fixture documents the learning-control topology and does not replace the original CFunction numerical implementation.",
+    "Each result-viewer screenshot is bound to the corresponding original P9 MWORKS MIL fixture.",
+    "Both routes executed through MWORKS MIL, generated-C SIL, and bounded Gazebo A/B, but strict performance acceptance remains blocked.",
+    "Both learning routes remain experimental and selectable=false; no stable superiority claim is made.",
+    "No Result.msr is promoted because an exact native file binding was not established."
+  ]
+}

@@ -46,6 +46,11 @@ FTC_BATCH = (
     / "Results/control_platform/controller_document_evidence_20260720/P7_FTC"
     / "P7_FTC_MWORKS_EVIDENCE_BATCH.json"
 )
+LEARNING_BATCH = (
+    ROOT
+    / "Results/control_platform/controller_document_evidence_20260720/P9_LEARNING"
+    / "P9_LEARNING_MWORKS_EVIDENCE_BATCH.json"
+)
 
 
 def load_builder():
@@ -315,6 +320,38 @@ def test_ftc_family_report_evidence_matches_manifest() -> None:
     assert batch["native_result_msr"] is None
 
 
+def test_learning_routes_are_discoverable_with_honest_boundaries() -> None:
+    builder = load_builder()
+    inventory = builder.build_inventory(builder.DEFAULT_MATRIX)
+    rows = {row["controller"]: row for row in inventory["rows"]}
+    for controller in ("trained_neural_residual", "rl_gain_scheduler"):
+        assert rows[controller]["graphical_model_screenshots"]
+        assert rows[controller]["result_viewer_screenshots"]
+        assert rows[controller]["numeric_results_or_metrics"]
+        assert not rows[controller]["native_result_msr"]
+
+
+def test_learning_report_evidence_matches_manifest() -> None:
+    batch = json.loads(LEARNING_BATCH.read_text(encoding="utf-8"))
+    assert batch["status"] == "executed_with_blocked_performance_acceptance"
+    assert len(batch["routes"]) == 2
+    assert batch["native_result_msr"] is None
+    for route in batch["routes"]:
+        for key, dimensions in (
+            ("graphical_screenshot", (1800, 1000)),
+            ("result_screenshot", (1708, 921)),
+        ):
+            metadata = route[key]
+            payload = (ROOT / metadata["path"]).read_bytes()
+            assert hashlib.sha256(payload).hexdigest().upper() == metadata["sha256"]
+            assert payload[:8] == b"\x89PNG\r\n\x1a\n"
+            assert struct.unpack(">II", payload[16:24]) == dimensions
+        assert route["graphical_live_check"]["check_model"] is True
+        assert route["graphical_live_check"]["simulate_model"] is True
+        assert route["numerical_live_check"]["check_model"] is True
+        assert route["numerical_live_check"]["simulate_model"] is True
+
+
 def test_cli_writes_json_and_markdown(tmp_path: Path) -> None:
     completed = subprocess.run(
         [sys.executable, str(BUILDER), "--output-dir", str(tmp_path)],
@@ -347,4 +384,6 @@ if __name__ == "__main__":
     test_mpc_screenshots_match_manifest_hash_and_dimensions()
     test_enhancement_evidence_batch_is_discoverable()
     test_enhancement_evidence_matches_manifest_hash_and_dimensions()
+    test_learning_routes_are_discoverable_with_honest_boundaries()
+    test_learning_report_evidence_matches_manifest()
     print("[OK] controller document evidence inventory tests")
