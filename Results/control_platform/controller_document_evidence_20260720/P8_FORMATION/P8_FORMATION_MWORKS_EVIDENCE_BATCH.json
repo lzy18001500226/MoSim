@@ -1,0 +1,263 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "p8_formation_mworks_evidence_20260720",
+  "status": "passed_with_documented_boundaries",
+  "source": "MWORKS_MCP_LIVE",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49155,
+  "route_count": 9,
+  "routes": [
+    {
+      "mode": "leader_follower",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_LEADER_FOLLOWER_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_LEADER_FOLLOWER_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/leader_follower/screenshots/graphical/leader_follower_graphical_model.png",
+        "sha256": "BE66BC4B29029D86C3FA05E78BE76C1430D52850434078EFF957EA1B502863A8",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30224
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/leader_follower/screenshots/result_capture/51472_0x3520E24_MoSim_P8_LEADER_FOLLOWER_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "33BAEFCBB05F0A6B23A754E4ADFFA47BAB99E83BDB0AD1D3CDA7DEB4DE7A0156",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100667
+      },
+      "mworks_mil_summary": {
+        "mode_id": 1,
+        "mode": "leader_follower",
+        "active_agents": 3,
+        "failed_mask": 0,
+        "safety_corrections": 0,
+        "status_code": 1
+      }
+    },
+    {
+      "mode": "virtual_structure",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_VIRTUAL_STRUCTURE_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_VIRTUAL_STRUCTURE_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/virtual_structure/screenshots/graphical/virtual_structure_graphical_model.png",
+        "sha256": "FEB0D5FF8537CA0D4AB0647A65A59190DBA6E0D336F894F0DA6E35E27D4B1748",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 29987
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/virtual_structure/screenshots/result_capture/51472_0x3520E24_MoSim_P8_VIRTUAL_STRUCTURE_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "CE29A34AD23B699EF60AC8EDD20F2CEAFB7FCCE095068FA0CAD451DC71755883",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101410
+      },
+      "mworks_mil_summary": {
+        "mode_id": 2,
+        "mode": "virtual_structure",
+        "active_agents": 3,
+        "failed_mask": 0,
+        "safety_corrections": 0,
+        "status_code": 1
+      }
+    },
+    {
+      "mode": "consensus",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONSENSUS_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_CONSENSUS_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/consensus/screenshots/graphical/consensus_graphical_model.png",
+        "sha256": "1D6D82E2101EF5A435AB30EDAE7530A5A3FAEC8881DB7C4FA62333D77FFE2BDB",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30450
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/consensus/screenshots/result_capture/51472_0x3520E24_MoSim_P8_CONSENSUS_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "DAC70977DD4EA16B2446056758E85D6BA650FE9469A138EE38C82680A88BAA46",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100371
+      },
+      "mworks_mil_summary": {
+        "mode_id": 3,
+        "mode": "consensus",
+        "active_agents": 3,
+        "failed_mask": 0,
+        "safety_corrections": 0,
+        "status_code": 1
+      }
+    },
+    {
+      "mode": "containment",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONTAINMENT_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_CONTAINMENT_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/containment/screenshots/graphical/containment_graphical_model.png",
+        "sha256": "C73E2B47B2F07AF0C3BFD950903616F17B48D8A6E260D4BAF3FC734B26E5C592",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30367
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/containment/screenshots/result_capture/51472_0x3520E24_MoSim_P8_CONTAINMENT_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "6CA825DA4124563A6ABF1F481C84D62187459F4D9E1333D7AD3F217FD346266D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100536
+      },
+      "mworks_mil_summary": {
+        "mode_id": 4,
+        "mode": "containment",
+        "active_agents": 3,
+        "failed_mask": 0,
+        "safety_corrections": 0,
+        "status_code": 1
+      }
+    },
+    {
+      "mode": "formation_tracking",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_TRACKING_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_TRACKING_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_tracking/screenshots/graphical/formation_tracking_graphical_model.png",
+        "sha256": "2D5286AADC5259D10CEF82F76BD420189879CB8A7C93FE51B4D68F446E488B85",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30126
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_tracking/screenshots/result_capture/51472_0x3520E24_MoSim_P8_FORMATION_TRACKING_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "7E410023E9FBFF254FCC4F1EFFA6EC20AD79F35204B96933D2B106C638232079",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101570
+      },
+      "mworks_mil_summary": {
+        "mode_id": 5,
+        "mode": "formation_tracking",
+        "active_agents": 3,
+        "failed_mask": 0,
+        "safety_corrections": 0,
+        "status_code": 1
+      }
+    },
+    {
+      "mode": "formation_reconfiguration",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_RECONFIGURATION_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_RECONFIGURATION_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_reconfiguration/screenshots/graphical/formation_reconfiguration_graphical_model.png",
+        "sha256": "BEF7FB28E3FC53EE41F25FF28DA8238C6099042AC918AB811E86E9A2358DAF17",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30139
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_reconfiguration/screenshots/result_capture/51472_0x3520E24_MoSim_P8_FORMATION_RECONFIGURATION_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "88B16AB3DC10F40C9B7AA300A476E0B27F4A8A7B5127D0CFEF53B9662D22F12D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102211
+      },
+      "mworks_mil_summary": {
+        "mode_id": 6,
+        "mode": "formation_reconfiguration",
+        "active_agents": 3,
+        "failed_mask": 0,
+        "safety_corrections": 0,
+        "status_code": 1
+      }
+    },
+    {
+      "mode": "fault_tolerant_formation",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FAULT_TOLERANT_FORMATION_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FAULT_TOLERANT_FORMATION_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/fault_tolerant_formation/screenshots/graphical/fault_tolerant_formation_graphical_model.png",
+        "sha256": "010A653D00476AF940C98D8795A210B1DB7793FDE97BEB914A75292548BAED31",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30425
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/fault_tolerant_formation/screenshots/result_capture/51472_0x3520E24_MoSim_P8_FAULT_TOLERANT_FORMATION_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "51273289C411B92CF0D2E0A624DFB9F2E25F89218FC38B8A946BDA0400D0D118",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101702
+      },
+      "mworks_mil_summary": {
+        "mode_id": 7,
+        "mode": "fault_tolerant_formation",
+        "active_agents": 2,
+        "failed_mask": 2,
+        "safety_corrections": 0,
+        "status_code": 1
+      }
+    },
+    {
+      "mode": "formation_cbf",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_CBF_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_CBF_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_cbf/screenshots/graphical/formation_cbf_graphical_model.png",
+        "sha256": "ACC479AD1B7A5B303C67925193BA047A32BAAFA87F3F9A04DD1B55386BC3876D",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30354
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_cbf/screenshots/result_capture/51472_0x3520E24_MoSim_P8_FORMATION_CBF_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "8DB374E3489BA61B4043222851CFE8F4AC8B9A768B4E4FDD009E92B4A3B19546",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101487
+      },
+      "mworks_mil_summary": {
+        "mode_id": 8,
+        "mode": "formation_cbf",
+        "active_agents": 3,
+        "failed_mask": 0,
+        "safety_corrections": 3,
+        "status_code": 1
+      }
+    },
+    {
+      "mode": "distributed_mpc_formation",
+      "graphical_model": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_DISTRIBUTED_MPC_FORMATION_GRAPHICAL_MIL.mo",
+      "numerical_model": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_DISTRIBUTED_MPC_FORMATION_MIL.mo",
+      "graphical_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/distributed_mpc_formation/screenshots/graphical/distributed_mpc_formation_graphical_model.png",
+        "sha256": "FB6E703F442B03FB1BC5995D683D1BB2C01521E3F02B9162B2582B7B16D8755A",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30428
+      },
+      "result_screenshot": {
+        "path": "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/distributed_mpc_formation/screenshots/result_capture/51472_0x3520E24_MoSim_P8_DISTRIBUTED_MPC_FORMATION_MIL - \u7ed3\u679c\u67e5\u770b\u5668.png",
+        "sha256": "8953CE63B0323D24F97189001B6447C0C116F40F2A4A22C3F44D609DD0ACA82B",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102778
+      },
+      "mworks_mil_summary": {
+        "mode_id": 9,
+        "mode": "distributed_mpc_formation",
+        "active_agents": 3,
+        "failed_mask": 0,
+        "safety_corrections": 0,
+        "status_code": 1
+      }
+    }
+  ],
+  "numerical_authority": "Results/control_platform/p8_formation_mworks_20260717/P8_FORMATION_MWORKS_MIL.json",
+  "generated_sil_authority": "Results/control_platform/p8_formation_mworks_20260717/sil/P8_GENERATED_SIL_EQUIVALENCE.json",
+  "native_result_msr": null,
+  "claim_boundary": [
+    "Each route-specific graphical fixture passed real MWORKS CheckModel and a 0.4 s simulation; it documents topology rather than replacing the CFunction numerical implementation.",
+    "Each result-viewer screenshot is bound to the corresponding original nine-mode CFunction MWORKS MIL fixture.",
+    "The accepted evidence covers fixed-size three-UAV formation-reference generation; complex-map reconfigurable obstacle avoidance remains separate.",
+    "No Result.msr is promoted because an exact native file binding was not established."
+  ]
+}

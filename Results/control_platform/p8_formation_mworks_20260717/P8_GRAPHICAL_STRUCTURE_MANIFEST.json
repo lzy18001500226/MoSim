@@ -1,0 +1,17 @@
+{
+  "schema": "mosim.control_platform.p8_formation_graphical_structure.v1",
+  "status": "generated_pending_live_check",
+  "live_check": null,
+  "models": {
+    "leader_follower": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_LEADER_FOLLOWER_GRAPHICAL_MIL.mo",
+    "virtual_structure": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_VIRTUAL_STRUCTURE_GRAPHICAL_MIL.mo",
+    "consensus": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONSENSUS_GRAPHICAL_MIL.mo",
+    "containment": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONTAINMENT_GRAPHICAL_MIL.mo",
+    "formation_tracking": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_TRACKING_GRAPHICAL_MIL.mo",
+    "formation_reconfiguration": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_RECONFIGURATION_GRAPHICAL_MIL.mo",
+    "fault_tolerant_formation": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FAULT_TOLERANT_FORMATION_GRAPHICAL_MIL.mo",
+    "formation_cbf": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_CBF_GRAPHICAL_MIL.mo",
+    "distributed_mpc_formation": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_DISTRIBUTED_MPC_FORMATION_GRAPHICAL_MIL.mo"
+  },
+  "claim_boundary": "Readable route-specific formation signal chains for report topology only. The existing nine-mode CFunction MWORKS MIL remains the numerical authority."
+}

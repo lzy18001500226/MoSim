@@ -35,7 +35,10 @@ COHORT_ROOTS = {
     "G9_CORE_COMPARISON": ["Results/control_platform/g5_mworks_closeout_20260716"],
     "P6_SAFETY": ["Results/control_platform/p6_safety_mworks_20260717"],
     "P7_FTC": ["Results/control_platform/p7_ftc_mworks_20260717"],
-    "P8_FORMATION": ["Results/control_platform/p8_formation_mworks_20260717"],
+    "P8_FORMATION": [
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+    ],
     "P9_LEARNING": ["Results/control_platform/p9_learning_mworks_20260717"],
     "P10_CLASSIC_RECONCILIATION": [
         "Results/control_platform/p10_mworks_gap_closeout_20260718",

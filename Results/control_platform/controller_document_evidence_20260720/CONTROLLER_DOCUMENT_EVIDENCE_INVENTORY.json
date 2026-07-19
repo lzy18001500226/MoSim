@@ -17,15 +17,15 @@
       "not_run": 7
     },
     "model_source_present_count": 60,
-    "graphical_screenshot_present_count": 51,
-    "result_screenshot_present_count": 40,
+    "graphical_screenshot_present_count": 59,
+    "result_screenshot_present_count": 48,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 20,
-      "confirm_native_result_msr_in_live_session": 38,
+      "capture_missing_mworks_screenshots": 12,
+      "confirm_native_result_msr_in_live_session": 46,
       "document_ready_static_audit": 2,
       "repair_or_rerun_required": 5
     }
@@ -1438,22 +1438,27 @@
         "multi_fault_estimation_reconfiguration"
       ],
       "search_roots": [
-        "Results/control_platform/p7_ftc_mworks_20260717"
+        "Results/control_platform/p7_ftc_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P7_FTC"
       ],
       "model_sources": [
+        "Results/control_platform/p7_ftc_mworks_20260717/models/graphical_variants/MoSim_P7_FDI_FTC_FAMILY_GRAPHICAL_MIL.mo",
         "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_ACTIVE_FTC_MIL.mo",
         "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_FDI_MIL.mo",
         "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL.mo",
         "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_PASSIVE_FTC_MIL.mo"
       ],
       "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P7_FTC/fdi_ftc_family/screenshots/graphical/fdi_ftc_family_graphical_model.png",
         "Results/control_platform/p7_ftc_mworks_20260717/screenshots/check_simulate/45064_0xC0E78_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - Sysplorer _教育版_.png"
       ],
       "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P7_FTC/fdi_ftc_family/screenshots/result/fdi_ftc_family_result_viewer.png",
         "Results/control_platform/p7_ftc_mworks_20260717/screenshots/result_plot/45064_0xFD0DF8_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - 结果查看器.png",
         "Results/control_platform/p7_ftc_mworks_20260717/screenshots/result_viewer/45064_0xFD0DF8_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
+        "Results/control_platform/controller_document_evidence_20260720/P7_FTC/P7_FTC_MWORKS_EVIDENCE_BATCH.json",
         "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json"
       ],
       "native_result_msr": [],
@@ -1476,13 +1481,20 @@
         "leader_follower"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_LEADER_FOLLOWER_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_LEADER_FOLLOWER_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/leader_follower/screenshots/graphical/leader_follower_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/leader_follower/screenshots/result_capture/51472_0x3520E24_MoSim_P8_LEADER_FOLLOWER_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
@@ -1491,12 +1503,10 @@
         "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P8_FORMATION",
@@ -1508,13 +1518,20 @@
         "virtual_structure"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_VIRTUAL_STRUCTURE_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_VIRTUAL_STRUCTURE_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/virtual_structure/screenshots/graphical/virtual_structure_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/virtual_structure/screenshots/result_capture/51472_0x3520E24_MoSim_P8_VIRTUAL_STRUCTURE_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p8_formation_mode2_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
@@ -1523,12 +1540,10 @@
         "Results/control_platform/p8_formation_mode2_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P8_FORMATION",
@@ -1540,13 +1555,20 @@
         "consensus"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONSENSUS_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_CONSENSUS_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/consensus/screenshots/graphical/consensus_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/consensus/screenshots/result_capture/51472_0x3520E24_MoSim_P8_CONSENSUS_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p8_formation_mode3_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
@@ -1555,12 +1577,10 @@
         "Results/control_platform/p8_formation_mode3_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P8_FORMATION",
@@ -1572,13 +1592,20 @@
         "containment"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONTAINMENT_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_CONTAINMENT_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/containment/screenshots/graphical/containment_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/containment/screenshots/result_capture/51472_0x3520E24_MoSim_P8_CONTAINMENT_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p8_formation_mode4_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
@@ -1587,12 +1614,10 @@
         "Results/control_platform/p8_formation_mode4_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P8_FORMATION",
@@ -1604,13 +1629,20 @@
         "formation_tracking"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_TRACKING_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_TRACKING_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_tracking/screenshots/graphical/formation_tracking_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_tracking/screenshots/result_capture/51472_0x3520E24_MoSim_P8_FORMATION_TRACKING_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p8_formation_mode5_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
@@ -1619,12 +1651,10 @@
         "Results/control_platform/p8_formation_mode5_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P8_FORMATION",
@@ -1636,13 +1666,20 @@
         "formation_reconfiguration"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_RECONFIGURATION_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_RECONFIGURATION_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_reconfiguration/screenshots/graphical/formation_reconfiguration_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_reconfiguration/screenshots/result_capture/51472_0x3520E24_MoSim_P8_FORMATION_RECONFIGURATION_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p8_formation_mode6_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
@@ -1651,12 +1688,10 @@
         "Results/control_platform/p8_formation_mode6_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P8_FORMATION",
@@ -1668,13 +1703,20 @@
         "fault_tolerant_formation"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FAULT_TOLERANT_FORMATION_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FAULT_TOLERANT_FORMATION_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/fault_tolerant_formation/screenshots/graphical/fault_tolerant_formation_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/fault_tolerant_formation/screenshots/result_capture/51472_0x3520E24_MoSim_P8_FAULT_TOLERANT_FORMATION_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p8_formation_mode7_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
@@ -1683,12 +1725,10 @@
         "Results/control_platform/p8_formation_mode7_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P8_FORMATION",
@@ -1700,15 +1740,20 @@
         "formation_cbf"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_CBF_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_CBF_MIL.mo"
       ],
       "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_cbf/screenshots/graphical/formation_cbf_graphical_model.png",
         "Results/control_platform/p8_formation_mworks_20260717/screenshots/MoSim_P8_FORMATION_CBF_MIL_diagram.png"
       ],
       "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/formation_cbf/screenshots/result_capture/51472_0x3520E24_MoSim_P8_FORMATION_CBF_MIL - 结果查看器.png",
         "Results/control_platform/p8_formation_mworks_20260717/screenshots/live_phase/45064_0xFD0DF8_MoSim_P8_FORMATION_CBF_MIL - 结果查看器.png"
       ],
       "numeric_results_or_metrics": [
@@ -1734,13 +1779,20 @@
         "distributed_mpc_formation"
       ],
       "search_roots": [
-        "Results/control_platform/p8_formation_mworks_20260717"
+        "Results/control_platform/p8_formation_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION",
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION"
       ],
       "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_DISTRIBUTED_MPC_FORMATION_GRAPHICAL_MIL.mo",
         "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_DISTRIBUTED_MPC_FORMATION_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/distributed_mpc_formation/screenshots/graphical/distributed_mpc_formation_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P8_FORMATION/distributed_mpc_formation/screenshots/result_capture/51472_0x3520E24_MoSim_P8_DISTRIBUTED_MPC_FORMATION_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p8_formation_mode9_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
@@ -1749,12 +1801,10 @@
         "Results/control_platform/p8_formation_mode9_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P9_LEARNING",
