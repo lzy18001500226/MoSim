@@ -43,6 +43,24 @@ payload = {
     "required_topics": [topic for topic in topics.split(",") if topic],
     "updated_at": time.time(),
 }
+
+# A delayed duplicate launcher may run after ROS shutdown. Preserve an already
+# proven ready display and retain the late attempt as diagnostic evidence.
+if os.path.exists(path):
+    try:
+        with open(path, "r", encoding="utf-8-sig") as stream:
+            existing = json.load(stream)
+    except (OSError, json.JSONDecodeError):
+        existing = {}
+    if existing.get("status") == "ready" and status != "ready":
+        late_path = path + ".latest_attempt.json"
+        temporary = late_path + ".tmp"
+        with open(temporary, "w", encoding="utf-8") as stream:
+            json.dump(payload, stream, ensure_ascii=False, indent=2)
+            stream.write("\n")
+        os.replace(temporary, late_path)
+        raise SystemExit(0)
+
 temporary = path + ".tmp"
 with open(temporary, "w", encoding="utf-8") as stream:
     json.dump(payload, stream, ensure_ascii=False, indent=2)
@@ -124,12 +142,17 @@ stop_project_ue_bridge() {
   done < <(pgrep -f '[s]tream_ros1_state_to_ue_udp.py' || true)
 }
 
-if ! timeout 5s rosnode list >/dev/null 2>&1; then
-  block ros_master_unreachable
-fi
+require_ros_master() {
+  if ! timeout 5s rosnode list >/dev/null 2>&1; then
+    block ros_master_unreachable
+  fi
+}
 
 case "${display_kind}" in
   rviz_pointcloud)
+    require_ros_master
+    owner_id="${4:-}"
+    [[ -n "${owner_id}" ]] || block "display_session_owner_missing"
     if [[ "${planner_profile}" != "none" ]]; then
       block "pointcloud_profile_not_supported:${planner_profile}"
     fi
@@ -139,9 +162,13 @@ case "${display_kind}" in
     assert_topic_frame /mosim/fastlio/laser_map_obstacles camera_init || \
       block "fixed_frame_mismatch:/mosim/fastlio/laser_map_obstacles" "${config_path}" camera_init "${required_topics}"
     write_readiness ready display_inputs_ready "${config_path}" camera_init "${required_topics}"
+    export MOSIM_DISPLAY_SESSION_ID="${owner_id}"
     exec rviz -d "${config_path}"
     ;;
   rviz_gridmap)
+    require_ros_master
+    owner_id="${4:-}"
+    [[ -n "${owner_id}" ]] || block "display_session_owner_missing"
     if [[ "${planner_profile}" != "none" ]]; then
       block "gridmap_profile_not_supported:${planner_profile}"
     fi
@@ -151,17 +178,44 @@ case "${display_kind}" in
     assert_topic_frame /mosim/fastlio/occupancy_object_review camera_init || \
       block "fixed_frame_mismatch:/mosim/fastlio/occupancy_object_review" "${config_path}" camera_init "${required_topics}"
     write_readiness ready display_inputs_ready "${config_path}" camera_init "${required_topics}"
+    export MOSIM_DISPLAY_SESSION_ID="${owner_id}"
     exec rviz -d "${config_path}"
     ;;
+  rviz_stop)
+    owner_id="${2:-}"
+    [[ -n "${owner_id}" ]] || { echo "rviz_stop requires a display-session owner id" >&2; exit 2; }
+    residual=0
+    while read -r pid; do
+      [[ -n "${pid}" && -r "/proc/${pid}/environ" ]] || continue
+      if tr '\0' '\n' < "/proc/${pid}/environ" 2>/dev/null | grep -Fxq "MOSIM_DISPLAY_SESSION_ID=${owner_id}"; then
+        kill -TERM "${pid}" >/dev/null 2>&1 || true
+      fi
+    done < <(pgrep -x rviz || true)
+    sleep 0.25
+    while read -r pid; do
+      [[ -n "${pid}" && -r "/proc/${pid}/environ" ]] || continue
+      if tr '\0' '\n' < "/proc/${pid}/environ" 2>/dev/null | grep -Fxq "MOSIM_DISPLAY_SESSION_ID=${owner_id}"; then
+        residual=1
+      fi
+    done < <(pgrep -x rviz || true)
+    exit "${residual}"
+    ;;
   unreal_bridge)
+    require_ros_master
     host_address="${2:-}"
     owner_id="${3:-}"
+    run_id="${4:-}"
+    metrics_output="${5:-}"
     if [[ -z "${host_address}" ]]; then
       echo "unreal_bridge requires the Windows host address" >&2
       exit 2
     fi
     if [[ -z "${owner_id}" ]]; then
       echo "unreal_bridge requires a display-session owner id" >&2
+      exit 2
+    fi
+    if [[ -z "${run_id}" || -z "${metrics_output}" ]]; then
+      echo "unreal_bridge requires run id and metrics output path" >&2
       exit 2
     fi
     stop_project_ue_bridge 5005
@@ -175,6 +229,8 @@ case "${display_kind}" in
       --port 5005 \
       --rate-hz 100 \
       --source-timeout-s 0.5 \
+      --run-id "${run_id}" \
+      --metrics-output "${metrics_output}" \
       --stream-id "${owner_id}" \
       --vehicle-id uav1 \
       --scene-id factory \

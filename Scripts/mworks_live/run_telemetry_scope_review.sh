@@ -8,6 +8,8 @@ RESULT_ROOT="${RESULT_ROOT:-${PROJECT_ROOT}/Results/control_platform/mworks_tele
 MWORKS_HOST="${MWORKS_HOST:-}"
 MWORKS_PORT="${MWORKS_PORT:-49020}"
 SCOPE_RATE_HZ="${SCOPE_RATE_HZ:-50}"
+FLIGHT_MISSION="${FLIGHT_MISSION:-takeoff_hover_land}"
+TELEMETRY_READY_TIMEOUT_S="${TELEMETRY_READY_TIMEOUT_S:-180}"
 RUNTIME_PID=""
 SENDER_PID=""
 
@@ -35,19 +37,28 @@ fi
 
 export RUN_ID
 export RESULT_DIR="${RESULT_ROOT}/flight"
-export GUI="false"
-export KEEP_ALIVE="false"
-export VEHICLE="sunray150"
+export GUI="${GUI:-false}"
+export KEEP_ALIVE="${KEEP_ALIVE:-false}"
+export VEHICLE="${VEHICLE:-sunray150_with_mid360}"
 export SUNRAY_STRIP_PX4_MODEL_PATH="false"
-export REVIEW_OPEN_RVIZ="false"
-export REVIEW_START_FASTLIO="false"
-export REVIEW_START_OCCUPANCY_NODE="false"
-export TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-150}"
+export REVIEW_OPEN_RVIZ="${REVIEW_OPEN_RVIZ:-false}"
+export REVIEW_START_FASTLIO="${REVIEW_START_FASTLIO:-${REVIEW_OPEN_RVIZ}}"
+export REVIEW_START_OCCUPANCY_NODE="${REVIEW_START_OCCUPANCY_NODE:-false}"
+if [[ "${FLIGHT_MISSION}" == "figure8" ]]; then
+  export TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-220}"
+  export PX4CTRL_MISSION_EXTRA_ARGS="${PX4CTRL_MISSION_EXTRA_ARGS:---initial-hover-s 10 --steady-hover-tail-s 8 --force-disarm-after-land --command-x-bias-m -0.006 --command-y-bias-m -0.004 --command-z-bias-m 0.0 --figure8-period-s 42 --figure8-cycles 2 --figure8-x-amp-m 0.65 --figure8-y-amp-m 0.30 --trajectory-time-lead-s 0.18 --post-hold-s 2 --max-trajectory-xyz-rmse-m 0.05 --max-trajectory-xyz-p95-m 0.05 --max-trajectory-xyz-max-m 0.06 --max-hover-z-rmse-m 0.025}"
+else
+  export TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-150}"
+fi
 export MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-90}"
+export MAVROS_SET_STREAM_GROUPS="${MAVROS_SET_STREAM_GROUPS:-position}"
+export FREQUENCY_AUDIT_DURATION_S="${FREQUENCY_AUDIT_DURATION_S:-0}"
 export PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE:-original}"
 export PX4CTRL_MISSION_EXTRA_ARGS="${PX4CTRL_MISSION_EXTRA_ARGS:---initial-hover-s 55 --steady-hover-tail-s 8 --land-wait-s 25 --force-disarm-after-land --force-disarm-timeout-s 18 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 30 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
 
-bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_basic_gate.sh" takeoff_hover_land \
+printf '%s\n' "${FLIGHT_MISSION}" > "${RESULT_ROOT}/flight_mission.txt"
+
+bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_basic_gate.sh" "${FLIGHT_MISSION}" \
   > "${RESULT_ROOT}/flight_runtime.log" 2>&1 &
 RUNTIME_PID="$!"
 printf '%s\n' "${RUNTIME_PID}" > "${RESULT_ROOT}/flight_runtime_pid.txt"
@@ -60,7 +71,7 @@ source /opt/ros/noetic/setup.bash
   source "${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/setup.bash"
 set -u
 
-deadline=$((SECONDS + 100))
+deadline=$((SECONDS + TELEMETRY_READY_TIMEOUT_S))
 while (( SECONDS < deadline )); do
   if ! kill -0 "${RUNTIME_PID}" >/dev/null 2>&1; then
     echo "flight runtime exited before telemetry became available" >&2
@@ -72,7 +83,7 @@ while (( SECONDS < deadline )); do
   sleep 1
 done
 if ! timeout 3 rostopic echo -n 1 /uav1/mavros/local_position/odom >/dev/null 2>&1; then
-  echo "ROS odometry did not become available within 100 seconds" >&2
+  echo "ROS odometry did not become available within ${TELEMETRY_READY_TIMEOUT_S} seconds" >&2
   exit 13
 fi
 

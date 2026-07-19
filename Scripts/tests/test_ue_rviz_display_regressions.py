@@ -24,6 +24,8 @@ def test_ros1_display_launcher_gates_real_d6_topics_and_frames() -> None:
     assert "Topic: /mosim/px4ctrl/reference_path" in pointcloud_config
     assert "Size (m): 0.20" in grid_config
     assert "Fixed Frame: camera_init" in grid_config
+    assert 'existing.get("status") == "ready" and status != "ready"' in launcher
+    assert 'late_path = path + ".latest_attempt.json"' in launcher
 
 
 def test_ue_live_bridge_has_single_sender_and_stale_source_guards() -> None:
@@ -42,14 +44,32 @@ def test_ue_live_bridge_has_single_sender_and_stale_source_guards() -> None:
     assert "latest_state_monotonic" in streamer
     assert "source_timeout_s" in streamer
     assert '"stream_id": self.args.stream_id' in streamer
+    assert "mosim.gazebo_ue_sender_metrics.v1" in streamer
+    assert "estimated_ipv4_udp_wire_bytes_per_s" in streamer
+    assert '"run_id": self.args.run_id' in streamer
+    assert "Sender-side measurement only" in streamer
     assert '"unreal_bridge", $hostAddress, $SessionId' in helper
     assert '"unreal_bridge_stop"' in helper
     assert "stop_project_ue_bridge 5005" in launcher
+    assert launcher.index('unreal_bridge_stop)') < launcher.index('stop_project_ue_bridge "" "${owner_id}"')
+    assert "require_ros_master()" in launcher
+    assert launcher.index("case \"${display_kind}\" in") < launcher.index("require_ros_master\n", launcher.index("case \"${display_kind}\" in"))
     assert '--source-timeout-s 0.5' in launcher
     assert '--stream-id "${owner_id}"' in launcher
     assert "StreamTakeoverTimeoutSeconds = 1.0" in receiver_header
     assert "rejected competing UDP stream" in receiver
     assert "rejected non-monotonic UDP frame" in receiver
+
+
+def test_unreal_receiver_and_frame_metrics_are_run_scoped() -> None:
+    receiver = Path("UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp").read_text(encoding="utf-8")
+    game_mode = Path("UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp").read_text(encoding="utf-8")
+    launcher = Path("Scripts/ui/attach_orchestrated_displays.ps1").read_text(encoding="utf-8-sig")
+    assert "mosim.gazebo_ue_receiver_metrics.v1" in receiver
+    assert "receiver_drop_rate" in receiver
+    assert "mosim.unreal_frame_timing.v1" in game_mode
+    assert "ue_fps" in game_mode
+    assert "-MoSimObservabilityRunId=$RunId" in launcher
 
 
 def test_ue_live_bridge_does_not_retransmit_stale_pose() -> None:
