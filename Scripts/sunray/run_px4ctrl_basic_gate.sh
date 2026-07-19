@@ -268,12 +268,22 @@ cleanup() {
   for pid in "${PIDS[@]:-}"; do
     kill "${pid}" >/dev/null 2>&1 || true
   done
-  for pid in "${PIDS[@]:-}"; do
-    wait "${pid}" >/dev/null 2>&1 || true
+  local cleanup_deadline=$((SECONDS + 5))
+  while (( SECONDS < cleanup_deadline )); do
+    local any_alive=false
+    for pid in "${PIDS[@]:-}"; do
+      if kill -0 "${pid}" >/dev/null 2>&1; then
+        any_alive=true
+        break
+      fi
+    done
+    [[ "${any_alive}" == "false" ]] && break
+    sleep 0.1
   done
-  sleep 2
   for pid in "${PIDS[@]:-}"; do
-    kill -9 "${pid}" >/dev/null 2>&1 || true
+    if kill -0 "${pid}" >/dev/null 2>&1; then
+      kill -9 "${pid}" >/dev/null 2>&1 || true
+    fi
   done
   for pid in "${PIDS[@]:-}"; do
     wait "${pid}" >/dev/null 2>&1 || true
@@ -1314,7 +1324,16 @@ print(max(values))
 PY
 )
   fi
-  if [[ "${NO_FLIGHT_DIAGNOSTIC_HOLD_S}" != "0" && "${NO_FLIGHT_DIAGNOSTIC_HOLD_S}" != "0.0" ]]; then
+  if [[ "${NO_FLIGHT_DIAGNOSTIC_HOLD_S}" == "until_stopped" ]]; then
+    {
+      echo "NO_FLIGHT_DIAGNOSTIC_HOLD_S=until_stopped"
+      echo "Ground standby remains active until the managed stop command terminates this run."
+      date --iso-8601=seconds
+    } > "${RESULT_DIR}/no_flight_diagnostic_hold.txt"
+    while true; do
+      sleep 60
+    done
+  elif [[ "${NO_FLIGHT_DIAGNOSTIC_HOLD_S}" != "0" && "${NO_FLIGHT_DIAGNOSTIC_HOLD_S}" != "0.0" ]]; then
     {
       echo "NO_FLIGHT_DIAGNOSTIC_HOLD_S=${NO_FLIGHT_DIAGNOSTIC_HOLD_S}"
       echo "Holding without mission so passive diagnostics can complete."

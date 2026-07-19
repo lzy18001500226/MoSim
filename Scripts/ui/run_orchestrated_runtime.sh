@@ -315,7 +315,7 @@ PY
   export PX4CTRL_START_CONTROLLER="false"
   export ORCHESTRATOR_REQUIRE_CONTROLLER_COMMAND="false"
   export ORCHESTRATOR_REQUIRE_ACTUATOR_TELEMETRY="false"
-  export NO_FLIGHT_DIAGNOSTIC_HOLD_S="${QGC_GROUND_STANDBY_HOLD_S:-1800}"
+  export NO_FLIGHT_DIAGNOSTIC_HOLD_S="${QGC_GROUND_STANDBY_HOLD_S:-until_stopped}"
   run_basic_gate original takeoff_hover_land false
 }
 
