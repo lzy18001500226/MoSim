@@ -1,167 +1,130 @@
 [CmdletBinding()]
-param(
-    [string]$ProfilePath = "Config/profiles/experiments/px4ctrl_ground_standby_v1.json",
-    [string]$ControllerId = "px4ctrl",
-    [int]$VehicleCount = 1
-)
+param()
 
 $ErrorActionPreference = "Stop"
-$ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
-$Client = Join-Path $ProjectRoot "Scripts/ui/orchestrator_client.py"
-$Service = Join-Path $ProjectRoot "Scripts/ui/orchestrator_service.py"
-$QgcLauncher = Join-Path $ProjectRoot "Scripts/ui/run_flight_console.ps1"
-$LogDir = Join-Path $ProjectRoot "Results/ui_platform/startup"
-New-Item -ItemType Directory -Force -Path $LogDir | Out-Null
+. (Join-Path $PSScriptRoot "launcher_common.ps1")
+
+$qgcLauncher = Join-Path $script:MoSimProjectRoot "Scripts/ui/run_flight_console.ps1"
+$displayHelper = Join-Path $script:MoSimProjectRoot "Scripts/ui/attach_orchestrated_displays.ps1"
 
 if (Get-Process -Name "MoSimFlightConsole" -ErrorAction SilentlyContinue) {
-    throw "qgc_already_running: close the existing Flight Console, then run Start_MoSim_QGC.cmd again"
+    throw "qgc_already_running: close the existing Flight Console first"
 }
 
-function Get-OrchestratorService {
-    return @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -and $_.CommandLine -like "*Scripts*orchestrator_service.py*" })
-}
-
-if ((Get-OrchestratorService).Count -eq 0) {
-    $serviceOut = Join-Path $LogDir "orchestrator.stdout.log"
-    $serviceErr = Join-Path $LogDir "orchestrator.stderr.log"
-    Start-Process -FilePath "python.exe" -WorkingDirectory $ProjectRoot `
-        -ArgumentList @($Service) -WindowStyle Hidden -RedirectStandardOutput $serviceOut `
-        -RedirectStandardError $serviceErr | Out-Null
-    Start-Sleep -Milliseconds 750
-}
-
-function Invoke-OrchestratorClient {
-    param([string[]]$Arguments)
-    $raw = & python.exe $Client @Arguments --format json --timeout-s 5 2>&1 | Out-String
-    if ($LASTEXITCODE -ne 0 -and $raw -notmatch '"accepted"\s*:\s*true') {
-        throw "orchestrator_request_failed: $raw"
-    }
-    try {
-        return ($raw | ConvertFrom-Json)
-    } catch {
-        throw "orchestrator_response_invalid: $raw"
-    }
-}
-
-function Stop-StaleManagedUnreal {
-    $records = Get-ChildItem -Path (Join-Path $ProjectRoot "Results/ui_platform/orchestrator_runs") `
-        -Recurse -Filter "DISPLAY_PROCESSES.json" -File -ErrorAction SilentlyContinue
-    foreach ($file in $records) {
-        try { $entries = Get-Content -Raw -LiteralPath $file.FullName | ConvertFrom-Json } catch { continue }
-        foreach ($entry in $entries) {
-            if ([string]$entry.kind -ne "unreal") { continue }
-            [int]$managedPid = 0
-            if (-not [int]::TryParse([string]$entry.pid, [ref]$managedPid) -or $managedPid -le 0) { continue }
-            $process = Get-Process -Id $managedPid -ErrorAction SilentlyContinue
-            if ($null -ne $process -and $process.ProcessName -eq "UnrealEditor") {
-                Write-Output "Stopping stale managed UE process PID $($process.Id)..."
-                Stop-Process -Id $process.Id -Force -ErrorAction SilentlyContinue
+function Test-ProcessHasUsableWindow {
+    param([int]$ProcessId)
+    if ($ProcessId -le 0) { return $false }
+    $probe = @"
+using System;
+using System.Runtime.InteropServices;
+public static class MoSimGroundWindowProbe {
+    public delegate bool Callback(IntPtr h, IntPtr p);
+    [StructLayout(LayoutKind.Sequential)] public struct Rect { public int Left, Top, Right, Bottom; }
+    [DllImport("user32.dll")] public static extern bool EnumWindows(Callback callback, IntPtr parameter);
+    [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr h, out uint processId);
+    [DllImport("user32.dll")] public static extern bool GetWindowRect(IntPtr h, out Rect rect);
+    public static bool HasUsableWindow(uint target) {
+        bool found = false;
+        EnumWindows((h, p) => {
+            uint owner; GetWindowThreadProcessId(h, out owner);
+            Rect rect;
+            if (owner == target && GetWindowRect(h, out rect) && (rect.Right - rect.Left) * (rect.Bottom - rect.Top) > 10000) {
+                found = true; return false;
             }
+            return true;
+        }, IntPtr.Zero);
+        return found;
+    }
+}
+"@
+    if ($null -eq ("MoSimGroundWindowProbe" -as [type])) { Add-Type $probe }
+    return [MoSimGroundWindowProbe]::HasUsableWindow([uint32]$ProcessId)
+}
+
+function Stop-StaleDisplayProcesses {
+    param([string]$ProcessFile)
+    if (-not (Test-Path -LiteralPath $ProcessFile)) { return }
+    try { $records = @(Get-Content -Raw -LiteralPath $ProcessFile | ConvertFrom-Json) } catch { return }
+    foreach ($record in $records) {
+        $pidValue = 0
+        if (-not [int]::TryParse([string]$record.pid, [ref]$pidValue)) { continue }
+        $process = Get-Process -Id $pidValue -ErrorAction SilentlyContinue
+        if ($null -eq $process) { continue }
+        if (($record.kind -eq "unreal" -and $process.ProcessName -eq "UnrealEditor") -or
+            ($record.kind -eq "unreal_bridge" -and $process.ProcessName -in @("wsl", "wslhost"))) {
+            Stop-Process -Id $pidValue -Force -ErrorAction SilentlyContinue
         }
     }
 }
 
-if (-not (Test-Path -LiteralPath (Join-Path $ProjectRoot $ProfilePath))) {
-    throw "default_profile_missing: $ProfilePath"
+Start-MoSimOrchestratorService
+$active = Get-MoSimActiveRun
+if ($null -eq $active -or -not $active.run_id) {
+    throw "flight_simulation_not_started: run the Gazebo flight simulation launcher first"
+}
+$runId = [string]$active.run_id
+$runState = Invoke-MoSimOrchestratorClient -Arguments @("get_run_state", "--run-id", $runId) -AllowRejected
+if (-not $runState.accepted -or $runState.manifest.lifecycle_state -notin @("starting", "running")) {
+    throw "flight_simulation_not_active: run the Gazebo flight simulation launcher first"
 }
 
-Stop-StaleManagedUnreal
-
-$prepared = Invoke-OrchestratorClient -Arguments @(
-    "prepare_run", "--profile-path", $ProfilePath,
-    "--controller-id", $ControllerId, "--vehicle-count", [string]$VehicleCount
-)
-if (-not $prepared.accepted) {
-    throw "prepare_run_blocked: $($prepared.reason_code)"
-}
-$runId = [string]$prepared.run_id
-
-$started = Invoke-OrchestratorClient -Arguments @(
-    "start_run", "--run-id", $runId
-)
-if (-not $started.accepted) {
-    throw "start_run_blocked: $($started.reason_code)"
-}
-
-$display = Invoke-OrchestratorClient -Arguments @(
+$display = Invoke-MoSimOrchestratorClient -Arguments @(
     "prepare_display_session", "--run-id", $runId, "--display", "unreal"
 )
-if (-not $display.accepted) {
-    throw "prepare_display_blocked: $($display.reason_code)"
-}
 $sessionId = [string]$display.session.session_id
+$runDir = Get-MoSimRunDirectory -RunId $runId
+$sessionDir = Join-Path $runDir "displays/$sessionId"
+$processFile = Join-Path $sessionDir "DISPLAY_PROCESSES.json"
+$statusFile = Join-Path $sessionDir "DISPLAY_STATUS.json"
 
-$attached = Invoke-OrchestratorClient -Arguments @(
-    "attach_display", "--session-id", $sessionId
-)
-if (-not $attached.accepted) {
-    throw "attach_display_blocked: $($attached.reason_code)"
-}
-
-$displayStatus = Join-Path $ProjectRoot "Results/ui_platform/orchestrator_runs/$runId/displays/$sessionId/DISPLAY_STATUS.json"
-$readyDeadline = [DateTime]::UtcNow.AddSeconds(195)
-do {
-    if (Test-Path -LiteralPath $displayStatus) {
-        try {
-            $status = Get-Content -Raw -LiteralPath $displayStatus | ConvertFrom-Json
-            $unreal = @($status.displays | Where-Object { $_.display -eq "unreal" }) | Select-Object -First 1
-            if ($status.state -eq "attached" -and $unreal.state -in @("ready", "running")) {
-                Write-Output "UE display is ready for run $runId. Starting QGC..."
-                break
-            }
-            if ($status.state -eq "blocked") {
-                throw "ue_display_start_blocked: $($unreal.reason)"
-            }
-        } catch {
-            if ($_.Exception.Message -like "ue_display_start_blocked:*") { throw }
+$unrealReady = $false
+if (Test-Path -LiteralPath $processFile) {
+    try {
+        $records = @(Get-Content -Raw -LiteralPath $processFile | ConvertFrom-Json)
+        $unrealRecord = @($records | Where-Object { $_.kind -eq "unreal" }) | Select-Object -First 1
+        if ($null -ne $unrealRecord) {
+            $unrealProcess = Get-Process -Id ([int]$unrealRecord.pid) -ErrorAction SilentlyContinue
+            $unrealReady = $null -ne $unrealProcess -and (Test-ProcessHasUsableWindow -ProcessId $unrealProcess.Id)
         }
-    }
-    Write-Output "Waiting for UE viewport... ($([int]([Math]::Max(0, ($readyDeadline - [DateTime]::UtcNow).TotalSeconds)))s remaining)"
-    Start-Sleep -Seconds 2
-} while ([DateTime]::UtcNow -lt $readyDeadline)
-
-if (-not $status -or $status.state -ne "attached") {
-    throw "ue_display_readiness_timeout: inspect $displayStatus and the display logs"
+    } catch { $unrealReady = $false }
 }
 
-# Put the operator surface on screen as soon as UE is ready. Runtime readiness
-# is reported inside QGC and must not leave the user staring at a standalone UE
-# window when PX4/MAVROS startup is delayed or blocked.
-& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $QgcLauncher
+if (-not $unrealReady) {
+    Write-Output "Starting the managed UE display for run $runId..."
+    Stop-StaleDisplayProcesses -ProcessFile $processFile
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $displayHelper `
+        -RunId $runId -SessionId $sessionId -DisplayCsv "unreal"
+    if ($LASTEXITCODE -ne 0) {
+        throw "ue_display_start_failed: inspect $sessionDir"
+    }
+} elseif ($display.session.state -eq "prepared") {
+    $null = Invoke-MoSimOrchestratorClient -Arguments @("attach_display", "--session-id", $sessionId)
+}
+
+$deadline = [DateTime]::UtcNow.AddSeconds(195)
+do {
+    $status = $null
+    if (Test-Path -LiteralPath $statusFile) {
+        try { $status = Get-Content -Raw -LiteralPath $statusFile | ConvertFrom-Json } catch { $status = $null }
+    }
+    $unreal = if ($null -ne $status) {
+        @($status.displays | Where-Object { $_.display -eq "unreal" }) | Select-Object -First 1
+    } else { $null }
+    if ($null -ne $status -and $status.state -eq "attached" -and $unreal.state -in @("ready", "running")) {
+        break
+    }
+    Write-Output "Waiting for UE viewport..."
+    Start-Sleep -Seconds 2
+} while ([DateTime]::UtcNow -lt $deadline)
+
+if ($null -eq $status -or $status.state -ne "attached") {
+    throw "ue_display_readiness_timeout: inspect $statusFile"
+}
+
+& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $qgcLauncher
 if ($LASTEXITCODE -ne 0) {
     throw "qgc_start_failed: run_flight_console.ps1 exited with $LASTEXITCODE"
 }
 
-$runtimeStatus = Join-Path $ProjectRoot "Results/ui_platform/orchestrator_runs/$runId/RUNTIME_STATUS.json"
-$preflightStatus = Join-Path $ProjectRoot "Results/ui_platform/orchestrator_runs/$runId/runtime/px4_ekf_global_origin.txt"
-$runtimeDeadline = [DateTime]::UtcNow.AddSeconds(240)
-$runtimeReady = $false
-do {
-    if (Test-Path -LiteralPath $runtimeStatus) {
-        try {
-            $runtime = Get-Content -Raw -LiteralPath $runtimeStatus | ConvertFrom-Json
-            $preflightReady = (Test-Path -LiteralPath $preflightStatus) -and
-                ((Get-Content -Raw -LiteralPath $preflightStatus) -match '(?m)^preflight_ready=true$')
-            if ($runtime.status -eq "running" -and @($runtime.missing_readiness).Count -eq 0 -and $preflightReady) {
-                Write-Output "PX4/MAVROS ground standby is ready for run $runId."
-                $runtimeReady = $true
-                break
-            }
-            if ($runtime.status -in @("blocked", "failed", "stopped")) {
-                throw "runtime_start_blocked: $($runtime.reason_code)"
-            }
-        } catch {
-            if ($_.Exception.Message -like "runtime_start_blocked:*") { throw }
-        }
-    }
-    Write-Output "Waiting for PX4/MAVROS ground standby... ($([int]([Math]::Max(0, ($runtimeDeadline - [DateTime]::UtcNow).TotalSeconds)))s remaining)"
-    Start-Sleep -Seconds 2
-} while ([DateTime]::UtcNow -lt $runtimeDeadline)
-
-if (-not $runtimeReady) {
-    throw "runtime_readiness_timeout: inspect $runtimeStatus, $preflightStatus, and the runtime logs"
-}
-
-Write-Output "PX4/MAVROS runtime is ready for QGC operation."
+Write-Output "MoSim ground station started for run $runId."
 exit 0

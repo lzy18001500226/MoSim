@@ -1,18 +1,42 @@
 from pathlib import Path
 
 
-def test_qgc_one_click_launcher_opens_operator_surface_before_runtime_wait() -> None:
-    launcher = Path("Scripts/ui/run_qgc_with_ue.ps1").read_text(encoding="utf-8")
+def test_flight_simulation_and_ground_station_have_separate_owners() -> None:
+    flight = Path("Scripts/ui/start_flight_simulation.ps1").read_text(encoding="utf-8")
+    ground = Path("Scripts/ui/run_qgc_with_ue.ps1").read_text(encoding="utf-8")
 
-    qgc_launch = "& powershell.exe -NoProfile -ExecutionPolicy Bypass -File $QgcLauncher"
-    assert '"start_run", "--run-id", $runId' in launcher
-    assert "RUNTIME_STATUS.json" in launcher
-    assert "px4_ekf_global_origin.txt" in launcher
-    assert "preflight_ready=true" in launcher
-    assert '$runtime.status -eq "running"' in launcher
-    assert '@($runtime.missing_readiness).Count -eq 0' in launcher
-    assert launcher.index('"start_run", "--run-id", $runId') < launcher.index(qgc_launch)
-    assert launcher.index(qgc_launch) < launcher.index(
-        '$runtimeStatus = Join-Path $ProjectRoot'
-    )
-    assert "qgc_start_failed" in launcher
+    assert '"prepare_run"' in flight
+    assert '"start_run"' in flight
+    assert "RUNTIME_STATUS.json" in flight
+    assert "Keep this window open while testing" in flight
+
+    assert '"prepare_run"' not in ground
+    assert '"start_run"' not in ground
+    assert '"get_run_state"' in ground
+    assert '"prepare_display_session"' in ground
+    assert '"unreal"' in ground
+    assert "run_flight_console.ps1" in ground
+    assert "flight_simulation_not_active" in ground
+    assert "Gazebo flight simulation launcher" in ground
+
+
+def test_operator_cmd_entrypoints_are_explicit() -> None:
+    flight_cmd = Path("\u542f\u52a8Gazebo\u98de\u884c\u4eff\u771f.cmd").read_text(encoding="utf-8")
+    ground_cmd = Path("\u542f\u52a8MoSim\u5730\u9762\u7ad9.cmd").read_text(encoding="utf-8")
+    stop_cmd = Path("\u505c\u6b62\u6240\u6709\u4eff\u771f.cmd").read_text(encoding="utf-8")
+    compatibility = Path("Start_MoSim_QGC.cmd").read_text(encoding="utf-8")
+
+    assert "start_flight_simulation.ps1" in flight_cmd
+    assert "run_qgc_with_ue.ps1" in ground_cmd
+    assert "stop_all_simulation.ps1" in stop_cmd
+    assert "\u542f\u52a8MoSim\u5730\u9762\u7ad9.cmd" in compatibility
+
+
+def test_stop_script_uses_active_run_and_scoped_process_records() -> None:
+    stopper = Path("Scripts/ui/stop_all_simulation.ps1").read_text(encoding="utf-8")
+
+    assert "Get-MoSimActiveRun" in stopper
+    assert "DISPLAY_PROCESSES.json" in stopper
+    assert '"stop_run"' in stopper
+    assert "stop_orchestrated_runtime.sh" in stopper
+    assert "Stop-Process -Name" not in stopper
