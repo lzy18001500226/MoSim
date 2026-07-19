@@ -50,7 +50,7 @@ def main() -> int:
     }
     try:
         before_pids = {process.pid for process in psutil.process_iter(["name"]) if process.info["name"] == "mworks.exe"}
-        ModelingPy.StartSysplorer(args.mworks_exe)
+        ModelingPy.StartSysplorer(start_mode="-gui", processPath=args.mworks_exe)
         result["started"] = True
         after_pids = {process.pid for process in psutil.process_iter(["name"]) if process.info["name"] == "mworks.exe"}
         result["mworks_process_ids"] = sorted(after_pids - before_pids)

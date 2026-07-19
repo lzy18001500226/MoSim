@@ -307,7 +307,7 @@ def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
     assert "user32.SetForegroundWindow(hwnd)" in script_text
     assert 'RUNNER_MODELS' in script_text
     assert "SimulateModel" not in script_text
-    assert "ModelingPy.StartSysplorer" in worker_text
+    assert 'ModelingPy.StartSysplorer(start_mode="-gui", processPath=args.mworks_exe)' in worker_text
     assert "ModelingPy.OpenModelFile" in worker_text
     assert "ModelingPy.OpenModel" in worker_text
     assert "ModelingPy.CheckModel" in worker_text

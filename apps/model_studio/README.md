@@ -120,8 +120,9 @@ model. Neither workspace starts, stops, or opens a result; after the model is
 open, run the simulation from MWORKS itself.
 
 The model-opening path is `Scripts/ui/open_model_studio_model.py`. It starts a
-dedicated Sysplorer session through the official `ModelingPy.StartSysplorer`
-API, loads the official quadrotor package and the three project packages in the
+dedicated Sysplorer session through the official
+`ModelingPy.StartSysplorer(start_mode="-gui", processPath=...)` API, loads the
+official quadrotor package and the three project packages in the
 same order used by profile certification, then opens the selected class. An
 offline model must also pass `CheckModel` before the APP reports success. A
 custom combination opens the qualified mother Runner for its selected output
