@@ -18,14 +18,14 @@
     },
     "model_source_present_count": 60,
     "graphical_screenshot_present_count": 44,
-    "result_screenshot_present_count": 16,
+    "result_screenshot_present_count": 20,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 44,
-      "confirm_native_result_msr_in_live_session": 16,
+      "capture_missing_mworks_screenshots": 40,
+      "confirm_native_result_msr_in_live_session": 20,
       "repair_or_rerun_required": 5
     }
   },
@@ -291,7 +291,8 @@
         "lqg"
       ],
       "search_roots": [
-        "Results/control_platform/p2_linear_robust_mworks_20260716"
+        "Results/control_platform/p2_linear_robust_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST"
       ],
       "model_sources": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
@@ -300,7 +301,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/graphical_variants/MoSim_P2_LQG_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST/lqg/result/51472_0x3520E24_MoSim_P2_LQG_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/raw/cfunction_variants/lqg.csv",
         "Results/control_platform/p2_linear_robust_mworks_20260716/raw/graphical_variants/lqg.csv",
@@ -311,11 +314,10 @@
         "Results/control_platform/p2_linear_robust_runtime_20260716/lqg/PX4CTRL_BASIC_MISSION_METRICS.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P2_LINEAR_ROBUST",
@@ -327,7 +329,8 @@
         "feedback_linearization"
       ],
       "search_roots": [
-        "Results/control_platform/p2_linear_robust_mworks_20260716"
+        "Results/control_platform/p2_linear_robust_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST"
       ],
       "model_sources": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
@@ -336,7 +339,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/graphical_variants/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST/feedback_linearization/result/51472_0x3520E24_MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/raw/cfunction_variants/feedback_linearization.csv",
         "Results/control_platform/p2_linear_robust_mworks_20260716/raw/graphical_variants/feedback_linearization.csv",
@@ -347,11 +352,10 @@
         "Results/control_platform/p2_linear_robust_runtime_20260716/feedback_linearization/PX4CTRL_BASIC_MISSION_METRICS.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P2_LINEAR_ROBUST",
@@ -363,7 +367,8 @@
         "passivity_based_control"
       ],
       "search_roots": [
-        "Results/control_platform/p2_linear_robust_mworks_20260716"
+        "Results/control_platform/p2_linear_robust_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST"
       ],
       "model_sources": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
@@ -372,7 +377,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/graphical_variants/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST/passivity_based_control/result/51472_0x3520E24_MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/raw/cfunction_variants/passivity_based_control.csv",
         "Results/control_platform/p2_linear_robust_mworks_20260716/raw/graphical_variants/passivity_based_control.csv",
@@ -383,11 +390,10 @@
         "Results/control_platform/p2_linear_robust_runtime_20260716/passivity_based_control/PX4CTRL_BASIC_MISSION_METRICS.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P2_LINEAR_ROBUST",
@@ -399,7 +405,8 @@
         "adaptive_backstepping"
       ],
       "search_roots": [
-        "Results/control_platform/p2_linear_robust_mworks_20260716"
+        "Results/control_platform/p2_linear_robust_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST"
       ],
       "model_sources": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
@@ -409,7 +416,9 @@
         "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/check_phase/45064_0xC0E78_MoSim_P2_ADAPTIVE_BACKSTEPPING_MIL - Sysplorer _教育版_.png",
         "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/graphical_variants/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST/adaptive_backstepping/result/51472_0x3520E24_MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p2_linear_robust_mworks_20260716/raw/cfunction_variants/adaptive_backstepping.csv",
         "Results/control_platform/p2_linear_robust_mworks_20260716/raw/graphical_variants/adaptive_backstepping.csv",
@@ -420,11 +429,10 @@
         "Results/control_platform/p2_linear_robust_runtime_20260716/adaptive_backstepping_retry2/PX4CTRL_BASIC_MISSION_METRICS.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P3_SLIDING_MODE",

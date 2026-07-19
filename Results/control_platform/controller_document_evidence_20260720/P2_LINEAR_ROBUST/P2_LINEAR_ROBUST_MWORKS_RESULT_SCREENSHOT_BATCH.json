@@ -1,0 +1,61 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "p2_linear_robust_mworks_result_screenshots_20260720",
+  "status": "passed",
+  "source": "MWORKS_MCP",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49155,
+  "activation_state_observation": "Sysplorer education edition main window visible and responsive",
+  "license_state": "education_edition_no_login_or_license_blocker_observed",
+  "session_sentinel": "Results/control_platform/controller_document_evidence_20260720/session_sentinel/51472_0x62F0AAC_Sysplorer _教育版_.png",
+  "model_check": "passed_4_of_4",
+  "simulation": "passed_4_of_4",
+  "result_variables": [
+    "desired_acceleration_x",
+    "desired_acceleration_y",
+    "desired_acceleration_z"
+  ],
+  "sample_count_per_case": 21,
+  "time_end_s": 0.2,
+  "rows": [
+    {
+      "controller": "lqg",
+      "model": "MoSim_P2_LQG_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 2.0081931102257293,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST/lqg/result/51472_0x3520E24_MoSim_P2_LQG_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "94964BF58DB8A8C3665B182B39330E6BD64D179383BE3F18062A38F59EAB0874"
+    },
+    {
+      "controller": "feedback_linearization",
+      "model": "MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 2.0500000000000003,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST/feedback_linearization/result/51472_0x3520E24_MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "1C3E8BD5B9513E8561F215ECE6CE6EBAB50D0A93773F757E28168C7ED888C6A6"
+    },
+    {
+      "controller": "passivity_based_control",
+      "model": "MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 2.0500000000000003,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST/passivity_based_control/result/51472_0x3520E24_MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "CCFD6D3906D481992A49C39687D3A24D9CD92117B85E2A7786744AEF643E006E"
+    },
+    {
+      "controller": "adaptive_backstepping",
+      "model": "MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 2.6999200000000005,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST/adaptive_backstepping/result/51472_0x3520E24_MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "81E23E0A5C2329C674B5EC514EBFB5A71F2EB208FA135E210257666BAF3B6101"
+    }
+  ],
+  "mworks_phase_observations": [
+    "All four graphical linear and robust controller fixtures passed CheckModel in the same reusable Sysplorer session.",
+    "All four simulations produced readable desired-acceleration results and nonempty result-viewer plots.",
+    "Every desired_acceleration_x end value matches the existing 2026-07-16 graphical MIL CSV.",
+    "Screenshots were captured with the DPI-aware background route without UI clicks."
+  ],
+  "claim_ceiling": "real_fixed_input_graphical_sysblock_mil_and_result_viewer_evidence_not_full_aircraft_trajectory"
+}

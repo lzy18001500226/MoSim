@@ -16,6 +16,11 @@ PID_BATCH = (
     / "Results/control_platform/controller_document_evidence_20260720/P1_PID"
     / "P1_PID_MWORKS_RESULT_SCREENSHOT_BATCH.json"
 )
+LINEAR_ROBUST_BATCH = (
+    ROOT
+    / "Results/control_platform/controller_document_evidence_20260720/P2_LINEAR_ROBUST"
+    / "P2_LINEAR_ROBUST_MWORKS_RESULT_SCREENSHOT_BATCH.json"
+)
 
 
 def load_builder():
@@ -102,6 +107,33 @@ def test_pid_result_screenshots_match_manifest_hash_and_dimensions() -> None:
         assert row["historical_metric_match"] is True
 
 
+def test_linear_robust_result_screenshot_batch_is_discoverable() -> None:
+    builder = load_builder()
+    inventory = builder.build_inventory(builder.DEFAULT_MATRIX)
+    rows = {row["controller"]: row for row in inventory["rows"]}
+    for controller in (
+        "lqg",
+        "feedback_linearization",
+        "passivity_based_control",
+        "adaptive_backstepping",
+    ):
+        assert rows[controller]["result_viewer_screenshots"]
+
+
+def test_linear_robust_screenshots_match_manifest_hash_and_dimensions() -> None:
+    batch = json.loads(LINEAR_ROBUST_BATCH.read_text(encoding="utf-8"))
+    assert batch["status"] == "passed"
+    assert len(batch["rows"]) == 4
+    for row in batch["rows"]:
+        path = ROOT / row["screenshot"]
+        payload = path.read_bytes()
+        assert hashlib.sha256(payload).hexdigest().upper() == row["screenshot_sha256"]
+        assert payload[:8] == b"\x89PNG\r\n\x1a\n"
+        width, height = struct.unpack(">II", payload[16:24])
+        assert (width, height) == (1708, 921)
+        assert row["historical_metric_match"] is True
+
+
 def test_cli_writes_json_and_markdown(tmp_path: Path) -> None:
     completed = subprocess.run(
         [sys.executable, str(BUILDER), "--output-dir", str(tmp_path)],
@@ -126,4 +158,6 @@ if __name__ == "__main__":
     test_only_exact_certified_profiles_bind_native_results()
     test_pid_result_screenshot_batch_is_discoverable()
     test_pid_result_screenshots_match_manifest_hash_and_dimensions()
+    test_linear_robust_result_screenshot_batch_is_discoverable()
+    test_linear_robust_screenshots_match_manifest_hash_and_dimensions()
     print("[OK] controller document evidence inventory tests")
