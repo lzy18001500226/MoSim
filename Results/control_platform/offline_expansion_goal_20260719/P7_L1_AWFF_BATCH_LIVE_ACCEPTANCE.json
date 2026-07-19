@@ -1,0 +1,32 @@
+{
+  "schema": "mosim.offline_expansion_batch_acceptance.v1",
+  "recorded_at": "2026-07-19T09:28:47+08:00",
+  "phase": "P7_batch_live_acceptance",
+  "batch_id": "p7-l1-awff-smoke-20260719-v2",
+  "profile_id": "offline_l1_awff_climb_v1",
+  "status": "accepted",
+  "batch_manifest": "Results/control_platform/offline_batches/p7-l1-awff-smoke-20260719-v2/BATCH_MANIFEST.json",
+  "certification_record": "Results/mworks_generated_profiles/batch-p7-l1-awff-smoke-20260719-v2-01-offline-l1-awff-climb-v1/CERTIFICATION.json",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 5001,
+    "result_msr_present": true,
+    "strict_metrics": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "task_owned_session_shutdown": true
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.137997190053892,
+    "steady_state_error_m": 0.0735607635326679,
+    "max_position_error_m": 0.610605537091138,
+    "settling_time_s": 0.54,
+    "max_tilt_rad": 0.268759132831842,
+    "constraint_violation_count": 18
+  },
+  "claim_ceiling": "Current offline MWORKS model/check/simulation/result/metrics/animation evidence for the L1/AWFF nominal Profile. Not PX4, Gazebo, ROS1, mworks_live, code-generation, or flight evidence."
+}

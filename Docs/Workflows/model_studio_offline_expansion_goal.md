@@ -555,6 +555,36 @@ now contains four accepted single-profile batches and no blocked batch. These
 results remain offline MWORKS evidence only and do not certify online or
 flight execution.
 
+P7 live checkpoint 7 adds the L1/AWFF nominal representative combination:
+`offline_l1_awff_climb_v1`. The batch completed in 88.792 seconds and passed
+the current MWORKS model/check/simulation/`Result.msr`/strict-metric/result-
+window/animation-window/session-shutdown gates. Its checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_L1_AWFF_BATCH_LIVE_ACCEPTANCE.json
+```
+
+The accepted run reports `position_rmse_m=0.13800`,
+`max_position_error_m=0.61061`, `max_tilt_rad=0.26876`, and 18 reported
+constraint samples. This is current offline MWORKS evidence for the nominal
+L1/AWFF Profile only.
+
+P7 live checkpoint 8 adds the same L1/AWFF combination under the catalogued
+wind scenario (`gust_force=[1.5,0,0]`). The batch completed in 59.722 seconds
+and passed the same model/check/simulation/`Result.msr`/strict-metric/result-
+window/animation-window/session-shutdown gates. Its checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_L1_AWFF_WIND_BATCH_LIVE_ACCEPTANCE.json
+```
+
+The accepted wind run reports `position_rmse_m=0.25404`,
+`max_position_error_m=0.86697`, `max_tilt_rad=0.26871`, and 18 reported
+constraint samples. This documents executable wind-scenario evidence, not a
+disturbance-rejection superiority claim or PX4/Gazebo/ROS1/online-flight
+acceptance. The runtime index now contains seven accepted single-profile
+batches and no blocked batch.
+
 P7 live checkpoint 6 adds the Linear MPC representative combination:
 `offline_linear_mpc_climb_v1`. The batch completed in 74.659 seconds and passed
 the current MWORKS model/check/simulation/`Result.msr`/strict-metric/result-
