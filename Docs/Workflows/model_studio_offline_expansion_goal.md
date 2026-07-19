@@ -554,3 +554,19 @@ The accepted run reports `position_rmse_m=0.13796`,
 now contains four accepted single-profile batches and no blocked batch. These
 results remain offline MWORKS evidence only and do not certify online or
 flight execution.
+
+P7 live checkpoint 6 adds the Linear MPC representative combination:
+`offline_linear_mpc_climb_v1`. The batch completed in 74.659 seconds and passed
+the current MWORKS model/check/simulation/`Result.msr`/strict-metric/result-
+window/animation-window/session-shutdown gates. Its checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_LINEAR_MPC_BATCH_LIVE_ACCEPTANCE.json
+```
+
+The accepted run reports `position_rmse_m=0.13488`,
+`max_position_error_m=0.59885`, `max_tilt_rad=0.27937`, and 18 reported
+constraint samples under the existing metric contract. The runtime index now
+contains five accepted single-profile batches and no blocked batch. This is
+current offline MWORKS evidence for Linear MPC only; it does not certify PX4,
+Gazebo, ROS1, online co-simulation, code-generation, or flight acceptance.
