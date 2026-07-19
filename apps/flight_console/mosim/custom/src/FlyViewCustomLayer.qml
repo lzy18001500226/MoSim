@@ -1187,6 +1187,14 @@ Item {
                             wrapMode: Text.Wrap
                             Layout.fillWidth: true
                         }
+                        QGCLabel {
+                            visible: profiles[profileBox.currentIndex].takeoff !== "qgc"
+                            text: "任务Adapter阶段：" + missionStatusText()
+                            color: missionStatusColor()
+                            font.bold: true
+                            wrapMode: Text.Wrap
+                            Layout.fillWidth: true
+                        }
                         ComboBox {
                             id: profileBox
                             Layout.fillWidth: true

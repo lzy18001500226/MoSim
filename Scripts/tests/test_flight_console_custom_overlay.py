@@ -332,6 +332,7 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert 'root.missionAdapterVehicleText(modelData)' in qml
     assert "状态不完整：收到 " in qml
     assert 'text: "飞行阶段：" + flightPhaseText()' in qml
+    assert 'text: "任务Adapter阶段：" + missionStatusText()' in qml
     assert '"run_starting": "正在启动飞行运行时"' in qml
     assert "operationStageText(mosimOrchestrator.operationStage)" in qml
     assert "interval: 40" in qml
