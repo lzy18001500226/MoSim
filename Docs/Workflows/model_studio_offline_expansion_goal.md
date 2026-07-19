@@ -525,3 +525,17 @@ The accepted run has `position_rmse_m=0.17639`, `max_position_error_m=0.72942`,
 metric contract. This is current offline MWORKS evidence for this Profile only;
 it does not promote all Certified Profiles or claim PX4, Gazebo, ROS1, online
 co-simulation, code-generation, or flight acceptance.
+
+P7 live checkpoint 4 adds the AWFF representative combination:
+`offline_awff_climb_v1`. The batch completed in 68.119 seconds and passed the
+same current MWORKS model/check/simulation/`Result.msr`/strict-metric/result-
+window/animation-window/session-shutdown gates. Its checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_AWFF_BATCH_LIVE_ACCEPTANCE.json
+```
+
+The accepted run reports `position_rmse_m=0.16650`,
+`max_position_error_m=0.69040`, and `max_tilt_rad=0.23158`. This remains an
+offline MWORKS Profile result and does not claim AWFF online, PX4, Gazebo,
+ROS1, code-generation, or flight performance.
