@@ -6,6 +6,9 @@ set -eo pipefail
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
 SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
+PX4_ROS1_GUARD_UXRCE_DDS="${PX4_ROS1_GUARD_UXRCE_DDS:-true}"
+PX4_ROS1_OVERLAY_PKG=""
+PX4_GCS_REMOTE_HOST="${PX4_GCS_REMOTE_HOST:-auto}"
 PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws}"
 LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
 MISSION="${1:-${MISSION:-takeoff_hover_land}}"
@@ -110,6 +113,10 @@ PX4CTRL_ODOM_VELOCITY_FRAME="${PX4CTRL_ODOM_VELOCITY_FRAME:-body}"
 PX4CTRL_TAKEOFF_HEIGHT="${PX4CTRL_TAKEOFF_HEIGHT:-1.0}"
 PX4CTRL_TAKEOFF_LAND_SPEED="${PX4CTRL_TAKEOFF_LAND_SPEED:-0.12}"
 PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE:-original}"
+PX4CTRL_ATTITUDE_OUTPUT_TOPIC="${PX4CTRL_ATTITUDE_OUTPUT_TOPIC:-/uav1/mavros/setpoint_raw/attitude}"
+PX4CTRL_PRE_MISSION_OWNER_TOPIC="${PX4CTRL_PRE_MISSION_OWNER_TOPIC:-}"
+PX4CTRL_PRE_MISSION_OWNER_STATE="${PX4CTRL_PRE_MISSION_OWNER_STATE:-ACTIVE}"
+PX4CTRL_PRE_MISSION_OWNER_TIMEOUT_S="${PX4CTRL_PRE_MISSION_OWNER_TIMEOUT_S:-30}"
 PX4CTRL_SAFETY_TEST_EVENT="${PX4CTRL_SAFETY_TEST_EVENT:-false}"
 PX4CTRL_START_EXTERNAL_FUSION="${PX4CTRL_START_EXTERNAL_FUSION:-true}"
 PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE="${PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE:-true}"
@@ -117,9 +124,17 @@ PX4CTRL_ENABLE_FASTLIO_EKF_FUSION="${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION:-false}"
 PX4CTRL_ODOM_SOURCE="${PX4CTRL_ODOM_SOURCE:-mavros_local}"
 PX4CTRL_ODOM_TOPIC="${PX4CTRL_ODOM_TOPIC:-/uav1/mavros/local_position/odom}"
 PX4CTRL_MISSION_EXTRA_ARGS="${PX4CTRL_MISSION_EXTRA_ARGS:-}"
+PX4CTRL_MANUAL_INPUT_FILE="${PX4CTRL_MANUAL_INPUT_FILE:-${PROJECT_ROOT}/Results/ui_platform/manual_control/manual_control.json}"
+PX4CTRL_MANUAL_RUN_ID="${PX4CTRL_MANUAL_RUN_ID:-${RUN_ID}}"
 PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS="${PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS:---initial-hover-s 20 --steady-hover-tail-s 8 --land-wait-s 25 --force-disarm-after-land --force-disarm-timeout-s 18 --command-x-bias-m -0.006 --command-y-bias-m -0.004 --command-z-bias-m 0.0 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 20 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
 PX4CTRL_TRAJECTORY_DEFAULT_ARGS="${PX4CTRL_TRAJECTORY_DEFAULT_ARGS:---force-disarm-after-land --force-disarm-timeout-s 18 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 20 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
 PX4CTRL_SKIP_MISSION="${PX4CTRL_SKIP_MISSION:-false}"
+PX4CTRL_START_CONTROLLER="${PX4CTRL_START_CONTROLLER:-true}"
+PX4CTRL_SET_EKF_GLOBAL_ORIGIN="${PX4CTRL_SET_EKF_GLOBAL_ORIGIN:-false}"
+PX4CTRL_EKF_ORIGIN_LAT="${PX4CTRL_EKF_ORIGIN_LAT:-}"
+PX4CTRL_EKF_ORIGIN_LON="${PX4CTRL_EKF_ORIGIN_LON:-}"
+PX4CTRL_EKF_ORIGIN_ALT_M="${PX4CTRL_EKF_ORIGIN_ALT_M:-}"
+PX4CTRL_EKF_ORIGIN_TIMEOUT_S="${PX4CTRL_EKF_ORIGIN_TIMEOUT_S:-20}"
 PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE="${PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE:-true}"
 PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S="${PX4CTRL_PARAM_SERVICE_READY_TIMEOUT_S:-30}"
 PX4CTRL_PARAM_DUMP_TIMEOUT_S="${PX4CTRL_PARAM_DUMP_TIMEOUT_S:-45}"
@@ -283,11 +298,100 @@ cleanup() {
   pkill -f "gzclient" >/dev/null 2>&1 || true
   pkill -f "mavros_node" >/dev/null 2>&1 || true
   pkill -f "/opt/mosim_work/sunray_px4.*/px4" >/dev/null 2>&1 || true
+  pkill -f "px4_ros1_runtime_overlay_.*px4" >/dev/null 2>&1 || true
   pkill -f "rosmaster" >/dev/null 2>&1 || true
   pkill -f "rosout" >/dev/null 2>&1 || true
   sunray_ros1_runtime_lock_release
 }
 trap cleanup EXIT
+trap 'exit 143' TERM
+trap 'exit 130' INT
+
+prepare_px4_ros1_runtime_overlay() {
+  PX4_ROS1_OVERLAY_PKG=""
+  if [[ "${PX4_ROS1_GUARD_UXRCE_DDS}" != "true" ]]; then
+    return 0
+  fi
+
+  local original_px4_etc="${SUNRAY_PX4_DIR}/build/px4_sitl_default/etc"
+  local original_px4_bin="${SUNRAY_PX4_DIR}/build/px4_sitl_default/bin"
+  local original_package="${SUNRAY_PX4_DIR}/package.xml"
+  local overlay_root="${RESULT_DIR}/px4_ros1_runtime_overlay_$$"
+  local overlay_pkg="${overlay_root}/px4"
+  local overlay_build="${overlay_pkg}/build/px4_sitl_default"
+  local overlay_etc="${overlay_build}/etc"
+  local overlay_rcs="${overlay_etc}/init.d-posix/rcS"
+  local overlay_mavlink="${overlay_etc}/init.d-posix/px4-rc.mavlink"
+  local gcs_remote_host="${PX4_GCS_REMOTE_HOST}"
+
+  for path in "${original_px4_etc}" "${original_px4_bin}" "${original_package}"; do
+    if [[ ! -e "${path}" ]]; then
+      echo "PX4 ROS1 overlay input missing: ${path}" >&2
+      exit 2
+    fi
+  done
+
+  mkdir -p "${overlay_build}"
+  cp "${original_package}" "${overlay_pkg}/package.xml"
+  cp -a "${original_px4_etc}" "${overlay_etc}"
+  ln -s "${original_px4_bin}" "${overlay_build}/bin"
+
+  if [[ "${gcs_remote_host}" == "auto" ]]; then
+    gcs_remote_host="$(ip route show default | awk 'NR == 1 {print $3}')"
+  fi
+  if [[ ! "${gcs_remote_host}" =~ ^[0-9]+(\.[0-9]+){3}$ ]]; then
+    echo "Unable to resolve Windows QGC host IPv4 address: ${gcs_remote_host}" >&2
+    exit 2
+  fi
+
+  python3 - "${overlay_rcs}" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+text = path.read_text(encoding="utf-8")
+old = "uxrce_dds_client start -t udp -h 127.0.0.1 -p $uxrce_dds_port $uxrce_dds_ns"
+new = """if ! uxrce_dds_client start -t udp -h 127.0.0.1 -p $uxrce_dds_port $uxrce_dds_ns
+then
+\techo "WARN [init] uxrce_dds_client start failed, continuing for MoSim ROS1/MAVROS gate"
+fi"""
+if old not in text:
+    raise SystemExit(f"uxrce_dds_client start line not found in {path}")
+text = text.replace(old, new, 1)
+if "# MoSim ROS1 guard: force rcS success" not in text:
+    text = text.rstrip() + "\n\n# MoSim ROS1 guard: force rcS success\ntrue\n"
+path.write_text(text, encoding="utf-8")
+PY
+
+  python3 - "${overlay_mavlink}" "${gcs_remote_host}" <<'PY'
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+host = sys.argv[2]
+text = path.read_text(encoding="utf-8")
+old = "mavlink start -x -u $udp_gcs_port_local -r 4000000 -f"
+new = f"{old} -t {host}"
+if old not in text:
+    raise SystemExit(f"GCS mavlink start line not found in {path}")
+path.write_text(text.replace(old, new, 1), encoding="utf-8")
+PY
+
+  PX4_ROS1_OVERLAY_PKG="${overlay_pkg}"
+  export PX4_ROS1_OVERLAY_PKG
+  {
+    echo "PX4_ROS1_GUARD_UXRCE_DDS=true"
+    echo "overlay_pkg=${overlay_pkg}"
+    echo "original_px4_etc=${original_px4_etc}"
+    echo "patched_rcS=${overlay_rcs}"
+    echo "patched_mavlink=${overlay_mavlink}"
+    echo "gcs_remote_host=${gcs_remote_host}"
+    grep -n "uxrce_dds_client start" "${overlay_rcs}" || true
+    grep -n "continuing for MoSim ROS1/MAVROS gate" "${overlay_rcs}" || true
+    tail -5 "${overlay_rcs}" || true
+    grep -n "mavlink start -x -u \$udp_gcs_port_local" "${overlay_mavlink}" || true
+  } > "${RESULT_DIR}/px4_ros1_runtime_overlay.txt"
+}
 
 source_env() {
   export PATH=/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib
@@ -322,7 +426,7 @@ PY
   # Sunray nodes/messages, Fast-Drone-250 px4ctrl, and Livox FAST-LIO messages
   # remain visible together.
   export CMAKE_PREFIX_PATH="${PX4CTRL_WS}/devel:${project_sunray_devel}:${CMAKE_PREFIX_PATH:-}"
-  export ROS_PACKAGE_PATH="${PX4CTRL_WS}/src:${SUNRAY_PX4_DIR}:${SUNRAY_WS}:/opt/ros/noetic/share:${ROS_PACKAGE_PATH:-}"
+  export ROS_PACKAGE_PATH="${PX4CTRL_WS}/src:${PX4_ROS1_OVERLAY_PKG:+${PX4_ROS1_OVERLAY_PKG}:}${SUNRAY_PX4_DIR}:${SUNRAY_WS}:/opt/ros/noetic/share:${ROS_PACKAGE_PATH:-}"
   export PYTHONPATH="${PX4CTRL_WS}/devel/lib/python3/dist-packages:${SUNRAY_WS}/devel/lib/python3/dist-packages:${project_sunray_devel}/lib/python3/dist-packages:${PYTHONPATH:-}"
   export GAZEBO_MODEL_PATH="${PROJECT_ROOT}/Config/gazebo/models:${sunray_models}/scence_models:${sunray_models}/drone_models:${sunray_models}/sensor_models:${sunray_models}/fake_models:${sunray_models}/ugv_models:${sunray_models}/aws_models:${sunray_models}/aws_vins_models:${GAZEBO_MODEL_PATH:-}"
   export GAZEBO_RESOURCE_PATH="${SUNRAY_WS}/simulation/sunray_simulator:${GAZEBO_RESOURCE_PATH:-}"
@@ -555,10 +659,12 @@ pkill -f "gzserver" >/dev/null 2>&1 || true
 pkill -f "gzclient" >/dev/null 2>&1 || true
 pkill -f "mavros_node" >/dev/null 2>&1 || true
 pkill -f "/opt/mosim_work/sunray_px4.*/px4" >/dev/null 2>&1 || true
+pkill -f "px4_ros1_runtime_overlay_.*px4" >/dev/null 2>&1 || true
 pkill -f "rosmaster" >/dev/null 2>&1 || true
 pkill -f "rosout" >/dev/null 2>&1 || true
 sleep 3
 
+prepare_px4_ros1_runtime_overlay
 source_env
 export SUNRAY_MID360_PLUGIN_DOWNSAMPLE
 export SUNRAY_LIVOX_PLUGIN_FILENAME
@@ -601,7 +707,7 @@ if [[ "${SUNRAY_GAZEBO_LAUNCH_FILE}" == *"factory_l2_sunray_px4_gazebo.launch" |
     > "${RESULT_DIR}/sunray_gazebo.log" 2>&1 &
 else
   roslaunch "${SUNRAY_GAZEBO_LAUNCH_FILE}" \
-    gui:="${GUI}" rviz_enable:=false world:="${WORLD_FILE}" use_sim_time:="${USE_SIM_TIME}" \
+    vehicle:="${VEHICLE}" gui:="${GUI}" rviz_enable:=false world:="${WORLD_FILE}" use_sim_time:="${USE_SIM_TIME}" \
     uav_init_x:="${SUNRAY_UAV_INIT_X}" uav_init_y:="${SUNRAY_UAV_INIT_Y}" \
     uav_init_yaw:="${SUNRAY_UAV_INIT_YAW}" \
     > "${RESULT_DIR}/sunray_gazebo.log" 2>&1 &
@@ -964,6 +1070,50 @@ if [[ "${PX4CTRL_ODOM_READY}" != "true" ]]; then
   exit 5
 fi
 
+if [[ "${PX4CTRL_SET_EKF_GLOBAL_ORIGIN}" == "true" ]]; then
+  if [[ -z "${PX4CTRL_EKF_ORIGIN_LAT}" || -z "${PX4CTRL_EKF_ORIGIN_LON}" || -z "${PX4CTRL_EKF_ORIGIN_ALT_M}" ]]; then
+    echo "PX4CTRL_SET_EKF_GLOBAL_ORIGIN=true requires latitude, longitude, and altitude" >&2
+    exit 6
+  fi
+
+  PX4_CLIENT_BIN_DIR="${SUNRAY_PX4_DIR}/build/px4_sitl_default/bin"
+  EKF_ORIGIN_EVIDENCE="${RESULT_DIR}/px4_ekf_global_origin.txt"
+  "${PX4_CLIENT_BIN_DIR}/px4-commander" set_ekf_origin \
+    "${PX4CTRL_EKF_ORIGIN_LAT}" \
+    "${PX4CTRL_EKF_ORIGIN_LON}" \
+    "${PX4CTRL_EKF_ORIGIN_ALT_M}" \
+    > "${EKF_ORIGIN_EVIDENCE}" 2>&1
+
+  origin_ready=false
+  origin_deadline=$((SECONDS + PX4CTRL_EKF_ORIGIN_TIMEOUT_S))
+  while (( SECONDS < origin_deadline )); do
+    vehicle_status="$(${PX4_CLIENT_BIN_DIR}/px4-listener vehicle_status -n 1 2>&1 || true)"
+    failsafe_flags="$(${PX4_CLIENT_BIN_DIR}/px4-listener failsafe_flags -n 1 2>&1 || true)"
+    if grep -q 'pre_flight_checks_pass: True' <<<"${vehicle_status}" &&
+       grep -q 'global_position_invalid: False' <<<"${failsafe_flags}" &&
+       grep -q 'home_position_invalid: False' <<<"${failsafe_flags}"; then
+      origin_ready=true
+      break
+    fi
+    sleep 1
+  done
+
+  {
+    echo "requested_origin=${PX4CTRL_EKF_ORIGIN_LAT},${PX4CTRL_EKF_ORIGIN_LON},${PX4CTRL_EKF_ORIGIN_ALT_M}"
+    echo "preflight_ready=${origin_ready}"
+    printf '%s\n' "${vehicle_status}"
+    printf '%s\n' "${failsafe_flags}"
+    "${PX4_CLIENT_BIN_DIR}/px4-listener" vehicle_global_position -n 1 || true
+    "${PX4_CLIENT_BIN_DIR}/px4-listener" home_position -n 1 || true
+    "${PX4_CLIENT_BIN_DIR}/px4-commander" check || true
+  } >> "${EKF_ORIGIN_EVIDENCE}" 2>&1
+
+  if [[ "${origin_ready}" != "true" ]]; then
+    echo "PX4 EKF global origin did not make the vehicle preflight-ready inside ${PX4CTRL_EKF_ORIGIN_TIMEOUT_S}s" >&2
+    exit 6
+  fi
+fi
+
 PX4CTRL_LAUNCH="${RESULT_DIR}/px4ctrl_mosim.launch"
 PX4CTRL_CONFIG="$(rospack find px4ctrl)/config/ctrl_param_fpv.yaml"
 cat > "${PX4CTRL_LAUNCH}" <<EOF
@@ -976,7 +1126,7 @@ cat > "${PX4CTRL_LAUNCH}" <<EOF
     <remap from="/mavros/imu/data" to="/uav1/mavros/imu/data" />
     <remap from="/mavros/rc/in" to="/uav1/mavros/rc/in" />
     <remap from="/mavros/battery" to="/uav1/mavros/battery" />
-    <remap from="/mavros/setpoint_raw/attitude" to="/uav1/mavros/setpoint_raw/attitude" />
+    <remap from="/mavros/setpoint_raw/attitude" to="${PX4CTRL_ATTITUDE_OUTPUT_TOPIC}" />
     <remap from="/mavros/set_mode" to="/uav1/mavros/set_mode" />
     <remap from="/mavros/cmd/arming" to="/uav1/mavros/cmd/arming" />
     <remap from="/mavros/cmd/command" to="/uav1/mavros/cmd/command" />
@@ -1084,9 +1234,17 @@ cat > "${PX4CTRL_LAUNCH}" <<EOF
 </launch>
 EOF
 
-stdbuf -oL -eL roslaunch "${PX4CTRL_LAUNCH}" > "${RESULT_DIR}/px4ctrl.log" 2>&1 &
-PIDS+=("$!")
-sleep 5
+if [[ "${PX4CTRL_START_CONTROLLER}" == "true" ]]; then
+  stdbuf -oL -eL roslaunch "${PX4CTRL_LAUNCH}" > "${RESULT_DIR}/px4ctrl.log" 2>&1 &
+  PIDS+=("$!")
+  sleep 5
+else
+  {
+    echo "PX4CTRL_START_CONTROLLER=false"
+    echo "px4ctrl_node not started; PX4 built-in control remains available to QGC."
+    date --iso-8601=seconds
+  } > "${RESULT_DIR}/px4ctrl.log"
+fi
 
 if [[ "${REVIEW_START_CLOUD_NODE}" == "true" ]]; then
   python3 "${PROJECT_ROOT}/Scripts/sunray/px4ctrl_pointcloud_review_node.py" \
@@ -1117,6 +1275,15 @@ if [[ "${REVIEW_PRESTART_HOLD_S}" != "0" && "${REVIEW_PRESTART_HOLD_S}" != "0.0"
     date --iso-8601=seconds
   } > "${RESULT_DIR}/review_prestart_hold.txt"
   sleep "${REVIEW_PRESTART_HOLD_S}"
+fi
+
+if [[ -n "${PX4CTRL_PRE_MISSION_OWNER_TOPIC}" ]]; then
+  python3 "${PROJECT_ROOT}/Scripts/mworks_live/wait_for_rt1_control_state.py" \
+    --topic "${PX4CTRL_PRE_MISSION_OWNER_TOPIC}" \
+    --expected-state "${PX4CTRL_PRE_MISSION_OWNER_STATE}" \
+    --run-id "${RUN_ID}" \
+    --timeout-s "${PX4CTRL_PRE_MISSION_OWNER_TIMEOUT_S}" \
+    --output "${RESULT_DIR}/pre_mission_control_owner.json"
 fi
 
 PX4CTRL_MISSION_EFFECTIVE_EXTRA_ARGS="${PX4CTRL_MISSION_EXTRA_ARGS}"
@@ -1163,6 +1330,8 @@ else
     --mission "${MISSION}" \
     --control-odom-topic "${PX4CTRL_ODOM_TOPIC}" \
     --path-frame "${PX4CTRL_PATH_FRAME}" \
+    --manual-input-file "${PX4CTRL_MANUAL_INPUT_FILE}" \
+    --manual-run-id "${PX4CTRL_MANUAL_RUN_ID}" \
     ${PX4CTRL_MISSION_EFFECTIVE_EXTRA_ARGS} \
     > "${RESULT_DIR}/px4ctrl_basic_mission.log" 2>&1
   MISSION_EXIT_CODE=$?
@@ -1209,6 +1378,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "mid360_csv_stride": "${SUNRAY_MID360_GOAL5_CSV_STRIDE}"
   },
   "px4ctrl": {
+    "controller_started": ${PX4CTRL_START_CONTROLLER},
     "mass": ${PX4CTRL_MASS},
     "hover_percentage": ${PX4CTRL_HOVER_PERCENTAGE},
     "thrust_estimate_enable": ${PX4CTRL_THRUST_ESTIMATE_ENABLE},
@@ -1267,6 +1437,9 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "takeoff_hover_default_args": "$(printf '%s' "${PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
     "trajectory_default_args": "$(printf '%s' "${PX4CTRL_TRAJECTORY_DEFAULT_ARGS}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
     "core_profile": "${PX4CTRL_CORE_PROFILE}",
+    "attitude_output_topic": "${PX4CTRL_ATTITUDE_OUTPUT_TOPIC}",
+    "pre_mission_owner_topic": "${PX4CTRL_PRE_MISSION_OWNER_TOPIC}",
+    "pre_mission_owner_state": "${PX4CTRL_PRE_MISSION_OWNER_STATE}",
     "safety_test_event": "${PX4CTRL_SAFETY_TEST_EVENT}",
     "smc": {
       "lambda_xy": ${PX4CTRL_SMC_LAMBDA_XY},
