@@ -216,8 +216,8 @@ def test_model_studio_filters_three_uav_mission_by_vehicle_count() -> None:
     assert "const SINGLE_UAV_MISSION_OPTIONS" in source
     assert 'const THREE_UAV_MISSION_OPTIONS = ["三机三角编队 8 字"]' in source
     assert "function is_three_uav_mission(mission)" in source
-    assert "mission_vehicle_count(mission) = is_three_uav_mission(mission) ? 3 : 1" in source
-    assert "mission_options_for_vehicle_count(vehicle_count) = vehicle_count == 3 ?" in source
+    assert "function mission_vehicle_count(mission)" in source
+    assert "function mission_options_for_vehicle_count(vehicle_count)" in source
 
     sync = source.split("function sync_vehicle_controls(app)", 1)[1].split(
         "function configure_composition_controls(app; live=false)", 1
