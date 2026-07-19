@@ -35,7 +35,7 @@ ACCEPTED_RECORD_STATUSES = {"accepted", "accepted_current_worktree"}
 BOUNDARY_CASES: tuple[dict[str, str], ...] = (
     {
         "output_variant": "ATTITUDE_THRUST",
-        "record": "Results/control_platform/offline_expansion_goal_20260719/P2_ATTITUDE_THRUST_LIVE_ACCEPTANCE.json",
+        "record": "Results/mworks_generated_profiles/goal-p2-attitude-thrust-fixture-20260719-v8/CERTIFICATION.json",
         "evidence_kind": "current_platform_fixture",
     },
     {

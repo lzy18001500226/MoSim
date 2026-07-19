@@ -1,18 +1,16 @@
 {
   "schema": "mosim.offline_boundary_regression.v1",
-  "generated_at": "2026-07-19T07:39:59+08:00",
-  "status": "blocked",
+  "generated_at": "2026-07-19T07:54:44+08:00",
+  "status": "accepted",
   "boundaries": [
     {
       "output_variant": "ATTITUDE_THRUST",
-      "record": "Results/control_platform/offline_expansion_goal_20260719/P2_ATTITUDE_THRUST_LIVE_ACCEPTANCE.json",
+      "record": "Results/mworks_generated_profiles/goal-p2-attitude-thrust-fixture-20260719-v8/CERTIFICATION.json",
       "evidence_kind": "current_platform_fixture",
-      "status": "blocked",
-      "reasons": [
-        "task_owned_session_cleanup_missing"
-      ],
-      "run_id": "goal-p2-attitude-thrust-fixture-20260719-v6",
-      "record_status": "accepted_with_session_cleanup_blocker",
+      "status": "accepted",
+      "reasons": [],
+      "run_id": "goal-p2-attitude-thrust-fixture-20260719-v8",
+      "record_status": "accepted",
       "acceptance": {
         "model_loaded": true,
         "check_model": true,
@@ -25,7 +23,7 @@
         "animation_window_opened": true,
         "bounded_closed_loop": true
       },
-      "session_cleanup": "blocked"
+      "session_cleanup": "passed"
     },
     {
       "output_variant": "BODY_RATE_THRUST",
