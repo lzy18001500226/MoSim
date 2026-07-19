@@ -542,6 +542,31 @@ Item {
         return path
     }
 
+    function taskPathLabel(kind) {
+        var path = taskPath(kind)
+        var semantics = String(path.semantics || "")
+        if (semantics === "formation_center_reference")
+            return "编队中心预期"
+        if (semantics === "exploration_target_sequence")
+            return "探索目标序列"
+        if (semantics === "planner_sampled_future_trajectory")
+            return "规划器未来轨迹"
+        return kind === "future" ? "未来轨迹" : "任务预期轨迹"
+    }
+
+    function taskPathStatusText() {
+        var expected = taskPath("expected")
+        var future = taskPath("future")
+        var labels = []
+        if (expected.status === "available")
+            labels.push(taskPathLabel("expected") + "已接收")
+        if (future.status === "available")
+            labels.push(taskPathLabel("future") + "已接收")
+        if (actualTrackRevision > 0)
+            labels.push("实际轨迹实时记录中")
+        return labels.length > 0 ? labels.join("；") : "等待任务轨迹与飞机位置"
+    }
+
     function paintTaskPaths(canvas, imageX, imageY, imageWidth, imageHeight) {
         var context = canvas.getContext("2d")
         context.reset()
@@ -1151,8 +1176,8 @@ Item {
                 Repeater {
                     model: [
                         { label: "实际", color: "#00d084", visible: Object.keys(root.actualTracksByVehicle).length > 0 },
-                        { label: "预期", color: "#ffb020", visible: root.taskPath("expected").status === "available" },
-                        { label: "未来", color: "#4aa3ff", visible: root.taskPath("future").status === "available" },
+                        { label: root.taskPathLabel("expected"), color: "#ffb020", visible: root.taskPath("expected").status === "available" },
+                        { label: root.taskPathLabel("future"), color: "#4aa3ff", visible: root.taskPath("future").status === "available" },
                         { label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }
                     ]
                     delegate: Row {
@@ -1576,6 +1601,12 @@ Item {
                                   : "Sidecar实时遥测：不可用或已过期"
                             color: runtimeTelemetryFresh() ? qgcPal.colorGreen : qgcPal.colorRed
                             font.bold: true
+                            wrapMode: Text.Wrap
+                            Layout.fillWidth: true
+                        }
+                        QGCLabel {
+                            text: "地图轨迹：" + taskPathStatusText()
+                            color: runtimeTelemetryFresh() ? qgcPal.colorGreen : qgcPal.colorOrange
                             wrapMode: Text.Wrap
                             Layout.fillWidth: true
                         }

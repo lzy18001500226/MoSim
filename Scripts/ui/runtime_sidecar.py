@@ -112,6 +112,7 @@ class RosRuntimeSidecar:
         self.args = args
         self.run_dir = args.run_dir
         self.manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+        self.profile_id = str(self.manifest.get("experiment_profile_id", ""))
         self.contract = load_contract(args.contract)
         manifest_count = self.manifest.get("vehicle_count", args.vehicle_count)
         if manifest_count != args.vehicle_count:
@@ -178,9 +179,19 @@ class RosRuntimeSidecar:
         return [_vector(point) for point in points[::stride]][:max_points]
 
     def _expected_path_cb(self, msg: Any, source_topic: str) -> None:
+        if self.profile_id == "factory_l2_three_uav_swarm_formation_v1":
+            semantics = "formation_center_reference"
+            vehicle_scope = "formation_center"
+        elif self.profile_id == "factory_l2_fuel_fixed64_exploration_v1":
+            semantics = "exploration_target_sequence"
+            vehicle_scope = "uav1"
+        else:
+            semantics = "mission_reference"
+            vehicle_scope = "uav1" if len(self.vehicle_ids) == 1 else "all_vehicles"
         self.task_paths["expected"] = {
             "status": "available",
-            "semantics": "mission_reference_or_targets",
+            "semantics": semantics,
+            "vehicle_scope": vehicle_scope,
             "source_topic": source_topic,
             "frame_id": str(msg.header.frame_id),
             "updated_at": time.time(),
@@ -193,6 +204,7 @@ class RosRuntimeSidecar:
         self.task_paths["future"] = {
             "status": "available",
             "semantics": "planner_sampled_future_trajectory",
+            "vehicle_scope": "uav1" if len(self.vehicle_ids) == 1 else "planner_default",
             "source_topic": source_topic,
             "frame_id": str(msg.header.frame_id),
             "updated_at": time.time(),

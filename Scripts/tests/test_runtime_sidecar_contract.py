@@ -153,7 +153,10 @@ def test_sidecar_can_skip_ftc_readiness_for_non_fault_profiles() -> None:
 def test_sidecar_exports_only_real_reference_and_future_path_sources() -> None:
     sidecar = Path("Scripts/ui/runtime_sidecar.py").read_text(encoding="utf-8")
     assert '"task_paths": self.task_paths' in sidecar
-    assert '"semantics": "mission_reference_or_targets"' in sidecar
+    assert 'semantics = "formation_center_reference"' in sidecar
+    assert 'semantics = "exploration_target_sequence"' in sidecar
+    assert 'semantics = "mission_reference"' in sidecar
+    assert '"vehicle_scope": vehicle_scope' in sidecar
     assert '"semantics": "planner_sampled_future_trajectory"' in sidecar
     assert 'msg.ns != "B-Spline"' in sidecar
     assert "msg.id >= 50" in sidecar

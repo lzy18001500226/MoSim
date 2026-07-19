@@ -369,6 +369,12 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "function paintFormationTarget" in qml
     assert "factoryFormationTargetPreview" in qml
     assert "factoryFormationTargetExpanded" in qml
+    assert "function taskPathLabel(kind)" in qml
+    assert "function taskPathStatusText()" in qml
+    assert 'return "编队中心预期"' in qml
+    assert 'return "探索目标序列"' in qml
+    assert 'return "规划器未来轨迹"' in qml
+    assert 'text: "地图轨迹：" + taskPathStatusText()' in qml
     assert "formation.target_center_xy_m" in qml
     assert 'context.strokeStyle = "#f05d9b"' in qml
     assert '{ label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }' in qml
