@@ -1,0 +1,40 @@
+{
+  "schema": "mosim.offline_expansion_custom_profile_acceptance.v1",
+  "recorded_at": "2026-07-19T10:33:50+08:00",
+  "phase": "P7_custom_profile_live_acceptance",
+  "run_id": "p7-custom-fault-comp-mixed-20260719-v2",
+  "profile_id": "custom_fault_comp_mixed_v1",
+  "status": "accepted",
+  "source_request": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/PROFILE.json",
+  "certification_record": "Results/mworks_generated_profiles/p7-custom-fault-comp-mixed-20260719-v2/CERTIFICATION.json",
+  "composition": {
+    "controller_id": "fault_compensation",
+    "output_variant": "ROTOR_COMMAND",
+    "scenario_id": "climb_rotor1_loss10_mild_wind",
+    "rotor_effectiveness": [0.9, 1.0, 1.0, 1.0],
+    "gust_force": [0.4, 0.0, 0.0]
+  },
+  "acceptance": {
+    "generated_wrapper": true,
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 5001,
+    "result_msr_present": true,
+    "strict_metrics": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "task_owned_session_shutdown": true
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.245702023286342,
+    "steady_state_error_m": 0.1877360441565703,
+    "max_position_error_m": 0.8393191045624275,
+    "settling_time_s": 32.74,
+    "max_tilt_rad": 0.23161901748800445,
+    "constraint_violation_count": 18
+  },
+  "claim_ceiling": "Current offline MWORKS on-demand custom wrapper/check/simulation/result/metrics/animation evidence for the mixed rotor-loss and gust case only. Not fault-rejection superiority, PX4, Gazebo, ROS1, mworks_live, code-generation, or flight evidence."
+}

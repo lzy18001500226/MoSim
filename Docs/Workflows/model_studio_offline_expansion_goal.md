@@ -647,3 +647,33 @@ constraint samples under the existing metric contract. The runtime index now
 contains five accepted single-profile batches and no blocked batch. This is
 current offline MWORKS evidence for Linear MPC only; it does not certify PX4,
 Gazebo, ROS1, online co-simulation, code-generation, or flight acceptance.
+
+P7 live checkpoint 10 closes the first Custom Compatible Profile proof:
+`custom_improved_pid_mild_wind_v1`. A new thin wrapper was generated on demand
+from the existing request, then passed current MWORKS model/check/simulation,
+`Result.msr`, strict metrics, result/plot/model/animation-window, and
+session-shutdown gates. Its checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_CUSTOM_IMPROVED_PID_MILD_WIND_LIVE_ACCEPTANCE.json
+```
+
+The run reports `position_rmse_m=0.20255`,
+`max_position_error_m=0.72960`, and `max_tilt_rad=0.20378`.
+
+P7 live checkpoint 11 closes the second Custom Compatible Profile proof:
+`custom_fault_comp_mixed_v1`. A new wrapper was generated on demand for a
+10-percent rotor-1 effectiveness loss plus `gust_force=[0.4,0,0]`, then passed
+the same current MWORKS and result/animation gates. Its checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_CUSTOM_FAULT_COMP_MIXED_LIVE_ACCEPTANCE.json
+```
+
+The run reports `position_rmse_m=0.24570`,
+`max_position_error_m=0.83932`, `settling_time_s=32.74`, and
+`max_tilt_rad=0.23162`. The catalog now points both custom proofs to these
+current accepted records. These proofs establish on-demand offline wrapper
+generation for two compatible `ROTOR_COMMAND` cases only; they do not certify
+all controller combinations, other output boundaries, online co-simulation,
+code generation, or flight behavior.

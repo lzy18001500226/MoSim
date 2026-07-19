@@ -1,0 +1,40 @@
+{
+  "schema": "mosim.offline_expansion_custom_profile_acceptance.v1",
+  "recorded_at": "2026-07-19T10:31:10+08:00",
+  "phase": "P7_custom_profile_live_acceptance",
+  "run_id": "p7-custom-improved-pid-mild-wind-20260719-v2",
+  "profile_id": "custom_improved_pid_mild_wind_v1",
+  "status": "accepted",
+  "source_request": "Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1/PROFILE.json",
+  "certification_record": "Results/mworks_generated_profiles/p7-custom-improved-pid-mild-wind-20260719-v2/CERTIFICATION.json",
+  "composition": {
+    "controller_id": "improved_pid",
+    "output_variant": "ROTOR_COMMAND",
+    "scenario_id": "climb_mild_wind",
+    "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+    "gust_force": [0.5, 0.0, 0.0]
+  },
+  "acceptance": {
+    "generated_wrapper": true,
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 5001,
+    "result_msr_present": true,
+    "strict_metrics": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "task_owned_session_shutdown": true
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.2025467974291693,
+    "steady_state_error_m": 0.10845909143009982,
+    "max_position_error_m": 0.7295974778237272,
+    "settling_time_s": 0.73,
+    "max_tilt_rad": 0.20377861211499146,
+    "constraint_violation_count": 17
+  },
+  "claim_ceiling": "Current offline MWORKS on-demand custom wrapper/check/simulation/result/metrics/animation evidence only. Not PX4, Gazebo, ROS1, mworks_live, code-generation, or flight evidence."
+}

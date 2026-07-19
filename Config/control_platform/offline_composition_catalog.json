@@ -254,15 +254,15 @@
   "custom_profile_proofs": [
     {
       "profile_id": "custom_improved_pid_mild_wind_v1",
-      "run_id": "custom-improved-pid-mild-wind-20260719-v1",
+      "run_id": "p7-custom-improved-pid-mild-wind-20260719-v2",
       "status": "accepted",
-      "certification_record": "Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1/CERTIFICATION.json"
+      "certification_record": "Results/mworks_generated_profiles/p7-custom-improved-pid-mild-wind-20260719-v2/CERTIFICATION.json"
     },
     {
       "profile_id": "custom_fault_comp_mixed_v1",
-      "run_id": "custom-fault-comp-mixed-20260719-v1",
+      "run_id": "p7-custom-fault-comp-mixed-20260719-v2",
       "status": "accepted",
-      "certification_record": "Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1/CERTIFICATION.json"
+      "certification_record": "Results/mworks_generated_profiles/p7-custom-fault-comp-mixed-20260719-v2/CERTIFICATION.json"
     }
   ],
   "disabled_profiles": [
