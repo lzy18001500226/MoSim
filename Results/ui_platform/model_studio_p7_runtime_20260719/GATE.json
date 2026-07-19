@@ -1,0 +1,90 @@
+{
+  "schema": "mosim.model_studio.p7_runtime_gate.v1",
+  "generated_at": "2026-07-19T12:00:06+08:00",
+  "status": "accepted",
+  "source_hashes": {
+    "apps/model_studio/src/app.jl": "8AA01C8DF23747296234451F7D65A9F71EF6C2005CA21DE30F394CA6C55ED381",
+    "Config/control_platform/offline_composition_catalog.json": "F121C24DE57F05BA1CC674C7A05067222714B05966C42E18D8C66B0AFC6B2B52",
+    "Scripts/mworks/run_offline_profile_batch.py": "4AB5FC2F40C6013D082CB5FA7D83A3C92C7D51B82AA1EF782D1B3AA64CB954C8"
+  },
+  "syslab_source_load": {
+    "status": "accepted",
+    "method": "include current app.jl through the visible Syslab GUI Julia service",
+    "window_handle": "0x6A099A",
+    "window_title": "MoSim Model Studio 0.5 UI Review",
+    "standalone_julia_boundary": "TyAppDesigner requires the Syslab GUI service; standalone Julia is not an accepted APP runtime"
+  },
+  "ui_modes": {
+    "offline_model_validation": "accepted",
+    "mworks_live": "visible_capability_gated",
+    "generated_c_deployment": "visible_capability_gated",
+    "layout_overlap": false
+  },
+  "profile_binding": {
+    "single_uav_certified": 8,
+    "three_uav_certified": 1,
+    "custom_compatible": 2,
+    "visible_disabled": [
+      "offline_qp_nmpc_safety_climb_v1"
+    ]
+  },
+  "async_batch": {
+    "status": "accepted",
+    "app_contract": "run(command; wait=false) followed by asynchronous wait",
+    "authoritative_backend": "Scripts/mworks/run_offline_profile_batch.py"
+  },
+  "safe_cancel": {
+    "status": "accepted",
+    "request_artifact": "CANCEL_REQUEST.json",
+    "mode": "after_active_profile_cleanup",
+    "terminal_status": "cancelled",
+    "kills_shared_sysplorer": false
+  },
+  "custom_rerun_contract": {
+    "status": "accepted",
+    "certified_argument": "--certified-profile-id",
+    "custom_argument": "--request-json",
+    "lineage_argument": "--retry-batch-id",
+    "result_index": "Results/control_platform/offline_batches/BATCH_INDEX.json"
+  },
+  "regression": {
+    "status": "passed",
+    "pytest_files": 8,
+    "catalog_checker": {
+      "ok": true,
+      "single_uav_profiles": 8,
+      "three_uav_profiles": 1
+    },
+    "runner_boundary_checker": {
+      "ok": true,
+      "boundary_count": 4
+    },
+    "expansion_inventory": {
+      "status": "passed",
+      "module_count": 77
+    },
+    "experiment_profile_checker": {
+      "status": "passed_with_warnings",
+      "checked_count": 27,
+      "error_count": 0
+    },
+    "julia_parse": "passed"
+  },
+  "screenshot_evidence": {
+    "capture": "Results/ui_platform/model_studio_p7_runtime_20260719/screenshots_offline_custom_current/37252_0x6A099A_MoSim Model Studio 0.5 UI Review.png",
+    "manifest": "Results/ui_platform/model_studio_p7_runtime_20260719/screenshots_offline_custom_current/capture_manifest.json",
+    "capture_mode": "window_level_capture",
+    "foreground_clicking_required_for_routine_regression": false
+  },
+  "mworks_live_batch_state": {
+    "new_full_batch_rerun_for_this_gate": false,
+    "authority": "existing Profile-specific P7 live MWORKS acceptance records"
+  },
+  "claim_boundary": [
+    "APP current-source runtime and UI layout",
+    "offline batch orchestration and result management",
+    "no new MWORKS controller-performance claim",
+    "no online co-simulation claim",
+    "no Gazebo, PX4, ROS1, QGC flight, or code-generation acceptance claim"
+  ]
+}

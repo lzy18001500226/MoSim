@@ -59,6 +59,41 @@ def test_run_one_records_acceptance_and_logs(monkeypatch, tmp_path: Path) -> Non
     assert "--record-only" in captured
 
 
+def test_custom_profile_uses_request_json(monkeypatch, tmp_path: Path) -> None:
+    request = tmp_path / "custom.json"
+    request.write_text("{}", encoding="utf-8")
+    captured: list[str] = []
+
+    class Completed:
+        returncode = 0
+        stdout = ""
+        stderr = ""
+
+    def fake_run(*args, **kwargs):
+        captured.extend(args[0])
+        return Completed()
+
+    monkeypatch.setattr(batch.subprocess, "run", fake_run)
+    relative = request.relative_to(batch.ROOT) if request.is_relative_to(batch.ROOT) else request
+    batch.run_one(
+        "custom",
+        {
+            "controller_id": "improved_pid",
+            "output_variant": "ROTOR_COMMAND",
+            "execution_kind": "custom_request",
+            "request_json": str(relative),
+        },
+        "batch-custom",
+        1,
+        reuse_generated=False,
+        record_only=False,
+        timeout_s=12,
+        output_dir=tmp_path,
+    )
+    assert "--request-json" in captured
+    assert "--certified-profile-id" not in captured
+
+
 def test_batch_manifest_schema_is_json_serializable(tmp_path: Path) -> None:
     manifest = {
         "schema": "mosim.model_studio.offline_batch.v1",
@@ -157,6 +192,7 @@ def test_retry_source_and_index_preserve_lineage(tmp_path: Path) -> None:
         "batch_count": 2,
         "accepted_count": 0,
         "blocked_count": 2,
+        "cancelled_count": 0,
         "index_error_count": 0,
     }
     assert index["latest_batch_id"] == "retry"
@@ -215,6 +251,82 @@ def test_model_studio_uses_retry_lineage_and_result_index() -> None:
     assert '"--retry-batch-id"' in source
     assert "BATCH_INDEX.json" in source
     assert "LastOfflineBatchId" in source
+    assert '"--request-cancel"' in source
+    assert "run(command; wait=false)" in source
+
+
+def test_cancel_request_is_atomic_and_rejects_terminal_batch(tmp_path: Path) -> None:
+    batch_root = tmp_path / "batches"
+    output_dir = batch_root / "running"
+    output_dir.mkdir(parents=True)
+    request = batch.request_cancel(batch_root, "running")
+    assert request["mode"] == "after_active_profile_cleanup"
+    assert batch.read_cancel_request(output_dir) == request
+
+    batch.write_batch_manifest(
+        output_dir,
+        "running",
+        ["official_pid"],
+        [],
+        started="2026-07-19T12:00:00+08:00",
+        reuse_generated=False,
+        record_only=False,
+        timeout_s=10,
+        lineage={"root_batch_id": "running", "retry_of": None, "attempt": 1},
+        cancelled=request,
+        batch_root=batch_root,
+    )
+    with pytest.raises(ValueError, match="cancel_batch_already_terminal:cancelled"):
+        batch.request_cancel(batch_root, "running")
+
+
+def test_main_stops_after_active_profile_cleanup_when_cancel_requested(
+    monkeypatch, tmp_path: Path
+) -> None:
+    batch_root = tmp_path / "batches"
+    catalog_path = tmp_path / "catalog.json"
+    profiles = [
+        {"profile_id": "first", "vehicle_count": 1},
+        {"profile_id": "second", "vehicle_count": 1},
+    ]
+    catalog_path.write_text(json.dumps({"certified_profiles": profiles}), encoding="utf-8")
+    monkeypatch.setattr(batch, "BATCH_ROOT", batch_root)
+    monkeypatch.setattr(batch, "CATALOG", catalog_path)
+
+    calls: list[str] = []
+
+    def fake_run_one(profile_id, profile, batch_id, index, **kwargs):
+        calls.append(profile_id)
+        batch.request_cancel(batch_root, batch_id)
+        return {
+            "profile_id": profile_id,
+            "run_id": f"run-{profile_id}",
+            "status": "accepted",
+            "reason_code": "certification_accepted",
+        }
+
+    monkeypatch.setattr(batch, "run_one", fake_run_one)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_offline_profile_batch.py",
+            "--profile-id",
+            "first",
+            "--profile-id",
+            "second",
+            "--batch-id",
+            "cancel-after-first",
+        ],
+    )
+    assert batch.main() == 3
+    assert calls == ["first"]
+    manifest = batch.read_json(batch_root / "cancel-after-first" / "BATCH_MANIFEST.json")
+    assert manifest["status"] == "cancelled"
+    assert manifest["completed_profiles"] == ["first"]
+    assert manifest["cancellation"]["mode"] == "after_active_profile_cleanup"
+    index = batch.read_json(batch_root / batch.BATCH_INDEX_NAME)
+    assert index["summary"]["cancelled_count"] == 1
 
 
 @pytest.mark.parametrize(

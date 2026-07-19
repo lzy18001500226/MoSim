@@ -19,6 +19,7 @@ CATALOG = ROOT / "Config" / "control_platform" / "offline_composition_catalog.js
 CERTIFIER = ROOT / "Scripts" / "mworks" / "run_offline_profile_certification.py"
 BATCH_ROOT = ROOT / "Results" / "control_platform" / "offline_batches"
 BATCH_INDEX_NAME = "BATCH_INDEX.json"
+CANCEL_REQUEST_NAME = "CANCEL_REQUEST.json"
 ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
 
 
@@ -62,6 +63,9 @@ def profile_map(catalog: dict[str, Any]) -> dict[str, dict[str, Any]]:
     for item in catalog.get("disabled_profiles", []):
         if isinstance(item, dict) and item.get("profile_id"):
             profiles.setdefault(str(item["profile_id"]), item)
+    for item in catalog.get("custom_profile_proofs", []):
+        if isinstance(item, dict) and item.get("profile_id"):
+            profiles.setdefault(str(item["profile_id"]), item)
     return profiles
 
 
@@ -71,6 +75,10 @@ def resolve_profile(catalog: dict[str, Any], profile_id: str) -> dict[str, Any]:
         raise ValueError(f"profile_not_allowlisted:{profile_id}")
     if item.get("certification_state") == "blocked_current_run":
         raise ValueError(f"profile_disabled:{profile_id}")
+    if item.get("execution_kind") == "custom_request":
+        request_path = ROOT / str(item.get("request_json", ""))
+        if item.get("status") != "accepted" or not request_path.is_file():
+            raise ValueError(f"custom_profile_request_unavailable:{profile_id}")
     if item.get("vehicle_count") != 1:
         raise ValueError(f"batch_requires_single_uav_profile:{profile_id}")
     if item.get("execution_kind") == "direct_model":
@@ -95,14 +103,12 @@ def run_one(
     output_dir: Path,
 ) -> dict[str, Any]:
     run_id = unique_run_id(batch_id, profile_id, index)
-    command = [
-        sys.executable,
-        str(CERTIFIER),
-        "--certified-profile-id",
-        profile_id,
-        "--run-id",
-        run_id,
-    ]
+    command = [sys.executable, str(CERTIFIER)]
+    if profile.get("execution_kind") == "custom_request":
+        command.extend(["--request-json", str(ROOT / profile["request_json"])])
+    else:
+        command.extend(["--certified-profile-id", profile_id])
+    command.extend(["--run-id", run_id])
     if reuse_generated:
         command.append("--reuse-generated")
     if record_only:
@@ -176,6 +182,37 @@ def load_retry_source(batch_root: Path, retry_batch_id: str) -> dict[str, Any]:
     return source
 
 
+def request_cancel(batch_root: Path, batch_id: str) -> dict[str, Any]:
+    """Request cancellation at the next safe profile boundary."""
+    if not ID_PATTERN.fullmatch(batch_id):
+        raise ValueError(f"invalid_cancel_batch_id:{batch_id}")
+    output_dir = batch_root / batch_id
+    if not output_dir.is_dir():
+        raise ValueError(f"cancel_batch_not_found:{batch_id}")
+    manifest_path = output_dir / "BATCH_MANIFEST.json"
+    if manifest_path.is_file():
+        manifest = read_json(manifest_path)
+        raise ValueError(f"cancel_batch_already_terminal:{manifest.get('status', 'unknown')}")
+    request = {
+        "schema": "mosim.model_studio.offline_batch_cancel_request.v1",
+        "batch_id": batch_id,
+        "requested_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "mode": "after_active_profile_cleanup",
+    }
+    write_json_atomic(output_dir / CANCEL_REQUEST_NAME, request)
+    return request
+
+
+def read_cancel_request(output_dir: Path) -> dict[str, Any] | None:
+    path = output_dir / CANCEL_REQUEST_NAME
+    if not path.is_file():
+        return None
+    request = read_json(path)
+    if request.get("schema") != "mosim.model_studio.offline_batch_cancel_request.v1":
+        raise ValueError("cancel_request_schema_unsupported")
+    return request
+
+
 def rebuild_batch_index(batch_root: Path = BATCH_ROOT) -> dict[str, Any]:
     entries: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
@@ -186,7 +223,7 @@ def rebuild_batch_index(batch_root: Path = BATCH_ROOT) -> dict[str, Any]:
             status = str(manifest["status"])
             if manifest.get("schema") != "mosim.model_studio.offline_batch.v1":
                 raise ValueError("unsupported_schema")
-            if status not in {"accepted", "blocked"}:
+            if status not in {"accepted", "blocked", "cancelled"}:
                 raise ValueError("invalid_status")
             entries.append(
                 {
@@ -217,6 +254,7 @@ def rebuild_batch_index(batch_root: Path = BATCH_ROOT) -> dict[str, Any]:
     )
     accepted_count = sum(item["status"] == "accepted" for item in entries)
     blocked_count = sum(item["status"] == "blocked" for item in entries)
+    cancelled_count = sum(item["status"] == "cancelled" for item in entries)
     index = {
         "schema": "mosim.model_studio.offline_batch_index.v1",
         "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
@@ -225,6 +263,7 @@ def rebuild_batch_index(batch_root: Path = BATCH_ROOT) -> dict[str, Any]:
             "batch_count": len(entries),
             "accepted_count": accepted_count,
             "blocked_count": blocked_count,
+            "cancelled_count": cancelled_count,
             "index_error_count": len(errors),
         },
         "entries": entries,
@@ -246,6 +285,7 @@ def write_batch_manifest(
     timeout_s: int,
     lineage: dict[str, Any],
     batch_root: Path | None = None,
+    cancelled: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     accepted = len(records) == len(requested_profiles) and all(
         item["status"] == "accepted" for item in records
@@ -253,13 +293,14 @@ def write_batch_manifest(
     manifest = {
         "schema": "mosim.model_studio.offline_batch.v1",
         "batch_id": batch_id,
-        "status": "accepted" if accepted else "blocked",
+        "status": "cancelled" if cancelled is not None else ("accepted" if accepted else "blocked"),
         "started_at": started,
         "completed_at": datetime.now().astimezone().isoformat(timespec="seconds"),
         "requested_profiles": requested_profiles,
         "completed_profiles": [item["profile_id"] for item in records if item.get("run_id")],
         "records": records,
         "lineage": lineage,
+        "cancellation": cancelled,
         "execution": {
             "reuse_generated": reuse_generated,
             "record_only": record_only,
@@ -278,11 +319,24 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile-id", action="append", dest="profile_ids")
     parser.add_argument("--retry-batch-id")
-    parser.add_argument("--batch-id", required=True)
+    parser.add_argument("--batch-id")
+    parser.add_argument("--request-cancel")
     parser.add_argument("--reuse-generated", action="store_true")
     parser.add_argument("--record-only", action="store_true")
     parser.add_argument("--timeout-s", type=int, default=900)
     args = parser.parse_args()
+    if args.request_cancel:
+        if args.batch_id or args.profile_ids or args.retry_batch_id:
+            parser.error("cancel_request_cannot_start_batch")
+        try:
+            request = request_cancel(BATCH_ROOT, args.request_cancel)
+        except (OSError, json.JSONDecodeError, ValueError) as error:
+            print(json.dumps({"accepted": False, "reason_code": str(error)}, ensure_ascii=False))
+            return 2
+        print(json.dumps({"accepted": True, "request": request}, ensure_ascii=False, indent=2))
+        return 0
+    if not args.batch_id:
+        parser.error("batch_id_required")
     if not ID_PATTERN.fullmatch(args.batch_id):
         parser.error("invalid_batch_id")
     if bool(args.profile_ids) == bool(args.retry_batch_id):
@@ -332,7 +386,11 @@ def main() -> int:
         )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
         return 2
+    cancel_request: dict[str, Any] | None = None
     for index, (profile_id, profile) in enumerate(selected, start=1):
+        cancel_request = read_cancel_request(output_dir)
+        if cancel_request is not None:
+            break
         record = run_one(
             profile_id,
             profile,
@@ -346,6 +404,9 @@ def main() -> int:
         records.append(record)
         if record["status"] != "accepted":
             break
+        cancel_request = read_cancel_request(output_dir)
+        if cancel_request is not None:
+            break
 
     manifest = write_batch_manifest(
         output_dir,
@@ -358,9 +419,10 @@ def main() -> int:
         timeout_s=args.timeout_s,
         lineage=lineage,
         batch_root=BATCH_ROOT,
+        cancelled=cancel_request,
     )
     print(json.dumps(manifest, ensure_ascii=False, indent=2))
-    return 0 if manifest["status"] == "accepted" else 2
+    return 0 if manifest["status"] == "accepted" else (3 if manifest["status"] == "cancelled" else 2)
 
 
 if __name__ == "__main__":

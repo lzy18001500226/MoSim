@@ -46,6 +46,35 @@ result and numeric acceptance contract. Batch certification uses
 `--gui-reset-windows --shutdown-session` so model, plot, result, animation, and
 dedicated Sysplorer windows do not accumulate after a run.
 
+## Batch execution and routine regression
+
+The offline MIL action starts the batch backend asynchronously. While a batch
+is active, the action changes to a cancellation request; cancellation is
+cooperative and takes effect only after the active Profile has finished its
+normal result recording and session/window cleanup. It must not terminate the
+shared Sysplorer process.
+
+The backend is the authoritative automation surface for routine regression:
+
+```powershell
+python Scripts/mworks/run_offline_profile_batch.py --profile-id <profile_id>
+python Scripts/mworks/run_offline_profile_batch.py --retry-batch-id <batch_id>
+python Scripts/mworks/run_offline_profile_batch.py --request-cancel <batch_id>
+```
+
+Certified Profiles are rerun by catalog ID. Custom Profiles are rerun from
+their frozen request JSON with `--request-json`, so a generated wrapper and its
+inputs remain attributable. Terminal manifests rebuild
+`Results/control_platform/offline_batches/BATCH_INDEX.json`, including
+accepted, blocked, and cancelled counts.
+
+Routine APP regression should call these command-line/backend surfaces and
+inspect manifests, the result index, tests, and background window captures.
+It does not require repeated foreground clicking. A real Syslab source load is
+still required when the APP source or layout changes, because TyAppDesigner
+depends on the Syslab GUI service; one bounded load and window-level capture is
+sufficient unless the change specifically affects interactive UI behavior.
+
 Run the source inside Syslab:
 
 ```julia
@@ -64,6 +93,18 @@ Machine-readable evidence is stored at:
 ```text
 Results/ui_platform/model_studio_d4_gate_20260717/GATE.json
 ```
+
+The current P7 source/runtime and orchestration closeout is stored at:
+
+```text
+Results/ui_platform/model_studio_p7_runtime_20260719/GATE.json
+```
+
+It validates current-source loading, the three UI modes, offline Profile
+binding, asynchronous batch execution, safe cancellation, Custom request-based
+rerun, command-line regression, and a window-level layout capture. No new full
+MWORKS batch was run for this APP closeout; the existing Profile-specific P7
+MWORKS acceptance records remain the simulation authorities.
 
 The source interface does not inherit D4 runtime
 acceptance. It does not prove MWORKS simulation/codegen, MWORKS Live timing,

@@ -19,6 +19,21 @@ def test_model_studio_contains_every_offline_profile_authority() -> None:
     assert missing == []
 
 
+def test_custom_profiles_are_rerunnable_and_bind_current_evidence() -> None:
+    catalog = json.loads(CATALOG.read_text(encoding="utf-8-sig"))
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    for proof in catalog["custom_profile_proofs"]:
+        assert proof["execution_kind"] == "custom_request"
+        assert proof["vehicle_count"] == 1
+        assert proof["status"] == "accepted"
+        request = ROOT / proof["request_json"]
+        certification = ROOT / proof["certification_record"]
+        assert request.is_file()
+        assert certification.is_file()
+        evidence_dir = str(Path(proof["certification_record"]).parent).replace("\\", "/")
+        assert evidence_dir in source
+
+
 def test_model_studio_fail_closes_disabled_safety_profile() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert '"QP/NMPC Safety [当前禁用]"' in source

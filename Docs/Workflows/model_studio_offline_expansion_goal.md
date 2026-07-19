@@ -677,3 +677,35 @@ current accepted records. These proofs establish on-demand offline wrapper
 generation for two compatible `ROTOR_COMMAND` cases only; they do not certify
 all controller combinations, other output boundaries, online co-simulation,
 code generation, or flight behavior.
+
+P7 APP/runtime closeout accepts the current Model Studio source and offline
+batch orchestration surface. The source was loaded once through the Syslab GUI
+Julia service, which is required by TyAppDesigner; the resulting APP window
+showed all three execution modes, the 8 single-UAV Certified Profiles, the
+1 three-UAV Certified Profile, the 2 current Custom Profiles, and the disabled
+QP/NMPC Safety entry without visible overlap. The accepted gate is:
+
+```text
+Results/ui_platform/model_studio_p7_runtime_20260719/GATE.json
+```
+
+The APP now starts the batch process asynchronously. A running batch exposes a
+cooperative cancel request that is honored only after the active Profile has
+recorded its terminal evidence and completed normal window/session cleanup; it
+does not kill the reusable Sysplorer process. Certified Profile reruns preserve
+batch lineage by catalog ID, while Custom Profile reruns use the frozen request
+JSON and regenerate their thin wrapper on demand. Terminal manifests rebuild
+the batch result index and distinguish accepted, blocked, and cancelled runs.
+
+Routine APP regression is command-line first: invoke the same batch backend as
+the buttons, validate manifests/indexes and tests, and use window-level capture
+when visual evidence is needed. Repeated foreground clicking is neither a gate
+nor a preferred automation method. A new bounded Syslab source load is needed
+only when APP source/layout changes or when an interaction-specific behavior
+cannot be established from the backend contract.
+
+No full MWORKS Profile batch was rerun during this APP closeout. Existing P7
+Profile-specific MWORKS records remain the authority for model checks,
+simulations, `Result.msr`, metrics, result windows, and native animation. This
+closeout does not claim online co-simulation, Gazebo/PX4/ROS1, QGC flight,
+code-generation acceptance, or controller-performance improvement.

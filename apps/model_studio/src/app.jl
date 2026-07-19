@@ -40,8 +40,8 @@ const OFFLINE_PROFILES = Dict(
     "L1/AWFF 风扰 [已认证]" => (profile="offline_l1_awff_wind_v1", mission="爬升 + 风扰", controller="L1/AWFF", augmentation="L1", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-l1-awff-wind-20260719-v1", available=true),
     "故障补偿：电机 1 效率 85% [已认证]" => (profile="offline_fault_comp_rotor1_85_v1", mission="爬升 + 电机效率下降", controller="故障补偿", augmentation="故障重构", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-fault-comp-rotor1-85-20260719-v1", available=true),
     "三机 Linear MPC 三角编队 8 字 [已认证]" => (profile="offline_three_uav_linear_mpc_figure8_v1", mission="三机三角编队 8 字", controller="Linear MPC", augmentation="Leader-Follower", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2", available=true),
-    "Custom：改进 PID + 轻风扰 [已验证]" => (profile="custom_improved_pid_mild_wind_v1", mission="爬升 + 轻风扰", controller="改进 PID", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/custom-improved-pid-mild-wind-20260719-v1", available=true),
-    "Custom：故障补偿 + 轻风扰 [已验证]" => (profile="custom_fault_comp_mixed_v1", mission="爬升 + 轻风扰 + 电机效率下降", controller="故障补偿", augmentation="故障重构", safety="基础限幅", evidence="Results/mworks_generated_profiles/custom-fault-comp-mixed-20260719-v1", available=true),
+    "Custom：改进 PID + 轻风扰 [已验证]" => (profile="custom_improved_pid_mild_wind_v1", mission="爬升 + 轻风扰", controller="改进 PID", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/p7-custom-improved-pid-mild-wind-20260719-v2", available=true),
+    "Custom：故障补偿 + 轻风扰 [已验证]" => (profile="custom_fault_comp_mixed_v1", mission="爬升 + 轻风扰 + 电机效率下降", controller="故障补偿", augmentation="故障重构", safety="基础限幅", evidence="Results/mworks_generated_profiles/p7-custom-fault-comp-mixed-20260719-v2", available=true),
     "QP/NMPC Safety [当前禁用]" => (profile="offline_qp_nmpc_safety_climb_v1", mission="爬升", controller="Linear MPC", augmentation="无", safety="QP/NMPC Safety", evidence="当前共用 Runner 与独立模型均数值失稳", available=false),
 )
 
@@ -106,6 +106,8 @@ const OFFLINE_PROFILES = Dict(
     LastOfflineBatchManifest::String = ""
     LastOfflineBatchId::String = ""
     LastOfflineProfile::String = ""
+    CurrentOfflineBatchId::String = ""
+    OfflineBatchRunning::Bool = false
 
     function refresh_live_capability(app, action="status")
         response = LiveCosimBackend.request(
@@ -377,7 +379,10 @@ const OFFLINE_PROFILES = Dict(
             append!(command_args, ["--retry-batch-id", retry_batch_id])
         end
         command = Cmd(command_args; dir=PROJECT_ROOT)
-        app.MilButton.Enable = false
+        app.OfflineBatchRunning = true
+        app.CurrentOfflineBatchId = batch_id
+        app.MilButton.Text = "请求取消"
+        app.MilButton.Enable = true
         app.ResultButton.Enable = false
         app.LastOfflineBatchManifest = joinpath(
             PROJECT_ROOT,
@@ -388,23 +393,54 @@ const OFFLINE_PROFILES = Dict(
             "BATCH_MANIFEST.json",
         )
         app.StatusLabel.Text = "正在执行离线 MWORKS 批次：" * profile_id
+        @async begin
+            try
+                process = run(command; wait=false)
+                wait(process)
+                app.StatusLabel.Text = "离线批次完成：" * app.LastOfflineBatchManifest
+                app.ResultButton.Enable = true
+            catch error
+                if isfile(app.LastOfflineBatchManifest)
+                    app.StatusLabel.Text = "离线批次已阻断或取消，manifest：" * app.LastOfflineBatchManifest
+                    app.ResultButton.Enable = true
+                else
+                    app.StatusLabel.Text = "离线批次阻断：" * sprint(showerror, error)
+                end
+            finally
+                if isfile(app.LastOfflineBatchManifest)
+                    app.LastOfflineBatchId = batch_id
+                    app.LastOfflineProfile = profile_id
+                end
+                app.OfflineBatchRunning = false
+                app.CurrentOfflineBatchId = ""
+                app.MilButton.Text = "运行 MWORKS MIL"
+                app.MilButton.Enable = true
+            end
+        end
+    end
+
+    function request_offline_cancel(app)
+        if !app.OfflineBatchRunning || isempty(app.CurrentOfflineBatchId)
+            app.StatusLabel.Text = "当前没有正在运行的离线批次。"
+            return
+        end
+        batch_dir = joinpath(PROJECT_ROOT, "Results", "control_platform", "offline_batches", app.CurrentOfflineBatchId)
+        for _ in 1:20
+            isdir(batch_dir) && break
+            sleep(0.05)
+        end
+        command = Cmd([
+            "python",
+            OFFLINE_BATCH_RUNNER,
+            "--request-cancel",
+            app.CurrentOfflineBatchId,
+        ]; dir=PROJECT_ROOT)
         try
             run(command)
-            app.StatusLabel.Text = "离线批次完成：" * app.LastOfflineBatchManifest
-            app.ResultButton.Enable = true
+            app.StatusLabel.Text = "已请求安全取消；当前 Profile 完成证据与会话清理后停止后续任务。"
+            app.MilButton.Enable = false
         catch error
-            if isfile(app.LastOfflineBatchManifest)
-                app.StatusLabel.Text = "离线批次阻断，manifest：" * app.LastOfflineBatchManifest
-                app.ResultButton.Enable = true
-            else
-                app.StatusLabel.Text = "离线批次阻断：" * sprint(showerror, error)
-            end
-        finally
-            if isfile(app.LastOfflineBatchManifest)
-                app.LastOfflineBatchId = batch_id
-                app.LastOfflineProfile = profile_id
-            end
-            app.MilButton.Enable = true
+            app.StatusLabel.Text = "取消请求失败：" * sprint(showerror, error)
         end
     end
 
@@ -429,6 +465,10 @@ const OFFLINE_PROFILES = Dict(
     function SafeStopPressed(app, event); app.ReviewAction("请求安全停止"); end
     function OpenModelPressed(app, event); app.ReviewAction("打开模型"); end
     function MilPressed(app, event)
+        if app.OfflineBatchRunning
+            app.request_offline_cancel()
+            return
+        end
         if app.CurrentMode == "offline" && haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value)
             item = OFFLINE_PROFILES[app.ProfileDropDown.Value]
             if item.available

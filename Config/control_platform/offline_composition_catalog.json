@@ -254,12 +254,24 @@
   "custom_profile_proofs": [
     {
       "profile_id": "custom_improved_pid_mild_wind_v1",
+      "vehicle_count": 1,
+      "controller_id": "improved_pid",
+      "output_variant": "ROTOR_COMMAND",
+      "scenario_id": "climb_mild_wind",
+      "execution_kind": "custom_request",
+      "request_json": "Results/mworks_generated_profiles/requests/custom_improved_pid_mild_wind_v1.json",
       "run_id": "p7-custom-improved-pid-mild-wind-20260719-v2",
       "status": "accepted",
       "certification_record": "Results/mworks_generated_profiles/p7-custom-improved-pid-mild-wind-20260719-v2/CERTIFICATION.json"
     },
     {
       "profile_id": "custom_fault_comp_mixed_v1",
+      "vehicle_count": 1,
+      "controller_id": "fault_compensation",
+      "output_variant": "ROTOR_COMMAND",
+      "scenario_id": "climb_rotor1_loss10_mild_wind",
+      "execution_kind": "custom_request",
+      "request_json": "Results/mworks_generated_profiles/requests/custom_fault_comp_mixed_v1.json",
       "run_id": "p7-custom-fault-comp-mixed-20260719-v2",
       "status": "accepted",
       "certification_record": "Results/mworks_generated_profiles/p7-custom-fault-comp-mixed-20260719-v2/CERTIFICATION.json"
