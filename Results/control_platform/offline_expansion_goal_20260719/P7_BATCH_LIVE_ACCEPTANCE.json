@@ -1,0 +1,25 @@
+{
+  "schema": "mosim.model_studio.offline_batch_live_acceptance.v1",
+  "recorded_at": "2026-07-19T07:56:44+08:00",
+  "status": "accepted",
+  "batch_id": "p7-official-pid-smoke-20260719-v1",
+  "requested_profiles": ["offline_official_pid_climb_v1"],
+  "completed_profiles": ["offline_official_pid_climb_v1"],
+  "run_id": "batch-p7-official-pid-smoke-20260719-v1-01-offline-official-pid-climb-v1",
+  "output_variant": "ROTOR_COMMAND",
+  "batch_manifest": "Results/control_platform/offline_batches/p7-official-pid-smoke-20260719-v1/BATCH_MANIFEST.json",
+  "certification_record": "Results/mworks_generated_profiles/batch-p7-official-pid-smoke-20260719-v1-01-offline-official-pid-climb-v1/CERTIFICATION.json",
+  "acceptance": {
+    "allowlist_enforced": true,
+    "single_profile_real_run": true,
+    "mworks_model_check": true,
+    "mworks_simulation": true,
+    "result_msr": true,
+    "metrics": true,
+    "result_window_opened": true,
+    "animation_window_opened": true,
+    "task_owned_session_cleanup": true,
+    "stop_on_first_blocker_policy": true
+  },
+  "claim_boundary": "Real offline MWORKS batch orchestration and run-local certification only. No PX4, Gazebo, ROS1, online co-simulation, or flight acceptance."
+}

@@ -446,3 +446,34 @@ The direct current MCP health check immediately afterward still returned
 independent client startup from a proven model or license failure. P2 remains
 active and the four-boundary regression remains blocked until ATTITUDE has a
 fresh accepted run with task-owned session cleanup.
+
+P2 live checkpoint 7 supersedes the ATTITUDE cleanup blocker. After the
+current dedicated session on port `49152` was shut down, a fresh independent
+certification run completed successfully:
+
+```text
+Results/mworks_generated_profiles/goal-p2-attitude-thrust-fixture-20260719-v8/CERTIFICATION.json
+```
+
+The run passed model load, `CheckModel`, the 50-second MWORKS simulation with
+5001 samples, current `Result.msr`, strict result checks, result/plot/model/
+animation-window creation, and task-owned session shutdown. Playback was not
+required. The resulting four-boundary regression is now accepted; this closes
+the platform-boundary fixture gate only and does not claim controller,
+code-generation, PX4, Gazebo, ROS1, online co-simulation, or flight evidence.
+
+P7 live checkpoint 2 validates the APP batch backend through one real
+single-profile run. The allowlisted `offline_official_pid_climb_v1` profile
+completed through the batch runner with a current MWORKS model check,
+simulation, `Result.msr`, metrics, result/animation windows, and task-owned
+session cleanup. The batch wrote `BATCH_MANIFEST.json`, retained per-run
+stdout/stderr logs, and returned `status=accepted` without touching the model
+source tree. The checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_BATCH_LIVE_ACCEPTANCE.json
+```
+
+This proves one real batch path, not all eight Certified Profiles or the full
+APP UI runtime. Remaining P7 work is batch failure/retry/result-management
+coverage and then the broader Certified/Custom Profile batches.
