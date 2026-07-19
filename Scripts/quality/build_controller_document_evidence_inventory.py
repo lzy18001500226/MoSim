@@ -162,6 +162,9 @@ def inventory_row(row: dict[str, Any]) -> dict[str, Any]:
     controller = str(row["controller"])
     cohort = str(row["cohort"])
     roots = [repo_path(path) for path in COHORT_ROOTS[cohort]]
+    captured_root = DEFAULT_OUTPUT_DIR / cohort
+    if captured_root.exists():
+        roots.append(captured_root)
     files = list(files_under(tuple(roots)))
     aliases = route_aliases(controller)
 

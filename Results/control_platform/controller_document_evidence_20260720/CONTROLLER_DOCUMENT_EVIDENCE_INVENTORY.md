@@ -7,7 +7,7 @@
 - 状态计数：`{"accepted": 27, "executed_blocked": 33, "not_run": 7}`
 - 已有模型源码：`60`
 - 已有图形模型截图：`44`
-- 已有结果查看器截图：`10`
+- 已有结果查看器截图：`16`
 - 已有数值结果或指标：`62`
 - 仓库内可见Result.msr：`4`
 - 实现阻塞：`2`
@@ -23,12 +23,12 @@
 
 | 家族 | 路线 | 矩阵状态 | 模型 | 图形截图 | 结果截图 | 数值结果 | MSR | 下一步 |
 |---|---|---|---:|---:|---:|---:|---:|---|
-| P1_PID | cascade_pid | accepted | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P1_PID | anti_windup | accepted | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P1_PID | feedforward_profile | accepted | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P1_PID | gain_scheduled_pid | accepted | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P1_PID | fuzzy_pid | accepted | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
-| P1_PID | neural_pid | accepted | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
+| P1_PID | cascade_pid | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P1_PID | anti_windup | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P1_PID | feedforward_profile | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P1_PID | gain_scheduled_pid | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P1_PID | fuzzy_pid | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
+| P1_PID | neural_pid | accepted | 有 | 有 | 有 | 有 | 待确认 | confirm_native_result_msr_in_live_session |
 | P2_LINEAR_ROBUST | lqg | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
 | P2_LINEAR_ROBUST | feedback_linearization | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |
 | P2_LINEAR_ROBUST | passivity_based_control | executed_blocked | 有 | 有 | 缺 | 有 | 待确认 | capture_missing_mworks_screenshots |

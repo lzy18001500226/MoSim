@@ -18,14 +18,14 @@
     },
     "model_source_present_count": 60,
     "graphical_screenshot_present_count": 44,
-    "result_screenshot_present_count": 10,
+    "result_screenshot_present_count": 16,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 50,
-      "confirm_native_result_msr_in_live_session": 10,
+      "capture_missing_mworks_screenshots": 44,
+      "confirm_native_result_msr_in_live_session": 16,
       "repair_or_rerun_required": 5
     }
   },
@@ -40,7 +40,8 @@
         "cascade_pid"
       ],
       "search_roots": [
-        "Results/control_platform/p1_pid_mworks_20260716"
+        "Results/control_platform/p1_pid_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID"
       ],
       "model_sources": [
         "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
@@ -51,7 +52,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID/cascade_pid/result/51472_0x3520E24_MoSim_PID_CASCADE_PID_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p1_pid_mworks_20260716/metrics/cascade_pid.json",
         "Results/control_platform/p1_pid_mworks_20260716/raw/cascade_pid.csv",
@@ -65,11 +68,10 @@
         "Results/sunray_ros1/p1_pid_cascade_runtime_r4_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P1_PID",
@@ -81,7 +83,8 @@
         "anti_windup"
       ],
       "search_roots": [
-        "Results/control_platform/p1_pid_mworks_20260716"
+        "Results/control_platform/p1_pid_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID"
       ],
       "model_sources": [
         "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL.mo",
@@ -90,7 +93,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID/anti_windup/result/51472_0x3520E24_MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p1_pid_mworks_20260716/metrics/anti_windup.json",
         "Results/control_platform/p1_pid_mworks_20260716/raw/anti_windup.csv",
@@ -104,11 +109,10 @@
         "Results/sunray_ros1/p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P1_PID",
@@ -120,7 +124,8 @@
         "feedforward_profile"
       ],
       "search_roots": [
-        "Results/control_platform/p1_pid_mworks_20260716"
+        "Results/control_platform/p1_pid_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID"
       ],
       "model_sources": [
         "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL.mo",
@@ -132,7 +137,9 @@
         "Results/control_platform/p1_pid_mworks_20260716/screenshots/check_sim/40544_0x11409CE_MoSim_PID_FEEDFORWARD_PROFILE_MIL - Sysplorer _教育版_.png",
         "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID/feedforward_profile/result/51472_0x3520E24_MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p1_pid_mworks_20260716/metrics/feedforward_profile.json",
         "Results/control_platform/p1_pid_mworks_20260716/raw/feedforward_profile.csv",
@@ -146,11 +153,10 @@
         "Results/sunray_ros1/p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P1_PID",
@@ -162,7 +168,8 @@
         "gain_scheduled_pid"
       ],
       "search_roots": [
-        "Results/control_platform/p1_pid_mworks_20260716"
+        "Results/control_platform/p1_pid_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID"
       ],
       "model_sources": [
         "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
@@ -171,7 +178,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID/gain_scheduled_pid/result/51472_0x3520E24_MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p1_pid_mworks_20260716/metrics/gain_scheduled_pid.json",
         "Results/control_platform/p1_pid_mworks_20260716/raw/gain_scheduled_pid.csv",
@@ -185,11 +194,10 @@
         "Results/sunray_ros1/p1_pid_gain_scheduled_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P1_PID",
@@ -201,7 +209,8 @@
         "fuzzy_pid"
       ],
       "search_roots": [
-        "Results/control_platform/p1_pid_mworks_20260716"
+        "Results/control_platform/p1_pid_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID"
       ],
       "model_sources": [
         "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
@@ -210,7 +219,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID/fuzzy_pid/result/51472_0x3520E24_MoSim_PID_FUZZY_PID_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p1_pid_mworks_20260716/metrics/fuzzy_pid.json",
         "Results/control_platform/p1_pid_mworks_20260716/raw/fuzzy_pid.csv",
@@ -224,11 +235,10 @@
         "Results/sunray_ros1/p1_pid_fuzzy_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P1_PID",
@@ -240,7 +250,8 @@
         "neural_pid"
       ],
       "search_roots": [
-        "Results/control_platform/p1_pid_mworks_20260716"
+        "Results/control_platform/p1_pid_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID"
       ],
       "model_sources": [
         "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
@@ -249,7 +260,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P1_PID/neural_pid/result/51472_0x3520E24_MoSim_PID_NEURAL_PID_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p1_pid_mworks_20260716/metrics/neural_pid.json",
         "Results/control_platform/p1_pid_mworks_20260716/raw/graphical_variants/neural_pid.csv",
@@ -263,11 +276,10 @@
         "Results/sunray_ros1/p1_pid_neural_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P2_LINEAR_ROBUST",

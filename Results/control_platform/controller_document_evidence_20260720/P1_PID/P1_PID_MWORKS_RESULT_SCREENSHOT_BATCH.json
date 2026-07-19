@@ -1,0 +1,73 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "p1_pid_mworks_result_screenshots_20260720",
+  "status": "passed",
+  "source": "MWORKS_MCP",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49155,
+  "activation_state_observation": "Sysplorer education edition main window visible and responsive",
+  "license_state": "education_edition_no_login_or_license_blocker_observed",
+  "session_sentinel": "Results/control_platform/controller_document_evidence_20260720/session_sentinel/51472_0x62F0AAC_Sysplorer _教育版_.png",
+  "model_check": "passed_6_of_6",
+  "simulation": "passed_6_of_6",
+  "result_variable": "command",
+  "sample_count_per_case": 21,
+  "time_end_s": 0.2,
+  "rows": [
+    {
+      "controller": "cascade_pid",
+      "model": "MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
+      "command_end": 0.8008260606089771,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P1_PID/cascade_pid/result/51472_0x3520E24_MoSim_PID_CASCADE_PID_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "CC7A18A93B3BD81F99F2C9F1F9B7A22B05C3619D14994A9D1660774DCD67A006"
+    },
+    {
+      "controller": "anti_windup",
+      "model": "MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL",
+      "command_end": 1.0,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P1_PID/anti_windup/result/51472_0x3520E24_MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "8049095910781EC4749D5F5133B4A314FED2F6E7E11EE68D030EE0C5FD20450A"
+    },
+    {
+      "controller": "feedforward_profile",
+      "model": "MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL",
+      "command_end": 0.6972,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P1_PID/feedforward_profile/result/51472_0x3520E24_MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "0508DBD70E8A4EB95915C268F7297511DF0017C7BF479725CAAAA0FCE2A96695"
+    },
+    {
+      "controller": "gain_scheduled_pid",
+      "model": "MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
+      "command_end": 0.6566399999999999,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P1_PID/gain_scheduled_pid/result/51472_0x3520E24_MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "198FF96D0047788DE2F9ADA037FAB196493964A9509085BD831F9CB167AFE9C8"
+    },
+    {
+      "controller": "fuzzy_pid",
+      "model": "MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
+      "command_end": 0.6095724216438178,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P1_PID/fuzzy_pid/result/51472_0x3520E24_MoSim_PID_FUZZY_PID_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "729AA70D2A46965EEBE05D0CAA803F3D0FF627A8DB7D82131B01F57FEF314B89"
+    },
+    {
+      "controller": "neural_pid",
+      "model": "MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
+      "command_end": 0.5581440000000001,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P1_PID/neural_pid/result/51472_0x3520E24_MoSim_PID_NEURAL_PID_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "22061EF2F8B80C6F682C33138F770BF2190FF4FA10ADE0B0E3E5C804FDD04569"
+    }
+  ],
+  "mworks_phase_observations": [
+    "All six graphical PID fixtures passed CheckModel in the same reusable Sysplorer session.",
+    "All six simulations produced readable command results and nonempty result-viewer plots.",
+    "Every command end value exactly matches the existing 2026-07-16 MWORKS metric file.",
+    "Screenshots were captured with the DPI-aware background route without UI clicks."
+  ],
+  "claim_ceiling": "real_fixed_input_graphical_sysblock_mil_and_result_viewer_evidence_not_full_aircraft_trajectory"
+}
