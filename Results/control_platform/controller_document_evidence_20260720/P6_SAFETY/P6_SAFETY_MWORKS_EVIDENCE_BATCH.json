@@ -1,0 +1,71 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "p6_safety_mworks_evidence_20260720",
+  "captured_at": "2026-07-20T03:17:20.4747206+08:00",
+  "status": "passed_with_documented_boundaries",
+  "source": "MWORKS_MCP_LIVE",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49155,
+  "activation_state_observation": "Sysplorer education edition main and result-viewer windows were responsive; no login, activation, authorization or error dialog was observed",
+  "license_state": "task_local_check_and_simulation_sufficient",
+  "route": "safety_supervisor_family",
+  "family_modes": [
+    "safety_filter",
+    "cbf",
+    "reference_governor",
+    "geofence",
+    "emergency_stop",
+    "return_and_land",
+    "failsafe_state_machine"
+  ],
+  "graphical_fixture": {
+    "model": "Results/control_platform/p6_safety_mworks_20260717/models/graphical_variants/MoSim_P6_SAFETY_SUPERVISOR_FAMILY_GRAPHICAL_MIL.mo",
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 21,
+    "time_end_s": 0.2,
+    "end_values": {
+      "safe_acceleration_x": 3.0,
+      "safe_reference_x": 8.0,
+      "action": 5.0
+    },
+    "screenshot": "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/graphical/safety_supervisor_family_graphical_model.png",
+    "screenshot_sha256": "21F4397026A698F5625D3D099ED3073747B676D5548D5116882A47881F0A28E4",
+    "screenshot_width": 1800,
+    "screenshot_height": 1000,
+    "claim_boundary": "Readable safety-family topology and native graphical MIL only; not numerical equivalence with the seven-mode CFunction and not full-aircraft evidence."
+  },
+  "representative_execution": {
+    "model": "Results/control_platform/p6_safety_mworks_20260717/models/MoSim_P6_SAFETY_FILTER_MIL.mo",
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 21,
+    "time_end_s": 0.2,
+    "end_values": {
+      "safe_acceleration_x": 4.0625,
+      "safe_thrust": 1.0,
+      "active_constraints": 7.0,
+      "action": 1.0
+    },
+    "historical_mil_row_match": true,
+    "historical_mil_authority": "Results/control_platform/p6_safety_mworks_20260717/MWORKS_MIL_EVIDENCE.json",
+    "result_screenshot": "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/result/safety_supervisor_family_result_viewer.png",
+    "result_screenshot_sha256": "653E3638091D693A5F686F3382FB64563FCEDE1AE6743410F9883E2F882D6594",
+    "result_screenshot_width": 1708,
+    "result_screenshot_height": 921
+  },
+  "seven_mode_authorities": {
+    "mworks_mil": "Results/control_platform/p6_safety_mworks_20260717/MWORKS_MIL_EVIDENCE.json",
+    "generated_runtime": "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json",
+    "mworks_mode_count": 7,
+    "runtime_acknowledged_mode_count": 7
+  },
+  "native_result_msr": null,
+  "claim_boundary": [
+    "The 67-row authority contains one safety_supervisor_family route; the seven safety modes are internal family coverage and are not seven additional controller rows.",
+    "The graphical fixture is a readable structural report asset. Seven-mode numerical authority remains the existing CFunction MWORKS MIL evidence.",
+    "The result screenshot is current real MWORKS result-viewer evidence for the representative safety_filter mode.",
+    "No Result.msr is promoted because an exact file binding was not established in this batch.",
+    "Runtime acknowledgement does not by itself claim ordinary takeoff-hover-land success for deliberate STOP, HOLD or RETURN scenarios."
+  ]
+}

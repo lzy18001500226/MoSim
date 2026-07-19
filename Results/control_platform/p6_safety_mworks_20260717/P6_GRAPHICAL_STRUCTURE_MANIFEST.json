@@ -1,0 +1,15 @@
+{
+  "schema": "mosim.control_platform.p6_safety_graphical_structure.v1",
+  "status": "generated_pending_live_check",
+  "model": "Results/control_platform/p6_safety_mworks_20260717/models/graphical_variants/MoSim_P6_SAFETY_SUPERVISOR_FAMILY_GRAPHICAL_MIL.mo",
+  "family_modes": [
+    "safety_filter",
+    "cbf",
+    "reference_governor",
+    "geofence",
+    "emergency_stop",
+    "return_and_land",
+    "failsafe_state_machine"
+  ],
+  "claim_boundary": "Readable native graphical family fixture for report topology only. The seven-mode CFunction MIL and generated runtime matrix remain the numerical and runtime authorities."
+}

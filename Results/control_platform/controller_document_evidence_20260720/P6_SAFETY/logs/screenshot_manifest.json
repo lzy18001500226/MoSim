@@ -1,0 +1,25 @@
+{
+  "schema": "mosim.mworks_phase_screenshot_manifest.v1",
+  "captured_at": "2026-07-20T03:17:20.4747206+08:00",
+  "source": "MWORKS_MCP_LIVE",
+  "sysplorer_port": 49155,
+  "screenshots": [
+    {
+      "phase": "graphical_model_after_check_and_simulate",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/graphical/safety_supervisor_family_graphical_model.png",
+      "sha256": "21F4397026A698F5625D3D099ED3073747B676D5548D5116882A47881F0A28E4",
+      "width": 1800,
+      "height": 1000,
+      "observation": "Three connected safety paths are visible: command constraint shaping, geofence/reference governance, and watchdog/emergency action arbitration."
+    },
+    {
+      "phase": "representative_cfunction_result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/result/safety_supervisor_family_result_viewer.png",
+      "sha256": "653E3638091D693A5F686F3382FB64563FCEDE1AE6743410F9883E2F882D6594",
+      "width": 1708,
+      "height": 921,
+      "observation": "The result tree selects MoSim_P6_SAFETY_FILTER_MIL and the plot shows safe_acceleration_x, safe_thrust, active_constraints and action over 0.0-0.2 s."
+    }
+  ],
+  "will_not_click_activation_login": true
+}

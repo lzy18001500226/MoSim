@@ -1,0 +1,43 @@
+model MoSim_P6_SAFETY_SUPERVISOR_FAMILY_GRAPHICAL_MIL "P6 safety family: constraint shaping, reference governance and failsafe arbitration"
+  extends ModelWorkspace;
+  import SysplorerEmbeddedCoder.Types.*;
+  import BaseWorkspace.*;
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true),OutputInterval=0.01),SysblockVersion="1.0"),experiment(Algorithm=Euler,Interval=0.01,IntegratorStep=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-540,-230},{320,230}},grid={2,2})));
+  SysplorerEmbeddedCoder.Sources.Constant candidate_acceleration_x(k=8.0) annotation(Placement(transformation(origin={-480,150},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Sources.Constant obstacle_margin(k=0.4) annotation(Placement(transformation(origin={-480,70},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Sources.Constant reference_position_x(k=12.0) annotation(Placement(transformation(origin={-480,-20},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Sources.Constant command_age_s(k=1.0) annotation(Placement(transformation(origin={-480,-115},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Sources.Constant emergency_request(k=1.0) annotation(Placement(transformation(origin={-480,-175},extent={{-16,-12},{16,12}})));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation candidate_command_limit(lowLimit=-4.0,upLimit=4.0) annotation(Placement(transformation(origin={-350,150},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain cbf_barrier_correction(k=-2.0) annotation(Placement(transformation(origin={-350,70},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Sum constraint_command_merge(inputs="++") annotation(Placement(transformation(origin={-210,120},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation final_safety_filter(lowLimit=-3.0,upLimit=3.0) annotation(Placement(transformation(origin={-70,120},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation geofence_projection(lowLimit=-10.0,upLimit=10.0) annotation(Placement(transformation(origin={-350,-20},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain reference_governor(k=0.8) annotation(Placement(transformation(origin={-210,-20},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain health_watchdog(k=2.0) annotation(Placement(transformation(origin={-350,-115},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain emergency_stop_request(k=5.0) annotation(Placement(transformation(origin={-350,-175},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.MathOperation.Sum failsafe_action_arbiter(inputs="++") annotation(Placement(transformation(origin={-210,-145},extent={{-18,-14},{18,14}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation action_priority_limit(lowLimit=0.0,upLimit=5.0) annotation(Placement(transformation(origin={-70,-145},extent={{-18,-14},{18,14}})));
+  SysplorerEmbeddedCoder.Port.Outport safe_acceleration_x annotation(Placement(transformation(origin={250,120},extent={{-14,-12},{14,12}})));
+  SysplorerEmbeddedCoder.Port.Outport safe_reference_x annotation(Placement(transformation(origin={250,-20},extent={{-14,-12},{14,12}})));
+  SysplorerEmbeddedCoder.Port.Outport action annotation(Placement(transformation(origin={250,-145},extent={{-14,-12},{14,12}})));
+  model ModelWorkspace
+    annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
+  end ModelWorkspace;
+equation
+  connect(candidate_acceleration_x.y,candidate_command_limit.u) annotation(Line(points={{-464,150},{-368,150}},color={0,0,0}));
+  connect(obstacle_margin.y,cbf_barrier_correction.u) annotation(Line(points={{-464,70},{-368,70}},color={0,0,0}));
+  connect(candidate_command_limit.y,constraint_command_merge.u1) annotation(Line(points={{-332,150},{-270,150},{-270,128},{-228,128}},color={0,0,0}));
+  connect(cbf_barrier_correction.y,constraint_command_merge.u2) annotation(Line(points={{-332,70},{-270,70},{-270,112},{-228,112}},color={0,0,0}));
+  connect(constraint_command_merge.y,final_safety_filter.u) annotation(Line(points={{-192,120},{-88,120}},color={0,0,0}));
+  connect(final_safety_filter.y,safe_acceleration_x) annotation(Line(points={{-52,120},{236,120}},color={0,0,0}));
+  connect(reference_position_x.y,geofence_projection.u) annotation(Line(points={{-464,-20},{-368,-20}},color={0,0,0}));
+  connect(geofence_projection.y,reference_governor.u) annotation(Line(points={{-332,-20},{-228,-20}},color={0,0,0}));
+  connect(reference_governor.y,safe_reference_x) annotation(Line(points={{-192,-20},{236,-20}},color={0,0,0}));
+  connect(command_age_s.y,health_watchdog.u) annotation(Line(points={{-464,-115},{-368,-115}},color={0,0,0}));
+  connect(emergency_request.y,emergency_stop_request.u) annotation(Line(points={{-464,-175},{-368,-175}},color={0,0,0}));
+  connect(health_watchdog.y,failsafe_action_arbiter.u1) annotation(Line(points={{-332,-115},{-270,-115},{-270,-137},{-228,-137}},color={0,0,0}));
+  connect(emergency_stop_request.y,failsafe_action_arbiter.u2) annotation(Line(points={{-332,-175},{-270,-175},{-270,-153},{-228,-153}},color={0,0,0}));
+  connect(failsafe_action_arbiter.y,action_priority_limit.u) annotation(Line(points={{-192,-145},{-88,-145}},color={0,0,0}));
+  connect(action_priority_limit.y,action) annotation(Line(points={{-52,-145},{236,-145}},color={0,0,0}));
+end MoSim_P6_SAFETY_SUPERVISOR_FAMILY_GRAPHICAL_MIL;

@@ -17,15 +17,15 @@
       "not_run": 7
     },
     "model_source_present_count": 60,
-    "graphical_screenshot_present_count": 50,
-    "result_screenshot_present_count": 39,
+    "graphical_screenshot_present_count": 51,
+    "result_screenshot_present_count": 40,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 21,
-      "confirm_native_result_msr_in_live_session": 37,
+      "capture_missing_mworks_screenshots": 20,
+      "confirm_native_result_msr_in_live_session": 38,
       "document_ready_static_audit": 2,
       "repair_or_rerun_required": 5
     }
@@ -1399,13 +1399,19 @@
         "safety_supervisor_family"
       ],
       "search_roots": [
-        "Results/control_platform/p6_safety_mworks_20260717"
+        "Results/control_platform/p6_safety_mworks_20260717",
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY"
       ],
       "model_sources": [
+        "Results/control_platform/p6_safety_mworks_20260717/models/graphical_variants/MoSim_P6_SAFETY_SUPERVISOR_FAMILY_GRAPHICAL_MIL.mo",
         "Results/control_platform/p6_safety_mworks_20260717/models/MoSim_P6_SAFETY_FILTER_MIL.mo"
       ],
-      "graphical_model_screenshots": [],
-      "result_viewer_screenshots": [],
+      "graphical_model_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/graphical/safety_supervisor_family_graphical_model.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY/safety_supervisor/screenshots/result/safety_supervisor_family_result_viewer.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json"
       ],
@@ -1414,12 +1420,10 @@
         "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json"
       ],
       "missing_evidence": [
-        "graphical_model_screenshot",
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P7_FTC",
