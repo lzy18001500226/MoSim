@@ -1,0 +1,86 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "p4_mpc_mworks_result_screenshots_20260720",
+  "status": "passed",
+  "source": "MWORKS_MCP",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49155,
+  "activation_state_observation": "Sysplorer education edition main window visible and responsive",
+  "license_state": "education_edition_no_login_or_license_blocker_observed",
+  "session_sentinel": "Results/control_platform/controller_document_evidence_20260720/session_sentinel/51472_0x62F0AAC_Sysplorer _教育版_.png",
+  "model_check": "passed_7_of_7",
+  "simulation": "passed_7_of_7",
+  "result_variables": [
+    "unconstrained_acceleration_x",
+    "desired_acceleration_x",
+    "solver_cost"
+  ],
+  "sample_count_per_case": 21,
+  "time_end_s": 0.2,
+  "rows": [
+    {
+      "controller": "linear_mpc",
+      "model": "MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.0,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P4_MPC/linear_mpc/result/51472_0x3520E24_MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "5EE637D31BF91C409B2EDFB437E1F39BA0F5CEC8CD6B99D243FEDF9789AD875F"
+    },
+    {
+      "controller": "robust_mpc",
+      "model": "MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.0,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P4_MPC/robust_mpc/result/51472_0x3520E24_MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "CE963BF1EDEF123A5EBE4E9CB62CF4B59EFC806723F931CBCEEB5FEE15E097CE"
+    },
+    {
+      "controller": "adaptive_mpc",
+      "model": "MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.0,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P4_MPC/adaptive_mpc/result/51472_0x3520E24_MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "A676E6A9640CA0C39B8B67256D9661A6502EF27F5AD621C2474FBE9A5CFD3702"
+    },
+    {
+      "controller": "tube_mpc",
+      "model": "MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 3.75,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P4_MPC/tube_mpc/result/51472_0x3520E24_MoSim_P4_TUBE_MPC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "0B008F4C220FFB0100FC63849C279C0A4622C987EB75C70C985B97A6AD793DE7"
+    },
+    {
+      "controller": "explicit_gain_scheduled_mpc",
+      "model": "MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.0,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P4_MPC/explicit_gain_scheduled_mpc/result/51472_0x3520E24_MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "93F598F064A47DC292E2CE4929F00B42983EE6365852AEEE02F0C51DD0A7AC2D"
+    },
+    {
+      "controller": "ilqr",
+      "model": "MoSim_P4_ILQR_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.0,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P4_MPC/ilqr/result/51472_0x3520E24_MoSim_P4_ILQR_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "6B5961B05FEF1E09EB5EB6FCCAE3E3B9487CC6791D3E3F65480D767C9C92AC8F"
+    },
+    {
+      "controller": "mppi",
+      "model": "MoSim_P4_MPPI_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.0,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P4_MPC/mppi/result/51472_0x3520E24_MoSim_P4_MPPI_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "0B773118D6B68B70105568844F4C7A62FFA98D0FC4B7BE6DA325D5387A284981"
+    }
+  ],
+  "mworks_phase_observations": [
+    "All seven native graphical MPC fixtures passed CheckModel in the same reusable Sysplorer session.",
+    "All seven simulations produced readable constrained-output, unconstrained-output, and solver-cost plots.",
+    "Every desired_acceleration_x end value matches the existing 2026-07-16 graphical MIL CSV.",
+    "Some optional auto-load dependency probes returned false, but each authoritative model check and simulation passed.",
+    "Screenshots were captured with the DPI-aware background route without UI clicks and were visually reviewed."
+  ],
+  "claim_ceiling": "real_fixed_input_native_graphical_sysblock_mil_and_result_viewer_evidence_not_full_aircraft_trajectory"
+}

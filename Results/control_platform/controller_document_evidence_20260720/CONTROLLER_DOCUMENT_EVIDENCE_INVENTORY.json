@@ -18,14 +18,15 @@
     },
     "model_source_present_count": 60,
     "graphical_screenshot_present_count": 44,
-    "result_screenshot_present_count": 26,
+    "result_screenshot_present_count": 33,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 34,
-      "confirm_native_result_msr_in_live_session": 26,
+      "capture_missing_mworks_screenshots": 27,
+      "confirm_native_result_msr_in_live_session": 32,
+      "document_ready_static_audit": 1,
       "repair_or_rerun_required": 5
     }
   },
@@ -690,7 +691,8 @@
         "linear_mpc"
       ],
       "search_roots": [
-        "Results/control_platform/p4_mpc_mworks_20260716"
+        "Results/control_platform/p4_mpc_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC"
       ],
       "model_sources": [
         "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
@@ -699,7 +701,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC/linear_mpc/result/51472_0x3520E24_MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/linear_mpc.csv",
         "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/linear_mpc.csv",
@@ -714,11 +718,9 @@
         "Results/control_platform/p4_mpc_runtime_20260716/linear_mpc/PX4CTRL_BASIC_MISSION_METRICS.json",
         "Results/control_platform/p4_mpc_runtime_20260716/linear_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json"
       ],
-      "missing_evidence": [
-        "result_viewer_screenshot"
-      ],
+      "missing_evidence": [],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "document_ready_static_audit"
     },
     {
       "cohort": "P4_MPC",
@@ -730,7 +732,8 @@
         "robust_mpc"
       ],
       "search_roots": [
-        "Results/control_platform/p4_mpc_mworks_20260716"
+        "Results/control_platform/p4_mpc_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC"
       ],
       "model_sources": [
         "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
@@ -739,7 +742,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC/robust_mpc/result/51472_0x3520E24_MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/robust_mpc.csv",
         "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/robust_mpc.csv",
@@ -753,11 +758,10 @@
         "Results/control_platform/p4_mpc_runtime_20260716/robust_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P4_MPC",
@@ -769,7 +773,8 @@
         "adaptive_mpc"
       ],
       "search_roots": [
-        "Results/control_platform/p4_mpc_mworks_20260716"
+        "Results/control_platform/p4_mpc_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC"
       ],
       "model_sources": [
         "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
@@ -778,7 +783,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC/adaptive_mpc/result/51472_0x3520E24_MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/adaptive_mpc.csv",
         "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/adaptive_mpc.csv",
@@ -792,11 +799,10 @@
         "Results/control_platform/p4_mpc_runtime_20260716/adaptive_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P4_MPC",
@@ -808,7 +814,8 @@
         "tube_mpc"
       ],
       "search_roots": [
-        "Results/control_platform/p4_mpc_mworks_20260716"
+        "Results/control_platform/p4_mpc_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC"
       ],
       "model_sources": [
         "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
@@ -817,7 +824,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC/tube_mpc/result/51472_0x3520E24_MoSim_P4_TUBE_MPC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/tube_mpc.csv",
         "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/tube_mpc.csv",
@@ -831,11 +840,10 @@
         "Results/control_platform/p4_mpc_runtime_20260716/tube_mpc_retry2_provenance/MPC_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P4_MPC",
@@ -847,7 +855,8 @@
         "explicit_gain_scheduled_mpc"
       ],
       "search_roots": [
-        "Results/control_platform/p4_mpc_mworks_20260716"
+        "Results/control_platform/p4_mpc_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC"
       ],
       "model_sources": [
         "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
@@ -856,7 +865,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC/explicit_gain_scheduled_mpc/result/51472_0x3520E24_MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/explicit_gain_scheduled_mpc.csv",
         "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/explicit_gain_scheduled_mpc.csv",
@@ -870,11 +881,10 @@
         "Results/control_platform/p4_mpc_runtime_20260716/explicit_gain_scheduled_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P4_MPC",
@@ -886,7 +896,8 @@
         "ilqr"
       ],
       "search_roots": [
-        "Results/control_platform/p4_mpc_mworks_20260716"
+        "Results/control_platform/p4_mpc_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC"
       ],
       "model_sources": [
         "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
@@ -895,7 +906,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_ILQR_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC/ilqr/result/51472_0x3520E24_MoSim_P4_ILQR_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/ilqr.csv",
         "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/ilqr.csv",
@@ -909,11 +922,10 @@
         "Results/control_platform/p4_mpc_runtime_20260716/ilqr/MPC_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P4_MPC",
@@ -925,7 +937,8 @@
         "mppi"
       ],
       "search_roots": [
-        "Results/control_platform/p4_mpc_mworks_20260716"
+        "Results/control_platform/p4_mpc_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC"
       ],
       "model_sources": [
         "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
@@ -934,7 +947,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_MPPI_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P4_MPC/mppi/result/51472_0x3520E24_MoSim_P4_MPPI_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/mppi.csv",
         "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/mppi.csv",
@@ -948,11 +963,10 @@
         "Results/control_platform/p4_mpc_runtime_20260716/mppi/MPC_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P5_ENHANCEMENT",
