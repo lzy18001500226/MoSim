@@ -18,6 +18,13 @@ const PROJECT_ROOT = normpath(joinpath(@__DIR__, "..", "..", ".."))
 const OFFLINE_BATCH_RUNNER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "run_offline_profile_batch.py")
 const OFFLINE_ANIMATION_RESUMER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "resume_offline_profile_animation.py")
 const OFFLINE_BATCH_INDEX = joinpath(PROJECT_ROOT, "Results", "control_platform", "offline_batches", "BATCH_INDEX.json")
+const OPEN_MODEL_SCRIPT = joinpath(PROJECT_ROOT, "Scripts", "ui", "open_model_studio_model.py")
+
+function run_process_in_directory(command_args, directory)
+    command = Cmd(Cmd(command_args); dir=directory)
+    process = run(command; wait=false)
+    wait(process)
+end
 
 const CUSTOM_PROFILE_LABEL = "自定义组合"
 const VEHICLE_COUNT_OPTIONS = string.(1:9)
@@ -109,7 +116,6 @@ const OFFLINE_PROFILES = Dict(
 @oodef mutable struct App
     UIFigure::Any = nothing
     TitleLabel::Any = nothing
-    SubtitleLabel::Any = nothing
     OfflineModeButton::Any = nothing
     LiveModeButton::Any = nothing
     DeployModeButton::Any = nothing
@@ -495,14 +501,11 @@ const OFFLINE_PROFILES = Dict(
         app.RestoreInjectionButton.Text = "恢复默认"
 
         app.set_visible(app.action_buttons(), false)
-        app.set_visible((app.MilButton, app.SafeStopButton, app.ResultButton), true)
-        app.MilButton.Position = [494, 600, 140, 38]
-        app.MilButton.Text = "开始仿真"
-        app.SafeStopButton.Position = [644, 600, 140, 38]
-        app.SafeStopButton.Text = "停止"
-        app.SafeStopButton.Enable = app.OfflineBatchRunning
-        app.ResultButton.Position = [794, 600, 140, 38]
-        app.ResultButton.Text = "打开结果"
+        app.set_visible((app.ValidateButton, app.OpenModelButton), true)
+        app.ValidateButton.Position = [494, 600, 210, 38]
+        app.ValidateButton.Text = "应用配置"
+        app.OpenModelButton.Position = [724, 600, 210, 38]
+        app.OpenModelButton.Text = "打开仿真模型"
     end
 
     function configure_live_workspace(app)
@@ -547,14 +550,11 @@ const OFFLINE_PROFILES = Dict(
         app.RestoreInjectionButton.Text = "恢复正常"
 
         app.set_visible(app.action_buttons(), false)
-        app.set_visible((app.PublishButton, app.QgcButton, app.SafeStopButton), true)
-        app.PublishButton.Position = [494, 674, 140, 38]
-        app.PublishButton.Text = "发布并准备"
-        app.PublishButton.Enable = false
-        app.QgcButton.Position = [644, 674, 140, 38]
-        app.QgcButton.Text = "进入 QGC"
-        app.SafeStopButton.Position = [794, 674, 140, 38]
-        app.SafeStopButton.Text = "安全停止"
+        app.set_visible((app.ValidateButton, app.OpenModelButton), true)
+        app.ValidateButton.Position = [494, 674, 210, 38]
+        app.ValidateButton.Text = "应用配置"
+        app.OpenModelButton.Position = [724, 674, 210, 38]
+        app.OpenModelButton.Text = "打开联合仿真模型"
     end
 
     function configure_deploy_workspace(app)
@@ -759,7 +759,6 @@ const OFFLINE_PROFILES = Dict(
         else
             append!(command_args, ["--retry-batch-id", retry_batch_id])
         end
-        command = Cmd(command_args; dir=PROJECT_ROOT)
         app.OfflineBatchRunning = true
         app.CurrentOfflineBatchId = batch_id
         app.MilButton.Text = "请求取消"
@@ -776,10 +775,9 @@ const OFFLINE_PROFILES = Dict(
         )
         app.set_top_status("在线建模验证  |  正在运行  |  " * profile_id; state="待命")
         app.append_console("开始 MWORKS 批次：" * profile_id; level="运行")
-        @async begin
+        Base.@async begin
             try
-                process = run(command; wait=false)
-                wait(process)
+                run_process_in_directory(command_args, PROJECT_ROOT)
                 app.set_top_status("在线建模验证  |  已完成  |  Result.msr 已登记"; state="正常")
                 app.append_console("批次完成：" * app.LastOfflineBatchManifest; level="通过")
                 app.ResultButton.Enable = true
@@ -832,11 +830,16 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function ValidatePressed(app, event)
-        if app.CurrentMode == "live"
-            response = app.refresh_live_capability("validate")
-            app.append_console("实时 Profile 校验：" * get(response, "reason_code", "unknown"))
+        if app.CurrentMode == "model"
+            app.refresh_summary()
+            app.append_console("在线建模配置已应用；未启动仿真", level="通过")
+            app.set_top_status("在线建模验证  |  配置已应用  |  尚未运行仿真"; state="正常")
+        elseif app.CurrentMode == "live"
+            app.refresh_summary()
+            app.append_console("联合仿真配置已应用；未启动实时链路", level="通过")
+            app.set_top_status("实时联合仿真  |  配置已应用  |  尚未连接"; state="待命")
         else
-            app.ReviewAction("校验配置")
+            app.ReviewAction("应用部署配置")
         end
     end
     function PublishPressed(app, event)
@@ -863,7 +866,31 @@ const OFFLINE_PROFILES = Dict(
             app.ReviewAction("请求安全停止")
         end
     end
-    function OpenModelPressed(app, event); app.ReviewAction("打开模型"); end
+    function OpenModelPressed(app, event)
+        if !isfile(OPEN_MODEL_SCRIPT)
+            app.append_console("打开模型入口不存在：" * OPEN_MODEL_SCRIPT; level="错误")
+            return
+        end
+        mode = app.CurrentMode == "live" ? "live" : "model"
+        profile_id = haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value) ?
+            OFFLINE_PROFILES[app.ProfileDropDown.Value].profile : ""
+        vehicle_count = app.VehicleCountDropDown.Value
+        app.append_console(mode == "live" ? "正在打开联合仿真模型" : "正在打开当前仿真模型"; level="运行")
+        @async begin
+            try
+                run_process_in_directory([
+                    "python", OPEN_MODEL_SCRIPT,
+                    "--mode", mode,
+                    "--profile-id", profile_id,
+                    "--vehicle-count", vehicle_count,
+                ], PROJECT_ROOT)
+                app.append_console(mode == "live" ? "联合仿真模型已打开；请在 MWORKS 中自行点击仿真" :
+                    "仿真模型已打开；请在 MWORKS 中自行点击仿真"; level="通过")
+            catch error
+                app.append_console("打开模型失败：" * sprint(showerror, error); level="错误")
+            end
+        end
+    end
     function MilPressed(app, event)
         if app.OfflineBatchRunning
             app.request_offline_cancel()
@@ -954,11 +981,7 @@ const OFFLINE_PROFILES = Dict(
         app.TitleLabel.FontSize = 24
         app.TitleLabel.FontWeight = "bold"
         app.TitleLabel.FontColor = [0.08, 0.16, 0.22]
-
-        app.SubtitleLabel = TyAppDesigner.uilabel(app.UIFigure)
-        app.SubtitleLabel.Position = [26, 50, 900, 22]
-        app.SubtitleLabel.Text = "控制器配置、模型验证与 QGC 运行交接"
-        app.SubtitleLabel.FontColor = [0.35, 0.42, 0.47]
+        app.TitleLabel.HorizontalAlignment = "left"
 
         app.OfflineModeButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.OfflineModeButton, "在线建模验证", "OfflineModePressed", [24, 82, 190, 40])

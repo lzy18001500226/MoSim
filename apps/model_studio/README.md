@@ -109,3 +109,18 @@ MWORKS acceptance records remain the simulation authorities.
 The source interface does not inherit D4 runtime
 acceptance. It does not prove MWORKS simulation/codegen, MWORKS Live timing,
 Gazebo/PX4/MAVROS runtime, QGC handoff, fault application, or flight performance.
+
+## Current workspace actions
+
+The `在线建模验证` workspace has two primary actions: `应用配置` records the
+current layer selection without starting a solver, and `打开仿真模型` loads the
+selected model into the existing MWORKS session. The `实时联合仿真` workspace
+uses the same two actions, with `打开联合仿真模型` loading the MWORKS Live
+model. Neither workspace starts, stops, or opens a result; after the model is
+open, run the simulation from MWORKS itself.
+
+The model-opening path is `Scripts/ui/open_model_studio_model.py`. It is
+restricted to `model_manager.load_file` followed by `model_manager.open` and
+does not call model checking, simulation, result, flight, or solver-lifecycle
+operations. It writes its last bounded operation record to
+`Results/ui_platform/model_studio_open_model/latest.json`.

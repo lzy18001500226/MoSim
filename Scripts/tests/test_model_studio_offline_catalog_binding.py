@@ -82,7 +82,6 @@ def test_model_studio_safe_button_callbacks_are_bound() -> None:
 def test_model_studio_external_action_buttons_fail_closed() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert 'app.ReviewAction("进入 QGC")' in source
-    assert 'app.ReviewAction("打开模型")' in source
     assert 'app.ReviewAction("生成 C 代码")' in source
     assert "OFFLINE_ANIMATION_RESUMER" in source
     assert '"--keep-session-open"' in source
@@ -231,6 +230,30 @@ def test_model_studio_filters_three_uav_mission_by_vehicle_count() -> None:
     assert 'occursin("三机", item.mission)' not in source
     assert 'occursin("三机", app.MissionDropDown.Value)' not in source
 
+
+def test_model_studio_header_is_compact_and_left_aligned() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    assert 'app.TitleLabel.HorizontalAlignment = "left"' in source
+    assert "SubtitleLabel" not in source
+    assert "控制器配置、模型验证与 QGC 运行交接" not in source
+
+
+def test_model_studio_starts_offline_batch_with_base_process_api() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    assert "function run_process_in_directory(command_args, directory)" in source
+    assert "command = Cmd(Cmd(command_args); dir=directory)" in source
+    assert "process = run(command; wait=false)" in source
+    assert "wait(process)" in source
+    batch_runner = source.split("function run_offline_batch(app, profile_id)", 1)[1].split(
+        "function request_offline_cancel", 1
+    )[0]
+    assert "Base.@async begin" in batch_runner
+    assert "run_process_in_directory(command_args, PROJECT_ROOT)" in batch_runner
+    assert 'app.append_console("批次阻断：" * sprint(showerror, error); level="错误")' in batch_runner
+
+
+def test_model_studio_mil_callback_requires_matching_profile() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
     mil_callback = source.split("function MilPressed(app, event)", 1)[1].split(
         "function CodegenPressed", 1
     )[0]
@@ -245,9 +268,10 @@ def test_live_workspace_groups_five_runtime_actions_in_middle_column() -> None:
     )[0]
     assert "app.ApplyInjectionButton.Position = [494, 628, 210, 32]" in live
     assert "app.RestoreInjectionButton.Position = [724, 628, 210, 32]" in live
-    assert "app.PublishButton.Position = [494, 674, 140, 38]" in live
-    assert "app.QgcButton.Position = [644, 674, 140, 38]" in live
-    assert "app.SafeStopButton.Position = [794, 674, 140, 38]" in live
+    assert "app.set_visible((app.ValidateButton, app.OpenModelButton), true)" in live
+    assert 'app.ValidateButton.Text = "应用配置"' in live
+    assert 'app.OpenModelButton.Text = "打开联合仿真模型"' in live
+    assert 'app.PublishButton.Text = "发布并准备"' not in live
 
 
 def test_model_workspace_removes_manual_timing_and_extra_primary_actions() -> None:
@@ -257,10 +281,22 @@ def test_model_workspace_removes_manual_timing_and_extra_primary_actions() -> No
     model = source.split("function configure_model_workspace(app)", 1)[1].split(
         "function configure_live_workspace(app)", 1
     )[0]
-    assert "app.set_visible((app.MilButton, app.SafeStopButton, app.ResultButton), true)" in model
-    assert 'app.MilButton.Text = "开始仿真"' in model
-    assert 'app.SafeStopButton.Text = "停止"' in model
-    assert 'app.ResultButton.Text = "打开结果"' in model
+    assert "app.set_visible((app.ValidateButton, app.OpenModelButton), true)" in model
+    assert 'app.ValidateButton.Text = "应用配置"' in model
+    assert 'app.OpenModelButton.Text = "打开仿真模型"' in model
+    assert 'app.MilButton.Text = "开始仿真"' not in model
+
+
+def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    assert 'const OPEN_MODEL_SCRIPT = joinpath(PROJECT_ROOT, "Scripts", "ui", "open_model_studio_model.py")' in source
+    assert '"--mode", mode' in source
+    assert "请在 MWORKS 中自行点击仿真" in source
+    script = ROOT / "Scripts" / "ui" / "open_model_studio_model.py"
+    script_text = script.read_text(encoding="utf-8")
+    assert '"action": "load_file"' in script_text
+    assert '"action": "open"' in script_text
+    assert "SimulateModel" not in script_text
 
 
 def test_deploy_workspace_uses_two_columns_and_wide_console() -> None:
@@ -276,7 +312,7 @@ def test_deploy_workspace_uses_two_columns_and_wide_console() -> None:
 def test_model_studio_window_height_tracks_lowest_controls() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert "app.UIFigure.Position = [30, 30, 1440, 720]" in source
-    assert "app.SafeStopButton.Position = [794, 674, 140, 38]" in source
+    assert "app.OpenModelButton.Position = [724, 674, 210, 38]" in source
 
 
 def test_certification_runner_closes_windows_and_session() -> None:
