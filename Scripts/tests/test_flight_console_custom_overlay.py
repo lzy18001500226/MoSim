@@ -365,6 +365,13 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "function paintExplorationBoundary" in qml
     assert "factoryExplorationBoundaryPreview" in qml
     assert "factoryExplorationBoundaryExpanded" in qml
+    assert "function formationTarget()" in qml
+    assert "function paintFormationTarget" in qml
+    assert "factoryFormationTargetPreview" in qml
+    assert "factoryFormationTargetExpanded" in qml
+    assert "formation.target_center_xy_m" in qml
+    assert 'context.strokeStyle = "#f05d9b"' in qml
+    assert '{ label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }' in qml
     assert "function frozenScenarioSummary()" in qml
     assert "场景哈希：" in qml
     assert 'QGCLabel { text: "任务Adapter确认"; font.bold: true }' in qml

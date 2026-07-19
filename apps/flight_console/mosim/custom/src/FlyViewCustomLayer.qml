@@ -406,6 +406,45 @@ Item {
         context.strokeRect(left, top, right - left, bottom - top)
     }
 
+    function formationTarget() {
+        var manifest = mosimOrchestrator.runManifest || ({})
+        if (manifest.run_id !== mosimOrchestrator.runId
+                || manifest.experiment_profile_id !== profiles[profileBox.currentIndex].id)
+            return null
+        var scenario = manifest.scenario_snapshot || ({})
+        var formation = scenario.formation || null
+        var target = formation ? formation.target_center_xy_m : null
+        if (!target || target.length !== 2)
+            return null
+        var x = Number(target[0])
+        var y = Number(target[1])
+        if (!isFinite(x) || !isFinite(y))
+            return null
+        return { x: x, y: y }
+    }
+
+    function paintFormationTarget(canvas, imageX, imageY, imageWidth, imageHeight) {
+        var context = canvas.getContext("2d")
+        context.reset()
+        var target = formationTarget()
+        if (!target)
+            return
+        var x = mapPixelX(target.x, imageX, imageWidth)
+        var y = mapPixelY(target.y, imageY, imageHeight)
+        var radius = Math.max(6, Math.min(12, imageWidth / 45))
+        context.beginPath()
+        context.arc(x, y, radius, 0, Math.PI * 2)
+        context.strokeStyle = "#f05d9b"
+        context.lineWidth = 3
+        context.stroke()
+        context.beginPath()
+        context.moveTo(x - radius - 4, y)
+        context.lineTo(x + radius + 4, y)
+        context.moveTo(x, y - radius - 4)
+        context.lineTo(x, y + radius + 4)
+        context.stroke()
+    }
+
     function frozenScenarioSummary() {
         var manifest = mosimOrchestrator.runManifest || ({})
         if (manifest.run_id !== mosimOrchestrator.runId || !manifest.scenario_snapshot)
@@ -800,11 +839,22 @@ Item {
             }
 
             Canvas {
+                id: factoryFormationTargetPreview
+                anchors.fill: parent
+                anchors.margins: 2
+                visible: !factoryMapExpanded && root.formationTarget() !== null
+                z: 3
+                property string scenarioHash: String(mosimOrchestrator.runManifest.scenario_hash || "")
+                onScenarioHashChanged: requestPaint()
+                onPaint: root.paintFormationTarget(this, 0, 0, width, height)
+            }
+
+            Canvas {
                 id: factoryActualTrackPreview
                 anchors.fill: parent
                 anchors.margins: 2
                 visible: !factoryMapExpanded && root.runtimeTelemetryFresh()
-                z: 3
+                z: 4
                 property int trackRevision: root.actualTrackRevision
                 onTrackRevisionChanged: requestPaint()
                 onPaint: root.paintActualTracks(this, 0, 0, width, height)
@@ -819,7 +869,7 @@ Item {
                     visible: root.vehicleMapPositionValid(vehicle)
                     width: 18
                     height: 18
-                    z: 4
+                    z: 5
                     rotation: 90 - root.vehicleYawDegrees(vehicle)
                     x: root.mapPixelX(Number(vehicle.state.position.x), 2, factoryMapPreview.width - 4) - width / 2
                     y: root.mapPixelY(Number(vehicle.state.position.y), 2, factoryMapPreview.height - 4) - height / 2
@@ -942,13 +992,28 @@ Item {
                             }
 
                             Canvas {
+                                id: factoryFormationTargetExpanded
+                                x: factoryMapImage.x
+                                y: factoryMapImage.y
+                                width: factoryMapImage.width
+                                height: factoryMapImage.height
+                                visible: root.formationTarget() !== null
+                                z: 3
+                                property string scenarioHash: String(mosimOrchestrator.runManifest.scenario_hash || "")
+                                onScenarioHashChanged: requestPaint()
+                                onWidthChanged: requestPaint()
+                                onHeightChanged: requestPaint()
+                                onPaint: root.paintFormationTarget(this, 0, 0, width, height)
+                            }
+
+                            Canvas {
                                 id: factoryActualTrackExpanded
                                 x: factoryMapImage.x
                                 y: factoryMapImage.y
                                 width: factoryMapImage.width
                                 height: factoryMapImage.height
                                 visible: root.runtimeTelemetryFresh()
-                                z: 3
+                                z: 4
                                 property int trackRevision: root.actualTrackRevision
                                 onTrackRevisionChanged: requestPaint()
                                 onWidthChanged: requestPaint()
@@ -1040,7 +1105,8 @@ Item {
                     model: [
                         { label: "实际", color: "#00d084", visible: Object.keys(root.actualTracksByVehicle).length > 0 },
                         { label: "预期", color: "#ffb020", visible: root.taskPath("expected").status === "available" },
-                        { label: "未来", color: "#4aa3ff", visible: root.taskPath("future").status === "available" }
+                        { label: "未来", color: "#4aa3ff", visible: root.taskPath("future").status === "available" },
+                        { label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }
                     ]
                     delegate: Row {
                         required property var modelData
