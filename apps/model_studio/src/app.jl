@@ -2,6 +2,7 @@ module MoSimModelStudio
 
 using ObjectOriented
 using TyAppDesigner
+using Dates
 include(joinpath(@__DIR__, "live_cosim_backend.jl"))
 using .LiveCosimBackend
 
@@ -11,9 +12,69 @@ const SECTION_COLOR = [0.12, 0.25, 0.32]
 const READY_COLOR = [0.86, 0.95, 0.89]
 const WAIT_COLOR = [0.98, 0.93, 0.80]
 const MUTED_COLOR = [0.93, 0.94, 0.94]
-const PROJECT_ROOT = normpath(joinpath(@__DIR__, "..", ".."))
+const CONSOLE_COLOR = [0.07, 0.10, 0.12]
+const CONSOLE_TEXT_COLOR = [0.82, 0.91, 0.86]
+const PROJECT_ROOT = normpath(joinpath(@__DIR__, "..", "..", ".."))
 const OFFLINE_BATCH_RUNNER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "run_offline_profile_batch.py")
+const OFFLINE_ANIMATION_RESUMER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "resume_offline_profile_animation.py")
 const OFFLINE_BATCH_INDEX = joinpath(PROJECT_ROOT, "Results", "control_platform", "offline_batches", "BATCH_INDEX.json")
+
+const CUSTOM_PROFILE_LABEL = "自定义组合"
+const VEHICLE_COUNT_OPTIONS = string.(1:9)
+const MAP_OPTIONS = ["空白地图", "Factory 避障地图"]
+const LIVE_PROFILE_OPTIONS = [
+    "official_pid_attitude_thrust_v1 [候选]",
+    "official_pid + awff_v1 [候选]",
+]
+const SINGLE_UAV_MISSION_OPTIONS = ["起飞-悬停-降落", "爬升", "八字轨迹", "螺旋轨迹"]
+const THREE_UAV_MISSION_OPTIONS = ["三机三角编队 8 字"]
+const MODEL_MISSION_OPTIONS = vcat(SINGLE_UAV_MISSION_OPTIONS, THREE_UAV_MISSION_OPTIONS)
+const MODEL_POSITION_OPTIONS = [
+    "official_pid [已认证]", "improved_pid [已认证]", "linear_mpc [已认证]",
+    "fault_compensation [已认证]", "px4ctrl [待接入]", "cascade_pid [待接入]",
+    "gain_scheduled_pid [待接入]", "fuzzy_pid [待接入]", "neural_pid [待接入]",
+    "trained_neural_residual [待接入]", "rl_gain_scheduler [待接入]", "lqr_baseline [待接入]",
+    "lqi_baseline [待接入]", "lqg [待接入]", "mu_synthesis [待接入]",
+    "feedback_linearization [待接入]", "passivity_based_control [待接入]",
+    "adaptive_backstepping [待接入]", "pole_placement_luenberger [待接入]",
+    "mrac [待接入]", "ndi [待接入]", "fopid [待接入]", "h2_state_feedback [待接入]",
+    "backstepping_baseline [待接入]", "se3_basic [待接入]", "dfbc_basic [待接入]",
+    "smc_boundary_layer [待接入]", "integral_smc [待接入]", "terminal_smc [待接入]",
+    "nonsingular_terminal_smc [待接入]", "super_twisting_smc [待接入]",
+    "adaptive_smc [待接入]", "fuzzy_smc [待接入]", "neural_smc [待接入]",
+    "hinf_hover_wrench [待接入]", "nmpc_outer [待接入]",
+    "dfbc_high_order_attitude [待接入]", "dfbc_high_order_bodyrate [待接入]",
+    "dfbc_smooth_robust_attitude [待接入]", "dfbc_smooth_robust_bodyrate [待接入]",
+]
+const MODEL_ATTITUDE_OPTIONS = ["模型内部姿态/角速度环 [已认证]", "so3_attitude [待接入]", "px4_attitude_rate_inner [在线专用]"]
+const MODEL_AUGMENTATION_OPTIONS = [
+    "无", "pid_indi [已认证]", "awff [已认证]", "l1_adaptive [已认证]",
+    "anti_windup [待接入]", "feedforward_profile [待接入]", "l1_awff_minimal [待接入]",
+    "complete_adrc [待接入]", "standardized_indi [待接入]", "parameter_scheduling [待接入]",
+    "ilc [待接入]", "dfbc_dob_eso_disabled [不可执行]", "dfbc_dob_eso [待接入]",
+]
+const MODEL_SAFETY_OPTIONS = [
+    "basic_limiter [已认证]", "safety_filter [待接入]", "cbf [待接入]",
+    "reference_governor [待接入]", "geofence [待接入]", "emergency_stop [待接入]",
+    "return_and_land [待接入]", "failsafe_state_machine [待接入]",
+]
+const MODEL_FAULT_OPTIONS = [
+    "无", "风扰", "电机效率下降", "风扰 + 电机效率下降", "fdi [待接入]",
+    "passive_ftc [待接入]", "active_ftc [待接入]", "fault_aware_control_allocation [待接入]",
+    "single_motor_fault_safe_land [待接入]", "multiple_fault_estimation_and_reconstruction [待接入]",
+]
+const MODEL_FORMATION_OPTIONS = [
+    "无", "leader_follower [已认证]", "virtual_structure [待接入]", "consensus [待接入]",
+    "containment [待接入]", "formation_tracking [待接入]", "formation_reconfiguration [待接入]",
+    "fault_tolerant_formation [待接入]", "formation_cbf [待接入]",
+    "distributed_mpc_formation [待接入]",
+]
+const MODEL_OUTPUT_OPTIONS = [
+    "ROTOR_COMMAND / px4_control_allocator [已认证]",
+    "ATTITUDE_THRUST / mavros_attitude_thrust [平台已验证]",
+    "BODY_RATE_THRUST / mavros_bodyrate_thrust [平台已验证]",
+    "WRENCH [平台已验证]",
+]
 
 const OFFLINE_PROFILE_ORDER = [
     "Official PID 爬升 [已认证]",
@@ -31,18 +92,18 @@ const OFFLINE_PROFILE_ORDER = [
 ]
 
 const OFFLINE_PROFILES = Dict(
-    "Official PID 爬升 [已认证]" => (profile="offline_official_pid_climb_v1", mission="爬升", controller="Official PID", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-official-pid-20260719-v2", available=true),
-    "改进 PID 爬升 [已认证]" => (profile="offline_improved_pid_climb_v1", mission="爬升", controller="改进 PID", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-improved-pid-20260719-v1", available=true),
-    "AWFF 爬升 [已认证]" => (profile="offline_awff_climb_v1", mission="爬升", controller="AWFF", augmentation="AWFF", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-awff-20260719-v1", available=true),
-    "PID-INDI 爬升 [已认证]" => (profile="offline_pid_indi_climb_v1", mission="爬升", controller="PID-INDI", augmentation="INDI", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-pid-indi-20260719-v1", available=true),
-    "Linear MPC 爬升 [已认证]" => (profile="offline_linear_mpc_climb_v1", mission="爬升", controller="Linear MPC", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1", available=true),
-    "L1/AWFF 爬升 [已认证]" => (profile="offline_l1_awff_climb_v1", mission="爬升", controller="L1/AWFF", augmentation="L1", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1", available=true),
-    "L1/AWFF 风扰 [已认证]" => (profile="offline_l1_awff_wind_v1", mission="爬升 + 风扰", controller="L1/AWFF", augmentation="L1", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-l1-awff-wind-20260719-v1", available=true),
-    "故障补偿：电机 1 效率 85% [已认证]" => (profile="offline_fault_comp_rotor1_85_v1", mission="爬升 + 电机效率下降", controller="故障补偿", augmentation="故障重构", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-fault-comp-rotor1-85-20260719-v1", available=true),
-    "三机 Linear MPC 三角编队 8 字 [已认证]" => (profile="offline_three_uav_linear_mpc_figure8_v1", mission="三机三角编队 8 字", controller="Linear MPC", augmentation="Leader-Follower", safety="基础限幅", evidence="Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2", available=true),
-    "Custom：改进 PID + 轻风扰 [已验证]" => (profile="custom_improved_pid_mild_wind_v1", mission="爬升 + 轻风扰", controller="改进 PID", augmentation="无", safety="基础限幅", evidence="Results/mworks_generated_profiles/p7-custom-improved-pid-mild-wind-20260719-v2", available=true),
-    "Custom：故障补偿 + 轻风扰 [已验证]" => (profile="custom_fault_comp_mixed_v1", mission="爬升 + 轻风扰 + 电机效率下降", controller="故障补偿", augmentation="故障重构", safety="基础限幅", evidence="Results/mworks_generated_profiles/p7-custom-fault-comp-mixed-20260719-v2", available=true),
-    "QP/NMPC Safety [当前禁用]" => (profile="offline_qp_nmpc_safety_climb_v1", mission="爬升", controller="Linear MPC", augmentation="无", safety="QP/NMPC Safety", evidence="当前共用 Runner 与独立模型均数值失稳", available=false),
+    "Official PID 爬升 [已认证]" => (profile="offline_official_pid_climb_v1", mission="爬升", controller="official_pid [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="无", safety="basic_limiter [已认证]", fault="无", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-official-pid-20260719-v2", available=true),
+    "改进 PID 爬升 [已认证]" => (profile="offline_improved_pid_climb_v1", mission="爬升", controller="improved_pid [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="无", safety="basic_limiter [已认证]", fault="无", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-improved-pid-20260719-v1", available=true),
+    "AWFF 爬升 [已认证]" => (profile="offline_awff_climb_v1", mission="爬升", controller="official_pid [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="awff [已认证]", safety="basic_limiter [已认证]", fault="无", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-awff-20260719-v1", available=true),
+    "PID-INDI 爬升 [已认证]" => (profile="offline_pid_indi_climb_v1", mission="爬升", controller="official_pid [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="pid_indi [已认证]", safety="basic_limiter [已认证]", fault="无", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-pid-indi-20260719-v1", available=true),
+    "Linear MPC 爬升 [已认证]" => (profile="offline_linear_mpc_climb_v1", mission="爬升", controller="linear_mpc [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="无", safety="basic_limiter [已认证]", fault="无", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1", available=true),
+    "L1/AWFF 爬升 [已认证]" => (profile="offline_l1_awff_climb_v1", mission="爬升", controller="official_pid [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="l1_adaptive [已认证]", safety="basic_limiter [已认证]", fault="无", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1", available=true),
+    "L1/AWFF 风扰 [已认证]" => (profile="offline_l1_awff_wind_v1", mission="爬升", controller="official_pid [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="l1_adaptive [已认证]", safety="basic_limiter [已认证]", fault="风扰", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-l1-awff-wind-20260719-v1", available=true),
+    "故障补偿：电机 1 效率 85% [已认证]" => (profile="offline_fault_comp_rotor1_85_v1", mission="爬升", controller="fault_compensation [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="无", safety="basic_limiter [已认证]", fault="电机效率下降", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-fault-comp-rotor1-85-20260719-v1", available=true),
+    "三机 Linear MPC 三角编队 8 字 [已认证]" => (profile="offline_three_uav_linear_mpc_figure8_v1", mission="三机三角编队 8 字", controller="linear_mpc [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="无", safety="basic_limiter [已认证]", fault="无", formation="leader_follower [已认证]", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2", available=true),
+    "Custom：改进 PID + 轻风扰 [已验证]" => (profile="custom_improved_pid_mild_wind_v1", mission="爬升", controller="improved_pid [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="无", safety="basic_limiter [已认证]", fault="风扰", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/p7-custom-improved-pid-mild-wind-20260719-v2", available=true),
+    "Custom：故障补偿 + 轻风扰 [已验证]" => (profile="custom_fault_comp_mixed_v1", mission="爬升", controller="fault_compensation [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="无", safety="basic_limiter [已认证]", fault="风扰 + 电机效率下降", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="Results/mworks_generated_profiles/p7-custom-fault-comp-mixed-20260719-v2", available=true),
+    "QP/NMPC Safety [当前禁用]" => (profile="offline_qp_nmpc_safety_climb_v1", mission="爬升", controller="linear_mpc [已认证]", attitude="模型内部姿态/角速度环 [已认证]", augmentation="无", safety="safety_filter [待接入]", fault="无", formation="无", output="ROTOR_COMMAND / px4_control_allocator [已认证]", evidence="当前共用 Runner 与独立模型均数值失稳", available=false),
 )
 
 @oodef mutable struct App
@@ -59,11 +120,15 @@ const OFFLINE_PROFILES = Dict(
     InjectionSectionLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
 
     ProfileDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
+    VehicleCountDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
+    MapDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
     MissionDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
     PositionDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
     AttitudeDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
     AugmentationDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
     SafetyDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
+    FaultDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
+    FormationDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
     OutputDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
     ProfileSummaryLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
     CapabilityLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
@@ -79,6 +144,10 @@ const OFFLINE_PROFILES = Dict(
     TestConnectionButton::TyAppDesigner.Button = TyAppDesigner.create_button()
     ConnectionStatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
 
+    DeployTargetDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
+    BuildModeDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
+
+    TargetUavDropDown::TyAppDesigner.DropDown = TyAppDesigner.create_dropdown()
     WindSlider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
     Motor1Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
     Motor2Slider::TyAppDesigner.Slider = TyAppDesigner.create_slider()
@@ -98,6 +167,8 @@ const OFFLINE_PROFILES = Dict(
     MilButton::TyAppDesigner.Button = TyAppDesigner.create_button()
     CodegenButton::TyAppDesigner.Button = TyAppDesigner.create_button()
     ResultButton::TyAppDesigner.Button = TyAppDesigner.create_button()
+    ConsoleToggleButton::TyAppDesigner.Button = TyAppDesigner.create_button()
+    ConsoleClearButton::TyAppDesigner.Button = TyAppDesigner.create_button()
     StatusLabel::TyAppDesigner.Label = TyAppDesigner.create_label()
 
     Appname::Module = @__MODULE__
@@ -108,6 +179,39 @@ const OFFLINE_PROFILES = Dict(
     LastOfflineProfile::String = ""
     CurrentOfflineBatchId::String = ""
     OfflineBatchRunning::Bool = false
+    ConsoleLines::Vector{String} = String[]
+    ConsoleExpanded::Bool = true
+
+    function append_console(app, message; level="信息")
+        normalized = replace(string(message), '\n' => "  |  ")
+        timestamp = Dates.format(Dates.now(), "HH:MM:SS")
+        push!(app.ConsoleLines, timestamp * "  [" * level * "]  " * normalized)
+        length(app.ConsoleLines) > 40 && deleteat!(app.ConsoleLines, 1:length(app.ConsoleLines)-40)
+        visible_lines = app.ConsoleExpanded ? 6 : 1
+        app.StatusLabel.Text = join(last(app.ConsoleLines, min(visible_lines, length(app.ConsoleLines))), "\n")
+    end
+
+    function set_top_status(app, text; state="待命")
+        marker = state == "正常" ? "●" : (state == "阻断" ? "■" : "◆")
+        app.ModeStatusLabel.Text = marker * "  " * text
+        app.ModeStatusLabel.FontColor = state == "正常" ? [0.10, 0.42, 0.25] :
+            (state == "阻断" ? [0.70, 0.20, 0.16] : [0.55, 0.38, 0.05])
+    end
+
+    function ToggleConsolePressed(app, event)
+        app.ConsoleExpanded = !app.ConsoleExpanded
+        app.StatusLabel.Visible = app.ConsoleExpanded
+        app.ConsoleToggleButton.Text = app.ConsoleExpanded ? "收起日志" : "展开日志"
+        if app.ConsoleExpanded && !isempty(app.ConsoleLines)
+            app.StatusLabel.Text = join(last(app.ConsoleLines, min(6, length(app.ConsoleLines))), "\n")
+        end
+    end
+
+    function ClearConsolePressed(app, event)
+        empty!(app.ConsoleLines)
+        app.StatusLabel.Text = ""
+        app.append_console("运行日志已清空")
+    end
 
     function refresh_live_capability(app, action="status")
         response = LiveCosimBackend.request(
@@ -126,10 +230,11 @@ const OFFLINE_PROFILES = Dict(
         latency = get(response, "latency_p99_ms", "")
         metrics = isempty(rate) ? "" : "\n实测输出 " * rate * " Hz  |  P99 " * latency * " ms"
         app.CapabilityLabel.Text = accepted ?
-            "实时能力门禁\nRT0 已通过；Profile 已发布，可请求 prepare。" * metrics :
-            "实时能力门禁\n200 Hz 为待验证目标，50 Hz 为已测基线；当前原因：" * reason * metrics
-        app.CapabilityLabel.BackgroundColor = accepted ? READY_COLOR : WAIT_COLOR
-        app.PrepareButton.Enable = accepted
+            "● 运行门禁通过  |  RT0 通过  |  可请求 prepare" * metrics :
+            "◆ 运行门禁阻断  |  50 Hz 已测  |  " * reason * metrics
+        app.CapabilityLabel.BackgroundColor = MUTED_COLOR
+        app.PrepareButton.Enable = accepted && app.live_combination_compatible()
+        app.PublishButton.Enable = app.PrepareButton.Enable
         app.QgcButton.Enable = false
         return response
     end
@@ -149,138 +254,361 @@ const OFFLINE_PROFILES = Dict(
         button.FontWeight = "bold"
     end
 
+    function set_visible(app, controls, visible)
+        for control in controls
+            control.Visible = visible
+        end
+    end
+
+    function configure_console_workspace(app; left=964, width=452)
+        app.configure_section(app.InjectionSectionLabel, "运行日志", [left, 144, width, 34])
+        app.StatusLabel.Position = [left, 192, width, 456]
+        app.StatusLabel.Visible = true
+        app.ConsoleToggleButton.Visible = false
+        app.ConsoleClearButton.Position = [left + width - 84, 200, 76, 28]
+        app.ConsoleClearButton.Visible = true
+    end
+
+    function workspace_controls(app)
+        return (
+            app.ProfileDropDown, app.VehicleCountDropDown, app.MapDropDown,
+            app.MissionDropDown, app.PositionDropDown,
+            app.AttitudeDropDown, app.AugmentationDropDown, app.SafetyDropDown,
+            app.FaultDropDown, app.FormationDropDown, app.OutputDropDown,
+            app.ProfileSummaryLabel, app.CapabilityLabel,
+            app.TargetHostField, app.Rt1PortField,
+            app.RosMasterField, app.LocalIpField, app.TargetRateDropDown,
+            app.TestConnectionButton, app.ConnectionStatusLabel,
+            app.DeployTargetDropDown, app.BuildModeDropDown, app.ChainLabel,
+            app.ContractLabel, app.TimingLabel, app.TargetUavDropDown,
+            app.WindSlider, app.Motor1Slider,
+            app.Motor2Slider, app.Motor3Slider, app.Motor4Slider,
+            app.InjectionValuesLabel, app.ApplyInjectionButton,
+            app.RestoreInjectionButton, app.ManifestLabel,
+        )
+    end
+
+    is_three_uav_mission(mission) = mission in THREE_UAV_MISSION_OPTIONS
+    mission_vehicle_count(mission) = is_three_uav_mission(mission) ? 3 : 1
+    mission_options_for_vehicle_count(vehicle_count) = vehicle_count == 3 ?
+        MODEL_MISSION_OPTIONS : SINGLE_UAV_MISSION_OPTIONS
+
+    function sync_vehicle_controls(app)
+        vehicle_count = parse(Int, app.VehicleCountDropDown.Value)
+        target_items = ["UAV " * string(index) for index in 1:vehicle_count]
+        current_target = app.TargetUavDropDown.Value
+        app.TargetUavDropDown.Items = target_items
+        app.TargetUavDropDown.Value = current_target in target_items ? current_target : target_items[1]
+
+        mission_items = mission_options_for_vehicle_count(vehicle_count)
+        current_mission = app.MissionDropDown.Value
+        app.MissionDropDown.Items = mission_items
+        app.MissionDropDown.Value = current_mission in mission_items ?
+            current_mission : mission_items[1]
+
+        app.FormationDropDown.Enable = vehicle_count > 1
+        if vehicle_count == 1
+            app.FormationDropDown.Value = "无"
+        end
+    end
+
+    function configure_composition_controls(app; live=false)
+        app.set_dropdown_position(app.ProfileDropDown, [24, 192, 440, 32])
+        app.ProfileDropDown.Label = "快速预设"
+        app.ProfileDropDown.Items = live ? vcat([CUSTOM_PROFILE_LABEL], LIVE_PROFILE_OPTIONS) :
+            vcat([CUSTOM_PROFILE_LABEL], OFFLINE_PROFILE_ORDER)
+        app.ProfileDropDown.Value = live ? LIVE_PROFILE_OPTIONS[1] : CUSTOM_PROFILE_LABEL
+
+        app.set_dropdown_position(app.VehicleCountDropDown, [24, 238, 210, 32])
+        app.VehicleCountDropDown.Items = VEHICLE_COUNT_OPTIONS
+        app.VehicleCountDropDown.Value = "1"
+        app.set_dropdown_position(app.MapDropDown, [254, 238, 210, 32])
+        app.MapDropDown.Items = MAP_OPTIONS
+        app.MapDropDown.Value = MAP_OPTIONS[1]
+
+        app.set_dropdown_position(app.MissionDropDown, [24, 284, 440, 32])
+        app.MissionDropDown.Items = MODEL_MISSION_OPTIONS
+        app.MissionDropDown.Value = MODEL_MISSION_OPTIONS[1]
+        app.set_dropdown_position(app.PositionDropDown, [24, 330, 440, 32])
+        app.PositionDropDown.Items = MODEL_POSITION_OPTIONS
+        app.PositionDropDown.Value = MODEL_POSITION_OPTIONS[1]
+        app.set_dropdown_position(app.AttitudeDropDown, [24, 376, 440, 32])
+        app.AttitudeDropDown.Items = MODEL_ATTITUDE_OPTIONS
+        app.AttitudeDropDown.Value = live ? "px4_attitude_rate_inner [在线专用]" : MODEL_ATTITUDE_OPTIONS[1]
+        app.set_dropdown_position(app.AugmentationDropDown, [24, 422, 440, 32])
+        app.AugmentationDropDown.Items = MODEL_AUGMENTATION_OPTIONS
+        app.AugmentationDropDown.Value = MODEL_AUGMENTATION_OPTIONS[1]
+        app.set_dropdown_position(app.SafetyDropDown, [24, 468, 440, 32])
+        app.SafetyDropDown.Items = MODEL_SAFETY_OPTIONS
+        app.SafetyDropDown.Value = MODEL_SAFETY_OPTIONS[1]
+        app.set_dropdown_position(app.FaultDropDown, [24, 514, 440, 32])
+        app.FaultDropDown.Items = MODEL_FAULT_OPTIONS
+        app.FaultDropDown.Value = MODEL_FAULT_OPTIONS[1]
+        app.set_dropdown_position(app.FormationDropDown, [24, 560, 440, 32])
+        app.FormationDropDown.Items = MODEL_FORMATION_OPTIONS
+        app.FormationDropDown.Value = MODEL_FORMATION_OPTIONS[1]
+        app.set_dropdown_position(app.OutputDropDown, [24, 606, 440, 32])
+        app.OutputDropDown.Items = MODEL_OUTPUT_OPTIONS
+        app.OutputDropDown.Value = live ?
+            "ATTITUDE_THRUST / mavros_attitude_thrust [平台已验证]" : MODEL_OUTPUT_OPTIONS[1]
+
+        for control in (app.VehicleCountDropDown, app.MapDropDown, app.MissionDropDown,
+            app.PositionDropDown, app.AttitudeDropDown, app.AugmentationDropDown,
+            app.SafetyDropDown, app.FaultDropDown, app.OutputDropDown)
+            control.Enable = true
+        end
+        app.sync_vehicle_controls()
+    end
+
+    function live_combination_compatible(app)
+        return app.VehicleCountDropDown.Value == "1" &&
+            app.FormationDropDown.Value == "无" &&
+            app.PositionDropDown.Value == MODEL_POSITION_OPTIONS[1] &&
+            app.AttitudeDropDown.Value == "px4_attitude_rate_inner [在线专用]" &&
+            app.OutputDropDown.Value == "ATTITUDE_THRUST / mavros_attitude_thrust [平台已验证]"
+    end
+
+    function action_buttons(app)
+        return (
+            app.ValidateButton, app.PublishButton, app.PrepareButton,
+            app.QgcButton, app.SafeStopButton, app.OpenModelButton,
+            app.MilButton, app.CodegenButton, app.ResultButton,
+        )
+    end
+
+    function apply_preset(app, label)
+        haskey(OFFLINE_PROFILES, label) || return
+        item = OFFLINE_PROFILES[label]
+        app.VehicleCountDropDown.Value = string(mission_vehicle_count(item.mission))
+        app.MapDropDown.Value = MAP_OPTIONS[1]
+        app.sync_vehicle_controls()
+        app.MissionDropDown.Value = item.mission
+        app.PositionDropDown.Value = item.controller
+        app.AttitudeDropDown.Value = item.attitude
+        app.AugmentationDropDown.Value = item.augmentation
+        app.SafetyDropDown.Value = item.safety
+        app.FaultDropDown.Value = item.fault
+        app.FormationDropDown.Value = item.formation
+        app.OutputDropDown.Value = item.output
+    end
+
+    function selected_model_profile(app)
+        label = app.ProfileDropDown.Value
+        return haskey(OFFLINE_PROFILES, label) ? OFFLINE_PROFILES[label] : nothing
+    end
+
+    function preset_matches_selection(app, item)
+        item === nothing && return false
+        return app.MissionDropDown.Value == item.mission &&
+            app.VehicleCountDropDown.Value == string(mission_vehicle_count(item.mission)) &&
+            app.MapDropDown.Value == MAP_OPTIONS[1] &&
+            app.PositionDropDown.Value == item.controller &&
+            app.AttitudeDropDown.Value == item.attitude &&
+            app.AugmentationDropDown.Value == item.augmentation &&
+            app.SafetyDropDown.Value == item.safety &&
+            app.FaultDropDown.Value == item.fault &&
+            app.FormationDropDown.Value == item.formation &&
+            app.OutputDropDown.Value == item.output
+    end
+
     function refresh_summary(app)
-        if app.CurrentMode == "offline" && haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value)
-            item = OFFLINE_PROFILES[app.ProfileDropDown.Value]
-            app.MissionDropDown.Items = [item.mission]
-            app.MissionDropDown.Value = item.mission
-            app.PositionDropDown.Items = [item.controller]
-            app.PositionDropDown.Value = item.controller
-            app.AttitudeDropDown.Items = ["模型内部姿态环与控制分配 [冻结]"]
-            app.AttitudeDropDown.Value = "模型内部姿态环与控制分配 [冻结]"
-            app.AugmentationDropDown.Items = [item.augmentation]
-            app.AugmentationDropDown.Value = item.augmentation
-            app.SafetyDropDown.Items = [item.safety]
-            app.SafetyDropDown.Value = item.safety
-            app.OutputDropDown.Items = ["ROTOR_COMMAND [离线]"]
-            app.OutputDropDown.Value = "ROTOR_COMMAND [离线]"
-            app.MilButton.Enable = item.available
-            app.ResultButton.Enable = item.available
-            app.CodegenButton.Enable = item.available && !occursin("Custom", app.ProfileDropDown.Value)
-            app.CapabilityLabel.Text = item.available ?
-                "离线证据已通过\nResult.msr、指标、曲线与原生动画窗口均已验收。" :
-                "当前禁用\n共用 Runner 与既有独立模型均数值失稳；不得用窗口打开替代控制质量。"
-            app.CapabilityLabel.BackgroundColor = item.available ? READY_COLOR : WAIT_COLOR
+        if app.CurrentMode == "model"
+            item = app.selected_model_profile()
+            certified = item !== nothing && item.available && app.preset_matches_selection(item)
+            unavailable = occursin("[待接入]", app.PositionDropDown.Value) ||
+                occursin("[待接入]", app.AttitudeDropDown.Value) ||
+                occursin("[待接入]", app.AugmentationDropDown.Value) ||
+                occursin("[待接入]", app.SafetyDropDown.Value) ||
+                occursin("[待接入]", app.FaultDropDown.Value) ||
+                occursin("[待接入]", app.FormationDropDown.Value)
+            incompatible = occursin("[不可执行]", app.AugmentationDropDown.Value) ||
+                (app.FormationDropDown.Value != "无" && app.VehicleCountDropDown.Value == "1") ||
+                (is_three_uav_mission(app.MissionDropDown.Value) && app.VehicleCountDropDown.Value != "3")
+            executable = certified && !unavailable && !incompatible
+            app.MilButton.Enable = executable
+            app.CodegenButton.Enable = executable && !occursin("Custom", app.ProfileDropDown.Value)
+            app.ValidateButton.Enable = true
+            state = incompatible ? "结构不兼容" : (unavailable ? "接口待接入" : (executable ? "可直接运行" : "可配置，需保存并验证"))
+            gate_mark = executable ? "✓" : (incompatible ? "✕" : "◆")
+            app.ChainLabel.Text = gate_mark * " 组合  " * state *
+                "  |  模型 ✓  接口 " * (unavailable ? "◆" : "✓") *
+                "  参数 ✓  执行 " * (executable ? "✓" : "✕")
+            app.ChainLabel.BackgroundColor = MUTED_COLOR
             app.ProfileSummaryLabel.Text =
-                "实验 Profile\n" * item.profile *
-                "\n\n任务：" * item.mission *
-                "\n控制器：" * item.controller *
-                "\n增强：" * item.augmentation *
-                "\n证据：" * item.evidence
+                "外环  " * app.PositionDropDown.Value * "  |  内环  " * app.AttitudeDropDown.Value * "\n" *
+                "增强  " * app.AugmentationDropDown.Value * "  |  安全  " * app.SafetyDropDown.Value
+            app.CapabilityLabel.Text = item === nothing ?
+                "◆ 自定义 Profile 未验证  |  执行保持禁用" :
+                "● " * item.profile * "  |  Result.msr / 动画证据已登记"
+            app.CapabilityLabel.BackgroundColor = MUTED_COLOR
+            return
+        elseif app.CurrentMode == "deploy"
+            app.ProfileSummaryLabel.Text = "配置来源  " * app.ProfileDropDown.Value * "\n" *
+                "生成目标  " * app.DeployTargetDropDown.Value * "\n" *
+                "构建类型  " * app.BuildModeDropDown.Value
             return
         end
-        app.ProfileSummaryLabel.Text =
-            "实验 Profile\n" * app.ProfileDropDown.Value *
-            "\n\n任务：" * app.MissionDropDown.Value *
-            "\n外环：" * app.PositionDropDown.Value *
-            "\n增强：" * app.AugmentationDropDown.Value
+        app.ProfileSummaryLabel.Text = "运行Profile  " * app.ProfileDropDown.Value *
+            "\n任务  " * app.MissionDropDown.Value
+    end
+
+    function configure_model_workspace(app)
+        app.set_top_status("在线建模验证  |  未运行  |  Result.msr --"; state="正常")
+        app.configure_section(app.ConfigSectionLabel, "控制器组合", [24, 144, 440, 34])
+        app.configure_section(app.ChainSectionLabel, "风扰与故障", [494, 144, 440, 34])
+        app.configure_console_workspace()
+        app.ConfigSectionLabel.Visible = true
+        app.ChainSectionLabel.Visible = true
+        app.InjectionSectionLabel.Visible = true
+        app.set_visible(app.workspace_controls(), false)
+        model_controls = (
+            app.ProfileDropDown, app.VehicleCountDropDown, app.MapDropDown,
+            app.MissionDropDown, app.PositionDropDown,
+            app.AttitudeDropDown, app.AugmentationDropDown, app.SafetyDropDown,
+            app.FaultDropDown, app.FormationDropDown, app.OutputDropDown,
+            app.TargetUavDropDown, app.WindSlider,
+            app.Motor1Slider, app.Motor2Slider, app.Motor3Slider,
+            app.Motor4Slider,
+            app.ApplyInjectionButton, app.RestoreInjectionButton,
+        )
+        app.set_visible(model_controls, true)
+        app.configure_composition_controls()
+
+        app.set_dropdown_position(app.TargetUavDropDown, [494, 192, 440, 32])
+        app.WindSlider.Position = [494, 240, 440, 52]
+        app.Motor1Slider.Position = [494, 298, 440, 52]
+        app.Motor2Slider.Position = [494, 356, 440, 52]
+        app.Motor3Slider.Position = [494, 414, 440, 52]
+        app.Motor4Slider.Position = [494, 472, 440, 52]
+        app.ApplyInjectionButton.Position = [494, 540, 210, 36]
+        app.ApplyInjectionButton.Text = "写入仿真场景"
+        app.RestoreInjectionButton.Position = [724, 540, 210, 36]
+        app.RestoreInjectionButton.Text = "恢复默认"
+
+        app.set_visible(app.action_buttons(), false)
+        app.set_visible((app.MilButton, app.SafeStopButton, app.ResultButton), true)
+        app.MilButton.Position = [494, 600, 140, 38]
+        app.MilButton.Text = "开始仿真"
+        app.SafeStopButton.Position = [644, 600, 140, 38]
+        app.SafeStopButton.Text = "停止"
+        app.SafeStopButton.Enable = app.OfflineBatchRunning
+        app.ResultButton.Position = [794, 600, 140, 38]
+        app.ResultButton.Text = "打开结果"
+    end
+
+    function configure_live_workspace(app)
+        app.set_top_status("实时联合仿真  |  运行状态 --  |  控制频率 -- Hz  |  RTT P95 -- ms  |  延迟 P99 -- ms  |  抖动 -- ms  |  丢包率 -- %  |  带宽 -- B/s  |  Deadline miss --"; state="待命")
+        app.configure_section(app.ConfigSectionLabel, "控制器组合", [24, 144, 440, 34])
+        app.configure_section(app.ChainSectionLabel, "连接与实时故障", [494, 144, 440, 34])
+        app.configure_console_workspace()
+        app.ConfigSectionLabel.Visible = true
+        app.ChainSectionLabel.Visible = true
+        app.InjectionSectionLabel.Visible = true
+        app.set_visible(app.workspace_controls(), false)
+        live_controls = (
+            app.ProfileDropDown, app.VehicleCountDropDown, app.MapDropDown,
+            app.MissionDropDown, app.PositionDropDown, app.AttitudeDropDown,
+            app.AugmentationDropDown, app.SafetyDropDown, app.FaultDropDown,
+            app.FormationDropDown, app.OutputDropDown, app.TargetHostField,
+            app.Rt1PortField, app.RosMasterField, app.LocalIpField,
+            app.TargetRateDropDown, app.TestConnectionButton,
+            app.TargetUavDropDown, app.WindSlider, app.Motor1Slider,
+            app.Motor2Slider, app.Motor3Slider, app.Motor4Slider,
+            app.ApplyInjectionButton, app.RestoreInjectionButton,
+        )
+        app.set_visible(live_controls, true)
+        app.configure_composition_controls(live=true)
+
+        app.TargetHostField.Position = [494, 192, 270, 32]
+        app.Rt1PortField.Position = [784, 192, 150, 32]
+        app.RosMasterField.Position = [494, 238, 270, 32]
+        app.LocalIpField.Position = [784, 238, 150, 32]
+        app.set_dropdown_position(app.TargetRateDropDown, [494, 284, 190, 32])
+        app.TestConnectionButton.Position = [704, 282, 150, 36]
+
+        app.set_dropdown_position(app.TargetUavDropDown, [494, 330, 440, 32])
+        app.WindSlider.Position = [494, 378, 440, 44]
+        app.Motor1Slider.Position = [494, 428, 440, 44]
+        app.Motor2Slider.Position = [494, 478, 440, 44]
+        app.Motor3Slider.Position = [494, 528, 440, 44]
+        app.Motor4Slider.Position = [494, 578, 440, 44]
+        app.ApplyInjectionButton.Position = [494, 628, 210, 32]
+        app.ApplyInjectionButton.Text = "应用故障"
+        app.RestoreInjectionButton.Position = [724, 628, 210, 32]
+        app.RestoreInjectionButton.Text = "恢复正常"
+
+        app.set_visible(app.action_buttons(), false)
+        app.set_visible((app.PublishButton, app.QgcButton, app.SafeStopButton), true)
+        app.PublishButton.Position = [494, 674, 140, 38]
+        app.PublishButton.Text = "发布并准备"
+        app.PublishButton.Enable = false
+        app.QgcButton.Position = [644, 674, 140, 38]
+        app.QgcButton.Text = "进入 QGC"
+        app.SafeStopButton.Position = [794, 674, 140, 38]
+        app.SafeStopButton.Text = "安全停止"
+    end
+
+    function configure_deploy_workspace(app)
+        app.set_top_status("生成代码部署  |  门禁通过  |  构建 Release  |  产物已登记"; state="正常")
+        app.configure_section(app.ConfigSectionLabel, "生成配置与操作", [24, 144, 560, 34])
+        app.configure_console_workspace(left=614, width=802)
+        app.ConfigSectionLabel.Visible = true
+        app.ChainSectionLabel.Visible = false
+        app.InjectionSectionLabel.Visible = true
+        app.set_visible(app.workspace_controls(), false)
+        deploy_controls = (
+            app.ProfileDropDown, app.DeployTargetDropDown,
+            app.BuildModeDropDown, app.OutputDropDown,
+        )
+        app.set_visible(deploy_controls, true)
+        app.set_dropdown_position(app.ProfileDropDown, [24, 192, 560, 32])
+        app.ProfileDropDown.Label = "已验证 Profile"
+        app.ProfileDropDown.Items = ["Official PID generated-C [已通过]", "PID-INDI generated-C [已通过]", "Linear MPC generated-C [已通过]", "实验控制器 [门禁未通过]"]
+        app.ProfileDropDown.Value = "Official PID generated-C [已通过]"
+        app.set_dropdown_position(app.DeployTargetDropDown, [24, 246, 560, 32])
+        app.set_dropdown_position(app.BuildModeDropDown, [24, 300, 560, 32])
+        app.set_dropdown_position(app.OutputDropDown, [24, 354, 560, 32])
+        app.OutputDropDown.Items = ["ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"]
+        app.OutputDropDown.Value = "ATTITUDE_THRUST"
+
+        app.set_visible(app.action_buttons(), false)
+        app.set_visible((app.ValidateButton, app.CodegenButton,
+            app.ResultButton, app.QgcButton), true)
+        app.ValidateButton.Position = [24, 420, 270, 44]
+        app.ValidateButton.Text = "检查生成门禁"
+        app.CodegenButton.Position = [314, 420, 270, 44]
+        app.CodegenButton.Text = "生成 C 代码"
+        app.ResultButton.Position = [24, 480, 270, 44]
+        app.ResultButton.Text = "打开产物目录"
+        app.QgcButton.Position = [314, 480, 270, 44]
+        app.QgcButton.Text = "交接至 QGC"
+        app.CodegenButton.Enable = true
+        app.QgcButton.Enable = true
     end
 
     function set_mode(app, mode)
         app.CurrentMode = mode
-        live_reason = ""
-        app.set_button_state(app.OfflineModeButton, mode == "offline")
+        app.set_button_state(app.OfflineModeButton, mode == "model")
         app.set_button_state(app.LiveModeButton, mode == "live")
         app.set_button_state(app.DeployModeButton, mode == "deploy")
-        app.MissionDropDown.Enable = true
-        app.PositionDropDown.Enable = true
-        app.AttitudeDropDown.Enable = true
-        app.AugmentationDropDown.Enable = true
-        app.SafetyDropDown.Enable = true
-        app.OutputDropDown.Enable = true
-
-        if mode == "offline"
+        if mode == "model"
+            app.configure_model_workspace()
             app.set_connection_controls(false)
-            app.ModeStatusLabel.Text = "离线建模验证  |  Model Studio 拥有模型检查、MIL、代码生成和结果操作权"
-            app.ProfileDropDown.Items = OFFLINE_PROFILE_ORDER
-            app.ProfileDropDown.Value = OFFLINE_PROFILE_ORDER[1]
-            app.MissionDropDown.Enable = false
-            app.PositionDropDown.Enable = false
-            app.AttitudeDropDown.Enable = false
-            app.AugmentationDropDown.Enable = false
-            app.SafetyDropDown.Enable = false
-            app.OutputDropDown.Enable = false
-            app.ValidateButton.Enable = true
-            app.PublishButton.Enable = true
-            app.PrepareButton.Enable = false
-            app.QgcButton.Enable = false
-            app.SafeStopButton.Enable = false
-            app.OpenModelButton.Enable = true
-            app.MilButton.Enable = true
-            app.CodegenButton.Enable = true
-            app.ResultButton.Enable = true
+            app.append_console("切换至在线建模验证工作台")
         elseif mode == "live"
+            app.configure_live_workspace()
             app.set_connection_controls(true)
-            app.ModeStatusLabel.Text = "实时联合仿真  |  50 Hz 已通过，200 Hz 能力待验证"
-            app.ProfileDropDown.Items = ["official_pid_attitude_thrust_v1 [候选]", "official_pid + awff_v1 [候选]"]
-            app.ProfileDropDown.Value = "official_pid_attitude_thrust_v1 [候选]"
-            app.MissionDropDown.Items = ["起飞-悬停-降落"]
-            app.MissionDropDown.Value = "起飞-悬停-降落"
-            app.PositionDropDown.Items = ["PX4CTRL 官方位置外环 PID"]
-            app.PositionDropDown.Value = "PX4CTRL 官方位置外环 PID"
-            app.AttitudeDropDown.Items = ["PX4 内置姿态/角速度环 [锁定]", "INDI [当前模式不可用]", "SMC [当前模式不可用]", "Backstepping [当前模式不可用]"]
-            app.AttitudeDropDown.Value = "PX4 内置姿态/角速度环 [锁定]"
-            app.AttitudeDropDown.Enable = false
-            app.OutputDropDown.Items = ["ATTITUDE_THRUST [锁定]"]
-            app.OutputDropDown.Value = "ATTITUDE_THRUST [锁定]"
-            app.OutputDropDown.Enable = false
-            app.CapabilityLabel.Text = "实时能力门禁\n目标扫描 50 / 100 / 200 Hz；只有同频 RT0 通过后才能发布对应 Profile。"
-            app.CapabilityLabel.BackgroundColor = WAIT_COLOR
-            app.ValidateButton.Enable = true
-            app.PublishButton.Enable = true
-            app.PrepareButton.Enable = false
-            app.QgcButton.Enable = false
-            app.SafeStopButton.Enable = false
-            app.OpenModelButton.Enable = true
-            app.MilButton.Enable = false
-            app.CodegenButton.Enable = false
-            app.ResultButton.Enable = true
-            live_response = app.refresh_live_capability()
-            live_reason = get(live_response, "reason_code", "unknown")
+            app.append_console("切换至实时联合仿真工作台；实时后端保持未连接")
         else
+            app.configure_deploy_workspace()
             app.set_connection_controls(false)
-            app.ModeStatusLabel.Text = "生成代码部署  |  Model Studio 发布并准备，QGC 执行飞行"
-            app.ProfileDropDown.Items = ["已发布 generated-C Profile", "实验控制器 Profile [未通过门禁]"]
-            app.ProfileDropDown.Value = "已发布 generated-C Profile"
-            app.MissionDropDown.Items = ["起飞-悬停-降落", "八字轨迹", "自主避障", "多机编队"]
-            app.PositionDropDown.Items = ["由已发布 Profile 冻结"]
-            app.PositionDropDown.Value = "由已发布 Profile 冻结"
-            app.AttitudeDropDown.Items = ["由 output_variant 与 Profile 冻结"]
-            app.AttitudeDropDown.Value = "由 output_variant 与 Profile 冻结"
-            app.AttitudeDropDown.Enable = false
-            app.OutputDropDown.Items = ["由已发布 Profile 冻结"]
-            app.OutputDropDown.Value = "由已发布 Profile 冻结"
-            app.OutputDropDown.Enable = false
-            app.CapabilityLabel.Text = "部署边界\n控制器参数和输出边界在起飞前冻结；QGC 只选择 Profile 和任务工件。"
-            app.CapabilityLabel.BackgroundColor = READY_COLOR
-            app.ValidateButton.Enable = true
-            app.PublishButton.Enable = true
-            app.PrepareButton.Enable = true
-            app.QgcButton.Enable = true
-            app.SafeStopButton.Enable = false
-            app.OpenModelButton.Enable = true
-            app.MilButton.Enable = false
-            app.CodegenButton.Enable = true
-            app.ResultButton.Enable = true
+            app.append_console("切换至生成代码部署工作台")
         end
         app.refresh_summary()
-        app.StatusLabel.Text = mode == "live" ?
-            "已读取 MWORKS Live 能力门禁：" * live_reason :
-            "界面审核模式：已切换到“" * app.ModeStatusLabel.Text * "”。未调用任何运行时。"
     end
 
     function OfflineModePressed(app, event)
-        app.set_mode("offline")
+        app.set_mode("model")
     end
 
     function LiveModePressed(app, event)
@@ -292,19 +620,48 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function SelectionChanged(app, event)
+        app.sync_vehicle_controls()
         app.refresh_summary()
-        app.StatusLabel.Text = "配置已修改，尚未校验或发布。"
+        if app.CurrentMode == "live"
+            app.ConnectionChanged(nothing)
+            if !app.live_combination_compatible()
+                app.append_console("当前组合超出单机 ATTITUDE_THRUST 实时合同；可保存但不可准备运行"; level="阻断")
+            end
+        else
+            app.append_console("配置已修改；兼容性已自动检查")
+        end
+    end
+
+    function PresetChanged(app, event)
+        if app.CurrentMode == "model"
+            app.apply_preset(app.ProfileDropDown.Value)
+        elseif app.CurrentMode == "live"
+            if app.ProfileDropDown.Value == LIVE_PROFILE_OPTIONS[1]
+                app.AugmentationDropDown.Value = "无"
+            elseif app.ProfileDropDown.Value == LIVE_PROFILE_OPTIONS[2]
+                app.AugmentationDropDown.Value = "awff [已认证]"
+            end
+        end
+        app.sync_vehicle_controls()
+        app.refresh_summary()
+        app.append_console(app.ProfileDropDown.Value == CUSTOM_PROFILE_LABEL ?
+            "进入自由组合模式；所有层级可编辑" :
+            "预设已载入：" * app.ProfileDropDown.Value)
     end
 
     function ConnectionChanged(app, event)
-        app.ConnectionStatusLabel.Text = "连接配置已修改，尚未测试；prepare 将保持阻断。"
-        app.ConnectionStatusLabel.BackgroundColor = WAIT_COLOR
+        app.ConnectionStatusLabel.Text = "◆ 配置已修改  |  等待连接测试"
+        app.ConnectionStatusLabel.BackgroundColor = MUTED_COLOR
         app.PrepareButton.Enable = false
+        app.PublishButton.Enable = false
+        app.set_top_status("实时联合仿真  |  等待连接测试  |  Run --"; state="待命")
+        app.append_console("连接参数已修改；prepare 保持阻断")
     end
 
     function TestConnectionPressed(app, event)
         app.TestConnectionButton.Enable = false
-        app.ConnectionStatusLabel.Text = "正在测试地址、ROS Master 与 RT1 双向握手..."
+        app.ConnectionStatusLabel.Text = "◆ 正在测试 ROS Master / RT1 双向链路"
+        app.append_console("开始连接预检：ROS Master / RT1")
         response = LiveCosimBackend.request(
             app.Appfile,
             "connection-test",
@@ -321,28 +678,40 @@ const OFFLINE_PROFILES = Dict(
         wire = get(response, "wire_bytes_per_s", "")
         detail = isempty(rtt) ? "" : "  |  RTT P95 " * rtt * " ms"
         detail *= isempty(wire) ? "" : "  |  wire " * wire * " B/s"
-        app.ConnectionStatusLabel.Text = connected ? "双向连接通过" * detail : "连接阻断：" * reason
-        app.ConnectionStatusLabel.BackgroundColor = connected ? READY_COLOR : WAIT_COLOR
+        app.ConnectionStatusLabel.Text = connected ? "● 双向连接通过" * detail : "■ 连接阻断  |  " * reason
+        app.ConnectionStatusLabel.BackgroundColor = MUTED_COLOR
         app.TestConnectionButton.Enable = true
-        app.PrepareButton.Enable = connected && parse(Int, app.TargetRateDropDown.Value) == 50
-        app.StatusLabel.Text = "连接预检：" * reason * detail
+        combination_ok = app.live_combination_compatible()
+        app.PrepareButton.Enable = connected && parse(Int, app.TargetRateDropDown.Value) == 50 && combination_ok
+        app.PublishButton.Enable = app.PrepareButton.Enable
+        app.set_top_status("实时联合仿真  |  " * (connected ? "已连接" : "连接阻断") * "  |  Run --";
+            state=connected ? "正常" : "阻断")
+        if connected && !combination_ok
+            app.append_console("连接已通过，但控制器组合不满足单机 ATTITUDE_THRUST 实时合同"; level="阻断")
+        else
+            app.append_console("连接预检：" * reason * detail; level=connected ? "通过" : "阻断")
+        end
     end
 
     function InjectionChanged(app, event)
         app.InjectionValuesLabel.Text =
-            "待应用值\n风速 " * string(round(app.WindSlider.Value; digits=1)) * " m/s  |  " *
+            "待应用  风速 " * string(round(app.WindSlider.Value; digits=1)) * " m/s  |  " *
             "电机效率 " * join(string.(round.([
                 app.Motor1Slider.Value,
                 app.Motor2Slider.Value,
                 app.Motor3Slider.Value,
                 app.Motor4Slider.Value,
             ]; digits=2)), " / ") *
-            "\n\n实际值\n风速 0.0 m/s  |  电机效率 1.00 / 1.00 / 1.00 / 1.00"
-        app.StatusLabel.Text = "故障参数已修改为待应用值；点击“应用”前不会发送。"
+            "\n实际  风速 0.0 m/s  |  电机效率 1.00 / 1.00 / 1.00 / 1.00"
+        app.append_console(app.CurrentMode == "model" ?
+            "场景参数已修改；将在下一次模型求解中生效" :
+            "实时故障待应用值已修改；尚未发送")
     end
 
     function ApplyInjectionPressed(app, event)
-        app.StatusLabel.Text = "界面审核模式：应用故障需要 Orchestrator accepted -> applied 事件，本版未发送。"
+        app.append_console(app.CurrentMode == "model" ?
+            "仿真场景参数已写入当前配置" :
+            "故障应用请求未发送；等待实时后端接入"; level=app.CurrentMode == "model" ? "通过" : "待办")
     end
 
     function RestoreInjectionPressed(app, event)
@@ -352,16 +721,18 @@ const OFFLINE_PROFILES = Dict(
         app.Motor3Slider.Value = 1.0
         app.Motor4Slider.Value = 1.0
         app.InjectionChanged(nothing)
-        app.StatusLabel.Text = "待应用值已恢复正常；审核版未发送 restore_all_injections。"
+        app.append_console(app.CurrentMode == "model" ?
+            "仿真场景已恢复默认值" :
+            "待应用值已恢复正常；restore 请求未发送")
     end
 
     function ReviewAction(app, action)
-        app.StatusLabel.Text = "界面审核模式：已触发“" * action * "”界面状态，未连接 MWORKS、QGC 或 Orchestrator。"
+        app.append_console(action * "：界面事件已触发，运行后端未连接"; level="审核")
     end
 
     function run_offline_batch(app, profile_id)
         if !isfile(OFFLINE_BATCH_RUNNER)
-            app.StatusLabel.Text = "离线批量执行器不存在：" * OFFLINE_BATCH_RUNNER
+            app.append_console("批量执行器不存在：" * OFFLINE_BATCH_RUNNER; level="错误")
             return
         end
         slug = lowercase(replace(profile_id, r"[^A-Za-z0-9]+" => "-"))
@@ -371,6 +742,7 @@ const OFFLINE_PROFILES = Dict(
             OFFLINE_BATCH_RUNNER,
             "--batch-id",
             batch_id,
+            "--keep-session-open",
         ]
         retry_batch_id = app.LastOfflineProfile == profile_id ? app.LastOfflineBatchId : ""
         if isempty(retry_batch_id)
@@ -383,6 +755,7 @@ const OFFLINE_PROFILES = Dict(
         app.CurrentOfflineBatchId = batch_id
         app.MilButton.Text = "请求取消"
         app.MilButton.Enable = true
+        app.SafeStopButton.Enable = true
         app.ResultButton.Enable = false
         app.LastOfflineBatchManifest = joinpath(
             PROJECT_ROOT,
@@ -392,19 +765,23 @@ const OFFLINE_PROFILES = Dict(
             batch_id,
             "BATCH_MANIFEST.json",
         )
-        app.StatusLabel.Text = "正在执行离线 MWORKS 批次：" * profile_id
+        app.set_top_status("在线建模验证  |  正在运行  |  " * profile_id; state="待命")
+        app.append_console("开始 MWORKS 批次：" * profile_id; level="运行")
         @async begin
             try
                 process = run(command; wait=false)
                 wait(process)
-                app.StatusLabel.Text = "离线批次完成：" * app.LastOfflineBatchManifest
+                app.set_top_status("在线建模验证  |  已完成  |  Result.msr 已登记"; state="正常")
+                app.append_console("批次完成：" * app.LastOfflineBatchManifest; level="通过")
                 app.ResultButton.Enable = true
             catch error
                 if isfile(app.LastOfflineBatchManifest)
-                    app.StatusLabel.Text = "离线批次已阻断或取消，manifest：" * app.LastOfflineBatchManifest
+                    app.set_top_status("在线建模验证  |  批次阻断  |  Manifest 已保留"; state="阻断")
+                    app.append_console("批次阻断或取消：" * app.LastOfflineBatchManifest; level="阻断")
                     app.ResultButton.Enable = true
                 else
-                    app.StatusLabel.Text = "离线批次阻断：" * sprint(showerror, error)
+                    app.set_top_status("在线建模验证  |  批次阻断"; state="阻断")
+                    app.append_console("批次阻断：" * sprint(showerror, error); level="错误")
                 end
             finally
                 if isfile(app.LastOfflineBatchManifest)
@@ -413,15 +790,16 @@ const OFFLINE_PROFILES = Dict(
                 end
                 app.OfflineBatchRunning = false
                 app.CurrentOfflineBatchId = ""
-                app.MilButton.Text = "运行 MWORKS MIL"
+                app.MilButton.Text = "开始仿真"
                 app.MilButton.Enable = true
+                app.SafeStopButton.Enable = false
             end
         end
     end
 
     function request_offline_cancel(app)
         if !app.OfflineBatchRunning || isempty(app.CurrentOfflineBatchId)
-            app.StatusLabel.Text = "当前没有正在运行的离线批次。"
+            app.append_console("当前没有正在运行的模型批次"; level="提示")
             return
         end
         batch_dir = joinpath(PROJECT_ROOT, "Results", "control_platform", "offline_batches", app.CurrentOfflineBatchId)
@@ -437,44 +815,57 @@ const OFFLINE_PROFILES = Dict(
         ]; dir=PROJECT_ROOT)
         try
             run(command)
-            app.StatusLabel.Text = "已请求安全取消；当前 Profile 完成证据与会话清理后停止后续任务。"
+            app.append_console("已请求安全取消；等待当前 Profile 清理完成"; level="运行")
             app.MilButton.Enable = false
         catch error
-            app.StatusLabel.Text = "取消请求失败：" * sprint(showerror, error)
+            app.append_console("取消请求失败：" * sprint(showerror, error); level="错误")
         end
     end
 
     function ValidatePressed(app, event)
         if app.CurrentMode == "live"
             response = app.refresh_live_capability("validate")
-            app.StatusLabel.Text = "MWORKS Live Profile 校验结果：" * get(response, "reason_code", "unknown")
+            app.append_console("实时 Profile 校验：" * get(response, "reason_code", "unknown"))
         else
             app.ReviewAction("校验配置")
         end
     end
-    function PublishPressed(app, event); app.ReviewAction("发布 Profile"); end
+    function PublishPressed(app, event)
+        if app.CurrentMode == "live"
+            response = app.refresh_live_capability("prepare")
+            app.append_console("发布并准备：" * get(response, "reason_code", "unknown"))
+        else
+            app.ReviewAction("发布 Profile")
+        end
+    end
     function PreparePressed(app, event)
         if app.CurrentMode == "live"
             response = app.refresh_live_capability("prepare")
-            app.StatusLabel.Text = "MWORKS Live prepare：" * get(response, "reason_code", "unknown")
+            app.append_console("实时 prepare：" * get(response, "reason_code", "unknown"))
         else
             app.ReviewAction("准备运行")
         end
     end
     function QgcPressed(app, event); app.ReviewAction("进入 QGC"); end
-    function SafeStopPressed(app, event); app.ReviewAction("请求安全停止"); end
+    function SafeStopPressed(app, event)
+        if app.CurrentMode == "model"
+            app.request_offline_cancel()
+        else
+            app.ReviewAction("请求安全停止")
+        end
+    end
     function OpenModelPressed(app, event); app.ReviewAction("打开模型"); end
     function MilPressed(app, event)
         if app.OfflineBatchRunning
             app.request_offline_cancel()
             return
         end
-        if app.CurrentMode == "offline" && haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value)
+        if app.CurrentMode == "model" && haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value)
             item = OFFLINE_PROFILES[app.ProfileDropDown.Value]
-            if item.available
+            if item.available && app.preset_matches_selection(item)
                 app.run_offline_batch(item.profile)
             else
-                app.StatusLabel.Text = "当前 Profile 已禁用，未启动离线仿真。"
+                app.append_console("Profile 与当前 UAV 数量、任务或控制链不一致；未启动仿真"; level="阻断")
             end
         else
             app.ReviewAction("运行 MWORKS MIL")
@@ -482,15 +873,35 @@ const OFFLINE_PROFILES = Dict(
     end
     function CodegenPressed(app, event); app.ReviewAction("生成 C 代码"); end
     function ResultPressed(app, event)
-        if app.CurrentMode == "offline" && !isempty(app.LastOfflineBatchManifest)
-            app.StatusLabel.Text = "离线批次记录：" * app.LastOfflineBatchManifest * "\n结果索引：" * OFFLINE_BATCH_INDEX
+        if app.CurrentMode == "model" && !isempty(app.LastOfflineBatchManifest)
+            if !isfile(OFFLINE_ANIMATION_RESUMER)
+                app.append_console("动画恢复器不存在：" * OFFLINE_ANIMATION_RESUMER; level="错误")
+                return
+            end
+            app.ResultButton.Enable = false
+            app.append_console("正在恢复当前 MWORKS 结果动画"; level="运行")
+            @async begin
+                try
+                    command = Cmd(["python", OFFLINE_ANIMATION_RESUMER]; dir=PROJECT_ROOT)
+                    output = read(command, String)
+                    app.append_console("当前结果动画已恢复：" * strip(output); level="通过")
+                catch error
+                    app.append_console("恢复动画失败；请重新执行当前仿真：" * sprint(showerror, error); level="错误")
+                finally
+                    app.ResultButton.Enable = true
+                end
+            end
         else
-            app.ReviewAction("打开结果")
+            app.append_console("请先完成一次仿真，再打开当前结果"; level="提示")
         end
     end
 
-    function configure_dropdown(app, control, label, position, items, value)
+    function set_dropdown_position(app, control, position)
         control.Position = position
+    end
+
+    function configure_dropdown(app, control, label, position, items, value)
+        app.set_dropdown_position(control, position)
         control.Label = label
         control.Items = items
         control.Value = value
@@ -524,8 +935,8 @@ const OFFLINE_PROFILES = Dict(
 
     function createComponents(app)
         app.UIFigure = TyAppDesigner.uifigure(Visible=false)
-        app.UIFigure.Position = [30, 30, 1440, 900]
-        app.UIFigure.Name = "MoSim Model Studio 0.5 UI Review"
+        app.UIFigure.Position = [30, 30, 1440, 720]
+        app.UIFigure.Name = "MoSim Model Studio 0.6 UI Review"
         app.UIFigure.Color = [0.96, 0.97, 0.97]
 
         app.TitleLabel = TyAppDesigner.uilabel(app.UIFigure)
@@ -541,7 +952,7 @@ const OFFLINE_PROFILES = Dict(
         app.SubtitleLabel.FontColor = [0.35, 0.42, 0.47]
 
         app.OfflineModeButton = TyAppDesigner.uibutton(app.UIFigure)
-        app.configure_action(app.OfflineModeButton, "离线建模验证", "OfflineModePressed", [24, 82, 190, 40])
+        app.configure_action(app.OfflineModeButton, "在线建模验证", "OfflineModePressed", [24, 82, 190, 40])
         app.LiveModeButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.LiveModeButton, "实时联合仿真", "LiveModePressed", [218, 82, 190, 40])
         app.DeployModeButton = TyAppDesigner.uibutton(app.UIFigure)
@@ -562,6 +973,11 @@ const OFFLINE_PROFILES = Dict(
 
         app.ProfileDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.ProfileDropDown, "实验 Profile", [24, 192, 420, 32], ["正在加载..."], "正在加载...")
+        app.ProfileDropDown.ValueChangedFcn = "PresetChanged"
+        app.VehicleCountDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.VehicleCountDropDown, "UAV 数量", [24, 238, 210, 32], VEHICLE_COUNT_OPTIONS, "1")
+        app.MapDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.MapDropDown, "地图", [254, 238, 210, 32], MAP_OPTIONS, MAP_OPTIONS[1])
         app.MissionDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.MissionDropDown, "任务轨迹", [24, 240, 420, 32], ["起飞-悬停-降落"], "起飞-悬停-降落")
         app.PositionDropDown = TyAppDesigner.uidropdown(app.UIFigure)
@@ -572,6 +988,10 @@ const OFFLINE_PROFILES = Dict(
         app.configure_dropdown(app.AugmentationDropDown, "增强与扰动补偿", [24, 384, 420, 32], ["无", "AWFF", "L1 [门禁待通过]", "DOB/ESO [门禁待通过]", "模糊补偿 [门禁待通过]", "神经网络补偿 [门禁待通过]"], "无")
         app.SafetyDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.SafetyDropDown, "安全层", [24, 432, 420, 32], ["基础限幅", "QP Safety Filter [门禁待通过]", "Return-and-Land [门禁待通过]", "CBF [门禁待通过]"], "基础限幅")
+        app.FaultDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.FaultDropDown, "故障容错层", [24, 468, 420, 32], MODEL_FAULT_OPTIONS, MODEL_FAULT_OPTIONS[1])
+        app.FormationDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.FormationDropDown, "编队控制层", [24, 514, 420, 32], MODEL_FORMATION_OPTIONS, MODEL_FORMATION_OPTIONS[1])
         app.OutputDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.OutputDropDown, "输出边界", [24, 480, 420, 32], ["ATTITUDE_THRUST [锁定]"], "ATTITUDE_THRUST [锁定]")
 
@@ -620,27 +1040,36 @@ const OFFLINE_PROFILES = Dict(
 
         app.ConnectionStatusLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.ConnectionStatusLabel.Position = [612, 286, 326, 48]
-        app.ConnectionStatusLabel.Text = "尚未测试双向连接；200 Hz 为待验证目标。"
+        app.ConnectionStatusLabel.Text = "◆ 尚未测试  |  200 Hz 候选目标"
         app.ConnectionStatusLabel.WordWrap = true
-        app.ConnectionStatusLabel.BackgroundColor = WAIT_COLOR
+        app.ConnectionStatusLabel.BackgroundColor = MUTED_COLOR
+
+        app.DeployTargetDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.DeployTargetDropDown, "生成目标", [24, 246, 430, 32], ["通用 C 库", "px4ctrl / Gazebo 控制器", "PX4 模块 [接口预留]"], "px4ctrl / Gazebo 控制器")
+
+        app.BuildModeDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.BuildModeDropDown, "构建类型", [24, 300, 430, 32], ["Release", "Debug", "SIL 对比"], "Release")
+
+        app.TargetUavDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.TargetUavDropDown, "故障目标", [494, 192, 440, 32], ["UAV 1"], "UAV 1")
 
         app.ChainLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.ChainLabel.Position = [468, 346, 470, 100]
-        app.ChainLabel.Text = "控制链\n\n任务 / 参考 -> 位置外环 -> 期望姿态与总推力\n-> PX4 内置姿态 / 角速度环 -> 控制分配 -> 四电机\n\nATTITUDE_THRUST v1 中，自研姿态内环不可在线选择。"
+        app.ChainLabel.Text = ""
         app.ChainLabel.VerticalAlignment = "top"
         app.ChainLabel.WordWrap = true
         app.ChainLabel.BackgroundColor = [0.89, 0.94, 0.96]
 
         app.ContractLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.ContractLabel.Position = [468, 458, 470, 96]
-        app.ContractLabel.Text = "三方职责\n\nModel Studio：配置、校验、发布、MIL / codegen、prepare\nQGC：连接、解锁、起飞、任务、降落、安全停止\nOrchestrator：唯一状态机、命令裁决和 RunManifest"
+        app.ContractLabel.Text = ""
         app.ContractLabel.VerticalAlignment = "top"
         app.ContractLabel.WordWrap = true
         app.ContractLabel.BackgroundColor = [0.94, 0.95, 0.95]
 
         app.TimingLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.TimingLabel.Position = [468, 566, 470, 164]
-        app.TimingLabel.Text = "实时与可观测性\n\n已通过基线：50 Hz  |  目标扫描：50 / 100 / 200 Hz\n每条链路记录 rate / latency / jitter / loss / bandwidth\nGazebo 记录 RTF；UE 记录 FPS 与 Game / Draw / GPU。\n\n200 Hz 未通过 RT0 前禁止 prepare。"
+        app.TimingLabel.Text = ""
         app.TimingLabel.VerticalAlignment = "top"
         app.TimingLabel.WordWrap = true
         app.TimingLabel.BackgroundColor = WAIT_COLOR
@@ -694,14 +1123,21 @@ const OFFLINE_PROFILES = Dict(
         app.configure_action(app.ResultButton, "打开结果", "ResultPressed", [1250, 754, 166, 38])
 
         app.StatusLabel = TyAppDesigner.uilabel(app.UIFigure)
-        app.StatusLabel.Position = [24, 810, 1392, 62]
+        app.StatusLabel.Position = [964, 192, 452, 456]
         app.StatusLabel.VerticalAlignment = "top"
+        app.StatusLabel.HorizontalAlignment = "left"
         app.StatusLabel.WordWrap = true
-        app.StatusLabel.BackgroundColor = [0.90, 0.93, 0.94]
+        app.StatusLabel.BackgroundColor = CONSOLE_COLOR
+        app.StatusLabel.FontColor = CONSOLE_TEXT_COLOR
 
-        app.set_mode("live")
+        app.ConsoleToggleButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.ConsoleToggleButton, "收起日志", "ToggleConsolePressed", [24, 738, 112, 28])
+        app.ConsoleClearButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.ConsoleClearButton, "清空", "ClearConsolePressed", [146, 738, 76, 28])
+
+        app.set_mode("model")
         app.InjectionChanged(nothing)
-        app.StatusLabel.Text = "Model Studio 已就绪。测试连接会执行 ROS Master 与 RT1 双向预检；飞行操作仍由 QGC 和 Orchestrator 负责。"
+        app.append_console("Model Studio 已就绪"; level="系统")
         app.UIFigure.Visible = true
     end
 

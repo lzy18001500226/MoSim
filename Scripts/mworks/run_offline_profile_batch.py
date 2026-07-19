@@ -79,10 +79,14 @@ def resolve_profile(catalog: dict[str, Any], profile_id: str) -> dict[str, Any]:
         request_path = ROOT / str(item.get("request_json", ""))
         if item.get("status") != "accepted" or not request_path.is_file():
             raise ValueError(f"custom_profile_request_unavailable:{profile_id}")
-    if item.get("vehicle_count") != 1:
-        raise ValueError(f"batch_requires_single_uav_profile:{profile_id}")
-    if item.get("execution_kind") == "direct_model":
-        raise ValueError(f"batch_wrapper_required_for_profile:{profile_id}")
+    vehicle_count = item.get("vehicle_count")
+    execution_kind = item.get("execution_kind")
+    if vehicle_count != 1 and execution_kind != "direct_model":
+        raise ValueError(f"batch_requires_single_uav_or_direct_model_profile:{profile_id}")
+    if execution_kind == "direct_model":
+        model_file = ROOT / str(item.get("direct_model_file", ""))
+        if vehicle_count != 3 or not item.get("direct_model") or not model_file.is_file():
+            raise ValueError(f"batch_direct_model_profile_invalid:{profile_id}")
     return item
 
 
@@ -99,6 +103,7 @@ def run_one(
     *,
     reuse_generated: bool,
     record_only: bool,
+    keep_session_open: bool = False,
     timeout_s: int,
     output_dir: Path,
 ) -> dict[str, Any]:
@@ -113,6 +118,8 @@ def run_one(
         command.append("--reuse-generated")
     if record_only:
         command.append("--record-only")
+    if keep_session_open:
+        command.append("--keep-session-open")
     started = time.time()
     try:
         completed = subprocess.run(
@@ -282,6 +289,7 @@ def write_batch_manifest(
     started: str,
     reuse_generated: bool,
     record_only: bool,
+    keep_session_open: bool = False,
     timeout_s: int,
     lineage: dict[str, Any],
     batch_root: Path | None = None,
@@ -304,6 +312,7 @@ def write_batch_manifest(
         "execution": {
             "reuse_generated": reuse_generated,
             "record_only": record_only,
+            "keep_session_open": keep_session_open,
             "timeout_s": timeout_s,
             "stop_on_first_blocker": True,
         },
@@ -323,6 +332,7 @@ def main() -> int:
     parser.add_argument("--request-cancel")
     parser.add_argument("--reuse-generated", action="store_true")
     parser.add_argument("--record-only", action="store_true")
+    parser.add_argument("--keep-session-open", action="store_true")
     parser.add_argument("--timeout-s", type=int, default=900)
     args = parser.parse_args()
     if args.request_cancel:
@@ -380,6 +390,7 @@ def main() -> int:
             started=started,
             reuse_generated=args.reuse_generated,
             record_only=args.record_only,
+            keep_session_open=args.keep_session_open,
             timeout_s=args.timeout_s,
             lineage=lineage,
             batch_root=BATCH_ROOT,
@@ -398,6 +409,7 @@ def main() -> int:
             index,
             reuse_generated=args.reuse_generated,
             record_only=args.record_only,
+            keep_session_open=args.keep_session_open,
             timeout_s=args.timeout_s,
             output_dir=output_dir,
         )
@@ -416,6 +428,7 @@ def main() -> int:
         started=started,
         reuse_generated=args.reuse_generated,
         record_only=args.record_only,
+        keep_session_open=args.keep_session_open,
         timeout_s=args.timeout_s,
         lineage=lineage,
         batch_root=BATCH_ROOT,

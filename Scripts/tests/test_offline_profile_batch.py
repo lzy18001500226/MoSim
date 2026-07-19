@@ -9,18 +9,28 @@ import pytest
 from Scripts.mworks import run_offline_profile_batch as batch
 
 
-def test_resolve_profile_rejects_disabled_and_multi_uav_entries() -> None:
+def test_resolve_profile_accepts_registered_three_uav_direct_model(tmp_path: Path, monkeypatch) -> None:
+    model = tmp_path / "three.mo"
+    model.write_text("model Three end Three;", encoding="utf-8")
+    monkeypatch.setattr(batch, "ROOT", tmp_path)
     catalog = {
         "certified_profiles": [
             {"profile_id": "ok", "vehicle_count": 1},
-            {"profile_id": "multi", "vehicle_count": 3},
+            {
+                "profile_id": "multi",
+                "vehicle_count": 3,
+                "execution_kind": "direct_model",
+                "direct_model": "Three",
+                "direct_model_file": "three.mo",
+            },
         ],
         "disabled_profiles": [
             {"profile_id": "disabled", "vehicle_count": 1, "certification_state": "blocked_current_run"}
         ],
     }
     assert batch.resolve_profile(catalog, "ok")["profile_id"] == "ok"
-    for profile_id, reason in (("disabled", "profile_disabled"), ("multi", "batch_requires_single_uav_profile")):
+    assert batch.resolve_profile(catalog, "multi")["profile_id"] == "multi"
+    for profile_id, reason in (("disabled", "profile_disabled"),):
         try:
             batch.resolve_profile(catalog, profile_id)
         except ValueError as error:
@@ -252,6 +262,7 @@ def test_model_studio_uses_retry_lineage_and_result_index() -> None:
     assert "BATCH_INDEX.json" in source
     assert "LastOfflineBatchId" in source
     assert '"--request-cancel"' in source
+    assert '"--keep-session-open"' in source
     assert "run(command; wait=false)" in source
 
 
@@ -333,8 +344,8 @@ def test_main_stops_after_active_profile_cleanup_when_cancel_requested(
     ("profile_id", "profile", "reason"),
     [
         ("disabled", {"certification_state": "blocked_current_run", "vehicle_count": 1}, "profile_disabled"),
-        ("multi", {"vehicle_count": 3}, "batch_requires_single_uav_profile"),
-        ("direct", {"vehicle_count": 1, "execution_kind": "direct_model"}, "batch_wrapper_required_for_profile"),
+        ("multi", {"vehicle_count": 3}, "batch_requires_single_uav_or_direct_model_profile"),
+        ("direct", {"vehicle_count": 1, "execution_kind": "direct_model"}, "batch_direct_model_profile_invalid"),
     ],
 )
 def test_main_preflight_failures_write_blocked_manifest(

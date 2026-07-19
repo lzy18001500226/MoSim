@@ -150,7 +150,9 @@ def parse_mcp_log(path: Path) -> dict[str, bool]:
     return status
 
 
-def build_smoke_command(profile: dict[str, Any], run_dir: Path) -> list[str]:
+def build_smoke_command(
+    profile: dict[str, Any], run_dir: Path, *, keep_session_open: bool = False
+) -> list[str]:
     model_name = profile["generated_model_name"]
     command = [
         sys.executable,
@@ -172,8 +174,9 @@ def build_smoke_command(profile: dict[str, Any], run_dir: Path) -> list[str]:
         "--scene-id", str(profile["scenario_id"]),
         "--controller-id", str(profile["controller_id"]),
         "--gui-reset-windows",
-        "--shutdown-session",
     ])
+    if not keep_session_open:
+        command.append("--shutdown-session")
     variable_overrides = profile.get("variable_overrides", VARIABLE_OVERRIDES)
     for alias, variable in variable_overrides.items():
         command.extend(["--override-variable", f"{alias}={variable}"])
@@ -386,6 +389,7 @@ def main() -> int:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--reuse-generated", action="store_true")
     parser.add_argument("--record-only", action="store_true")
+    parser.add_argument("--keep-session-open", action="store_true")
     args = parser.parse_args()
     if bool(args.certified_profile_id) == bool(args.request_json):
         parser.error("provide exactly one of --certified-profile-id or --request-json")
@@ -411,7 +415,11 @@ def main() -> int:
         profile = read_json(run_dir / "PROFILE.json")
 
     if not args.record_only:
-        completed = subprocess.run(build_smoke_command(profile, run_dir), cwd=ROOT, text=True)
+        completed = subprocess.run(
+            build_smoke_command(profile, run_dir, keep_session_open=args.keep_session_open),
+            cwd=ROOT,
+            text=True,
+        )
         if completed.returncode != 0:
             return completed.returncode
     record = write_certification(run_dir, profile)
