@@ -214,6 +214,12 @@ def resolve_native_result(run_dir: Path, model_name: str) -> Path:
     preferred = run_dir / "native_result" / model_name / "Result.msr"
     if preferred.is_file():
         return preferred
+    # Sysplorer stores direct-model results under the unqualified class name,
+    # while generated wrappers already use an unqualified model name.
+    short_name = model_name.rsplit(".", 1)[-1]
+    short_path = run_dir / "native_result" / short_name / "Result.msr"
+    if short_path.is_file():
+        return short_path
     manifest_path = run_dir / "native_result" / "native_result_manifest.json"
     if not manifest_path.is_file():
         return preferred

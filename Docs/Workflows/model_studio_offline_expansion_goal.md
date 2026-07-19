@@ -609,6 +609,29 @@ the current single-UAV Certified Profile batch set only; three-UAV, Custom
 Profile, APP runtime, code-generation, online co-simulation, and flight gates
 remain separate.
 
+P6 live checkpoint 1 closes the required three-UAV Certified Profile:
+`offline_three_uav_linear_mpc_figure8_v1`. The direct model
+`QuadrotorExperiments.FormationScenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop`
+completed a current 80-second MWORKS run with 4001 samples, strict metrics,
+result/plot/model/animation windows, and dedicated-session shutdown. The first
+certification closeout exposed a certifier-only path bug: Sysplorer wrote the
+native result under the unqualified model class name, while the certifier
+looked under the fully qualified name. The resolver now checks the fully
+qualified path, then the short class path, then the constrained manifest path;
+the same run artifacts were certified without rerunning the simulation. The
+canonical checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P6_THREE_UAV_CERTIFIED_PROFILE_LIVE_ACCEPTANCE.json
+```
+
+The accepted run reports `position_rmse_m=0.02118`,
+`max_position_error_m=0.14381`, `max_tilt_rad=0.07348`,
+`max_formation_error_m=4.12e-10`, and
+`min_inter_uav_distance_m=1.28062`. This closes the current offline three-UAV
+Certified Profile evidence gate only; it is not online multi-UAV, PX4,
+Gazebo, ROS1, planner, code-generation, or flight evidence.
+
 P7 live checkpoint 6 adds the Linear MPC representative combination:
 `offline_linear_mpc_climb_v1`. The batch completed in 74.659 seconds and passed
 the current MWORKS model/check/simulation/`Result.msr`/strict-metric/result-

@@ -112,6 +112,17 @@ def test_resolve_native_result_accepts_project_results_manifest(tmp_path: Path, 
     assert certification.resolve_native_result(run_dir, "Model") == cached.resolve()
 
 
+def test_resolve_native_result_accepts_direct_model_short_name(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run-v1"
+    result = run_dir / "native_result" / "FormationModel" / "Result.msr"
+    result.parent.mkdir(parents=True)
+    result.write_bytes(b"msr")
+    assert certification.resolve_native_result(
+        run_dir,
+        "QuadrotorExperiments.FormationScenarios.FormationModel",
+    ) == result
+
+
 def test_resolve_native_result_rejects_manifest_outside_results(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.setattr(certification, "ROOT", tmp_path)
     run_dir = tmp_path / "Results" / "mworks_generated_profiles" / "run-v1"

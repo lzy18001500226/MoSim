@@ -1,0 +1,41 @@
+{
+  "schema": "mosim.offline_expansion_three_uav_acceptance.v1",
+  "recorded_at": "2026-07-19T10:04:19+08:00",
+  "phase": "P6_three_uav_certified_profile",
+  "run_id": "p6-three-uav-linear-mpc-figure8-20260719-v1",
+  "profile_id": "offline_three_uav_linear_mpc_figure8_v1",
+  "status": "accepted",
+  "certification_record": "Results/mworks_generated_profiles/p6-three-uav-linear-mpc-figure8-20260719-v1/CERTIFICATION.json",
+  "direct_model": "QuadrotorExperiments.FormationScenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop",
+  "acceptance": {
+    "model_loaded": true,
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 4001,
+    "end_time_s": 80.0,
+    "result_msr_present": true,
+    "strict_metrics": true,
+    "result_window_opened": true,
+    "plot_window_opened": true,
+    "model_window_opened": true,
+    "animation_window_opened": true,
+    "task_owned_session_shutdown": true,
+    "bounded_three_uav_closed_loop": true
+  },
+  "selected_metrics": {
+    "position_rmse_m": 0.02117919285287649,
+    "steady_state_error_m": 0.010544020803986306,
+    "max_position_error_m": 0.14380785551069927,
+    "settling_time_s": 1.36,
+    "max_tilt_rad": 0.07348285563460609,
+    "constraint_violation_count": 0,
+    "max_formation_error_m": 4.113102670136469e-10,
+    "min_inter_uav_distance_m": 1.2806248470016286
+  },
+  "certifier_fix": {
+    "issue": "Sysplorer stores direct-model native results under the unqualified class name",
+    "resolution": "resolve the fully qualified model path first, then the short class name, then the constrained manifest path",
+    "simulation_rerun_required": false
+  },
+  "claim_ceiling": "Current offline MWORKS direct-model check/simulation/result/metrics/three-UAV animation evidence only. Not multi-UAV online co-simulation, PX4, Gazebo, ROS1, planner, code-generation, or flight evidence."
+}
