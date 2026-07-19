@@ -291,14 +291,15 @@ def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert 'const OPEN_MODEL_SCRIPT = joinpath(PROJECT_ROOT, "Scripts", "ui", "open_model_studio_model.py")' in source
     assert '"--mode", mode' in source
+    assert '"--output-variant", output_variant' in source
+    assert 'success(process) || error(' in source
     assert "请在 MWORKS 中自行点击仿真" in source
     script = ROOT / "Scripts" / "ui" / "open_model_studio_model.py"
     script_text = script.read_text(encoding="utf-8")
-    assert '"action": "load_file"' in script_text
-    assert '"action": "open"' in script_text
-    assert 'ModelingPy.OpenModel' in script_text
-    assert '"call_code"' in script_text
-    assert '"mode": "run_script"' in script_text
+    assert 'subprocess.Popen([str(executable), str(model_file)]' in script_text
+    assert 'window_title = visible_window_title' not in script_text
+    assert 'result["window_title"] = visible_window_title(process.pid)' in script_text
+    assert 'RUNNER_MODELS' in script_text
     assert "SimulateModel" not in script_text
 
 

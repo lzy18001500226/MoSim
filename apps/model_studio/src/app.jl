@@ -24,6 +24,7 @@ function run_process_in_directory(command_args, directory)
     command = Cmd(Cmd(command_args); dir=directory)
     process = run(command; wait=false)
     wait(process)
+    success(process) || error("process exited with code " * string(process.exitcode))
 end
 
 const CUSTOM_PROFILE_LABEL = "自定义组合"
@@ -875,6 +876,7 @@ const OFFLINE_PROFILES = Dict(
         profile_id = haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value) ?
             OFFLINE_PROFILES[app.ProfileDropDown.Value].profile : ""
         vehicle_count = app.VehicleCountDropDown.Value
+        output_variant = app.OutputDropDown.Value
         app.append_console(mode == "live" ? "正在打开联合仿真模型" : "正在打开当前仿真模型"; level="运行")
         @async begin
             try
@@ -883,6 +885,7 @@ const OFFLINE_PROFILES = Dict(
                     "--mode", mode,
                     "--profile-id", profile_id,
                     "--vehicle-count", vehicle_count,
+                    "--output-variant", output_variant,
                 ], PROJECT_ROOT)
                 app.append_console(mode == "live" ? "联合仿真模型已打开；请在 MWORKS 中自行点击仿真" :
                     "仿真模型已打开；请在 MWORKS 中自行点击仿真"; level="通过")

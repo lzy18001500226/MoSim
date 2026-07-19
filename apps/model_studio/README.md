@@ -119,9 +119,10 @@ uses the same two actions, with `打开联合仿真模型` loading the MWORKS Li
 model. Neither workspace starts, stops, or opens a result; after the model is
 open, run the simulation from MWORKS itself.
 
-The model-opening path is `Scripts/ui/open_model_studio_model.py`. It uses
-`model_manager.load_file`, `model_manager.open`, and the documented
-`ModelingPy.OpenModel` diagram call as the visible-window gate. It does not
-call model checking, simulation, result, flight, or solver-lifecycle
-operations. It writes its last bounded operation record to
+The model-opening path is `Scripts/ui/open_model_studio_model.py`. It launches
+the selected `.mo` file through the installed native `mworks.exe` and requires
+a visible Sysplorer window before reporting success. A custom combination opens
+the mother Runner for its selected output boundary; a certified Profile opens
+its frozen generated wrapper. It does not call model checking, simulation,
+result, flight, or solver-lifecycle operations. It writes its last bounded operation record to
 `Results/ui_platform/model_studio_open_model/latest.json`.
