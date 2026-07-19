@@ -299,6 +299,7 @@ def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
     assert 'subprocess.Popen([str(executable), str(model_file)]' in script_text
     assert 'window_title = visible_window_title' not in script_text
     assert 'result["window_title"] = visible_window_title(process.pid)' in script_text
+    assert "user32.SetForegroundWindow(hwnd)" in script_text
     assert 'RUNNER_MODELS' in script_text
     assert "SimulateModel" not in script_text
 

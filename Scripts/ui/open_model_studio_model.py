@@ -75,7 +75,7 @@ def visible_window_title(pid: int, timeout_s: float = 10.0) -> str:
     user32 = ctypes.windll.user32
     deadline = time.monotonic() + timeout_s
     while time.monotonic() < deadline:
-        titles: list[str] = []
+        windows: list[tuple[int, str]] = []
         callback_type = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
 
         def collect(hwnd: int, _lparam: int) -> bool:
@@ -86,12 +86,16 @@ def visible_window_title(pid: int, timeout_s: float = 10.0) -> str:
                 if length:
                     buffer = ctypes.create_unicode_buffer(length + 1)
                     user32.GetWindowTextW(hwnd, buffer, length + 1)
-                    titles.append(buffer.value)
+                    windows.append((hwnd, buffer.value))
             return True
 
         user32.EnumWindows(callback_type(collect), 0)
-        if titles:
-            return titles[0]
+        if windows:
+            hwnd, title = windows[0]
+            user32.ShowWindow(hwnd, 9)  # SW_RESTORE
+            user32.BringWindowToTop(hwnd)
+            user32.SetForegroundWindow(hwnd)
+            return title
         time.sleep(0.2)
     return ""
 
