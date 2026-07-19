@@ -1,0 +1,2564 @@
+{
+  "schema": "mosim.controller_document_evidence_inventory.v1",
+  "status": "static_audit_not_live_mworks_acceptance",
+  "source_matrix": "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+  "claim_boundary": [
+    "This inventory is a static file-presence audit and does not run MWORKS.",
+    "Graphical model screenshots and result-viewer screenshots are separate evidence classes.",
+    "CSV or JSON evidence is not promoted to native Result.msr evidence.",
+    "A blocked or negative result remains valid report evidence when its provenance is preserved."
+  ],
+  "summary": {
+    "row_count": 67,
+    "unique_controller_count": 67,
+    "matrix_status_counts": {
+      "accepted": 27,
+      "executed_blocked": 33,
+      "not_run": 7
+    },
+    "model_source_present_count": 60,
+    "graphical_screenshot_present_count": 44,
+    "result_screenshot_present_count": 10,
+    "numeric_result_present_count": 62,
+    "native_result_msr_present_count": 4,
+    "implementation_blocked_count": 2,
+    "next_action_counts": {
+      "bounded_implementation_gap_review": 2,
+      "capture_missing_mworks_screenshots": 50,
+      "confirm_native_result_msr_in_live_session": 10,
+      "repair_or_rerun_required": 5
+    }
+  },
+  "rows": [
+    {
+      "cohort": "P1_PID",
+      "controller": "cascade_pid",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "cascade_pid"
+      ],
+      "search_roots": [
+        "Results/control_platform/p1_pid_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL_backup/crash_recovery/20260716183950/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_CASCADE_PID_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_CASCADE_PID_MIL_backup/crash_recovery/20260716183950/MoSim_PID_CASCADE_PID_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p1_pid_mworks_20260716/metrics/cascade_pid.json",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/cascade_pid.csv",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/graphical_variants/cascade_pid.csv",
+        "Results/sunray_ros1/p1_pid_cascade_runtime_r4_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/sunray_ros1/p1_pid_cascade_runtime_r4_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/sunray_ros1/p1_pid_cascade_runtime_r4_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/sunray_ros1/p1_pid_cascade_runtime_r4_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P1_PID",
+      "controller": "anti_windup",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "anti_windup"
+      ],
+      "search_roots": [
+        "Results/control_platform/p1_pid_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_ANTI_WINDUP_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p1_pid_mworks_20260716/metrics/anti_windup.json",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/anti_windup.csv",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/graphical_variants/anti_windup.csv",
+        "Results/sunray_ros1/p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/sunray_ros1/p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/sunray_ros1/p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/sunray_ros1/p1_pid_anti_windup_runtime_r4_xbias012_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P1_PID",
+      "controller": "feedforward_profile",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "feedforward_profile"
+      ],
+      "search_roots": [
+        "Results/control_platform/p1_pid_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL_backup/crash_recovery/20260716183950/MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_FEEDFORWARD_PROFILE_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_FEEDFORWARD_PROFILE_MIL_backup/crash_recovery/20260716183950/MoSim_PID_FEEDFORWARD_PROFILE_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p1_pid_mworks_20260716/screenshots/check_sim/40544_0x11409CE_MoSim_PID_FEEDFORWARD_PROFILE_MIL - Sysplorer _教育版_.png",
+        "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p1_pid_mworks_20260716/metrics/feedforward_profile.json",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/feedforward_profile.csv",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/graphical_variants/feedforward_profile.csv",
+        "Results/sunray_ros1/p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/sunray_ros1/p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/sunray_ros1/p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/sunray_ros1/p1_pid_feedforward_runtime_r6_ff05_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P1_PID",
+      "controller": "gain_scheduled_pid",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "gain_scheduled_pid"
+      ],
+      "search_roots": [
+        "Results/control_platform/p1_pid_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_GAIN_SCHEDULED_PID_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p1_pid_mworks_20260716/metrics/gain_scheduled_pid.json",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/gain_scheduled_pid.csv",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/graphical_variants/gain_scheduled_pid.csv",
+        "Results/sunray_ros1/p1_pid_gain_scheduled_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/sunray_ros1/p1_pid_gain_scheduled_runtime_r1_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/sunray_ros1/p1_pid_gain_scheduled_runtime_r1_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/sunray_ros1/p1_pid_gain_scheduled_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P1_PID",
+      "controller": "fuzzy_pid",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "fuzzy_pid"
+      ],
+      "search_roots": [
+        "Results/control_platform/p1_pid_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_FUZZY_PID_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p1_pid_mworks_20260716/metrics/fuzzy_pid.json",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/fuzzy_pid.csv",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/graphical_variants/fuzzy_pid.csv",
+        "Results/sunray_ros1/p1_pid_fuzzy_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/sunray_ros1/p1_pid_fuzzy_runtime_r1_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/sunray_ros1/p1_pid_fuzzy_runtime_r1_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/sunray_ros1/p1_pid_fuzzy_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P1_PID",
+      "controller": "neural_pid",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "neural_pid"
+      ],
+      "search_roots": [
+        "Results/control_platform/p1_pid_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_NEURAL_PID_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p1_pid_mworks_20260716/screenshots/graphical_variants/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p1_pid_mworks_20260716/metrics/neural_pid.json",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/graphical_variants/neural_pid.csv",
+        "Results/control_platform/p1_pid_mworks_20260716/raw/neural_pid.csv",
+        "Results/sunray_ros1/p1_pid_neural_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/sunray_ros1/p1_pid_neural_runtime_r1_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/sunray_ros1/p1_pid_neural_runtime_r1_hover0291_20260716/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/sunray_ros1/p1_pid_neural_runtime_r1_hover0291_20260716/PID_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P2_LINEAR_ROBUST",
+      "controller": "lqg",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "lqg"
+      ],
+      "search_roots": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_LQG_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/graphical_variants/MoSim_P2_LQG_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/raw/cfunction_variants/lqg.csv",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/raw/graphical_variants/lqg.csv",
+        "Results/control_platform/p2_linear_robust_runtime_20260716/lqg/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p2_linear_robust_runtime_20260716/lqg/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P2_LINEAR_ROBUST",
+      "controller": "feedback_linearization",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "feedback_linearization"
+      ],
+      "search_roots": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_FEEDBACK_LINEARIZATION_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/graphical_variants/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/raw/cfunction_variants/feedback_linearization.csv",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/raw/graphical_variants/feedback_linearization.csv",
+        "Results/control_platform/p2_linear_robust_runtime_20260716/feedback_linearization/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p2_linear_robust_runtime_20260716/feedback_linearization/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P2_LINEAR_ROBUST",
+      "controller": "passivity_based_control",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "passivity_based_control"
+      ],
+      "search_roots": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_PASSIVITY_BASED_CONTROL_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/graphical_variants/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/raw/cfunction_variants/passivity_based_control.csv",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/raw/graphical_variants/passivity_based_control.csv",
+        "Results/control_platform/p2_linear_robust_runtime_20260716/passivity_based_control/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p2_linear_robust_runtime_20260716/passivity_based_control/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P2_LINEAR_ROBUST",
+      "controller": "adaptive_backstepping",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "adaptive_backstepping"
+      ],
+      "search_roots": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_ADAPTIVE_BACKSTEPPING_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/check_phase/45064_0xC0E78_MoSim_P2_ADAPTIVE_BACKSTEPPING_MIL - Sysplorer _教育版_.png",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/screenshots/graphical_variants/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p2_linear_robust_mworks_20260716/raw/cfunction_variants/adaptive_backstepping.csv",
+        "Results/control_platform/p2_linear_robust_mworks_20260716/raw/graphical_variants/adaptive_backstepping.csv",
+        "Results/control_platform/p2_linear_robust_runtime_20260716/adaptive_backstepping_retry2/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p2_linear_robust_runtime_20260716/adaptive_backstepping_retry2/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P3_SLIDING_MODE",
+      "controller": "integral_smc",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "integral_smc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_INTEGRAL_SMC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/integral_smc.csv",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/integral_smc.csv",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/integral_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/integral_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/integral_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/integral_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P3_SLIDING_MODE",
+      "controller": "terminal_smc",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "terminal_smc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_NONSINGULAR_TERMINAL_SMC_MIL.mo",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_TERMINAL_SMC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.png",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/nonsingular_terminal_smc.csv",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/terminal_smc.csv",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/nonsingular_terminal_smc.csv",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/terminal_smc.csv",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P3_SLIDING_MODE",
+      "controller": "nonsingular_terminal_smc",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "nonsingular_terminal_smc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_NONSINGULAR_TERMINAL_SMC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/nonsingular_terminal_smc.csv",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/nonsingular_terminal_smc.csv",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/nonsingular_terminal_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/nonsingular_terminal_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/nonsingular_terminal_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/nonsingular_terminal_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P3_SLIDING_MODE",
+      "controller": "super_twisting_smc",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "super_twisting_smc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_SUPER_TWISTING_SMC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/super_twisting_smc.csv",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/super_twisting_smc.csv",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/super_twisting_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/super_twisting_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/super_twisting_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/super_twisting_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P3_SLIDING_MODE",
+      "controller": "adaptive_smc",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "adaptive_smc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_ADAPTIVE_SMC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/adaptive_smc.csv",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/adaptive_smc.csv",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/adaptive_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/adaptive_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/adaptive_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/adaptive_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P3_SLIDING_MODE",
+      "controller": "fuzzy_smc",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "fuzzy_smc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_FUZZY_SMC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/fuzzy_smc.csv",
+        "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/fuzzy_smc.csv",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/fuzzy_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/fuzzy_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/fuzzy_smc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p3_sliding_mode_runtime_20260716/fuzzy_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P4_MPC",
+      "controller": "linear_mpc",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "linear_mpc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p4_mpc_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_LINEAR_MPC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/linear_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/linear_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/runtime_provenance_build/linear_mpc.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/linear_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/linear_mpc/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [
+        "Results/mworks_generated_profiles/cert-linear-mpc-20260719-v1/native_result/MoSimGenerated_cert_linear_mpc_20260719_v1/Result.msr"
+      ],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p4_mpc_runtime_20260716/linear_mpc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/linear_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P4_MPC",
+      "controller": "robust_mpc",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "robust_mpc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p4_mpc_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_ROBUST_MPC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/robust_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/robust_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/runtime_provenance_build/robust_mpc.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/robust_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/robust_mpc/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p4_mpc_runtime_20260716/robust_mpc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/robust_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P4_MPC",
+      "controller": "adaptive_mpc",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "adaptive_mpc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p4_mpc_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_ADAPTIVE_MPC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/adaptive_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/adaptive_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/runtime_provenance_build/adaptive_mpc.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/adaptive_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/adaptive_mpc/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p4_mpc_runtime_20260716/adaptive_mpc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/adaptive_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P4_MPC",
+      "controller": "tube_mpc",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "tube_mpc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p4_mpc_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_TUBE_MPC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/tube_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/tube_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/runtime_provenance_build/tube_mpc.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/tube_mpc_retry2_provenance/MPC_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/tube_mpc_retry2_provenance/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p4_mpc_runtime_20260716/tube_mpc_retry2_provenance/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/tube_mpc_retry2_provenance/MPC_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P4_MPC",
+      "controller": "explicit_gain_scheduled_mpc",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "explicit_gain_scheduled_mpc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p4_mpc_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/explicit_gain_scheduled_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/explicit_gain_scheduled_mpc.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/runtime_provenance_build/explicit_gain_scheduled_mpc.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/explicit_gain_scheduled_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/explicit_gain_scheduled_mpc/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p4_mpc_runtime_20260716/explicit_gain_scheduled_mpc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/explicit_gain_scheduled_mpc/MPC_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P4_MPC",
+      "controller": "ilqr",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "ilqr"
+      ],
+      "search_roots": [
+        "Results/control_platform/p4_mpc_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_ILQR_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_ILQR_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/ilqr.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/ilqr.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/runtime_provenance_build/ilqr.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/ilqr/MPC_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/ilqr/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p4_mpc_runtime_20260716/ilqr/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/ilqr/MPC_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P4_MPC",
+      "controller": "mppi",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "mppi"
+      ],
+      "search_roots": [
+        "Results/control_platform/p4_mpc_mworks_20260716"
+      ],
+      "model_sources": [
+        "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
+        "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_MPPI_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p4_mpc_mworks_20260716/screenshots/graphical_variants/MoSim_P4_MPPI_GRAPHICAL_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/cfunction_variants/mppi.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/raw/graphical_variants/mppi.csv",
+        "Results/control_platform/p4_mpc_mworks_20260716/runtime_provenance_build/mppi.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/mppi/MPC_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/mppi/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p4_mpc_runtime_20260716/mppi/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p4_mpc_runtime_20260716/mppi/MPC_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P5_ENHANCEMENT",
+      "controller": "l1_adaptive",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "l1_adaptive"
+      ],
+      "search_roots": [
+        "Results/control_platform/p5_enhancement_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_L1_ADAPTIVE_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/l1_adaptive_retry1/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/l1_adaptive_retry1/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/l1_adaptive_retry1/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/l1_adaptive_retry1/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P5_ENHANCEMENT",
+      "controller": "awff",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "awff"
+      ],
+      "search_roots": [
+        "Results/control_platform/p5_enhancement_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_AWFF_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/awff/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/awff/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [
+        "Results/mworks_generated_profiles/cert-awff-20260719-v1/native_result/MoSimGenerated_cert_awff_20260719_v1/Result.msr"
+      ],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/awff/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/awff/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P5_ENHANCEMENT",
+      "controller": "complete_adrc",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "complete_adrc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p5_enhancement_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_COMPLETE_ADRC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/complete_adrc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/complete_adrc/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/complete_adrc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/complete_adrc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P5_ENHANCEMENT",
+      "controller": "standardized_indi",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "standardized_indi"
+      ],
+      "search_roots": [
+        "Results/control_platform/p5_enhancement_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_STANDARDIZED_INDI_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/standardized_indi/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/standardized_indi/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/standardized_indi/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/standardized_indi/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P5_ENHANCEMENT",
+      "controller": "parameter_scheduling",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "parameter_scheduling"
+      ],
+      "search_roots": [
+        "Results/control_platform/p5_enhancement_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_PARAMETER_SCHEDULING_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/parameter_scheduling/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/parameter_scheduling/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/parameter_scheduling/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/parameter_scheduling/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P5_ENHANCEMENT",
+      "controller": "ilc",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "aliases": [
+        "ilc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p5_enhancement_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_ILC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/ilc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/ilc/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p5_enhancement_runtime_20260717/ilc/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p5_enhancement_runtime_20260717/ilc/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "G9_CORE_COMPARISON",
+      "controller": "official_pid",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "executed_not_accepted",
+      "aliases": [
+        "awff_pid_sysblock_demo",
+        "official_pid"
+      ],
+      "search_roots": [
+        "Results/control_platform/g5_mworks_closeout_20260716"
+      ],
+      "model_sources": [
+        "Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/g5_mworks_closeout_20260716/official_pid/screenshots/40544_0x11409CE_AWFF_PID_Sysblock_Demo_SIL_Constant_QuadrotorControllerBlocks_ - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/G9_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/PX4CTRL_BASIC_MISSION_METRICS.json"
+      ],
+      "native_result_msr": [
+        "Results/mworks_generated_profiles/cert-official-pid-20260719-v2/native_result/MoSimGenerated_cert_official_pid_20260719_v2/Result.msr"
+      ],
+      "matrix_evidence_existing": [
+        "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/controller_family_final_acceptance_20260717/g9_core/official_pid/takeoff_hover_land_retry2/G9_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "G9_CORE_COMPARISON",
+      "controller": "se3_basic",
+      "matrix_status": "not_run",
+      "implementation_state": "implemented",
+      "claim_ceiling": "offline_equivalence_only",
+      "aliases": [
+        "se3",
+        "se3_basic"
+      ],
+      "search_roots": [
+        "Results/control_platform/g5_mworks_closeout_20260716"
+      ],
+      "model_sources": [],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
+      ],
+      "missing_evidence": [
+        "model_source",
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "numeric_result_or_metrics",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "repair_or_rerun_required"
+    },
+    {
+      "cohort": "G9_CORE_COMPARISON",
+      "controller": "dfbc_basic",
+      "matrix_status": "not_run",
+      "implementation_state": "implemented",
+      "claim_ceiling": "offline_equivalence_only",
+      "aliases": [
+        "dfbc_basic"
+      ],
+      "search_roots": [
+        "Results/control_platform/g5_mworks_closeout_20260716"
+      ],
+      "model_sources": [],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
+      ],
+      "missing_evidence": [
+        "model_source",
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "numeric_result_or_metrics",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "repair_or_rerun_required"
+    },
+    {
+      "cohort": "G9_CORE_COMPARISON",
+      "controller": "smc_boundary_layer",
+      "matrix_status": "not_run",
+      "implementation_state": "implemented",
+      "claim_ceiling": "offline_equivalence_only",
+      "aliases": [
+        "boundary_layer_smc",
+        "smc_boundary_layer"
+      ],
+      "search_roots": [
+        "Results/control_platform/g5_mworks_closeout_20260716"
+      ],
+      "model_sources": [],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
+      ],
+      "missing_evidence": [
+        "model_source",
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "numeric_result_or_metrics",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "repair_or_rerun_required"
+    },
+    {
+      "cohort": "G9_CORE_COMPARISON",
+      "controller": "pid_indi",
+      "matrix_status": "not_run",
+      "implementation_state": "implemented",
+      "claim_ceiling": "offline_equivalence_only",
+      "aliases": [
+        "pid_indi"
+      ],
+      "search_roots": [
+        "Results/control_platform/g5_mworks_closeout_20260716"
+      ],
+      "model_sources": [],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [],
+      "native_result_msr": [
+        "Results/mworks_generated_profiles/cert-pid-indi-20260719-v1/native_result/MoSimGenerated_cert_pid_indi_20260719_v1/Result.msr"
+      ],
+      "matrix_evidence_existing": [
+        "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
+      ],
+      "missing_evidence": [
+        "model_source",
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "numeric_result_or_metrics"
+      ],
+      "implementation_blocked": false,
+      "next_action": "repair_or_rerun_required"
+    },
+    {
+      "cohort": "G9_CORE_COMPARISON",
+      "controller": "nmpc_outer",
+      "matrix_status": "not_run",
+      "implementation_state": "implemented",
+      "claim_ceiling": "offline_equivalence_only",
+      "aliases": [
+        "nmpc",
+        "nmpc_outer"
+      ],
+      "search_roots": [
+        "Results/control_platform/g5_mworks_closeout_20260716"
+      ],
+      "model_sources": [],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Docs/Workflows/g9_mworks_generated_runtime_closeout.md"
+      ],
+      "missing_evidence": [
+        "model_source",
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "numeric_result_or_metrics",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "repair_or_rerun_required"
+    },
+    {
+      "cohort": "P6_SAFETY",
+      "controller": "safety_supervisor_family",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "seven_generated_safety_modes_runtime_event_acknowledged",
+      "aliases": [
+        "safety_filter",
+        "safety_supervisor",
+        "safety_supervisor_family"
+      ],
+      "search_roots": [
+        "Results/control_platform/p6_safety_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p6_safety_mworks_20260717/models/MoSim_P6_SAFETY_FILTER_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p6_safety_runtime_20260717/P6_SAFETY_RUNTIME_MATRIX.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P7_FTC",
+      "controller": "fdi_ftc_family",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "physical_rotor1_loss35_generated_ftc_runtime_accepted",
+      "aliases": [
+        "fdi",
+        "fdi_ftc_family",
+        "ftc",
+        "multi_fault_estimation_reconfiguration"
+      ],
+      "search_roots": [
+        "Results/control_platform/p7_ftc_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_ACTIVE_FTC_MIL.mo",
+        "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_FDI_MIL.mo",
+        "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL.mo",
+        "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_PASSIVE_FTC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p7_ftc_mworks_20260717/screenshots/check_simulate/45064_0xC0E78_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p7_ftc_mworks_20260717/screenshots/result_plot/45064_0xFD0DF8_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - 结果查看器.png",
+        "Results/control_platform/p7_ftc_mworks_20260717/screenshots/result_viewer/45064_0xFD0DF8_MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_RUNTIME_CLOSEOUT.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "leader_follower",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "leader_follower"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_LEADER_FOLLOWER_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode1_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "virtual_structure",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "virtual_structure"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_VIRTUAL_STRUCTURE_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode2_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode2_gazebo_r7_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "consensus",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "consensus"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_CONSENSUS_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode3_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode3_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "containment",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "containment"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_CONTAINMENT_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode4_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode4_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "formation_tracking",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "formation_tracking"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_TRACKING_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode5_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode5_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "formation_reconfiguration",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "formation_reconfiguration"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_RECONFIGURATION_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode6_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode6_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "fault_tolerant_formation",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "fault_tolerant_formation"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FAULT_TOLERANT_FORMATION_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode7_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode7_gazebo_r1_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "formation_cbf",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "formation_cbf"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_CBF_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p8_formation_mworks_20260717/screenshots/MoSim_P8_FORMATION_CBF_MIL_diagram.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p8_formation_mworks_20260717/screenshots/live_phase/45064_0xFD0DF8_MoSim_P8_FORMATION_CBF_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode8_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode8_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P8_FORMATION",
+      "controller": "distributed_mpc_formation",
+      "matrix_status": "accepted",
+      "implementation_state": "implemented",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "aliases": [
+        "distributed_mpc_formation"
+      ],
+      "search_roots": [
+        "Results/control_platform/p8_formation_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_DISTRIBUTED_MPC_FORMATION_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p8_formation_mode9_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p8_formation_mode9_gazebo_r3_20260717/PX4CTRL_SWARM_BASIC_METRICS.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P9_LEARNING",
+      "controller": "trained_neural_residual",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "report_ready_runtime_execution_not_selectable",
+      "aliases": [
+        "trained_neural_residual"
+      ],
+      "search_roots": [
+        "Results/control_platform/p9_learning_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p9_learning_mworks_20260717/models/MoSim_P9_TRAINED_NEURAL_RESIDUAL_MIL.mo"
+      ],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+      ],
+      "missing_evidence": [
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P9_LEARNING",
+      "controller": "rl_gain_scheduler",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "report_ready_runtime_execution_not_selectable",
+      "aliases": [
+        "rl_gain_scheduler"
+      ],
+      "search_roots": [
+        "Results/control_platform/p9_learning_mworks_20260717"
+      ],
+      "model_sources": [
+        "Results/control_platform/p9_learning_mworks_20260717/models/MoSim_P9_RL_GAIN_SCHEDULER_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p9_learning_mworks_20260717/screenshots/69844_0xF219B0_MoSim_P9_RL_GAIN_SCHEDULER_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p9_learning_gazebo_r4_20260717/P9_LEARNING_RUNTIME_CLOSEOUT.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "lqr_baseline",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "lqr_baseline",
+        "wave_a_lqr",
+        "wavea_lqr"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQR_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_LQR_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqr_baseline/takeoff_hover_land_retry3_px4_startup/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "lqi_baseline",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "lqi_baseline",
+        "wave_a_lqi",
+        "wavea_lqi"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQI_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_LQI_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/lqi_baseline/takeoff_hover_land_retry4_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "hinf_hover_wrench",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "hinf_hover_wrench"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/models/MoSim_P10_HINF_HOVER_WRENCH_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_audit/after/MoSim_P10_HINF_HOVER_WRENCH_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_audit/after/MoSim_P10_HINF_HOVER_WRENCH_MIL.v2.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_audit/before/MoSim_P10_HINF_HOVER_WRENCH_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_HINF_HOVER_WRENCH_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_HINF_HOVER_WRENCH_MIL - Sysplorer _教育版_.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/screenshots/mil/54364_0x21098A_MoSim_P10_HINF_HOVER_WRENCH_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_HINF_HOVER_WRENCH_MIL - 结果查看器.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/screenshots/mil/54364_0x36031A_MoSim_P10_HINF_HOVER_WRENCH_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p10_generated_gazebo_20260718/hinf_hover_wrench/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/hinf_hover_wrench/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_audit/layout/MoSim_P10_HINF_HOVER_WRENCH_MIL.layout.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_audit/layout/MoSim_P10_HINF_HOVER_WRENCH_MIL.layout.v2.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/P10_MWORKS_GRAPHICAL_REVIEW.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/P10_HINF_MWORKS_MANIFEST.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/raw/hinf_hover_wrench_mil.csv"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/P10_HINF_MWORKS_MANIFEST.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/P10_MWORKS_GRAPHICAL_REVIEW.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/hinf_hover_wrench/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/hinf_hover_wrench/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "mu_synthesis",
+      "matrix_status": "not_run",
+      "implementation_state": "blocked",
+      "claim_ceiling": "syslab_constant_matrix_mu_analysis_available_but_dynamic_musyn_controller_synthesis_unavailable",
+      "aliases": [
+        "mu_synthesis"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json"
+      ],
+      "missing_evidence": [
+        "model_source",
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": true,
+      "next_action": "bounded_implementation_gap_review"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "so3_attitude",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "so3_attitude",
+        "wave_a_so3",
+        "wavea_so3"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_SO3_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_SO3_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/so3_attitude/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "backstepping_baseline",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "backstepping_baseline",
+        "wave_a_backstepping",
+        "wavea_backstepping"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL.mo",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL_backup/crash_recovery/20260716183950/MoSim_WaveA_BACKSTEPPING_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a/diagrams/MoSim_WaveA_BACKSTEPPING_MIL.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "dfbc_high_order_attitude",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "dfbc_high_order_attitude"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_high_order_attitude/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_high_order_attitude/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_high_order_attitude_closeout.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/metrics/dfbc_high_order_attitude_mil_metrics.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/raw/dfbc_high_order_attitude_mil.csv"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_high_order_attitude_closeout.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_high_order_attitude/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_high_order_attitude/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "dfbc_high_order_bodyrate",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "dfbc_high_order_bodyrate"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_high_order_bodyrate/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_high_order_bodyrate/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_high_order_bodyrate_closeout.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/metrics/dfbc_high_order_bodyrate_mil_metrics.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/raw/dfbc_high_order_bodyrate_mil.csv"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_high_order_bodyrate_closeout.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_high_order_bodyrate/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_high_order_bodyrate/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "dfbc_smooth_robust_attitude",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "dfbc_smooth_robust_attitude"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_smooth_robust_attitude/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_smooth_robust_attitude/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_smooth_robust_attitude_closeout.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/metrics/dfbc_smooth_robust_attitude_mil_metrics.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/raw/dfbc_smooth_robust_attitude_mil.csv"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_smooth_robust_attitude_closeout.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_smooth_robust_attitude/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_smooth_robust_attitude/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "dfbc_smooth_robust_bodyrate",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "dfbc_smooth_robust_bodyrate"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_smooth_robust_bodyrate/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_smooth_robust_bodyrate/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_smooth_robust_bodyrate_closeout.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/metrics/dfbc_smooth_robust_bodyrate_mil_metrics.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/raw/dfbc_smooth_robust_bodyrate_mil.csv"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_smooth_robust_bodyrate_closeout.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_smooth_robust_bodyrate/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_smooth_robust_bodyrate/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "l1_awff_minimal",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "l1_awff_minimal"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/models/MoSim_P10_L1_AWFF_Minimal_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_L1_AWFF_Minimal_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_L1_AWFF_Minimal_MIL - Sysplorer _教育版_.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/screenshots/simulate_failure/54364_0x21098A_MoSim_P10_L1_AWFF_Minimal_MIL - Sysplorer _教育版_.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/screenshots/simulate_plot/54364_0x21098A_MoSim_P10_L1_AWFF_Minimal_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_L1_AWFF_Minimal_MIL - 结果查看器.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/screenshots/simulate_plot/54364_0x36031A_MoSim_P10_L1_AWFF_Minimal_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p10_generated_gazebo_20260718/l1_awff_minimal/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/l1_awff_minimal/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/P10_L1_AWFF_MWORKS_CLOSEOUT.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/P10_L1_AWFF_MWORKS_CLOSEOUT.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/l1_awff_minimal/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/l1_awff_minimal/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "dfbc_dob_eso_disabled",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "dfbc_dob_eso_disabled"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_dob_eso_disabled/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_dob_eso_disabled/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_dob_eso_disabled_closeout.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/metrics/dfbc_dob_eso_disabled_mil_metrics.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/raw/dfbc_dob_eso_disabled_mil.csv"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_dob_eso_disabled_closeout.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_dob_eso_disabled/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_dob_eso_disabled/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "dfbc_dob_eso",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "dfbc_dob_eso"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL.mo",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_DOB_ESO_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/screenshots/dob_enabled/54364_0x21098A_MoSim_P10_DFBC_DOB_ESO_MIL - Sysplorer _教育版_.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/diagrams/MoSim_P10_DFBC_DOB_ESO_MIL.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL - Sysplorer _教育版_.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x21098A_MoSim_P10_DFBC_DOB_ESO_MIL - Sysplorer _教育版_.png"
+      ],
+      "result_viewer_screenshots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/screenshots/dob_disabled/54364_0x36031A_MoSim_P10_DFBC_DOB_ESO_MIL - 结果查看器.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/screenshots/dob_enabled/54364_0x36031A_MoSim_P10_DFBC_DOB_ESO_MIL - 结果查看器.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/screenshots/high_order/54364_0x36031A_MoSim_P10_DFBC_DOB_ESO_MIL - 结果查看器.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/screenshots/smooth_robust/54364_0x36031A_MoSim_P10_DFBC_DOB_ESO_MIL - 结果查看器.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL - 结果查看器.png",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/graphical_review_20260718/live_gui/54364_0x36031A_MoSim_P10_DFBC_DOB_ESO_MIL - 结果查看器.png"
+      ],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_dob_eso/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_dob_eso/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_dob_eso_closeout.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_dob_eso_disabled_closeout.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/metrics/dfbc_dob_eso_disabled_mil_metrics.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/metrics/dfbc_dob_eso_mil_metrics.json",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/raw/dfbc_dob_eso_disabled_mil.csv",
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/raw/dfbc_dob_eso_mil.csv"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/closeout/dfbc_dob_eso_closeout.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_dob_eso/takeoff_hover_land/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/p10_generated_gazebo_20260718/dfbc_dob_eso/takeoff_hover_land/P10_GENERATED_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "confirm_native_result_msr_in_live_session"
+    },
+    {
+      "cohort": "P10_CLASSIC_RECONCILIATION",
+      "controller": "neural_smc",
+      "matrix_status": "not_run",
+      "implementation_state": "blocked",
+      "claim_ceiling": "interface_only_no_frozen_training_dataset_or_model_artifact",
+      "aliases": [
+        "neural_smc"
+      ],
+      "search_roots": [
+        "Results/control_platform/p10_mworks_gap_closeout_20260718",
+        "Results/control_platform/g5_mworks_closeout_20260716/wave_a"
+      ],
+      "model_sources": [],
+      "graphical_model_screenshots": [],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"
+      ],
+      "missing_evidence": [
+        "model_source",
+        "graphical_model_screenshot",
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": true,
+      "next_action": "bounded_implementation_gap_review"
+    },
+    {
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "controller": "pole_placement_luenberger",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "pole_placement_luenberger"
+      ],
+      "search_roots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+      ],
+      "model_sources": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/pole_placement_luenberger.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/pole_placement_luenberger_mil_metrics.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/pole_placement_luenberger_mil.csv",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/pole_placement_luenberger/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "controller": "mrac",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_hover_passed_figure8_acceptance_blocked",
+      "aliases": [
+        "mrac"
+      ],
+      "search_roots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+      ],
+      "model_sources": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_MRAC_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/mrac.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/mrac_mil_metrics.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/mrac_mil.csv",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/mrac_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "controller": "ndi",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_hover_passed_figure8_acceptance_blocked",
+      "aliases": [
+        "ndi"
+      ],
+      "search_roots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+      ],
+      "model_sources": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_NDI_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/ndi.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/ndi_mil_metrics.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/ndi_mil.csv",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/ndi_figure8/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "controller": "fopid",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "fopid"
+      ],
+      "search_roots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+      ],
+      "model_sources": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_FOPID_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/fopid.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/fopid_mil_metrics.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/fopid_mil.csv",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    },
+    {
+      "cohort": "P11_CLASSIC_ADDITIONS",
+      "controller": "h2_state_feedback",
+      "matrix_status": "executed_blocked",
+      "implementation_state": "implemented",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "aliases": [
+        "h2_state_feedback"
+      ],
+      "search_roots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks"
+      ],
+      "model_sources": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo"
+      ],
+      "graphical_model_screenshots": [
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/diagrams/h2_state_feedback.png"
+      ],
+      "result_viewer_screenshots": [],
+      "numeric_results_or_metrics": [
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/metrics/h2_state_feedback_mil_metrics.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/raw/h2_state_feedback_mil.csv",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json"
+      ],
+      "native_result_msr": [],
+      "matrix_evidence_existing": [
+        "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+        "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/PX4CTRL_BASIC_MISSION_METRICS.json",
+        "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+      ],
+      "missing_evidence": [
+        "result_viewer_screenshot",
+        "native_result_msr_live_confirmation"
+      ],
+      "implementation_blocked": false,
+      "next_action": "capture_missing_mworks_screenshots"
+    }
+  ]
+}
