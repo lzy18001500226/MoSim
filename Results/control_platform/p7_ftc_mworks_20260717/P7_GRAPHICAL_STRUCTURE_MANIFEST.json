@@ -1,0 +1,20 @@
+{
+  "schema": "mosim.control_platform.p7_ftc_graphical_structure.v1",
+  "status": "live_check_passed",
+  "live_check": {
+    "check_model": true,
+    "simulate_model": true,
+    "stop_time_s": 0.25,
+    "sample_count": 26
+  },
+  "model": "Results/control_platform/p7_ftc_mworks_20260717/models/graphical_variants/MoSim_P7_FDI_FTC_FAMILY_GRAPHICAL_MIL.mo",
+  "family_modes": [
+    "fdi",
+    "passive_ftc",
+    "active_ftc",
+    "fault_aware_control_allocation",
+    "single_motor_safe_landing",
+    "multi_fault_estimation_reconfiguration"
+  ],
+  "claim_boundary": "Readable native graphical FDI/FTC signal chain for report topology only. Six-mode CFunction MIL, generated-C SIL and physical Gazebo injection remain separate numerical and runtime authorities."
+}

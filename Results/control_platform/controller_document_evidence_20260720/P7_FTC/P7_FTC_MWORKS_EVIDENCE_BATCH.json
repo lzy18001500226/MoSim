@@ -1,0 +1,73 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "p7_ftc_mworks_evidence_20260720",
+  "status": "passed_with_documented_boundaries",
+  "source": "MWORKS_MCP_LIVE_AND_REUSED_VERIFIED_RESULT",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49155,
+  "route": "fdi_ftc_family",
+  "family_modes": [
+    "fdi",
+    "passive_ftc",
+    "active_ftc",
+    "fault_aware_control_allocation",
+    "single_motor_safe_landing",
+    "multi_fault_estimation_reconfiguration"
+  ],
+  "graphical_fixture": {
+    "model": "Results/control_platform/p7_ftc_mworks_20260717/models/graphical_variants/MoSim_P7_FDI_FTC_FAMILY_GRAPHICAL_MIL.mo",
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 26,
+    "time_end_s": 0.25,
+    "end_values": {
+      "motor_command_1": 0.98200000000764,
+      "eta_hat_1": 0.52249999999045,
+      "isolated_score": 0.9550000000190999,
+      "action": 1.9100000000381998
+    },
+    "screenshot": "Results/control_platform/controller_document_evidence_20260720/P7_FTC/fdi_ftc_family/screenshots/graphical/fdi_ftc_family_graphical_model.png",
+    "screenshot_sha256": "108A8629851300661E83B41D7E6BECD929D6BEA12C48B0056DD62F5633348F53",
+    "screenshot_width": 1800,
+    "screenshot_height": 1000,
+    "claim_boundary": "Readable FDI/FTC signal-chain topology and native graphical MIL only; not numerical equivalence with the six-mode CFunction or full-aircraft recovery evidence."
+  },
+  "representative_execution": {
+    "model": "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL.mo",
+    "mode": "multi_fault_estimation_reconfiguration",
+    "check_model": true,
+    "simulate_model": true,
+    "sample_count": 26,
+    "time_end_s": 0.25,
+    "end_values": {
+      "eta_hat_1": 0.563977255124845,
+      "eta_hat_3": 0.61242422677764,
+      "fault_count": 2,
+      "action": 2
+    },
+    "historical_mil_authority": "Results/control_platform/p7_ftc_mworks_20260717/MWORKS_MIL_EVIDENCE.json",
+    "result_screenshot": "Results/control_platform/controller_document_evidence_20260720/P7_FTC/fdi_ftc_family/screenshots/result/fdi_ftc_family_result_viewer.png",
+    "result_screenshot_sha256": "056B1795AB65D0696FFBB43567DF78BD4BFF2F65EDA35F4FE2E5C2F0D0FF08BF",
+    "result_screenshot_width": 1708,
+    "result_screenshot_height": 921
+  },
+  "runtime_authority": {
+    "path": "Results/control_platform/p7_ftc_generated_gazebo_r3_20260717/P7_FTC_GENERATED_GAZEBO_GATE.json",
+    "status": "passed",
+    "rotor_index": 1,
+    "effectiveness": 0.65,
+    "fault_applied": true,
+    "isolated_mask_observed": 1,
+    "generated_takeover_applied": true,
+    "final_landed_state": 1,
+    "final_armed": 0
+  },
+  "native_result_msr": null,
+  "claim_boundary": [
+    "The 67-row authority contains one fdi_ftc_family route; six internal modes are family coverage rather than six additional controller rows.",
+    "The new graphical fixture documents the complete residual-estimation-isolation-reconfiguration chain; six-mode numerical authority remains the existing CFunction MWORKS MIL evidence.",
+    "The reused result-viewer screenshot is bound to the verified multi-fault MWORKS fixture and shows the persistence-triggered transition.",
+    "Gazebo authority covers one physical rotor-1 effectiveness reduction to 0.65 with generated isolation and takeover; it does not prove complete rotor outage or arbitrary multi-fault recovery.",
+    "No Result.msr is promoted because an exact native file binding was not established."
+  ]
+}

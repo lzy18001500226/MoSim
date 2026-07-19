@@ -41,6 +41,11 @@ SAFETY_BATCH = (
     / "Results/control_platform/controller_document_evidence_20260720/P6_SAFETY"
     / "P6_SAFETY_MWORKS_EVIDENCE_BATCH.json"
 )
+FTC_BATCH = (
+    ROOT
+    / "Results/control_platform/controller_document_evidence_20260720/P7_FTC"
+    / "P7_FTC_MWORKS_EVIDENCE_BATCH.json"
+)
 
 
 def load_builder():
@@ -282,6 +287,32 @@ def test_safety_family_evidence_matches_manifest_hash_and_dimensions() -> None:
         assert payload[:8] == b"\x89PNG\r\n\x1a\n"
         assert struct.unpack(">II", payload[16:24]) == expected_dimensions
     assert batch["representative_execution"]["historical_mil_row_match"] is True
+
+
+def test_ftc_family_report_evidence_matches_manifest() -> None:
+    batch = json.loads(FTC_BATCH.read_text(encoding="utf-8"))
+    assert batch["status"] == "passed_with_documented_boundaries"
+    assert len(batch["family_modes"]) == 6
+    assert batch["runtime_authority"]["effectiveness"] == 0.65
+    assert batch["runtime_authority"]["generated_takeover_applied"] is True
+    cases = (
+        (
+            batch["graphical_fixture"]["screenshot"],
+            batch["graphical_fixture"]["screenshot_sha256"],
+            (1800, 1000),
+        ),
+        (
+            batch["representative_execution"]["result_screenshot"],
+            batch["representative_execution"]["result_screenshot_sha256"],
+            (1708, 921),
+        ),
+    )
+    for relative_path, expected_hash, expected_dimensions in cases:
+        payload = (ROOT / relative_path).read_bytes()
+        assert hashlib.sha256(payload).hexdigest().upper() == expected_hash
+        assert payload[:8] == b"\x89PNG\r\n\x1a\n"
+        assert struct.unpack(">II", payload[16:24]) == expected_dimensions
+    assert batch["native_result_msr"] is None
 
 
 def test_cli_writes_json_and_markdown(tmp_path: Path) -> None:

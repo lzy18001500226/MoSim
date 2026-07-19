@@ -1,0 +1,23 @@
+{
+  "schema": "mosim.mworks_phase_screenshot_manifest.v1",
+  "source": "MWORKS_MCP_LIVE_AND_REUSED_VERIFIED_RESULT",
+  "screenshots": [
+    {
+      "phase": "graphical_model_after_check_and_simulate",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P7_FTC/fdi_ftc_family/screenshots/graphical/fdi_ftc_family_graphical_model.png",
+      "sha256": "108A8629851300661E83B41D7E6BECD929D6BEA12C48B0056DD62F5633348F53",
+      "width": 1800,
+      "height": 1000,
+      "observation": "The connected chain shows nominal allocation, response residual, bounded effectiveness estimation, persistent state, isolation, reallocation and degraded action selection."
+    },
+    {
+      "phase": "representative_multi_fault_result_viewer",
+      "path": "Results/control_platform/controller_document_evidence_20260720/P7_FTC/fdi_ftc_family/screenshots/result/fdi_ftc_family_result_viewer.png",
+      "sha256": "056B1795AB65D0696FFBB43567DF78BD4BFF2F65EDA35F4FE2E5C2F0D0FF08BF",
+      "width": 1708,
+      "height": 921,
+      "observation": "The result viewer is bound to MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL and shows eta_hat_1/3 decreasing before fault_count and action switch."
+    }
+  ],
+  "will_not_click_activation_login": true
+}
