@@ -130,6 +130,7 @@ private:
     void writeQgcObservability();
     void resetQgcObservability(const QString &runId);
     void attachQgcLinks();
+    void launchRuntimeStatusTerminal();
 
     QProcess _process;
     QTimer _timeout;

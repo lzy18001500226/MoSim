@@ -7,6 +7,10 @@ def test_flight_simulation_and_ground_station_have_separate_owners() -> None:
 
     assert '"prepare_run"' in flight
     assert '"start_run"' in flight
+    assert 'lifecycle_state -eq "ready"' in flight
+    assert "Starting the QGC-validated task" in flight
+    assert "flight_terminal_" in flight
+    assert "A Gazebo status terminal is already monitoring run" in flight
     assert "RUNTIME_STATUS.json" in flight
     assert "Keep this window open while testing" in flight
 
@@ -18,6 +22,18 @@ def test_flight_simulation_and_ground_station_have_separate_owners() -> None:
     assert "run_flight_console.ps1" in ground
     assert "flight_simulation_not_active" in ground
     assert "Gazebo flight simulation launcher" in ground
+
+
+def test_qgc_start_ack_opens_separate_runtime_status_terminal() -> None:
+    bridge = Path("apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.cc").read_text(encoding="utf-8")
+    header = Path("apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.h").read_text(encoding="utf-8")
+
+    assert "void MoSimOrchestratorBridge::launchRuntimeStatusTerminal()" in bridge
+    assert "launchRuntimeStatusTerminal();" in bridge
+    assert 'QStringLiteral("启动Gazebo飞行仿真.cmd")' in bridge
+    assert 'QStringLiteral("cmd.exe")' in bridge
+    assert "QProcess::startDetached" in bridge
+    assert "void launchRuntimeStatusTerminal();" in header
 
 
 def test_ground_station_reconciles_duplicate_managed_unreal_processes() -> None:

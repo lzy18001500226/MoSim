@@ -377,6 +377,28 @@ void MoSimOrchestratorBridge::startRun()
     _autoAttachUnrealAfterStart = true;
     invokeRunAction(QStringLiteral("start_run"));
 }
+
+void MoSimOrchestratorBridge::launchRuntimeStatusTerminal()
+{
+#ifdef Q_OS_WIN
+    const QString launcher = QDir(_projectRoot).filePath(QStringLiteral("启动Gazebo飞行仿真.cmd"));
+    if (!QFileInfo::exists(launcher)) {
+        _reasonCode = QStringLiteral("runtime_status_terminal_missing");
+        _statusText = launcher;
+        emit responseChanged();
+        return;
+    }
+    qint64 processId = 0;
+    if (!QProcess::startDetached(QStringLiteral("cmd.exe"),
+                                 {QStringLiteral("/d"), QStringLiteral("/c"),
+                                  QStringLiteral("call"), QDir::toNativeSeparators(launcher)},
+                                 _projectRoot, &processId)) {
+        _reasonCode = QStringLiteral("runtime_status_terminal_spawn_failed");
+        _statusText = launcher;
+        emit responseChanged();
+    }
+#endif
+}
 void MoSimOrchestratorBridge::requestSafeStop() { invokeRunAction(QStringLiteral("request_safe_stop")); }
 void MoSimOrchestratorBridge::stopRun()
 {
@@ -894,6 +916,7 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
             invoke({QStringLiteral("get_run_state"), QStringLiteral("--run-id"), _runId});
         });
     } else if (completedAction == QStringLiteral("start_run") && _accepted && _autoAttachUnrealAfterStart) {
+        launchRuntimeStatusTerminal();
         QTimer::singleShot(0, this, [this]() { prepareDisplays({QStringLiteral("unreal")}); });
     } else if (completedAction == QStringLiteral("prepare_display_session") && _accepted
                && _autoAttachUnrealAfterStart) {

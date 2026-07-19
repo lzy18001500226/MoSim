@@ -26,6 +26,11 @@ if ($null -ne $active -and $active.run_id) {
 if ($null -ne $state -and $state.accepted -and $state.manifest.lifecycle_state -in @("starting", "running")) {
     $runId = [string]$state.run_id
     Show-Stage "Reusing active flight simulation: $runId"
+} elseif ($null -ne $state -and $state.accepted -and $state.manifest.lifecycle_state -eq "ready") {
+    $runId = [string]$state.run_id
+    Show-Stage "Starting the QGC-validated task: $($state.manifest.experiment_profile_id)"
+    $started = Invoke-MoSimOrchestratorClient -Arguments @("start_run", "--run-id", $runId)
+    Show-Stage "Runtime launch accepted: $($started.reason_code)"
 } else {
     if (-not (Test-Path -LiteralPath (Join-Path $script:MoSimProjectRoot $ProfilePath))) {
         throw "profile_missing: $ProfilePath"
@@ -44,6 +49,24 @@ $runDir = Get-MoSimRunDirectory -RunId $runId
 $runtimeStatusPath = Join-Path $runDir "RUNTIME_STATUS.json"
 $preflightPath = Join-Path $runDir "runtime/px4_ekf_global_origin.txt"
 $mavlinkPath = Join-Path $runDir "observability/mavlink_qgc.json"
+$monitorPath = Join-Path $script:MoSimStartupLogDir ("flight_terminal_{0}.json" -f $runId)
+
+if (Test-Path -LiteralPath $monitorPath) {
+    try {
+        $existingMonitor = Get-Content -Raw -LiteralPath $monitorPath | ConvertFrom-Json
+        $existingProcess = Get-Process -Id ([int]$existingMonitor.process_id) -ErrorAction SilentlyContinue
+        if ($null -ne $existingProcess -and $existingProcess.ProcessName -eq "powershell") {
+            Write-Host "A Gazebo status terminal is already monitoring run $runId (PID $($existingProcess.Id))."
+            exit 0
+        }
+    } catch {}
+}
+@{
+    schema = "mosim.flight_runtime_terminal.v1"
+    run_id = $runId
+    process_id = $PID
+    started_at = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
+} | ConvertTo-Json | Set-Content -LiteralPath $monitorPath -Encoding UTF8
 
 Write-Host ""
 Write-Host "MoSim flight simulation terminal"
@@ -54,33 +77,37 @@ Write-Host "Use the Stop All MoSim Simulation launcher to stop the managed run."
 Write-Host ""
 
 $lastLine = ""
-while ($true) {
-    $status = $null
-    if (Test-Path -LiteralPath $runtimeStatusPath) {
-        try { $status = Get-Content -Raw -LiteralPath $runtimeStatusPath | ConvertFrom-Json } catch { $status = $null }
+try {
+    while ($true) {
+        $status = $null
+        if (Test-Path -LiteralPath $runtimeStatusPath) {
+            try { $status = Get-Content -Raw -LiteralPath $runtimeStatusPath | ConvertFrom-Json } catch { $status = $null }
+        }
+        $preflightReady = (Test-Path -LiteralPath $preflightPath) -and
+            ((Get-Content -Raw -LiteralPath $preflightPath -ErrorAction SilentlyContinue) -match '(?m)^preflight_ready=true$')
+        $qgcLinks = 0
+        if (Test-Path -LiteralPath $mavlinkPath) {
+            try {
+                $mavlink = Get-Content -Raw -LiteralPath $mavlinkPath | ConvertFrom-Json
+                $qgcLinks = [int]$mavlink.connected_link_count
+            } catch { $qgcLinks = 0 }
+        }
+        $statusName = if ($null -ne $status) { [string]$status.status } else { "starting" }
+        $reason = if ($null -ne $status) { [string]$status.reason_code } else { "runtime_status_pending" }
+        $missing = if ($null -ne $status) { @($status.missing_readiness) -join "," } else { "status_file" }
+        if (-not $missing) { $missing = "none" }
+        $line = "state=$statusName reason=$reason preflight=$preflightReady qgc_links=$qgcLinks missing=$missing"
+        if ($line -ne $lastLine) {
+            Show-Stage $line
+            $lastLine = $line
+        }
+        if ($statusName -in @("blocked", "failed", "stopped", "completed")) {
+            break
+        }
+        Start-Sleep -Seconds 2
     }
-    $preflightReady = (Test-Path -LiteralPath $preflightPath) -and
-        ((Get-Content -Raw -LiteralPath $preflightPath -ErrorAction SilentlyContinue) -match '(?m)^preflight_ready=true$')
-    $qgcLinks = 0
-    if (Test-Path -LiteralPath $mavlinkPath) {
-        try {
-            $mavlink = Get-Content -Raw -LiteralPath $mavlinkPath | ConvertFrom-Json
-            $qgcLinks = [int]$mavlink.connected_link_count
-        } catch { $qgcLinks = 0 }
-    }
-    $statusName = if ($null -ne $status) { [string]$status.status } else { "starting" }
-    $reason = if ($null -ne $status) { [string]$status.reason_code } else { "runtime_status_pending" }
-    $missing = if ($null -ne $status) { @($status.missing_readiness) -join "," } else { "status_file" }
-    if (-not $missing) { $missing = "none" }
-    $line = "state=$statusName reason=$reason preflight=$preflightReady qgc_links=$qgcLinks missing=$missing"
-    if ($line -ne $lastLine) {
-        Show-Stage $line
-        $lastLine = $line
-    }
-    if ($statusName -in @("blocked", "failed", "stopped", "completed")) {
-        break
-    }
-    Start-Sleep -Seconds 2
+} finally {
+    Remove-Item -LiteralPath $monitorPath -Force -ErrorAction SilentlyContinue
 }
 
 Write-Host ""
