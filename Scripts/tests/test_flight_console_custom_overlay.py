@@ -386,6 +386,12 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "QGC原生解锁/起飞" in qml
     assert "下一步：" in qml
     assert "selectionMatchesPreparedRun()" in qml
+    assert "function controllerCompatibleWithTask(moduleId)" in qml
+    assert "function vehicleCountCompatibleWithTask(vehicleCount)" in qml
+    assert "function taskSelectionCompatible()" in qml
+    assert "当前任务没有该控制器的运行后端" in qml
+    assert "当前任务固定为" in qml
+    assert "当前控制器或机数与任务运行后端不匹配" in qml
     assert "另一个任务仍在运行" in qml
     assert "experimentProfileId" in bridge_header
     assert "selectedControllerId" in bridge_header

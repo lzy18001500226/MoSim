@@ -635,6 +635,19 @@ Item {
         return -1
     }
 
+    function controllerCompatibleWithTask(moduleId) {
+        return String(moduleId || "") === String(profiles[profileBox.currentIndex].controller)
+    }
+
+    function vehicleCountCompatibleWithTask(vehicleCount) {
+        return Number(vehicleCount) === Number(profiles[profileBox.currentIndex].count)
+    }
+
+    function taskSelectionCompatible() {
+        return controllerCompatibleWithTask(controllerBox.currentValue)
+                && vehicleCountCompatibleWithTask(vehicleCounts[vehicleBox.currentIndex].value)
+    }
+
     function syncProfileSelection() {
         var profile = profiles[profileBox.currentIndex]
         var index = controllerIndex(profile.controller)
@@ -1399,9 +1412,11 @@ Item {
                             delegate: ItemDelegate {
                                 width: controllerBox.width
                                 text: modelData.label
-                                enabled: modelData.enabled
-                                ToolTip.visible: hovered && !modelData.enabled
-                                ToolTip.text: modelData.disabled_reason
+                                enabled: modelData.enabled && root.controllerCompatibleWithTask(modelData.module_id)
+                                ToolTip.visible: hovered && !enabled
+                                ToolTip.text: !modelData.enabled
+                                              ? modelData.disabled_reason
+                                              : "当前任务没有该控制器的运行后端"
                             }
                         }
                         QGCLabel {
@@ -1419,7 +1434,21 @@ Item {
                             enabled: flightConfigurationEditable
                             model: vehicleCounts
                             textRole: "label"
-                            delegate: ItemDelegate { width: vehicleBox.width; text: modelData.label; enabled: modelData.enabled }
+                            delegate: ItemDelegate {
+                                width: vehicleBox.width
+                                text: modelData.label
+                                enabled: modelData.enabled && root.vehicleCountCompatibleWithTask(modelData.value)
+                                ToolTip.visible: hovered && !enabled
+                                ToolTip.text: !modelData.enabled ? "该机数尚未通过规模验收"
+                                                                  : "当前任务固定为" + profiles[profileBox.currentIndex].count + "架飞机"
+                            }
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            visible: !taskSelectionCompatible()
+                            text: "当前控制器或机数与任务运行后端不匹配，请重新选择任务。"
+                            color: qgcPal.colorRed
+                            wrapMode: Text.Wrap
                         }
                         QGCLabel {
                             Layout.fillWidth: true
@@ -1441,6 +1470,7 @@ Item {
                                          && mosimOrchestrator.controllers[controllerBox.currentIndex].enabled
                                          && vehicleCounts[vehicleBox.currentIndex].enabled
                                          && profiles[profileBox.currentIndex].enabled
+                                         && taskSelectionCompatible()
                                 onClicked: mosimOrchestrator.prepareRun(profiles[profileBox.currentIndex].path,
                                                                         controllerBox.currentValue,
                                                                         vehicleCounts[vehicleBox.currentIndex].value, 0,
