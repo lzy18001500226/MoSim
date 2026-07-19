@@ -18,14 +18,14 @@
     },
     "model_source_present_count": 60,
     "graphical_screenshot_present_count": 44,
-    "result_screenshot_present_count": 20,
+    "result_screenshot_present_count": 26,
     "numeric_result_present_count": 62,
     "native_result_msr_present_count": 4,
     "implementation_blocked_count": 2,
     "next_action_counts": {
       "bounded_implementation_gap_review": 2,
-      "capture_missing_mworks_screenshots": 40,
-      "confirm_native_result_msr_in_live_session": 20,
+      "capture_missing_mworks_screenshots": 34,
+      "confirm_native_result_msr_in_live_session": 26,
       "repair_or_rerun_required": 5
     }
   },
@@ -444,7 +444,8 @@
         "integral_smc"
       ],
       "search_roots": [
-        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+        "Results/control_platform/p3_sliding_mode_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE"
       ],
       "model_sources": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
@@ -453,7 +454,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/integral_smc/result/51472_0x3520E24_MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/integral_smc.csv",
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/integral_smc.csv",
@@ -466,11 +469,10 @@
         "Results/control_platform/p3_sliding_mode_runtime_20260716/integral_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P3_SLIDING_MODE",
@@ -482,7 +484,8 @@
         "terminal_smc"
       ],
       "search_roots": [
-        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+        "Results/control_platform/p3_sliding_mode_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE"
       ],
       "model_sources": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
@@ -494,7 +497,10 @@
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.png",
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/nonsingular_terminal_smc/result/51472_0x3520E24_MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png",
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/terminal_smc/result/51472_0x3520E24_MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/nonsingular_terminal_smc.csv",
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/terminal_smc.csv",
@@ -509,11 +515,10 @@
         "Results/control_platform/p3_sliding_mode_runtime_20260716/terminal_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P3_SLIDING_MODE",
@@ -525,7 +530,8 @@
         "nonsingular_terminal_smc"
       ],
       "search_roots": [
-        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+        "Results/control_platform/p3_sliding_mode_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE"
       ],
       "model_sources": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
@@ -534,7 +540,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/nonsingular_terminal_smc/result/51472_0x3520E24_MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/nonsingular_terminal_smc.csv",
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/nonsingular_terminal_smc.csv",
@@ -547,11 +555,10 @@
         "Results/control_platform/p3_sliding_mode_runtime_20260716/nonsingular_terminal_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P3_SLIDING_MODE",
@@ -563,7 +570,8 @@
         "super_twisting_smc"
       ],
       "search_roots": [
-        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+        "Results/control_platform/p3_sliding_mode_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE"
       ],
       "model_sources": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
@@ -572,7 +580,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/super_twisting_smc/result/51472_0x3520E24_MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/super_twisting_smc.csv",
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/super_twisting_smc.csv",
@@ -585,11 +595,10 @@
         "Results/control_platform/p3_sliding_mode_runtime_20260716/super_twisting_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P3_SLIDING_MODE",
@@ -601,7 +610,8 @@
         "adaptive_smc"
       ],
       "search_roots": [
-        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+        "Results/control_platform/p3_sliding_mode_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE"
       ],
       "model_sources": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
@@ -610,7 +620,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/adaptive_smc/result/51472_0x3520E24_MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/adaptive_smc.csv",
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/adaptive_smc.csv",
@@ -623,11 +635,10 @@
         "Results/control_platform/p3_sliding_mode_runtime_20260716/adaptive_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P3_SLIDING_MODE",
@@ -639,7 +650,8 @@
         "fuzzy_smc"
       ],
       "search_roots": [
-        "Results/control_platform/p3_sliding_mode_mworks_20260716"
+        "Results/control_platform/p3_sliding_mode_mworks_20260716",
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE"
       ],
       "model_sources": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
@@ -648,7 +660,9 @@
       "graphical_model_screenshots": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/screenshots/graphical_variants/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.png"
       ],
-      "result_viewer_screenshots": [],
+      "result_viewer_screenshots": [
+        "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/fuzzy_smc/result/51472_0x3520E24_MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL - 结果查看器.png"
+      ],
       "numeric_results_or_metrics": [
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/cfunction_variants/fuzzy_smc.csv",
         "Results/control_platform/p3_sliding_mode_mworks_20260716/raw/graphical_variants/fuzzy_smc.csv",
@@ -661,11 +675,10 @@
         "Results/control_platform/p3_sliding_mode_runtime_20260716/fuzzy_smc/SLIDING_MODE_GENERATED_RUNTIME_PROVENANCE.json"
       ],
       "missing_evidence": [
-        "result_viewer_screenshot",
         "native_result_msr_live_confirmation"
       ],
       "implementation_blocked": false,
-      "next_action": "capture_missing_mworks_screenshots"
+      "next_action": "confirm_native_result_msr_in_live_session"
     },
     {
       "cohort": "P4_MPC",

@@ -1,0 +1,78 @@
+{
+  "schema": "mosim.controller_document_evidence_batch.v1",
+  "batch_id": "p3_sliding_mode_mworks_result_screenshots_20260720",
+  "status": "passed",
+  "source": "MWORKS_MCP",
+  "live_mworks_touched": true,
+  "sysplorer_port": 49155,
+  "activation_state_observation": "Sysplorer education edition main window visible and responsive",
+  "license_state": "education_edition_no_login_or_license_blocker_observed",
+  "session_sentinel": "Results/control_platform/controller_document_evidence_20260720/session_sentinel/51472_0x62F0AAC_Sysplorer _教育版_.png",
+  "model_check": "passed_6_of_6",
+  "simulation": "passed_6_of_6",
+  "result_variables": [
+    "sliding_surface_x",
+    "effective_reaching_gain_x",
+    "desired_acceleration_x"
+  ],
+  "sample_count_per_case": 21,
+  "time_end_s": 0.2,
+  "rows": [
+    {
+      "controller": "integral_smc",
+      "model": "MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 3.8448800000000007,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/integral_smc/result/51472_0x3520E24_MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "01F0C4C2215CA9D76B44BF4AFA152CB0EB07D3AC54C339FD3A6D760701C1338E"
+    },
+    {
+      "controller": "terminal_smc",
+      "model": "MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 3.8675155528763625,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/terminal_smc/result/51472_0x3520E24_MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "686B77685B8406ADBCF6F4C06E6ADC2C3627C526A084F1549D73EC72BC4B4F84"
+    },
+    {
+      "controller": "nonsingular_terminal_smc",
+      "model": "MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.018351690783981,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/nonsingular_terminal_smc/result/51472_0x3520E24_MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "8B753C72248A624EBE7807BFA4356297C058312D4743F5031C1C3815F2A01326"
+    },
+    {
+      "controller": "super_twisting_smc",
+      "model": "MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 3.7359046063504966,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/super_twisting_smc/result/51472_0x3520E24_MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "4547E39245F9A62F19AE7DDC2184C9EAA1714E0CE91E5141B54F74F47A0B4AAB"
+    },
+    {
+      "controller": "adaptive_smc",
+      "model": "MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.027599999999997,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/adaptive_smc/result/51472_0x3520E24_MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "327A86ABDECA806762388B89BB58BBA20E98846A814886F53151D1CEBEBD2022"
+    },
+    {
+      "controller": "fuzzy_smc",
+      "model": "MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
+      "desired_acceleration_x_end": 4.8180000000000005,
+      "historical_metric_match": true,
+      "screenshot": "Results/control_platform/controller_document_evidence_20260720/P3_SLIDING_MODE/fuzzy_smc/result/51472_0x3520E24_MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL - 结果查看器.png",
+      "screenshot_sha256": "A81BCF170D0B9CED9AAA2FCD064B8312A63A9294EFD9A72750BEB87EBC370ED9"
+    }
+  ],
+  "mworks_phase_observations": [
+    "All six native graphical sliding-mode fixtures passed CheckModel in the same reusable Sysplorer session.",
+    "All six simulations produced readable sliding-surface, reaching-gain, and desired-acceleration result plots.",
+    "Every desired_acceleration_x end value matches the existing 2026-07-16 graphical MIL CSV.",
+    "Some optional auto-load dependency probes returned false, but each authoritative model check and simulation passed.",
+    "Screenshots were captured with the DPI-aware background route without UI clicks and were visually reviewed."
+  ],
+  "claim_ceiling": "real_fixed_input_native_graphical_sysblock_mil_and_result_viewer_evidence_not_full_aircraft_trajectory"
+}
