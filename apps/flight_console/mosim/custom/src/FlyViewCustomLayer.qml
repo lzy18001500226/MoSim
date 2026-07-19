@@ -34,6 +34,9 @@ Item {
     readonly property var activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
     readonly property bool manualTaskSelected: profiles[profileBox.currentIndex].manual === true
+    readonly property bool flightConfigurationEditable: !mosimOrchestrator.busy
+                                                        && mosimOrchestrator.lifecycleState !== "starting"
+                                                        && mosimOrchestrator.lifecycleState !== "running"
     readonly property bool manualControlReady: manualTaskSelected
                                                 && selectionMatchesPreparedRun()
                                                 && mosimOrchestrator.lifecycleState === "running"
@@ -1198,7 +1201,7 @@ Item {
                         ComboBox {
                             id: profileBox
                             Layout.fillWidth: true
-                            enabled: !mosimOrchestrator.busy
+                            enabled: flightConfigurationEditable
                             model: profiles
                             textRole: "label"
                             delegate: ItemDelegate {
@@ -1223,7 +1226,7 @@ Item {
                         ComboBox {
                             id: controllerBox
                             Layout.fillWidth: true
-                            enabled: profileBox.enabled
+                            enabled: flightConfigurationEditable
                             model: mosimOrchestrator.controllers
                             textRole: "label"
                             valueRole: "module_id"
@@ -1247,10 +1250,18 @@ Item {
                         ComboBox {
                             id: vehicleBox
                             Layout.fillWidth: true
-                            enabled: profileBox.enabled
+                            enabled: flightConfigurationEditable
                             model: vehicleCounts
                             textRole: "label"
                             delegate: ItemDelegate { width: vehicleBox.width; text: modelData.label; enabled: modelData.enabled }
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: manualTaskSelected
+                                  ? "手动定点：运行时就绪后，使用QGC原生解锁、起飞和Position模式。"
+                                  : "自动任务：Mission Adapter将独占完成连接检查、解锁、起飞、任务执行和降落；无需手动解锁。"
+                            color: qgcPal.colorOrange
+                            wrapMode: Text.Wrap
                         }
                         RowLayout {
                             Layout.fillWidth: true
@@ -1270,7 +1281,7 @@ Item {
                                                                         manualTaskSelected)
                             }
                             QGCButton {
-                                text: "启动仿真并连接飞机"
+                                text: manualTaskSelected ? "启动仿真并连接飞机" : "启动并执行自动任务"
                                 Layout.fillWidth: true
                                 enabled: !mosimOrchestrator.busy
                                          && mosimOrchestrator.lifecycleState === "ready"

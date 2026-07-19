@@ -45,6 +45,11 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert "model: mosimOrchestrator.controllers" in qml
     assert "disabled_reason" in qml
     assert "启动仿真并连接飞机" in qml
+    assert "启动并执行自动任务" in qml
+    assert "无需手动解锁" in qml
+    assert 'readonly property bool flightConfigurationEditable' in qml
+    assert 'mosimOrchestrator.lifecycleState !== "starting"' in qml
+    assert 'mosimOrchestrator.lifecycleState !== "running"' in qml
     assert "px4ctrl_ground_standby_v1.json" in qml
     assert "Take off (W/A/S/D)" not in qml
     assert "启动进度" in qml
