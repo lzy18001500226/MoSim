@@ -296,12 +296,25 @@ def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
     assert "请在 MWORKS 中自行点击仿真" in source
     script = ROOT / "Scripts" / "ui" / "open_model_studio_model.py"
     script_text = script.read_text(encoding="utf-8")
-    assert 'subprocess.Popen([str(executable), str(model_file)]' in script_text
-    assert 'window_title = visible_window_title' not in script_text
-    assert 'result["window_title"] = visible_window_title(process.pid)' in script_text
+    worker = ROOT / "Scripts" / "ui" / "open_model_studio_model_worker.py"
+    worker_text = worker.read_text(encoding="utf-8")
+    assert "BASE_MODEL_FILES" in script_text
+    assert "model_load_files(args.mode, model_file)" in script_text
+    assert 'command.append("--check-model")' in script_text
+    assert "visible_model_window(model_name)" in script_text
+    assert "subprocess.Popen" in script_text
+    assert 'result["worker_process_id"] = worker.pid' in script_text
     assert "user32.SetForegroundWindow(hwnd)" in script_text
     assert 'RUNNER_MODELS' in script_text
     assert "SimulateModel" not in script_text
+    assert "ModelingPy.StartSysplorer" in worker_text
+    assert "ModelingPy.OpenModelFile" in worker_text
+    assert "ModelingPy.OpenModel" in worker_text
+    assert "ModelingPy.CheckModel" in worker_text
+    assert "while any(psutil.pid_exists(pid) for pid in tracked_pids):" in worker_text
+    assert 'result["mworks_process_ids"]' in worker_text
+    assert "psutil.pid_exists(pid)" in worker_text
+    assert "SimulateModel" not in worker_text
 
 
 def test_deploy_workspace_uses_two_columns_and_wide_console() -> None:

@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Open a Model Studio model in the native MWORKS Sysplorer application.
 
-This entry point only launches a selected model file. It never checks or
-simulates the model, opens a result, starts a flight task, or changes the solver
-lifecycle.
+The selected class is loaded with its project package dependencies and opened
+in a dedicated Sysplorer session. Offline models are checked before success is
+reported. This entry point never simulates the model, opens a result, starts a
+flight task, or changes the solver lifecycle.
 """
 
 from __future__ import annotations
@@ -17,6 +18,8 @@ import subprocess
 import time
 from pathlib import Path
 
+import psutil
+
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "Config" / "control_platform" / "offline_composition_catalog.json"
 LOG = ROOT / "Results" / "ui_platform" / "model_studio_open_model" / "latest.json"
@@ -26,11 +29,20 @@ LIVE_MODEL_FILE = ROOT / "Models" / "MworksLive" / "package.mo"
 LIVE_MODEL_NAME = "MworksLive.RT1OfficialPidShadow50Hz"
 MODEL_DECLARATION = re.compile(r"\bmodel\s+([A-Za-z_]\w*)")
 DEFAULT_MWORKS_EXE = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\Bin64\mworks.exe")
+DEFAULT_MWORKS_PYTHON = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\External\python64\python.exe")
+WORKER = ROOT / "Scripts" / "ui" / "open_model_studio_model_worker.py"
+WORKER_RESULT = LOG.with_name("latest.worker.json")
+BASE_MODEL_FILES = [
+    ROOT / "References" / "MWORKS" / "QuadrotorModel" / "package.mo",
+    ROOT / "Models" / "QuadrotorControllerBlocks" / "package.mo",
+    ROOT / "Models" / "QuadrotorExperiments" / "package.mo",
+    ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo",
+]
 RUNNER_MODELS = {
-    "ROTOR_COMMAND": ROOT / "Models" / "MoSimQuadrotorModel" / "ExperimentRunner" / "Runners" / "RotorCommandRunner.mo",
-    "ATTITUDE_THRUST": ROOT / "Models" / "MoSimQuadrotorModel" / "ExperimentRunner" / "Runners" / "AttitudeThrustRunner.mo",
-    "BODY_RATE_THRUST": ROOT / "Models" / "MoSimQuadrotorModel" / "ExperimentRunner" / "Runners" / "BodyRateThrustRunner.mo",
-    "WRENCH": ROOT / "Models" / "MoSimQuadrotorModel" / "ExperimentRunner" / "Runners" / "WrenchRunner.mo",
+    "ROTOR_COMMAND": (ROOT / "Models" / "MoSimQuadrotorModel" / "ExperimentRunner" / "Runners" / "RotorCommandRunner.mo", "MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner"),
+    "ATTITUDE_THRUST": (ROOT / "Models" / "MoSimQuadrotorModel" / "ExperimentRunner" / "Runners" / "AttitudeThrustRunner.mo", "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner"),
+    "BODY_RATE_THRUST": (ROOT / "Models" / "MoSimQuadrotorModel" / "ExperimentRunner" / "Runners" / "BodyRateThrustRunner.mo", "MoSimQuadrotorModel.ExperimentRunner.Runners.BodyRateThrustRunner"),
+    "WRENCH": (ROOT / "Models" / "MoSimQuadrotorModel" / "ExperimentRunner" / "Runners" / "WrenchRunner.mo", "MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner"),
 }
 
 
@@ -46,10 +58,10 @@ def resolve_offline_model(profile_id: str, vehicle_count: int, output_variant: s
         return THREE_MODEL_FILE, THREE_MODEL_NAME
     if not profile_id:
         boundary = output_variant.split("/", 1)[0].strip()
-        model_file = RUNNER_MODELS.get(boundary)
-        if model_file is None:
+        runner = RUNNER_MODELS.get(boundary)
+        if runner is None:
             raise ValueError("unsupported_output_variant")
-        return model_file, model_name_from_file(model_file)
+        return runner
     catalog = json.loads(CATALOG.read_text(encoding="utf-8-sig"))
     entries = list(catalog.get("certified_profiles", [])) + list(catalog.get("custom_profile_proofs", []))
     entry = next((item for item in entries if item.get("profile_id") == profile_id), None)
@@ -69,35 +81,59 @@ def resolve_mworks_executable() -> Path:
     return executable
 
 
-def visible_window_title(pid: int, timeout_s: float = 10.0) -> str:
+def resolve_mworks_python() -> Path:
+    configured = os.environ.get("MWORKS_SYSPLORE_PYTHON", "").strip()
+    executable = Path(configured) if configured else DEFAULT_MWORKS_PYTHON
+    if not executable.is_file():
+        raise FileNotFoundError(f"mworks_python_not_found: {executable}")
+    return executable
+
+
+def model_load_files(mode: str, model_file: Path) -> list[Path]:
+    if mode == "live":
+        return [LIVE_MODEL_FILE]
+    files = list(BASE_MODEL_FILES)
+    packaged_roots = [path.parent.resolve() for path in BASE_MODEL_FILES]
+    resolved = model_file.resolve()
+    if not any(resolved.is_relative_to(root) for root in packaged_roots):
+        files.append(model_file)
+    return files
+
+
+def visible_model_window(model_name: str, timeout_s: float = 15.0) -> tuple[int, str]:
     if os.name != "nt":
-        return "non_windows_process_started"
+        return 0, "non_windows_model_opened"
     user32 = ctypes.windll.user32
     deadline = time.monotonic() + timeout_s
     while time.monotonic() < deadline:
-        windows: list[tuple[int, str]] = []
+        windows: list[tuple[int, int, str]] = []
         callback_type = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_void_p, ctypes.c_void_p)
 
         def collect(hwnd: int, _lparam: int) -> bool:
             process_id = ctypes.c_ulong()
             user32.GetWindowThreadProcessId(hwnd, ctypes.byref(process_id))
-            if process_id.value == pid and user32.IsWindowVisible(hwnd):
+            if user32.IsWindowVisible(hwnd):
                 length = user32.GetWindowTextLengthW(hwnd)
                 if length:
                     buffer = ctypes.create_unicode_buffer(length + 1)
                     user32.GetWindowTextW(hwnd, buffer, length + 1)
-                    windows.append((hwnd, buffer.value))
+                    try:
+                        is_mworks = psutil.Process(process_id.value).name().lower() == "mworks.exe"
+                    except (psutil.Error, OSError):
+                        is_mworks = False
+                    if is_mworks and model_name in buffer.value and "Sysplorer" in buffer.value:
+                        windows.append((hwnd, process_id.value, buffer.value))
             return True
 
         user32.EnumWindows(callback_type(collect), 0)
         if windows:
-            hwnd, title = windows[0]
+            hwnd, pid, title = windows[0]
             user32.ShowWindow(hwnd, 9)  # SW_RESTORE
             user32.BringWindowToTop(hwnd)
             user32.SetForegroundWindow(hwnd)
-            return title
+            return pid, title
         time.sleep(0.2)
-    return ""
+    return 0, ""
 
 
 def main() -> int:
@@ -127,14 +163,63 @@ def main() -> int:
     }
     try:
         executable = resolve_mworks_executable()
-        process = subprocess.Popen([str(executable), str(model_file)], cwd=ROOT)
+        python_executable = resolve_mworks_python()
+        load_files = model_load_files(args.mode, model_file)
+        missing = [path for path in load_files if not path.is_file()]
+        if missing:
+            raise FileNotFoundError(f"model_dependency_not_found: {missing[0]}")
+        if WORKER_RESULT.exists():
+            WORKER_RESULT.unlink()
+        command = [
+            str(python_executable),
+            str(WORKER),
+            "--mworks-exe", str(executable),
+            "--model-name", model_name,
+            "--result-path", str(WORKER_RESULT),
+        ]
+        for path in load_files:
+            command.extend(["--model-file", str(path)])
+        if args.mode == "model":
+            command.append("--check-model")
+        worker_stdout = LOG.with_name("latest.worker.stdout.log")
+        worker_stderr = LOG.with_name("latest.worker.stderr.log")
+        with worker_stdout.open("w", encoding="utf-8", newline="\n") as stdout_handle, worker_stderr.open(
+            "w", encoding="utf-8", newline="\n"
+        ) as stderr_handle:
+            worker = subprocess.Popen(
+                command,
+                cwd=ROOT,
+                stdout=stdout_handle,
+                stderr=stderr_handle,
+            )
+        deadline = time.monotonic() + 120.0
+        worker_result: dict[str, object] = {}
+        while time.monotonic() < deadline:
+            if WORKER_RESULT.is_file():
+                worker_result = json.loads(WORKER_RESULT.read_text(encoding="utf-8-sig"))
+                break
+            if worker.poll() is not None:
+                break
+            time.sleep(0.2)
+        if not worker_result:
+            if worker.poll() is None:
+                worker.terminate()
+            raise RuntimeError(f"mworks_model_worker_not_ready: return_code={worker.poll()}")
         result["mworks_executable"] = str(executable)
-        result["process_id"] = process.pid
-        result["window_title"] = visible_window_title(process.pid)
-        result["opened"] = bool(result["window_title"])
+        result["mworks_python"] = str(python_executable)
+        result["dependency_files"] = [path.relative_to(ROOT).as_posix() for path in load_files]
+        result["worker_process_id"] = worker.pid
+        result["worker_return_code"] = worker.poll()
+        result["worker_result"] = worker_result
+        pid, title = visible_model_window(model_name)
+        result["process_id"] = pid
+        result["window_title"] = title
+        result["opened"] = "error" not in worker_result and bool(title)
         if not result["opened"]:
-            return_code = process.poll()
-            raise RuntimeError(f"mworks_visible_window_not_found: return_code={return_code}")
+            error = worker_result.get("error", "model_window_not_found")
+            if worker.poll() is None:
+                worker.terminate()
+            raise RuntimeError(f"mworks_model_open_failed: {error}")
     finally:
         LOG.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return 0 if result["opened"] else 1

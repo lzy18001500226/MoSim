@@ -119,11 +119,16 @@ uses the same two actions, with `打开联合仿真模型` loading the MWORKS Li
 model. Neither workspace starts, stops, or opens a result; after the model is
 open, run the simulation from MWORKS itself.
 
-The model-opening path is `Scripts/ui/open_model_studio_model.py`. It launches
-the selected `.mo` file through the installed native `mworks.exe` and requires
-a visible Sysplorer window before reporting success, then requests that window
-to be restored and brought to the foreground. A custom combination opens
-the mother Runner for its selected output boundary; a certified Profile opens
-its frozen generated wrapper. It does not call model checking, simulation,
-result, flight, or solver-lifecycle operations. It writes its last bounded operation record to
+The model-opening path is `Scripts/ui/open_model_studio_model.py`. It starts a
+dedicated Sysplorer session through the official `ModelingPy.StartSysplorer`
+API, loads the official quadrotor package and the three project packages in the
+same order used by profile certification, then opens the selected class. An
+offline model must also pass `CheckModel` before the APP reports success. A
+custom combination opens the qualified mother Runner for its selected output
+boundary; a certified Profile loads its frozen generated wrapper after the
+packages. A lightweight ModelingPy worker remains connected while that
+dedicated Sysplorer session is open so the loaded package context is retained
+for manual simulation. The selected model window is restored and brought to the foreground.
+This action does not simulate the model, open a result, start a flight task, or
+change solver lifecycle. It writes its last bounded operation record to
 `Results/ui_platform/model_studio_open_model/latest.json`.
