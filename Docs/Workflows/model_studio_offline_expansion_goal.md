@@ -498,3 +498,14 @@ MWORKS batch. The blocker record is:
 ```text
 Results/control_platform/offline_expansion_goal_20260719/P7_MWORKS_PROBE_BLOCKER_V2.json
 ```
+
+P7 static checkpoint 4 adds rerun lineage and a self-rebuilding result index.
+`--retry-batch-id` reads the source batch's requested Profiles, creates a new
+batch directory, and records `root_batch_id`, `retry_of`, and `attempt` in the
+new manifest; the source batch is never overwritten. Every terminal manifest
+also rebuilds the runtime-only `Results/control_platform/offline_batches/
+BATCH_INDEX.json` atomically, including accepted/blocked counts, latest batch,
+manifest paths, and index errors. Model Studio uses the previous batch as the
+source for a same-Profile rerun and exposes both the manifest and index paths.
+This remains batch orchestration evidence only; it does not imply a new live
+MWORKS certification or alter the real-time lane.

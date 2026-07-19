@@ -80,6 +80,7 @@ def test_preflight_blocker_writes_a_manifest(tmp_path: Path) -> None:
         reuse_generated=False,
         record_only=False,
         timeout_s=10,
+        lineage={"root_batch_id": "batch-blocked", "retry_of": None, "attempt": 1},
     )
     assert manifest["status"] == "blocked"
     record = json.loads((tmp_path / "BATCH_MANIFEST.json").read_text(encoding="utf-8"))["records"][0]
@@ -113,10 +114,107 @@ def test_run_one_failure_is_recorded_and_batch_can_be_audited(monkeypatch, tmp_p
         reuse_generated=False,
         record_only=False,
         timeout_s=10,
+        lineage={"root_batch_id": "batch-failed", "retry_of": None, "attempt": 1},
     )
     assert manifest["status"] == "blocked"
     assert manifest["records"][0]["reason_code"] == "certification_failed"
     assert manifest["records"][0]["return_code"] == 7
+
+
+def test_retry_source_and_index_preserve_lineage(tmp_path: Path) -> None:
+    batch_root = tmp_path / "batches"
+    source_dir = batch_root / "source"
+    source_dir.mkdir(parents=True)
+    batch.write_batch_manifest(
+        source_dir,
+        "source",
+        ["official_pid"],
+        [batch.blocked_record("official_pid", "certification_failed")],
+        started="2026-07-19T12:00:00+08:00",
+        reuse_generated=False,
+        record_only=False,
+        timeout_s=10,
+        lineage={"root_batch_id": "source", "retry_of": None, "attempt": 1},
+        batch_root=batch_root,
+    )
+    source = batch.load_retry_source(batch_root, "source")
+    retry_dir = batch_root / "retry"
+    retry_dir.mkdir()
+    batch.write_batch_manifest(
+        retry_dir,
+        "retry",
+        source["requested_profiles"],
+        [batch.blocked_record("official_pid", "certification_timeout")],
+        started="2026-07-19T12:01:00+08:00",
+        reuse_generated=False,
+        record_only=False,
+        timeout_s=10,
+        lineage={"root_batch_id": "source", "retry_of": "source", "attempt": 2},
+        batch_root=batch_root,
+    )
+    index = json.loads((batch_root / batch.BATCH_INDEX_NAME).read_text(encoding="utf-8"))
+    assert index["summary"] == {
+        "batch_count": 2,
+        "accepted_count": 0,
+        "blocked_count": 2,
+        "index_error_count": 0,
+    }
+    assert index["latest_batch_id"] == "retry"
+    assert index["entries"][-1]["lineage"]["attempt"] == 2
+
+
+def test_main_retry_inherits_profiles_and_writes_attempt_two(monkeypatch, tmp_path: Path) -> None:
+    batch_root = tmp_path / "batches"
+    source_dir = batch_root / "source"
+    source_dir.mkdir(parents=True)
+    batch.write_batch_manifest(
+        source_dir,
+        "source",
+        ["official_pid"],
+        [batch.blocked_record("official_pid", "certification_failed")],
+        started="2026-07-19T12:00:00+08:00",
+        reuse_generated=False,
+        record_only=False,
+        timeout_s=10,
+        lineage={"root_batch_id": "source", "retry_of": None, "attempt": 1},
+        batch_root=batch_root,
+    )
+    catalog_path = tmp_path / "catalog.json"
+    catalog_path.write_text(
+        json.dumps({"certified_profiles": [{"profile_id": "official_pid", "vehicle_count": 1}]}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(batch, "BATCH_ROOT", batch_root)
+    monkeypatch.setattr(batch, "CATALOG", catalog_path)
+    captured: list[str] = []
+
+    class Completed:
+        returncode = 7
+        stdout = ""
+        stderr = "retry_failed"
+
+    def fake_run(*args, **kwargs):
+        captured.extend(args[0])
+        return Completed()
+
+    monkeypatch.setattr(batch.subprocess, "run", fake_run)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_offline_profile_batch.py", "--retry-batch-id", "source", "--batch-id", "retry-cli"],
+    )
+    assert batch.main() == 2
+    assert "--certified-profile-id" in captured
+    manifest = json.loads((batch_root / "retry-cli" / "BATCH_MANIFEST.json").read_text(encoding="utf-8"))
+    assert manifest["requested_profiles"] == ["official_pid"]
+    assert manifest["lineage"] == {"root_batch_id": "source", "retry_of": "source", "attempt": 2}
+
+
+def test_model_studio_uses_retry_lineage_and_result_index() -> None:
+    source = (batch.ROOT / "apps" / "model_studio" / "src" / "app.jl").read_text(encoding="utf-8")
+    assert '"--retry-batch-id"' in source
+    assert "BATCH_INDEX.json" in source
+    assert "LastOfflineBatchId" in source
 
 
 @pytest.mark.parametrize(

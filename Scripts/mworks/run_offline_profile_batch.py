@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -17,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "Config" / "control_platform" / "offline_composition_catalog.json"
 CERTIFIER = ROOT / "Scripts" / "mworks" / "run_offline_profile_certification.py"
 BATCH_ROOT = ROOT / "Results" / "control_platform" / "offline_batches"
+BATCH_INDEX_NAME = "BATCH_INDEX.json"
 ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
 
 
@@ -34,6 +36,13 @@ def write_json(path: Path, value: Any) -> None:
         encoding="utf-8",
         newline="\n",
     )
+
+
+def write_json_atomic(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    write_json(temporary, value)
+    temporary.replace(path)
 
 
 def display_path(path: Path) -> str:
@@ -139,7 +148,7 @@ def run_one(
     return run_record
 
 
-def blocked_record(profile_id: str, reason_code: str) -> dict[str, Any]:
+def blocked_record(profile_id: str | None, reason_code: str) -> dict[str, Any]:
     """Represent a preflight blocker without starting MWORKS."""
     return {
         "profile_id": profile_id,
@@ -152,6 +161,79 @@ def blocked_record(profile_id: str, reason_code: str) -> dict[str, Any]:
     }
 
 
+def load_retry_source(batch_root: Path, retry_batch_id: str) -> dict[str, Any]:
+    if not ID_PATTERN.fullmatch(retry_batch_id):
+        raise ValueError(f"invalid_retry_batch_id:{retry_batch_id}")
+    source_path = batch_root / retry_batch_id / "BATCH_MANIFEST.json"
+    if not source_path.is_file():
+        raise ValueError(f"retry_batch_not_found:{retry_batch_id}")
+    source = read_json(source_path)
+    if source.get("schema") != "mosim.model_studio.offline_batch.v1":
+        raise ValueError(f"retry_batch_schema_unsupported:{retry_batch_id}")
+    profiles = source.get("requested_profiles")
+    if not isinstance(profiles, list) or not profiles or not all(isinstance(item, str) for item in profiles):
+        raise ValueError(f"retry_batch_profiles_invalid:{retry_batch_id}")
+    return source
+
+
+def rebuild_batch_index(batch_root: Path = BATCH_ROOT) -> dict[str, Any]:
+    entries: list[dict[str, Any]] = []
+    errors: list[dict[str, str]] = []
+    for manifest_path in sorted(batch_root.glob("*/BATCH_MANIFEST.json")):
+        try:
+            manifest = read_json(manifest_path)
+            batch_id = str(manifest["batch_id"])
+            status = str(manifest["status"])
+            if manifest.get("schema") != "mosim.model_studio.offline_batch.v1":
+                raise ValueError("unsupported_schema")
+            if status not in {"accepted", "blocked"}:
+                raise ValueError("invalid_status")
+            entries.append(
+                {
+                    "batch_id": batch_id,
+                    "status": status,
+                    "started_at": manifest.get("started_at"),
+                    "completed_at": manifest.get("completed_at"),
+                    "requested_profiles": manifest.get("requested_profiles", []),
+                    "completed_profiles": manifest.get("completed_profiles", []),
+                    "lineage": manifest.get("lineage", {}),
+                    "manifest": display_path(manifest_path),
+                }
+            )
+        except (KeyError, OSError, json.JSONDecodeError, ValueError) as error:
+            errors.append({"manifest": display_path(manifest_path), "reason_code": str(error)})
+    entries.sort(
+        key=lambda item: (
+            str(item.get("completed_at") or ""),
+            next(
+                (
+                    path.stat().st_mtime_ns
+                    for path in batch_root.glob(f"{item['batch_id']}/BATCH_MANIFEST.json")
+                ),
+                0,
+            ),
+            item["batch_id"],
+        )
+    )
+    accepted_count = sum(item["status"] == "accepted" for item in entries)
+    blocked_count = sum(item["status"] == "blocked" for item in entries)
+    index = {
+        "schema": "mosim.model_studio.offline_batch_index.v1",
+        "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+        "latest_batch_id": entries[-1]["batch_id"] if entries else None,
+        "summary": {
+            "batch_count": len(entries),
+            "accepted_count": accepted_count,
+            "blocked_count": blocked_count,
+            "index_error_count": len(errors),
+        },
+        "entries": entries,
+        "index_errors": errors,
+    }
+    write_json_atomic(batch_root / BATCH_INDEX_NAME, index)
+    return index
+
+
 def write_batch_manifest(
     output_dir: Path,
     batch_id: str,
@@ -162,6 +244,8 @@ def write_batch_manifest(
     reuse_generated: bool,
     record_only: bool,
     timeout_s: int,
+    lineage: dict[str, Any],
+    batch_root: Path | None = None,
 ) -> dict[str, Any]:
     accepted = len(records) == len(requested_profiles) and all(
         item["status"] == "accepted" for item in records
@@ -175,6 +259,7 @@ def write_batch_manifest(
         "requested_profiles": requested_profiles,
         "completed_profiles": [item["profile_id"] for item in records if item.get("run_id")],
         "records": records,
+        "lineage": lineage,
         "execution": {
             "reuse_generated": reuse_generated,
             "record_only": record_only,
@@ -184,12 +269,15 @@ def write_batch_manifest(
         "claim_boundary": "Batch orchestration and run-local offline MWORKS certification only; no PX4, Gazebo, ROS1, online co-simulation, or flight acceptance.",
     }
     write_json(output_dir / "BATCH_MANIFEST.json", manifest)
+    if batch_root is not None:
+        rebuild_batch_index(batch_root)
     return manifest
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile-id", action="append", dest="profile_ids")
+    parser.add_argument("--retry-batch-id")
     parser.add_argument("--batch-id", required=True)
     parser.add_argument("--reuse-generated", action="store_true")
     parser.add_argument("--record-only", action="store_true")
@@ -197,9 +285,9 @@ def main() -> int:
     args = parser.parse_args()
     if not ID_PATTERN.fullmatch(args.batch_id):
         parser.error("invalid_batch_id")
-    if not args.profile_ids:
-        parser.error("at_least_one_profile_id_required")
-    if len(set(args.profile_ids)) != len(args.profile_ids):
+    if bool(args.profile_ids) == bool(args.retry_batch_id):
+        parser.error("exactly_one_profile_source_required")
+    if args.profile_ids and len(set(args.profile_ids)) != len(args.profile_ids):
         parser.error("duplicate_profile_id")
 
     output_dir = BATCH_ROOT / args.batch_id
@@ -209,21 +297,38 @@ def main() -> int:
     started = datetime.now().astimezone().isoformat(timespec="seconds")
     records: list[dict[str, Any]] = []
     selected: list[tuple[str, dict[str, Any]]] = []
-    profile_id = args.profile_ids[0]
+    requested_profiles = list(args.profile_ids or [])
+    lineage: dict[str, Any] = {
+        "root_batch_id": args.batch_id,
+        "retry_of": None,
+        "attempt": 1,
+    }
+    profile_id: str | None = requested_profiles[0] if requested_profiles else None
     try:
+        if args.retry_batch_id:
+            source = load_retry_source(BATCH_ROOT, args.retry_batch_id)
+            requested_profiles = list(source["requested_profiles"])
+            source_lineage = source.get("lineage", {})
+            lineage = {
+                "root_batch_id": source_lineage.get("root_batch_id", args.retry_batch_id),
+                "retry_of": args.retry_batch_id,
+                "attempt": int(source_lineage.get("attempt", 1)) + 1,
+            }
         catalog = read_json(CATALOG)
-        for profile_id in args.profile_ids:
+        for profile_id in requested_profiles:
             selected.append((profile_id, resolve_profile(catalog, profile_id)))
     except (OSError, json.JSONDecodeError, ValueError) as error:
         manifest = write_batch_manifest(
             output_dir,
             args.batch_id,
-            args.profile_ids,
+            requested_profiles,
             [blocked_record(profile_id, str(error))],
             started=started,
             reuse_generated=args.reuse_generated,
             record_only=args.record_only,
             timeout_s=args.timeout_s,
+            lineage=lineage,
+            batch_root=BATCH_ROOT,
         )
         print(json.dumps(manifest, ensure_ascii=False, indent=2))
         return 2
@@ -245,12 +350,14 @@ def main() -> int:
     manifest = write_batch_manifest(
         output_dir,
         args.batch_id,
-        args.profile_ids,
+        requested_profiles,
         records,
         started=started,
         reuse_generated=args.reuse_generated,
         record_only=args.record_only,
         timeout_s=args.timeout_s,
+        lineage=lineage,
+        batch_root=BATCH_ROOT,
     )
     print(json.dumps(manifest, ensure_ascii=False, indent=2))
     return 0 if manifest["status"] == "accepted" else 2

@@ -13,6 +13,7 @@ const WAIT_COLOR = [0.98, 0.93, 0.80]
 const MUTED_COLOR = [0.93, 0.94, 0.94]
 const PROJECT_ROOT = normpath(joinpath(@__DIR__, "..", ".."))
 const OFFLINE_BATCH_RUNNER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "run_offline_profile_batch.py")
+const OFFLINE_BATCH_INDEX = joinpath(PROJECT_ROOT, "Results", "control_platform", "offline_batches", "BATCH_INDEX.json")
 
 const OFFLINE_PROFILE_ORDER = [
     "Official PID 爬升 [已认证]",
@@ -103,6 +104,8 @@ const OFFLINE_PROFILES = Dict(
     Appfile::String = @__FILE__
     CurrentMode::String = "live"
     LastOfflineBatchManifest::String = ""
+    LastOfflineBatchId::String = ""
+    LastOfflineProfile::String = ""
 
     function refresh_live_capability(app, action="status")
         response = LiveCosimBackend.request(
@@ -360,15 +363,20 @@ const OFFLINE_PROFILES = Dict(
             return
         end
         slug = lowercase(replace(profile_id, r"[^A-Za-z0-9]+" => "-"))
-        batch_id = "app-" * slug * "-" * string(round(Int, time()))
-        command = Cmd([
+        batch_id = "app-" * slug * "-" * string(round(Int, time() * 1000))
+        command_args = [
             "python",
             OFFLINE_BATCH_RUNNER,
-            "--profile-id",
-            profile_id,
             "--batch-id",
             batch_id,
-        ]; dir=PROJECT_ROOT)
+        ]
+        retry_batch_id = app.LastOfflineProfile == profile_id ? app.LastOfflineBatchId : ""
+        if isempty(retry_batch_id)
+            append!(command_args, ["--profile-id", profile_id])
+        else
+            append!(command_args, ["--retry-batch-id", retry_batch_id])
+        end
+        command = Cmd(command_args; dir=PROJECT_ROOT)
         app.MilButton.Enable = false
         app.ResultButton.Enable = false
         app.LastOfflineBatchManifest = joinpath(
@@ -392,6 +400,10 @@ const OFFLINE_PROFILES = Dict(
                 app.StatusLabel.Text = "离线批次阻断：" * sprint(showerror, error)
             end
         finally
+            if isfile(app.LastOfflineBatchManifest)
+                app.LastOfflineBatchId = batch_id
+                app.LastOfflineProfile = profile_id
+            end
             app.MilButton.Enable = true
         end
     end
@@ -431,7 +443,7 @@ const OFFLINE_PROFILES = Dict(
     function CodegenPressed(app, event); app.ReviewAction("生成 C 代码"); end
     function ResultPressed(app, event)
         if app.CurrentMode == "offline" && !isempty(app.LastOfflineBatchManifest)
-            app.StatusLabel.Text = "离线批次记录：" * app.LastOfflineBatchManifest
+            app.StatusLabel.Text = "离线批次记录：" * app.LastOfflineBatchManifest * "\n结果索引：" * OFFLINE_BATCH_INDEX
         else
             app.ReviewAction("打开结果")
         end
