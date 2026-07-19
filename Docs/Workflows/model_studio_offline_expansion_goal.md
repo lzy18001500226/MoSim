@@ -509,3 +509,19 @@ manifest paths, and index errors. Model Studio uses the previous batch as the
 source for a same-Profile rerun and exposes both the manifest and index paths.
 This remains batch orchestration evidence only; it does not imply a new live
 MWORKS certification or alter the real-time lane.
+
+P7 live checkpoint 3 adds a second real batch-certified single-UAV Profile:
+`offline_improved_pid_climb_v1`. The batch completed in 92.927 seconds and
+recorded 5001 samples, current `Result.msr`, strict metrics, result/plot/model/
+animation-window creation, and dedicated-session shutdown. The canonical
+checkpoint is:
+
+```text
+Results/control_platform/offline_expansion_goal_20260719/P7_IMPROVED_PID_BATCH_LIVE_ACCEPTANCE.json
+```
+
+The accepted run has `position_rmse_m=0.17639`, `max_position_error_m=0.72942`,
+`max_tilt_rad=0.20377`, and 17 reported constraint samples under the existing
+metric contract. This is current offline MWORKS evidence for this Profile only;
+it does not promote all Certified Profiles or claim PX4, Gazebo, ROS1, online
+co-simulation, code-generation, or flight acceptance.
