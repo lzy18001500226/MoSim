@@ -396,8 +396,15 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "experimentProfileId" in bridge_header
     assert "selectedControllerId" in bridge_header
     assert "selectedVehicleCount" in bridge_header
-    assert "助手将读取当前Profile" in qml
-    assert "任何飞行操作仍需人工确认" in qml
+    assert "受控任务助手把自然语言转换为已登记的任务Profile" in qml
+    assert "启动、解锁和飞行仍需在任务页人工确认" in qml
+    assert "function agentProposalReady()" in qml
+    assert "function confirmAgentProposal()" in qml
+    assert 'text: "生成受控任务建议"' in qml
+    assert 'text: "采用建议并验证配置"' in qml
+    assert "mosimOrchestrator.proposeOperatorTask(agentPrompt.text)" in qml
+    assert "proposal.may_start_flight === false" in qml
+    assert "Codex诊断能力尚未接入" in qml
     assert "factory_l2_fuel_fixed64_exploration_v1.json" in qml
     assert 'label: "FUEL单机自主探索"' in qml
     assert 'text: "请求安全停止"' in qml

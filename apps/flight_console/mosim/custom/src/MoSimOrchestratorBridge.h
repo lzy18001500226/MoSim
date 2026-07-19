@@ -38,6 +38,7 @@ class MoSimOrchestratorBridge final : public QObject
     Q_PROPERTY(QVariantMap operatorMap READ operatorMap CONSTANT)
     Q_PROPERTY(QVariantMap runManifest READ runManifest NOTIFY responseChanged)
     Q_PROPERTY(QVariantMap runtimeTelemetry READ runtimeTelemetry NOTIFY responseChanged)
+    Q_PROPERTY(QVariantMap agentProposal READ agentProposal NOTIFY responseChanged)
     Q_PROPERTY(QString lastResponse READ lastResponse NOTIFY responseChanged)
 
 public:
@@ -71,6 +72,7 @@ public:
     QVariantMap operatorMap() const { return _operatorMap; }
     QVariantMap runManifest() const { return _runManifest; }
     QVariantMap runtimeTelemetry() const { return _runtimeTelemetry; }
+    QVariantMap agentProposal() const { return _agentProposal; }
     QString lastResponse() const { return _lastResponse; }
 
     Q_INVOKABLE void prepareRun(const QString &profilePath, const QString &controllerId, int vehicleCount,
@@ -92,6 +94,8 @@ public:
     Q_INVOKABLE void attachDisplays();
     Q_INVOKABLE void detachDisplays();
     Q_INVOKABLE void refreshControllers();
+    Q_INVOKABLE void proposeOperatorTask(const QString &prompt);
+    Q_INVOKABLE void clearAgentProposal();
     Q_INVOKABLE void closeAllRviz();
     Q_INVOKABLE void startUeRecording();
     Q_INVOKABLE void stopUeRecording();
@@ -159,6 +163,7 @@ private:
     QVariantMap _operatorMap;
     QVariantMap _runManifest;
     QVariantMap _runtimeTelemetry;
+    QVariantMap _agentProposal;
     int _unrealDiscoveryAttempt = 0;
     int _unrealContainerReadyAttempt = 0;
     bool _unrealPresentationSuppressed = false;

@@ -161,6 +161,10 @@ Item {
             "display_attached": "显示窗口已连接",
             "display_detached": "显示窗口已分离",
             "rviz_sessions_closed": "RViz窗口已关闭"
+            ,"agent_proposal_ready": "任务建议已生成，等待人工确认"
+            ,"agent_prompt_empty": "请输入任务需求"
+            ,"agent_prompt_too_long": "任务描述过长，请简化后重试"
+            ,"agent_intent_not_recognized": "未识别任务，请明确填写定点、8字、FUEL或三机编队"
         }
         return labels[reason] || reason
     }
@@ -646,6 +650,36 @@ Item {
     function taskSelectionCompatible() {
         return controllerCompatibleWithTask(controllerBox.currentValue)
                 && vehicleCountCompatibleWithTask(vehicleCounts[vehicleBox.currentIndex].value)
+    }
+
+    function profileIndex(profileId) {
+        for (var index = 0; index < profiles.length; ++index) {
+            if (profiles[index].id === profileId)
+                return index
+        }
+        return -1
+    }
+
+    function agentProposalReady() {
+        var proposal = mosimOrchestrator.agentProposal || ({})
+        return proposal.requires_user_confirmation === true
+                && proposal.may_start_flight === false
+                && profileIndex(String(proposal.profile_id || "")) >= 0
+    }
+
+    function confirmAgentProposal() {
+        if (!agentProposalReady() || !flightConfigurationEditable || mosimOrchestrator.busy)
+            return
+        var proposal = mosimOrchestrator.agentProposal
+        var index = profileIndex(String(proposal.profile_id))
+        if (index < 0 || !profiles[index].enabled)
+            return
+        profileBox.currentIndex = index
+        syncProfileSelection()
+        mosimOrchestrator.clearAgentProposal()
+        mosimOrchestrator.prepareRun(String(proposal.profile_path), String(proposal.controller_id),
+                                     Number(proposal.vehicle_count), 0,
+                                     proposal.manual_control === true)
     }
 
     function syncProfileSelection() {
@@ -1787,27 +1821,44 @@ Item {
                         QGCLabel {
                             Layout.fillWidth: true
                             wrapMode: Text.Wrap
-                            text: "助手将读取当前Profile、运行编号、告警和日志，生成诊断或仿真建议。任何飞行操作仍需人工确认。"
+                            text: "受控任务助手把自然语言转换为已登记的任务Profile。采用建议只会验证并冻结配置；启动、解锁和飞行仍需在任务页人工确认。"
                         }
                         TextArea {
                             id: agentPrompt
                             Layout.fillWidth: true
                             Layout.preferredHeight: 110
-                            placeholderText: "例如：检查当前FUEL任务为什么停止，并给出安全复跑建议"
-                            enabled: false
+                            placeholderText: "例如：运行FUEL单机自主探索，或运行三机固定编队避障"
+                            enabled: flightConfigurationEditable && !mosimOrchestrator.busy
                         }
                         QGCButton {
-                            text: "提交给本机Codex（待接入）"
+                            text: "生成受控任务建议"
                             Layout.fillWidth: true
-                            enabled: false
-                            ToolTip.visible: hovered
-                            ToolTip.text: "Agent最小闭环将在视频主流程完成后接入"
+                            enabled: agentPrompt.enabled && agentPrompt.text.trim().length > 0
+                            onClicked: mosimOrchestrator.proposeOperatorTask(agentPrompt.text)
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            wrapMode: Text.Wrap
+                            visible: agentProposalReady()
+                            color: qgcPal.colorGreen
+                            text: "建议任务：" + String(mosimOrchestrator.agentProposal.label || "-")
+                                  + "\n控制器：" + String(mosimOrchestrator.agentProposal.controller_id || "-")
+                                  + "；飞机数量：" + String(mosimOrchestrator.agentProposal.vehicle_count || "-")
+                                  + "\n安全边界：助手不能启动或控制飞机。"
+                        }
+                        QGCButton {
+                            text: "采用建议并验证配置"
+                            Layout.fillWidth: true
+                            visible: agentProposalReady()
+                            enabled: visible && flightConfigurationEditable && !mosimOrchestrator.busy
+                                     && profiles[profileIndex(String(mosimOrchestrator.agentProposal.profile_id || ""))].enabled
+                            onClicked: confirmAgentProposal()
                         }
                         QGCLabel {
                             Layout.fillWidth: true
                             wrapMode: Text.Wrap
                             color: qgcPal.colorOrange
-                            text: "当前状态：界面已预留，后端未启用。"
+                            text: "当前为本机受控意图路由器；Codex诊断能力尚未接入，不作为飞行控制权所有者。"
                         }
                     }
                 }

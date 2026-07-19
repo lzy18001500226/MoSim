@@ -580,6 +580,27 @@ def test_controller_catalog_is_dynamic_and_explains_disabled_entries(tmp_path: P
     assert response["registry_hash"]
 
 
+def test_agent_proposes_registered_task_without_flight_authority(tmp_path: Path) -> None:
+    orchestrator = MoSimOrchestrator(run_root=tmp_path)
+    response = orchestrator.propose_operator_task(request_id="agent", prompt="请运行三机编队避障")
+    assert response["accepted"] is True
+    proposal = response["proposal"]
+    assert proposal["profile_id"] == "factory_l2_three_uav_swarm_formation_v1"
+    assert proposal["controller_id"] == "px4ctrl"
+    assert proposal["vehicle_count"] == 3
+    assert proposal["requires_user_confirmation"] is True
+    assert proposal["may_start_flight"] is False
+    assert proposal["next_action"] == "confirm_then_prepare_run"
+
+
+def test_agent_rejects_unknown_or_empty_intent(tmp_path: Path) -> None:
+    orchestrator = MoSimOrchestrator(run_root=tmp_path)
+    empty = orchestrator.propose_operator_task(request_id="empty", prompt="  ")
+    unknown = orchestrator.propose_operator_task(request_id="unknown", prompt="帮我处理一下")
+    assert empty["reason_code"] == "agent_prompt_empty"
+    assert unknown["reason_code"] == "agent_intent_not_recognized"
+
+
 def test_operation_progress_reaches_runtime_ready(tmp_path: Path) -> None:
     orchestrator = MoSimOrchestrator(run_root=tmp_path, backend=StartingRuntimeBackend())
     prepared = orchestrator.prepare_run(

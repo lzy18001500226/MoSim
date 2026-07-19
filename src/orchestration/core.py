@@ -42,6 +42,7 @@ ORCHESTRATOR_COMMANDS = frozenset(
         "generate_code",
         "get_model_gate_state",
         "list_controllers",
+        "propose_operator_task",
         "get_operation_progress",
         "close_all_rviz",
         "start_ue_recording",
@@ -165,6 +166,87 @@ class MoSimOrchestrator:
             controllers=controllers,
             registry_hash=_canonical_hash(registry),
         )
+
+    def propose_operator_task(self, *, request_id: str, prompt: str) -> dict[str, Any]:
+        text = str(prompt).strip()
+        if not text:
+            return self._response(request_id, False, "agent_prompt_empty")
+        if len(text) > 1000:
+            return self._response(request_id, False, "agent_prompt_too_long")
+
+        normalized = text.casefold()
+        tasks = (
+            {
+                "profile_id": "cascade_pid_figure8_generated_c_v1",
+                "profile_path": "Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json",
+                "controller_id": "cascade_pid",
+                "vehicle_count": 1,
+                "label": "生成代码控制器8字飞行",
+                "keywords": ("生成代码", "generated c", "codegen"),
+                "manual_control": False,
+            },
+            {
+                "profile_id": "factory_l2_fuel_fixed64_exploration_v1",
+                "profile_path": "Config/profiles/experiments/factory_l2_fuel_fixed64_exploration_v1.json",
+                "controller_id": "px4ctrl",
+                "vehicle_count": 1,
+                "label": "FUEL单机自主探索",
+                "keywords": ("fuel", "自主探索", "探索"),
+                "manual_control": False,
+            },
+            {
+                "profile_id": "factory_l2_three_uav_swarm_formation_v1",
+                "profile_path": "Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json",
+                "controller_id": "px4ctrl",
+                "vehicle_count": 3,
+                "label": "三机固定编队避障",
+                "keywords": ("三机", "编队", "formation", "swarm"),
+                "manual_control": False,
+            },
+            {
+                "profile_id": "px4ctrl_figure8_baseline_v1",
+                "profile_path": "Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json",
+                "controller_id": "px4ctrl",
+                "vehicle_count": 1,
+                "label": "单机8字飞行",
+                "keywords": ("8字", "八字", "figure eight", "figure8"),
+                "manual_control": False,
+            },
+            {
+                "profile_id": "px4ctrl_ground_standby_v1",
+                "profile_path": "Config/profiles/experiments/px4ctrl_ground_standby_v1.json",
+                "controller_id": "px4ctrl",
+                "vehicle_count": 1,
+                "label": "单机定点操纵",
+                "keywords": ("定点", "手动", "wasd", "悬停"),
+                "manual_control": True,
+            },
+        )
+        task = next(
+            (candidate for candidate in tasks if any(keyword in normalized for keyword in candidate["keywords"])),
+            None,
+        )
+        if task is None:
+            return self._response(
+                request_id,
+                False,
+                "agent_intent_not_recognized",
+                supported_intents=[candidate["label"] for candidate in tasks],
+            )
+
+        profile_path = PROJECT_ROOT / str(task["profile_path"])
+        if not profile_path.is_file():
+            return self._response(request_id, False, "agent_profile_missing", profile_path=str(task["profile_path"]))
+        proposal = {key: value for key, value in task.items() if key != "keywords"}
+        proposal.update(
+            {
+                "requires_user_confirmation": True,
+                "may_start_flight": False,
+                "next_action": "confirm_then_prepare_run",
+                "source": "bounded_local_intent_router_v1",
+            }
+        )
+        return self._response(request_id, True, "agent_proposal_ready", proposal=proposal)
 
     def _operation_path(self, run_id: str, operation_id: str) -> Path:
         return self.run_root / run_id / "operations" / f"{operation_id}.json"

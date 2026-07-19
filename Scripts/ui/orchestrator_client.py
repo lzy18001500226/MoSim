@@ -70,6 +70,11 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         payload["request_id"] = args.request_id
     if args.action == "list_controllers":
         return payload
+    if args.action == "propose_operator_task":
+        if not args.prompt:
+            raise ValueError("propose_operator_task requires a prompt")
+        payload["prompt"] = args.prompt
+        return payload
     if args.action == "preflight_connection":
         if not args.profile_path or not args.controller_id or args.vehicle_count is None:
             raise ValueError("preflight_connection requires profile, controller, and vehicle count")
@@ -173,6 +178,7 @@ def main() -> int:
             "generate_code",
             "get_model_gate_state",
             "list_controllers",
+            "propose_operator_task",
             "get_operation_progress",
             "close_all_rviz",
             "start_ue_recording",
@@ -180,6 +186,7 @@ def main() -> int:
         ),
     )
     parser.add_argument("--profile-path")
+    parser.add_argument("--prompt")
     parser.add_argument("--controller-id")
     parser.add_argument("--vehicle-count", type=int)
     parser.add_argument("--wind-speed-mps", type=float, default=0.0)

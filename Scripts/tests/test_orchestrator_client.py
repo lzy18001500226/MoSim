@@ -11,6 +11,7 @@ def _args(**overrides):
         "action": "list_controllers",
         "request_id": None,
         "profile_path": None,
+        "prompt": None,
         "controller_id": None,
         "vehicle_count": None,
         "wind_speed_mps": 0.0,
@@ -50,6 +51,18 @@ def test_client_builds_catalog_and_operation_requests_without_implicit_fields(tm
     )
     assert operation["run_id"] == "run-test"
     assert operation["operation_id"] == "op-test"
+
+
+def test_client_builds_bounded_operator_task_proposal() -> None:
+    payload = orchestrator_client.build_payload(
+        _args(action="propose_operator_task", request_id="agent-fixed", prompt="运行三机编队避障")
+    )
+    assert payload == {
+        "schema": "mosim.orchestrator.request.v1",
+        "action": "propose_operator_task",
+        "request_id": "agent-fixed",
+        "prompt": "运行三机编队避障",
+    }
 
 
 def test_connection_preflight_can_defer_ros_master_for_orchestrator_cold_start() -> None:

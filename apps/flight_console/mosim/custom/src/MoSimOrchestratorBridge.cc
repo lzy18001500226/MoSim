@@ -449,6 +449,16 @@ void MoSimOrchestratorBridge::detachDisplays()
 }
 
 void MoSimOrchestratorBridge::refreshControllers() { invoke({QStringLiteral("list_controllers")}); }
+void MoSimOrchestratorBridge::proposeOperatorTask(const QString &prompt)
+{
+    _agentProposal.clear();
+    invoke({QStringLiteral("propose_operator_task"), QStringLiteral("--prompt"), prompt});
+}
+void MoSimOrchestratorBridge::clearAgentProposal()
+{
+    _agentProposal.clear();
+    emit responseChanged();
+}
 void MoSimOrchestratorBridge::closeAllRviz() { invokeRunAction(QStringLiteral("close_all_rviz")); }
 void MoSimOrchestratorBridge::startUeRecording() { invokeRunAction(QStringLiteral("start_ue_recording")); }
 void MoSimOrchestratorBridge::stopUeRecording() { invokeRunAction(QStringLiteral("stop_ue_recording")); }
@@ -818,6 +828,11 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
     if (!controllers.isEmpty() || _pendingAction == QStringLiteral("list_controllers")) {
         _controllers = controllers.toVariantList();
         _registryHash = response.value(QStringLiteral("registry_hash")).toString();
+    }
+    if (completedAction == QStringLiteral("propose_operator_task")) {
+        _agentProposal = _accepted
+            ? response.value(QStringLiteral("proposal")).toObject().toVariantMap()
+            : QVariantMap{};
     }
     const QJsonObject operation = response.value(QStringLiteral("operation")).toObject();
     if (!operation.isEmpty()) {
