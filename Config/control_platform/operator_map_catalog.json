@@ -1,0 +1,29 @@
+{
+  "schema": "mosim.operator_map_catalog.v1",
+  "maps": [
+    {
+      "map_id": "factory_l2",
+      "display_name": "Factory L2",
+      "enabled": true,
+      "resource_url": "qrc:/Custom/maps/factory_l2/v1/floorplan.png",
+      "world_frame": "mworks_world",
+      "world_bounds_m": {
+        "min_x_m": -608.09999,
+        "max_x_m": 587.89997,
+        "min_y_m": -284.65,
+        "max_y_m": 246.35
+      },
+      "simulation_geodetic_anchor": {
+        "latitude_deg": 47.397742,
+        "longitude_deg": 8.545594,
+        "altitude_m": 488.0,
+        "status": "display_anchor_pending_runtime_round_trip_gate"
+      },
+      "default_zoom_level": 16.0,
+      "mission_publication": {
+        "status": "blocked_until_runtime_round_trip_gate",
+        "required_home_tolerance_m": 2.0
+      }
+    }
+  ]
+}

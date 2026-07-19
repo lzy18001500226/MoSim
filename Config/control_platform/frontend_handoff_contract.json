@@ -12,10 +12,12 @@
     "active_run", "lifecycle_state", "telemetry_channels", "event_timeline"
   ],
   "commands": [
-    "validate_experiment_profile", "prepare_run", "start_run", "stop_run", "reset_run",
+    "validate_experiment_profile", "prepare_run", "start_run", "request_safe_stop",
+    "stop_run", "reset_run",
     "apply_injection", "restore_injection", "prepare_display_session", "attach_display",
     "detach_display", "capture_display_evidence", "get_run_state", "get_telemetry",
-    "get_result_packet", "open_model_context"
+    "get_result_packet", "open_model_context", "run_mil", "generate_code",
+    "get_model_gate_state", "close_all_rviz", "start_ue_recording", "stop_ue_recording"
   ],
   "lifecycle_states": [
     "idle", "validating", "ready", "starting", "running", "stopping",

@@ -1,0 +1,36 @@
+{
+  "experiment_profile": {
+    "id": "factory_l2_fuel_fixed64_exploration_v1",
+    "version": 1,
+    "description": "Accepted Factory L2 fixed-64 single-UAV FUEL autonomous exploration profile",
+    "goal": "FUEL fixed-64",
+    "scenario_profile": "factory_l2_fuel_fixed64_exploration_v1",
+    "scenario_path": "Config/scenarios/ui/factory_l2_fuel_fixed64_exploration.json",
+    "vehicle_count": 1,
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "fastlio_px4_ekf_fused_v1",
+    "height_source_profile": "fastlio_height_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "factory_l2_fuel_fixed64_exploration_v1",
+    "planner_profile": "fuel_single_exploration",
+    "controller_profile": "px4ctrl_attitude_thrust_v1",
+    "augmentation_profile": "none",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "factory_l2_rviz_ue_v1",
+    "evaluation_profile": "fastlio_px4_ekf_ab_metrics_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_fastlio_px4_ekf_runtime_export_v1",
+    "evidence_profile": "standard_run_packet_v1",
+    "accepted_runtime_evidence": "Results/sunray_ros1/factory_l2_fuel_frame_unified_selector_r83_300s_20260714_060951",
+    "forbidden_claims": [
+      "complete 175.66 x 64 m Factory coverage",
+      "multi-UAV autonomous exploration",
+      "depth-camera planner input"
+    ]
+  }
+}

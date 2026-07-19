@@ -1,0 +1,41 @@
+{
+  "experiment_profile": {
+    "id": "mworks_live_official_pid_hover_200hz_v1",
+    "version": 1,
+    "profile_status": "active",
+    "description": "Single-UAV Official PID MWORKS Live takeoff-hover-land profile released for RT1 validation after the 200 Hz v3 RT0 capability gate",
+    "goal": "Goal 1",
+    "scenario_profile": "sunray150_empty_lab_v1",
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "px4_mavros_fused_v1",
+    "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_200hz_candidate_v2",
+    "trajectory_profile": "takeoff_hover_land_200hz_v1",
+    "planner_profile": "none",
+    "controller_profile": "official_pid_attitude_thrust_live_200hz_v1",
+    "augmentation_profile": "none",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "rviz_gazebo_v1",
+    "evaluation_profile": "tracking_metrics_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_px4ctrl_runtime_export_v1",
+    "evidence_profile": "standard_run_packet_v1",
+    "controller_backend": "mworks_live",
+    "live_contract_id": "mworks_live_attitude_thrust_v3_candidate_200hz",
+    "attitude_inner_owner": "px4_builtin_attitude_rate_v1",
+    "capability_gate": "RT0",
+    "capability_status": "rt0_validated",
+    "rt0_evidence": "Results/control_platform/mworks_live_full_loop_20260719/rt0_200hz_v3_run6/rt0_invocation.json",
+    "forbidden_claims": [
+      "MWORKS Live 200 Hz flight accepted before RT1-RT3",
+      "5 ms hard end-to-end deadline",
+      "generated-C runtime accepted by this profile",
+      "autonomous exploration"
+    ]
+  }
+}

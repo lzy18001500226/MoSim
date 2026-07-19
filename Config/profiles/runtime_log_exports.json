@@ -4,6 +4,7 @@
     "px4ctrl_runtime_log_export_v1": {
       "description": "Runtime artifact collection contract for px4ctrl single-UAV baseline runs.",
       "compatible_experiment_ids": [
+        "px4ctrl_ground_standby_v1",
         "px4ctrl_takeoff_hover_land_v1",
         "px4ctrl_figure8_baseline_v1",
         "cascade_pid_figure8_generated_c_v1",
@@ -33,7 +34,12 @@
         "g96_dfbc_smooth_robust_takeoff_hover_land_v1",
         "g96_dfbc_smooth_robust_figure8_v1",
         "g96_dfbc_smooth_robust_bodyrate_takeoff_hover_land_v1",
-        "g96_dfbc_smooth_robust_bodyrate_figure8_v1"
+        "g96_dfbc_smooth_robust_bodyrate_figure8_v1",
+        "p7_ftc_rotor1_loss35_takeoff_hover_land_v1",
+        "factory_l2_three_uav_swarm_formation_v1",
+        "mworks_live_official_pid_hover_50hz_v2",
+        "mworks_live_official_pid_hover_200hz_v1",
+        "mworks_live_official_pid_awff_hover_50hz_v2"
       ],
       "tracking_source_profile": "px4_mavros_fused_reference_state_csv_v1",
       "tracking_reference_slot": "reference_csv",
@@ -115,7 +121,8 @@
     "fastlio_px4_ekf_runtime_log_export_v1": {
       "description": "Runtime artifact collection contract for FAST-LIO through PX4 EKF fused-state runs.",
       "compatible_experiment_ids": [
-        "fastlio_px4_ekf_ab_figure8_v1"
+        "fastlio_px4_ekf_ab_figure8_v1",
+        "factory_l2_fuel_fixed64_exploration_v1"
       ],
       "tracking_source_profile": "fastlio_px4_ekf_fused_reference_state_csv_v1",
       "tracking_reference_slot": "reference_csv",

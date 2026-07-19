@@ -1,0 +1,36 @@
+{
+  "schema": "mosim.mworks_live_rt1_transport.v1",
+  "transport_id": "mworks_live_rt1_udp_fixed_v1",
+  "live_contract_id": "mworks_live_attitude_thrust_v1",
+  "status": "source_ready_shadow_pending",
+  "protocol_version": 1,
+  "transport": "udp_fixed_little_endian",
+  "default_mworks_host": "127.0.0.1",
+  "default_mworks_port": 49020,
+  "nominal_rate_hz": 50.0,
+  "clock_domains": {
+    "state_source_stamp_ns": "ROS source clock; never subtracted from a Windows monotonic timestamp",
+    "state_receive_monotonic_ns": "ROS1 adapter monotonic clock and echoed by the MWORKS command as command source_stamp_ns",
+    "command_produced_monotonic_ns": "Windows QueryPerformanceCounter domain; diagnostic only",
+    "command_valid_until_ns": "ROS1 adapter monotonic domain, computed from echoed state_receive_monotonic_ns plus the frozen 50 ms validity budget",
+    "command_age_formula": "adapter_now_monotonic_ns - command_source_stamp_ns"
+  },
+  "topics": {
+    "odometry": "/uav1/mavros/local_position/odom",
+    "imu": "/uav1/mavros/imu/data",
+    "flight_state": "/uav1/mavros/state",
+    "reference": "/position_cmd",
+    "px4ctrl_candidate": "/mosim/mworks_live/px4ctrl_attitude_candidate",
+    "mworks_candidate": "/mosim/mworks_live/mworks_attitude_candidate",
+    "final_attitude_target": "/uav1/mavros/setpoint_raw/attitude",
+    "owner_state": "/mosim/mworks_live/control_owner_state"
+  },
+  "authority_gate": {
+    "shadow_default": true,
+    "active_requires_explicit_flag": true,
+    "active_requires_px4ctrl_output_remap": true,
+    "airborne_backend_switch_allowed": false,
+    "fallback_source": "px4ctrl_candidate",
+    "only_final_publisher": "ros1_rt1_adapter"
+  }
+}

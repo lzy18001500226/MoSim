@@ -18,6 +18,12 @@
       "has_geofence": true,
       "scenario_path": "Config/scenarios/ui/factory_l2_single_figure8.json"
     },
+    "factory_l2_fuel_fixed64_exploration_v1": {
+      "vehicle_count": 1,
+      "map_type": "factory_unknown_obstacles",
+      "has_geofence": true,
+      "scenario_path": "Config/scenarios/ui/factory_l2_fuel_fixed64_exploration.json"
+    },
     "factory_l2_three_uav_obstacle_crossing_v1": {
       "vehicle_count": 3,
       "map_type": "factory_known_obstacles",
@@ -97,11 +103,53 @@
     }
   },
   "frequency_profiles": {
+    "attitude_thrust_200hz_candidate_v1": {
+      "controller_rate_hz": 200,
+      "command_publish_rate_hz": 200,
+      "trajectory_evaluation_rate_hz": 200,
+      "planner_nominal_rate_hz": 20,
+      "nominal_period_ms": 5.0,
+      "deadline_ms": 5.0,
+      "minimum_sustained_rate_hz": 198,
+      "consecutive_deadline_misses_before_degrade": 3,
+      "command_stale_ms": 50.0,
+      "failsafe_escalation_ms": 100.0,
+      "capability_status": "candidate_rt0_pending"
+    },
+    "attitude_thrust_200hz_candidate_v2": {
+      "controller_rate_hz": 200,
+      "command_publish_rate_hz": 200,
+      "trajectory_evaluation_rate_hz": 200,
+      "planner_nominal_rate_hz": 20,
+      "nominal_period_ms": 5.0,
+      "soft_deadline_warning_ms": 5.0,
+      "deadline_ms": 10.0,
+      "output_period_deadline_ms": 10.0,
+      "minimum_sustained_rate_hz": 198,
+      "consecutive_deadline_misses_before_degrade": 3,
+      "command_stale_ms": 50.0,
+      "failsafe_escalation_ms": 100.0,
+      "capability_status": "candidate_rt0_pending"
+    },
     "attitude_thrust_100hz_v1": {
       "controller_rate_hz": 100,
       "command_publish_rate_hz": 100,
       "trajectory_evaluation_rate_hz": 100,
       "planner_nominal_rate_hz": 20
+    },
+    "attitude_thrust_50hz_v1": {
+      "controller_rate_hz": 50,
+      "command_publish_rate_hz": 50,
+      "trajectory_evaluation_rate_hz": 50,
+      "planner_nominal_rate_hz": 20,
+      "nominal_period_ms": 20.0,
+      "deadline_ms": 20.0,
+      "output_period_deadline_ms": 50.0,
+      "minimum_sustained_rate_hz": 50,
+      "consecutive_deadline_misses_before_degrade": 3,
+      "command_stale_ms": 50.0,
+      "failsafe_escalation_ms": 100.0,
+      "capability_status": "candidate_rt0_pending"
     },
     "bodyrate_thrust_100hz_v1": {
       "controller_rate_hz": 100,
@@ -112,6 +160,30 @@
     }
   },
   "trajectory_profiles": {
+    "operator_ground_standby_v1": {
+      "source_type": "operator_ground_standby",
+      "provides_reference": [
+        "position",
+        "velocity",
+        "acceleration",
+        "jerk",
+        "yaw_rate",
+        "yaw"
+      ],
+      "reference_rate_hz": 100,
+      "duration_s": 1800.0,
+      "continuity_required": {
+        "position": true,
+        "velocity": true,
+        "acceleration": true
+      },
+      "constraints": {
+        "max_velocity_mps": 0.5,
+        "max_acceleration_mps2": 1.0,
+        "max_yaw_rate_radps": 0.5
+      },
+      "required_for_goal": "Operator standby"
+    },
     "takeoff_hover_land_v1": {
       "source_type": "state_machine_analytic",
       "provides_reference": [
@@ -134,6 +206,24 @@
         "max_acceleration_mps2": 2.0,
         "max_yaw_rate_radps": 0.8
       },
+      "required_for_goal": "Goal 1"
+    },
+    "takeoff_hover_land_50hz_v1": {
+      "source_type": "state_machine_analytic",
+      "provides_reference": ["position", "velocity", "acceleration", "jerk", "yaw_rate", "yaw"],
+      "reference_rate_hz": 50,
+      "duration_s": 20.0,
+      "continuity_required": {"position": true, "velocity": true, "acceleration": true},
+      "constraints": {"max_velocity_mps": 1.0, "max_acceleration_mps2": 2.0, "max_yaw_rate_radps": 0.8},
+      "required_for_goal": "Goal 1"
+    },
+    "takeoff_hover_land_200hz_v1": {
+      "source_type": "state_machine_analytic",
+      "provides_reference": ["position", "velocity", "acceleration", "jerk", "yaw_rate", "yaw"],
+      "reference_rate_hz": 200,
+      "duration_s": 20.0,
+      "continuity_required": {"position": true, "velocity": true, "acceleration": true},
+      "constraints": {"max_velocity_mps": 1.0, "max_acceleration_mps2": 2.0, "max_yaw_rate_radps": 0.8},
       "required_for_goal": "Goal 1"
     },
     "figure8_v1": {
@@ -214,6 +304,14 @@
       "duration_s": 420.0,
       "continuity_required": {"position": true, "velocity": true, "acceleration": true},
       "constraints": {"max_velocity_mps": 0.8, "max_acceleration_mps2": 0.8, "max_yaw_rate_radps": 0.8, "minimum_separation_m": 1.0}
+    },
+    "factory_l2_fuel_fixed64_exploration_v1": {
+      "source_type": "fuel_online_bspline",
+      "provides_reference": ["position", "velocity", "acceleration", "yaw"],
+      "reference_rate_hz": 100,
+      "duration_s": 300.0,
+      "continuity_required": {"position": true, "velocity": true, "acceleration": true},
+      "constraints": {"max_velocity_mps": 2.0, "max_acceleration_mps2": 1.5, "max_yaw_rate_radps": 1.0}
     }
   },
   "planner_profiles": {
@@ -226,6 +324,13 @@
       "owns_mavros_control": false,
       "produces_multi_uav_reference": true,
       "implementation_status": "accepted"
+    },
+    "fuel_single_exploration": {
+      "planner_id": "fuel_single_exploration",
+      "owns_mavros_control": false,
+      "produces_online_reference": true,
+      "implementation_status": "accepted",
+      "accepted_runtime_evidence": "Results/sunray_ros1/factory_l2_fuel_frame_unified_selector_r83_300s_20260714_060951"
     }
   },
   "formation_profiles": {
@@ -334,6 +439,54 @@
         "REPORT",
         "CANDIDATE"
       ],
+      "evidence_level": "E4"
+    },
+    "official_pid_attitude_thrust_live_50hz_v1": {
+      "controller_id": "official_pid",
+      "implementation": "mworks_live_attitude_thrust_outer_loop",
+      "implementation_status": "implemented",
+      "g9_task": "G9-A",
+      "controller_family": "pid",
+      "chain_position": "nominal_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 50,
+      "required_state": ["position", "velocity", "attitude", "angular_velocity"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "optional_reference": ["yaw_rate"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none", "awff_live_50hz_v1"],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/official_pid_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/control_platform/mworks_live_full_loop_20260719/rt0_accepted_50hz_v1/rt0_invocation.json"
+      ],
+      "mworks_codegen_route": "official_pid_model_to_generated_c_to_icontroller",
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E4"
+    },
+    "official_pid_attitude_thrust_live_200hz_v1": {
+      "controller_id": "official_pid",
+      "implementation": "mworks_live_attitude_thrust_outer_loop",
+      "implementation_status": "implemented",
+      "g9_task": "G9-A",
+      "controller_family": "pid",
+      "chain_position": "nominal_position_velocity_outer_loop",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 200,
+      "required_state": ["position", "velocity", "attitude", "angular_velocity"],
+      "required_reference": ["position", "velocity", "acceleration", "yaw"],
+      "optional_reference": ["yaw_rate"],
+      "compatible_adapters": ["mavros_attitude_thrust_v1"],
+      "compatible_safety": ["basic_limiter_v1"],
+      "compatible_augmentations": ["none"],
+      "source_basis_required": true,
+      "source_basis": [
+        "Results/g9/official_pid_attitude_thrust_v1/source_audit/controller_source_audit.json",
+        "Results/control_platform/mworks_live_full_loop_20260719/rt0_200hz_v3_run6/rt0_invocation.json"
+      ],
+      "mworks_codegen_route": "official_pid_model_to_generated_c_to_icontroller",
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
       "evidence_level": "E4"
     },
     "cascade_pid_attitude_thrust_v1": {
@@ -1437,6 +1590,23 @@
       "source_basis": ["Scripts/control_platform/enhancement_attitude_thrust_core.[ch]", "Results/control_platform/p5_enhancement_runtime_20260717/awff/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json"],
       "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
       "evidence_level": "E5"
+    },
+    "awff_live_50hz_v1": {
+      "augmentation_id": "awff",
+      "implementation_status": "implemented",
+      "module_family": "adaptive_wind_feedforward",
+      "chain_position": "bounded_disturbance_feedforward_compensation",
+      "output_interface": "ATTITUDE_THRUST",
+      "rate_hz": 50,
+      "compatible_controller_profiles": ["official_pid_attitude_thrust_live_50hz_v1"],
+      "source_basis_required": true,
+      "source_basis": [
+        "Scripts/control_platform/enhancement_attitude_thrust_core.[ch]",
+        "Results/control_platform/p5_enhancement_runtime_20260717/awff/ENHANCEMENT_GENERATED_RUNTIME_PROVENANCE.json",
+        "Results/control_platform/mworks_live_full_loop_20260719/rt0_accepted_50hz_v1/rt0_invocation.json"
+      ],
+      "acceptance_tiers": ["PASS", "REPORT", "CANDIDATE"],
+      "evidence_level": "E4"
     },
     "complete_adrc_v1": {
       "augmentation_id": "complete_adrc",

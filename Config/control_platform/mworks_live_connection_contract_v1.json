@@ -1,0 +1,65 @@
+{
+  "schema": "mosim.mworks_live_connection_contract.v1",
+  "contract_id": "mworks_live_connection_preflight_v1",
+  "status": "source_ready_runtime_pending",
+  "editable_owner": "model_studio_before_prepare",
+  "validation_owner": "mosim_orchestrator",
+  "qgc_access": "read_only_after_prepare",
+  "defaults": {
+    "target_host": "127.0.0.1",
+    "rt1_udp_port": 49020,
+    "ros_master_uri": "http://127.0.0.1:11311",
+    "local_advertised_ip": "auto",
+    "requested_rate_hz": 200,
+    "fallback_rate_hz": 50
+  },
+  "rate_candidates_hz": [50, 100, 200],
+  "preflight_stages": [
+    "address_validation",
+    "name_resolution",
+    "ros_master_xmlrpc",
+    "rt1_forward_request",
+    "rt1_return_response",
+    "protocol_version_match",
+    "profile_rate_compatibility",
+    "rt_capability_evidence",
+    "freeze_endpoint"
+  ],
+  "required_success": [
+    "target_host_resolved",
+    "ros_master_reachable_when_configured",
+    "rt1_response_received",
+    "rt1_run_id_match",
+    "rt1_sequence_match",
+    "protocol_version_match",
+    "selected_rate_has_accepted_rt0_profile"
+  ],
+  "run_manifest_fields": [
+    "connection_contract_id",
+    "target_host",
+    "resolved_target_addresses",
+    "rt1_udp_port",
+    "ros_master_uri",
+    "local_advertised_ip",
+    "requested_rate_hz",
+    "selected_rate_hz",
+    "profile_id",
+    "profile_hash",
+    "protocol_version",
+    "preflight_id",
+    "preflight_result_hash"
+  ],
+  "reason_codes": [
+    "invalid_target_host",
+    "target_name_resolution_failed",
+    "invalid_udp_port",
+    "ros_master_unreachable",
+    "ros_master_protocol_error",
+    "rt1_timeout",
+    "rt1_protocol_mismatch",
+    "rt1_run_id_mismatch",
+    "rt1_sequence_mismatch",
+    "requested_rate_unvalidated",
+    "connection_preflight_passed"
+  ]
+}

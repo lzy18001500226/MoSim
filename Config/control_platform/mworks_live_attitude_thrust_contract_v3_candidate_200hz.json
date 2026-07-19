@@ -1,0 +1,105 @@
+{
+  "schema": "mosim.mworks_live_contract.v1",
+  "contract_id": "mworks_live_attitude_thrust_v3_candidate_200hz",
+  "status": "candidate_capability_unverified",
+  "control_boundary": "ATTITUDE_THRUST",
+  "controller_role": "position_translation_outer_loop",
+  "attitude_inner_owner": "px4_builtin_attitude_rate_v1",
+  "authority": {
+    "arbiter": "mosim_orchestrator",
+    "reference_owner_count": 1,
+    "command_owner_count": 1,
+    "airborne_backend_switch_allowed": false,
+    "qgc_high_rate_command_allowed": false,
+    "model_studio_high_rate_command_allowed": false
+  },
+  "frames": {
+    "contract_id": "mosim_enu_flu_quaternion_xyzw_v1",
+    "world": "ENU",
+    "body": "FLU",
+    "quaternion_order": "xyzw",
+    "state_quaternion": "q_enu_from_flu_xyzw",
+    "command_quaternion": "q_enu_from_flu_des_xyzw",
+    "rotation_formula": "v_enu = R(q_enu_from_flu_xyzw) * v_flu",
+    "body_rate_frame": "FLU",
+    "body_rate_unit": "rad/s",
+    "collective_thrust_axis": "+FLU_Z",
+    "collective_thrust_input_unit": "N",
+    "mavros_adapter_output": "normalized_collective_thrust_0_to_1",
+    "quaternion_rules": {
+      "normalization_tolerance": 1e-06,
+      "sign_continuity": "choose_sign_maximizing_dot_with_previous_quaternion",
+      "invalid_norm_action": "reject_frame"
+    }
+  },
+  "state_frame": {
+    "required_fields": [
+      "schema_version", "run_id", "sequence", "source_stamp_ns", "receive_monotonic_ns",
+      "position_enu_m", "velocity_enu_mps", "q_enu_from_flu_xyzw",
+      "body_rate_flu_radps", "armed", "flight_mode", "validity_mask"
+    ],
+    "ros_sources": {
+      "odometry": "/uav1/mavros/local_position/odom",
+      "imu": "/uav1/mavros/imu/data",
+      "flight_state": "/uav1/sunray/uav_state"
+    }
+  },
+  "reference_frame": {
+    "required_fields": [
+      "schema_version", "run_id", "sequence", "source_stamp_ns", "valid_until_ns",
+      "reference_authority", "mission_revision", "position_enu_m", "velocity_enu_mps",
+      "acceleration_enu_mps2", "yaw_enu_rad", "yaw_rate_enu_radps"
+    ],
+    "allowed_authorities": ["position_manual", "programmed"]
+  },
+  "command_frame": {
+    "required_fields": [
+      "schema_version", "run_id", "sequence", "state_sequence", "source_stamp_ns",
+      "produced_monotonic_ns", "valid_until_ns", "q_enu_from_flu_des_xyzw",
+      "collective_thrust_N", "saturation_mask", "controller_status"
+    ],
+    "optional_fields": ["body_rate_flu_des_radps"],
+    "finite_values_required": true,
+    "reject_out_of_order": true,
+    "reject_run_id_mismatch": true
+  },
+  "timing_candidates": {
+    "nominal_rate_hz": 200,
+    "minimum_sustained_rate_hz": 198,
+    "nominal_period_ms": 5.0,
+    "soft_deadline_warning_ms": 5.0,
+    "deadline_ms": 10.0,
+    "output_period_deadline_ms": 10.0,
+    "consecutive_deadline_misses_before_degrade": 3,
+    "command_stale_ms": 50.0,
+    "failsafe_escalation_ms": 100.0,
+    "rt0_status": "not_validated",
+    "mutation_rule": "publish_new_profile_version_and_hash",
+    "accepted_fallback_profile": "attitude_thrust_50hz_v1",
+    "claim_boundary": "200 Hz is candidate-only until a dedicated RT0 run passes. The 5 ms period is not claimed as a hard end-to-end deadline; 5-10 ms is reported as a soft-deadline warning."
+  },
+  "failsafe": {
+    "triggers": [
+      "input_stale", "output_stale", "non_finite_output", "command_out_of_bounds",
+      "run_id_mismatch", "sequence_regression", "sustained_rate_below_minimum", "mworks_disconnect"
+    ],
+    "transition": "fallback_hover",
+    "fallback_backend": "deployed_px4ctrl_hover",
+    "automatic_live_restart_airborne": false,
+    "allowed_operator_actions_after_fallback": ["hover", "land", "safe_stop"]
+  },
+  "rt0_acceptance": {
+    "required_execution_source": "mworks_sysplorer_realtime",
+    "required_sim_mode": 2,
+    "minimum_samples": 1000,
+    "minimum_duration_s": 10.0,
+    "required_metrics": [
+      "input_rate_hz", "compute_rate_hz", "output_rate_hz", "latency_mean_ms",
+      "latency_p95_ms", "latency_p99_ms", "latency_max_ms", "jitter_p99_ms",
+      "output_period_p50_ms", "output_period_p95_ms", "output_period_p99_ms",
+      "output_period_max_ms",
+      "drop_count", "duplicate_count", "out_of_order_count", "command_age_max_ms"
+    ],
+    "claim_boundary": "Transport-only, Python-equivalent, generated-C, or ordinary non-realtime SimulateModel measurements cannot pass RT0."
+  }
+}

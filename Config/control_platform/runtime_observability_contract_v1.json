@@ -1,0 +1,144 @@
+{
+  "schema": "mosim.runtime_observability_contract.v1",
+  "contract_id": "runtime_observability_v1",
+  "status": "design_ready_measurement_pending",
+  "clock_policy": {
+    "same_host_latency": "monotonic_clock",
+    "cross_host_one_way_latency": "requires_ptp_or_ntp_offset_evidence",
+    "cross_host_without_clock_sync": "report_rtt_and_command_age_only",
+    "all_samples_require_run_id": true,
+    "all_samples_require_monotonic_sequence": true
+  },
+  "control_rate_capability_scan": {
+    "requested_rates_hz": [50, 100, 200],
+    "accepted_baseline_hz": 50,
+    "target_rate_hz": 200,
+    "target_status": "rt0_validated_rt1_pending",
+    "promotion_rule": "publish_new_profile_version_and_hash_after_rt0_pass",
+    "no_in_place_profile_mutation": true
+  },
+  "links": [
+    {
+      "link_id": "mworks_ros_control",
+      "producer": "windows_mworks",
+      "consumer": "ros1_rt1_adapter",
+      "metrics": ["input_rate_hz", "output_rate_hz", "rtt_ms", "command_age_ms", "jitter_ms", "drop_rate", "duplicate_count", "out_of_order_count", "payload_bytes_per_s", "wire_bytes_per_s"]
+    },
+    {
+      "link_id": "mavros_px4",
+      "producer": "mavros",
+      "consumer": "px4_sitl",
+      "metrics": ["heartbeat_rate_hz", "setpoint_rate_hz", "message_loss_rate", "command_age_ms", "payload_bytes_per_s", "wire_bytes_per_s"]
+    },
+    {
+      "link_id": "gazebo_runtime",
+      "producer": "gazebo_classic",
+      "consumer": "ros1_runtime",
+      "metrics": ["real_time_factor", "sim_time_rate_hz", "physics_update_rate_hz", "sensor_topic_rate_hz", "cpu_percent", "resident_memory_bytes"]
+    },
+    {
+      "link_id": "gazebo_ue_display",
+      "producer": "gazebo_ros_display_bridge",
+      "consumer": "unreal_renderer",
+      "metrics": ["source_update_rate_hz", "receive_rate_hz", "pose_age_ms", "rtt_ms", "drop_rate", "payload_bytes_per_s", "wire_bytes_per_s", "ue_fps", "ue_frame_ms", "ue_game_ms", "ue_draw_ms", "ue_gpu_ms", "hitch_count"],
+      "measurement_policy": {
+        "sender_authority": "Scripts/UE5/stream_ros1_state_to_ue_udp.py structured metrics",
+        "receiver_authority": "UE sequence accounting and stat unit capture",
+        "sender_only_can_claim": ["source_update_rate_hz", "send_rate_hz", "payload_bytes_per_s", "estimated_ipv4_udp_wire_bytes_per_s", "source_pose_age_ms"],
+        "receiver_required_for": ["receive_rate_hz", "drop_rate", "ue_fps", "ue_frame_ms", "ue_game_ms", "ue_draw_ms", "ue_gpu_ms", "hitch_count"],
+        "rtt_status": "unavailable_on_one_way_udp_without_ack",
+        "do_not_substitute": "host network-interface throughput is not per-link Gazebo-to-UE bandwidth"
+      }
+    },
+    {
+      "link_id": "ros_rviz_display",
+      "producer": "ros1_topics",
+      "consumer": "rviz",
+      "metrics": ["topic_rate_hz", "topic_delay_ms", "topic_bandwidth_bytes_per_s", "queue_drop_rate", "display_fps"]
+    },
+    {
+      "link_id": "mavlink_qgc_display",
+      "producer": "px4_mavlink",
+      "consumer": "flight_console",
+      "metrics": ["heartbeat_rate_hz", "telemetry_rate_hz", "message_loss_rate", "rtt_ms", "rx_transport_bytes_per_s", "tx_transport_bytes_per_s", "ui_fps"],
+      "measurement_policy": {
+        "message_authority": "QGC Vehicle.messagesReceived/messagesLost/mavlinkLossPercent plus MAVLinkProtocol messageReceived",
+        "transport_authority": "QGC LinkInterface bytesReceived/bytesSent",
+        "transport_byte_boundary": "includes MAVLink framing; does not infer UDP/IP wire overhead",
+        "rtt_status": "unavailable_until_a_correlated_QGC_ping_measurement_is_attached",
+        "ui_fps_status": "unavailable_until_Qt_Quick_render_instrumentation_is_attached"
+      }
+    }
+  ],
+  "host_metrics": [
+    "cpu_total_percent",
+    "cpu_per_process_percent",
+    "memory_used_bytes",
+    "network_interface_rx_bytes_per_s",
+    "network_interface_tx_bytes_per_s",
+    "gpu_utilization_percent",
+    "gpu_memory_used_bytes",
+    "disk_write_bytes_per_s"
+  ],
+  "measurement_windows": {
+    "preflight_s": 5,
+    "steady_state_s": 60,
+    "long_run_s": 300,
+    "warmup_s": 10,
+    "same_run_required": true
+  },
+  "diagnostic_thresholds": {
+    "status": "candidate_defaults_pending_same_run_validation",
+    "control_200hz": {
+      "minimum_sustained_rate_hz": 198.0,
+      "nominal_period_ms": 5.0,
+      "soft_deadline_warning_ms": 5.0,
+      "deadline_ms": 10.0,
+      "consecutive_deadline_misses_before_degrade": 3
+    },
+    "gazebo": {
+      "real_time_factor_warning_below": 0.95
+    },
+    "unreal": {
+      "fps_warning_below": 55.0,
+      "frame_ms_warning_above": 20.0,
+      "hitch_definition_ms": 50.0
+    },
+    "resource_saturation": {
+      "host_cpu_warning_percent": 90.0,
+      "host_memory_warning_percent": 90.0,
+      "gpu_utilization_warning_percent": 95.0
+    },
+    "interpretation": "Thresholds classify diagnostics only until a same-run acceptance profile freezes them. Bandwidth is reported, not passed merely because bytes per second are low."
+  },
+  "same_run_artifacts": {
+    "host_samples": "observability/host_samples.jsonl",
+    "summary": "observability/RUNTIME_OBSERVABILITY_SUMMARY.json",
+    "mworks_ros_control": "observability/RT1_STATUS.json",
+    "gazebo_ue_sender": "observability/gazebo_ue_sender.json",
+    "gazebo_ue_receiver": "observability/gazebo_ue_receiver.json",
+    "unreal_frame_timing": "observability/ue_frame_timing.json",
+    "ros1_topics": "observability/ros1_topics.json",
+    "gazebo_runtime": "observability/gazebo_runtime.json",
+    "mavlink_qgc": "observability/mavlink_qgc.json"
+  },
+  "collector_overhead_policy": {
+    "status_json_rate_hz": {
+      "50_hz_control": 2.0,
+      "200_hz_control": 0.5
+    },
+    "host_sample_rate_hz": 1.0,
+    "process_group_sample_rate_hz": 0.2,
+    "ue_metric_window_s": 5.0,
+    "reason": "Observability must not perform disk writes or blocking full-process enumeration at the 200 Hz control-loop rate."
+  },
+  "authoritative_tools": {
+    "ros1": ["rostopic hz", "rostopic bw", "rostopic delay", "topic_statistics_when_enabled"],
+    "gazebo": ["/gazebo/performance_metrics", "/gazebo/model_states", "world_stats_or_equivalent_runtime_log"],
+    "px4_mavros": ["MAVLink sequence loss", "MAVROS diagnostics", "PX4 perf counters"],
+    "unreal": ["stat fps", "stat unit", "stat net", "stat startfile/stopfile"],
+    "windows": ["Get-Counter", "Get-NetAdapterStatistics"],
+    "linux": ["pidstat", "sar", "ip -s link"]
+  },
+  "claim_boundary": "A configured target rate or available network bandwidth is not proof of realtime capability. Each promoted rate requires same-run RT0 evidence and a new frozen profile hash."
+}

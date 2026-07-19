@@ -1,0 +1,35 @@
+{
+  "schema": "mosim.control_platform.model_operation_catalog.v1",
+  "version": 1,
+  "claim_boundary": "Only fixed project-owned MWORKS model operations are authorized. A submitted operation remains pending until its run-local status and evidence gates pass.",
+  "model_profiles": [
+    {
+      "model_profile_id": "cascade_pid_model_loop_v1",
+      "experiment_profile_ids": ["cascade_pid_figure8_generated_c_v1"],
+      "controller_ids": ["cascade_pid"],
+      "vehicle_counts": [1],
+      "status": "enabled",
+      "run_mil": {
+        "model_file": "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_CASCADE_PID_MIL.mo",
+        "model_name": "MoSim_PID_CASCADE_PID_MIL",
+        "stop_time_s": 0.12,
+        "verify_variables": {
+          "command": "command",
+          "status_code": "status_code"
+        },
+        "result_gate": "mworks/run_mil/MWORKS_MIL_RESULT.json"
+      },
+      "generate_code": {
+        "model_file": "Results/control_platform/p1_pid_mworks_20260716/models/graphical/MoSim_PID_Unified_Graphical_Sysblock.mo",
+        "model_name": "MoSim_PID_Unified_Graphical_Sysblock",
+        "required_files": [
+          "MoSim_PID_Unified_Graphical_Sysblock.c",
+          "MoSim_PID_Unified_Graphical_Sysblock.h",
+          "MoSim_PID_Unified_Graphical_Sysblock_data.c",
+          "MoSim_PID_Unified_Graphical_Sysblock_private.h"
+        ],
+        "result_gate": "mworks/generate_code/MWORKS_CODEGEN_RESULT.json"
+      }
+    }
+  ]
+}
