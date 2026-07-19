@@ -215,9 +215,9 @@ def test_model_studio_filters_three_uav_mission_by_vehicle_count() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert "const SINGLE_UAV_MISSION_OPTIONS" in source
     assert 'const THREE_UAV_MISSION_OPTIONS = ["三机三角编队 8 字"]' in source
-    assert "function is_three_uav_mission(mission)" in source
-    assert "function mission_vehicle_count(mission)" in source
-    assert "function mission_options_for_vehicle_count(vehicle_count)" in source
+    assert "function is_three_uav_mission(app, mission)" in source
+    assert "function mission_vehicle_count(app, mission)" in source
+    assert "function mission_options_for_vehicle_count(app, vehicle_count)" in source
 
     sync = source.split("function sync_vehicle_controls(app)", 1)[1].split(
         "function configure_composition_controls(app; live=false)", 1
@@ -227,7 +227,7 @@ def test_model_studio_filters_three_uav_mission_by_vehicle_count() -> None:
     assert "current_mission : mission_items[1]" in sync
     assert 'app.FormationDropDown.Value = "无"' in sync
 
-    assert 'app.VehicleCountDropDown.Value = string(mission_vehicle_count(item.mission))' in source
+    assert 'app.VehicleCountDropDown.Value = string(app.mission_vehicle_count(item.mission))' in source
     assert 'occursin("三机", item.mission)' not in source
     assert 'occursin("三机", app.MissionDropDown.Value)' not in source
 

@@ -290,15 +290,15 @@ const OFFLINE_PROFILES = Dict(
         )
     end
 
-    function is_three_uav_mission(mission)
+    function is_three_uav_mission(app, mission)
         return mission in THREE_UAV_MISSION_OPTIONS
     end
 
-    function mission_vehicle_count(mission)
-        return is_three_uav_mission(mission) ? 3 : 1
+    function mission_vehicle_count(app, mission)
+        return app.is_three_uav_mission(mission) ? 3 : 1
     end
 
-    function mission_options_for_vehicle_count(vehicle_count)
+    function mission_options_for_vehicle_count(app, vehicle_count)
         return vehicle_count == 3 ? MODEL_MISSION_OPTIONS : SINGLE_UAV_MISSION_OPTIONS
     end
 
@@ -309,7 +309,7 @@ const OFFLINE_PROFILES = Dict(
         app.TargetUavDropDown.Items = target_items
         app.TargetUavDropDown.Value = current_target in target_items ? current_target : target_items[1]
 
-        mission_items = mission_options_for_vehicle_count(vehicle_count)
+        mission_items = app.mission_options_for_vehicle_count(vehicle_count)
         current_mission = app.MissionDropDown.Value
         app.MissionDropDown.Items = mission_items
         app.MissionDropDown.Value = current_mission in mission_items ?
@@ -388,7 +388,7 @@ const OFFLINE_PROFILES = Dict(
     function apply_preset(app, label)
         haskey(OFFLINE_PROFILES, label) || return
         item = OFFLINE_PROFILES[label]
-        app.VehicleCountDropDown.Value = string(mission_vehicle_count(item.mission))
+        app.VehicleCountDropDown.Value = string(app.mission_vehicle_count(item.mission))
         app.MapDropDown.Value = MAP_OPTIONS[1]
         app.sync_vehicle_controls()
         app.MissionDropDown.Value = item.mission
@@ -409,7 +409,7 @@ const OFFLINE_PROFILES = Dict(
     function preset_matches_selection(app, item)
         item === nothing && return false
         return app.MissionDropDown.Value == item.mission &&
-            app.VehicleCountDropDown.Value == string(mission_vehicle_count(item.mission)) &&
+            app.VehicleCountDropDown.Value == string(app.mission_vehicle_count(item.mission)) &&
             app.MapDropDown.Value == MAP_OPTIONS[1] &&
             app.PositionDropDown.Value == item.controller &&
             app.AttitudeDropDown.Value == item.attitude &&
@@ -432,7 +432,7 @@ const OFFLINE_PROFILES = Dict(
                 occursin("[待接入]", app.FormationDropDown.Value)
             incompatible = occursin("[不可执行]", app.AugmentationDropDown.Value) ||
                 (app.FormationDropDown.Value != "无" && app.VehicleCountDropDown.Value == "1") ||
-                (is_three_uav_mission(app.MissionDropDown.Value) && app.VehicleCountDropDown.Value != "3")
+                (app.is_three_uav_mission(app.MissionDropDown.Value) && app.VehicleCountDropDown.Value != "3")
             executable = certified && !unavailable && !incompatible
             app.MilButton.Enable = executable
             app.CodegenButton.Enable = executable && !occursin("Custom", app.ProfileDropDown.Value)
