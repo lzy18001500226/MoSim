@@ -4,16 +4,22 @@
 
 ## 1. 首次启动
 
-1. 双击仓库根目录的 `启动Gazebo飞行仿真.cmd`。
-2. 保持状态终端打开，等待终端出现 `state=running` 和 `reason=runtime_ready`。
-3. 双击 `启动MoSim地面站.cmd`，等待 UE 嵌入 Flight Console。
-4. 确认 QGC 已发现飞机，并在右侧“任务”页查看“下一步”和“飞行阶段”。
+比赛演示推荐顺序：
+
+1. 双击仓库根目录的 `启动MoSim地面站.cmd`。
+2. 若当前没有飞行运行时，Flight Console 先进入任务配置模式；此时 UE 区域显示等待状态是正常现象。
+3. 在右侧“任务”页选择任务和已开放的控制器 Profile，点击“验证配置”。
+4. 确认场景摘要、哈希和 `run_id` 后，点击“启动仿真并连接飞机”或“启动并执行自动任务”。
+5. QGC 启动与该 Profile 对应的 Gazebo/PX4/MAVROS 后端，并弹出独立状态终端；保持该终端打开。
+6. 运行时就绪后 UE 自动启动并嵌入 Flight Console，QGC 开始显示飞机连接和任务阶段。
+7. 按任务页的“下一步”和“操作进度”继续操作。
 
 两个入口职责分离：
 
-- `启动Gazebo飞行仿真.cmd` 启动单机地面待命运行时，包括 Gazebo、PX4 和 MAVROS。
+- `启动MoSim地面站.cmd` 可以在没有飞行运行时的情况下先打开 QGC，供操作者选择和验证任务。
+- `启动Gazebo飞行仿真.cmd` 是独立运行时入口：没有已验证任务时启动单机地面待命；存在 QGC 已冻结的 `ready` 任务时启动该任务。
 - 若 QGC 已经验证并冻结了一个 `ready` 任务，`启动Gazebo飞行仿真.cmd` 必须启动该任务，不能另建默认单机任务。
-- `启动MoSim地面站.cmd` 连接当前活动 `run_id`，启动 UE 和 Flight Console，不重复创建飞行运行时。
+- 若飞行运行时已经存在，`启动MoSim地面站.cmd` 连接当前 `run_id` 并恢复 UE；若运行时不存在，则只启动 Flight Console 配置界面。
 - 从 QGC 点击“启动仿真”后，Orchestrator 完成唯一启动裁决，并自动弹出独立的 Gazebo 状态终端；该终端只显示当前 `run_id` 的状态和日志，不拥有飞行控制权。
 - 关闭并重新打开 Flight Console 不应停止飞行仿真。
 - `停止所有仿真.cmd` 只清理当前 `run_id` 记录的受管进程，不关闭其他 Unreal 项目。

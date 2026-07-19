@@ -20,8 +20,10 @@ def test_flight_simulation_and_ground_station_have_separate_owners() -> None:
     assert '"prepare_display_session"' in ground
     assert '"unreal"' in ground
     assert "run_flight_console.ps1" in ground
-    assert "flight_simulation_not_active" in ground
-    assert "Gazebo flight simulation launcher" in ground
+    assert "Start-FlightConsoleConfigurationMode" in ground
+    assert "no active flight simulation" in ground
+    assert "Select a task, validate its Profile, then start it from QGC" in ground
+    assert "managed UE viewport will start for that run_id" in ground
 
 
 def test_qgc_start_ack_opens_separate_runtime_status_terminal() -> None:
@@ -59,6 +61,7 @@ def test_operator_cmd_entrypoints_are_explicit() -> None:
 
     assert "start_flight_simulation.ps1" in flight_cmd
     assert "run_qgc_with_ue.ps1" in ground_cmd
+    assert "Review the error above and the startup logs" in ground_cmd
     assert "stop_all_simulation.ps1" in stop_cmd
     assert "\u542f\u52a8MoSim\u5730\u9762\u7ad9.cmd" in compatibility
 

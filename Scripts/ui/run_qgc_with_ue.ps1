@@ -11,6 +11,19 @@ if (Get-Process -Name "MoSimFlightConsole" -ErrorAction SilentlyContinue) {
     throw "qgc_already_running: close the existing Flight Console first"
 }
 
+function Start-FlightConsoleConfigurationMode {
+    param([string]$Reason)
+
+    Write-Output "Starting Flight Console in task configuration mode ($Reason)."
+    Write-Output "Select a task, validate its Profile, then start it from QGC."
+    Write-Output "Gazebo/PX4/MAVROS and the managed UE viewport will start for that run_id."
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $qgcLauncher
+    if ($LASTEXITCODE -ne 0) {
+        throw "qgc_start_failed: run_flight_console.ps1 exited with $LASTEXITCODE"
+    }
+    Write-Output "MoSim ground station started in task configuration mode."
+}
+
 function Test-ProcessHasUsableWindow {
     param([int]$ProcessId)
     if ($ProcessId -le 0) { return $false }
@@ -116,12 +129,15 @@ function Stop-StaleDisplayProcesses {
 Start-MoSimOrchestratorService
 $active = Get-MoSimActiveRun
 if ($null -eq $active -or -not $active.run_id) {
-    throw "flight_simulation_not_started: run the Gazebo flight simulation launcher first"
+    Start-FlightConsoleConfigurationMode -Reason "no active flight simulation"
+    exit 0
 }
 $runId = [string]$active.run_id
 $runState = Invoke-MoSimOrchestratorClient -Arguments @("get_run_state", "--run-id", $runId) -AllowRejected
 if (-not $runState.accepted -or $runState.manifest.lifecycle_state -notin @("starting", "running")) {
-    throw "flight_simulation_not_active: run the Gazebo flight simulation launcher first"
+    $stateLabel = if ($runState.accepted) { [string]$runState.manifest.lifecycle_state } else { "unavailable" }
+    Start-FlightConsoleConfigurationMode -Reason "active run state: $stateLabel"
+    exit 0
 }
 
 $display = Invoke-MoSimOrchestratorClient -Arguments @(
