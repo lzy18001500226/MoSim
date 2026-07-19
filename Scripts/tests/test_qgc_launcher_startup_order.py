@@ -60,3 +60,17 @@ def test_stop_script_uses_active_run_and_scoped_process_records() -> None:
     assert '"stop_run"' in stopper
     assert "stop_orchestrated_runtime.sh" in stopper
     assert "Stop-Process -Name" not in stopper
+
+
+def test_operator_workflow_distinguishes_manual_and_automatic_flight_authority() -> None:
+    workflow = Path("Docs/Workflows/qgc_ue_operator_startup.md").read_text(encoding="utf-8")
+
+    assert "使用 QGC 原生飞行操作解锁并起飞" in workflow
+    assert "未连接、未解锁或不在 `Position` 模式时" in workflow
+    assert "以下任务不要求操作者手动解锁" in workflow
+    assert "FUEL单机自主探索" in workflow
+    assert "三机固定编队避障" in workflow
+    assert "启动并执行自动任务" in workflow
+    assert "任务 Adapter 返回终态 ACK" in workflow
+    assert "不得再使用 QGC 手动解锁" in workflow
+    assert "UE 已嵌入且显示当前运行的飞机，不是上一 `run_id` 的残留画面" in workflow
