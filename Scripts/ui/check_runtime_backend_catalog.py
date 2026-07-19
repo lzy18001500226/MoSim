@@ -16,9 +16,15 @@ DEFAULT_QML = ROOT / "apps" / "flight_console" / "mosim" / "custom" / "src" / "F
 PROFILE_PATTERN = re.compile(
     r'\{\s*id:\s*"(?P<id>[^"]+)".*?path:\s*"(?P<path>[^"]+)"'
     r'.*?controller:\s*"(?P<controller>[^"]+)".*?count:\s*(?P<count>\d+)'
-    r'.*?enabled:\s*(?P<enabled>true|false)',
+    r'.*?enabled:\s*(?P<enabled>true|false).*?manual:\s*(?P<manual>true|false)'
+    r'.*?takeoff:\s*"(?P<takeoff>[^"]+)"',
 )
 RUNNER_OPERATION_PATTERN = re.compile(r"^  ([a-z][a-z0-9_]*)\)$", re.MULTILINE)
+MISSION_ADAPTER_MARKERS = (
+    "MissionStatusChannel",
+    "SafeStopChannel",
+    "mission_status.finish",
+)
 
 
 def check(catalog_path: Path, runner_path: Path = DEFAULT_RUNNER, qml_path: Path = DEFAULT_QML) -> dict:
@@ -27,6 +33,7 @@ def check(catalog_path: Path, runner_path: Path = DEFAULT_RUNNER, qml_path: Path
     identifiers: set[str] = set()
     operation_ids: set[str] = set()
     runtime_keys: set[tuple[str, str, int]] = set()
+    operator_contracts: dict[tuple[str, str, int], dict[str, object]] = {}
     runner_text = runner_path.read_text(encoding="utf-8") if runner_path.is_file() else ""
     runner_operations = set(RUNNER_OPERATION_PATTERN.findall(runner_text))
     for entry in catalog.get("runtime_profiles", []):
@@ -51,6 +58,35 @@ def check(catalog_path: Path, runner_path: Path = DEFAULT_RUNNER, qml_path: Path
             errors.append(f"profile_or_controller_allowlist_missing:{identifier}")
         if not set(entry.get("vehicle_counts", [])) <= {1, 3}:
             errors.append(f"unaccepted_vehicle_scale:{identifier}")
+        operator_contract = entry.get("operator_contract")
+        if not isinstance(operator_contract, dict):
+            errors.append(f"operator_contract_missing:{identifier}")
+            operator_contract = {}
+        authority = operator_contract.get("flight_authority")
+        if authority not in {"qgc_native_manual", "mission_adapter"}:
+            errors.append(f"operator_flight_authority_invalid:{identifier}:{authority}")
+        if authority == "qgc_native_manual":
+            if operator_contract.get("takeoff_owner") != "qgc_native":
+                errors.append(f"manual_takeoff_owner_invalid:{identifier}")
+            if operator_contract.get("terminal_ack") != "qgc_vehicle_disarm":
+                errors.append(f"manual_terminal_ack_invalid:{identifier}")
+            if operator_contract.get("safe_stop") != "qgc_native_land":
+                errors.append(f"manual_safe_stop_invalid:{identifier}")
+        elif authority == "mission_adapter":
+            adapter_source = ROOT / str(operator_contract.get("mission_adapter_source", ""))
+            if not adapter_source.is_file() or not adapter_source.resolve().is_relative_to(ROOT):
+                errors.append(f"mission_adapter_source_missing_or_external:{identifier}")
+            else:
+                adapter_text = adapter_source.read_text(encoding="utf-8")
+                for marker in MISSION_ADAPTER_MARKERS:
+                    if marker not in adapter_text:
+                        errors.append(f"mission_adapter_marker_missing:{identifier}:{marker}")
+            if operator_contract.get("takeoff_owner") != "mission_adapter":
+                errors.append(f"automatic_takeoff_owner_invalid:{identifier}")
+            if operator_contract.get("terminal_ack") != "mission_status_channel_v1":
+                errors.append(f"automatic_terminal_ack_invalid:{identifier}")
+            if operator_contract.get("safe_stop") != "safe_stop_channel_v1":
+                errors.append(f"automatic_safe_stop_invalid:{identifier}")
         for profile_id in entry.get("experiment_profile_ids", []):
             profile_path = ROOT / "Config" / "profiles" / "experiments" / f"{profile_id}.json"
             if not profile_path.is_file():
@@ -67,6 +103,7 @@ def check(catalog_path: Path, runner_path: Path = DEFAULT_RUNNER, qml_path: Path
                 if key in runtime_keys:
                     errors.append(f"duplicate_runtime_selection:{profile_id}:{controller_id}:{declared_count}")
                 runtime_keys.add(key)
+                operator_contracts[key] = operator_contract
     for operation_id in sorted(runner_operations - operation_ids):
         errors.append(f"runner_operation_not_catalogued:{operation_id}")
 
@@ -79,6 +116,8 @@ def check(catalog_path: Path, runner_path: Path = DEFAULT_RUNNER, qml_path: Path
             "controller": match.group("controller"),
             "count": int(match.group("count")),
             "enabled": match.group("enabled") == "true",
+            "manual": match.group("manual") == "true",
+            "takeoff": match.group("takeoff"),
         }
         qml_profiles.append(item)
         profile_path = ROOT / str(item["path"])
@@ -91,6 +130,14 @@ def check(catalog_path: Path, runner_path: Path = DEFAULT_RUNNER, qml_path: Path
         selection = (str(item["id"]), str(item["controller"]), int(item["count"]))
         if selection not in runtime_keys:
             errors.append(f"qgc_runtime_selection_missing:{':'.join(map(str, selection))}")
+            continue
+        contract = operator_contracts[selection]
+        if item["enabled"] and item["manual"]:
+            if item["takeoff"] != "qgc" or contract.get("flight_authority") != "qgc_native_manual":
+                errors.append(f"qgc_manual_authority_mismatch:{item['id']}")
+        elif item["enabled"]:
+            if item["takeoff"] != "automatic" or contract.get("flight_authority") != "mission_adapter":
+                errors.append(f"qgc_automatic_authority_mismatch:{item['id']}")
     if not qml_profiles:
         errors.append("qgc_profile_catalog_missing")
     for helper in ("Scripts/ui/run_orchestrated_runtime.sh", "Scripts/ui/stop_orchestrated_runtime.sh"):

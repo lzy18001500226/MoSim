@@ -37,3 +37,45 @@ def test_gate_rejects_catalog_operation_missing_from_runner(tmp_path: Path) -> N
 
     assert result["status"] == "failed"
     assert any(error.endswith(":factory_l2_fuel_fixed64_exploration") for error in result["errors"])
+
+
+def test_gate_rejects_enabled_automatic_task_without_mission_adapter_contract(tmp_path: Path) -> None:
+    catalog = json.loads(Path("Config/control_platform/runtime_backend_catalog.json").read_text(encoding="utf-8"))
+    fuel = next(
+        entry
+        for entry in catalog["runtime_profiles"]
+        if entry["operation_id"] == "factory_l2_fuel_fixed64_exploration"
+    )
+    fuel["operator_contract"] = {
+        "flight_authority": "qgc_native_manual",
+        "takeoff_owner": "qgc_native",
+        "mission_adapter_source": None,
+        "terminal_ack": "qgc_vehicle_disarm",
+        "safe_stop": "qgc_native_land",
+    }
+    catalog_path = tmp_path / "runtime_backend_catalog.json"
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+
+    result = check(catalog_path)
+
+    assert result["status"] == "failed"
+    assert "qgc_automatic_authority_mismatch:factory_l2_fuel_fixed64_exploration_v1" in result["errors"]
+
+
+def test_gate_rejects_external_mission_adapter_source(tmp_path: Path) -> None:
+    catalog = json.loads(Path("Config/control_platform/runtime_backend_catalog.json").read_text(encoding="utf-8"))
+    figure8 = next(
+        entry for entry in catalog["runtime_profiles"] if entry["operation_id"] == "px4ctrl_figure8_single"
+    )
+    incomplete_adapter = tmp_path / "incomplete_adapter.py"
+    incomplete_adapter.write_text("MissionStatusChannel\nSafeStopChannel\n", encoding="utf-8")
+    figure8["operator_contract"]["mission_adapter_source"] = str(
+        incomplete_adapter.relative_to(Path.cwd())
+    ) if incomplete_adapter.is_relative_to(Path.cwd()) else str(incomplete_adapter)
+    catalog_path = tmp_path / "runtime_backend_catalog.json"
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+
+    result = check(catalog_path)
+
+    assert result["status"] == "failed"
+    assert any(error.startswith("mission_adapter_source_missing_or_external:") for error in result["errors"])
