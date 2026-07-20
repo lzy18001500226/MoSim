@@ -90,6 +90,22 @@ Scripts/sunray/start_mid360_fastlio_review.sh
 Use `Scripts/gazebo/` only when a current Sunray ROS1 workflow explicitly
 points there. Do not choose old ROS2/Gazebo scripts by name similarity.
 
+For a self-service no-flight infrastructure check, use the repository-root
+Windows entrypoints instead of manually composing terminal commands:
+
+```text
+01_启动Sunray基础自检.cmd
+02_启动Sunray基础可视化审核.cmd
+00_停止Sunray基础仿真.cmd
+```
+
+The first entry proves only `Gazebo + PX4 + MAVROS + nonempty MID360` in a
+grounded, unarmed state. The second retains the verified runtime for Gazebo
+inspection until `Ctrl+C`; its terminal and per-run `STATUS.md` remain the
+first error surface. The stop entry deliberately refuses to terminate a
+non-foundation managed run. It is not a substitute for FAST-LIO, controller,
+planner, or formation gates.
+
 Live wait budget: ordinary live probes should wait about 1-2 minutes. A single
 blocking command must not wait more than 5 minutes unless the user explicitly
 authorizes a longer unattended run for that incident. For controller A/B,

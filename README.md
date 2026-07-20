@@ -18,9 +18,31 @@ MoSim_Submission/
   Docs/                           用户手册、仿真分析报告、图件和说明文档
   启动MoSim地面站.cmd             APP启动入口
   启动Gazebo飞行仿真.cmd          Gazebo/PX4验证入口
+  01_启动Sunray基础自检.cmd       无UE基础链路自检入口
+  02_启动Sunray基础可视化审核.cmd 无UE Gazebo地面审核入口
+  00_停止Sunray基础仿真.cmd       仅停止基础链路入口
   停止所有仿真.cmd                清理运行进程入口
   README.md                       本说明文件
 ```
+
+### Sunray 基础链路自助启动
+
+在启动 QGC、UE、FAST-LIO、规划器或控制器前，先双击根目录
+`01_启动Sunray基础自检.cmd`。它只检查当前 ROS1 Noetic / Gazebo Classic /
+PX4 / MAVROS / MID360 链路，不解锁、不起飞、不启动控制器，也不启动 UE。
+
+- 成功条件：`MAVROS connected: True` 且 `/uav1/livox/lidar` 有非空
+  `PointCloud2`；终端会打印本次 `Results/sunray_ros1/<run_id>/` 路径。
+- 失败时：窗口不会立刻关闭；先读终端的 `failure excerpt`，再打开同一目录的
+  `STATUS.md` 和 `failure_excerpt.txt`。
+- 需要看到 Gazebo 时，双击 `02_启动Sunray基础可视化审核.cmd`。显示
+  `READY` 后飞机应处于地面、未解锁状态；在该终端按 `Ctrl+C` 正常停止。
+- 若终端已丢失，只能双击 `00_停止Sunray基础仿真.cmd` 停止同类基础运行。
+  它会拒绝停止 FUEL、Diff、编队或其他非基础任务，避免误杀正在执行的任务。
+
+这三项只解决“基础设施是否可启动、报错在哪里”的问题。FAST-LIO 建图、
+控制器起飞/悬停/降落、FUEL/Diff 和三机编队必须在基础自检通过后，分别使用
+各自独立脚本和结果目录验收，不能把一个基础通过误写成全部任务通过。
 
 ### MWORKS模型入口
 

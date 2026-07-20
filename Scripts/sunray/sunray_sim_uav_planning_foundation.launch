@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Stable single-UAV planning-world entry point for the no-flight runtime gate. -->
+  <arg name="gazebo_enable" default="true"/>
+  <arg name="gui" default="false"/>
+  <arg name="world" default="$(find sunray_simulator)/worlds/planning_test.world"/>
+  <arg name="use_sim_time" default="true"/>
+
+  <group if="$(arg gazebo_enable)">
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="world_name" value="$(arg world)"/>
+      <arg name="gui" value="$(arg gui)"/>
+      <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    </include>
+  </group>
+
+  <arg name="vehicle" default="sunray150_with_mid360"/>
+  <arg name="uav_id" default="1"/>
+  <arg name="uav_init_x" default="1.0"/>
+  <arg name="uav_init_y" default="1.0"/>
+  <arg name="uav_init_z" default="0.2"/>
+  <arg name="uav_init_yaw" default="0.0"/>
+
+  <include file="$(find sunray_simulator)/launch_basic/sunray_px4_basic.launch">
+    <arg name="uav_id" value="$(arg uav_id)"/>
+    <arg name="vehicle" value="$(arg vehicle)"/>
+    <arg name="uav_init_x" value="$(arg uav_init_x)"/>
+    <arg name="uav_init_y" value="$(arg uav_init_y)"/>
+    <arg name="uav_init_z" value="$(arg uav_init_z)"/>
+    <arg name="uav_init_yaw" value="$(arg uav_init_yaw)"/>
+  </include>
+</launch>
