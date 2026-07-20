@@ -2,6 +2,83 @@
 
 本项目面向 A8 四旋翼无人机位姿控制系统设计优化赛题，基于 MWORKS.Sysplorer、Sysblock 和 Syslab 构建可复现的仿真验证工程。
 
+## 比赛提交与快速运行入口
+
+本仓库提交时建议作为“完整源文件包”提供，配合用户手册 PDF、仿真分析报告 PDF 和演示视频一起提交。不要只提交 `Models/`，因为 APP、配置、脚本、结果指标、报告图件和运行说明也属于复现实验所需资产。
+
+推荐提交包结构：
+
+```text
+MoSim_Submission/
+  Models/                         MWORKS模型源文件
+  apps/model_studio/              MoSim Model Studio实验配置界面
+  Config/                         控制器、场景、规划器和Profile配置
+  Scripts/                        批量仿真、指标计算、代码生成和辅助脚本
+  Results/                        报告采用的代表性结果、指标和图件
+  Docs/                           用户手册、仿真分析报告、图件和说明文档
+  启动MoSim地面站.cmd             APP启动入口
+  启动Gazebo飞行仿真.cmd          Gazebo/PX4验证入口
+  停止所有仿真.cmd                清理运行进程入口
+  README.md                       本说明文件
+```
+
+### MWORKS模型入口
+
+模型源文件位于：
+
+```text
+Models/MoSimQuadrotorModel
+Models/QuadrotorControllerBlocks
+Models/QuadrotorExperiments
+```
+
+其中：
+
+| 目录 | 用途 |
+|---|---|
+| `Models/MoSimQuadrotorModel` | 四旋翼整机、机体、旋翼、电机、传感器和结果查看器动画相关模型 |
+| `Models/QuadrotorControllerBlocks` | 控制器、增强层、安全层、故障容错层等可复用模块 |
+| `Models/QuadrotorExperiments` | 单机任务、控制器闭环实验、三机编队实验等可直接打开仿真的实验模型 |
+| `Models/MworksLive` | 实时联合仿真相关模型，比赛前作为扩展能力展示 |
+
+`Models/MworksLive_backup` 是备份目录，不建议放入最终提交包。
+
+### 推荐演示流程
+
+1. 打开 MWORKS/Sysplorer。
+2. 加载 `Models/MoSimQuadrotorModel`、`Models/QuadrotorControllerBlocks` 和 `Models/QuadrotorExperiments`。
+3. 在 `QuadrotorExperiments` 中打开已验收的单机或三机实验模型。
+4. 点击 MWORKS 原生仿真按钮运行。
+5. 在结果查看器中查看曲线和三维动画。
+6. 若使用 APP 演示，运行根目录 `启动MoSim地面站.cmd`，在 Model Studio 中选择在线建模验证、实时联合仿真或生成代码部署页面。
+
+### 文档交付
+
+赛题要求两份 PDF 文档：
+
+```text
+Docs/报告/用户手册_正文骨架.md       用户手册写作源文件
+Docs/报告/仿真分析报告_正文骨架.md   仿真分析报告写作源文件
+Docs/报告/公式与推导.md             报告公式与推导统一来源
+Docs/报告/图/                       报告截图、手绘图和界面图
+```
+
+最终提交时请导出：
+
+```text
+用户手册.pdf
+仿真分析报告.pdf
+演示视频.mp4
+```
+
+### 交付边界说明
+
+- MWORKS 是赛题主线，负责建模、控制器设计、MIL仿真、指标对比、故障/扰动/编队验证和报告证据。
+- Gazebo/PX4/MAVROS/Sunray 是部署验证后端，用于说明生成代码或控制策略进入接近真实飞控链路后的验证过程。
+- QGC、RViz、UE 和 APP 是展示与实验交互层，不替代 MWORKS 或 Gazebo 的控制闭环证据。
+- FAST-LIO、Diff-Planner、FUEL 用于定位、建图、规划和部署场景验证，不应写成控制器本体。
+- `mu_synthesis`、`neural_smc` 等未完全闭合项只能作为理论覆盖或后续工作描述，不能写成已完成验收。
+
 当前证据口径：项目目标以 **MWORKS.Sysblock 控制器仿真为主线**，Sysplorer/Modelica 闭环仿真和脚本指标计算为辅助。现阶段已经完成多组真实 Sysplorer MCP 性能证据；Sysblock 方向已完成 AWFF PID 高度环最小模型、位置环、姿态环、电机分配、三层组合控制器 `AWFF_FullController_Sysblock`、单层扁平图形化控制器 `AWFF_FullControllerFlatGraphical_Sysblock`，以及 L1/INDI/故障隔离图形化控制器包 `AWFF_InnovationGraphicalControllers` 的真实 MCP `load_file/check_model` 验证。图形化 Sysblock 控制器作为 Modelica 整机子组件时，当前编译器会在内部多输入端口解析处失败，因此整机性能主线使用等价 Equation Sysblock 控制器接入 `QuadrotorExperiments.*SysblockClosedLoop`；图形化模型仍是控制器结构、信号流、离散状态、限幅和模式逻辑的主表达形式，Equation 版只作为当前整机混合接入的桥接实现。
 
 当前正式场景矩阵共 `76` 个，均已完成结果生成并通过 evidence bundle 审计；其中 `59` 个为可支撑结论的 `pass` evidence，`17` 个为已标注的边界/负样本证据。负样本主要用于证明 PID/AWFF/纯 L1/纯 LinearMPC 在旋翼退化下不够，需要故障隔离、在线效率估计或控制分配补偿。当前 Sysblock 主线已覆盖阶梯爬升、螺旋爬升、8 字轨迹、质量摄动、横向阵风、旋翼退化、L1-inspired 残差补偿、L1-inspired + INDI-like 组合控制器、LinearMPC-style 外环、在线效率估计控制分配、QP/NMPC-style 安全投影、CBF-style Safety Filter、模式切换、event_log、安全返航/降落闭环、Sunray150 规划避障闭环、GPS dropout 系统级降级场景，以及平面/螺旋 8 字轨迹留痕可视化审查场景。
