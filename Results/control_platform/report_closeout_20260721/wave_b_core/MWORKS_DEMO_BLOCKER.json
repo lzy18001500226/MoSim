@@ -1,0 +1,29 @@
+{
+  "schema": "mosim.controller_evidence.mworks_license_blocker.v1",
+  "created_at": "2026-07-21T02:11:34+08:00",
+  "status": "blocked",
+  "failure_kind": "mworks_demo_license",
+  "scope": "Wave B core controller graphical-model and simulation recheck",
+  "observed_window": {
+    "title": "MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL - Sysplorer [演示版]",
+    "evidence": "Results/control_platform/report_closeout_20260721/wave_b_core/screenshots/preflight/43908_0xA611AA_MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL - Sysplorer _演示版_.png",
+    "capture_manifest": "Results/control_platform/report_closeout_20260721/wave_b_core/screenshots/preflight/capture_manifest.json"
+  },
+  "not_performed": [
+    "MWORKS CheckModel for Wave B routes",
+    "MWORKS model simulation for Wave B routes",
+    "MWORKS result-variable extraction or metric calculation for Wave B routes",
+    "login, authorization, restart, or interaction with an unknown license dialog"
+  ],
+  "evidence_boundary": "Historical CSV files, prior screenshots, and prior result windows remain historical artifacts only. They are not evidence of a current MWORKS check or simulation while the observed Sysplorer session is in demo mode.",
+  "minimal_user_action": "Restore an authorized MWORKS/Sysplorer session, then return to the existing Wave B recheck sequence. Do not use this blocker as a completion record.",
+  "resume_sequence": [
+    "background screenshot and capture-manifest validation",
+    "load controller model file",
+    "CheckModel",
+    "export or capture the real internal graphical model",
+    "simulate only after CheckModel succeeds",
+    "bind result variables, metrics, screenshots, and manifest to the exact controller route"
+  ],
+  "latest_snapshot": "Results/control_platform/report_closeout_20260721/wave_b_core/MWORKS_DEMO_BLOCKER.json"
+}
