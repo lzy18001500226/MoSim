@@ -150,6 +150,8 @@ param(
     [int]$UnrealUdpPort = 5005,
     [string]$UnrealPoseTopic = "/uav1/sunray/gazebo_pose",
     [double]$UnrealStateRateHz = 100.0,
+    [ValidateRange(1, 240)]
+    [int]$UnrealMaxFps = 30,
     [switch]$NoUnreal,
     [switch]$ReuseUnrealWindow,
     [switch]$DisableReviewAccumulation,
@@ -309,13 +311,21 @@ function Start-UnrealLiveMirrorWindow {
         "-MoSimFollowCameraUpCm=28",
         "-MoSimFollowCameraLocationInterpSpeed=0",
         "-MoSimFollowCameraRotationInterpSpeed=0",
+        "-ExecCmds=`"t.MaxFPS $UnrealMaxFps`"",
         "-MoSimNoReviewCollision"
     )
     $ueProcess = Start-Process -FilePath $ue -ArgumentList $args -PassThru
+    try {
+        $ueProcess.PriorityClass = "BelowNormal"
+    } catch {
+        Write-Warning "Unable to lower UE review process priority: $($_.Exception.Message)"
+    }
     [pscustomobject]@{
         process_id = $ueProcess.Id
         udp_port = $UnrealUdpPort
         state_rate_hz = $UnrealStateRateHz
+        max_render_fps = $UnrealMaxFps
+        process_priority = "BelowNormal"
         pose_topic = $UnrealPoseTopic
         fuel_random_seed = $FuelRandomSeed
         camera = "follow_playback_fixed_offset"

@@ -384,6 +384,19 @@ Diff-Planner point-cloud review:
 
 Factory FUEL exploration review:
   entry: Scripts/sunray/start_factory_fuel_single_exploration_review.ps1
+  UE live-review resource contract:
+    `UnrealMaxFps` defaults to 30 and the launched `UnrealEditor` process is
+    lowered to `BelowNormal`. Keep the UDP mirror at 100 Hz; it carries the
+    newest Gazebo-truth state and raising that rate cannot compensate for a
+    low Gazebo real-time factor. For the fixed 64 x 64 m, no-RViz comparison
+    at `Results/sunray_ros1/factory_l2_fuel_rtf_ue_fps30_fixed64_20260721_001`,
+    the 20 Hz MID360 wall-clock rate recovered from 4.15 Hz with uncapped UE
+    to 5.37 Hz, versus a 5.89 Hz headless baseline. UE CPU consumption fell
+    from about six logical cores to about 2.18 logical cores. One 1.44 s
+    sensor-wall-clock gap remained in that short sample, so this is a
+    display-performance recovery, not a 1:1 real-time or control-performance
+    claim. Record an RTF/topic-frequency audit before changing physics,
+    sensor, FAST-LIO, planner, or controller parameters.
   point-cloud config:
     Config/rviz/sunray_ros1_factory_fuel_pointcloud_review.rviz
   3D occupancy config:

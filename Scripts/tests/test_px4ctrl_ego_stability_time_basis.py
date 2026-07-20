@@ -21,6 +21,18 @@ class Px4ctrlEgoStabilityTimeBasisTests(unittest.TestCase):
         self.assertIn("[bool]$PublishHoverDuringTakeoff = $true", source)
         self.assertIn("DIFF_PUBLISH_HOVER_DURING_TAKEOFF=", source)
 
+    def test_factory_fuel_ue_review_is_resource_bounded(self):
+        source = (
+            Path(__file__).resolve().parents[1]
+            / "sunray"
+            / "start_factory_fuel_single_exploration_review.ps1"
+        ).read_text(encoding="utf-8")
+        self.assertIn("[int]$UnrealMaxFps = 30", source)
+        self.assertIn('"-ExecCmds=`"t.MaxFPS $UnrealMaxFps`""', source)
+        self.assertIn('$ueProcess.PriorityClass = "BelowNormal"', source)
+        self.assertIn("max_render_fps = $UnrealMaxFps", source)
+        self.assertIn('process_priority = "BelowNormal"', source)
+
 
 if __name__ == "__main__":
     unittest.main()
