@@ -9,6 +9,16 @@
     "evidence": "Results/control_platform/report_closeout_20260721/wave_b_core/screenshots/preflight/43908_0xA611AA_MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL - Sysplorer _演示版_.png",
     "capture_manifest": "Results/control_platform/report_closeout_20260721/wave_b_core/screenshots/preflight/capture_manifest.json"
   },
+  "last_refreshed_at": "2026-07-21T02:31:49+08:00",
+  "refresh_observation": {
+    "process": "mworks",
+    "process_id": 43908,
+    "title": "MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL - Sysplorer [演示版]",
+    "window_minimized": true,
+    "capture_manifest": "Results/control_platform/report_closeout_20260721/wave_b_core/screenshots/preflight_refresh/capture_manifest.json",
+    "capture_reliability": "not_captured_minimized_window_requires_restore",
+    "action_boundary": "No restore, maximize, login, authorization, restart, model check, or simulation was performed."
+  },
   "not_performed": [
     "MWORKS CheckModel for Wave B routes",
     "MWORKS model simulation for Wave B routes",
