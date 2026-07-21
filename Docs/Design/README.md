@@ -30,6 +30,7 @@ document.
 
 | Document | Purpose |
 |---|---|
+| `架构/01_控制器平台/MWORKS控制器关系与组合架构.md` | Canonical control responsibility chain, PX4/MWORKS plug-in points, actual Model Studio mapping, and verified-preset versus custom-candidate boundary. |
 | `架构/01_控制器平台/控制平台接口与闭环实施规范.md` | G1-G6 control-platform authority for typed interfaces, composition, module registry, promotion gates, and the bounded Factory fault surface. |
 | `架构/00_架构与任务/系统架构问题与决策矩阵.md` | Architecture risks, authority boundaries, remaining design decisions, and traceability matrices that must be frozen before broad implementation. |
 | `架构/00_架构与任务/系统集成接口与编排.md` | Cross-module frames, controller core ABI, profiles, orchestration, launch plans, and code-generation coupling boundaries. |

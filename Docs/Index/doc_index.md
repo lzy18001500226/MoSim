@@ -99,7 +99,8 @@
 |---|---|
 | Design entrypoint | `Docs/Design/README.md` |
 | Competition task scope | `Docs/Design/赛题.md` |
-| Control-system architecture root | `Docs/Design/架构/01_控制器平台/控制体系总览.md` |
+| Control-system relationship and composition root | `Docs/Design/架构/01_控制器平台/MWORKS控制器关系与组合架构.md` |
+| Control-system algorithm family index | `Docs/Design/架构/01_控制器平台/控制体系总览.md` |
 | High-level architecture narrative | `Docs/Design/架构.md` |
 | Unified controller interface and ABI | `Docs/Design/架构/01_控制器平台/统一控制接口.md` |
 | Single-UAV controller implementation | `Docs/Design/架构/01_控制器平台/单机控制器实现.md` |
