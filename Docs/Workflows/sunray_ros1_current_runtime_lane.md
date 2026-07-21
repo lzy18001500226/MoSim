@@ -397,6 +397,23 @@ Factory FUEL exploration review:
     display-performance recovery, not a 1:1 real-time or control-performance
     claim. Record an RTF/topic-frequency audit before changing physics,
     sensor, FAST-LIO, planner, or controller parameters.
+  MID360 input-density performance gate:
+    `-Mid360PluginDownsample` defaults to `4`; it is the Gazebo MID360 plugin
+    ray/point decimation factor, not a physics or controller-rate setting.
+    `-ProfileRuntimeProcesses` is opt-in and writes a run-scoped CPU/RSS
+    profile without changing ROS messages or runtime control. In the clean
+    Factory, seed-1, no-UE/no-RViz, 20 s simulation-time A/B on 2026-07-21
+    with FAST-LIO surface/map filters both held at `0.5 m`, changing only
+    `4 -> 8` raised RTF from `0.2844` to `0.4063`, reduced the
+    final raw LiDAR cloud from `4323` to `2220` points, retained nonempty
+    occupancy (`1537 -> 1509`) and approximately 20 Hz FAST-LIO, and completed
+    takeoff, exploration, and landing without a recorded safety violation.
+    Evidence: `Results/sunray_ros1/factory_l2_fuel_cpu_profile_real_20260721_001/`
+    and `Results/sunray_ros1/factory_l2_fuel_downsample8_cpu_profile_20260721_001/`.
+    Keep `4` as the high-density default. Use `8` only as a short,
+    performance-sensitive candidate until it passes a longer map-continuity
+    and localization gate; this comparison does not establish full-Factory
+    coverage or long-horizon localization accuracy.
   point-cloud config:
     Config/rviz/sunray_ros1_factory_fuel_pointcloud_review.rviz
   3D occupancy config:

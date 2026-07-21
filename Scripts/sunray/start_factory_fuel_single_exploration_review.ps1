@@ -142,6 +142,11 @@ param(
     [string]$FuelSensorPoseSource = "fastlio",
     [ValidateSet("fastlio", "truth", "truth_delta")]
     [string]$FuelFastlioAlignmentZSource = "truth",
+    [ValidateRange(1, 32)]
+    [int]$Mid360PluginDownsample = 4,
+    [switch]$ProfileRuntimeProcesses,
+    [ValidateRange(0.25, 10.0)]
+    [double]$ProfileRuntimeSamplePeriodS = 1.0,
     [switch]$SkipPreflight,
     [switch]$UnlimitedAccumulation,
     [switch]$RecordRosbag,
@@ -205,6 +210,7 @@ $OccupancyCap = if ($UnlimitedAccumulation) { 0 } else { 1000000 }
 $OpenRvizValue = if ($NoRviz) { "false" } else { "true" }
 $KeepAliveValue = if ($NoKeepAlive) { "false" } else { "true" }
 $ReviewAccumulationValue = if ($DisableReviewAccumulation) { "false" } else { "true" }
+$ProfileRuntimeProcessesValue = $ProfileRuntimeProcesses.IsPresent.ToString().ToLowerInvariant()
 if ($FuelRandomSeed -lt -1) {
     throw "FuelRandomSeed must be -1 (random_device) or a non-negative integer: $FuelRandomSeed"
 }
@@ -357,7 +363,7 @@ $envParts = @(
     "FACTORY_MODEL_PATH=$FactoryModelPathWsl",
     "SUNRAY_GAZEBO_LAUNCH_FILE=$ProjectRootWsl/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
     "SUNRAY_STRIP_PX4_MODEL_PATH=true",
-    "SUNRAY_MID360_PLUGIN_DOWNSAMPLE=4",
+    "SUNRAY_MID360_PLUGIN_DOWNSAMPLE=$Mid360PluginDownsample",
     "SUNRAY_LIVOX_PLUGIN_FILENAME=$ProjectRootWsl/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws/devel/lib/liblivox_laser_simulation.so",
     "SUNRAY_MID360_CSV_FILE_NAME=mid360-real-centr.csv",
     "SUNRAY_MID360_GOAL5_CSV_STRIDE=4",
@@ -591,6 +597,17 @@ echo 0 > '$ResultDirWsl/preflight_exit_code.txt'
 export GAZEBO_MODEL_PATH='$FactoryModelPathWsl':"`${GAZEBO_MODEL_PATH:-}"
 rosbag_pid=""
 rosbag_watch_pid=""
+profile_pid=""
+if [[ '$ProfileRuntimeProcessesValue' == 'true' ]]; then
+  python3 Scripts/sunray/profile_fuel_runtime_processes.py \
+    --output-csv '$ResultDirWsl/fuel_runtime_process_profile.csv' \
+    --output-json '$ResultDirWsl/fuel_runtime_process_profile.json' \
+    --sample-period-s '$ProfileRuntimeSamplePeriodS' \
+    --startup-wait-s 240 \
+    --max-runtime-s '$TotalTimeoutS' \
+    > '$ResultDirWsl/fuel_runtime_process_profile.log' 2>&1 &
+  profile_pid=`$!
+fi
 if [[ '$RecordRosbagValue' == 'true' ]]; then
   source /opt/ros/noetic/setup.bash
   if command -v rosbag >/dev/null 2>&1; then
@@ -615,6 +632,10 @@ set +e
 $($envParts -join " ") bash Scripts/sunray/run_px4ctrl_ego_single_gate.sh > '$ResultDirWsl/background_launcher.log' 2>&1
 run_exit=$bashStatus
 echo `$run_exit > '$ResultDirWsl/background_exit_code.txt'
+if [[ -n "`$profile_pid" ]]; then
+  kill -INT "`$profile_pid" >/dev/null 2>&1 || true
+  wait "`$profile_pid" >/dev/null 2>&1 || true
+fi
 if [[ -n "`$rosbag_pid" ]]; then
   kill -INT "`$rosbag_pid" >/dev/null 2>&1 || true
   wait "`$rosbag_pid" >/dev/null 2>&1 || true
