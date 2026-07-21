@@ -23,7 +23,7 @@ se3_basic
 | `控制器组合与整机动画闭环设计.md` | AWFF边界、控制器分层组合、整机母模型、三维动画验收和剩余工作 |
 | `统一控制接口.md` | State、Reference、ControlCommand、Adapter和频率语义 |
 | `单机控制器实现.md` | px4ctrl、PID、SE3等单机控制器实现规范 |
-| `控制器证据矩阵.md` | 控制器覆盖、Simulink/MWORKS可实现性、开源/资料证据和Gazebo接入门禁 |
+| `控制器证据矩阵.md` | 67 条当前路线的控制层归属、输出边界、证据状态和报告可声明范围 |
 | `代码生成与PX4部署.md` | MWORKS/Sysblock生成C/C++、IController包装和PX4部署门禁 |
 | `控制器管理与配置.md` | ControllerProfile、参数版本、切换和回退规则 |
 | `控制增强与容错.md` | INDI、L1、AWFF、DOB/ESO、安全过滤、故障容错 |
