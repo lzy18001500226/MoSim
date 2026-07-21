@@ -82,38 +82,128 @@ MoSim 当前最成熟的项目侧替换点是“位置/平动外环”。因此�
 任何报告都必须同时写出“模块名 + 输出边界 + 下游 owner”。例如：
 
 ```text
-official_pid (position/translation outer loop)
-  -> ATTITUDE_THRUST
-  -> PX4 built-in attitude/rate inner loops and allocator
+ official_pid (position/translation outer loop)
+   -> ATTITUDE_THRUST
+   -> PX4 built-in attitude/rate inner loops and allocator
 ```
 
-## 4. 当前 Model Studio 是怎样映射这套架构的
+## 3.1 模型库边界与入口
 
-`apps/model_studio/src/app.jl` 的当前模型界面不是简单的 Profile 选择器。它有
-“快速预设 / 自定义组合”以及如下配置项：
+控制责任和文件位置必须同时说明。当前四个模型根目录不是四份相同模型，也不能
+互相替代：
 
-| 当前 UI 字段 | 它映射的项目概念 | 不是什么 |
+```text
+Models/MoSimQuadrotorModel/
+  正式项目包：Baseline、Controllers、Dynamics、ExperimentRunner、
+  Formation、Missions、Planning、Robustness、System 等命名空间
+
+Models/QuadrotorControllerBlocks/
+  可复用 Sysblock/方程控制器源码；正式包的 Controllers 命名空间提供部分包装入口
+
+Models/QuadrotorExperiments/
+  现有场景和实现兼容池；许多已登记的闭环模型仍在这里，暂不能按目录名删除
+
+Models/MworksLive/
+  RT0/RT1 实时探针、桥接资源和遥测范围模型；不属于离线整机模型
+```
+
+离线 Profile 的推荐打开链路是：
+
+```text
+Model Studio
+  -> MoSimQuadrotorModel.ExperimentRunner.Runners.*
+  -> typed Adapter
+  -> controller wrapper/source
+  -> shared plant/result contract
+```
+
+当 Profile 仍绑定 `QuadrotorExperiments.*` 时，这表示“现有实现兼容”，不表示
+迁移已经完成；当模型位于 `MworksLive.*` 时，只能作实时探针证据，不能当成离线
+控制器或飞行闭环证据。
+
+## 4. 当前 Model Studio 与统一目标
+
+`apps/model_studio/src/app.jl` 当前仍使用“快速预设 / 自定义组合”和多个下拉框。
+统一后的界面语义改为“主控制器选择 + 环路职责自动解析”。本节区分当前实现和
+目标合同，避免把目标 UI 当成已经完成的代码。
+
+当前实现核对（2026-07-21）：
+
+```text
+当前仍存在：ProfileDropDown、PositionDropDown、AttitudeDropDown、
+AugmentationDropDown、SafetyDropDown、FaultDropDown、FormationDropDown、
+OutputDropDown；OFFLINE_PROFILES 仍有 fault 字段。
+
+因此当前 APP 仍是旧的多下拉候选配置界面，不是下面的“主控制器先选、
+环路 owner 自动解析”实现。本文本轮只统一文档口径，未声称 APP 已完成改造。
+```
+
+APP 改造完成前，任何报告、截图或 agent 回报都必须使用“目标设计”与“当前实现”
+两个标签；不能因为文档已经定义了目标交互，就宣称故障下拉已经删除或环路 owner
+已经由 Registry 自动解析。
+
+| UI 字段/目标控件 | 它映射的项目概念 | 不是什么 |
 | --- | --- | --- |
+| 主控制器 / 控制器方案 | 一个 `nominal_controller` 或已登记 Profile 的主入口 | 不是所有环路的无条件总开关 |
 | UAV 数量、地图、任务轨迹 | 场景和参考来源 | 控制器槽位 |
-| 位置/平动外环 | 一个名义外环控制器 | 所有控制子环的总开关 |
-| 姿态/角速度内环 | 内环 owner/实现选择 | 可与外环并列的第二个名义控制器 |
+| 位置环、速度环、姿态环、角速度环 | 从 Registry/Profile 解析出的职责 owner；默认禁用且只读 | 四个可以随意拼接的名义控制器 |
+| 控制分配/输出边界 | 命令类型和下游 owner | 单纯的显示格式 |
 | 增强与扰动补偿 | 一个当前可选择的增强候选 | 可任意叠加的控制器列表 |
 | 安全层 | 一项安全策略 | 一般轨迹跟踪控制器 |
-| 故障容错层 | 当前主要承载风扰、电机效率等场景注入 | 已完成的 FDI/FTC/重构证明 |
+| 场景扰动 / 故障注入 | 风扰、电机效率等实验条件；默认关闭但可见 | 已完成的 FDI/FTC/重构证明 |
 | 编队控制层 | 0..1 编队参考生成器 | 每架机的电机级协同控制 |
-| 输出边界 | 命令语义和下游 owner 的选择 | 单纯的显示格式 |
 
-该 UI 是当前最小可用编辑面，不是架构的最终上限。后续可把“故障容错层”拆成
-`注入场景`、`FDI/健康监测`、`容错响应/分配` 三个字段，也可让增强层支持显式的
-有序多模块链；这些 UI 优化不应改变本文的控制责任链。
+当前 Registry 已提供 `kind`、`output_variant`、`backend_owner` 等字段，但还没有
+完整的四环 owner 元数据。因此在补齐以下字段之前，APP 不得根据控制器名称自动
+猜测职责：
+
+```json
+{
+  "loop_ownership": {
+    "position": "controller_or_backend_owner",
+    "velocity": "controller_or_backend_owner",
+    "attitude": "controller_or_backend_owner",
+    "body_rate": "controller_or_backend_owner",
+    "allocation": "controller_or_backend_owner"
+  },
+  "display_role": "nominal_controller|inner_controller|augmentation|safety|scenario_injection"
+}
+```
+
+字段补齐前，文档只能使用源码、Adapter 和已冻结 Profile 的审计结论；不能把
+`nominal_controller` 直接等同于“同时拥有位置、速度、姿态和角速度四个环路”。
+
+统一目标中的标准页面顺序为：
+
+```text
+主控制器 / 控制器方案       [可选]
+位置环                      [自动解析，只读/禁用]
+速度环                      [自动解析，只读/禁用]
+姿态环                      [自动解析，只读/禁用]
+角速度环                    [自动解析，只读/禁用]
+控制分配 / 输出边界          [自动解析，只读/禁用]
+增强层                      [默认“无”；只有兼容项可编辑]
+安全约束                    [默认基础限幅]
+场景扰动 / 故障注入          [可见，默认关闭]
+编队参考                    [UAV 数量大于 1 时启用]
+```
+
+“只读/禁用”是有意的可见状态：用户仍能看到当前控制器到底负责哪一个环路，
+但不会误以为可以把四个环路任意拼接。高级自由组合可以作为显式的高级模式，
+开启后也必须通过 Registry、Adapter 和兼容性门禁。
+
+标准控制链不再设置独立的“故障容错层”下拉框。已有故障管理源码和证据暂不删除，
+但它们只能在明确声明 FDI、隔离、重构和安全动作合同的实验 Profile 中使用；普通
+风扰/电机效率实验只进入“场景扰动 / 故障注入”侧栏，并且必须区分 requested 和
+applied 值。
 
 ### 4.1 自定义组合、认证预设和可运行性是三件事
 
 | 状态 | APP 当前实际行为 | 可作出的结论 |
 | --- | --- | --- |
-| 自定义组合 | 各层下拉框可编辑，APP 显示“可配置，需保存并验证”或“结构不兼容” | 只说明候选组合被描述，不能说明已仿真、已代码生成或可运行 |
+| 自定义组合 | 主控制器先选定；环路职责默认只读，显式开启高级模式后才允许编辑兼容槽位 | 只说明候选组合被描述，不能说明已仿真、已代码生成或可运行 |
 | 认证/验证预设 | 选择预设会填充所有字段；只有字段仍与该预设完全匹配，离线 MIL 才可启动 | 该精确组合的认证记录可追溯；改任一字段即成为新候选 |
-| 当前禁用预设 | `QP/NMPC Safety` 仍因数值失稳可见禁用 | 不能通过改名或换 UI 位置绕过门禁 |
+| 当前禁用预设 | `QP/NMPC Safety` 等候选仍可见禁用；场景注入控件也默认关闭 | 不能通过改名或换 UI 位置绕过门禁 |
 | Live 可准备 | 还需连接预检和实时合同通过 | 当前只允许单机、无编队、`official_pid`、PX4 inner、`ATTITUDE_THRUST` 的 50 Hz 合同 |
 
 因此，“APP 支持自由组合”的准确表述是：**可自由编辑候选配置，并由兼容性、预设

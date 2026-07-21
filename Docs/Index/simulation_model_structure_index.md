@@ -3,7 +3,26 @@
 > Maintained map for MoSim simulation models, scenario configs, runner scripts,
 > and result locations.
 
-Status: current structure snapshot, 2026-06-14 CST.
+Status: current structure snapshot, 2026-07-21 CST.
+
+Current authority rule:
+
+```text
+Models/MoSimQuadrotorModel/       formal project package and offline entry surface
+Models/QuadrotorControllerBlocks/ reusable controller source blocks
+Models/QuadrotorExperiments/      implementation/scenario compatibility pool
+Models/MworksLive/                realtime MWORKS probe and bridge package
+Models/MworksLive_backup/         upgrade backup; not an entry surface
+```
+
+These four directories are intentionally not one package yet. The formal
+package already exposes wrappers, dynamics surfaces and ExperimentRunner
+entries, but several implementations still resolve through the controller
+block library or `QuadrotorExperiments`. Do not describe the migration as
+complete until the package references and all runnable scenario bindings have
+been audited. `Models/MworksLive_backup/` is excluded from the four-directory
+authority rule: it is a dated upgrade snapshot and must not be opened as the
+current live package.
 
 This file answers two practical questions:
 
@@ -31,9 +50,11 @@ packet traffic unless they become a stable simulation evidence location.
 
 | Path | Role | Notes |
 |---|---|---|
-| `Models/MoSimQuadrotorModel/` | Formal project-owned quadrotor package surface | New accepted MoSim/Sunray150 model entries should become visible here after checks. |
-| `Models/QuadrotorExperiments/` | Legacy/current implementation and compatibility pool | Still contains many executable scenario implementations and migration sources. Do not treat every legacy entry as final accepted surface. |
-| `Models/QuadrotorControllerBlocks/` | Sysblock/controller block library | Controller source blocks used by closed-loop scenarios and formal controller wrappers. |
+| `Models/MoSimQuadrotorModel/` | Formal project-owned quadrotor package and offline entry surface | Contains baseline, dynamics, controller wrappers, scenario namespaces, `ExperimentRunner`, and compatibility aliases. This is the package a new formal entry should target. |
+| `Models/QuadrotorControllerBlocks/` | Reusable Sysblock/controller source library | Source blocks remain here until their implementation is independently audited and promoted; `MoSimQuadrotorModel.Controllers` exposes formal wrapper namespaces. |
+| `Models/QuadrotorExperiments/` | Implementation and scenario compatibility pool | Still contains executable scenario implementations and migration sources. It is not the preferred new public namespace, but it remains a live dependency for existing entries. |
+| `Models/MworksLive/` | Realtime MWORKS probe/bridge package | RT0/RT1 probes and native bridge resources. It is not an offline plant, controller library, or replacement for `MoSimQuadrotorModel.ExperimentRunner`. |
+| `Models/MworksLive_backup/` | Dated MWORKS upgrade backup | Historical copy only; do not add it to a Modelica load path or use it as evidence. |
 | `Config/scenarios/` | Scenario YAML configs | Configs connect a named scenario to model class, controller choice, runner settings, and result paths. |
 | `Config/gazebo/` | Project-owned Gazebo validation scaffold | Single-UAV exported-controller validation world/model/sensor configs. Gazebo evidence is system-validation evidence, not MWORKS/Syslab competition metric evidence. |
 | `Scripts/mworks/` | MWORKS/Sysplorer runner, check, extraction, and validation scripts | Use these for repeatable checks before claiming simulation evidence. |
@@ -45,9 +66,11 @@ packet traffic unless they become a stable simulation evidence location.
 
 ## 3. Formal Package: `Models/MoSimQuadrotorModel/`
 
-This is the user-facing target package for accepted MoSim quadrotor model
-surfaces. It is currently partly an alias/wrapper layer over
-`QuadrotorExperiments`; that is intentional during migration.
+This is the formal project-owned package for accepted MoSim quadrotor model
+surfaces and offline experiment entry points. It is already the preferred
+namespace, but it is not yet self-contained: some wrappers deliberately extend
+implementations in `QuadrotorExperiments` and source blocks in
+`QuadrotorControllerBlocks`.
 
 ```text
 Models/MoSimQuadrotorModel/
@@ -56,6 +79,7 @@ Models/MoSimQuadrotorModel/
   Baseline/
   Controllers/
   Dynamics/
+  ExperimentRunner/
   Formation/
   LegacyCompatibility/
   Missions/
@@ -66,6 +90,17 @@ Models/MoSimQuadrotorModel/
   Support/
   System/
 ```
+
+The current formal package responsibilities are:
+
+| Namespace | Responsibility | Entry rule |
+|---|---|---|
+| `Baseline/` | Official example/chassis baseline aliases | Use for baseline comparison and plant identity. |
+| `Controllers/` | Formal controller-family wrapper namespaces | Exposes grouped controller blocks without moving source equations prematurely. |
+| `Dynamics/` | Formal dynamics/actuator/wrench surfaces and diagnostic smoke models | Prefer these names for new formal dynamics checks. |
+| `ExperimentRunner/` | Typed offline controller interfaces, adapters, shared plant animation, and output-boundary runners | This is the current reusable offline execution surface; it is not a claim of runtime/PX4 equivalence. |
+| `Formation/`, `Missions/`, `Planning/`, `Robustness/`, `SceneTrace/`, `System/` | Scenario and system namespaces | Add a formal wrapper only after its source, scenario, and evidence mapping are recorded. |
+| `LegacyCompatibility/` | Explicit compatibility aliases | No new primary implementation should be added here. |
 
 Current high-priority dynamics entry surface:
 
@@ -99,8 +134,11 @@ inspect package-browser order.
 
 ## 4. Implementation Pool: `Models/QuadrotorExperiments/`
 
-This package contains current and legacy implementation entries. It remains
-important because many executable scenarios still live here.
+This package is the current implementation/scenario compatibility pool. The
+word “legacy” applies to its public namespace and migration status, not to
+every file inside it: many existing executable scenarios and the current
+dynamics implementation still live here. A file in this tree is not
+automatically deprecated or automatically accepted.
 
 ```text
 Models/QuadrotorExperiments/
@@ -157,6 +195,43 @@ package.order
 
 Backup/upgrade folders are historical artifacts. They are not the preferred
 public controller surface unless a task explicitly reviews and promotes them.
+
+### 5.1 Four-package boundary and opening decision
+
+```text
+Model Studio / offline profile
+  -> MoSimQuadrotorModel.ExperimentRunner.Runners.*
+  -> typed Adapter
+  -> controller implementation
+       -> MoSimQuadrotorModel.Controllers.* wrapper, or
+       -> QuadrotorControllerBlocks.* source block, or
+       -> QuadrotorExperiments.* compatibility scenario
+  -> shared plant / result contract
+
+MWORKS Live probe
+  -> MworksLive.RT0RealtimeProbe*
+  -> native bridge resources
+  -> realtime evidence only
+```
+
+The current `MworksLive` package order contains the RT0 probes, RT1 official-PID
+shadow probes, `RTTelemetryScope50Hz`, and the `Interfaces`/`Plant`/`Adapters`/
+`Runners` namespaces. The dated `MworksLive_backup/upgrade/...` copy is not part
+of this load path.
+
+Use the following decision rule when opening a model:
+
+| User intent | First namespace to inspect | Do not infer |
+|---|---|---|
+| Open the formal offline package | `MoSimQuadrotorModel` | That every child is self-contained. |
+| Inspect a reusable controller graph | `MoSimQuadrotorModel.Controllers` then `QuadrotorControllerBlocks` | That a graph has full-plant closed-loop evidence. |
+| Run an existing named mission/scenario | Its registered `QuadrotorExperiments` scenario or formal wrapper | That the old namespace means the scenario is abandoned. |
+| Inspect realtime MWORKS capability | `MworksLive` | That an RT probe is an offline controller or flight acceptance. |
+
+`Models/MoSimQuadrotorModel.ExperimentRunner` is a Modelica namespace, so the
+filesystem path is `Models/MoSimQuadrotorModel/ExperimentRunner/`. The dot form
+is used only when naming a class, for example
+`MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner`.
 
 ## 6. Scenario Configs: `Config/scenarios/`
 
@@ -435,9 +510,17 @@ You can inspect the current model structure directly in the folder tree:
 ```text
 Models/
   MoSimQuadrotorModel/
-  QuadrotorExperiments/
   QuadrotorControllerBlocks/
+  QuadrotorExperiments/
+  MworksLive/
+  MworksLive_backup/       # dated backup; do not open as current package
 ```
+
+`Models/MoSimQuadrotorModel/` is the formal package root; the other three
+directories are separate source/compatibility/runtime boundaries, not sibling
+formal packages to be opened interchangeably. `MworksLive_backup/` is outside
+this authority set and is shown only to prevent accidental selection of the
+backup as the live package.
 
 What the folder tree shows well:
 

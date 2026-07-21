@@ -1,7 +1,12 @@
 # Model Studio 三模式界面与 QGC 交接设计
 
-> 状态：界面设计基线，2026-07-18。本文冻结 Model Studio、QGC 与
+> 状态：界面设计基线，2026-07-21。本文冻结 Model Studio、QGC 与
 > Orchestrator 的职责和第一版界面，不证明 MWORKS Live、Gazebo 或飞行运行已通过。
+
+实现边界：本文是目标界面合同，不是当前 APP 的完成报告。当前源码仍保留旧的
+多下拉控件和 `FaultDropDown`；目标中的“主控制器先选、环路 owner 自动解析、场景
+注入默认关闭”需要后续 APP 任务单独实现。当前实现核对以
+`MWORKS控制器关系与组合架构.md` 第 4 节为准。
 
 ## 1. 产品定位
 
@@ -42,17 +47,25 @@ Orchestrator
 
 ## 3. 控制链配置
 
-界面按层级展开，不使用一个含混的“控制器”下拉框：
+标准页面先选择一个主控制器/控制器方案，再由 Registry 和 Profile 自动解析每个
+环路的职责。位置环、速度环、姿态环和角速度环在默认模式中必须可见但只读/禁用，
+这样用户能看懂当前控制器替换了哪一层，又不会把四个环路误认为可以任意拼接。
 
 ```text
-任务轨迹
-位置 / 平动外环
-姿态 / 角速度内环
-增强与扰动补偿
-安全层
-故障与控制分配
-输出边界
+主控制器 / 控制器方案       [选择]
+位置环                      [自动显示 owner，禁用]
+速度环                      [自动显示 owner，禁用]
+姿态环                      [自动显示 owner，禁用]
+角速度环                    [自动显示 owner，禁用]
+控制分配 / 输出边界          [自动显示 owner，禁用]
+增强层                      [默认无；兼容项可选]
+安全约束                    [默认基础限幅]
+场景扰动 / 故障注入          [可见，默认关闭]
+编队参考                    [仅多机启用]
 ```
+
+`so3_attitude` 等内环模块不能直接伪装成完整主控制器。若选择它，Profile 必须
+同时声明兼容的外环和输出边界；否则 APP 应显示不兼容并禁止运行。
 
 ### 3.1 ATTITUDE_THRUST v1
 
@@ -86,10 +99,13 @@ frame_contract_id = mosim_enu_flu_quaternion_xyzw_v1
 
 ## 4. 故障注入区
 
-第一版只提供固定方向的风速和四个独立电机效率滑块。滑块改变的是待应用值，不连续发送：
+第一版只提供固定方向的风速和四个独立电机效率滑块。它们属于场景扰动/故障注入，
+不是标准控制链中的“故障容错层”。注入区保持可见，但默认关闭；关闭时滑块不可用，
+且不改变控制器组合。滑块改变的是待应用值，不连续发送：
 
 ```text
 拖动滑块
+  -> 开启“场景注入”
   -> 更新 requested_value
   -> 点击“应用”
   -> Orchestrator 受理
@@ -135,36 +151,46 @@ frame_contract_id
 nominal_rate_hz / deadline_ms / max_command_age_ms
 fallback_profile_id / PX4 parameter snapshot hash
 scenario_id / world_hash / vehicle_ids
+connection_contract_id / target_host / resolved_target_addresses
+rt1_udp_port / ros_master_uri / local_advertised_ip
+requested_rate_hz / selected_rate_hz / protocol_version
+preflight_id / preflight_result_hash
 ```
 
 RunManifest 在 `ready_on_ground` 后不可修改。运行状态、分阶段 ACK、故障事件和遥测进入
 独立 RunStatus/Event 记录，不持续回写 Manifest。
 
-## 7. RT0 前界面口径
+## 7. 在线连接与频率能力口径
 
-以下数值是候选 Profile 默认值，不是已验证能力：
+在线页提供目标主机、RT1 UDP端口、ROS Master URI、本机广播IP和50/100/200 Hz目标频率。
+用户必须先点击“测试连接”，看到ROS Master与RT1双向请求-响应分别通过，才能进入prepare。
+连接失败显示阶段、reason code、耗时和建议动作；测试期间按钮禁用，重复点击复用同一预检。
+
+当前能力分层为：
 
 ```text
-nominal_rate_hz = 100
-deadline_ms = 10
-degraded_after_consecutive_misses = 3
-max_command_age_ms = 50
-failsafe_escalation_ms = 100
+50 Hz = RT0已通过的可用基线
+100 Hz = 已测试未通过，不能发布
+200 Hz = 新目标，能力待验证，不能发布
 ```
 
-RT0 前 `mworks_live` 必须显示“候选值 / 能力待验证”并保持禁用。若 RT0 只能稳定达到
-50 Hz，发布新的 Profile version/hash，并重新冻结整组频率和超时参数，禁止原地修改。
+200 Hz目标需要5 ms周期，因此其deadline、command age和fallback阈值必须由新的RT0结果重新
+冻结，不能沿用50 Hz参数，也不能原地修改`mworks_live_*_50hz_v2`。QGC只显示Orchestrator
+冻结后的端点、Profile、RT0状态、RTT、command age、丢包和fallback，不提供第二套端点编辑。
 
 ## 8. 第一版界面验收
 
 纯界面审核版必须满足：
 
 - 三模式可见，当前模式有明确选中状态；
-- 控制链按层级展开，ATTITUDE_THRUST v1 的 PX4 内环锁定清楚；
+- 第一行先选主控制器，位置/速度/姿态/角速度环的 owner 自动显示且默认禁用；
+- ATTITUDE_THRUST v1 的 PX4 内环和控制分配 owner 锁定清楚；
 - AWFF 位于增强层，自研姿态内环在实时模式可见禁用；
-- 风速和四电机效率均使用稳定尺寸滑块；
+- 场景扰动/故障注入区可见但默认关闭，风速和四电机效率均使用稳定尺寸滑块；
 - 请求值与实际值分开显示；
 - 不包含合成曲线、静态整机拓扑预览或伪运行结果；
 - 离线操作和 QGC 飞行操作不会混淆；
+- 在线地址可编辑、连接测试有真实握手结果，未通过时prepare保持禁用；
+- 50 Hz已通过与200 Hz待验证在界面上不会混为一个“实时可用”状态；
 - 普通桌面和较小窗口下文字不重叠、不越界；
 - 审核版不启动 MWORKS、Gazebo、QGC 或修改模型。
