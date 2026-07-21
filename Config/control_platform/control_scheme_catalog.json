@@ -1,0 +1,490 @@
+{
+  "schema": "mosim.control_scheme_catalog.v1",
+  "version": 1,
+  "authority": "The single source of truth for the finite top-level control schemes shown in reports and the future Model Studio scheme selector. It does not replace per-route evidence status or runtime gates.",
+  "frozen_at": "2026-07-21",
+  "frozen_decision": "49 complete top-level control schemes: 43 competition primary routes, one px4ctrl engineering baseline, and five named fixed integrated chains. Generic augmentations, safety, fault management, formation, planning, injections, allocators, and adapters are not multiplicative scheme dimensions.",
+  "frozen_scheme_count": 49,
+  "count_summary": {
+    "competition_primary_routes": 43,
+    "engineering_baseline": 1,
+    "fixed_integrated_schemes": 5,
+    "total": 49
+  },
+  "selection_contract": {
+    "one_top_level_scheme_per_run": true,
+    "generic_augmentation_selector": "not_exposed_in_standard_ui",
+    "fixed_integrated_scheme_policy": "A scheme may contain multiple named internal blocks only when their order, interfaces, limits, fallback, source configuration, and evidence boundary are fixed together.",
+    "mpc_role": "MPC/NMPC is a nominal optimization outer-loop family, not a generic augmentation.",
+    "not_counted_as_top_level_schemes": [
+      "generic_augmentation_or_ablation_module",
+      "safety_filter_or_reference_governor",
+      "fault_manager",
+      "formation_reference_generator",
+      "scenario_disturbance_or_fault_injection",
+      "backend_inner_loop_allocator_or_adapter"
+    ]
+  },
+  "research_basis": [
+    {
+      "topic": "MPC as an outer-loop controller",
+      "citation": "Cascaded model predictive control of a quadrotor UAV",
+      "year": 2013,
+      "doi": "10.1109/AUCC.2013.6697298",
+      "decision": "Treat MPC/NMPC as a primary nominal-control family rather than an augmentation checkbox."
+    },
+    {
+      "topic": "INDI as a lower-level augmentation",
+      "citation": "Adaptive Incremental Nonlinear Dynamic Inversion for Attitude Control of Micro Air Vehicles",
+      "year": 2016,
+      "doi": "10.2514/1.G001490",
+      "decision": "Expose INDI only inside an explicitly declared fixed chain or a controlled ablation, not as an arbitrary stack with every controller."
+    },
+    {
+      "topic": "L1 adaptive residual compensation",
+      "citation": "Position trajectory tracking of a quadrotor helicopter based on L1 adaptive control",
+      "year": 2013,
+      "doi": "10.23919/ECC.2013.6669410",
+      "decision": "Keep L1-inspired residual compensation tied to a named nominal controller and bounded interface."
+    }
+  ],
+  "schemes": [
+    {
+      "scheme_id": "cascade_pid",
+      "display_name_zh": "串级 PID",
+      "display_name_en": "Cascade PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "cascade_pid"
+    },
+    {
+      "scheme_id": "gain_scheduled_pid",
+      "display_name_zh": "增益调度 PID",
+      "display_name_en": "Gain-Scheduled PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "gain_scheduled_pid"
+    },
+    {
+      "scheme_id": "fuzzy_pid",
+      "display_name_zh": "模糊 PID",
+      "display_name_en": "Fuzzy PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "fuzzy_pid"
+    },
+    {
+      "scheme_id": "neural_pid",
+      "display_name_zh": "神经 PID",
+      "display_name_en": "Neural PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "neural_pid"
+    },
+    {
+      "scheme_id": "official_pid",
+      "display_name_zh": "官方 PID",
+      "display_name_en": "Official PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "official_pid"
+    },
+    {
+      "scheme_id": "lqg",
+      "display_name_zh": "LQG",
+      "display_name_en": "LQG",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "lqg"
+    },
+    {
+      "scheme_id": "feedback_linearization",
+      "display_name_zh": "反馈线性化",
+      "display_name_en": "Feedback Linearization",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "feedback_linearization"
+    },
+    {
+      "scheme_id": "passivity_based_control",
+      "display_name_zh": "无源控制",
+      "display_name_en": "Passivity-Based Control",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "passivity_based_control"
+    },
+    {
+      "scheme_id": "adaptive_backstepping",
+      "display_name_zh": "自适应反步控制",
+      "display_name_en": "Adaptive Backstepping",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "adaptive_backstepping"
+    },
+    {
+      "scheme_id": "lqr_baseline",
+      "display_name_zh": "LQR",
+      "display_name_en": "LQR",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "lqr_baseline"
+    },
+    {
+      "scheme_id": "lqi_baseline",
+      "display_name_zh": "LQI",
+      "display_name_en": "LQI",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "lqi_baseline"
+    },
+    {
+      "scheme_id": "hinf_hover_wrench",
+      "display_name_zh": "H 无穷悬停控制",
+      "display_name_en": "H-Infinity Hover Control",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "hinf_hover_wrench"
+    },
+    {
+      "scheme_id": "mu_synthesis",
+      "display_name_zh": "mu 综合",
+      "display_name_en": "Mu Synthesis",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "mu_synthesis"
+    },
+    {
+      "scheme_id": "backstepping_baseline",
+      "display_name_zh": "反步控制",
+      "display_name_en": "Backstepping",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "backstepping_baseline"
+    },
+    {
+      "scheme_id": "pole_placement_luenberger",
+      "display_name_zh": "极点配置与 Luenberger 观测器",
+      "display_name_en": "Pole Placement with Luenberger Observer",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "pole_placement_luenberger"
+    },
+    {
+      "scheme_id": "mrac",
+      "display_name_zh": "模型参考自适应控制",
+      "display_name_en": "MRAC",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "mrac"
+    },
+    {
+      "scheme_id": "ndi",
+      "display_name_zh": "非线性动态逆",
+      "display_name_en": "NDI",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "ndi"
+    },
+    {
+      "scheme_id": "fopid",
+      "display_name_zh": "分数阶 PID",
+      "display_name_en": "Fractional-Order PID",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "fopid"
+    },
+    {
+      "scheme_id": "h2_state_feedback",
+      "display_name_zh": "H2 状态反馈",
+      "display_name_en": "H2 State Feedback",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "h2_state_feedback"
+    },
+    {
+      "scheme_id": "integral_smc",
+      "display_name_zh": "积分滑模控制",
+      "display_name_en": "Integral Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "integral_smc"
+    },
+    {
+      "scheme_id": "terminal_smc",
+      "display_name_zh": "终端滑模控制",
+      "display_name_en": "Terminal Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "terminal_smc"
+    },
+    {
+      "scheme_id": "nonsingular_terminal_smc",
+      "display_name_zh": "非奇异终端滑模控制",
+      "display_name_en": "Nonsingular Terminal Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "nonsingular_terminal_smc"
+    },
+    {
+      "scheme_id": "super_twisting_smc",
+      "display_name_zh": "Super-Twisting 滑模控制",
+      "display_name_en": "Super-Twisting Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "super_twisting_smc"
+    },
+    {
+      "scheme_id": "adaptive_smc",
+      "display_name_zh": "自适应滑模控制",
+      "display_name_en": "Adaptive Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "adaptive_smc"
+    },
+    {
+      "scheme_id": "fuzzy_smc",
+      "display_name_zh": "模糊滑模控制",
+      "display_name_en": "Fuzzy Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "fuzzy_smc"
+    },
+    {
+      "scheme_id": "neural_smc",
+      "display_name_zh": "神经滑模控制",
+      "display_name_en": "Neural Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "neural_smc"
+    },
+    {
+      "scheme_id": "smc_boundary_layer",
+      "display_name_zh": "边界层滑模控制",
+      "display_name_en": "Boundary-Layer Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "smc_boundary_layer"
+    },
+    {
+      "scheme_id": "linear_mpc",
+      "display_name_zh": "线性 MPC",
+      "display_name_en": "Linear MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "linear_mpc"
+    },
+    {
+      "scheme_id": "robust_mpc",
+      "display_name_zh": "鲁棒 MPC",
+      "display_name_en": "Robust MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "robust_mpc"
+    },
+    {
+      "scheme_id": "adaptive_mpc",
+      "display_name_zh": "自适应 MPC",
+      "display_name_en": "Adaptive MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "adaptive_mpc"
+    },
+    {
+      "scheme_id": "tube_mpc",
+      "display_name_zh": "管束 MPC",
+      "display_name_en": "Tube MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "tube_mpc"
+    },
+    {
+      "scheme_id": "explicit_gain_scheduled_mpc",
+      "display_name_zh": "显式增益调度 MPC",
+      "display_name_en": "Explicit Gain-Scheduled MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "explicit_gain_scheduled_mpc"
+    },
+    {
+      "scheme_id": "ilqr",
+      "display_name_zh": "iLQR",
+      "display_name_en": "iLQR",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "ilqr"
+    },
+    {
+      "scheme_id": "mppi",
+      "display_name_zh": "MPPI",
+      "display_name_en": "MPPI",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "mppi"
+    },
+    {
+      "scheme_id": "nmpc_outer",
+      "display_name_zh": "NMPC 外环",
+      "display_name_en": "NMPC Outer Loop",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "nmpc_outer"
+    },
+    {
+      "scheme_id": "se3_basic",
+      "display_name_zh": "SE(3) 几何控制",
+      "display_name_en": "SE(3) Geometric Control",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "se3_basic"
+    },
+    {
+      "scheme_id": "dfbc_basic",
+      "display_name_zh": "基础微分平坦控制",
+      "display_name_en": "Basic Differential-Flatness Control",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "dfbc_basic"
+    },
+    {
+      "scheme_id": "dfbc_high_order_attitude",
+      "display_name_zh": "高阶微分平坦姿态输出",
+      "display_name_en": "High-Order DFBC Attitude Output",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "dfbc_high_order_attitude"
+    },
+    {
+      "scheme_id": "dfbc_high_order_bodyrate",
+      "display_name_zh": "高阶微分平坦角速度输出",
+      "display_name_en": "High-Order DFBC Body-Rate Output",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "dfbc_high_order_bodyrate"
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_attitude",
+      "display_name_zh": "平滑鲁棒微分平坦姿态输出",
+      "display_name_en": "Smooth-Robust DFBC Attitude Output",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "dfbc_smooth_robust_attitude"
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_bodyrate",
+      "display_name_zh": "平滑鲁棒微分平坦角速度输出",
+      "display_name_en": "Smooth-Robust DFBC Body-Rate Output",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "dfbc_smooth_robust_bodyrate"
+    },
+    {
+      "scheme_id": "trained_neural_residual",
+      "display_name_zh": "训练神经残差控制",
+      "display_name_en": "Trained Neural Residual Control",
+      "category": "learning",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "trained_neural_residual"
+    },
+    {
+      "scheme_id": "rl_gain_scheduler",
+      "display_name_zh": "强化学习增益调度",
+      "display_name_en": "RL Gain Scheduler",
+      "category": "learning",
+      "entry_type": "competition_primary_route",
+      "evidence_matrix_controller": "rl_gain_scheduler"
+    },
+    {
+      "scheme_id": "px4ctrl",
+      "display_name_zh": "px4ctrl 工程基线",
+      "display_name_en": "px4ctrl Engineering Baseline",
+      "category": "engineering_baseline",
+      "entry_type": "engineering_baseline",
+      "registry_module_id": "px4ctrl"
+    },
+    {
+      "scheme_id": "fixed_awff_pid",
+      "display_name_zh": "抗积分饱和与参考前馈 PID",
+      "display_name_en": "Anti-Windup and Reference-Feedforward PID",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "source_config": "Config/controllers/awff_pid/default.yaml",
+      "source_controller_id": "awff_pid",
+      "selection_state": "offline_evidence_available",
+      "fixed_order": [
+        "pid_outer_and_attitude_chain",
+        "conditional_integration_anti_windup",
+        "vertical_reference_feedforward",
+        "motor_mixing"
+      ],
+      "deduplication_note": "This is a project-owned full controller component, not the generic awff_v1 augmentation profile."
+    },
+    {
+      "scheme_id": "fixed_awff_l1_residual",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
+      "display_name_en": "Anti-Windup Feedforward PID with L1-Inspired Residual Compensation",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "source_config": "Config/controllers/l1_residual_sysblock/default.yaml",
+      "source_controller_id": "l1_residual_sysblock",
+      "selection_state": "offline_evidence_available",
+      "fixed_order": [
+        "awff_pid_base_chain",
+        "bounded_l1_inspired_residual_compensation",
+        "motor_mixing"
+      ],
+      "deduplication_note": "The L1 residual is fixed inside this Sysblock chain; it is not an arbitrary attachment to all 43 primary routes."
+    },
+    {
+      "scheme_id": "fixed_awff_l1_indi",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
+      "display_name_en": "Anti-Windup Feedforward PID with L1 Residual and INDI-Like Attitude Correction",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "source_config": "Config/controllers/awff_indi_sysblock/default.yaml",
+      "source_controller_id": "awff_indi_sysblock",
+      "selection_state": "offline_evidence_available",
+      "fixed_order": [
+        "awff_pid_base_chain",
+        "bounded_l1_inspired_residual_compensation",
+        "indi_like_attitude_correction",
+        "motor_mixing"
+      ],
+      "deduplication_note": "This is a fixed controller topology with one source model, not the matrix pid_indi augmentation row."
+    },
+    {
+      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
+      "display_name_en": "Linear MPC Outer Loop with L1 Residual and INDI-Like Attitude Correction",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "source_config": "Config/controllers/linear_mpc_sysblock/default.yaml",
+      "source_controller_id": "linear_mpc_sysblock",
+      "selection_state": "offline_evidence_available",
+      "fixed_order": [
+        "finite_horizon_linear_mpc_outer_loop",
+        "bounded_l1_inspired_residual_feedforward",
+        "indi_like_attitude_inner_loop",
+        "motor_mixing"
+      ],
+      "deduplication_note": "Distinct from the P4 matrix linear_mpc generated-C route: this Sysblock chain has an explicit L1 residual and INDI-like inner layer."
+    },
+    {
+      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
+      "display_name_en": "QP/NMPC Outer Loop with L1, INDI, and CBF-Style Safety Projection",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "source_config": "Config/controllers/nmpc_indi_l1/default.yaml",
+      "source_controller_id": "nmpc_indi_l1",
+      "selection_state": "visible_disabled",
+      "fixed_order": [
+        "fixed_iteration_qp_mpc_with_nmpc_projection",
+        "bounded_l1_compensation",
+        "indi_attitude_inner_loop",
+        "cbf_style_reference_and_command_projection",
+        "mode_manager_and_motor_mixing"
+      ],
+      "deduplication_note": "Distinct from nmpc_outer because its safety projection and mode manager are integral parts of this fixed topology. It remains disabled until its numerical gate passes."
+    }
+  ]
+}
