@@ -1,12 +1,1 @@
-PIDBaselines
-RotorLoss
-Mass20AWFFBaseline
-Mass20AWFF
-Mass20L1
-Mass20LinearMPC
-WindGustAWFF
-WindGustAWFFBaseline
-WindGustL1
-WindGustLinearMPC
-SafetyQPNMPC
-SafetyReturnLand
+Scenarios
