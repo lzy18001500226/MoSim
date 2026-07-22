@@ -75,4 +75,4 @@ Diff three-UAV execute target errors: 0.0291 / 0.0165 / 0.0153 m
 Forbidden claims: do not mechanically require jerk/snap for every controller;
 only DFBC-Full and related high-dynamic variants require it. Do not claim
 user-frozen G9-C acceptance, body-rate/torque-level DFBC, MWORKS-generated
-acceptance, or PX4-native deployment from the current G9-C Basic evidence.
+acceptance, or PX4-native deployment from the historical G9-C Basic evidence.

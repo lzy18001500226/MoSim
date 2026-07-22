@@ -3,7 +3,7 @@
 > Maintained map for MoSim simulation models, scenario configs, runner scripts,
 > and result locations.
 
-Status: current structure snapshot, 2026-07-21 CST.
+Status: current structure snapshot, 2026-07-22 CST.
 
 Current authority rule:
 
@@ -63,6 +63,67 @@ packet traffic unless they become a stable simulation evidence location.
 | `Scripts/tests/` | Scripted regression and quality tests | Use for non-GUI validation and repeated evidence checks. |
 | `Results/` | Reproducible outputs, metrics, logs, figures, packets, screenshots, and evidence bundles | Stable result locations should be recorded here; scratch output should not become a claim source without review. |
 | `References/MWORKS/QuadrotorModel/` | Official/upstream MWORKS quadrotor baseline | Baseline/reference only. Do not silently modify as project-owned model work. |
+
+## 2.1 G4 Current Model Entry Mapping and Non-destructive Refactor Contract
+
+Status: G3 contract frozen and G4 static mapping completed. This section does
+not claim a MWORKS run, graphical acceptance, or simulation result.
+
+The planned G4 deliverable is:
+
+```text
+Config/control_platform/current_model_entry_map.json
+```
+
+It must contain exactly the 49 `scheme_id` values from
+`Config/control_platform/control_scheme_catalog.json`, using the G1 inventory
+only as source-candidate and blocker input. Its rows must retain the catalog
+`entry_type` and declare one of these explicit states:
+
+| Mapping state | Required meaning |
+|---|---|
+| `resolved_current_model` | `current_model_file` is a project-owned path below `Models/`, its Modelica class/name is recorded, and the G4 compatibility decision is recorded. This mapping alone does not authorize a MWORKS run. |
+| `blocked_missing_current_model` | No current model entry is available. Record a stable blocker code and the source candidates inspected. |
+| `not_applicable_runtime_baseline` | Reserved only for `px4ctrl`; it is a ROS1/PX4 engineering baseline, not an MWORKS graphical scheme. |
+
+`Results/` files, including the existing model-operation catalog copies, are
+historical evidence or source candidates only. They must never become the
+`current_model_file` of a `resolved_current_model` row. The
+`model_operation_catalog.json` remains an allowlisted Model Studio operation
+catalog; it is not the 49-scheme current-model-entry registry and cannot grant
+G4/G5 MWORKS eligibility by itself.
+
+G4 is non-destructive: do not move, delete, overwrite, or silently rename an
+existing `.mo` file. Preserve source paths and hashes, add a formal wrapper or
+compatibility alias only when needed, update `package.order` and references in
+the same change, then record the old-to-new decision in the mapping row. G4
+does not open MWORKS, generate code, run Gazebo/ROS/UE, or claim a simulation
+result. G5 starts only after the mapping checker and the existing G1 inventory
+checker both pass.
+
+The formal import surface for archived graphical controller cores is
+`Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/`. It is grouped by the
+six nominal controller families and contains non-destructive package-context
+copies only. A `GraphicalMIL` entry is a controller-core inspection target, not
+a whole-aircraft model, not a runtime backend, and not automatic MWORKS run
+authorization. Its source-derived package copy is generated as UTF-8 LF text
+without line-end whitespace; only those formatting bytes may be canonicalized,
+while declarations, equations, annotations and G5 layout changes remain
+protected. Its exact source hash and import text are checked by:
+
+```text
+Scripts/quality/import_current_graphical_mil_models.py --check
+Scripts/quality/build_current_model_entry_map.py --check
+Scripts/quality/check_current_model_entry_map.py
+```
+
+G4 static mapping result: the checked map currently has 49 rows with
+`46 resolved_current_model`, `2 blocked_missing_current_model` (`mu_synthesis`
+and `neural_smc`), and one `not_applicable_runtime_baseline` (`px4ctrl`). It
+contains 41 imported controller cores and five existing fixed integrated
+whole-aircraft entries. All 49 rows remain `mworks_run_eligible=false`; G5 must
+still inspect internal topology and establish the first minimum closed-loop
+evidence or preserve its blocker.
 
 ## 3. Formal Package: `Models/MoSimQuadrotorModel/`
 

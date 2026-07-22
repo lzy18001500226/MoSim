@@ -20,7 +20,7 @@ PX4 dependency: v1 reuses PX4 attitude loop, rate loop and allocation. It does
 not silently bypass PX4 inner loops.
 
 MWORKS/codegen route: MWORKS model and solver feasibility -> generated/wrapped
-core -> deadline and fallback checks -> Gazebo validation. Current G9-F C++
+core -> deadline and fallback checks -> Gazebo validation. Historical G9-F C++
 backend is a bounded short-horizon surrogate used to prove the G9 interface and
 evidence route before a full generated solver is released.
 
@@ -99,6 +99,6 @@ output = desired attitude quaternion + normalized thrust through px4ctrl adapter
 
 Forbidden claims: do not claim full nonlinear online NMPC solver, rotor-level
 NMPC, hard real-time solver feasibility, user-frozen G9-F acceptance,
-MWORKS-generated acceptance, or PX4-native deployment from the current G9-F
+MWORKS-generated acceptance, or PX4-native deployment from the historical G9-F
 evidence. NMPC with INDI/L1 is a composite profile, not the same as standalone
 NMPC.

@@ -1,5 +1,10 @@
 # Controller Cards
 
+> 历史说明：下文 G8/G9/G10/G11 是此前控制器研究与证据波次的标签。它们保留
+> source/profile/evidence 追溯价值，但不定义当前 G1-G7 的执行顺序，也不授权在
+> G1-G4 启动 MWORKS、Gazebo、代码生成或部署。当前入口是
+> `Docs/Workflows/controller_evidence_closeout.md`。
+
 本目录记录名义控制器规格。每个文档必须先说明控制链路位置、输入、输出层级、
 是否复用PX4内环、MWORKS/codegen路线和当前证据状态。
 
@@ -24,7 +29,7 @@ accepted: 用户审核通过并冻结为可复用基线
 卡片状态和Profile状态不是同一字段。卡片可以处于`DESIGNED`，但只要Profile仍是
 `planned`，对应ExperimentProfile就只能放在`Config/profiles/candidates/`。
 
-## 批次边界
+## 历史批次边界
 
 | 批次 | 卡片 | 说明 |
 | --- | --- | --- |
@@ -42,11 +47,11 @@ accepted: 用户审核通过并冻结为可复用基线
 研究/候选卡片只代表需求和架构位置已记录，不代表当前实现承诺。任何卡片进入
 实施前，都必须补充实验Profile、参考实现、参数、门禁和证据目录。
 
-当前控制器路线不是“G10后冻结一个最佳栈”。G11要求所有进入`implemented`或
+历史控制器路线不是“G10后冻结一个最佳栈”。历史 G11 要求所有进入`implemented`或
 `accepted`的控制器、以及被批准的控制器+增强组合，都完成MWORKS/codegen
 闭环；只跑通最佳候选不能代表平台控制器族完成。
 
-当前G9首批机器入口：
+历史 G9 首批机器入口：
 
 ```text
 Config/profiles/experiments/g9_official_pid_figure8_v1.json
@@ -57,7 +62,7 @@ Config/profiles/experiments/g9_pid_indi_figure8_v1.json
 Config/profiles/experiments/g9_nmpc_outer_figure8_v1.json
 ```
 
-`g9_official_pid_figure8_v1`当前是`implemented`入口：C++ ATTITUDE_THRUST
+以下 `g9_*` 条目是历史 `implemented` 证据入口，不是当前运行命令。`g9_official_pid_figure8_v1`当前是`implemented`入口：C++ ATTITUDE_THRUST
 后端、静态门禁、单机Gazebo任务、Diff单机和Diff三机证据已存在；用户冻结
 验收、MWORKS生成代码验收和PX4-native部署仍需后续证据。
 

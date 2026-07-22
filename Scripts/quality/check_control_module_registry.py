@@ -25,7 +25,7 @@ REQUIRED_SLOTS = {
     "augmentation", "safety_filter", "attitude_rate_inner",
     "control_allocator", "command_adapter",
 }
-ALLOWED_KINDS = REQUIRED_SLOTS
+ALLOWED_KINDS = REQUIRED_SLOTS | {"fault_manager"}
 ALLOWED_SECTIONS = {
     "controller_profiles",
     "augmentation_profiles",
@@ -33,6 +33,8 @@ ALLOWED_SECTIONS = {
     "inner_controller_profiles",
     "allocator_profiles",
     "adapter_profiles",
+    "formation_profiles",
+    "fault_profiles",
 }
 ACTIVE_STATUSES = {"active", "implemented", "accepted"}
 COMMAND_VARIANT_ALIASES = {"BODYRATE_THRUST": "BODY_RATE_THRUST"}
@@ -43,6 +45,7 @@ SECTION_FAMILY_FIELDS = {
     "inner_controller_profiles": "module_family",
     "allocator_profiles": "module_family",
     "adapter_profiles": "module_family",
+    "formation_profiles": "formation_id",
 }
 SECTION_ALLOWED_KINDS = {
     "controller_profiles": {"nominal_controller", "attitude_rate_inner"},
@@ -51,7 +54,18 @@ SECTION_ALLOWED_KINDS = {
     "inner_controller_profiles": {"attitude_rate_inner"},
     "allocator_profiles": {"control_allocator"},
     "adapter_profiles": {"command_adapter"},
+    "formation_profiles": {"formation_controller"},
+    "fault_profiles": {"fault_manager"},
 }
+FAULT_FAMILY_BY_MODE = {
+    "fdi": "fault_detection_and_isolation",
+    "passive_ftc": "passive_fault_tolerant_control",
+    "active_ftc": "active_fault_tolerant_control",
+    "fault_aware_control_allocation": "fault_aware_control_allocation",
+    "single_motor_safe_landing": "single_motor_safe_landing",
+    "multi_fault_estimation_reconfiguration": "multi_fault_estimation_and_reconstruction",
+}
+FAULT_OUTPUT_VARIANTS = {"FAULT_EVENT", "ROTOR_COMMAND", "ROTOR_COMMAND_AND_LAND_ACTION"}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -148,8 +162,11 @@ def validate(registry: dict[str, Any]) -> list[dict[str, str]]:
         catalog_status = str(entry.get("implementation_status", "accepted" if profile_id == "none" else ""))
         if status != catalog_status:
             add("CMR-DRIFT-01", f"{module_id} status {status} != catalog status {catalog_status}")
-        family_field = SECTION_FAMILY_FIELDS[section]
-        if str(entry.get(family_field, "")) != str(module.get("family", "")):
+        if section == "fault_profiles":
+            expected_family = FAULT_FAMILY_BY_MODE.get(str(entry.get("management_mode", "")), "")
+        else:
+            expected_family = str(entry.get(SECTION_FAMILY_FIELDS[section], ""))
+        if expected_family != str(module.get("family", "")):
             add("CMR-DRIFT-03", f"{module_id} family does not match catalog")
         selectable = module.get("selectable")
         if not isinstance(selectable, bool):
@@ -199,6 +216,14 @@ def validate(registry: dict[str, Any]) -> list[dict[str, str]]:
             for field in ("backend_inner_profile", "backend_allocator_profile"):
                 if str(module.get(field, "")) != str(entry.get(field, "")):
                     add("CMR-DRIFT-09", f"{module_id} {field} does not match catalog")
+        elif section == "formation_profiles":
+            if str(module.get("output_variant", "")) != "MULTI_UAV_REFERENCE":
+                add("CMR-FORMATION-01", f"{module_id} must output MULTI_UAV_REFERENCE")
+        elif section == "fault_profiles":
+            if str(module.get("input_variant", "")) != "ROTOR_COMMAND_AND_RESPONSE":
+                add("CMR-FAULT-01", f"{module_id} must consume ROTOR_COMMAND_AND_RESPONSE")
+            if str(module.get("output_variant", "")) not in FAULT_OUTPUT_VARIANTS:
+                add("CMR-FAULT-02", f"{module_id} has unsupported fault-manager output")
 
     modules_by_profile = {
         str(module.get("profile_id")): module

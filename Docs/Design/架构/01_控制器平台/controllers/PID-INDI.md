@@ -104,4 +104,4 @@ output interface.
 
 Forbidden claims: do not claim user-frozen G9-E acceptance, standalone INDI,
 body-rate/torque/rotor-level INDI, actuator-effectiveness INDI, MWORKS-generated
-acceptance, or PX4-native deployment from the current G9-E evidence.
+acceptance, or PX4-native deployment from the historical G9-E evidence.

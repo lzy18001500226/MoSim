@@ -1,0 +1,3583 @@
+{
+  "schema": "mosim.report_controller_asset_audit.v1",
+  "status": "static_audit_pending_manual_mworks_review",
+  "authorities": {
+    "controller_matrix": "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json",
+    "document_evidence_inventory": "Results/control_platform/controller_document_evidence_20260720/CONTROLLER_DOCUMENT_EVIDENCE_INVENTORY.json"
+  },
+  "claim_boundary": [
+    "This audit checks report-copy files and static provenance only; it does not open MWORKS or run a simulation.",
+    "A nonduplicate PNG is not automatically a readable internal controller diagram.",
+    "A result-viewer screenshot and metrics file do not replace a route-bound native Result.msr or live-session verification.",
+    "Only a review that opens the actual internal control-law submodel may mark wiring/layout as passed."
+  ],
+  "summary": {
+    "controller_matrix_rows": 67,
+    "matrix_status_counts": {
+      "accepted": 27,
+      "executed_blocked": 33,
+      "not_run": 7
+    },
+    "report_asset_pair_count": 65,
+    "missing_visual_asset_routes": [
+      "mu_synthesis",
+      "neural_smc"
+    ],
+    "model_duplicate_group_count": 4,
+    "model_duplicate_replacement_count": 7,
+    "result_duplicate_group_count": 5,
+    "result_duplicate_replacement_count": 5,
+    "vertical_model_capture_routes": [],
+    "model_source_present_count": 65,
+    "source_classification_counts": {
+      "atomic_cfunction_wrapper": 17,
+      "implementation_blocked": 2,
+      "native_graphical_candidate": 47,
+      "source_mapping_ambiguous": 1
+    },
+    "atomic_cfunction_wrapper_routes": [
+      "backstepping_baseline",
+      "dfbc_dob_eso",
+      "dfbc_dob_eso_disabled",
+      "dfbc_high_order_attitude",
+      "dfbc_high_order_bodyrate",
+      "dfbc_smooth_robust_attitude",
+      "dfbc_smooth_robust_bodyrate",
+      "fopid",
+      "h2_state_feedback",
+      "hinf_hover_wrench",
+      "l1_awff_minimal",
+      "lqi_baseline",
+      "lqr_baseline",
+      "mrac",
+      "ndi",
+      "pole_placement_luenberger",
+      "so3_attitude"
+    ],
+    "source_mapping_ambiguous_routes": [
+      "terminal_smc"
+    ],
+    "numeric_result_present_count": 67,
+    "native_result_msr_present_count": 8,
+    "manual_layout_reviews_required": 47,
+    "result_title_mismatch_routes": [
+      "awff",
+      "backstepping_baseline",
+      "complete_adrc",
+      "dfbc_basic",
+      "fopid",
+      "l1_adaptive",
+      "lqi_baseline",
+      "lqr_baseline",
+      "mrac",
+      "ndi",
+      "official_pid",
+      "parameter_scheduling",
+      "pid_indi",
+      "pole_placement_luenberger",
+      "se3_basic",
+      "smc_boundary_layer",
+      "so3_attitude",
+      "standardized_indi",
+      "trained_neural_residual"
+    ],
+    "result_title_unresolved_routes": []
+  },
+  "duplicate_groups": {
+    "graphical_model": [
+      {
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "routes": [
+          "h2_state_feedback",
+          "mrac",
+          "ndi",
+          "pole_placement_luenberger"
+        ]
+      },
+      {
+        "sha256": "A06B0665DC1FEA88BD71BF31B61E901A8DF9E6EDBEC9B3BE0E71AE939AAE6DC5",
+        "routes": [
+          "dfbc_high_order_attitude",
+          "dfbc_high_order_bodyrate"
+        ]
+      },
+      {
+        "sha256": "E0BD446114E194557E5B08400D534E6BC9F4CFA3E0CEC0EA9C66725B4A91C815",
+        "routes": [
+          "nonsingular_terminal_smc",
+          "terminal_smc"
+        ]
+      },
+      {
+        "sha256": "F1B11484C80F1C5B7DC9DCFCF315963CCFA990B2ACE9E38B3AE31B7BE88038C6",
+        "routes": [
+          "dfbc_dob_eso_disabled",
+          "dfbc_smooth_robust_attitude",
+          "dfbc_smooth_robust_bodyrate"
+        ]
+      }
+    ],
+    "simulation_result": [
+      {
+        "sha256": "38EC1B7EDB249B35A9BD04A0C82F068F2C96D77D91B751C8E8A6D62062B57447",
+        "routes": [
+          "dfbc_basic",
+          "nmpc_outer"
+        ]
+      },
+      {
+        "sha256": "4E0E35662FEE84F5DAABB634B3E36D641D13AE705A79548AAD6252B94B7E8563",
+        "routes": [
+          "awff",
+          "ilc"
+        ]
+      },
+      {
+        "sha256": "8B753C72248A624EBE7807BFA4356297C058312D4743F5031C1C3815F2A01326",
+        "routes": [
+          "nonsingular_terminal_smc",
+          "terminal_smc"
+        ]
+      },
+      {
+        "sha256": "977E8113796AC2ECCAD70FEAE4B7533A17D46381AA061E31509DC1523F172239",
+        "routes": [
+          "fopid",
+          "h2_state_feedback"
+        ]
+      },
+      {
+        "sha256": "D861AD0138A216DA03D3FD9E94708CE9004CF327452599523A64A393EF77559F",
+        "routes": [
+          "official_pid",
+          "se3_basic"
+        ]
+      }
+    ]
+  },
+  "rows": [
+    {
+      "family": "01_PID族",
+      "controller": "cascade_pid",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/cascade_pid/01_图形模型.png",
+        "sha256": "652BA0BEC9779AAE456AD44188FC1828407E87486040AD4196968E404CEDBA16",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 131591,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/cascade_pid/02_仿真结果.png",
+        "sha256": "CC7A18A93B3BD81F99F2C9F1F9B7A22B05C3619D14994A9D1660774DCD67A006",
+        "width": 1708,
+        "height": 921,
+        "bytes": 95355,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 83,
+          "connection_count": 109
+        },
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_CASCADE_PID_MIL.mo",
+          "model_name": "MoSim_PID_CASCADE_PID_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 11,
+          "connection_count": 18
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "01_PID族",
+      "controller": "anti_windup",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/anti_windup/01_图形模型.png",
+        "sha256": "955C476FEAC88714434BDCD96F95F01D1E089013D7F0C0E46E640B300A21A1C1",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 101974,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/anti_windup/02_仿真结果.png",
+        "sha256": "8049095910781EC4749D5F5133B4A314FED2F6E7E11EE68D030EE0C5FD20450A",
+        "width": 1708,
+        "height": 921,
+        "bytes": 96149,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_PID_ANTI_WINDUP_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 46,
+          "connection_count": 57
+        },
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_ANTI_WINDUP_MIL.mo",
+          "model_name": "MoSim_PID_ANTI_WINDUP_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 11,
+          "connection_count": 18
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "01_PID族",
+      "controller": "feedforward_profile",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/feedforward_profile/01_图形模型.png",
+        "sha256": "EBFC5F7FA196F978EFB0222B45A639811EF490E53D7F9339DA2AB2658FBE5C3A",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 111826,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/feedforward_profile/02_仿真结果.png",
+        "sha256": "0508DBD70E8A4EB95915C268F7297511DF0017C7BF479725CAAAA0FCE2A96695",
+        "width": 1708,
+        "height": 921,
+        "bytes": 97256,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_PID_FEEDFORWARD_PROFILE_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 46,
+          "connection_count": 57
+        },
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_FEEDFORWARD_PROFILE_MIL.mo",
+          "model_name": "MoSim_PID_FEEDFORWARD_PROFILE_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 11,
+          "connection_count": 18
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "01_PID族",
+      "controller": "gain_scheduled_pid",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/gain_scheduled_pid/01_图形模型.png",
+        "sha256": "87A6698B2E3F0C03C01590AC870C659402EE4AD496C22ACD6C578CC1EC65CAFB",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 102219,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/gain_scheduled_pid/02_仿真结果.png",
+        "sha256": "198FF96D0047788DE2F9ADA037FAB196493964A9509085BD831F9CB167AFE9C8",
+        "width": 1708,
+        "height": 921,
+        "bytes": 98090,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 46,
+          "connection_count": 57
+        },
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_GAIN_SCHEDULED_PID_MIL.mo",
+          "model_name": "MoSim_PID_GAIN_SCHEDULED_PID_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 11,
+          "connection_count": 18
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "01_PID族",
+      "controller": "fuzzy_pid",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/fuzzy_pid/01_图形模型.png",
+        "sha256": "4D8D0DB3359C61AA11446888B613FA9844076B640931F745086CD182CE77C47E",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 102253,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/fuzzy_pid/02_仿真结果.png",
+        "sha256": "729AA70D2A46965EEBE05D0CAA803F3D0FF627A8DB7D82131B01F57FEF314B89",
+        "width": 1708,
+        "height": 921,
+        "bytes": 98148,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 46,
+          "connection_count": 57
+        },
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_FUZZY_PID_MIL.mo",
+          "model_name": "MoSim_PID_FUZZY_PID_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 11,
+          "connection_count": 18
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "01_PID族",
+      "controller": "neural_pid",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/neural_pid/01_图形模型.png",
+        "sha256": "ABBEC87BB934AE962A985B3D0B2D9B590357BE4131F84AC43D02A5369749F368",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 102272,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/neural_pid/02_仿真结果.png",
+        "sha256": "22061EF2F8B80C6F682C33138F770BF2190FF4FA10ADE0B0E3E5C804FDD04569",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99382,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/graphical_variants/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 46,
+          "connection_count": 57
+        },
+        {
+          "path": "Results/control_platform/p1_pid_mworks_20260716/models/MoSim_PID_NEURAL_PID_MIL.mo",
+          "model_name": "MoSim_PID_NEURAL_PID_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 11,
+          "connection_count": 18
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "02_线性与鲁棒",
+      "controller": "lqg",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/lqg/01_图形模型.png",
+        "sha256": "130F6E3DFF61C9B011AEB00CA4E207ED8B21001EA14FE8C4FFC77DC7C0356BAA",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 160909,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/lqg/02_仿真结果.png",
+        "sha256": "94964BF58DB8A8C3665B182B39330E6BD64D179383BE3F18062A38F59EAB0874",
+        "width": 1708,
+        "height": 921,
+        "bytes": 95912,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P2_LQG_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 72,
+          "connection_count": 99
+        },
+        {
+          "path": "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_LQG_MIL.mo",
+          "model_name": "MoSim_P2_LQG_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 47
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "02_线性与鲁棒",
+      "controller": "feedback_linearization",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/feedback_linearization/01_图形模型.png",
+        "sha256": "22DCC850AD4E11E39C470271D5D670609D811842366304944794F36BD1EB43BA",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 107778,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/feedback_linearization/02_仿真结果.png",
+        "sha256": "1C3E8BD5B9513E8561F215ECE6CE6EBAB50D0A93773F757E28168C7ED888C6A6",
+        "width": 1708,
+        "height": 921,
+        "bytes": 98681,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 36,
+          "connection_count": 45
+        },
+        {
+          "path": "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_FEEDBACK_LINEARIZATION_MIL.mo",
+          "model_name": "MoSim_P2_FEEDBACK_LINEARIZATION_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 47
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "02_线性与鲁棒",
+      "controller": "passivity_based_control",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/passivity_based_control/01_图形模型.png",
+        "sha256": "BB1FCD0F571A168E7DFF3D1B267687CF5E695D708C83F6D04099FA85800F260D",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 130978,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/passivity_based_control/02_仿真结果.png",
+        "sha256": "CCFD6D3906D481992A49C39687D3A24D9CD92117B85E2A7786744AEF643E006E",
+        "width": 1708,
+        "height": 921,
+        "bytes": 98456,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 53,
+          "connection_count": 73
+        },
+        {
+          "path": "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_PASSIVITY_BASED_CONTROL_MIL.mo",
+          "model_name": "MoSim_P2_PASSIVITY_BASED_CONTROL_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 47
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "02_线性与鲁棒",
+      "controller": "adaptive_backstepping",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/adaptive_backstepping/01_图形模型.png",
+        "sha256": "CAF0E48191294B95C6D2588273B14646175AC5393912AF681A66C427F300BE9A",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 123671,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/adaptive_backstepping/02_仿真结果.png",
+        "sha256": "81E23E0A5C2329C674B5EC514EBFB5A71F2EB208FA135E210257666BAF3B6101",
+        "width": 1708,
+        "height": 921,
+        "bytes": 98970,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 57,
+          "connection_count": 75
+        },
+        {
+          "path": "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_ADAPTIVE_BACKSTEPPING_MIL.mo",
+          "model_name": "MoSim_P2_ADAPTIVE_BACKSTEPPING_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 47
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "03_滑模控制",
+      "controller": "integral_smc",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/integral_smc/01_图形模型.png",
+        "sha256": "6A85CC42CB4D2F12950CF4C654595B32C158296A0E05CEE6F67209338194780C",
+        "width": 3000,
+        "height": 2000,
+        "bytes": 158475,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/integral_smc/02_仿真结果.png",
+        "sha256": "01F0C4C2215CA9D76B44BF4AFA152CB0EB07D3AC54C339FD3A6D760701C1338E",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99061,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 77,
+          "connection_count": 95
+        },
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_INTEGRAL_SMC_MIL.mo",
+          "model_name": "MoSim_P3_INTEGRAL_SMC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 46
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "03_滑模控制",
+      "controller": "terminal_smc",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/terminal_smc/01_图形模型.png",
+        "sha256": "E0BD446114E194557E5B08400D534E6BC9F4CFA3E0CEC0EA9C66725B4A91C815",
+        "width": 3000,
+        "height": 2000,
+        "bytes": 163445,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/terminal_smc/02_仿真结果.png",
+        "sha256": "8B753C72248A624EBE7807BFA4356297C058312D4743F5031C1C3815F2A01326",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100462,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "nonsingular_terminal_smc",
+        "terminal_smc"
+      ],
+      "result_duplicate_routes": [
+        "nonsingular_terminal_smc",
+        "terminal_smc"
+      ],
+      "model_source_present": true,
+      "source_classification": "source_mapping_ambiguous",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 80,
+          "connection_count": 98
+        },
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 80,
+          "connection_count": 98
+        },
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_NONSINGULAR_TERMINAL_SMC_MIL.mo",
+          "model_name": "MoSim_P3_NONSINGULAR_TERMINAL_SMC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 46
+        },
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_TERMINAL_SMC_MIL.mo",
+          "model_name": "MoSim_P3_TERMINAL_SMC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 46
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "source_mapping_ambiguous_select_internal_model_first",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "source_mapping_required_before_report_use"
+    },
+    {
+      "family": "03_滑模控制",
+      "controller": "nonsingular_terminal_smc",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/nonsingular_terminal_smc/01_图形模型.png",
+        "sha256": "E0BD446114E194557E5B08400D534E6BC9F4CFA3E0CEC0EA9C66725B4A91C815",
+        "width": 3000,
+        "height": 2000,
+        "bytes": 163445,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/nonsingular_terminal_smc/02_仿真结果.png",
+        "sha256": "8B753C72248A624EBE7807BFA4356297C058312D4743F5031C1C3815F2A01326",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100462,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "nonsingular_terminal_smc",
+        "terminal_smc"
+      ],
+      "result_duplicate_routes": [
+        "nonsingular_terminal_smc",
+        "terminal_smc"
+      ],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 80,
+          "connection_count": 98
+        },
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_NONSINGULAR_TERMINAL_SMC_MIL.mo",
+          "model_name": "MoSim_P3_NONSINGULAR_TERMINAL_SMC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 46
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "duplicate_model_review_or_recapture",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "03_滑模控制",
+      "controller": "super_twisting_smc",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/super_twisting_smc/01_图形模型.png",
+        "sha256": "711F777D88293F78B5237C2AD99A69F790F69FA241D1828089245469D6ACFFFB",
+        "width": 3000,
+        "height": 2000,
+        "bytes": 174111,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/super_twisting_smc/02_仿真结果.png",
+        "sha256": "4547E39245F9A62F19AE7DDC2184C9EAA1714E0CE91E5141B54F74F47A0B4AAB",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100114,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 89,
+          "connection_count": 104
+        },
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_SUPER_TWISTING_SMC_MIL.mo",
+          "model_name": "MoSim_P3_SUPER_TWISTING_SMC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 46
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "03_滑模控制",
+      "controller": "adaptive_smc",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/adaptive_smc/01_图形模型.png",
+        "sha256": "9E35AC03257F21F96C2041647EF1DBA68F84B6F2FF24D03C978A22F26B220576",
+        "width": 3000,
+        "height": 2000,
+        "bytes": 151346,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/adaptive_smc/02_仿真结果.png",
+        "sha256": "327A86ABDECA806762388B89BB58BBA20E98846A814886F53151D1CEBEBD2022",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99740,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 80,
+          "connection_count": 95
+        },
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_ADAPTIVE_SMC_MIL.mo",
+          "model_name": "MoSim_P3_ADAPTIVE_SMC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 46
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "03_滑模控制",
+      "controller": "fuzzy_smc",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/fuzzy_smc/01_图形模型.png",
+        "sha256": "149975C099D20577C825530A0AC22EEE8BD7E224CBBB3D739BA4175229CC91A7",
+        "width": 3000,
+        "height": 2000,
+        "bytes": 153349,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/fuzzy_smc/02_仿真结果.png",
+        "sha256": "A81BCF170D0B9CED9AAA2FCD064B8312A63A9294EFD9A72750BEB87EBC370ED9",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99467,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/graphical_variants/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 83,
+          "connection_count": 101
+        },
+        {
+          "path": "Results/control_platform/p3_sliding_mode_mworks_20260716/models/MoSim_P3_FUZZY_SMC_MIL.mo",
+          "model_name": "MoSim_P3_FUZZY_SMC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 46
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "04_MPC族",
+      "controller": "linear_mpc",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/linear_mpc/01_图形模型.png",
+        "sha256": "CD12FBD73C32B4E8832F81B50728521A3017AF05AB2438B56FD7673ABF69AAEA",
+        "width": 3600,
+        "height": 2400,
+        "bytes": 196587,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/linear_mpc/02_仿真结果.png",
+        "sha256": "5EE637D31BF91C409B2EDFB437E1F39BA0F5CEC8CD6B99D243FEDF9789AD875F",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99012,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 113,
+          "connection_count": 155
+        },
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_LINEAR_MPC_MIL.mo",
+          "model_name": "MoSim_P4_LINEAR_MPC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 45
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": true,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "04_MPC族",
+      "controller": "robust_mpc",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/robust_mpc/01_图形模型.png",
+        "sha256": "21A8CD8A78194D6C38995632DC282832AD63B2ED71D86F9DFA82A384568C74D3",
+        "width": 3600,
+        "height": 2400,
+        "bytes": 217753,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/robust_mpc/02_仿真结果.png",
+        "sha256": "CE963BF1EDEF123A5EBE4E9CB62CF4B59EFC806723F931CBCEEB5FEE15E097CE",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99069,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 134,
+          "connection_count": 179
+        },
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_ROBUST_MPC_MIL.mo",
+          "model_name": "MoSim_P4_ROBUST_MPC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 45
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "04_MPC族",
+      "controller": "adaptive_mpc",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/adaptive_mpc/01_图形模型.png",
+        "sha256": "3A13A100E26AB99A4ED0445C33726BC5BB1CDF816E97480B6F1A220E080AC7DF",
+        "width": 3600,
+        "height": 2400,
+        "bytes": 203621,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/adaptive_mpc/02_仿真结果.png",
+        "sha256": "A676E6A9640CA0C39B8B67256D9661A6502EF27F5AD621C2474FBE9A5CFD3702",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99108,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 131,
+          "connection_count": 188
+        },
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_ADAPTIVE_MPC_MIL.mo",
+          "model_name": "MoSim_P4_ADAPTIVE_MPC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 45
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "04_MPC族",
+      "controller": "tube_mpc",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/tube_mpc/01_图形模型.png",
+        "sha256": "C1106562A6EA2AD1690DA3500D8C5854B261C2D9199266F2ACC57EF7B553E2F1",
+        "width": 3600,
+        "height": 2400,
+        "bytes": 212997,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/tube_mpc/02_仿真结果.png",
+        "sha256": "0B008F4C220FFB0100FC63849C279C0A4622C987EB75C70C985B97A6AD793DE7",
+        "width": 1708,
+        "height": 921,
+        "bytes": 98664,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 128,
+          "connection_count": 173
+        },
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_TUBE_MPC_MIL.mo",
+          "model_name": "MoSim_P4_TUBE_MPC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 45
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "04_MPC族",
+      "controller": "explicit_gain_scheduled_mpc",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/explicit_gain_scheduled_mpc/01_图形模型.png",
+        "sha256": "208141E2499DB6E2CCF35A05991B96E934CBF9FBA3406CE4BEB160A0858A0667",
+        "width": 3600,
+        "height": 2400,
+        "bytes": 237149,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/explicit_gain_scheduled_mpc/02_仿真结果.png",
+        "sha256": "93F598F064A47DC292E2CE4929F00B42983EE6365852AEEE02F0C51DD0A7AC2D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100820,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 137,
+          "connection_count": 188
+        },
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_MIL.mo",
+          "model_name": "MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 45
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "04_MPC族",
+      "controller": "ilqr",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/ilqr/01_图形模型.png",
+        "sha256": "4864E270EAF173A09B4AD7E902D3E2314BBFBBB87E4AD4F6AB5C89B046E2D472",
+        "width": 3600,
+        "height": 2400,
+        "bytes": 368439,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/ilqr/02_仿真结果.png",
+        "sha256": "6B5961B05FEF1E09EB5EB6FCCAE3E3B9487CC6791D3E3F65480D767C9C92AC8F",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99050,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P4_ILQR_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 308,
+          "connection_count": 440
+        },
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_ILQR_MIL.mo",
+          "model_name": "MoSim_P4_ILQR_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 45
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "04_MPC族",
+      "controller": "mppi",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/mppi/01_图形模型.png",
+        "sha256": "FB9AEA1B7E09A6C67D5265577815700872AF3B383132B955C3B5C344027E78B9",
+        "width": 3600,
+        "height": 2400,
+        "bytes": 624039,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/mppi/02_仿真结果.png",
+        "sha256": "0B773118D6B68B70105568844F4C7A62FFA98D0FC4B7BE6DA325D5387A284981",
+        "width": 1708,
+        "height": 921,
+        "bytes": 98201,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/graphical_variants/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P4_MPPI_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 548,
+          "connection_count": 833
+        },
+        {
+          "path": "Results/control_platform/p4_mpc_mworks_20260716/models/MoSim_P4_MPPI_MIL.mo",
+          "model_name": "MoSim_P4_MPPI_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 26,
+          "connection_count": 45
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "05_增强与扰动补偿",
+      "controller": "l1_adaptive",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/l1_adaptive/01_图形模型.png",
+        "sha256": "83A1B3628CCF4207A62609AEECA439B104B9C715317C01469F3FEE0D446384B4",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 35533,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/l1_adaptive/02_仿真结果.png",
+        "sha256": "D64E2D8260B34DF449A7F3D8D3A0D47EACF8D000174D23DDD6B69CE455231104",
+        "width": 1708,
+        "height": 921,
+        "bytes": 115117,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_L1_ADAPTIVE_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_L1_ADAPTIVE_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P5_L1_ADAPTIVE_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 13,
+          "connection_count": 16
+        },
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_L1_ADAPTIVE_MIL.mo",
+          "model_name": "MoSim_P5_L1_ADAPTIVE_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 31,
+          "connection_count": 52
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "05_增强与扰动补偿",
+      "controller": "awff",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/awff/01_图形模型.png",
+        "sha256": "20A018CF0F64A29219CA3FC294D01001071A94711CC376E2F2AA172226FA95B4",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 37180,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/awff/02_仿真结果.png",
+        "sha256": "4E0E35662FEE84F5DAABB634B3E36D641D13AE705A79548AAD6252B94B7E8563",
+        "width": 1708,
+        "height": 921,
+        "bytes": 105625,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [
+        "awff",
+        "ilc"
+      ],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_AWFF_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_AWFF_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P5_AWFF_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 13,
+          "connection_count": 16
+        },
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_AWFF_MIL.mo",
+          "model_name": "MoSim_P5_AWFF_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 31,
+          "connection_count": 52
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": true,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "05_增强与扰动补偿",
+      "controller": "complete_adrc",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/complete_adrc/01_图形模型.png",
+        "sha256": "9C793D70015D2B2F442863615A90D8C77D95CF5CECD171EA3ADFB686E8408ECB",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 33841,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/complete_adrc/02_仿真结果.png",
+        "sha256": "B9C4719D7233911C4EDBBE26C8700DC70D503C69E76A5C01B685A68C1462574F",
+        "width": 1708,
+        "height": 921,
+        "bytes": 122441,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_COMPLETE_ADRC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_COMPLETE_ADRC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P5_COMPLETE_ADRC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 13,
+          "connection_count": 15
+        },
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_COMPLETE_ADRC_MIL.mo",
+          "model_name": "MoSim_P5_COMPLETE_ADRC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 31,
+          "connection_count": 52
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "05_增强与扰动补偿",
+      "controller": "standardized_indi",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/standardized_indi/01_图形模型.png",
+        "sha256": "702DF84E4C104C2D005094C38A54187EE34862284DCFE5EA4963D325A2C1CEC1",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 35710,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/standardized_indi/02_仿真结果.png",
+        "sha256": "2D1FCE70DEEE379AA5623BBF33ECE7E0F5A2484C4835D0E48628B33E492EBDBA",
+        "width": 1708,
+        "height": 921,
+        "bytes": 99844,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_STANDARDIZED_INDI_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_STANDARDIZED_INDI_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P5_STANDARDIZED_INDI_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 11,
+          "connection_count": 13
+        },
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_STANDARDIZED_INDI_MIL.mo",
+          "model_name": "MoSim_P5_STANDARDIZED_INDI_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 31,
+          "connection_count": 52
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "05_增强与扰动补偿",
+      "controller": "parameter_scheduling",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/parameter_scheduling/01_图形模型.png",
+        "sha256": "831A77A8168CD253C9F629EEA1C9AA5FAD35214292C2FE5B037B889613A47F97",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 35892,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/parameter_scheduling/02_仿真结果.png",
+        "sha256": "657C8E89BD90EE6865818FC60B870B2B96214248697FCC516B05F68C84729ED1",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100225,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_PARAMETER_SCHEDULING_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_PARAMETER_SCHEDULING_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P5_PARAMETER_SCHEDULING_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 13,
+          "connection_count": 13
+        },
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_PARAMETER_SCHEDULING_MIL.mo",
+          "model_name": "MoSim_P5_PARAMETER_SCHEDULING_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 31,
+          "connection_count": 52
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "05_增强与扰动补偿",
+      "controller": "ilc",
+      "matrix_status": "accepted",
+      "claim_ceiling": "generated_c_gazebo_takeoff_hover_land",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/ilc/01_图形模型.png",
+        "sha256": "AB27AE3FA5D4F5C85C946671B3A48529A43F79BE5965A22B0E5FDD77C80E9AE6",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 34405,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/ilc/02_仿真结果.png",
+        "sha256": "4E0E35662FEE84F5DAABB634B3E36D641D13AE705A79548AAD6252B94B7E8563",
+        "width": 1708,
+        "height": 921,
+        "bytes": 105625,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [
+        "awff",
+        "ilc"
+      ],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_ILC_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/graphical_variants/MoSim_P5_ILC_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P5_ILC_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 13,
+          "connection_count": 15
+        },
+        {
+          "path": "Results/control_platform/p5_enhancement_mworks_20260717/models/MoSim_P5_ILC_MIL.mo",
+          "model_name": "MoSim_P5_ILC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 31,
+          "connection_count": 52
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "06_核心对比路线",
+      "controller": "official_pid",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "executed_not_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/official_pid/01_图形模型.png",
+        "sha256": "8BED9CE79A5063C244F3D45EDED38D251B45EF837836786EC8FCC2F00967D468",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 123655,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/official_pid/02_仿真结果.png",
+        "sha256": "D861AD0138A216DA03D3FD9E94708CE9004CF327452599523A64A393EF77559F",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 22897,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [
+        "official_pid",
+        "se3_basic"
+      ],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo",
+      "source_records": [
+        {
+          "path": "Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo",
+          "model_name": "AWFF_PID_Sysblock_Demo",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 8,
+          "connection_count": 12
+        },
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/official_pid/models/MoSim_OFFICIAL_PID_REPORT_MIL.mo",
+          "model_name": "MoSim_OFFICIAL_PID_REPORT_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 1,
+          "connection_count": 2
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": true,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "06_核心对比路线",
+      "controller": "se3_basic",
+      "matrix_status": "not_run",
+      "claim_ceiling": "offline_equivalence_only",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/se3_basic/01_图形模型.png",
+        "sha256": "5113C521F82A11DE0C3C5FD6ADE99B62E31180477E12E8DF80A2974335A0FCDD",
+        "width": 1708,
+        "height": 921,
+        "bytes": 27518,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/se3_basic/02_仿真结果.png",
+        "sha256": "D861AD0138A216DA03D3FD9E94708CE9004CF327452599523A64A393EF77559F",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 22897,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [
+        "official_pid",
+        "se3_basic"
+      ],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+          "model_name": "MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 8,
+          "connection_count": 8
+        },
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_REPORT_MIL.mo",
+          "model_name": "MoSim_G9_SE3_REPORT_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 101,
+          "connection_count": 141
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": true,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "06_核心对比路线",
+      "controller": "dfbc_basic",
+      "matrix_status": "not_run",
+      "claim_ceiling": "offline_equivalence_only",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/dfbc_basic/01_图形模型.png",
+        "sha256": "5DF2A7A79B2ECB405781A3491F0D43A05D9EB3D21F0979E1ED47E737562216CC",
+        "width": 1708,
+        "height": 921,
+        "bytes": 25994,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/dfbc_basic/02_仿真结果.png",
+        "sha256": "38EC1B7EDB249B35A9BD04A0C82F068F2C96D77D91B751C8E8A6D62062B57447",
+        "width": 1708,
+        "height": 921,
+        "bytes": 103986,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [
+        "dfbc_basic",
+        "nmpc_outer"
+      ],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+          "model_name": "MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 10,
+          "connection_count": 10
+        },
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_REPORT_MIL.mo",
+          "model_name": "MoSim_G9_DFBC_REPORT_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 101,
+          "connection_count": 141
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": true,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "06_核心对比路线",
+      "controller": "smc_boundary_layer",
+      "matrix_status": "not_run",
+      "claim_ceiling": "offline_equivalence_only",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/smc_boundary_layer/01_图形模型.png",
+        "sha256": "BB4E08C3EE4D21ECD26D0526D28E5C8387F42C6CDCE4434D99865EEE97D68D32",
+        "width": 1708,
+        "height": 921,
+        "bytes": 24428,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/smc_boundary_layer/02_仿真结果.png",
+        "sha256": "6F133AAE743C4204A70488F1C88379E0B122A6936CE687820A10927BB5235F02",
+        "width": 1708,
+        "height": 921,
+        "bytes": 105837,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+          "model_name": "MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 9,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_REPORT_MIL.mo",
+          "model_name": "MoSim_G9_SMC_BOUNDARY_LAYER_REPORT_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 101,
+          "connection_count": 141
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": true,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "06_核心对比路线",
+      "controller": "pid_indi",
+      "matrix_status": "not_run",
+      "claim_ceiling": "offline_equivalence_only",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/pid_indi/01_图形模型.png",
+        "sha256": "351A3C6F1D968AC1C34A34E5FB9B252AC203AB9056F75211AE4F07D8CBB7DBDC",
+        "width": 1708,
+        "height": 921,
+        "bytes": 25980,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/pid_indi/02_仿真结果.png",
+        "sha256": "53E247863207B5294EC49629B75C754FCBD79B8B925CBC09639A057D29A398B2",
+        "width": 1708,
+        "height": 921,
+        "bytes": 112083,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_GRAPHICAL_OVERVIEW.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_GRAPHICAL_OVERVIEW.mo",
+          "model_name": "MoSim_G9_PID_INDI_GRAPHICAL_OVERVIEW",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 10,
+          "connection_count": 11
+        },
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_PID_INDI_REPORT_MIL.mo",
+          "model_name": "MoSim_G9_PID_INDI_REPORT_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 101,
+          "connection_count": 141
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": true,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "06_核心对比路线",
+      "controller": "nmpc_outer",
+      "matrix_status": "not_run",
+      "claim_ceiling": "offline_equivalence_only",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/nmpc_outer/01_图形模型.png",
+        "sha256": "1F6D343E6567CF1E8FF6DA8D7DD42743C034630B51D2CB269918AD4CD27806B9",
+        "width": 1708,
+        "height": 921,
+        "bytes": 26745,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/nmpc_outer/02_仿真结果.png",
+        "sha256": "38EC1B7EDB249B35A9BD04A0C82F068F2C96D77D91B751C8E8A6D62062B57447",
+        "width": 1708,
+        "height": 921,
+        "bytes": 103986,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [
+        "dfbc_basic",
+        "nmpc_outer"
+      ],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+          "model_name": "MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 10,
+          "connection_count": 11
+        },
+        {
+          "path": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_REPORT_MIL.mo",
+          "model_name": "MoSim_G9_NMPC_OUTER_REPORT_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 101,
+          "connection_count": 141
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": true,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "07_安全层",
+      "controller": "safety_supervisor_family",
+      "matrix_status": "accepted",
+      "claim_ceiling": "seven_generated_safety_modes_runtime_event_acknowledged",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/07_安全层/safety_supervisor_family/01_图形模型.png",
+        "sha256": "21F4397026A698F5625D3D099ED3073747B676D5548D5116882A47881F0A28E4",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 37057,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/07_安全层/safety_supervisor_family/02_仿真结果.png",
+        "sha256": "653E3638091D693A5F686F3382FB64563FCEDE1AE6743410F9883E2F882D6594",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101150,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p6_safety_mworks_20260717/models/graphical_variants/MoSim_P6_SAFETY_SUPERVISOR_FAMILY_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p6_safety_mworks_20260717/models/graphical_variants/MoSim_P6_SAFETY_SUPERVISOR_FAMILY_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P6_SAFETY_SUPERVISOR_FAMILY_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 15,
+          "connection_count": 15
+        },
+        {
+          "path": "Results/control_platform/p6_safety_mworks_20260717/models/MoSim_P6_SAFETY_FILTER_MIL.mo",
+          "model_name": "MoSim_P6_SAFETY_FILTER_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 28,
+          "connection_count": 40
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "08_故障容错",
+      "controller": "fdi_ftc_family",
+      "matrix_status": "accepted",
+      "claim_ceiling": "physical_rotor1_loss35_generated_ftc_runtime_accepted",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/08_故障容错/fdi_ftc_family/01_图形模型.png",
+        "sha256": "108A8629851300661E83B41D7E6BECD929D6BEA12C48B0056DD62F5633348F53",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 38286,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/08_故障容错/fdi_ftc_family/02_仿真结果.png",
+        "sha256": "056B1795AB65D0696FFBB43567DF78BD4BFF2F65EDA35F4FE2E5C2F0D0FF08BF",
+        "width": 1708,
+        "height": 921,
+        "bytes": 85336,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p7_ftc_mworks_20260717/models/graphical_variants/MoSim_P7_FDI_FTC_FAMILY_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p7_ftc_mworks_20260717/models/graphical_variants/MoSim_P7_FDI_FTC_FAMILY_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P7_FDI_FTC_FAMILY_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 16,
+          "connection_count": 21
+        },
+        {
+          "path": "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_ACTIVE_FTC_MIL.mo",
+          "model_name": "MoSim_P7_ACTIVE_FTC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 14,
+          "connection_count": 32
+        },
+        {
+          "path": "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_FDI_MIL.mo",
+          "model_name": "MoSim_P7_FDI_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 14,
+          "connection_count": 32
+        },
+        {
+          "path": "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL.mo",
+          "model_name": "MoSim_P7_MULTI_FAULT_ESTIMATION_RECONFIGURATION_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 14,
+          "connection_count": 32
+        },
+        {
+          "path": "Results/control_platform/p7_ftc_mworks_20260717/models/MoSim_P7_PASSIVE_FTC_MIL.mo",
+          "model_name": "MoSim_P7_PASSIVE_FTC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 14,
+          "connection_count": 32
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "leader_follower",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/leader_follower/01_图形模型.png",
+        "sha256": "BE66BC4B29029D86C3FA05E78BE76C1430D52850434078EFF957EA1B502863A8",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30224,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/leader_follower/02_仿真结果.png",
+        "sha256": "33BAEFCBB05F0A6B23A754E4ADFFA47BAB99E83BDB0AD1D3CDA7DEB4DE7A0156",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100667,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_LEADER_FOLLOWER_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_LEADER_FOLLOWER_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_LEADER_FOLLOWER_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_LEADER_FOLLOWER_MIL.mo",
+          "model_name": "MoSim_P8_LEADER_FOLLOWER_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "virtual_structure",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/virtual_structure/01_图形模型.png",
+        "sha256": "FEB0D5FF8537CA0D4AB0647A65A59190DBA6E0D336F894F0DA6E35E27D4B1748",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 29987,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/virtual_structure/02_仿真结果.png",
+        "sha256": "CE29A34AD23B699EF60AC8EDD20F2CEAFB7FCCE095068FA0CAD451DC71755883",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101410,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_VIRTUAL_STRUCTURE_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_VIRTUAL_STRUCTURE_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_VIRTUAL_STRUCTURE_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_VIRTUAL_STRUCTURE_MIL.mo",
+          "model_name": "MoSim_P8_VIRTUAL_STRUCTURE_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "consensus",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/consensus/01_图形模型.png",
+        "sha256": "1D6D82E2101EF5A435AB30EDAE7530A5A3FAEC8881DB7C4FA62333D77FFE2BDB",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30450,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/consensus/02_仿真结果.png",
+        "sha256": "DAC70977DD4EA16B2446056758E85D6BA650FE9469A138EE38C82680A88BAA46",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100371,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONSENSUS_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONSENSUS_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_CONSENSUS_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_CONSENSUS_MIL.mo",
+          "model_name": "MoSim_P8_CONSENSUS_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "containment",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/containment/01_图形模型.png",
+        "sha256": "C73E2B47B2F07AF0C3BFD950903616F17B48D8A6E260D4BAF3FC734B26E5C592",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30367,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/containment/02_仿真结果.png",
+        "sha256": "6CA825DA4124563A6ABF1F481C84D62187459F4D9E1333D7AD3F217FD346266D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 100536,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONTAINMENT_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_CONTAINMENT_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_CONTAINMENT_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_CONTAINMENT_MIL.mo",
+          "model_name": "MoSim_P8_CONTAINMENT_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "formation_tracking",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_tracking/01_图形模型.png",
+        "sha256": "2D5286AADC5259D10CEF82F76BD420189879CB8A7C93FE51B4D68F446E488B85",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30126,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_tracking/02_仿真结果.png",
+        "sha256": "7E410023E9FBFF254FCC4F1EFFA6EC20AD79F35204B96933D2B106C638232079",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101570,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_TRACKING_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_TRACKING_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_FORMATION_TRACKING_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_TRACKING_MIL.mo",
+          "model_name": "MoSim_P8_FORMATION_TRACKING_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "formation_reconfiguration",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_reconfiguration/01_图形模型.png",
+        "sha256": "BEF7FB28E3FC53EE41F25FF28DA8238C6099042AC918AB811E86E9A2358DAF17",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30139,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_reconfiguration/02_仿真结果.png",
+        "sha256": "88B16AB3DC10F40C9B7AA300A476E0B27F4A8A7B5127D0CFEF53B9662D22F12D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102211,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_RECONFIGURATION_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_RECONFIGURATION_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_FORMATION_RECONFIGURATION_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_RECONFIGURATION_MIL.mo",
+          "model_name": "MoSim_P8_FORMATION_RECONFIGURATION_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "fault_tolerant_formation",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/fault_tolerant_formation/01_图形模型.png",
+        "sha256": "010A653D00476AF940C98D8795A210B1DB7793FDE97BEB914A75292548BAED31",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30425,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/fault_tolerant_formation/02_仿真结果.png",
+        "sha256": "51273289C411B92CF0D2E0A624DFB9F2E25F89218FC38B8A946BDA0400D0D118",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101702,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FAULT_TOLERANT_FORMATION_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FAULT_TOLERANT_FORMATION_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_FAULT_TOLERANT_FORMATION_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FAULT_TOLERANT_FORMATION_MIL.mo",
+          "model_name": "MoSim_P8_FAULT_TOLERANT_FORMATION_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "formation_cbf",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_cbf/01_图形模型.png",
+        "sha256": "ACC479AD1B7A5B303C67925193BA047A32BAAFA87F3F9A04DD1B55386BC3876D",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30354,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_cbf/02_仿真结果.png",
+        "sha256": "8DB374E3489BA61B4043222851CFE8F4AC8B9A768B4E4FDD009E92B4A3B19546",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101487,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_CBF_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_FORMATION_CBF_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_FORMATION_CBF_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_FORMATION_CBF_MIL.mo",
+          "model_name": "MoSim_P8_FORMATION_CBF_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "09_编队控制",
+      "controller": "distributed_mpc_formation",
+      "matrix_status": "accepted",
+      "claim_ceiling": "three_uav_takeoff_hover_land_generated_formation",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/distributed_mpc_formation/01_图形模型.png",
+        "sha256": "FB6E703F442B03FB1BC5995D683D1BB2C01521E3F02B9162B2582B7B16D8755A",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 30428,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/distributed_mpc_formation/02_仿真结果.png",
+        "sha256": "8953CE63B0323D24F97189001B6447C0C116F40F2A4A22C3F44D609DD0ACA82B",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102778,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_DISTRIBUTED_MPC_FORMATION_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/graphical_variants/MoSim_P8_DISTRIBUTED_MPC_FORMATION_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P8_DISTRIBUTED_MPC_FORMATION_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 7,
+          "connection_count": 9
+        },
+        {
+          "path": "Results/control_platform/p8_formation_mworks_20260717/models/MoSim_P8_DISTRIBUTED_MPC_FORMATION_MIL.mo",
+          "model_name": "MoSim_P8_DISTRIBUTED_MPC_FORMATION_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 33,
+          "connection_count": 57
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "core_candidate_after_manual_review"
+    },
+    {
+      "family": "10_智能增强",
+      "controller": "trained_neural_residual",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "report_ready_runtime_execution_not_selectable",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/10_智能增强/trained_neural_residual/01_图形模型.png",
+        "sha256": "73412A08FF0E6A65D3F49F446CEE44B5142B5385FB087DCBB29666C362FAD79E",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 32697,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/10_智能增强/trained_neural_residual/02_仿真结果.png",
+        "sha256": "7AD51636B016B90AFC9E248C0971708C4488C824B6163314B481687B6244EE7D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 107130,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 9,
+          "connection_count": 10
+        },
+        {
+          "path": "Results/control_platform/p9_learning_mworks_20260717/models/MoSim_P9_TRAINED_NEURAL_RESIDUAL_MIL.mo",
+          "model_name": "MoSim_P9_TRAINED_NEURAL_RESIDUAL_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 34,
+          "connection_count": 52
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "10_智能增强",
+      "controller": "rl_gain_scheduler",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "report_ready_runtime_execution_not_selectable",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/10_智能增强/rl_gain_scheduler/01_图形模型.png",
+        "sha256": "6A2C69471A6837ED4F13D5CB7D8B9F3BF4B80B649F5620E6C15DA7914625EEF3",
+        "width": 1800,
+        "height": 1000,
+        "bytes": 32593,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/10_智能增强/rl_gain_scheduler/02_仿真结果.png",
+        "sha256": "A348445C41380647CA98EC49E828D868A27B1EC45DBC811346F6637D6A67A99B",
+        "width": 1708,
+        "height": 921,
+        "bytes": 109211,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "native_graphical_candidate",
+      "selected_internal_source": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
+      "source_records": [
+        {
+          "path": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
+          "model_name": "MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL",
+          "has_atomic_cfunction": false,
+          "graphical_block_count": 9,
+          "connection_count": 10
+        },
+        {
+          "path": "Results/control_platform/p9_learning_mworks_20260717/models/MoSim_P9_RL_GAIN_SCHEDULER_MIL.mo",
+          "model_name": "MoSim_P9_RL_GAIN_SCHEDULER_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 34,
+          "connection_count": 52
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "manual_mworks_internal_wiring_review_required",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": true,
+      "report_use": "coverage_matrix_or_appendix_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "lqr_baseline",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/lqr_baseline/01_图形模型.png",
+        "sha256": "3F9D2F859A06E82A230251930BC508556C457304B248722010D0BC996539A5B2",
+        "width": 1800,
+        "height": 1200,
+        "bytes": 87239,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/lqr_baseline/02_仿真结果.png",
+        "sha256": "BA278F127C155807D94ACA7D2A0F2BDD5F9459C4B9AD7CF7A70169A15AEE5AC4",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101048,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQR_MIL.mo",
+          "model_name": "MoSim_WaveA_LQR_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 32,
+          "connection_count": 47
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "lqi_baseline",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/lqi_baseline/01_图形模型.png",
+        "sha256": "17EECDD2E9A1A894B8936A2D77770AB101283CC0E8E324EC834F1F49D992C472",
+        "width": 1800,
+        "height": 1200,
+        "bytes": 87327,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/lqi_baseline/02_仿真结果.png",
+        "sha256": "6AF7CDB4FF3B3FE0F4B29F64793C4B3159733DB1AE978D1250BCB3267D1C3A3D",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102087,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQI_MIL.mo",
+          "model_name": "MoSim_WaveA_LQI_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 32,
+          "connection_count": 47
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "hinf_hover_wrench",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/hinf_hover_wrench/01_图形模型.png",
+        "sha256": "0992BB28FE75691B78DF3755E90A79F54BAD654964594EB9FC6631646FCECEBD",
+        "width": 2600,
+        "height": 1800,
+        "bytes": 116468,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/hinf_hover_wrench/02_仿真结果.png",
+        "sha256": "CB718DD4EC1C71149416321BDD3F66ADE5F05762F86A13E593D6072402883F3E",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 204113,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/models/MoSim_P10_HINF_HOVER_WRENCH_MIL.mo",
+          "model_name": "MoSim_P10_HINF_HOVER_WRENCH_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 39,
+          "connection_count": 56
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "未归档视觉资产",
+      "controller": "mu_synthesis",
+      "matrix_status": "not_run",
+      "claim_ceiling": "syslab_constant_matrix_mu_analysis_available_but_dynamic_musyn_controller_synthesis_unavailable",
+      "report_asset_present": false,
+      "graphical_model": null,
+      "simulation_result": null,
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": false,
+      "source_classification": "implementation_blocked",
+      "selected_internal_source": null,
+      "source_records": [],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "implementation_blocked_not_a_graphical_model",
+      "simulation_evidence_status": "missing_report_copy",
+      "result_title_binding_status": "missing_result_viewer_screenshot",
+      "result_report_use": "live_result_binding_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "blocked_route_not_in_body"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "so3_attitude",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/so3_attitude/01_图形模型.png",
+        "sha256": "7B9BE8EDD73CCAABC38338804240CCF9DC6B72359CCBDFDA6D621D7BF3D5E9B9",
+        "width": 1800,
+        "height": 1200,
+        "bytes": 87314,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/so3_attitude/02_仿真结果.png",
+        "sha256": "E1831C1748A7E942DB38EF4632B5D6D19B744E5726A21E3DA27F6F9ADD0F9906",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101226,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_SO3_MIL.mo",
+          "model_name": "MoSim_WaveA_SO3_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 32,
+          "connection_count": 47
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "backstepping_baseline",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/backstepping_baseline/01_图形模型.png",
+        "sha256": "874738F19E53B10805B40831127675164698F4CE5B81610F05CC41D25EA3283E",
+        "width": 1800,
+        "height": 1200,
+        "bytes": 87303,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/backstepping_baseline/02_仿真结果.png",
+        "sha256": "109F238B761CA3A9E3B936422486D7801FE5BC0F94ED16189F355D21B0289A89",
+        "width": 1708,
+        "height": 921,
+        "bytes": 102664,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL.mo",
+          "model_name": "MoSim_WaveA_BACKSTEPPING_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 32,
+          "connection_count": 47
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "dfbc_high_order_attitude",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_high_order_attitude/01_图形模型.png",
+        "sha256": "A06B0665DC1FEA88BD71BF31B61E901A8DF9E6EDBEC9B3BE0E71AE939AAE6DC5",
+        "width": 6000,
+        "height": 10000,
+        "bytes": 697588,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_high_order_attitude/02_仿真结果.png",
+        "sha256": "9010C903212A71E681571F16F2BC08688091FC8184F5C9A2E46DBAACBEE06019",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 176142,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "dfbc_high_order_attitude",
+        "dfbc_high_order_bodyrate"
+      ],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL.mo",
+          "model_name": "MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 140,
+          "connection_count": 172
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "dfbc_high_order_bodyrate",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_high_order_bodyrate/01_图形模型.png",
+        "sha256": "A06B0665DC1FEA88BD71BF31B61E901A8DF9E6EDBEC9B3BE0E71AE939AAE6DC5",
+        "width": 6000,
+        "height": 10000,
+        "bytes": 697588,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_high_order_bodyrate/02_仿真结果.png",
+        "sha256": "94ACC315BEF4E6485BCD799F43EB58B5E334AD379D9CD43D9725BA6C1305027D",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 176169,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "dfbc_high_order_attitude",
+        "dfbc_high_order_bodyrate"
+      ],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL.mo",
+          "model_name": "MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 140,
+          "connection_count": 172
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "dfbc_smooth_robust_attitude",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_smooth_robust_attitude/01_图形模型.png",
+        "sha256": "F1B11484C80F1C5B7DC9DCFCF315963CCFA990B2ACE9E38B3AE31B7BE88038C6",
+        "width": 6000,
+        "height": 10000,
+        "bytes": 697590,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_smooth_robust_attitude/02_仿真结果.png",
+        "sha256": "60D6C9343045A946133998E09ABF8796D7B0B6F25CAC7796371E64F3844D09DB",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 171943,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "dfbc_dob_eso_disabled",
+        "dfbc_smooth_robust_attitude",
+        "dfbc_smooth_robust_bodyrate"
+      ],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL.mo",
+          "model_name": "MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 140,
+          "connection_count": 172
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "dfbc_smooth_robust_bodyrate",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_smooth_robust_bodyrate/01_图形模型.png",
+        "sha256": "F1B11484C80F1C5B7DC9DCFCF315963CCFA990B2ACE9E38B3AE31B7BE88038C6",
+        "width": 6000,
+        "height": 10000,
+        "bytes": 697590,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_smooth_robust_bodyrate/02_仿真结果.png",
+        "sha256": "1746C03B2B308B0C321810B50C5E353BA3062F7B09FC8AB779744D9EF14D0A5D",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 172007,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "dfbc_dob_eso_disabled",
+        "dfbc_smooth_robust_attitude",
+        "dfbc_smooth_robust_bodyrate"
+      ],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL.mo",
+          "model_name": "MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 140,
+          "connection_count": 172
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "l1_awff_minimal",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/l1_awff_minimal/01_图形模型.png",
+        "sha256": "9F1B6A24AF479F389B88A4CC9D81C1A3920604F9B095C0CDB28293BDBA0340D1",
+        "width": 6000,
+        "height": 10000,
+        "bytes": 695382,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/l1_awff_minimal/02_仿真结果.png",
+        "sha256": "46FE4B74B20FF6DFBD0F60B2AC6EF34793C84D392527B029BE7FBAED8A82BB48",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 171178,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/models/MoSim_P10_L1_AWFF_Minimal_MIL.mo",
+          "model_name": "MoSim_P10_L1_AWFF_Minimal_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 140,
+          "connection_count": 172
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "dfbc_dob_eso_disabled",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_dob_eso_disabled/01_图形模型.png",
+        "sha256": "F1B11484C80F1C5B7DC9DCFCF315963CCFA990B2ACE9E38B3AE31B7BE88038C6",
+        "width": 6000,
+        "height": 10000,
+        "bytes": 697590,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_dob_eso_disabled/02_仿真结果.png",
+        "sha256": "4452DB16B3924970DD226E474320834604F3068A19E0A574153888632E151D79",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 171674,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "dfbc_dob_eso_disabled",
+        "dfbc_smooth_robust_attitude",
+        "dfbc_smooth_robust_bodyrate"
+      ],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL.mo",
+          "model_name": "MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 140,
+          "connection_count": 172
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "11_经典控制补充",
+      "controller": "dfbc_dob_eso",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_dob_eso/01_图形模型.png",
+        "sha256": "84B8ED3523225B9793E5E28B51BE9E8A2F6319A3DA2F1BDFB3901CF9D62BB6E6",
+        "width": 2578,
+        "height": 1398,
+        "bytes": 117496,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_dob_eso/02_仿真结果.png",
+        "sha256": "15024A75267E518C129370881378EE988A9E026EDD0BAEA9444CA405C581D759",
+        "width": 1708,
+        "height": 921,
+        "bytes": 110385,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL.mo",
+          "model_name": "MoSim_P10_DFBC_DOB_ESO_DISABLED_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 140,
+          "connection_count": 172
+        },
+        {
+          "path": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_DOB_ESO_MIL.mo",
+          "model_name": "MoSim_P10_DFBC_DOB_ESO_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 140,
+          "connection_count": 172
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "未归档视觉资产",
+      "controller": "neural_smc",
+      "matrix_status": "not_run",
+      "claim_ceiling": "interface_only_no_frozen_training_dataset_or_model_artifact",
+      "report_asset_present": false,
+      "graphical_model": null,
+      "simulation_result": null,
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [],
+      "model_source_present": false,
+      "source_classification": "implementation_blocked",
+      "selected_internal_source": null,
+      "source_records": [],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "implementation_blocked_not_a_graphical_model",
+      "simulation_evidence_status": "missing_report_copy",
+      "result_title_binding_status": "missing_result_viewer_screenshot",
+      "result_report_use": "live_result_binding_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "blocked_route_not_in_body"
+    },
+    {
+      "family": "12_经典控制扩展",
+      "controller": "pole_placement_luenberger",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/pole_placement_luenberger/01_图形模型.png",
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "width": 2200,
+        "height": 1600,
+        "bytes": 184254,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/pole_placement_luenberger/02_仿真结果.png",
+        "sha256": "8094D9A03F7D0803826A210073396E318207C0AD9AE2C4B935628A1A3085722E",
+        "width": 1708,
+        "height": 921,
+        "bytes": 117175,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "h2_state_feedback",
+        "mrac",
+        "ndi",
+        "pole_placement_luenberger"
+      ],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL.mo",
+          "model_name": "MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 20,
+          "connection_count": 55
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "12_经典控制扩展",
+      "controller": "mrac",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_hover_passed_figure8_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/mrac/01_图形模型.png",
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "width": 2200,
+        "height": 1600,
+        "bytes": 184254,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/mrac/02_仿真结果.png",
+        "sha256": "30AE77B2BEFF4195F73BA1023B7FB031D2B454A11F0392293085121C5AB170E3",
+        "width": 1708,
+        "height": 921,
+        "bytes": 107351,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "h2_state_feedback",
+        "mrac",
+        "ndi",
+        "pole_placement_luenberger"
+      ],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_MRAC_MIL.mo",
+          "model_name": "MoSim_Classic_MRAC_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 20,
+          "connection_count": 55
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "12_经典控制扩展",
+      "controller": "ndi",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_hover_passed_figure8_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/ndi/01_图形模型.png",
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "width": 2200,
+        "height": 1600,
+        "bytes": 184254,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/ndi/02_仿真结果.png",
+        "sha256": "AAA8295406D058AD5C0F87151B3C5142166FB9891F4C4DDC8516E609ADC2E689",
+        "width": 1708,
+        "height": 921,
+        "bytes": 101574,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "h2_state_feedback",
+        "mrac",
+        "ndi",
+        "pole_placement_luenberger"
+      ],
+      "result_duplicate_routes": [],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_NDI_MIL.mo",
+          "model_name": "MoSim_Classic_NDI_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 20,
+          "connection_count": 55
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "manual_result_title_curve_and_run_binding_review_required",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "12_经典控制扩展",
+      "controller": "fopid",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/fopid/01_图形模型.png",
+        "sha256": "5FE9817F8544289F4C580CFAB5E3716468D558B8A03BA9F248526422AF80FCB4",
+        "width": 2400,
+        "height": 1900,
+        "bytes": 52154,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/fopid/02_仿真结果.png",
+        "sha256": "977E8113796AC2ECCAD70FEAE4B7533A17D46381AA061E31509DC1523F172239",
+        "width": 1708,
+        "height": 921,
+        "bytes": 126737,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [],
+      "result_duplicate_routes": [
+        "fopid",
+        "h2_state_feedback"
+      ],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_FOPID_MIL.mo",
+          "model_name": "MoSim_Classic_FOPID_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 20,
+          "connection_count": 55
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "result_title_route_mismatch",
+      "result_report_use": "recapture_required_before_report_result_use",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    },
+    {
+      "family": "12_经典控制扩展",
+      "controller": "h2_state_feedback",
+      "matrix_status": "executed_blocked",
+      "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+      "report_asset_present": true,
+      "graphical_model": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/h2_state_feedback/01_图形模型.png",
+        "sha256": "993976538CF28074B6EF29D4B32E31A995279AD20C629E718D0832BA4F9C7AA1",
+        "width": 2200,
+        "height": 1600,
+        "bytes": 184254,
+        "vertical_long_capture": false
+      },
+      "simulation_result": {
+        "path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/h2_state_feedback/02_仿真结果.png",
+        "sha256": "977E8113796AC2ECCAD70FEAE4B7533A17D46381AA061E31509DC1523F172239",
+        "width": 1708,
+        "height": 921,
+        "bytes": 126737,
+        "vertical_long_capture": false
+      },
+      "model_duplicate_routes": [
+        "h2_state_feedback",
+        "mrac",
+        "ndi",
+        "pole_placement_luenberger"
+      ],
+      "result_duplicate_routes": [
+        "fopid",
+        "h2_state_feedback"
+      ],
+      "model_source_present": true,
+      "source_classification": "atomic_cfunction_wrapper",
+      "selected_internal_source": null,
+      "source_records": [
+        {
+          "path": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo",
+          "model_name": "MoSim_Classic_H2_STATE_FEEDBACK_MIL",
+          "has_atomic_cfunction": true,
+          "graphical_block_count": 20,
+          "connection_count": 55
+        }
+      ],
+      "numeric_result_present": true,
+      "native_result_msr_present": false,
+      "graphical_layout_status": "atomic_cfunction_wrapper_not_report_internal_diagram",
+      "simulation_evidence_status": "duplicate_result_review_or_recapture",
+      "result_title_binding_status": "machine_title_matches_source_review_required",
+      "result_report_use": "eligible_after_manual_result_review",
+      "manual_review_required": false,
+      "report_use": "interface_integration_evidence_only"
+    }
+  ]
+}

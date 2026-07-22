@@ -4,4 +4,6 @@ FaultAllocationControllers
 LinearMPCControllers
 SafetyControllers
 DemosAndSIL
+GraphicalMIL
+IntegratedChains
 CompatibilityAndLegacy

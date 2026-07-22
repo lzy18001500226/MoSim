@@ -113,3 +113,23 @@ def test_selectable_controller_requires_matching_safety_filter() -> None:
     safety["supported_variants"] = ["ATTITUDE_THRUST"]
     codes = {error["code"] for error in checker.validate(registry)}
     assert "CMR-CHAIN-06" in codes
+
+
+def test_formation_controller_requires_multi_uav_reference_output() -> None:
+    checker = load_checker()
+    registry = load_registry()
+    formation = next(item for item in registry["modules"] if item["kind"] == "formation_controller")
+    formation["output_variant"] = "ATTITUDE_THRUST"
+    codes = {error["code"] for error in checker.validate(registry)}
+    assert "CMR-FORMATION-01" in codes
+
+
+def test_fault_manager_contract_and_family_are_checked() -> None:
+    checker = load_checker()
+    registry = load_registry()
+    fault = next(item for item in registry["modules"] if item["kind"] == "fault_manager")
+    fault["input_variant"] = "ATTITUDE_THRUST"
+    fault["family"] = "wrong_family"
+    codes = {error["code"] for error in checker.validate(registry)}
+    assert "CMR-FAULT-01" in codes
+    assert "CMR-DRIFT-03" in codes

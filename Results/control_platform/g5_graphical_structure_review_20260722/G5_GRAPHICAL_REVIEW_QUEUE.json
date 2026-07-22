@@ -1,0 +1,1774 @@
+{
+  "schema": "mosim.g5_graphical_review_queue.v1",
+  "scope": "Static G5 review plan only. No row is a MWORKS check, simulation, layout-pass, code-generation, or runtime-success claim.",
+  "source_map": "Config/control_platform/current_model_entry_map.json",
+  "source_map_sha256": "109de9efd4bd1f8c58f0ed52cc13b9ac606c186f9b56ad7c510ee2e9c8944f0e",
+  "summary": {
+    "top_level_scheme_count": 49,
+    "current_mworks_review_scope_count": 46,
+    "pending_live_internal_review_count": 46,
+    "blocked_before_live_review_count": 2,
+    "not_applicable_runtime_baseline_count": 1,
+    "pending_family_counts": {
+      "classic_robust": 13,
+      "fixed_integrated": 5,
+      "geometric_flatness": 6,
+      "learning": 2,
+      "optimization": 8,
+      "pid_family": 5,
+      "sliding_mode": 7
+    }
+  },
+  "first_live_batch": "G5-01-pid_family",
+  "batches": [
+    {
+      "batch_id": "G5-01-pid_family",
+      "category": "pid_family",
+      "category_label_zh": "PID",
+      "scheme_ids": [
+        "cascade_pid",
+        "gain_scheduled_pid",
+        "fuzzy_pid",
+        "neural_pid",
+        "official_pid"
+      ],
+      "count": 5,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-02-classic_robust",
+      "category": "classic_robust",
+      "category_label_zh": "经典鲁棒",
+      "scheme_ids": [
+        "lqg",
+        "feedback_linearization",
+        "passivity_based_control",
+        "adaptive_backstepping",
+        "lqr_baseline"
+      ],
+      "count": 5,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-03-classic_robust",
+      "category": "classic_robust",
+      "category_label_zh": "经典鲁棒",
+      "scheme_ids": [
+        "lqi_baseline",
+        "hinf_hover_wrench",
+        "backstepping_baseline",
+        "pole_placement_luenberger",
+        "mrac"
+      ],
+      "count": 5,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-04-classic_robust",
+      "category": "classic_robust",
+      "category_label_zh": "经典鲁棒",
+      "scheme_ids": [
+        "ndi",
+        "fopid",
+        "h2_state_feedback"
+      ],
+      "count": 3,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-05-sliding_mode",
+      "category": "sliding_mode",
+      "category_label_zh": "滑模",
+      "scheme_ids": [
+        "integral_smc",
+        "terminal_smc",
+        "nonsingular_terminal_smc",
+        "super_twisting_smc",
+        "adaptive_smc"
+      ],
+      "count": 5,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-06-sliding_mode",
+      "category": "sliding_mode",
+      "category_label_zh": "滑模",
+      "scheme_ids": [
+        "fuzzy_smc",
+        "smc_boundary_layer"
+      ],
+      "count": 2,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-07-optimization",
+      "category": "optimization",
+      "category_label_zh": "优化",
+      "scheme_ids": [
+        "linear_mpc",
+        "robust_mpc",
+        "adaptive_mpc",
+        "tube_mpc",
+        "explicit_gain_scheduled_mpc"
+      ],
+      "count": 5,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-08-optimization",
+      "category": "optimization",
+      "category_label_zh": "优化",
+      "scheme_ids": [
+        "ilqr",
+        "mppi",
+        "nmpc_outer"
+      ],
+      "count": 3,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-09-geometric_flatness",
+      "category": "geometric_flatness",
+      "category_label_zh": "几何平坦",
+      "scheme_ids": [
+        "se3_basic",
+        "dfbc_basic",
+        "dfbc_high_order_attitude",
+        "dfbc_high_order_bodyrate",
+        "dfbc_smooth_robust_attitude"
+      ],
+      "count": 5,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-10-geometric_flatness",
+      "category": "geometric_flatness",
+      "category_label_zh": "几何平坦",
+      "scheme_ids": [
+        "dfbc_smooth_robust_bodyrate"
+      ],
+      "count": 1,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-11-learning",
+      "category": "learning",
+      "category_label_zh": "学习",
+      "scheme_ids": [
+        "trained_neural_residual",
+        "rl_gain_scheduler"
+      ],
+      "count": 2,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    },
+    {
+      "batch_id": "G5-12-fixed_integrated",
+      "category": "fixed_integrated",
+      "category_label_zh": "固定集成链",
+      "scheme_ids": [
+        "fixed_awff_pid",
+        "fixed_awff_l1_residual",
+        "fixed_awff_l1_indi",
+        "fixed_linear_mpc_l1_indi",
+        "fixed_qp_nmpc_l1_indi_cbf"
+      ],
+      "count": 5,
+      "batch_note_zh": "按同族分批审查。少于四条的尾批保留为同族尾批，不与异构控制器混合。"
+    }
+  ],
+  "schemes": [
+    {
+      "scheme_id": "cascade_pid",
+      "display_name_zh": "串级 PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
+        "model_sha256": "ff711adbc781bba981898ff609ae645a6b3e06ed4ebc53797bdfdd63c93729f3",
+        "placement_count": 88,
+        "connect_count": 109,
+        "line_annotation_count": 109,
+        "mworks_marker_count": 34,
+        "inport_count": 0,
+        "outport_count": 5,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "gain_scheduled_pid",
+      "display_name_zh": "增益调度 PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
+        "model_sha256": "04860f9a4f9fe3a7f7eadda3c3c3a5d7304a39018f938dd93741eb4f461d3c19",
+        "placement_count": 51,
+        "connect_count": 57,
+        "line_annotation_count": 57,
+        "mworks_marker_count": 18,
+        "inport_count": 0,
+        "outport_count": 5,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "fuzzy_pid",
+      "display_name_zh": "模糊 PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
+        "model_sha256": "86f6142714ab4d991d26835a85df7a76402bcde2c310b11e8b79f7da095cc9d7",
+        "placement_count": 51,
+        "connect_count": 57,
+        "line_annotation_count": 57,
+        "mworks_marker_count": 18,
+        "inport_count": 0,
+        "outport_count": 5,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "neural_pid",
+      "display_name_zh": "神经 PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
+        "model_sha256": "2de2dce839a99bdb6adf584e9a9b7a21f49d1ff4d6cf8f9af8a5e8e7b0f4c9e2",
+        "placement_count": 51,
+        "connect_count": 57,
+        "line_annotation_count": 57,
+        "mworks_marker_count": 18,
+        "inport_count": 0,
+        "outport_count": 5,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "official_pid",
+      "display_name_zh": "官方 PID",
+      "category": "pid_family",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/AWFF_PID_Sysblock_Demo.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.AWFF_PID_Sysblock_Demo",
+        "model_sha256": "bceaf4bd2dc4985f84c8daf22e23cbb54620766c9611bd6a1a091384079c352e",
+        "placement_count": 10,
+        "connect_count": 12,
+        "line_annotation_count": 12,
+        "mworks_marker_count": 15,
+        "inport_count": 1,
+        "outport_count": 1,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "lqg",
+      "display_name_zh": "LQG",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_LQG_GRAPHICAL_MIL",
+        "model_sha256": "18e5042e2723ea7ac74e9ad6a34258575d3a915c85ecd8d261485dde7384afd6",
+        "placement_count": 85,
+        "connect_count": 99,
+        "line_annotation_count": 99,
+        "mworks_marker_count": 33,
+        "inport_count": 0,
+        "outport_count": 13,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "feedback_linearization",
+      "display_name_zh": "反馈线性化",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
+        "model_sha256": "bbb627bc285de0b88f803bca95dfcdb51cb44d71eed5bbc8192cabe93317ee82",
+        "placement_count": 49,
+        "connect_count": 45,
+        "line_annotation_count": 45,
+        "mworks_marker_count": 15,
+        "inport_count": 0,
+        "outport_count": 13,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "passivity_based_control",
+      "display_name_zh": "无源控制",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
+        "model_sha256": "c5056a04f011e050fad53b32162b6e6fb6762d63d174109799a4b0d83a131df0",
+        "placement_count": 66,
+        "connect_count": 73,
+        "line_annotation_count": 73,
+        "mworks_marker_count": 26,
+        "inport_count": 0,
+        "outport_count": 13,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "adaptive_backstepping",
+      "display_name_zh": "自适应反步控制",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
+        "model_sha256": "7e12f31fba5ed1a862aff8dc59160baf8c4a44e94bb3bedd45c7b182fe700c7a",
+        "placement_count": 70,
+        "connect_count": 75,
+        "line_annotation_count": 75,
+        "mworks_marker_count": 24,
+        "inport_count": 0,
+        "outport_count": 13,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "lqr_baseline",
+      "display_name_zh": "LQR",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_WaveA_LQR_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_WaveA_LQR_MIL",
+        "model_sha256": "60f014561f252161188cc50d9f2733f1384a2f65690fb17faa35345fd9f3b1d3",
+        "placement_count": 48,
+        "connect_count": 47,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 15,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "lqi_baseline",
+      "display_name_zh": "LQI",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_WaveA_LQI_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_WaveA_LQI_MIL",
+        "model_sha256": "074e16ff49061dd6eb7ba7c310a1fd7f2ce47f5f22605a8ca8502f96202818f4",
+        "placement_count": 48,
+        "connect_count": 47,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 15,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "hinf_hover_wrench",
+      "display_name_zh": "H 无穷悬停控制",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P10_HINF_HOVER_WRENCH_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P10_HINF_HOVER_WRENCH_MIL",
+        "model_sha256": "55ce37e4084102e6ce9a5c173936a402f99d9b81b00851f52ae4332ac6f40f5a",
+        "placement_count": 57,
+        "connect_count": 56,
+        "line_annotation_count": 56,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 17,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "mu_synthesis",
+      "display_name_zh": "mu 综合",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "blocked_missing_current_model",
+      "review_disposition": "blocked_before_live_review",
+      "live_review_status": "not_started",
+      "blocker_code": "missing_dynamic_mu_synthesis_controller_implementation",
+      "blocker_reason": "Installed Syslab lacks a dynamic musyn controller implementation; a constant-matrix mu analysis is not a controller model.",
+      "source_candidates_inspected": [],
+      "review_note_zh": "缺少当前实现工件，不能以邻近控制器、历史截图或静态公式替代。"
+    },
+    {
+      "scheme_id": "backstepping_baseline",
+      "display_name_zh": "反步控制",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_WaveA_BACKSTEPPING_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_WaveA_BACKSTEPPING_MIL",
+        "model_sha256": "2d384a0846c79044c7a010c4669cf688c9caa49c7ec9c2d54eac836484b39e2d",
+        "placement_count": 48,
+        "connect_count": 47,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 15,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "pole_placement_luenberger",
+      "display_name_zh": "极点配置与 Luenberger 观测器",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL",
+        "model_sha256": "0ae9fd3fc2f78fe15a8ecf0e481a318611853ed457dc516d04ecd182dd3bfb34",
+        "placement_count": 56,
+        "connect_count": 55,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 35,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "mrac",
+      "display_name_zh": "模型参考自适应控制",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_MRAC_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_MRAC_MIL",
+        "model_sha256": "3843a68e9240e6d031ac5a10c513a0485168876ec5a04354ae72dbb36d4ba929",
+        "placement_count": 56,
+        "connect_count": 55,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 35,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "ndi",
+      "display_name_zh": "非线性动态逆",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_NDI_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_NDI_MIL",
+        "model_sha256": "2530d79cb6492461d4b1d26c9eb39b7543fa5b4ea50f88cd6783163365b7e5a1",
+        "placement_count": 56,
+        "connect_count": 55,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 35,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "fopid",
+      "display_name_zh": "分数阶 PID",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_FOPID_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_FOPID_MIL",
+        "model_sha256": "457bd12f3eda29e1c62e592b77030ada79bf8466f65917ce2c0bf71d299b5f04",
+        "placement_count": 56,
+        "connect_count": 55,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 35,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "h2_state_feedback",
+      "display_name_zh": "H2 状态反馈",
+      "category": "classic_robust",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_H2_STATE_FEEDBACK_MIL",
+        "model_sha256": "c9014d279f66c28c21d060a0e0c4a549da375680131caeec3b7d61858cb9ed53",
+        "placement_count": 56,
+        "connect_count": 55,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 35,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "integral_smc",
+      "display_name_zh": "积分滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
+        "model_sha256": "1a2a00dc369a9ca565e7e29ff9e72ba8726f63ecf4b418d2e40c0608a1ccc9ab",
+        "placement_count": 89,
+        "connect_count": 95,
+        "line_annotation_count": 95,
+        "mworks_marker_count": 30,
+        "inport_count": 0,
+        "outport_count": 12,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "terminal_smc",
+      "display_name_zh": "终端滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
+        "model_sha256": "d5d0d124bc5be6c58b91df1145ae00363f50519f2e6bb9601fe4d58b084e40a7",
+        "placement_count": 92,
+        "connect_count": 98,
+        "line_annotation_count": 98,
+        "mworks_marker_count": 30,
+        "inport_count": 0,
+        "outport_count": 12,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "nonsingular_terminal_smc",
+      "display_name_zh": "非奇异终端滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
+        "model_sha256": "3e13a9ea89f5cdef803e43fd600dd0fa339a0630558339af1db8228d72bb37c2",
+        "placement_count": 92,
+        "connect_count": 98,
+        "line_annotation_count": 98,
+        "mworks_marker_count": 30,
+        "inport_count": 0,
+        "outport_count": 12,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "super_twisting_smc",
+      "display_name_zh": "Super-Twisting 滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
+        "model_sha256": "a2c06b21276a6144e887c7c83fdc9fd676268e6c13ac5f5a1cd098a2c6aabd20",
+        "placement_count": 101,
+        "connect_count": 104,
+        "line_annotation_count": 104,
+        "mworks_marker_count": 30,
+        "inport_count": 0,
+        "outport_count": 12,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "adaptive_smc",
+      "display_name_zh": "自适应滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
+        "model_sha256": "41245cb155ac57c6b3787405843a693a1c6b8e2755ec4148a2c2ef42c700d4dd",
+        "placement_count": 92,
+        "connect_count": 95,
+        "line_annotation_count": 95,
+        "mworks_marker_count": 30,
+        "inport_count": 0,
+        "outport_count": 12,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "fuzzy_smc",
+      "display_name_zh": "模糊滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
+        "model_sha256": "d2427f9012314dd2853b0bd02ff91d4aab82236102c8f691cd3e91946ba1b610",
+        "placement_count": 95,
+        "connect_count": 101,
+        "line_annotation_count": 101,
+        "mworks_marker_count": 33,
+        "inport_count": 0,
+        "outport_count": 12,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "neural_smc",
+      "display_name_zh": "神经滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "blocked_missing_current_model",
+      "review_disposition": "blocked_before_live_review",
+      "live_review_status": "not_started",
+      "blocker_code": "missing_frozen_neural_smc_training_artifact",
+      "blocker_reason": "No frozen training dataset, trained Neural-SMC weights, fixed-size inference implementation, and fallback test are jointly available.",
+      "source_candidates_inspected": [],
+      "review_note_zh": "缺少当前实现工件，不能以邻近控制器、历史截图或静态公式替代。"
+    },
+    {
+      "scheme_id": "smc_boundary_layer",
+      "display_name_zh": "边界层滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+        "model_sha256": "7aa5d81431f3e884dc1dc8475cb2f433fe6250b3ce0e57dc3d67b72a40b8ebfc",
+        "placement_count": 10,
+        "connect_count": 9,
+        "line_annotation_count": 9,
+        "mworks_marker_count": 4,
+        "inport_count": 0,
+        "outport_count": 1,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "linear_mpc",
+      "display_name_zh": "线性 MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
+        "model_sha256": "99c1ee53aeea94d743603776952f7bad7073fadd26eb3a7d5e6959b7d3932d22",
+        "placement_count": 124,
+        "connect_count": 155,
+        "line_annotation_count": 155,
+        "mworks_marker_count": 56,
+        "inport_count": 0,
+        "outport_count": 11,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "robust_mpc",
+      "display_name_zh": "鲁棒 MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
+        "model_sha256": "3ef1375e4b17b637d8ddb7a01ecf2ebe680a7127217e98358ffa30d26d72966f",
+        "placement_count": 145,
+        "connect_count": 179,
+        "line_annotation_count": 179,
+        "mworks_marker_count": 62,
+        "inport_count": 0,
+        "outport_count": 11,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "adaptive_mpc",
+      "display_name_zh": "自适应 MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
+        "model_sha256": "080396ee52ff089e7c0c6a669c64aa53bee86fe4adde97fcfc10c10a2341ab5d",
+        "placement_count": 142,
+        "connect_count": 188,
+        "line_annotation_count": 188,
+        "mworks_marker_count": 71,
+        "inport_count": 0,
+        "outport_count": 11,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "tube_mpc",
+      "display_name_zh": "管束 MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
+        "model_sha256": "bef4d7d7cc8955775d9adcc558811a0a155a1dff6869df34ed6b637acee1e1da",
+        "placement_count": 139,
+        "connect_count": 173,
+        "line_annotation_count": 173,
+        "mworks_marker_count": 62,
+        "inport_count": 0,
+        "outport_count": 11,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "explicit_gain_scheduled_mpc",
+      "display_name_zh": "显式增益调度 MPC",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
+        "model_sha256": "72d53043689f5b021669b6825a8028bf6568fa5868d77c17679e07fae4dd7d28",
+        "placement_count": 148,
+        "connect_count": 188,
+        "line_annotation_count": 188,
+        "mworks_marker_count": 65,
+        "inport_count": 0,
+        "outport_count": 11,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "ilqr",
+      "display_name_zh": "iLQR",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ILQR_GRAPHICAL_MIL",
+        "model_sha256": "e24adb837fe4154978a814c031d5e4bfdd42f8be6eb78518c562c013d23070a1",
+        "placement_count": 319,
+        "connect_count": 440,
+        "line_annotation_count": 440,
+        "mworks_marker_count": 146,
+        "inport_count": 0,
+        "outport_count": 11,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "mppi",
+      "display_name_zh": "MPPI",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_MPPI_GRAPHICAL_MIL",
+        "model_sha256": "bf135fe338d36ab61c0f7d801bc0263c21555dc35148aba585fcd16a5f62deff",
+        "placement_count": 559,
+        "connect_count": 833,
+        "line_annotation_count": 833,
+        "mworks_marker_count": 320,
+        "inport_count": 0,
+        "outport_count": 11,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "nmpc_outer",
+      "display_name_zh": "NMPC 外环",
+      "category": "optimization",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+        "model_sha256": "db8aaf0d3883dbad91589fb1a85130cb2bf6e86ae6bd94c83b493a8313ce9c21",
+        "placement_count": 11,
+        "connect_count": 11,
+        "line_annotation_count": 11,
+        "mworks_marker_count": 4,
+        "inport_count": 0,
+        "outport_count": 1,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "se3_basic",
+      "display_name_zh": "SE(3) 几何控制",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
+        "model_sha256": "40fc0433745d3fe025f9c2ccc8652562329005af3d48ac62b01af154c29e82e5",
+        "placement_count": 9,
+        "connect_count": 8,
+        "line_annotation_count": 8,
+        "mworks_marker_count": 3,
+        "inport_count": 0,
+        "outport_count": 1,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "dfbc_basic",
+      "display_name_zh": "基础微分平坦控制",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
+        "model_sha256": "f74c9166d729eb8794c01f3de036124275861985b932fab8d5c28e2fa050fd8e",
+        "placement_count": 11,
+        "connect_count": 10,
+        "line_annotation_count": 10,
+        "mworks_marker_count": 4,
+        "inport_count": 0,
+        "outport_count": 1,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "dfbc_high_order_attitude",
+      "display_name_zh": "高阶微分平坦姿态输出",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL",
+        "model_sha256": "a1e9433198ec7d0db6ac3db2156fe8cb5ae040493152bc1193c7093f9ddad943",
+        "placement_count": 173,
+        "connect_count": 172,
+        "line_annotation_count": 172,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 32,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "dfbc_high_order_bodyrate",
+      "display_name_zh": "高阶微分平坦角速度输出",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL",
+        "model_sha256": "863aace8ec8912b31ddc879622261bf985988a58ba3f2a98496af759c58cad91",
+        "placement_count": 173,
+        "connect_count": 172,
+        "line_annotation_count": 172,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 32,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_attitude",
+      "display_name_zh": "平滑鲁棒微分平坦姿态输出",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL",
+        "model_sha256": "c63e1dc2b1309897370a559a1a7cdceab5b346cb5429911b96ebc191816d057c",
+        "placement_count": 173,
+        "connect_count": 172,
+        "line_annotation_count": 172,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 32,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_bodyrate",
+      "display_name_zh": "平滑鲁棒微分平坦角速度输出",
+      "category": "geometric_flatness",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL",
+        "model_sha256": "1c346294f61ed4b8e93c3770a7f4a11833562625de69a2da5c165240c78e7477",
+        "placement_count": 173,
+        "connect_count": 172,
+        "line_annotation_count": 172,
+        "mworks_marker_count": 2,
+        "inport_count": 0,
+        "outport_count": 32,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "trained_neural_residual",
+      "display_name_zh": "训练神经残差控制",
+      "category": "learning",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Learning/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning.MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL",
+        "model_sha256": "4926f9fee668df045ca6445e65e2aa5a302cb5f9512b8b3e6933cf38b6309b27",
+        "placement_count": 12,
+        "connect_count": 10,
+        "line_annotation_count": 10,
+        "mworks_marker_count": 3,
+        "inport_count": 0,
+        "outport_count": 3,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "rl_gain_scheduler",
+      "display_name_zh": "强化学习增益调度",
+      "category": "learning",
+      "entry_type": "competition_primary_route",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "review_target_kind": "current_graphical_controller_core",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Learning/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning.MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL",
+        "model_sha256": "c43c627a889f89558cd9ea1f837f473cd1667805900926ff2602df339843267e",
+        "placement_count": 12,
+        "connect_count": 10,
+        "line_annotation_count": 10,
+        "mworks_marker_count": 3,
+        "inport_count": 0,
+        "outport_count": 3,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": null,
+      "review_note_zh": "必须在 MWORKS 中核对可见块、端口、走线和功能组；静态计数不能记为通过。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "px4ctrl",
+      "display_name_zh": "px4ctrl 工程基线",
+      "category": "engineering_baseline",
+      "entry_type": "engineering_baseline",
+      "mapping_state": "not_applicable_runtime_baseline",
+      "review_disposition": "not_applicable_runtime_baseline",
+      "live_review_status": "not_started",
+      "blocker_code": "runtime_baseline_not_an_mworks_graphical_scheme",
+      "review_note_zh": "px4ctrl 是 ROS1/PX4 工程基线，不伪造 MWORKS 图形模型；其验证留给 G7 后的运行时路线。"
+    },
+    {
+      "scheme_id": "fixed_awff_pid",
+      "display_name_zh": "抗积分饱和与参考前馈 PID",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffPid.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffPid",
+        "model_sha256": "76232f6cf8a48de5275465d203547d55c49693b95bd45b6a53cf37f0ea40cc6b",
+        "placement_count": 0,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "source_wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorExperiments/OfficialScenarios/Example1AWFFSysblockClosedLoop.mo",
+        "model_class": "QuadrotorExperiments.OfficialScenarios.Example1AWFFSysblockClosedLoop",
+        "model_sha256": "3fb07e06c14a4b483c7c79fa27a07d29feacd0f81730ca36bdf9e25f547e999e",
+        "placement_count": 0,
+        "connect_count": 39,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "review_target_kind": "internal_controller_referenced_by_whole_aircraft_wrapper",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo",
+        "model_class": "AWFF_FullControllerEquation_Sysblock",
+        "model_sha256": "30ff4f4a44e5a83dd0a5a0b71d8543b70c8b46a68b905666c75dc12ed472e4ea",
+        "placement_count": 12,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 14,
+        "inport_count": 8,
+        "outport_count": 4,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": "The mapped entry is a formal alias of a whole-aircraft closed-loop wrapper. Review the source wrapper's referenced controller3_2 model first; alias and wrapper are integration context only and cannot substitute for an internal controller-layout verdict.",
+      "review_note_zh": "当前入口是固定整机链的正式别名；先审查源整机包装器中 controller3_2 指向的内部控制器，别名和整机包装器只用于核对接入关系。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "fixed_awff_l1_residual",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffL1Residual.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffL1Residual",
+        "model_sha256": "c33498595e8dcf48d03b069cc393bfae43d4a9041a844ce9d2075fd430b8d1db",
+        "placement_count": 0,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "source_wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorExperiments/OfficialScenarios/Example1L1SysblockClosedLoop.mo",
+        "model_class": "QuadrotorExperiments.OfficialScenarios.Example1L1SysblockClosedLoop",
+        "model_sha256": "f67ca5bf6476c3045e8d634670e069354ae1dd0f1299b672741731106d034764",
+        "placement_count": 0,
+        "connect_count": 39,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "review_target_kind": "internal_controller_referenced_by_whole_aircraft_wrapper",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo",
+        "model_class": "AWFF_L1ResidualControllerEquation_Sysblock",
+        "model_sha256": "90358dd6a29dd129b9def07d30d7b0e9853f328f7a961548fa9d95f80d5a3a6a",
+        "placement_count": 12,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 14,
+        "inport_count": 8,
+        "outport_count": 4,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": "The mapped entry is a formal alias of a whole-aircraft closed-loop wrapper. Review the source wrapper's referenced controller3_2 model first; alias and wrapper are integration context only and cannot substitute for an internal controller-layout verdict.",
+      "review_note_zh": "当前入口是固定整机链的正式别名；先审查源整机包装器中 controller3_2 指向的内部控制器，别名和整机包装器只用于核对接入关系。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "fixed_awff_l1_indi",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffL1Indi.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffL1Indi",
+        "model_sha256": "db943af2b4beb39c71628db77233dda195cd14114d1857bae78f8c6fbc4629d7",
+        "placement_count": 0,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "source_wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorExperiments/OfficialScenarios/Example1INDISysblockClosedLoop.mo",
+        "model_class": "QuadrotorExperiments.OfficialScenarios.Example1INDISysblockClosedLoop",
+        "model_sha256": "b72a2047eab1105e58da148cd58ab76d6dbd129fd86f01dcabeba5b7cbcb3688",
+        "placement_count": 0,
+        "connect_count": 39,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "review_target_kind": "internal_controller_referenced_by_whole_aircraft_wrapper",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorControllerBlocks/AWFF_INDIControllerEquation_Sysblock.mo",
+        "model_class": "AWFF_INDIControllerEquation_Sysblock",
+        "model_sha256": "3afe9e501c3df7770a27e24a297b9dff8141c15b192741a70b207a5c7cbef4b3",
+        "placement_count": 12,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 14,
+        "inport_count": 8,
+        "outport_count": 4,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": "The mapped entry is a formal alias of a whole-aircraft closed-loop wrapper. Review the source wrapper's referenced controller3_2 model first; alias and wrapper are integration context only and cannot substitute for an internal controller-layout verdict.",
+      "review_note_zh": "当前入口是固定整机链的正式别名；先审查源整机包装器中 controller3_2 指向的内部控制器，别名和整机包装器只用于核对接入关系。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedLinearMpcL1Indi.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedLinearMpcL1Indi",
+        "model_sha256": "7e31aecc7befc4acaca76e537a94993b316408c428a40e306e29f833b63a9256",
+        "placement_count": 0,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "source_wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorExperiments/OfficialScenarios/Example1LinearMPCSysblockClosedLoop.mo",
+        "model_class": "QuadrotorExperiments.OfficialScenarios.Example1LinearMPCSysblockClosedLoop",
+        "model_sha256": "69ab5d48cc2e7c115a87d06491b423abb54a9669206e7c431aa744f6f1fe1291",
+        "placement_count": 0,
+        "connect_count": 39,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "review_target_kind": "internal_controller_referenced_by_whole_aircraft_wrapper",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+        "model_class": "AWFF_LinearMPCOuterLoopControllerEquation_Sysblock",
+        "model_sha256": "6cd41dd82aa7194e3de0b2e890defab58155dc4c69e5a63508c00858583cc6f8",
+        "placement_count": 12,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 14,
+        "inport_count": 8,
+        "outport_count": 4,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": "The mapped entry is a formal alias of a whole-aircraft closed-loop wrapper. Review the source wrapper's referenced controller3_2 model first; alias and wrapper are integration context only and cannot substitute for an internal controller-layout verdict.",
+      "review_note_zh": "当前入口是固定整机链的正式别名；先审查源整机包装器中 controller3_2 指向的内部控制器，别名和整机包装器只用于核对接入关系。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    },
+    {
+      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
+      "category": "fixed_integrated",
+      "entry_type": "fixed_integrated_scheme",
+      "mapping_state": "resolved_current_model",
+      "review_disposition": "pending_live_internal_graphical_review",
+      "live_review_status": "not_started",
+      "wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
+        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedQpNmpcL1IndiCbf",
+        "model_sha256": "dcdfb833c5b3ff52686f438fbd96b36c7134a251cb6934768e3e03f968b900d6",
+        "placement_count": 0,
+        "connect_count": 0,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "source_wrapper_static_indicators": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1QPNMPCSafetySysblockClosedLoop.mo",
+        "model_class": "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetySysblockClosedLoop",
+        "model_sha256": "ec8d22746079b144a3e4ae3f89ef0ec8b6924d5d600cb8256038116e3d26f9b6",
+        "placement_count": 0,
+        "connect_count": 39,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 1,
+        "inport_count": 0,
+        "outport_count": 0,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "review_target_kind": "internal_controller_referenced_by_whole_aircraft_wrapper",
+      "review_target": {
+        "source_kind": "static_source_preflight_only",
+        "model_file": "Models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo",
+        "model_class": "AWFF_QPNMPCSafetyController_Sysblock",
+        "model_sha256": "1348b7958740c8296492cc41e86a71bb7e97f2655c83de0112d8bf058e0209ea",
+        "placement_count": 19,
+        "connect_count": 8,
+        "line_annotation_count": 0,
+        "mworks_marker_count": 20,
+        "inport_count": 8,
+        "outport_count": 10,
+        "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
+      },
+      "wrapper_risk": "The mapped entry is a formal alias of a whole-aircraft closed-loop wrapper. Review the source wrapper's referenced controller3_2 model first; alias and wrapper are integration context only and cannot substitute for an internal controller-layout verdict.",
+      "review_note_zh": "当前入口是固定整机链的正式别名；先审查源整机包装器中 controller3_2 指向的内部控制器，别名和整机包装器只用于核对接入关系。",
+      "required_layout_observations": [
+        "is_internal_control_law",
+        "signal_flow_readable",
+        "functional_groups_readable",
+        "wires_traceable"
+      ]
+    }
+  ]
+}

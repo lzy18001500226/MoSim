@@ -103,4 +103,4 @@ body-rate, torque-level, or rotor-level SMC variants are implemented.
 
 Forbidden claims: do not claim user-frozen G9-D acceptance, terminal SMC,
 super-twisting SMC, attitude/body-rate/torque-level SMC, MWORKS-generated
-acceptance, or PX4-native deployment from the current G9-D evidence.
+acceptance, or PX4-native deployment from the historical G9-D evidence.

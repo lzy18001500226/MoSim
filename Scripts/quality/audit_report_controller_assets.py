@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Audit controller images prepared for MoSim's formal report.
+"""Audit archived controller exports from MoSim's former report asset tree.
 
-This is deliberately a static audit. It verifies the report-copy asset pair,
+This is deliberately a static audit. It verifies the archived report-copy asset pair,
 cross-references the authoritative controller inventory, and detects byte-level
 duplicate PNG files. It cannot judge Sysplorer wiring readability, confirm the
 opened submodel, or turn a screenshot into a passed simulation result. Those
@@ -21,7 +21,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REPORT_ASSET_ROOT = ROOT / "Docs" / "报告" / "图" / "控制器"
+REPORT_ASSET_ROOT = ROOT / "Docs" / "报告" / "图" / "归档" / "控制器旧导出资产_20260722"
 CONTROLLER_MATRIX = (
     ROOT
     / "Results"
@@ -36,7 +36,7 @@ EVIDENCE_INVENTORY = (
     / "controller_document_evidence_20260720"
     / "CONTROLLER_DOCUMENT_EVIDENCE_INVENTORY.json"
 )
-DEFAULT_OUTPUT_DIR = ROOT / "Docs" / "报告" / "审计"
+DEFAULT_OUTPUT_DIR = ROOT / "Docs" / "报告" / "审计" / "归档" / "控制器旧导出资产_20260722"
 
 MODEL_IMAGE = "01_图形模型.png"
 RESULT_IMAGE = "02_仿真结果.png"

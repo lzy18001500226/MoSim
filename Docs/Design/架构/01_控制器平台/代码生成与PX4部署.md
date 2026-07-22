@@ -4,6 +4,9 @@
 > 文档名称：MoSim控制器代码生成与PX4部署规范
 > 适用项目：MoSim四旋翼多领域建模、控制与联合仿真平台
 > 状态：当前代码生成与PX4部署专题规范，2026-06-24。
+> 当前 G1-G7 不执行代码生成、PX4 部署或 Gazebo 回灌；本文件保留后续专项工作
+> 的门禁和历史证据，不能覆盖 `Docs/Workflows/controller_evidence_closeout.md` 的
+> 当前顺序。
 > 依赖文档：
 >
 > * MoSim-CTRL-01《MoSim控制体系总览》
@@ -25,12 +28,12 @@ PX4CTRL Golden Vertical Slice
 
 当前不做完整 PX4 Module 板载部署，不做 BODY_RATE_THRUST/WRENCH/ROTOR_* 代码回灌。
 
-G11阶段的代码生成闭环不只服务于“最佳控制器”。所有进入`implemented`或
+历史 G11 阶段的代码生成闭环不只服务于“最佳控制器”。所有进入`implemented`或
 `accepted`的控制器，以及所有被批准与名义控制器组合的增强模块，都必须按同一
 生命周期进入MWORKS/codegen闭环；未完成代码生成和回灌的对象只能保持为
 `candidate`、`research`或`report-only`，不能作为正式平台能力。
 
-截至2026-06-30，G9-A..G9-F已采用统一`controller_family_attitude_thrust_v1`
+截至2026-06-30，历史 G9-A..G9-F 已采用统一`controller_family_attitude_thrust_v1`
 路径完成MWORKS `GenerateModelCode`、生成C离线一致性和静态ROS/Sunray
 adapter形状检查：
 
@@ -91,7 +94,7 @@ live 模型检查、代码生成或GUI布局审核前，先执行 no-start probe
 
 ```text
 静态资产/I-O冻结
-  -> G5/G6离线脚本
+  -> 历史原 G5/G6 离线脚本
   -> no-start probe 或最新授权巡检证据
   -> check_model
   -> GenerateModelCode

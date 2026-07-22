@@ -1,0 +1,1202 @@
+{
+  "schema": "mosim.legacy_controller_export_archive.v1",
+  "scope": "Historical exported report images and state notes only; not current graphical-review or simulation evidence.",
+  "source_root_before_archive": "Docs/报告/图/控制器",
+  "archive_root": "Docs/报告/图/归档/控制器旧导出资产_20260722",
+  "file_count": 133,
+  "png_count": 130,
+  "legacy_note_count": 3,
+  "files": [
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/anti_windup/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/anti_windup/01_图形模型.png",
+      "kind": "png",
+      "sha256": "955c476feac88714434bdcd96f95f01d1e089013d7f0c0e46e640b300a21a1c1",
+      "bytes": 101974,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/anti_windup/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/anti_windup/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "8049095910781ec4749d5f5133b4a314fed2f6e7e11ee68d030ee0c5fd20450a",
+      "bytes": 96149,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/cascade_pid/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/cascade_pid/01_图形模型.png",
+      "kind": "png",
+      "sha256": "652ba0bec9779aae456ad44188fc1828407e87486040ad4196968e404cedba16",
+      "bytes": 131591,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/cascade_pid/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/cascade_pid/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "cc7a18a93b3bd81f99f2c9f1f9b7a22b05c3619d14994a9d1660774dcd67a006",
+      "bytes": 95355,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/feedforward_profile/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/feedforward_profile/01_图形模型.png",
+      "kind": "png",
+      "sha256": "ebfc5f7fa196f978efb0222b45a639811ef490e53d7f9339da2ab2658fbe5c3a",
+      "bytes": 111826,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/feedforward_profile/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/feedforward_profile/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "0508dbd70e8a4eb95915c268f7297511df0017c7bf479725caaaa0fce2a96695",
+      "bytes": 97256,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/fuzzy_pid/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/fuzzy_pid/01_图形模型.png",
+      "kind": "png",
+      "sha256": "4d8d0db3359c61aa11446888b613fa9844076b640931f745086cd182ce77c47e",
+      "bytes": 102253,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/fuzzy_pid/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/fuzzy_pid/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "729aa70d2a46965eebe05d0caa803f3d0ff627a8db7d82131b01f57fef314b89",
+      "bytes": 98148,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/gain_scheduled_pid/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/gain_scheduled_pid/01_图形模型.png",
+      "kind": "png",
+      "sha256": "87a6698b2e3f0c03c01590ac870c659402ee4ad496c22acd6c578cc1ec65cafb",
+      "bytes": 102219,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/gain_scheduled_pid/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/gain_scheduled_pid/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "198ff96d0047788de2f9ada037fab196493964a9509085bd831f9cb167afe9c8",
+      "bytes": 98090,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/neural_pid/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/neural_pid/01_图形模型.png",
+      "kind": "png",
+      "sha256": "abbec87bb934ae962a985b3d0b2d9b590357be4131f84ac43d02a5369749f368",
+      "bytes": 102272,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/01_PID族/neural_pid/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/01_PID族/neural_pid/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "22061ef2f8b80c6f682c33138f770bf2190ff4fa10ade0b0e3e5c804fdd04569",
+      "bytes": 99382,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/02_线性与鲁棒/adaptive_backstepping/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/adaptive_backstepping/01_图形模型.png",
+      "kind": "png",
+      "sha256": "caf0e48191294b95c6d2588273b14646175ac5393912af681a66c427f300be9a",
+      "bytes": 123671,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/02_线性与鲁棒/adaptive_backstepping/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/adaptive_backstepping/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "81e23e0a5c2329c674b5ec514ebfb5a71f2eb208fa135e210257666baf3b6101",
+      "bytes": 98970,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/02_线性与鲁棒/feedback_linearization/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/feedback_linearization/01_图形模型.png",
+      "kind": "png",
+      "sha256": "22dcc850ad4e11e39c470271d5d670609d811842366304944794f36bd1eb43ba",
+      "bytes": 107778,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/02_线性与鲁棒/feedback_linearization/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/feedback_linearization/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "1c3e8bd5b9513e8561f215ece6ce6ebab50d0a93773f757e28168c7ed888c6a6",
+      "bytes": 98681,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/02_线性与鲁棒/lqg/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/lqg/01_图形模型.png",
+      "kind": "png",
+      "sha256": "130f6e3dff61c9b011aeb00ca4e207ed8b21001ea14fe8c4ffc77dc7c0356baa",
+      "bytes": 160909,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/02_线性与鲁棒/lqg/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/lqg/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "94964bf58db8a8c3665b182b39330e6bd64d179383be3f18062a38f59eab0874",
+      "bytes": 95912,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/02_线性与鲁棒/passivity_based_control/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/passivity_based_control/01_图形模型.png",
+      "kind": "png",
+      "sha256": "bb1fcd0f571a168e7dff3d1b267687cf5e695d708c83f6d04099fa85800f260d",
+      "bytes": 130978,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/02_线性与鲁棒/passivity_based_control/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/02_线性与鲁棒/passivity_based_control/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "ccfd6d3906d481992a49c39687d3a24d9cd92117b85e2a7786744aef643e006e",
+      "bytes": 98456,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/adaptive_smc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/adaptive_smc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "9e35ac03257f21f96c2041647ef1dba68f84b6f2ff24d03c978a22f26b220576",
+      "bytes": 151346,
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/adaptive_smc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/adaptive_smc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "327a86abdeca806762388b89bb58bba20e98846a814886f53151d1cebebd2022",
+      "bytes": 99740,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/fuzzy_smc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/fuzzy_smc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "149975c099d20577c825530a0ac22eee8bd7e224cbbb3d739ba4175229cc91a7",
+      "bytes": 153349,
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/fuzzy_smc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/fuzzy_smc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "a81bcf170d0b9ced9aaa2fcd064b8312a63a9294efd9a72750beb87ebc370ed9",
+      "bytes": 99467,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/integral_smc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/integral_smc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "6a85cc42cb4d2f12950cf4c654595b32c158296a0e05cee6f67209338194780c",
+      "bytes": 158475,
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/integral_smc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/integral_smc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "01f0c4c2215ca9d76b44bf4afa152cb0eb07d3ac54c339fd3a6d760701c1338e",
+      "bytes": 99061,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/nonsingular_terminal_smc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/nonsingular_terminal_smc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "e0bd446114e194557e5b08400d534e6bc9f4cfa3e0cec0ea9c66725b4a91c815",
+      "bytes": 163445,
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/nonsingular_terminal_smc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/nonsingular_terminal_smc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "8b753c72248a624ebe7807bfa4356297c058312d4743f5031c1c3815f2a01326",
+      "bytes": 100462,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/super_twisting_smc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/super_twisting_smc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "711f777d88293f78b5237c2ad99a69f790f69fa241d1828089245469d6acfffb",
+      "bytes": 174111,
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/super_twisting_smc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/super_twisting_smc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "4547e39245f9a62f19ae7ddc2184c9eaa1714e0ce91e5141b54f74f47a0b4aab",
+      "bytes": 100114,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/terminal_smc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/terminal_smc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "e0bd446114e194557e5b08400d534e6bc9f4cfa3e0cec0ea9c66725b4a91c815",
+      "bytes": 163445,
+      "width": 3000,
+      "height": 2000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/03_滑模控制/terminal_smc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/03_滑模控制/terminal_smc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "8b753c72248a624ebe7807bfa4356297c058312d4743f5031c1c3815f2a01326",
+      "bytes": 100462,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/adaptive_mpc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/adaptive_mpc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "3a13a100e26ab99a4ed0445c33726bc5bb1cdf816e97480b6f1a220e080ac7df",
+      "bytes": 203621,
+      "width": 3600,
+      "height": 2400
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/adaptive_mpc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/adaptive_mpc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "a676e6a9640ca0c39b8b67256d9661a6502ef27f5ad621c2474fbe9a5cfd3702",
+      "bytes": 99108,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/explicit_gain_scheduled_mpc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/explicit_gain_scheduled_mpc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "208141e2499db6e2ccf35a05991b96e934cbf9fba3406ce4beb160a0858a0667",
+      "bytes": 237149,
+      "width": 3600,
+      "height": 2400
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/explicit_gain_scheduled_mpc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/explicit_gain_scheduled_mpc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "93f598f064a47dc292e2ce4929f00b42983ee6365852aeee02f0c51dd0a7ac2d",
+      "bytes": 100820,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/ilqr/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/ilqr/01_图形模型.png",
+      "kind": "png",
+      "sha256": "4864e270eaf173a09b4ad7e902d3e2314bbfbbb87e4ad4f6ab5c89b046e2d472",
+      "bytes": 368439,
+      "width": 3600,
+      "height": 2400
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/ilqr/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/ilqr/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "6b5961b05fef1e09eb5eb6fccae3e3b9487cc6791d3e3f65480d767c9c92ac8f",
+      "bytes": 99050,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/linear_mpc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/linear_mpc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "cd12fbd73c32b4e8832f81b50728521a3017af05ab2438b56fd7673abf69aaea",
+      "bytes": 196587,
+      "width": 3600,
+      "height": 2400
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/linear_mpc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/linear_mpc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "5ee637d31bf91c409b2edfb437e1f39ba0f5cec8cd6b99d243fedf9789ad875f",
+      "bytes": 99012,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/mppi/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/mppi/01_图形模型.png",
+      "kind": "png",
+      "sha256": "fb9aea1b7e09a6c67d5265577815700872af3b383132b955c3b5c344027e78b9",
+      "bytes": 624039,
+      "width": 3600,
+      "height": 2400
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/mppi/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/mppi/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "0b773118d6b68b70105568844f4c7a62ffa98d0fc4b7be6da325d5387a284981",
+      "bytes": 98201,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/robust_mpc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/robust_mpc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "21a8cd8a78194d6c38995632dc282832ad63b2ed71d86f9dfa82a384568c74d3",
+      "bytes": 217753,
+      "width": 3600,
+      "height": 2400
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/robust_mpc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/robust_mpc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "ce963bf1edef123a5ebe4e9cb62cf4b59efc806723f931cbceeb5fee15e097ce",
+      "bytes": 99069,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/tube_mpc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/tube_mpc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "c1106562a6ea2ad1690da3500d8c5854b261c2d9199266f2acc57ef7b553e2f1",
+      "bytes": 212997,
+      "width": 3600,
+      "height": 2400
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/04_MPC族/tube_mpc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/04_MPC族/tube_mpc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "0b008f4c220ffb0100fc63849c279c0a4622c987eb75c70c985b97a6ad793de7",
+      "bytes": 98664,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/awff/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/awff/01_图形模型.png",
+      "kind": "png",
+      "sha256": "20a018cf0f64a29219ca3fc294d01001071a94711cc376e2f2aa172226fa95b4",
+      "bytes": 37180,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/awff/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/awff/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "4e0e35662fee84f5daabb634b3e36d641d13ae705a79548aad6252b94b7e8563",
+      "bytes": 105625,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/complete_adrc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/complete_adrc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "9c793d70015d2b2f442863615a90d8c77d95cf5cecd171ea3adfb686e8408ecb",
+      "bytes": 33841,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/complete_adrc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/complete_adrc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "b9c4719d7233911c4edbbe26c8700dc70d503c69e76a5c01b685a68c1462574f",
+      "bytes": 122441,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/ilc/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/ilc/01_图形模型.png",
+      "kind": "png",
+      "sha256": "ab27ae3fa5d4f5c85c946671b3a48529a43f79be5965a22b0e5fdd77c80e9ae6",
+      "bytes": 34405,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/ilc/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/ilc/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "4e0e35662fee84f5daabb634b3e36d641d13ae705a79548aad6252b94b7e8563",
+      "bytes": 105625,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/l1_adaptive/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/l1_adaptive/01_图形模型.png",
+      "kind": "png",
+      "sha256": "83a1b3628ccf4207a62609aeeca439b104b9c715317c01469f3fee0d446384b4",
+      "bytes": 35533,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/l1_adaptive/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/l1_adaptive/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "d64e2d8260b34df449a7f3d8d3a0d47eacf8d000174d23ddd6b69ce455231104",
+      "bytes": 115117,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/parameter_scheduling/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/parameter_scheduling/01_图形模型.png",
+      "kind": "png",
+      "sha256": "831a77a8168cd253c9f629eea1c9aa5fad35214292c2fe5b037b889613a47f97",
+      "bytes": 35892,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/parameter_scheduling/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/parameter_scheduling/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "657c8e89bd90ee6865818fc60b870b2b96214248697fcc516b05f68c84729ed1",
+      "bytes": 100225,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/standardized_indi/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/standardized_indi/01_图形模型.png",
+      "kind": "png",
+      "sha256": "702df84e4c104c2d005094c38a54187ee34862284dcfe5ea4963d325a2c1cec1",
+      "bytes": 35710,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/05_增强与扰动补偿/standardized_indi/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/05_增强与扰动补偿/standardized_indi/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "2d1fce70deee379aa5623bbf33ece7e0f5a2484c4835d0e48628b33e492ebdba",
+      "bytes": 99844,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/dfbc_basic/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/dfbc_basic/01_图形模型.png",
+      "kind": "png",
+      "sha256": "5df2a7a79b2ecb405781a3491f0d43a05d9eb3d21f0979e1ed47e737562216cc",
+      "bytes": 25994,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/dfbc_basic/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/dfbc_basic/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "38ec1b7edb249b35a9bd04a0c82f068f2c96d77d91b751c8e8a6d62062b57447",
+      "bytes": 103986,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/nmpc_outer/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/nmpc_outer/01_图形模型.png",
+      "kind": "png",
+      "sha256": "1f6d343e6567cf1e8ff6da8d7dd42743c034630b51d2cb269918ad4cd27806b9",
+      "bytes": 26745,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/nmpc_outer/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/nmpc_outer/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "38ec1b7edb249b35a9bd04a0c82f068f2c96d77d91b751c8e8a6d62062b57447",
+      "bytes": 103986,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/official_pid/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/official_pid/01_图形模型.png",
+      "kind": "png",
+      "sha256": "8bed9ce79a5063c244f3d45eded38d251b45ef837836786ec8fcc2f00967d468",
+      "bytes": 123655,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/official_pid/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/official_pid/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "d861ad0138a216da03d3fd9e94708ce9004cf327452599523a64a393ef77559f",
+      "bytes": 22897,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/pid_indi/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/pid_indi/01_图形模型.png",
+      "kind": "png",
+      "sha256": "351a3c6f1d968ac1c34a34e5fb9b252ac203ab9056f75211ae4f07d8cbb7dbdc",
+      "bytes": 25980,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/pid_indi/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/pid_indi/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "53e247863207b5294ec49629b75c754fcbd79b8b925cbc09639a057d29a398b2",
+      "bytes": 112083,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/se3_basic/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/se3_basic/01_图形模型.png",
+      "kind": "png",
+      "sha256": "5113c521f82a11de0c3c5fd6ade99b62e31180477e12e8df80a2974335a0fcdd",
+      "bytes": 27518,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/se3_basic/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/se3_basic/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "d861ad0138a216da03d3fd9e94708ce9004cf327452599523a64a393ef77559f",
+      "bytes": 22897,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/smc_boundary_layer/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/smc_boundary_layer/01_图形模型.png",
+      "kind": "png",
+      "sha256": "bb4e08c3ee4d21ecd26d0526d28e5c8387f42c6cdce4434d99865eee97d68d32",
+      "bytes": 24428,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/06_核心对比路线/smc_boundary_layer/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/06_核心对比路线/smc_boundary_layer/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "6f133aae743c4204a70488f1c88379e0b122a6936ce687820a10927bb5235f02",
+      "bytes": 105837,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/07_安全层/safety_supervisor_family/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/07_安全层/safety_supervisor_family/01_图形模型.png",
+      "kind": "png",
+      "sha256": "21f4397026a698f5625d3d099ed3073747b676d5548d5116882a47881f0a28e4",
+      "bytes": 37057,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/07_安全层/safety_supervisor_family/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/07_安全层/safety_supervisor_family/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "653e3638091d693a5f686f3382fb64563fcede1ae6743410f9883e2f882d6594",
+      "bytes": 101150,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/08_故障容错/fdi_ftc_family/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/08_故障容错/fdi_ftc_family/01_图形模型.png",
+      "kind": "png",
+      "sha256": "108a8629851300661e83b41d7e6becd929d6bea12c48b0056dd62f5633348f53",
+      "bytes": 38286,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/08_故障容错/fdi_ftc_family/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/08_故障容错/fdi_ftc_family/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "056b1795ab65d0696ffbb43567df78bd4bff2f65eda35f4fe2e5c2f0d0ff08bf",
+      "bytes": 85336,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/consensus/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/consensus/01_图形模型.png",
+      "kind": "png",
+      "sha256": "1d6d82e2101ef5a435ab30edae7530a5a3faec8881db7c4fa62333d77ffe2bdb",
+      "bytes": 30450,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/consensus/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/consensus/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "dac70977dd4ea16b2446056758e85d6ba650fe9469a138ee38c82680a88baa46",
+      "bytes": 100371,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/containment/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/containment/01_图形模型.png",
+      "kind": "png",
+      "sha256": "c73e2b47b2f07af0c3bfd950903616f17b48d8a6e260d4baf3fc734b26e5c592",
+      "bytes": 30367,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/containment/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/containment/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "6ca825da4124563a6abf1f481c84d62187459f4d9e1333d7ad3f217fd346266d",
+      "bytes": 100536,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/distributed_mpc_formation/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/distributed_mpc_formation/01_图形模型.png",
+      "kind": "png",
+      "sha256": "fb6e703f442b03fb1bc5995d683d1bb2c01521e3f02b9162b2582b7b16d8755a",
+      "bytes": 30428,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/distributed_mpc_formation/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/distributed_mpc_formation/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "8953ce63b0323d24f97189001b6447c0c116f40f2a4a22c3f44d609dd0aca82b",
+      "bytes": 102778,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/fault_tolerant_formation/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/fault_tolerant_formation/01_图形模型.png",
+      "kind": "png",
+      "sha256": "010a653d00476af940c98d8795a210b1db7793fde97beb914a75292548baed31",
+      "bytes": 30425,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/fault_tolerant_formation/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/fault_tolerant_formation/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "51273289c411b92cf0d2e0a624dfb9f2e25f89218fc38b8a946bda0400d0d118",
+      "bytes": 101702,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/formation_cbf/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_cbf/01_图形模型.png",
+      "kind": "png",
+      "sha256": "acc479ad1b7a5b303c67925193ba047a32baafa87f3f9a04dd1b55386bc3876d",
+      "bytes": 30354,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/formation_cbf/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_cbf/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "8db374e3489ba61b4043222851cfe8f4ac8b9a768b4e4fdd009e92b4a3b19546",
+      "bytes": 101487,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/formation_reconfiguration/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_reconfiguration/01_图形模型.png",
+      "kind": "png",
+      "sha256": "bef7fb28e3fc53ee41f25ff28da8238c6099042ac918ab811e86e9a2358daf17",
+      "bytes": 30139,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/formation_reconfiguration/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_reconfiguration/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "88b16ab3dc10f40c9b7aa300a476e0b27f4a8a7b5127d0cfef53b9662d22f12d",
+      "bytes": 102211,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/formation_tracking/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_tracking/01_图形模型.png",
+      "kind": "png",
+      "sha256": "2d5286aadc5259d10cef82f76bd420189879cb8a7c93fe51b4d68f446e488b85",
+      "bytes": 30126,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/formation_tracking/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/formation_tracking/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "7e410023e9fbff254fcc4f1effa6ec20ad79f35204b96933d2b106c638232079",
+      "bytes": 101570,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/leader_follower/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/leader_follower/01_图形模型.png",
+      "kind": "png",
+      "sha256": "be66bc4b29029d86c3fa05e78be76c1430d52850434078eff957ea1b502863a8",
+      "bytes": 30224,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/leader_follower/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/leader_follower/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "33baefcbb05f0a6b23a754e4adffa47bab99e83bdb0ad1d3cda7deb4de7a0156",
+      "bytes": 100667,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/virtual_structure/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/virtual_structure/01_图形模型.png",
+      "kind": "png",
+      "sha256": "feb0d5ff8537ca0d4ab0647a65a59190dba6e0d336f894f0da6e35e27d4b1748",
+      "bytes": 29987,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/09_编队控制/virtual_structure/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/09_编队控制/virtual_structure/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "ce29a34ad23b699ef60ac8edd20f2ceafb7fcce095068fa0cad451dc71755883",
+      "bytes": 101410,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/10_智能增强/rl_gain_scheduler/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/10_智能增强/rl_gain_scheduler/01_图形模型.png",
+      "kind": "png",
+      "sha256": "6a2c69471a6837ed4f13d5cb7d8b9f3bf4b80b649f5620e6c15da7914625eef3",
+      "bytes": 32593,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/10_智能增强/rl_gain_scheduler/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/10_智能增强/rl_gain_scheduler/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "a348445c41380647ca98ec49e828d868a27b1ec45dbc811346f6637d6a67a99b",
+      "bytes": 109211,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/10_智能增强/trained_neural_residual/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/10_智能增强/trained_neural_residual/01_图形模型.png",
+      "kind": "png",
+      "sha256": "73412a08ff0e6a65d3f49f446cee44b5142b5385fb087dcbb29666c362fad79e",
+      "bytes": 32697,
+      "width": 1800,
+      "height": 1000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/10_智能增强/trained_neural_residual/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/10_智能增强/trained_neural_residual/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "7ad51636b016b90afc9e248c0971708c4488c824b6163314b481687b6244ee7d",
+      "bytes": 107130,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/backstepping_baseline/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/backstepping_baseline/01_图形模型.png",
+      "kind": "png",
+      "sha256": "874738f19e53b10805b40831127675164698f4ce5b81610f05cc41d25ea3283e",
+      "bytes": 87303,
+      "width": 1800,
+      "height": 1200
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/backstepping_baseline/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/backstepping_baseline/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "109f238b761ca3a9e3b936422486d7801fe5bc0f94ed16189f355d21b0289a89",
+      "bytes": 102664,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_dob_eso/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_dob_eso/01_图形模型.png",
+      "kind": "png",
+      "sha256": "84b8ed3523225b9793e5e28b51be9e8a2f6319a3da2f1bdfb3901cf9d62bb6e6",
+      "bytes": 117496,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_dob_eso/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_dob_eso/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "15024a75267e518c129370881378ee988a9e026edd0baea9444ca405c581d759",
+      "bytes": 110385,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_dob_eso_disabled/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_dob_eso_disabled/01_图形模型.png",
+      "kind": "png",
+      "sha256": "f1b11484c80f1c5b7dc9dcfcf315963ccfa990b2ace9e38b3ae31b7be88038c6",
+      "bytes": 697590,
+      "width": 6000,
+      "height": 10000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_dob_eso_disabled/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_dob_eso_disabled/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "4452db16b3924970dd226e474320834604f3068a19e0a574153888632e151d79",
+      "bytes": 171674,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_high_order_attitude/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_high_order_attitude/01_图形模型.png",
+      "kind": "png",
+      "sha256": "a06b0665dc1fea88bd71bf31b61e901a8df9e6edbec9b3be0e71ae939aae6dc5",
+      "bytes": 697588,
+      "width": 6000,
+      "height": 10000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_high_order_attitude/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_high_order_attitude/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "9010c903212a71e681571f16f2bc08688091fc8184f5c9a2e46dbaacbee06019",
+      "bytes": 176142,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_high_order_bodyrate/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_high_order_bodyrate/01_图形模型.png",
+      "kind": "png",
+      "sha256": "a06b0665dc1fea88bd71bf31b61e901a8df9e6edbec9b3be0e71ae939aae6dc5",
+      "bytes": 697588,
+      "width": 6000,
+      "height": 10000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_high_order_bodyrate/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_high_order_bodyrate/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "94acc315bef4e6485bcd799f43eb58b5e334ad379d9cd43d9725ba6c1305027d",
+      "bytes": 176169,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_smooth_robust_attitude/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_smooth_robust_attitude/01_图形模型.png",
+      "kind": "png",
+      "sha256": "f1b11484c80f1c5b7dc9dcfcf315963ccfa990b2ace9e38b3ae31b7be88038c6",
+      "bytes": 697590,
+      "width": 6000,
+      "height": 10000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_smooth_robust_attitude/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_smooth_robust_attitude/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "60d6c9343045a946133998e09abf8796d7b0b6f25cac7796371e64f3844d09db",
+      "bytes": 171943,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_smooth_robust_bodyrate/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_smooth_robust_bodyrate/01_图形模型.png",
+      "kind": "png",
+      "sha256": "f1b11484c80f1c5b7dc9dcfcf315963ccfa990b2ace9e38b3ae31b7be88038c6",
+      "bytes": 697590,
+      "width": 6000,
+      "height": 10000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/dfbc_smooth_robust_bodyrate/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/dfbc_smooth_robust_bodyrate/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "1746c03b2b308b0c321810b50c5e353ba3062f7b09fc8ab779744d9ef14d0a5d",
+      "bytes": 172007,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/hinf_hover_wrench/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/hinf_hover_wrench/01_图形模型.png",
+      "kind": "png",
+      "sha256": "0992bb28fe75691b78df3755e90a79f54bad654964594eb9fc6631646fcecebd",
+      "bytes": 116468,
+      "width": 2600,
+      "height": 1800
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/hinf_hover_wrench/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/hinf_hover_wrench/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "cb718dd4ec1c71149416321bdd3f66ade5f05762f86a13e593d6072402883f3e",
+      "bytes": 204113,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/l1_awff_minimal/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/l1_awff_minimal/01_图形模型.png",
+      "kind": "png",
+      "sha256": "9f1b6a24af479f389b88a4cc9d81c1a3920604f9b095c0cdb28293bdba0340d1",
+      "bytes": 695382,
+      "width": 6000,
+      "height": 10000
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/l1_awff_minimal/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/l1_awff_minimal/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "46fe4b74b20ff6dfbd0f60b2ac6ef34793c84d392527b029be7fbaed8a82bb48",
+      "bytes": 171178,
+      "width": 2578,
+      "height": 1398
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/lqi_baseline/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/lqi_baseline/01_图形模型.png",
+      "kind": "png",
+      "sha256": "17eecdd2e9a1a894b8936a2d77770ab101283cc0e8e324ec834f1f49d992c472",
+      "bytes": 87327,
+      "width": 1800,
+      "height": 1200
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/lqi_baseline/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/lqi_baseline/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "6af7cdb4ff3b3fe0f4b29f64793c4b3159733db1ae978d1250bcb3267d1c3a3d",
+      "bytes": 102087,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/lqr_baseline/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/lqr_baseline/01_图形模型.png",
+      "kind": "png",
+      "sha256": "3f9d2f859a06e82a230251930bc508556c457304b248722010d0bc996539a5b2",
+      "bytes": 87239,
+      "width": 1800,
+      "height": 1200
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/lqr_baseline/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/lqr_baseline/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "ba278f127c155807d94aca7d2a0f2bdd5f9459c4b9ad7cf7a70169a15aee5ac4",
+      "bytes": 101048,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/mu_synthesis/状态.md",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/mu_synthesis/状态.md",
+      "kind": "legacy_note",
+      "sha256": "27864d118d1c8423fb0c90189ef5657cce945efac765b90f71d2632285e6aaca",
+      "bytes": 387
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/neural_smc/状态.md",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/neural_smc/状态.md",
+      "kind": "legacy_note",
+      "sha256": "d079d5ab007a3ecefd5b81e65b66a3bc14d79c80b9b0130d4a887700f2b47b52",
+      "bytes": 392
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/so3_attitude/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/so3_attitude/01_图形模型.png",
+      "kind": "png",
+      "sha256": "7b9be8edd73ccaabc38338804240ccf9dc6b72359ccbdfda6d621d7bf3d5e9b9",
+      "bytes": 87314,
+      "width": 1800,
+      "height": 1200
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/11_经典控制补充/so3_attitude/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/11_经典控制补充/so3_attitude/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "e1831c1748a7e942db38ef4632b5d6d19b744e5726a21e3da27f6f9add0f9906",
+      "bytes": 101226,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/fopid/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/fopid/01_图形模型.png",
+      "kind": "png",
+      "sha256": "5fe9817f8544289f4c580cfab5e3716468d558b8a03ba9f248526422af80fcb4",
+      "bytes": 52154,
+      "width": 2400,
+      "height": 1900
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/fopid/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/fopid/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "977e8113796ac2eccad70feae4b7533a17d46381aa061e31509dc1523f172239",
+      "bytes": 126737,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/h2_state_feedback/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/h2_state_feedback/01_图形模型.png",
+      "kind": "png",
+      "sha256": "993976538cf28074b6ef29d4b32e31a995279ad20c629e718d0832ba4f9c7aa1",
+      "bytes": 184254,
+      "width": 2200,
+      "height": 1600
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/h2_state_feedback/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/h2_state_feedback/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "977e8113796ac2eccad70feae4b7533a17d46381aa061e31509dc1523f172239",
+      "bytes": 126737,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/mrac/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/mrac/01_图形模型.png",
+      "kind": "png",
+      "sha256": "993976538cf28074b6ef29d4b32e31a995279ad20c629e718d0832ba4f9c7aa1",
+      "bytes": 184254,
+      "width": 2200,
+      "height": 1600
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/mrac/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/mrac/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "30ae77b2beff4195f73ba1023b7fb031d2b454a11f0392293085121c5ab170e3",
+      "bytes": 107351,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/ndi/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/ndi/01_图形模型.png",
+      "kind": "png",
+      "sha256": "993976538cf28074b6ef29d4b32e31a995279ad20c629e718d0832ba4f9c7aa1",
+      "bytes": 184254,
+      "width": 2200,
+      "height": 1600
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/ndi/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/ndi/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "aaa8295406d058ad5c0f87151b3c5142166fb9891f4c4ddc8516e609adc2e689",
+      "bytes": 101574,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/pole_placement_luenberger/01_图形模型.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/pole_placement_luenberger/01_图形模型.png",
+      "kind": "png",
+      "sha256": "993976538cf28074b6ef29d4b32e31a995279ad20c629e718d0832ba4f9c7aa1",
+      "bytes": 184254,
+      "width": 2200,
+      "height": 1600
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/12_经典控制扩展/pole_placement_luenberger/02_仿真结果.png",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/12_经典控制扩展/pole_placement_luenberger/02_仿真结果.png",
+      "kind": "png",
+      "sha256": "8094d9a03f7d0803826a210073396e318207c0ad9ae2c4b935628a1a3085722e",
+      "bytes": 117175,
+      "width": 1708,
+      "height": 921
+    },
+    {
+      "origin_path": "Docs/报告/图/控制器/README.md",
+      "archived_path": "Docs/报告/图/归档/控制器旧导出资产_20260722/legacy_root_README.md",
+      "kind": "legacy_note",
+      "sha256": "8aa3ef711fd1193178444799ac56049c080b37374f6e11265b53747e5197eee2",
+      "bytes": 1372
+    }
+  ]
+}

@@ -1,6 +1,12 @@
 {
   "schema": "mosim.control_platform.model_operation_catalog.v1",
   "version": 1,
+  "authority_scope": "allowlisted_model_studio_operations_only",
+  "non_authoritative_for": [
+    "complete_49_scheme_model_entry_mapping",
+    "current_project_model_entry_promotion",
+    "g4_g5_mworks_eligibility"
+  ],
   "claim_boundary": "Only fixed project-owned MWORKS model operations are authorized. A submitted operation remains pending until its run-local status and evidence gates pass.",
   "model_profiles": [
     {
