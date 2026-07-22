@@ -1,6 +1,6 @@
 within QuadrotorExperiments.RobustFaultScenarios.PIDBaselines;
 model Example1WindGustPID
-  "Example1 baseline PID with lateral gust disturbance"
-  extends Example1WindGustBase;
+  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Robustness.Scenarios.PIDBaselines.Example1WindGustPID"
+  extends MoSimQuadrotorModel.Robustness.Scenarios.PIDBaselines.Example1WindGustPID;
   annotation(__MWORKS(hide=true));
 end Example1WindGustPID;

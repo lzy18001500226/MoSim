@@ -1,13 +1,6 @@
 within QuadrotorExperiments.DynamicsUpgrade;
 model Sunray150DynamicsWrapperHoverSmoke
-  "Hover smoke for the project-owned Sunray150 dynamics wrapper surface"
-  Sunray150DynamicsWrapperSurface wrapper;
-equation
-  wrapper.motor_command = {
-    wrapper.dynamics.spin_command_sign[1] * wrapper.dynamics.hover_motor_speed_cmd,
-    wrapper.dynamics.spin_command_sign[2] * wrapper.dynamics.hover_motor_speed_cmd,
-    wrapper.dynamics.spin_command_sign[3] * wrapper.dynamics.hover_motor_speed_cmd,
-    wrapper.dynamics.spin_command_sign[4] * wrapper.dynamics.hover_motor_speed_cmd};
-  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.25, Tolerance = 0.0001, Interval = 0.001));
+  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke"
+  extends MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke;
   annotation(__MWORKS(hide=true));
 end Sunray150DynamicsWrapperHoverSmoke;

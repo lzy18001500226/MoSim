@@ -1,6 +1,6 @@
 within QuadrotorExperiments.ControllerBaselines;
 model Example1AntiWindupFeedforwardPID
-  "Example1 with project-owned anti-windup and reference-feedforward controller"
-  extends Example1ProjectControllerBase;
+  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Controllers.Baselines.Example1AntiWindupFeedforwardPID"
+  extends MoSimQuadrotorModel.Controllers.Baselines.Example1AntiWindupFeedforwardPID;
   annotation(__MWORKS(hide=true));
 end Example1AntiWindupFeedforwardPID;
