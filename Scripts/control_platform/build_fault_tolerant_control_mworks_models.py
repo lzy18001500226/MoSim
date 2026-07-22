@@ -189,7 +189,7 @@ def main() -> int:
         "stop_time_s": 0.25,
         "fixed_size": True,
         "reuse_basis": [
-            "Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+            "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
             "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml",
         ],
         "claim_boundary": "Equation-bridge plus six persistent fault fixtures. Live CheckModel/MIL, official codegen/SIL and Gazebo actuator evidence are separate gates.",

@@ -43,7 +43,6 @@ class FormalDynamicsSmokeScenarioTest(unittest.TestCase):
             self.assertIn("--no-gui-result-viewer", command_text)
             self.assertIn("--no-gui-open", command_text)
             command_text_normalized = command_text.replace("\\", "/")
-            self.assertIn("Results/generated_mworks/minimal_dynamics_only/QuadrotorExperiments/package.mo", command_text_normalized)
             self.assertIn("Results/generated_mworks/minimal_dynamics_only/MoSimQuadrotorModel/package.mo", command_text_normalized)
             self.assertNotIn("Models/MoSimQuadrotorModel/package.mo", command_text_normalized)
             self.assertFalse(binding["missing_extra_variable_mappings"])

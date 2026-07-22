@@ -5,9 +5,9 @@ priority: P1
 evidence_level: real_sysplorer_mcp_full_awff_pid
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example1AntiWindupFeedforwardPID
-  model_path_hint: Models/QuadrotorExperiments/package.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Controllers.Baselines.Example1AntiWindupFeedforwardPID
+  model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 Anti-windup feedforward PID
 

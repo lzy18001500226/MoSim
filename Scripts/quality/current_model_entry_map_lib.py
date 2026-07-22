@@ -70,7 +70,7 @@ BLOCKED_PRIMARY = {
 }
 
 SPECIAL_PRIMARY_SOURCES = {
-    "official_pid": ROOT / "Models" / "QuadrotorControllerBlocks" / "AWFF_PID_Sysblock_Demo.mo",
+    "official_pid": ROOT / "Models" / "MoSimQuadrotorModel" / "Controllers" / "Sysblocks" / "AWFF_PID_Sysblock_Demo.mo",
     "terminal_smc": ROOT
     / "Results"
     / "control_platform"
@@ -136,28 +136,28 @@ GRAPHICAL_SUPPORT_SOURCES = (
 FIXED_INTEGRATED_SPECS = {
     "fixed_awff_pid": {
         "alias_model": "FixedAwffPid",
-        "source_file": ROOT / "Models" / "QuadrotorExperiments" / "OfficialScenarios" / "Example1AWFFSysblockClosedLoop.mo",
-        "source_model_class": "QuadrotorExperiments.OfficialScenarios.Example1AWFFSysblockClosedLoop",
+        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Missions" / "Official" / "Example1AWFFSysblockClosedLoop.mo",
+        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1AWFFSysblockClosedLoop",
     },
     "fixed_awff_l1_residual": {
         "alias_model": "FixedAwffL1Residual",
-        "source_file": ROOT / "Models" / "QuadrotorExperiments" / "OfficialScenarios" / "Example1L1SysblockClosedLoop.mo",
-        "source_model_class": "QuadrotorExperiments.OfficialScenarios.Example1L1SysblockClosedLoop",
+        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Missions" / "Official" / "Example1L1SysblockClosedLoop.mo",
+        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1L1SysblockClosedLoop",
     },
     "fixed_awff_l1_indi": {
         "alias_model": "FixedAwffL1Indi",
-        "source_file": ROOT / "Models" / "QuadrotorExperiments" / "OfficialScenarios" / "Example1INDISysblockClosedLoop.mo",
-        "source_model_class": "QuadrotorExperiments.OfficialScenarios.Example1INDISysblockClosedLoop",
+        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Missions" / "Official" / "Example1INDISysblockClosedLoop.mo",
+        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1INDISysblockClosedLoop",
     },
     "fixed_linear_mpc_l1_indi": {
         "alias_model": "FixedLinearMpcL1Indi",
-        "source_file": ROOT / "Models" / "QuadrotorExperiments" / "OfficialScenarios" / "Example1LinearMPCSysblockClosedLoop.mo",
-        "source_model_class": "QuadrotorExperiments.OfficialScenarios.Example1LinearMPCSysblockClosedLoop",
+        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Missions" / "Official" / "Example1LinearMPCSysblockClosedLoop.mo",
+        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1LinearMPCSysblockClosedLoop",
     },
     "fixed_qp_nmpc_l1_indi_cbf": {
         "alias_model": "FixedQpNmpcL1IndiCbf",
-        "source_file": ROOT / "Models" / "QuadrotorExperiments" / "RobustFaultScenarios" / "Example1QPNMPCSafetySysblockClosedLoop.mo",
-        "source_model_class": "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetySysblockClosedLoop",
+        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Robustness" / "Scenarios" / "Example1QPNMPCSafetySysblockClosedLoop.mo",
+        "source_model_class": "MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop",
     },
 }
 
@@ -392,7 +392,7 @@ def expected_fixed_integrated_alias_text(item: dict[str, Any]) -> str:
     return (
         f"within {INTEGRATED_CHAINS_PACKAGE};\n\n"
         f"model {item['alias_model']}\n"
-        '  "Formal public alias; source implementation remains in QuadrotorExperiments"\n'
+        '  "Formal public alias for a canonical whole-aircraft controller chain"\n'
         f"  extends {item['source_model_class']};\n"
         "  annotation(__MWORKS(hide=false));\n"
         f"end {item['alias_model']};\n"

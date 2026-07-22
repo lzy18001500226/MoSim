@@ -1552,7 +1552,7 @@
       "source_basis": [
         "Results/control_platform/g5_wave_c_l1_awff_20260716/RUN_MANIFEST.json",
         "Results/control_platform/g3_current_family_20260716/G3_SUMMARY.json",
-        "Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo"
+        "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_L1ResidualControllerEquation_Sysblock.mo"
       ],
       "acceptance_tiers": [
         "REPORT",

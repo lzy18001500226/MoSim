@@ -20,21 +20,19 @@ ROOT = Path(__file__).resolve().parents[2]
 REQUEST_ID = "PMO-MWORKS-R1-MOSIMQUAD-LIVE-GATE-RUNNER-STATIC-HARDENING-20260608-024"
 INPUT_REQUEST_ID = "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023"
 
-DEFAULT_INPUT_DIR = (
+ROOT_CONSOLIDATION_DIR = (
     ROOT
     / "Results"
     / "mworks_model_hygiene"
-    / "20260608_023_mosimquad_formal_smoke_surface_static_prep"
+    / "20260722_mosimquad_model_root_consolidation"
 )
-DEFAULT_OUTPUT_DIR = (
-    ROOT
-    / "Results"
-    / "mworks_model_hygiene"
-    / "20260608_024_mosimquad_live_gate_runner_static_hardening"
-)
+DEFAULT_INPUT_DIR = ROOT_CONSOLIDATION_DIR / "formal_smoke_surface"
+DEFAULT_OUTPUT_DIR = ROOT_CONSOLIDATION_DIR / "live_gate_runner"
 
-FORMAL_DYNAMICS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics"
-FORMAL_PARAMETERS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters"
+CANONICAL_ROOT = ROOT / "Models" / "MoSimQuadrotorModel"
+BASELINE_PACKAGE = ROOT / "References" / "MWORKS" / "QuadrotorModel" / "package.mo"
+FORMAL_DYNAMICS_DIR = CANONICAL_ROOT / "Dynamics"
+FORMAL_PARAMETERS_DIR = CANONICAL_ROOT / "Parameters"
 COMPAT_DIR = ROOT / "Models" / "QuadrotorExperiments" / "DynamicsUpgrade"
 
 OUTPUT_FILES = [
@@ -162,6 +160,8 @@ def build_resolution_check(
     parameter_target = expected_variables.get("parameter_target", {})
     parameter_name = parameter_target.get("formal_target")
 
+    canonical_package_path = CANONICAL_ROOT / "package.mo"
+    canonical_order_path = CANONICAL_ROOT / "package.order"
     formal_package_path = FORMAL_DYNAMICS_DIR / "package.mo"
     formal_order_path = FORMAL_DYNAMICS_DIR / "package.order"
     compat_package_path = COMPAT_DIR / "package.mo"
@@ -169,12 +169,35 @@ def build_resolution_check(
     parameter_package_path = FORMAL_PARAMETERS_DIR / "package.mo"
     parameter_order_path = FORMAL_PARAMETERS_DIR / "package.order"
 
-    formal_package = read_text(formal_package_path)
-    formal_order = read_order(formal_order_path)
-    compat_package = read_text(compat_package_path)
-    compat_order = read_order(compat_order_path)
-    parameter_package = read_text(parameter_package_path)
-    parameter_order = read_order(parameter_order_path)
+    canonical_order = read_order(canonical_order_path) if canonical_order_path.exists() else []
+    formal_package = read_text(formal_package_path) if formal_package_path.exists() else ""
+    formal_order = read_order(formal_order_path) if formal_order_path.exists() else []
+    compat_package = read_text(compat_package_path) if compat_package_path.exists() else ""
+    compat_order = read_order(compat_order_path) if compat_order_path.exists() else []
+    parameter_package = read_text(parameter_package_path) if parameter_package_path.exists() else ""
+    parameter_order = read_order(parameter_order_path) if parameter_order_path.exists() else []
+
+    if not BASELINE_PACKAGE.is_file():
+        add_finding(
+            findings,
+            code="official_baseline_package_missing",
+            message="official QuadrotorModel baseline package is missing",
+            target=rel(BASELINE_PACKAGE),
+        )
+    if not canonical_package_path.is_file():
+        add_finding(
+            findings,
+            code="canonical_root_package_missing",
+            message="MoSimQuadrotorModel package is missing",
+            target=rel(canonical_package_path),
+        )
+    if "Dynamics" not in canonical_order:
+        add_finding(
+            findings,
+            code="canonical_root_dynamics_missing",
+            message="MoSimQuadrotorModel/package.order no longer exposes Dynamics",
+            target=rel(canonical_order_path),
+        )
 
     check_targets = future_surface.get("check_model_target_order", [])
     simulate_targets = future_surface.get("minimal_simulate_order_after_all_checks_pass", [])
@@ -216,13 +239,13 @@ def build_resolution_check(
         add_finding(
             findings,
             code="check_target_order_drift",
-            message="future check_model order no longer matches the 023 target matrix",
+            message="future check_model order no longer matches the formal target matrix",
         )
     if simulate_targets != expected_sim_targets:
         add_finding(
             findings,
             code="simulate_target_order_drift",
-            message="future SimulateModel order no longer matches the 023 target matrix",
+            message="future SimulateModel order no longer matches the formal target matrix",
         )
 
     matrix_targets = set(target_index)
@@ -272,7 +295,9 @@ def build_resolution_check(
                 "target": parameter_name,
                 "kind": "parameter_record",
                 "source_file": rel(parameter_package_path),
-                "static_status": "resolved" if not any(not item["present"] for item in parameter_checks["expected_fields_present"]) else "failed",
+                "static_status": "resolved"
+                if not any(not item["present"] for item in parameter_checks["expected_fields_present"])
+                else "failed",
                 "checks": parameter_checks,
             }
         )
@@ -300,27 +325,34 @@ def build_resolution_check(
         compat_name = last_segment(item["compat_alias"])
         implementation_name = last_segment(item["implementation_model"])
         implementation_path = ROOT / item["implementation_file"]
-        implementation_exists = implementation_path.exists()
-        implementation_text = read_text(implementation_path) if implementation_exists else ""
         formal_source_path = FORMAL_DYNAMICS_DIR / f"{formal_name}.mo"
-        formal_text = read_text(formal_source_path) if formal_source_path.exists() else formal_package
+        formal_text = read_text(formal_source_path) if formal_source_path.exists() else ""
 
         checks = {
             "formal_package_order_contains": formal_name in formal_order,
             "formal_package_defines_model": f"model {formal_name}" in formal_text,
-            "formal_extends_compat_alias": f"extends QuadrotorExperiments.DynamicsUpgrade.{compat_name}" in formal_text,
+            "formal_source_owns_implementation": (
+                implementation_path == formal_source_path
+                and item["implementation_model"] == item["formal_target"]
+                and implementation_name == formal_name
+            ),
+            "formal_source_has_no_legacy_namespace": "QuadrotorExperiments" not in formal_text,
+            "formal_source_is_not_compatibility_alias": "Deprecated compatibility alias" not in formal_text,
             "compat_package_order_contains": compat_name in compat_order,
             "compat_package_defines_model": f"model {compat_name}" in compat_package,
-            "compat_extends_implementation": f"extends QuadrotorExperiments.DynamicsUpgrade.{implementation_name}" in compat_package,
-            "implementation_file_exists": implementation_exists,
-            "implementation_defines_model": f"model {implementation_name}" in implementation_text,
+            "compat_alias_extends_formal_implementation": (
+                f"extends {item['formal_target']};" in compat_package
+            ),
+            "implementation_file_exists": implementation_path.is_file(),
+            "implementation_defines_model": f"model {implementation_name}" in formal_text,
             "required_source_anchors": [],
             "expected_result_variables_match": (
                 expected_index.get(item["formal_target"], {}).get("expected_result_variables")
                 == item.get("expected_result_variables")
             ),
             "expected_result_source_matches": (
-                expected_index.get(item["formal_target"], {}).get("source") == item.get("implementation_file")
+                expected_index.get(item["formal_target"], {}).get("source")
+                == item.get("implementation_file")
             ),
         }
 
@@ -336,13 +368,13 @@ def build_resolution_check(
                 )
 
         for snippet in item.get("required_source_anchors", []):
-            present = isinstance(snippet, str) and snippet in implementation_text
+            present = isinstance(snippet, str) and snippet in formal_text
             checks["required_source_anchors"].append({"snippet": snippet, "present": present})
             if not present:
                 add_finding(
                     findings,
                     code="required_source_anchor_missing",
-                    message=f"required source anchor missing: {snippet!r}",
+                    message=f"required canonical source anchor missing: {snippet!r}",
                     target=item["formal_target"],
                 )
 
@@ -352,7 +384,7 @@ def build_resolution_check(
                 "kind": "dynamics_model",
                 "compat_alias": item["compat_alias"],
                 "implementation_model": item["implementation_model"],
-                "formal_source_file": rel(formal_source_path) if formal_source_path.exists() else rel(formal_package_path),
+                "formal_source_file": rel(formal_source_path),
                 "source_file": item["implementation_file"],
                 "check_model_order": item.get("check_model_order"),
                 "simulate_order_after_all_checks": item.get("simulate_order_after_all_checks"),
@@ -387,7 +419,7 @@ def build_resolution_check(
             )
 
     result = {
-        "schema": "mosim.mworks.live_gate_target_resolution_check.v1",
+        "schema": "mosim.mworks.live_gate_target_resolution_check.v2",
         "request_id": REQUEST_ID,
         "input_request_id": INPUT_REQUEST_ID,
         "status": "passed_static" if not findings else "failed_static",
@@ -399,12 +431,15 @@ def build_resolution_check(
             rel(DEFAULT_INPUT_DIR / "expected_result_variables.json"),
         ],
         "source_anchors": {
+            "official_baseline_package": rel(BASELINE_PACKAGE),
+            "canonical_root_package": rel(canonical_package_path),
+            "canonical_root_order": rel(canonical_order_path),
             "formal_dynamics_package": rel(formal_package_path),
             "formal_dynamics_order": rel(formal_order_path),
             "formal_parameters_package": rel(parameter_package_path),
             "formal_parameters_order": rel(parameter_order_path),
-            "compat_dynamics_package": rel(compat_package_path),
-            "compat_dynamics_order": rel(compat_order_path),
+            "legacy_compatibility_dynamics_package": rel(compat_package_path),
+            "legacy_compatibility_dynamics_order": rel(compat_order_path),
         },
         "target_count": len(resolutions),
         "dynamics_target_count": len([item for item in resolutions if item["kind"] == "dynamics_model"]),
@@ -412,15 +447,15 @@ def build_resolution_check(
         "findings": findings,
         "resolutions": resolutions,
         "static_rejection_contract": [
+            "Reject if the official baseline package or canonical MoSimQuadrotorModel root is missing.",
             "Reject if any target in future_live_validation_surface is absent from formal_smoke_target_matrix.",
-            "Reject if expected_result_variables target lists drift from formal_smoke_target_matrix.",
-            "Reject if MoSimQuadrotorModel.Dynamics/package.mo or package.order no longer exposes the formal target.",
-            "Reject if QuadrotorExperiments.DynamicsUpgrade alias or implementation source anchors are missing.",
+            "Reject if expected_result_variables target lists or source paths drift from the formal target matrix.",
+            "Reject if a formal Dynamics source is no longer its own canonical implementation or reintroduces a legacy namespace.",
+            "Reject if a legacy DynamicsUpgrade alias no longer extends the canonical formal implementation.",
             "Reject if the future SimulateModel queue contains a non-smoke/check-only target.",
         ],
     }
     return result, findings
-
 
 def build_runner_plan(
     matrix: dict[str, Any],
@@ -460,14 +495,14 @@ def build_runner_plan(
                 "order": order,
                 "operation": "check_model",
                 "target": target,
-                "target_kind": "formal_dynamics_alias",
+                "target_kind": "canonical_dynamics_implementation",
                 "compat_alias": item.get("compat_alias"),
                 "implementation_model": item.get("implementation_model"),
                 "implementation_file": item.get("implementation_file"),
                 "expected_result_variables": expected_index.get(target, {}).get("expected_result_variables", []),
                 "blocker_on": [
                     "target missing or renamed",
-                    "formal alias or compatibility alias missing",
+                    "canonical implementation or compatibility alias missing",
                     "future MWORKS check_model reports authorization, translation, package, or structural error",
                 ],
             }
@@ -507,7 +542,7 @@ def build_runner_plan(
             "expected_result_variables": rel(DEFAULT_INPUT_DIR / "expected_result_variables.json"),
         },
         "future_preflight_boundary": [
-            "A future live task must consume current legacy ops patrol or PMO reusable-window patrol or run its own allowed preflight if the task packet requires it.",
+            "A future live task must collect its own bounded single-thread MWORKS preflight before any load, check, or simulation action.",
             "Stop before load/check/simulate on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown state.",
             "Do not open, close, restart, maximize, screenshot, log into, or operate MWORKS from this static runner.",
         ],
@@ -515,22 +550,24 @@ def build_runner_plan(
             {
                 "order": 1,
                 "operation": "model_manager.load_file",
-                "file": "Models/MoSimQuadrotorModel/package.mo",
+                "file": rel(BASELINE_PACKAGE),
                 "force_reload": True,
-                "static_file_status": "exists" if (ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo").exists() else "missing",
+                "static_file_status": "exists" if BASELINE_PACKAGE.exists() else "missing",
+                "role": "official_baseline_dependency",
             },
             {
                 "order": 2,
-                "operation": "dependency_package_available",
-                "file": "Models/QuadrotorExperiments/package.mo",
-                "force_reload": False,
-                "static_file_status": "exists" if (ROOT / "Models" / "QuadrotorExperiments" / "package.mo").exists() else "missing",
+                "operation": "model_manager.load_file",
+                "file": rel(CANONICAL_ROOT / "package.mo"),
+                "force_reload": True,
+                "static_file_status": "exists" if (CANONICAL_ROOT / "package.mo").exists() else "missing",
+                "role": "sole_project_owned_implementation_root",
             },
         ],
         "future_check_model_plan": check_plan,
         "future_simulate_model_plan": simulate_plan,
-        "result_variable_probe_manifest": "Results/mworks_model_hygiene/20260608_024_mosimquad_live_gate_runner_static_hardening/result_variable_probe_plan.json",
-        "target_resolution_manifest": "Results/mworks_model_hygiene/20260608_024_mosimquad_live_gate_runner_static_hardening/target_resolution_check.json",
+        "result_variable_probe_manifest": rel(DEFAULT_OUTPUT_DIR / "result_variable_probe_plan.json"),
+        "target_resolution_manifest": rel(DEFAULT_OUTPUT_DIR / "target_resolution_check.json"),
         "stop_conditions": [
             "target resolution status is not passed_static",
             "license/login/authorization/GUI/preflight state is blocking or unknown in a future live task",

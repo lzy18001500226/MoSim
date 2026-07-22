@@ -11,12 +11,12 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - QuadrotorExperiments.Example1LinearMPCSysblockClosedLoop
-    - QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop
-    - QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example1LinearMPCSysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example2LinearMPCSysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example3LinearMPCSysblockClosedLoop
   sysblock_controller: AWFF_LinearMPCOuterLoopControllerEquation_Sysblock
   graphical_sysblock_counterpart:
-    package_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+    package_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
     controller_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
     outer_loop_model: AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock
     static_contract: Results/model_checks/awff_sysblock/graphical_contract/graphical_awff_sysblock_contract_20260512_linear_mpc_gate.json
@@ -45,7 +45,7 @@ verified_evidence:
   source: MWORKS_MCP
   nominal_full:
     scenario_file: Config/scenarios/official/example1_linear_mpc_sysblock.yaml
-    model_name: QuadrotorExperiments.Example1LinearMPCSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Missions.Official.Example1LinearMPCSysblockClosedLoop
     raw_file: Results/official/example1_step/official_example1_linear_mpc_sysblock/raw/official_example1_linear_mpc_sysblock.csv
     metrics_file: Results/official/example1_step/official_example1_linear_mpc_sysblock/metrics/official_example1_linear_mpc_sysblock.json
     row_count: 5001
@@ -55,7 +55,7 @@ verified_evidence:
     rmse_reduction_vs_l1_indi_pct: 0.828
   helix_full:
     scenario_file: Config/scenarios/official/example2_linear_mpc_sysblock.yaml
-    model_name: QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Missions.Official.Example2LinearMPCSysblockClosedLoop
     raw_file: Results/official/example2_helix/official_example2_linear_mpc_sysblock/raw/official_example2_linear_mpc_sysblock.csv
     metrics_file: Results/official/example2_helix/official_example2_linear_mpc_sysblock/metrics/official_example2_linear_mpc_sysblock.json
     row_count: 5001
@@ -65,7 +65,7 @@ verified_evidence:
     rmse_reduction_vs_l1_indi_pct: 0.574
   figure8_full:
     scenario_file: Config/scenarios/official/example3_linear_mpc_sysblock.yaml
-    model_name: QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Missions.Official.Example3LinearMPCSysblockClosedLoop
     raw_file: Results/official/example3_figure8/official_example3_linear_mpc_sysblock/raw/official_example3_linear_mpc_sysblock.csv
     metrics_file: Results/official/example3_figure8/official_example3_linear_mpc_sysblock/metrics/official_example3_linear_mpc_sysblock.json
     row_count: 12001
@@ -75,7 +75,7 @@ verified_evidence:
     rmse_reduction_vs_l1_indi_pct: 1.882
   mass20_full:
     scenario_file: Config/scenarios/robustness/example1_mass20_linear_mpc_sysblock.yaml
-    model_name: QuadrotorExperiments.Example1Mass20LinearMPCSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Robustness.Scenarios.Example1Mass20LinearMPCSysblockClosedLoop
     raw_file: Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/raw/robust_mass20_example1_linear_mpc_sysblock.csv
     metrics_file: Results/robustness/mass20_example1/robust_mass20_example1_linear_mpc_sysblock/metrics/robust_mass20_example1_linear_mpc_sysblock.json
     row_count: 5001
@@ -85,7 +85,7 @@ verified_evidence:
     rmse_reduction_vs_l1_residual_pct: 0.755
   wind_gust_full:
     scenario_file: Config/scenarios/robustness/example1_wind_gust_linear_mpc_sysblock.yaml
-    model_name: QuadrotorExperiments.Example1WindGustLinearMPCSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Robustness.Scenarios.Example1WindGustLinearMPCSysblockClosedLoop
     raw_file: Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/raw/robust_wind_gust_example1_linear_mpc_sysblock.csv
     metrics_file: Results/robustness/wind_gust_example1/robust_wind_gust_example1_linear_mpc_sysblock/metrics/robust_wind_gust_example1_linear_mpc_sysblock.json
     row_count: 5001
@@ -95,7 +95,7 @@ verified_evidence:
     rmse_reduction_vs_l1_residual_pct: 6.984
   rotor1_loss15_boundary:
     scenario_file: Config/scenarios/robustness/example1_rotor1_loss15_linear_mpc_sysblock.yaml
-    model_name: QuadrotorExperiments.Example1Rotor1Loss15LinearMPCSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15LinearMPCSysblockClosedLoop
     raw_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/raw/robust_rotor1_loss15_example1_linear_mpc_sysblock.csv
     metrics_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_linear_mpc_sysblock/metrics/robust_rotor1_loss15_example1_linear_mpc_sysblock.json
     row_count: 5001

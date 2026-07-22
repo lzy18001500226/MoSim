@@ -223,7 +223,7 @@ the right proof for project-local C/C++ export.
 Probe model:
 
 ```text
-Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo
+Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_PID_Sysblock_Demo.mo
 ```
 
 Output:
@@ -409,7 +409,7 @@ MWORKS/Sysblock constant reference model
 Reference model:
 
 ```text
-Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo
+Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_PID_Sysblock_Demo_SIL_Constant.mo
 ```
 
 Evidence:
@@ -471,7 +471,7 @@ The current codegen-compatible AWFF controller model has this interface:
 
 ```text
 model:
-  Models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo
+  Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullController_Sysblock.mo
 
 sample time:
   0.01 s
@@ -497,7 +497,7 @@ outputs:
 equation bridge for behavior review, but it is not the current codegen target:
 `CheckModel` reports unsupported `der()` use inside Sysblock and blocks
 `GenerateModelCode`. The active codegen target is
-`QuadrotorControllerBlocks.AWFF_FullController_Sysblock`, which has passed
+`MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FullController_Sysblock`, which has passed
 Gate A/B/C below. Gate D has now passed the first real MWORKS nonzero
 constant-input SIL check; the stronger time-varying-input SIL check remains a
 future hardening gate before claiming complete controller equivalence.
@@ -746,7 +746,7 @@ Current 2026-06-19 AWFF behavior-wrapper gate:
 
 ```text
 source model:
-  Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
 
 runtime wrapper:
   Scripts/ros/mworks_awff_takeoff_hover_land_controller.py
@@ -875,7 +875,7 @@ Gate 0: PX4+Gazebo baseline
   loop is controlled by PX4, takeoff-hover-land baseline is reproducible
 
 Gate A: generate AWFF code
-  input: Models/QuadrotorControllerBlocks/AWFF_FullController_Sysblock.mo
+  input: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullController_Sysblock.mo
   status: passed for run Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/
   evidence: CODEGEN_MANIFEST.json, generated file list, source hash
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for RotorEffectivenessSmoke formal source-surface materialization."""
+"""Tests for canonical RotorEffectivenessSmoke source ownership."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 FORMAL_SOURCE = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "RotorEffectivenessSmoke.mo"
 FORMAL_DYNAMICS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics"
 FORMAL_PACKAGE = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "package.mo"
+LEGACY_ALIAS = ROOT / "Models" / "QuadrotorExperiments" / "DynamicsUpgrade" / "Sunray150RotorEffectivenessSmoke.mo"
 SCRIPT_PATH = ROOT / "Scripts" / "mworks" / "validate_mosimquad_formal_smoke_surface.py"
 
 
@@ -25,18 +26,22 @@ def load_module():
 
 
 class RotorEffectivenessSmokeSurfaceTest(unittest.TestCase):
-    def test_formal_source_is_dedicated_extends_only_surface(self) -> None:
+    def test_formal_source_is_canonical_implementation(self) -> None:
         source = FORMAL_SOURCE.read_text(encoding="utf-8")
         package = FORMAL_PACKAGE.read_text(encoding="utf-8")
+        legacy_alias = LEGACY_ALIAS.read_text(encoding="utf-8")
 
         self.assertIn("within MoSimQuadrotorModel.Dynamics;", source)
         self.assertIn("model RotorEffectivenessSmoke", source)
-        self.assertIn("extends QuadrotorExperiments.DynamicsUpgrade.RotorEffectivenessSmoke;", source)
-        self.assertIn("annotation(__MWORKS(hide=false));", source)
-        self.assertNotIn("equation", source)
+        self.assertIn("equation", source)
+        self.assertIn("RotorActuatorCore dynamics(", source)
+        self.assertNotIn("QuadrotorExperiments", source)
+        self.assertNotIn("Deprecated compatibility alias", source)
         self.assertNotIn("model RotorEffectivenessSmoke", package)
+        self.assertIn("extends MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke;", legacy_alias)
+        self.assertIn("annotation(__MWORKS(hide=true));", legacy_alias)
 
-    def test_all_formal_dynamics_targets_are_dedicated_sources(self) -> None:
+    def test_all_formal_dynamics_targets_are_canonical_sources(self) -> None:
         module = load_module()
         package = FORMAL_PACKAGE.read_text(encoding="utf-8")
 
@@ -46,10 +51,11 @@ class RotorEffectivenessSmokeSurfaceTest(unittest.TestCase):
             self.assertTrue(source_path.exists(), f"missing {source_path}")
             source = source_path.read_text(encoding="utf-8")
             self.assertIn(f"model {formal_name}", source)
-            self.assertIn("extends QuadrotorExperiments.DynamicsUpgrade.", source)
-            self.assertNotIn("\nequation", source)
+            self.assertIn("within MoSimQuadrotorModel.Dynamics;", source)
+            self.assertNotIn("QuadrotorExperiments", source)
+            self.assertNotIn("Deprecated compatibility alias", source)
 
-    def test_formal_smoke_matrix_requires_dedicated_source(self) -> None:
+    def test_formal_smoke_matrix_requires_canonical_source(self) -> None:
         module = load_module()
         matrix, findings = module.build_matrix()
         self.assertEqual(findings, [])
@@ -64,6 +70,7 @@ class RotorEffectivenessSmokeSurfaceTest(unittest.TestCase):
             target["formal_source_file"],
             "Models/MoSimQuadrotorModel/Dynamics/RotorEffectivenessSmoke.mo",
         )
+        self.assertEqual(target["implementation_file"], target["formal_source_file"])
         self.assertTrue(all(item["dedicated_formal_source_required"] for item in matrix))
         self.assertTrue(all(item["formal_source_present"] for item in matrix))
 

@@ -5,9 +5,9 @@ priority: P1
 evidence_level: real_sysplorer_mcp_sysblock_l1_indi_full
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example1INDISysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/Example1INDISysblockClosedLoop.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Missions.Official.Example1INDISysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Missions/Official/Example1INDISysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 AWFF + L1-inspired outer loop + INDI-like attitude Sysblock full validation
 
@@ -15,9 +15,9 @@ controller:
   params_file: Config/controllers/awff_indi_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: official_example1_awff_sysblock
-  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_INDIControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_INDIControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

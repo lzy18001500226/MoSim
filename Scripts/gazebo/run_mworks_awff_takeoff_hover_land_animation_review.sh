@@ -27,7 +27,7 @@ cat > "${RESULT_DIR}/AWFF_ANIMATION_REVIEW_REQUEST.json" <<JSON
   "status": "starting",
   "purpose": "open Gazebo GUI for user review of the MWORKS AWFF behavior-wrapper takeoff-hover-land deployment",
   "controller_runtime": "mworks_awff_equation_behavior_wrapper",
-  "source_model": "Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo",
+  "source_model": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo",
   "world": "Config/gazebo/worlds/sunray150_takeoff_hover_land_plant_sanity.sdf",
   "world_name": "sunray150_takeoff_hover_land_plant_sanity",
   "vehicle": "sunray150_assembled",

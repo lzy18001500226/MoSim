@@ -12,11 +12,11 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - QuadrotorExperiments.Sunray150CompleteSystemBatteryLowSysblock
-    - QuadrotorExperiments.Sunray150CompleteSystemGeofenceBreachSysblock
-    - QuadrotorExperiments.Sunray150CompleteSystemGpsDropoutSysblock
-    - QuadrotorExperiments.Sunray150CompleteSystemMissionFailureSysblock
-    - QuadrotorExperiments.Sunray150CompleteSystemOffboardLossSysblock
+    - MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemBatteryLowSysblock
+    - MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGeofenceBreachSysblock
+    - MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGPSDropoutSysblock
+    - MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemMissionFailureSysblock
+    - MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemOffboardLossSysblock
   sysblock_controller: AWFF_FullControllerEquation_Sysblock
   scope: complete-system failsafe and event-log validation
 

@@ -2,7 +2,7 @@
 """MWORKS AWFF equation-controller wrapper for Gazebo takeoff-hover-land.
 
 This is a behavior-equivalent Python runtime wrapper for
-Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo.
+Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo.
 It ports the Sysblock equations into the same Gazebo ControllerOutput ABI used
 by the runtime plant gate. It is not generated C code and must not be claimed
 as final SIL/codegen evidence.
@@ -40,7 +40,7 @@ from gazebo_truth_takeoff_hover_land_controller import (  # noqa: E402
 )
 
 
-MWORKS_SOURCE_MODEL = "Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo"
+MWORKS_SOURCE_MODEL = "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo"
 SPIN_SIGN = [1.0, -1.0, 1.0, -1.0]
 # MWORKS controller/source order is Dronefixed1..4:
 # front-right, front-left, back-left, back-right.

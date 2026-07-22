@@ -5,9 +5,9 @@ priority: P1-B
 evidence_level: real_sysplorer_mcp_sysblock_linear_mpc_online_fault_allocation_rotor_loss_ablation
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/RobustFaultScenarios/RotorLoss/Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/RotorLoss/Example1Rotor1Loss15LinearMPCOnlineFaultAllocationSysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 1号旋翼升力效率85% LinearMPC outer loop + online eta_hat allocation Sysblock
 
@@ -15,11 +15,11 @@ controller:
   params_file: Config/controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_rotor1_loss15_example1_linear_mpc_sysblock
-  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
   extra_sysblock_controller_files:
-    - Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+    - Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
 
 disturbance:
   type: actuator_efficiency_loss

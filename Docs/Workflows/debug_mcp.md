@@ -63,7 +63,7 @@ wrapper around MCP. Use the MCP tools directly. If the Codex tool surface does
 not expose a `sysplorer` namespace, connect to the configured stdio wrapper
 and issue JSON-RPC MCP calls directly; record the log under `Results/`.
 
-For `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock`, follow the
+For `MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock`, follow the
 direct sequence in `Docs/Workflows/run_simulation.md`. The key failure classes are:
 
 | Error | Interpretation |

@@ -18,7 +18,7 @@ def fresh_preflight_payload() -> dict:
     return {
         "schema_version": "mosim.mworks_echo_live_downlink_preflight_input.v1",
         "source": "MWORKS_MCP",
-        "model": "QuadrotorExperiments.EchoMcpStateSmoke",
+        "model": "MoSimQuadrotorModel.Support.Models.EchoMcpStateSmoke",
         "run_id": "mworks_mcp_live_downlink_preflight_20260606_004",
         "check_model_ok": True,
         "simulate_model_ok": True,

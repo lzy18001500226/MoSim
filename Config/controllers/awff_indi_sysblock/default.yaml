@@ -11,10 +11,10 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - QuadrotorExperiments.Example1INDISysblockClosedLoop
-    - QuadrotorExperiments.Example2INDISysblockClosedLoop
-    - QuadrotorExperiments.Example2HelixTunedINDISysblockClosedLoop
-    - QuadrotorExperiments.Example3INDISysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example1INDISysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example2INDISysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example2HelixTunedINDISysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example3INDISysblockClosedLoop
   sysblock_controller: AWFF_INDIControllerEquation_Sysblock
   verification_scope: Example1 full climb, Example2 helix-tuned climb, and Example3 figure-eight validation complete for the combined L1-inspired + INDI-like branch
   limitation: >
@@ -102,7 +102,7 @@ verified_evidence:
   example1_full:
     date: 2026-05-11
     scenario_file: Config/scenarios/official/example1_awff_indi_sysblock.yaml
-    model_name: QuadrotorExperiments.Example1INDISysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Missions.Official.Example1INDISysblockClosedLoop
     raw_file: Results/official/example1_step/official_example1_awff_indi_sysblock/raw/official_example1_awff_indi_sysblock.csv
     metrics_file: Results/official/example1_step/official_example1_awff_indi_sysblock/metrics/official_example1_awff_indi_sysblock.json
     mcp_log: Results/official/example1_step/official_example1_awff_indi_sysblock/logs/sysplorer_example1_awff_indi_sysblock_full_20260511.jsonl
@@ -117,7 +117,7 @@ verified_evidence:
   example3_full:
     date: 2026-05-11
     scenario_file: Config/scenarios/official/example3_awff_indi_sysblock.yaml
-    model_name: QuadrotorExperiments.Example3INDISysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Missions.Official.Example3INDISysblockClosedLoop
     raw_file: Results/official/example3_figure8/official_example3_awff_indi_sysblock/raw/official_example3_awff_indi_sysblock.csv
     metrics_file: Results/official/example3_figure8/official_example3_awff_indi_sysblock/metrics/official_example3_awff_indi_sysblock.json
     mcp_log: Results/official/example3_figure8/official_example3_awff_indi_sysblock/logs/sysplorer_example3_awff_indi_sysblock_full_20260511.jsonl
@@ -133,7 +133,7 @@ verified_evidence:
   example2_helix_tuned_full:
     date: 2026-05-11
     scenario_file: Config/scenarios/official/example2_awff_indi_sysblock_helix_tuned.yaml
-    model_name: QuadrotorExperiments.Example2HelixTunedINDISysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Missions.Official.Example2HelixTunedINDISysblockClosedLoop
     raw_file: Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/raw/official_example2_awff_indi_sysblock_helix_tuned.csv
     metrics_file: Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/metrics/official_example2_awff_indi_sysblock_helix_tuned.json
     mcp_log: Results/official/example2_helix/official_example2_awff_indi_sysblock_helix_tuned/logs/sysplorer_example2_awff_indi_sysblock_helix_tuned_full_20260511.jsonl

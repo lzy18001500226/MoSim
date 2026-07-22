@@ -30,7 +30,8 @@ OUTPUT_DIR = (
     ROOT
     / "Results"
     / "mworks_model_hygiene"
-    / "20260611_mosimquad_formal_dynamics_live_preflight"
+    / "20260722_mosimquad_model_root_consolidation"
+    / "live_preflight_blocker"
 )
 
 SCENARIOS = [
@@ -146,14 +147,6 @@ def build_summary() -> dict[str, Any]:
     if not upgrade_capture_manifest:
         add_finding(findings, "missing_upgrade_capture_manifest", "upgrade-model screenshot manifest is missing")
 
-    top_package = (ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo").read_text(encoding="utf-8")
-    if "QuadrotorControllerBlocks" not in top_package:
-        add_finding(
-            findings,
-            "top_package_dependency_changed",
-            "top-level package no longer documents the full controller dependency that caused the broad-load risk",
-        )
-
     scenario_summaries: list[dict[str, Any]] = []
     for name in SCENARIOS:
         path = SCENARIO_DIR / name
@@ -174,11 +167,11 @@ def build_summary() -> dict[str, Any]:
                 "formal Dynamics smoke scenarios must explicitly request the minimal Dynamics load strategy",
                 target=rel(path),
             )
-        if base_model != "Models/MoSimQuadrotorModel/package.mo":
+        if base_model != "References/MWORKS/QuadrotorModel/package.mo":
             add_finding(
                 findings,
                 "unexpected_base_model_path",
-                "scenario base model path drifted from the formal package anchor",
+                "scenario base model path drifted from the official baseline package",
                 target=rel(path),
             )
         scenario_summaries.append(

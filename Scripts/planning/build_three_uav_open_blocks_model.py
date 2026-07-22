@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HELPER_PATH = ROOT / "Scripts/planning/update_planning_open_blocks_model.py"
 DEFAULT_CONFIG = ROOT / "Config/planners/astar_min_snap/map_open_blocks.yaml"
 DEFAULT_METRICS = ROOT / "Results/planning/three_uav_open_blocks_mworks_20260720/metrics/three_uav_planning_metrics.json"
-DEFAULT_MODEL = ROOT / "Models/QuadrotorExperiments/PlanningScenarios/ThreeUavOpenBlocksReconfigurableFormationLinearMPC.mo"
+DEFAULT_MODEL = ROOT / "Models/MoSimQuadrotorModel/Planning/Scenarios/ThreeUavOpenBlocksReconfigurableFormationLinearMPC.mo"
 MODEL_POINT_CAPACITY = 91
 MODEL_SEGMENT_CAPACITY = 90
 TAKEOFF_DURATION_S = 3.0
@@ -137,7 +137,7 @@ def build_model(config: dict[str, Any], metrics: dict[str, Any]) -> str:
         raise ValueError("Generated vehicle references do not share one stop time")
 
     declarations = [
-        "within QuadrotorExperiments.PlanningScenarios;",
+        "within MoSimQuadrotorModel.Planning.Scenarios;",
         "model ThreeUavOpenBlocksReconfigurableFormationLinearMPC",
         '  "Three whole-aircraft Linear-MPC loops following synchronized collision-safe OpenBlocks references"',
         "  parameter Real planned_clearance_m[3] = {"

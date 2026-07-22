@@ -12,8 +12,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_ROOT = ROOT / "Results/unreal_scene_mapping"
-SOURCE_MODEL = ROOT / "Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo"
-MODEL_DIR = ROOT / "Models/QuadrotorExperiments"
+SOURCE_MODEL = ROOT / "Models/MoSimQuadrotorModel/Planning/Scenarios/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo"
+MODEL_DIR = ROOT / "Models/MoSimQuadrotorModel/SceneTrace/Scenarios"
 SCENARIO_DIR = ROOT / "Config/scenarios/planning"
 DEFAULT_SCENES = ("factoryenvironmentcollect", "derelictcorridormegascans")
 
@@ -168,21 +168,21 @@ def build_model(scene_id: str, scene_dir: Path, model_name: str) -> dict[str, An
             "evidence_level: real_sysplorer_mcp_ue_scene_control_smoke",
             "",
             "model:",
-            "  source_package: QuadrotorExperiments",
-            f"  model_name: QuadrotorExperiments.{model_name}",
+            "  source_package: MoSimQuadrotorModel",
+            f"  model_name: MoSimQuadrotorModel.SceneTrace.Scenarios.{model_name}",
             f"  model_path_hint: {rel(output_model)}",
             "  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo",
             "  extra_model_files:",
-            "    - Models/QuadrotorExperiments/PlannedQuinticReference.mo",
-            "    - Models/QuadrotorExperiments/PlanningNavigationDisplay.mo",
+            "    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlannedQuinticReference.mo",
+            "    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlanningNavigationDisplay.mo",
             "",
             "controller:",
             "  params_file: Config/controllers/linear_mpc_sysblock/default.yaml",
             "  replacement_component: controller3_2",
             "  require_baseline_improvement: false",
-            "  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
+            "  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo",
             "  graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
-            "  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo",
+            "  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
             "",
             "simulation:",
             "  start_time_s: 0.0",
@@ -221,7 +221,7 @@ def build_model(scene_id: str, scene_dir: Path, model_name: str) -> dict[str, An
     )
     return {
         "scene_id": scene_id,
-        "model_name": f"QuadrotorExperiments.{model_name}",
+        "model_name": f"MoSimQuadrotorModel.SceneTrace.Scenarios.{model_name}",
         "model_file": rel(output_model),
         "scenario_file": rel(scenario),
         "n_segments": params["n_segments"],

@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 RESULT_DIR = ROOT / "Results/planning/three_uav_open_blocks_mworks_20260720"
-MODEL_DIR = ROOT / "Models/QuadrotorExperiments/PlanningScenarios"
+MODEL_DIR = ROOT / "Models/MoSimQuadrotorModel/Planning/Scenarios"
 
 
 def load_auditor():

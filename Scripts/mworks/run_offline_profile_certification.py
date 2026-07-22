@@ -24,8 +24,6 @@ from Scripts.mworks import generate_offline_profile_wrapper as generator
 SMOKE_SCRIPT = ROOT / "Scripts" / "mworks" / "run_sysplorer_mcp_smoke.py"
 BASE_MODEL_FILES = [
     ROOT / "References" / "MWORKS" / "QuadrotorModel" / "package.mo",
-    ROOT / "Models" / "QuadrotorControllerBlocks" / "package.mo",
-    ROOT / "Models" / "QuadrotorExperiments" / "package.mo",
     ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo",
 ]
 VARIABLE_OVERRIDES = {

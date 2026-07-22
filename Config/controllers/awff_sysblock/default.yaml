@@ -10,10 +10,10 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - QuadrotorExperiments.Example1AWFFSysblockClosedLoop
-    - QuadrotorExperiments.Example2AWFFSysblockClosedLoop
-    - QuadrotorExperiments.Example2HelixTunedAWFFSysblockClosedLoop
-    - QuadrotorExperiments.Example3AWFFSysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example1AWFFSysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example2AWFFSysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example2HelixTunedAWFFSysblockClosedLoop
+    - MoSimQuadrotorModel.Missions.Official.Example3AWFFSysblockClosedLoop
   sysblock_controller: AWFF_FullControllerEquation_Sysblock
   graphical_sysblock_controller:
     hierarchical: AWFF_FullController_Sysblock

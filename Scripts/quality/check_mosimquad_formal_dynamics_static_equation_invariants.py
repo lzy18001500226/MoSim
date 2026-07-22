@@ -15,7 +15,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_ROOT = ROOT / "Models" / "QuadrotorExperiments" / "DynamicsUpgrade"
+SOURCE_ROOT = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics"
 READINESS = (
     ROOT
     / "Results"
@@ -34,7 +34,7 @@ DEFAULT_OUTPUT = (
 
 ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
     "rotor_core": {
-        "source": "Sunray150RflyStyleRotorDynamics.mo",
+        "source": "RotorActuatorCore.mo",
         "anchors": [
             "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
             "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
@@ -51,7 +51,7 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
         ],
     },
     "wrapper_surface": {
-        "source": "Sunray150DynamicsWrapperSurface.mo",
+        "source": "WrapperSurface.mo",
         "anchors": [
             "dynamics.motor_command = motor_command",
             "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
@@ -67,7 +67,7 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
         ],
     },
     "physical_wrench_adapter": {
-        "source": "Sunray150PhysicalWrenchFrameAdapter.mo",
+        "source": "PhysicalWrenchAdapter.mo",
         "anchors": [
             "applied_force_body = {0, 0, wrapper.total_thrust}",
             "applied_torque_body = wrapper.total_moment_body",
@@ -82,7 +82,7 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
         ],
     },
     "rotor_effectiveness_smoke": {
-        "source": "Sunray150RotorEffectivenessSmoke.mo",
+        "source": "RotorEffectivenessSmoke.mo",
         "anchors": [
             "parameter Real degraded_rotor_thrust_effectiveness = 0.85",
             "thrust_effectiveness = {",
@@ -102,7 +102,7 @@ IMPLEMENTATION_BY_MODEL = {
     "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke": "Sunray150DynamicsWrapperYawStepSmoke.mo",
     "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke": "Sunray150PhysicalWrenchHoverSmoke.mo",
     "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke": "Sunray150PhysicalWrenchYawStepSmoke.mo",
-    "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke": "Sunray150RotorEffectivenessSmoke.mo",
+    "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke": "RotorEffectivenessSmoke.mo",
 }
 
 DEPENDENCY_GROUPS_BY_MODEL = {
@@ -116,26 +116,26 @@ DEPENDENCY_GROUPS_BY_MODEL = {
 }
 
 INSTANCE_ANCHORS_BY_MODEL = {
-    "MoSimQuadrotorModel.Dynamics.HoverSmoke": ["Sunray150RflyStyleRotorDynamics dynamics"],
+    "MoSimQuadrotorModel.Dynamics.HoverSmoke": ["RotorActuatorCore dynamics"],
     "MoSimQuadrotorModel.Dynamics.YawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
-        "Sunray150RflyStyleRotorDynamics dynamics",
+        "RotorActuatorCore dynamics",
     ],
-    "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke": ["Sunray150DynamicsWrapperSurface wrapper"],
+    "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke": ["WrapperSurface wrapper"],
     "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
-        "Sunray150DynamicsWrapperSurface wrapper",
+        "WrapperSurface wrapper",
     ],
-    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke": ["Sunray150PhysicalWrenchFrameAdapter adapter"],
+    "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke": ["PhysicalWrenchAdapter adapter"],
     "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
-        "Sunray150PhysicalWrenchFrameAdapter adapter",
+        "PhysicalWrenchAdapter adapter",
     ],
     "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke": [
-        "Sunray150RflyStyleRotorDynamics dynamics",
+        "RotorActuatorCore dynamics",
         "thrust_effectiveness = {",
         "Real total_thrust_loss",
         "Real roll_moment_imbalance",

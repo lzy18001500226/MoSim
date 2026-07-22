@@ -6,9 +6,9 @@ priority: visual-review
 evidence_level: real_sysplorer_mcp_native_gui_planar_figure8_trail
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example1PlanarFigure8TrailSysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/Example1PlanarFigure8TrailSysblockClosedLoop.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Missions.Official.Example1PlanarFigure8TrailSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Missions/Official/Example1PlanarFigure8TrailSysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 官方 EightPath 同款 8 字轨迹 + LinearMPC 控制器 + 原生三维参考线 + 实际/参考位置标记 GUI 审查
 
@@ -16,9 +16,9 @@ controller:
   params_file: Config/controllers/linear_mpc_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

@@ -5,9 +5,9 @@ priority: P1
 evidence_level: real_sysplorer_mcp_sysblock_l1_residual_mass20_ablation
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/Example1Mass20L1SysblockClosedLoop.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Robustness.Scenarios.Example1Mass20L1SysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/Example1Mass20L1SysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 +20% 机体质量摄动 AWFF + L1-inspired residual Sysblock
 
@@ -15,9 +15,9 @@ controller:
   params_file: Config/controllers/l1_residual_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_mass20_example1_awff_sysblock
-  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_L1ResidualControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 disturbance:
   type: mass_parameter_perturbation

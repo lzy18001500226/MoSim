@@ -5,18 +5,18 @@ priority: P1
 evidence_level: real_sysplorer_mcp_full_awff_sysblock_helix_tuned
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example2HelixTunedAWFFSysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/Example2HelixTunedAWFFSysblockClosedLoop.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Missions.Official.Example2HelixTunedAWFFSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Missions/Official/Example2HelixTunedAWFFSysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 螺旋爬升 AWFF Sysblock 横向权限调优
 
 controller:
   params_file: Config/controllers/awff_sysblock/default.yaml
   replacement_component: controller3_2
-  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
-  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
   baseline_experiment: official_example2_improved_pid
 
 simulation:

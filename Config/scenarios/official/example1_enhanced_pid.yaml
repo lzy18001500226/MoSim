@@ -5,9 +5,9 @@ priority: P1
 evidence_level: real_sysplorer_mcp_full_enhanced_pid
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example1EnhancedPID
-  model_path_hint: Models/QuadrotorExperiments/package.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Controllers.Baselines.Example1EnhancedPID
+  model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升运动 Enhanced PID
 

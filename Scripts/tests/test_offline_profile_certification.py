@@ -47,7 +47,7 @@ def test_build_command_keeps_generated_wrapper_and_result_under_run_dir(tmp_path
 
 def test_build_command_supports_direct_three_uav_profile(tmp_path: Path) -> None:
     profile = {
-        "generated_model_name": "QuadrotorExperiments.FormationScenarios.Model",
+        "generated_model_name": "MoSimQuadrotorModel.Formation.Scenarios.Model",
         "execution_kind": "direct_model",
         "scenario_id": "formation",
         "controller_id": "linear_mpc",
@@ -119,7 +119,7 @@ def test_resolve_native_result_accepts_direct_model_short_name(tmp_path: Path) -
     result.write_bytes(b"msr")
     assert certification.resolve_native_result(
         run_dir,
-        "QuadrotorExperiments.FormationScenarios.FormationModel",
+        "MoSimQuadrotorModel.Formation.Scenarios.FormationModel",
     ) == result
 
 

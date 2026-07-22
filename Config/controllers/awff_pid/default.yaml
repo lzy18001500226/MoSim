@@ -17,13 +17,13 @@ features:
 
 implementation_status:
   current_mworks_models:
-    - QuadrotorExperiments.Example1AntiWindupFeedforwardPID
-    - QuadrotorExperiments.Example2AntiWindupFeedforwardPID
-    - QuadrotorExperiments.Example2HelixTunedAntiWindupFeedforwardPID
-    - QuadrotorExperiments.Example3AntiWindupFeedforwardPID
-    - QuadrotorExperiments.Example1Mass20AntiWindupFeedforwardPID
-    - QuadrotorExperiments.Example1WindGustAntiWindupFeedforwardPID
-    - QuadrotorExperiments.Example1Rotor1Loss15AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Controllers.Baselines.Example1AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Controllers.Baselines.Example2AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Controllers.Baselines.Example2HelixTunedAntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Controllers.Baselines.Example3AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Robustness.Scenarios.Example1Mass20AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Robustness.Scenarios.Example1WindGustAntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15AntiWindupFeedforwardPID
   base_controller: Config/controllers/enhanced_pid/default.yaml
   verification_scope: >
     Full Example1/2/3 official scenarios and mass/wind/rotor-loss robustness

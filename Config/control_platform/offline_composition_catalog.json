@@ -222,8 +222,8 @@
       "mapping_blocker": "The QP/NMPC safety bundle is numerically blocked and has no accepted one-to-one registry mapping.",
       "disabled_reason": "Current shared-runner and dedicated-model MWORKS runs are numerically unstable; keep visible but disabled until a versioned implementation passes the short numeric gate.",
       "known_backend_models": [
-        "QuadrotorControllerBlocks.AWFF_QPNMPCSafetyController_Sysblock",
-        "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetySysblockClosedLoop"
+        "MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_QPNMPCSafetyController_Sysblock",
+        "MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop"
       ]
     },
     "fault_compensation": {
@@ -249,7 +249,7 @@
     {"profile_id": "offline_l1_awff_climb_v1", "vehicle_count": 1, "controller_id": "l1_awff", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-l1-awff-climb-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-l1-awff-climb-20260719-v1/CERTIFICATION.json"},
     {"profile_id": "offline_l1_awff_wind_v1", "vehicle_count": 1, "controller_id": "l1_awff", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb_wind", "rotor_effectiveness": [1, 1, 1, 1], "gust_force": [1.5, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-l1-awff-wind-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-l1-awff-wind-20260719-v1/CERTIFICATION.json"},
     {"profile_id": "offline_fault_comp_rotor1_85_v1", "vehicle_count": 1, "controller_id": "fault_compensation", "output_variant": "ROTOR_COMMAND", "scenario_id": "climb_rotor1_loss15", "rotor_effectiveness": [0.85, 1, 1, 1], "gust_force": [0, 0, 0], "certification_state": "accepted", "certification_run_id": "cert-fault-comp-rotor1-85-20260719-v1", "certification_record": "Results/mworks_generated_profiles/cert-fault-comp-rotor1-85-20260719-v1/CERTIFICATION.json"},
-    {"profile_id": "offline_three_uav_linear_mpc_figure8_v1", "vehicle_count": 3, "controller_id": "linear_mpc", "output_variant": "ROTOR_COMMAND", "scenario_id": "formation_triangle_figure8", "execution_kind": "direct_model", "direct_model": "QuadrotorExperiments.FormationScenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop", "direct_model_file": "Models/QuadrotorExperiments/FormationScenarios/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo", "stop_time_s": 80, "certification_state": "accepted", "certification_run_id": "cert-three-uav-linear-mpc-figure8-20260719-v2", "certification_record": "Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2/CERTIFICATION.json"}
+    {"profile_id": "offline_three_uav_linear_mpc_figure8_v1", "vehicle_count": 3, "controller_id": "linear_mpc", "output_variant": "ROTOR_COMMAND", "scenario_id": "formation_triangle_figure8", "execution_kind": "direct_model", "direct_model": "MoSimQuadrotorModel.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop", "direct_model_file": "Models/MoSimQuadrotorModel/Formation/Scenarios/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo", "stop_time_s": 80, "certification_state": "accepted", "certification_run_id": "cert-three-uav-linear-mpc-figure8-20260719-v2", "certification_record": "Results/mworks_generated_profiles/cert-three-uav-linear-mpc-figure8-20260719-v2/CERTIFICATION.json"}
   ],
   "custom_profile_proofs": [
     {

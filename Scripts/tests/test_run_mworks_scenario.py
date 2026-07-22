@@ -159,10 +159,8 @@ def test_run_mworks_scenario_minimal_dynamics_strategy_generates_load_tree() -> 
     args.no_gui_open = True
     command = module.scenario_command(args, config)
     joined = " ".join(command).replace("\\", "/")
-    if "Results/generated_mworks/minimal_dynamics_only/QuadrotorExperiments/package.mo" not in joined:
-        raise AssertionError(f"minimal strategy should load generated dependency package first: {joined}")
     if "Results/generated_mworks/minimal_dynamics_only/MoSimQuadrotorModel/package.mo" not in joined:
-        raise AssertionError(f"minimal strategy should load generated formal package as extra package: {joined}")
+        raise AssertionError(f"minimal strategy should load the generated canonical package as an extra package: {joined}")
     if "Models/MoSimQuadrotorModel/package.mo" in joined:
         raise AssertionError(f"minimal strategy must not broad-load the formal top-level package: {joined}")
     generated_root = ROOT / "Results" / "generated_mworks" / "minimal_dynamics_only"
@@ -187,9 +185,11 @@ def test_formal_dynamics_postprocess_summary_uses_diagnostics_contract() -> None
         metrics_file = tmp_root / "metrics.json"
         summary_file = tmp_root / "summary.json"
         raw_file.write_text(
-            "time,dynamics_total_thrust,dynamics_total_moment_body,dynamics_hover_thrust_error,dynamics_omega,dynamics_thrust\n"
-            "0,1,0,0,100,0.25\n"
-            "0.1,1,0,0,100,0.25\n",
+            "time,dynamics_total_thrust,dynamics_hover_thrust_error,"
+            "dynamics_roll_moment,dynamics_pitch_moment,dynamics_yaw_moment,"
+            "dynamics_thrust_1,dynamics_thrust_2,dynamics_thrust_3,dynamics_thrust_4\n"
+            "0,1,0,0,0,0,0.25,0.25,0.25,0.25\n"
+            "0.1,1,0,0,0,0,0.25,0.25,0.25,0.25\n",
             encoding="utf-8",
             newline="\n",
         )

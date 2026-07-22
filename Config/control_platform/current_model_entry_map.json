@@ -164,7 +164,7 @@
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
-        "source_file": "Models/QuadrotorControllerBlocks/AWFF_PID_Sysblock_Demo.mo",
+        "source_file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_PID_Sysblock_Demo.mo",
         "source_model_class": "AWFF_PID_Sysblock_Demo",
         "source_sha256": "0c7fdf610f672d7722ccf84195c7f5a22d5ad4b7c66554edc227664e0e376ebc",
         "import_mode": "non_destructive_copy_with_package_context",
@@ -976,9 +976,9 @@
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/awff_pid/default.yaml",
-        "source_file": "Models/QuadrotorExperiments/OfficialScenarios/Example1AWFFSysblockClosedLoop.mo",
+        "source_file": "Models/MoSimQuadrotorModel/Missions/Official/Example1AWFFSysblockClosedLoop.mo",
         "source_sha256": "3fb07e06c14a4b483c7c79fa27a07d29feacd0f81730ca36bdf9e25f547e999e",
-        "source_model_class": "QuadrotorExperiments.OfficialScenarios.Example1AWFFSysblockClosedLoop",
+        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1AWFFSysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."
@@ -997,9 +997,9 @@
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/l1_residual_sysblock/default.yaml",
-        "source_file": "Models/QuadrotorExperiments/OfficialScenarios/Example1L1SysblockClosedLoop.mo",
+        "source_file": "Models/MoSimQuadrotorModel/Missions/Official/Example1L1SysblockClosedLoop.mo",
         "source_sha256": "f67ca5bf6476c3045e8d634670e069354ae1dd0f1299b672741731106d034764",
-        "source_model_class": "QuadrotorExperiments.OfficialScenarios.Example1L1SysblockClosedLoop",
+        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1L1SysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."
@@ -1018,9 +1018,9 @@
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/awff_indi_sysblock/default.yaml",
-        "source_file": "Models/QuadrotorExperiments/OfficialScenarios/Example1INDISysblockClosedLoop.mo",
+        "source_file": "Models/MoSimQuadrotorModel/Missions/Official/Example1INDISysblockClosedLoop.mo",
         "source_sha256": "b72a2047eab1105e58da148cd58ab76d6dbd129fd86f01dcabeba5b7cbcb3688",
-        "source_model_class": "QuadrotorExperiments.OfficialScenarios.Example1INDISysblockClosedLoop",
+        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1INDISysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."
@@ -1039,9 +1039,9 @@
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/linear_mpc_sysblock/default.yaml",
-        "source_file": "Models/QuadrotorExperiments/OfficialScenarios/Example1LinearMPCSysblockClosedLoop.mo",
+        "source_file": "Models/MoSimQuadrotorModel/Missions/Official/Example1LinearMPCSysblockClosedLoop.mo",
         "source_sha256": "69ab5d48cc2e7c115a87d06491b423abb54a9669206e7c431aa744f6f1fe1291",
-        "source_model_class": "QuadrotorExperiments.OfficialScenarios.Example1LinearMPCSysblockClosedLoop",
+        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1LinearMPCSysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."
@@ -1060,9 +1060,9 @@
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/nmpc_indi_l1/default.yaml",
-        "source_file": "Models/QuadrotorExperiments/RobustFaultScenarios/Example1QPNMPCSafetySysblockClosedLoop.mo",
+        "source_file": "Models/MoSimQuadrotorModel/Robustness/Scenarios/Example1QPNMPCSafetySysblockClosedLoop.mo",
         "source_sha256": "ec8d22746079b144a3e4ae3f89ef0ec8b6924d5d600cb8256038116e3d26f9b6",
-        "source_model_class": "QuadrotorExperiments.RobustFaultScenarios.Example1QPNMPCSafetySysblockClosedLoop",
+        "source_model_class": "MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."

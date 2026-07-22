@@ -125,7 +125,7 @@ healthy.
 
 ### Direct MCP Review For Graphical System Models
 
-For manual review of `QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock`,
+For manual review of `MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock`,
 use this direct MCP sequence:
 
 ```text
@@ -133,10 +133,10 @@ python Scripts\agent\check_mworks_gui_sentinel.py --output Results\mworks_gui_in
 capture a maximized or foreground screenshot of the target reusable Sysplorer/MWORKS main window, and verify the image content actually shows that target window
 session_manager(action="health")
 model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\References\\MWORKS\\QuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
-model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\QuadrotorControllerBlocks\\AWFF_FullControllerFlatGraphical_Sysblock.mo", force_reload=true, auto_load_deps=true)
-model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\QuadrotorExperiments\\package.mo", force_reload=true, auto_load_deps=true)
-model_manager(action="open", model_name="QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock")
-check_model(model_name="QuadrotorExperiments.Sunray150CompleteSystemGraphical_Sysblock", stop_on_error=false)
+model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\Controllers\\Sysblocks\\AWFF_FullControllerFlatGraphical_Sysblock.mo", force_reload=true, auto_load_deps=true)
+model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
+model_manager(action="open", model_name="MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock")
+check_model(model_name="MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock", stop_on_error=false)
 ```
 
 Background `PrintWindow` capture, including
@@ -148,14 +148,10 @@ MWORKS is activated. If the target reusable Sysplorer/MWORKS main window cannot
 be maximized or the screenshot content does not match it, stop before live MCP
 work and return a license/window-evidence blocker.
 
-Do not load this file because it must not exist:
-
-```text
-Models/QuadrotorExperiments/Sunray150CompleteSystemGraphical_Sysblock.mo
-```
-
-That standalone file causes `错误(1401): 模型重复定义` because the model is
-defined inside `Models/QuadrotorExperiments/package.mo`.
+Load the canonical root package once, rather than loading a legacy alias and its
+canonical implementation together. Mixing both roots can cause
+`错误(1401): 模型重复定义`; the formal entry is
+`MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock`.
 
 Review-result interpretation:
 
@@ -163,8 +159,8 @@ Review-result interpretation:
 |---|---|---|
 | `open ok=true` and no `1401` | The review model loads and opens | Continue visual review |
 | `错误(1401): 模型重复定义` | A duplicate standalone model file exists or was loaded | Delete the standalone file and load only the package |
-| `组件的类型 QuadrotorModel... 查找不到` | Dependencies were not loaded first | Load `References/MWORKS/QuadrotorModel/package.mo` before `QuadrotorExperiments/package.mo` |
-| `组件的类型 AWFF_FullControllerFlatGraphical_Sysblock 查找不到` | Graphical controller was not loaded first | Load `Models/QuadrotorControllerBlocks/AWFF_FullControllerFlatGraphical_Sysblock.mo` before the experiment package |
+| `组件的类型 QuadrotorModel... 查找不到` | Dependencies were not loaded first | Load `References/MWORKS/QuadrotorModel/package.mo` before `MoSimQuadrotorModel/package.mo` |
+| `组件的类型 AWFF_FullControllerFlatGraphical_Sysblock 查找不到` | Graphical controller was not loaded first | Load `Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo` before `MoSimQuadrotorModel/package.mo` |
 | `组件引用 x_sum.u1 / y_sum.u1 / thrust_sum.u1 查找不到` | Known Sysplorer limitation for embedded graphical Sysblock multi-input ports | Do not treat as image/load failure; keep Equation controller for executable closed-loop evidence |
 
 Graphical layout acceptance for this model:
@@ -184,7 +180,7 @@ mistake.
 
 ### Planning Model GUI Review Variables
 
-For `QuadrotorExperiments.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`,
+For `MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`,
 the reference trajectory is exported from `planningReference`, not from the
 official Example1 `climbePath`. When using `run_sysplorer_mcp_smoke.py` for
 GUI review or reproducible export, override the reference aliases explicitly:
@@ -554,7 +550,7 @@ the same pillar map rendered in Sysplorer:
 
 ```bash
 uv run python Scripts/planning/check_planning_display_collision.py \
-  Models/QuadrotorExperiments/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo \
+  Models/MoSimQuadrotorModel/Planning/Scenarios/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo \
   --required-clearance-m 0.35
 ```
 
@@ -692,7 +688,7 @@ keep the numerical evidence, reduce display load, and rerun a short
 `check_model`/`simulate_model` smoke before any full run.
 
 For video capture that needs the full colored global map, open
-`QuadrotorExperiments.Sunray150PlanningOpenBlocksColorMapReview`. This model is
+`MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningOpenBlocksColorMapReview`. This model is
 a thin review-only extension of
 `Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`: it keeps the same
 controller, vehicle, path, local sensing overlay, and timing, but enables

@@ -4,9 +4,9 @@ controller_id: improved_pid
 priority: P0
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example2ImprovedPID
-  model_path_hint: Models/QuadrotorExperiments/package.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Controllers.Baselines.Example2ImprovedPID
+  model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 螺旋爬升运动
 

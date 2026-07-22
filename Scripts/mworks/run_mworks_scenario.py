@@ -20,7 +20,7 @@ except ImportError:  # pragma: no cover
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MODEL_FILE = ROOT / "References/MWORKS/QuadrotorModel/package.mo"
-DEFAULT_EXTRA_MODEL_FILE = ROOT / "Models/QuadrotorExperiments/package.mo"
+DEFAULT_EXTRA_MODEL_FILE = ROOT / "Models/MoSimQuadrotorModel/package.mo"
 MINIMAL_DYNAMICS_BUILD_ROOT = ROOT / "Results/generated_mworks/minimal_dynamics_only"
 MINIMAL_DYNAMICS_STRATEGY = "minimal_dynamics_only"
 
@@ -118,39 +118,21 @@ def write_minimal_root_package(path: Path, *, package_name: str, description: st
     path.write_text(text, encoding="utf-8", newline="\n")
 
 
-def build_minimal_dynamics_load_tree() -> tuple[Path, Path]:
-    """Build a generated load tree that excludes Controllers/System/Planning packages.
+def build_minimal_dynamics_load_tree() -> Path:
+    """Build a canonical Dynamics-only load tree for bounded live smoke checks.
 
-    The official project source remains under Models/. This tree is only a live
-    smoke loading surface so Sysplorer does not pull broad top-level packages
-    that can trigger upgrade-model UI.
+    The official project source remains under Models/. This tree prevents a
+    Dynamics smoke check from loading Controllers, System, or Planning while
+    preserving the sole active MoSimQuadrotorModel namespace.
     """
-    dependency_root = MINIMAL_DYNAMICS_BUILD_ROOT / "QuadrotorExperiments"
     formal_root = MINIMAL_DYNAMICS_BUILD_ROOT / "MoSimQuadrotorModel"
-
-    for root in [dependency_root, formal_root]:
-        root.mkdir(parents=True, exist_ok=True)
-
-    write_minimal_root_package(
-        dependency_root / "package.mo",
-        package_name="QuadrotorExperiments",
-        description="Generated minimal live-load dependency package for DynamicsUpgrade smoke tests",
-        uses=["Modelica(version = \"4.0.0.TY.1\")"],
-    )
-    (dependency_root / "package.order").write_text("DynamicsUpgrade\n", encoding="utf-8", newline="\n")
-    copy_tree_files(
-        ROOT / "Models/QuadrotorExperiments/DynamicsUpgrade",
-        dependency_root / "DynamicsUpgrade",
-    )
+    formal_root.mkdir(parents=True, exist_ok=True)
 
     write_minimal_root_package(
         formal_root / "package.mo",
         package_name="MoSimQuadrotorModel",
-        description="Generated minimal live-load formal package for MoSimQuadrotorModel.Dynamics smoke tests",
-        uses=[
-            "Modelica(version = \"4.0.0.TY.1\")",
-            "QuadrotorExperiments",
-        ],
+        description="Generated canonical Dynamics-only live-load package",
+        uses=["Modelica(version = \"4.0.0.TY.1\")"],
     )
     (formal_root / "package.order").write_text("Dynamics\n", encoding="utf-8", newline="\n")
     copy_tree_files(
@@ -158,7 +140,7 @@ def build_minimal_dynamics_load_tree() -> tuple[Path, Path]:
         formal_root / "Dynamics",
     )
 
-    return dependency_root / "package.mo", formal_root / "package.mo"
+    return formal_root / "package.mo"
 
 
 def default_result_base(config: dict[str, Any], experiment_id: str) -> Path:
@@ -225,8 +207,10 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     model_file = windows_path(str(model.get("base_model_path_hint") or model.get("model_path_hint", "")), default=DEFAULT_MODEL_FILE)
     extra_model_files: list[str] = []
     if live_load_strategy == MINIMAL_DYNAMICS_STRATEGY:
-        dependency_package, formal_package = build_minimal_dynamics_load_tree()
-        model_file = to_windows_path(dependency_package)
+        # Keep the official baseline as the primary package and add only the
+        # generated canonical Dynamics package for a bounded smoke load.
+        model_file = to_windows_path(DEFAULT_MODEL_FILE)
+        formal_package = build_minimal_dynamics_load_tree()
         extra_model_files.append(to_windows_path(formal_package))
     else:
         for extra_model_file in model.get("extra_model_files", []) or []:

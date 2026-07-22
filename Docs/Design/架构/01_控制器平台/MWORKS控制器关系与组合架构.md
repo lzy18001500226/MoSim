@@ -107,22 +107,24 @@ MoSim 当前最成熟的项目侧替换点是“位置/平动外环”。因此�
 
 ## 3.1 模型库边界与入口
 
-控制责任和文件位置必须同时说明。当前四个模型根目录不是四份相同模型，也不能
-互相替代：
+控制责任和文件位置必须同时说明。当前正式 Modelica 实现只有一个根；旧三个目录
+保留为隐藏兼容 facade，不再拥有独立实现：
 
 ```text
 Models/MoSimQuadrotorModel/
-  正式项目包：Baseline、Controllers、Dynamics、ExperimentRunner、
-  Formation、Missions、Planning、Robustness、System 等命名空间
+  唯一活动实现与正式加载入口：Baseline、Controllers、Dynamics、
+  ExperimentRunner、LiveIntegration、Formation、Missions、Parameters、
+  Planning、Robustness、SceneTrace、Support、System、LegacyCompatibility
 
 Models/QuadrotorControllerBlocks/
-  可复用 Sysblock/方程控制器源码；正式包的 Controllers 命名空间提供部分包装入口
+  隐藏兼容别名 -> MoSimQuadrotorModel.Controllers.Sysblocks
 
 Models/QuadrotorExperiments/
-  现有场景和实现兼容池；许多已登记的闭环模型仍在这里，暂不能按目录名删除
+  隐藏兼容别名 -> Controllers.Baselines、Missions.Official、Robustness.Scenarios、
+  Planning.Scenarios、Formation.Scenarios、SceneTrace、Support、System 等正式域
 
 Models/MworksLive/
-  RT0/RT1 实时探针、桥接资源和遥测范围模型；不属于离线整机模型
+  隐藏兼容别名 -> MoSimQuadrotorModel.LiveIntegration
 ```
 
 离线 Profile 的推荐打开链路是：
@@ -135,9 +137,9 @@ Model Studio
   -> shared plant/result contract
 ```
 
-当 Profile 仍绑定 `QuadrotorExperiments.*` 时，这表示“现有实现兼容”，不表示
-迁移已经完成；当模型位于 `MworksLive.*` 时，只能作实时探针证据，不能当成离线
-控制器或飞行闭环证据。
+活动 Profile、脚本、配置和人工打开操作必须使用 `MoSimQuadrotorModel.*`。旧命名空间
+只用于兼容已有调用；历史 Results、旧运行记录和已归档证据中的旧全限定名必须保留其
+原样，并且只能说明当时的来源，不能重新作为当前正式加载入口。
 
 ## 4. 当前 Model Studio 与统一目标
 

@@ -5,9 +5,9 @@ priority: P1
 evidence_level: real_sysplorer_mcp_robust_mass20_ablation
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Example1Mass20PID
-  model_path_hint: Models/QuadrotorExperiments/package.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Robustness.Scenarios.PIDBaselines.Example1Mass20PID
+  model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: 阶梯爬升 +20% 机体质量摄动 baseline PID
 

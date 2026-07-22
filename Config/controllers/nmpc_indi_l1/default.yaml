@@ -4,9 +4,9 @@ priority: P1-D
 
 implementation_status:
   current_mworks_model:
-    - QuadrotorExperiments.Example1QPNMPCSafetySysblockClosedLoop
+    - MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop
   sysblock_controller: AWFF_QPNMPCSafetyController_Sysblock
-  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_QPNMPCSafetyController_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_QPNMPCSafetyController_Sysblock.mo
   verification_scope: >
     First integrated implementation of fixed-iteration constrained QP MPC,
     NMPC-style nonlinear tilt correction, CBF-style safety projection,

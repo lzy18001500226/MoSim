@@ -5,8 +5,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-MODEL = ROOT / "Models" / "QuadrotorExperiments" / "package.mo"
-CORE_MODEL = (
+MODEL = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
+CORE_MODEL = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "RotorActuatorCore.mo"
+LEGACY_ALIAS = (
     ROOT
     / "Models"
     / "QuadrotorExperiments"
@@ -38,13 +39,18 @@ def test_dynamics_upgrade_contains_minimum_rfly_style_structure() -> None:
     ]
     for snippet in required:
         assert snippet in text
+    assert "QuadrotorExperiments" not in text
 
 
-def test_top_level_package_keeps_deprecated_alias() -> None:
-    text = MODEL.read_text(encoding="utf-8")
+def test_top_level_package_is_canonical_and_legacy_alias_is_hidden() -> None:
+    package = MODEL.read_text(encoding="utf-8")
+    legacy_alias = LEGACY_ALIAS.read_text(encoding="utf-8")
 
-    assert "model Sunray150RflyStyleRotorDynamics" in text
-    assert "extends QuadrotorExperiments.DynamicsUpgrade.Sunray150RflyStyleRotorDynamics" in text
+    assert "package MoSimQuadrotorModel" in package
+    assert "QuadrotorExperiments" not in package
+    assert "model Sunray150RflyStyleRotorDynamics" in legacy_alias
+    assert "extends MoSimQuadrotorModel.Dynamics.RotorActuatorCore" in legacy_alias
+    assert "annotation(__MWORKS(hide=true));" in legacy_alias
 
 
 def test_hover_and_yaw_step_reference_math() -> None:

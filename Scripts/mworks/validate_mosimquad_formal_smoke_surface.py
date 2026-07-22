@@ -2,7 +2,7 @@
 """Static MoSimQuadrotorModel formal smoke/check surface generator.
 
 This script is intentionally file-only. It validates the project-owned
-Modelica alias surface and emits the future live validation matrix for a later
+Modelica implementation surface and emits the future live validation matrix for a later
 MWORKS task. It does not call MWORKS, Sysplorer, MCP, check_model, or simulate.
 """
 
@@ -19,6 +19,13 @@ ROOT = Path(__file__).resolve().parents[2]
 FORMAL_DYNAMICS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics"
 FORMAL_PARAMETERS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters"
 COMPAT_DIR = ROOT / "Models" / "QuadrotorExperiments" / "DynamicsUpgrade"
+ROOT_CONSOLIDATION_DIR = (
+    ROOT
+    / "Results"
+    / "mworks_model_hygiene"
+    / "20260722_mosimquad_model_root_consolidation"
+    / "formal_smoke_surface"
+)
 
 REQUEST_ID = "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023"
 
@@ -59,8 +66,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "RotorActuatorCore",
         "compat_name": "RotorDynamicsCore",
-        "implementation_model": "Sunray150RflyStyleRotorDynamics",
-        "implementation_file": "Sunray150RflyStyleRotorDynamics.mo",
+        "implementation_model": "RotorActuatorCore",
+        "implementation_file": "RotorActuatorCore.mo",
         "role": "core_dynamics_check",
         "check_phase": 1,
         "simulate_phase": None,
@@ -93,8 +100,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "RotorEffectivenessSmoke",
         "compat_name": "RotorEffectivenessSmoke",
-        "implementation_model": "Sunray150RotorEffectivenessSmoke",
-        "implementation_file": "Sunray150RotorEffectivenessSmoke.mo",
+        "implementation_model": "RotorEffectivenessSmoke",
+        "implementation_file": "RotorEffectivenessSmoke.mo",
         "role": "single_rotor_effectiveness_smoke",
         "check_phase": 3,
         "simulate_phase": 3,
@@ -109,7 +116,7 @@ TARGETS: list[dict[str, Any]] = [
         "required_snippets": [
             "parameter Integer degraded_rotor_index = 1",
             "parameter Real degraded_rotor_thrust_effectiveness = 0.85",
-            "Sunray150RflyStyleRotorDynamics dynamics(",
+            "RotorActuatorCore dynamics(",
             "thrust_effectiveness = {",
             "total_thrust_loss = expected_nominal_total_thrust - dynamics.total_thrust",
             "roll_moment_imbalance = dynamics.total_moment_body[1]",
@@ -121,8 +128,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "ActuatorCommandMapper",
         "compat_name": "ActuatorCommandMapper",
-        "implementation_model": "Sunray150ActuatorCommandMapper",
-        "implementation_file": "Sunray150ActuatorCommandMapper.mo",
+        "implementation_model": "ActuatorCommandMapper",
+        "implementation_file": "ActuatorCommandMapper.mo",
         "role": "normalized_command_mapper_check",
         "check_phase": 2,
         "simulate_phase": None,
@@ -146,8 +153,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "WrapperSurface",
         "compat_name": "WrapperSurface",
-        "implementation_model": "Sunray150DynamicsWrapperSurface",
-        "implementation_file": "Sunray150DynamicsWrapperSurface.mo",
+        "implementation_model": "WrapperSurface",
+        "implementation_file": "WrapperSurface.mo",
         "role": "wrapper_force_moment_surface_check",
         "check_phase": 4,
         "simulate_phase": None,
@@ -179,8 +186,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "ActuatorMappedWrapperSurface",
         "compat_name": "ActuatorMappedWrapperSurface",
-        "implementation_model": "Sunray150ActuatorMappedWrapperSurface",
-        "implementation_file": "Sunray150ActuatorMappedWrapperSurface.mo",
+        "implementation_model": "ActuatorMappedWrapperSurface",
+        "implementation_file": "ActuatorMappedWrapperSurface.mo",
         "role": "mapper_to_wrapper_surface_check",
         "check_phase": 5,
         "simulate_phase": None,
@@ -211,8 +218,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "OptionalDampingGyroLayer",
         "compat_name": "OptionalDampingGyroLayer",
-        "implementation_model": "Sunray150OptionalDampingGyroLayer",
-        "implementation_file": "Sunray150OptionalDampingGyroLayer.mo",
+        "implementation_model": "OptionalDampingGyroLayer",
+        "implementation_file": "OptionalDampingGyroLayer.mo",
         "role": "default_disabled_optional_layer_check",
         "check_phase": 6,
         "simulate_phase": None,
@@ -252,8 +259,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "PhysicalWrenchAdapter",
         "compat_name": "PhysicalWrenchAdapter",
-        "implementation_model": "Sunray150PhysicalWrenchFrameAdapter",
-        "implementation_file": "Sunray150PhysicalWrenchFrameAdapter.mo",
+        "implementation_model": "PhysicalWrenchAdapter",
+        "implementation_file": "PhysicalWrenchAdapter.mo",
         "role": "physical_wrench_boundary_check",
         "check_phase": 7,
         "simulate_phase": None,
@@ -283,8 +290,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "HoverSmoke",
         "compat_name": "RotorHoverSmoke",
-        "implementation_model": "Sunray150DynamicsUpgradeHoverSmoke",
-        "implementation_file": "Sunray150DynamicsUpgradeHoverSmoke.mo",
+        "implementation_model": "HoverSmoke",
+        "implementation_file": "HoverSmoke.mo",
         "role": "core_hover_smoke",
         "check_phase": 8,
         "simulate_phase": 1,
@@ -296,7 +303,7 @@ TARGETS: list[dict[str, Any]] = [
             "dynamics.thrust",
         ],
         "required_snippets": [
-            "Sunray150RflyStyleRotorDynamics dynamics",
+            "RotorActuatorCore dynamics",
             "dynamics.motor_command =",
             "annotation(experiment(",
             "StopTime = 0.25",
@@ -306,8 +313,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "YawStepSmoke",
         "compat_name": "RotorYawStepSmoke",
-        "implementation_model": "Sunray150DynamicsUpgradeYawStepSmoke",
-        "implementation_file": "Sunray150DynamicsUpgradeYawStepSmoke.mo",
+        "implementation_model": "YawStepSmoke",
+        "implementation_file": "YawStepSmoke.mo",
         "role": "core_yaw_step_smoke",
         "check_phase": 9,
         "simulate_phase": 2,
@@ -330,8 +337,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "WrapperHoverSmoke",
         "compat_name": "WrapperHoverSmoke",
-        "implementation_model": "Sunray150DynamicsWrapperHoverSmoke",
-        "implementation_file": "Sunray150DynamicsWrapperHoverSmoke.mo",
+        "implementation_model": "WrapperHoverSmoke",
+        "implementation_file": "WrapperHoverSmoke.mo",
         "role": "wrapper_hover_smoke",
         "check_phase": 10,
         "simulate_phase": 4,
@@ -346,7 +353,7 @@ TARGETS: list[dict[str, Any]] = [
             "wrapper.yaw_direction_gate_error",
         ],
         "required_snippets": [
-            "Sunray150DynamicsWrapperSurface wrapper",
+            "WrapperSurface wrapper",
             "wrapper.motor_command =",
             "StopTime = 0.25",
         ],
@@ -355,8 +362,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "WrapperYawStepSmoke",
         "compat_name": "WrapperYawStepSmoke",
-        "implementation_model": "Sunray150DynamicsWrapperYawStepSmoke",
-        "implementation_file": "Sunray150DynamicsWrapperYawStepSmoke.mo",
+        "implementation_model": "WrapperYawStepSmoke",
+        "implementation_file": "WrapperYawStepSmoke.mo",
         "role": "wrapper_yaw_step_smoke",
         "check_phase": 11,
         "simulate_phase": 5,
@@ -371,7 +378,7 @@ TARGETS: list[dict[str, Any]] = [
             "wrapper.commanded_yaw_moment_gate",
         ],
         "required_snippets": [
-            "Sunray150DynamicsWrapperSurface wrapper",
+            "WrapperSurface wrapper",
             "yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0",
             "wrapper.motor_command[i] =",
         ],
@@ -380,8 +387,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "PhysicalWrenchHoverSmoke",
         "compat_name": "PhysicalWrenchHoverSmoke",
-        "implementation_model": "Sunray150PhysicalWrenchHoverSmoke",
-        "implementation_file": "Sunray150PhysicalWrenchHoverSmoke.mo",
+        "implementation_model": "PhysicalWrenchHoverSmoke",
+        "implementation_file": "PhysicalWrenchHoverSmoke.mo",
         "role": "physical_wrench_hover_smoke",
         "check_phase": 12,
         "simulate_phase": 6,
@@ -397,7 +404,7 @@ TARGETS: list[dict[str, Any]] = [
             "adapter.wrapper_yaw_moment",
         ],
         "required_snippets": [
-            "Sunray150PhysicalWrenchFrameAdapter adapter",
+            "PhysicalWrenchAdapter adapter",
             "adapter.wrapper.motor_command =",
             "StopTime = 0.25",
         ],
@@ -406,8 +413,8 @@ TARGETS: list[dict[str, Any]] = [
     {
         "formal_name": "PhysicalWrenchYawStepSmoke",
         "compat_name": "PhysicalWrenchYawStepSmoke",
-        "implementation_model": "Sunray150PhysicalWrenchYawStepSmoke",
-        "implementation_file": "Sunray150PhysicalWrenchYawStepSmoke.mo",
+        "implementation_model": "PhysicalWrenchYawStepSmoke",
+        "implementation_file": "PhysicalWrenchYawStepSmoke.mo",
         "role": "physical_wrench_yaw_step_smoke",
         "check_phase": 13,
         "simulate_phase": 7,
@@ -423,7 +430,7 @@ TARGETS: list[dict[str, Any]] = [
             "adapter.wrapper_yaw_moment",
         ],
         "required_snippets": [
-            "Sunray150PhysicalWrenchFrameAdapter adapter",
+            "PhysicalWrenchAdapter adapter",
             "yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0",
             "adapter.wrapper.motor_command[i] =",
         ],
@@ -500,7 +507,7 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
         formal_name = target["formal_name"]
         compat_name = target["compat_name"]
         implementation_model = target["implementation_model"]
-        implementation_path = COMPAT_DIR / target["implementation_file"]
+        implementation_path = FORMAL_DYNAMICS_DIR / target["implementation_file"]
         implementation_text = read_text(implementation_path)
         formal_source_path = FORMAL_DYNAMICS_DIR / f"{formal_name}.mo"
         formal_source_present = formal_source_path.exists()
@@ -520,7 +527,7 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
         assert_contains(
             findings,
             formal_text,
-            f"extends QuadrotorExperiments.DynamicsUpgrade.{compat_name}",
+            "within MoSimQuadrotorModel.Dynamics;",
             f"MoSimQuadrotorModel.Dynamics.{formal_name}",
         )
         assert_contains(
@@ -532,7 +539,7 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
         assert_contains(
             findings,
             compat_package,
-            f"extends QuadrotorExperiments.DynamicsUpgrade.{implementation_model}",
+            f"extends MoSimQuadrotorModel.Dynamics.{formal_name}",
             f"QuadrotorExperiments.DynamicsUpgrade.{compat_name}",
         )
         assert_contains(
@@ -553,7 +560,7 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
             {
                 "formal_target": f"MoSimQuadrotorModel.Dynamics.{formal_name}",
                 "compat_alias": f"QuadrotorExperiments.DynamicsUpgrade.{compat_name}",
-                "implementation_model": f"QuadrotorExperiments.DynamicsUpgrade.{implementation_model}",
+                "implementation_model": f"MoSimQuadrotorModel.Dynamics.{implementation_model}",
                 "implementation_file": rel(implementation_path),
                 "formal_source_file": rel(formal_source_path) if formal_source_present else rel(FORMAL_DYNAMICS_DIR / "package.mo"),
                 "formal_source_present": formal_source_present,
@@ -564,7 +571,7 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
                 "expected_result_variables": target["expected_result_variables"],
                 "required_source_anchors": target["required_snippets"],
                 "pass_fail_boundary": target["pass_fail_boundary"],
-                "source_status": "present_static_anchor_verified",
+                "source_status": "canonical_source_anchor_verified",
             }
         )
 
@@ -693,12 +700,12 @@ def write_source_materialization_rationale(path: Path) -> None:
     lines = [
         "# Source Anchor Materialization Rationale",
         "",
-        "023 inspected the formal `MoSimQuadrotorModel.Dynamics` alias package, `package.order`, the `MoSimQuadrotorModel.Parameters` provenance record, and the concrete project-owned `QuadrotorExperiments.DynamicsUpgrade` implementation files.",
+        "023 inspects the canonical `MoSimQuadrotorModel.Dynamics` implementation package, `package.order`, the `MoSimQuadrotorModel.Parameters` provenance record, and hidden legacy aliases only as compatibility checks.",
         "",
         "The current formal source-surface rule is:",
         "",
-        "- All formal Dynamics entries should be dedicated extends-only `.mo` files.",
-        "- Dedicated formal sources must not duplicate equations from `QuadrotorExperiments.DynamicsUpgrade`.",
+        "- All formal Dynamics entries are canonical project-owned implementation `.mo` files.",
+        "- Legacy DynamicsUpgrade aliases must not own equations or become a source of truth.",
         "",
         "Current materialized dedicated surfaces:",
         "",
@@ -719,9 +726,9 @@ def write_source_materialization_rationale(path: Path) -> None:
         "Static acceptance basis:",
         "",
         "- The 13 formal Dynamics entries are present and ordered in `Models/MoSimQuadrotorModel/Dynamics/package.order`.",
-        "- All formal Dynamics entries exist as extends-only formal source files.",
+        "- All formal Dynamics entries exist as canonical source files with their own implementation anchors.",
         "- `Dynamics/package.mo` is a package shell and does not duplicate model definitions.",
-        "- Each compatibility alias extends a concrete project-owned implementation model under `Models/QuadrotorExperiments/DynamicsUpgrade/`.",
+        "- Each compatibility alias extends its canonical model under `Models/MoSimQuadrotorModel/Dynamics/`.",
         "- The formal smoke surface can be prepared as a target matrix, expected variable manifest, and future live validation queue without duplicating dynamics behavior.",
         "",
         "This rationale remains static-only. Live `check_model` and `SimulateModel` acceptance are still future gates.",
@@ -734,7 +741,7 @@ def main() -> int:
     parser.add_argument(
         "--output-dir",
         type=Path,
-        default=ROOT / "Results" / "mworks_model_hygiene" / "20260608_023_mosimquad_formal_smoke_surface_static_prep",
+        default=ROOT_CONSOLIDATION_DIR,
     )
     args = parser.parse_args()
 
@@ -776,14 +783,14 @@ def main() -> int:
             "Scripts/mworks/validate_mosimquad_formal_smoke_surface.py"
         ],
         "evidence_files_written_by_023": [
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/formal_smoke_target_matrix.json",
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/formal_smoke_target_matrix.md",
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/future_live_validation_surface.json",
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/expected_result_variables.json",
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/pass_fail_boundaries.md",
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/source_anchor_materialization_rationale.md",
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/changed_files.json",
-            "Results/mworks_model_hygiene/20260608_023_mosimquad_formal_smoke_surface_static_prep/static_validation_summary.json",
+            "Results/mworks_model_hygiene/20260722_mosimquad_model_root_consolidation/formal_smoke_surface/formal_smoke_target_matrix.json",
+            "Results/mworks_model_hygiene/20260722_mosimquad_model_root_consolidation/formal_smoke_surface/formal_smoke_target_matrix.md",
+            "Results/mworks_model_hygiene/20260722_mosimquad_model_root_consolidation/formal_smoke_surface/future_live_validation_surface.json",
+            "Results/mworks_model_hygiene/20260722_mosimquad_model_root_consolidation/formal_smoke_surface/expected_result_variables.json",
+            "Results/mworks_model_hygiene/20260722_mosimquad_model_root_consolidation/formal_smoke_surface/pass_fail_boundaries.md",
+            "Results/mworks_model_hygiene/20260722_mosimquad_model_root_consolidation/formal_smoke_surface/source_anchor_materialization_rationale.md",
+            "Results/mworks_model_hygiene/20260722_mosimquad_model_root_consolidation/formal_smoke_surface/changed_files.json",
+            "Results/mworks_model_hygiene/20260722_mosimquad_model_root_consolidation/formal_smoke_surface/static_validation_summary.json",
         ],
     }
     summary = {

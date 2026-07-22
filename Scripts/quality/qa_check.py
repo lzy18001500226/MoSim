@@ -31,7 +31,7 @@ REQUIRED_DIRS = [
     "Docs/Index",
     "Docs/MworksDocs/converted",
     "References/MWORKS/QuadrotorModel",
-    "Models/QuadrotorExperiments",
+    "Models/MoSimQuadrotorModel",
     "Docs/Workflows",
 ]
 
@@ -197,7 +197,7 @@ OFFICIAL_REFERENCE_OUTPUTS = [
 ]
 
 MWORKS_MCP_IMPROVED_OUTPUTS = [
-    "Models/QuadrotorExperiments/package.mo",
+    "Models/MoSimQuadrotorModel/package.mo",
     "Results/tuning/pid_search/summary/pid_tuning_summary.csv",
     "Results/tuning/pid_search/summary/pid_tuning_summary.md",
     "Results/official/example1_step/official_example1_improved_pid/logs/sysplorer_example1_improved_pid_full_20260509.jsonl",

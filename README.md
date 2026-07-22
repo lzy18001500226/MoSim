@@ -58,18 +58,18 @@ Models/QuadrotorExperiments
 
 | 目录 | 用途 |
 |---|---|
-| `Models/MoSimQuadrotorModel` | 四旋翼整机、机体、旋翼、电机、传感器和结果查看器动画相关模型 |
-| `Models/QuadrotorControllerBlocks` | 控制器、增强层、安全层、故障容错层等可复用模块 |
-| `Models/QuadrotorExperiments` | 单机任务、控制器闭环实验、三机编队实验等可直接打开仿真的实验模型 |
-| `Models/MworksLive` | 实时联合仿真相关模型，比赛前作为扩展能力展示 |
+| `Models/MoSimQuadrotorModel` | 唯一活动模型根，包含整机、动力学、控制器、任务、规划、编队、实时桥接和结果查看器动画相关模型 |
+| `Models/QuadrotorControllerBlocks` | 隐藏兼容别名，仅用于旧调用兼容 |
+| `Models/QuadrotorExperiments` | 隐藏兼容别名，仅用于旧实验调用兼容 |
+| `Models/MworksLive` | 隐藏兼容别名，正式实时桥接位于 `MoSimQuadrotorModel.LiveIntegration` |
 
-`Models/MworksLive_backup` 是备份目录，不建议放入最终提交包。
+历史备份已归档到 `Docs/Cache/model_legacy/MworksLive_backup_20260722`，不应加入 Modelica 加载路径或最终提交包。
 
 ### 推荐演示流程
 
 1. 打开 MWORKS/Sysplorer。
-2. 加载 `Models/MoSimQuadrotorModel`、`Models/QuadrotorControllerBlocks` 和 `Models/QuadrotorExperiments`。
-3. 在 `QuadrotorExperiments` 中打开已验收的单机或三机实验模型。
+2. 加载 `Models/MoSimQuadrotorModel/package.mo` 与官方参考依赖包。
+3. 在 `MoSimQuadrotorModel` 的正式命名空间中打开已验收的单机或三机实验模型。
 4. 点击 MWORKS 原生仿真按钮运行。
 5. 在结果查看器中查看曲线和三维动画。
 6. 若使用 APP 演示，运行根目录 `启动MoSim地面站.cmd`，在 Model Studio 中选择在线建模验证、实时联合仿真或生成代码部署页面。

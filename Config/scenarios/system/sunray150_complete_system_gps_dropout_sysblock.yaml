@@ -6,13 +6,13 @@ evidence_level: real_sysplorer_mcp_complete_system_gps_dropout
 quality_profile: system_mode
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Sunray150CompleteSystemGPSDropoutSysblock
-  model_path_hint: Models/QuadrotorExperiments/package.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGPSDropoutSysblock
+  model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   official_description: Sunray150 complete system with GPS dropout, estimator quality degradation, and flight-mode downgrade
   extra_model_files:
-    - Models/QuadrotorControllerBlocks/AWFF_FullControllerEquation_Sysblock.mo
+    - Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
 
 controller:
   replacement_component: controller

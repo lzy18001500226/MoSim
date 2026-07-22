@@ -10,11 +10,11 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - QuadrotorExperiments.Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop
+    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop
   sysblock_controller: AWFF_FaultCompensationControllerEquation_Sysblock
   graphical_sysblock_controller:
     controller_model: AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock
-    controller_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+    controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
     status: graphical counterpart uses AWFF outer-loop settings with L1 residual gains set to zero, PID attitude loop, and KnownRotorFaultMixerBlock.
   verification_scope: pending real MWORKS_MCP full run for rotor-1 85% efficiency degradation plus wind gust
   limitation: >

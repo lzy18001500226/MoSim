@@ -88,13 +88,13 @@ Use a compact subset in MWORKS instead of importing the full PX4 state space.
 
 | Project component | Current file/model | PX4-inspired role |
 |---|---|---|
-| `PerceptionInterfaceModule` | `Models/QuadrotorExperiments/package.mo` | GPS/Mid360 validity and obstacle margin |
-| `V6XFlightControllerModule` | `Models/QuadrotorExperiments/package.mo` | simple state estimator and estimator quality |
-| `ORINNXMissionComputerModule` | `Models/QuadrotorExperiments/package.mo` | flight mode, setpoint source, safety status |
-| `SystemSupervisorModule` | `Models/QuadrotorExperiments/package.mo` | exported failsafe/status evidence |
-| `BatteryPowerModule` | `Models/QuadrotorExperiments/package.mo` | voltage, power ok, voltage margin |
-| `ESCDriveModule` | `Models/QuadrotorExperiments/package.mo` | motor command limiting, ESC health, saturation estimate |
-| `AWFFControllerModule` | `Models/QuadrotorExperiments/package.mo` | controller + hover trim + motor command scaling |
+| `PerceptionInterface` | `MoSimQuadrotorModel.System.Modules.PerceptionInterface` | GPS/Mid360 validity and obstacle margin |
+| `FlightController` | `MoSimQuadrotorModel.System.Modules.FlightController` | simple state estimator and estimator quality |
+| `MissionComputer` | `MoSimQuadrotorModel.System.Modules.MissionComputer` | flight mode, setpoint source, safety status |
+| `Supervisor` | `MoSimQuadrotorModel.System.Modules.Supervisor` | exported failsafe/status evidence |
+| `BatteryPower` | `MoSimQuadrotorModel.System.Modules.BatteryPower` | voltage, power ok, voltage margin |
+| `ESCDrive` | `MoSimQuadrotorModel.System.Modules.ESCDrive` | motor command limiting, ESC health, saturation estimate |
+| `AWFFController` | `MoSimQuadrotorModel.System.Modules.AWFFController` | controller + hover trim + motor command scaling |
 
 ## 7. Implementation Priority
 

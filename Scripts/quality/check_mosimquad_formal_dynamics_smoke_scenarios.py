@@ -20,14 +20,14 @@ PROBE_PLAN = (
     ROOT
     / "Results"
     / "mworks_model_hygiene"
-    / "20260608_024_mosimquad_live_gate_runner_static_hardening"
+    / "20260722_mosimquad_model_root_consolidation/live_gate_runner"
     / "result_variable_probe_plan.json"
 )
 DEFAULT_OUTPUT = (
     ROOT
     / "Results"
     / "mworks_model_hygiene"
-    / "20260611_mosimquad_formal_dynamics_smoke_scenario_bindings"
+    / "20260722_mosimquad_model_root_consolidation/dynamics_smoke_scenario_bindings"
     / "static_validation_summary.json"
 )
 
@@ -118,10 +118,10 @@ def validate_binding(
             "formal dynamics smoke must explicitly request the minimal Dynamics load strategy",
             target,
         )
-    if model.get("base_model_path_hint") != "Models/MoSimQuadrotorModel/package.mo":
-        add_finding(findings, "wrong_base_model_path_hint", "scenario does not load the formal MoSim package first", target)
-    if model.get("model_path_hint") != "Models/QuadrotorExperiments/package.mo":
-        add_finding(findings, "wrong_dependency_model_path_hint", "scenario does not include the DynamicsUpgrade dependency package", target)
+    if model.get("base_model_path_hint") != "References/MWORKS/QuadrotorModel/package.mo":
+        add_finding(findings, "wrong_base_model_path_hint", "scenario does not load the official baseline package first", target)
+    if model.get("model_path_hint") != "Models/MoSimQuadrotorModel/package.mo":
+        add_finding(findings, "wrong_model_path_hint", "scenario does not identify the canonical MoSim package", target)
     if config.get("controller_id") != "diagnostics_no_controller":
         add_finding(findings, "wrong_controller_id", "formal dynamics smoke must not imply a controller", target)
     if config.get("evidence_level") != "future_live_mworks_formal_dynamics_smoke_contract":
@@ -153,7 +153,7 @@ def validate_binding(
     command_text = " ".join(command)
     required_fragments = [
         "--model-file",
-        "Results\\generated_mworks\\minimal_dynamics_only\\QuadrotorExperiments\\package.mo",
+        "References\\MWORKS\\QuadrotorModel\\package.mo",
         "--extra-model-file",
         "Results\\generated_mworks\\minimal_dynamics_only\\MoSimQuadrotorModel\\package.mo",
         "--no-gui-result-viewer",
@@ -206,7 +206,7 @@ def validate(scenario_dir: Path, probe_plan_path: Path) -> dict[str, Any]:
         "runner_support_boundary": [
             "Scenario YAML now declares model.live_load_strategy=minimal_dynamics_only.",
             "run_mworks_scenario generates a temporary minimal load tree under Results/generated_mworks/minimal_dynamics_only.",
-            "The generated live command loads only QuadrotorExperiments.DynamicsUpgrade and MoSimQuadrotorModel.Dynamics surfaces instead of the broad formal top-level package.",
+            "The generated live command loads the official baseline package plus the generated canonical MoSimQuadrotorModel.Dynamics surface; it never uses a legacy compatibility package as an implementation source.",
             "Do not treat this as check_model or SimulateModel evidence until a live run succeeds.",
         ],
         "findings": findings,

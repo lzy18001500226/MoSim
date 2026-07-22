@@ -11,7 +11,7 @@ px4ctrl controller.
 ROS1 odometry/reference/target/state
   -> ros1_telemetry_scope_sender.py
   -> UDP telemetry frame
-  -> MworksLive.RTTelemetryScope50Hz
+  -> MoSimQuadrotorModel.LiveIntegration.RTTelemetryScope50Hz
   -> MWORKS result curve window
 ```
 
@@ -43,7 +43,7 @@ waits for real `/uav1/mavros/local_position/odom`, and then starts the
 read-only telemetry sender. In MWORKS, load/check and run:
 
 ```text
-MworksLive.RTTelemetryScope50Hz
+MoSimQuadrotorModel.LiveIntegration.RTTelemetryScope50Hz
 simulation mode: real-time (2)
 ```
 

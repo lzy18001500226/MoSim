@@ -23,10 +23,10 @@ import psutil
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "Config" / "control_platform" / "offline_composition_catalog.json"
 LOG = ROOT / "Results" / "ui_platform" / "model_studio_open_model" / "latest.json"
-THREE_MODEL_FILE = ROOT / "Models" / "QuadrotorExperiments" / "FormationScenarios" / "FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo"
-THREE_MODEL_NAME = "QuadrotorExperiments.FormationScenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop"
-LIVE_MODEL_FILE = ROOT / "Models" / "MworksLive" / "package.mo"
-LIVE_MODEL_NAME = "MworksLive.RT1OfficialPidShadow50Hz"
+THREE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Formation" / "Scenarios" / "FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo"
+THREE_MODEL_NAME = "MoSimQuadrotorModel.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop"
+LIVE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
+LIVE_MODEL_NAME = "MoSimQuadrotorModel.LiveIntegration.RT1OfficialPidShadow50Hz"
 MODEL_DECLARATION = re.compile(r"\bmodel\s+([A-Za-z_]\w*)")
 DEFAULT_MWORKS_EXE = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\Bin64\mworks.exe")
 DEFAULT_MWORKS_PYTHON = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\External\python64\python.exe")
@@ -34,8 +34,6 @@ WORKER = ROOT / "Scripts" / "ui" / "open_model_studio_model_worker.py"
 WORKER_RESULT = LOG.with_name("latest.worker.json")
 BASE_MODEL_FILES = [
     ROOT / "References" / "MWORKS" / "QuadrotorModel" / "package.mo",
-    ROOT / "Models" / "QuadrotorControllerBlocks" / "package.mo",
-    ROOT / "Models" / "QuadrotorExperiments" / "package.mo",
     ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo",
 ]
 RUNNER_MODELS = {

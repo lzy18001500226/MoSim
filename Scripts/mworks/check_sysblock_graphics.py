@@ -426,7 +426,7 @@ def behavior_contract_checks(base: Path) -> list[dict[str, Any]]:
 
 
 def run_checks() -> dict[str, Any]:
-    base = ROOT / "Models" / "QuadrotorControllerBlocks"
+    base = ROOT / "Models" / "MoSimQuadrotorModel" / "Controllers" / "Sysblocks"
     results = [check_model(base / filename, spec) for filename, spec in REQUIRED_MODELS.items()]
     for filename, specs in PACKAGE_MODELS.items():
         results.extend(check_package_models(base / filename, specs))

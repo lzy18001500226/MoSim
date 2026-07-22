@@ -13,15 +13,14 @@ combination must have a legal Profile, an explicit output-boundary Adapter, a
 real MWORKS run, `Result.msr`, strict metrics, and native animation-window
 evidence.
 
-Directory migration is deliberately last. Do not move or rename these paths
-until the extension platform passes its full regression and a migration freeze
-point is recorded:
-
-```text
-Models/MoSimQuadrotorModel
-Models/QuadrotorControllerBlocks
-Models/QuadrotorExperiments
-```
+Directory consolidation is complete. `Models/MoSimQuadrotorModel/` is the sole
+active implementation root; `Models/QuadrotorControllerBlocks/`,
+`Models/QuadrotorExperiments/`, and `Models/MworksLive/` are hidden
+compatibility facades. Do not add new source to any legacy root or load it as an
+independent library. The hash-verified `MworksLive` upgrade snapshot is under
+`Docs/Cache/model_legacy/MworksLive_backup_20260722/`. Any old root path later
+in this dated phase log is historical checkpoint provenance only, not a current
+loading instruction.
 
 ## 2. Rollback And Ownership Boundary
 

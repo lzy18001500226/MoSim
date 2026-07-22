@@ -22,11 +22,11 @@ ament_target_dependencies(fastlio_odometry_to_px4_visual_odometry_node rclcpp na
 if(NOT DEFINED MOSIM_POSITION_OUTER_CODE_DIR)
   if(DEFINED ENV{MOSIM_PROJECT_ROOT})
     set(MOSIM_POSITION_OUTER_CODE_DIR
-      "$ENV{MOSIM_PROJECT_ROOT}/Results/generated_mworks/AWFF_PositionOuterLoop_Sysblock_20260620_070500/QuadrotorControllerBlocks.AWFF_PositionOuterLoop_Sysblock"
+      "$ENV{MOSIM_PROJECT_ROOT}/Results/generated_mworks/AWFF_PositionOuterLoop_Sysblock_20260620_070500/MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_PositionOuterLoop_Sysblock"
     )
   else()
     set(MOSIM_POSITION_OUTER_CODE_DIR
-      "${CMAKE_CURRENT_SOURCE_DIR}/../../../Results/generated_mworks/AWFF_PositionOuterLoop_Sysblock_20260620_070500/QuadrotorControllerBlocks.AWFF_PositionOuterLoop_Sysblock"
+      "${CMAKE_CURRENT_SOURCE_DIR}/../../../Results/generated_mworks/AWFF_PositionOuterLoop_Sysblock_20260620_070500/MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_PositionOuterLoop_Sysblock"
     )
   endif()
 endif()

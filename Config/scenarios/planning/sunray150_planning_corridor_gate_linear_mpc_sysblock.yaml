@@ -5,22 +5,22 @@ priority: P1
 evidence_level: real_sysplorer_mcp_sysblock_planning_corridor_gate_linear_mpc
 
 model:
-  source_package: QuadrotorExperiments
-  model_name: QuadrotorExperiments.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop
-  model_path_hint: Models/QuadrotorExperiments/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Planning/Scenarios/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo
   base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
   extra_model_files:
-    - Models/QuadrotorExperiments/PlannedQuinticReference.mo
-    - Models/QuadrotorExperiments/PlanningNavigationDisplay.mo
+    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlannedQuinticReference.mo
+    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlanningNavigationDisplay.mo
   official_description: Sunray150 单机 corridor gate A* 轨迹 LinearMPC-style Sysblock 闭环
 
 controller:
   params_file: Config/controllers/linear_mpc_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: Models/QuadrotorControllerBlocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/QuadrotorControllerBlocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

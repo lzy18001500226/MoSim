@@ -50,13 +50,13 @@ Current formal model ownership:
 | Package | Role |
 |---|---|
 | `QuadrotorModel` | Official/upstream baseline and regression reference. Keep it loadable and avoid destructive MoSim-specific edits. |
-| `MoSimQuadrotorModel` | Project-owned formal Sunray150/MoSim package. Formal dynamics upgrades, controller/planner/fault wrappers, scene-trace adapters, and final classified experiment entry points should migrate here. |
-| `QuadrotorExperiments` | Legacy experiment pool and compatibility layer. Existing flat names may remain as aliases until scenario configs, scripts, docs, and `check_model` evidence are migrated. |
+| `MoSimQuadrotorModel` | Sole active project-owned Sunray150/MoSim implementation and public entry root. It contains the formal dynamics, controller, planner, fault, scene-trace, system and live-integration domains. |
+| `QuadrotorExperiments` / `QuadrotorControllerBlocks` / `MworksLive` | Hidden compatibility facades only. They preserve old callers through aliases, but no new source, scenario, or formal load entry may be placed there. |
 
-Do not treat "moved into `MoSimQuadrotorModel`" as accepted dynamics evidence.
-For each migrated class, record whether it is an alias-only compatibility
-entry, a static organization move, a checked MWORKS model, or a simulated
-model with metrics.
+Do not treat presence under `MoSimQuadrotorModel` as accepted dynamics evidence.
+For each canonical class, record whether it is static organization only, a
+checked MWORKS model, or a simulated model with metrics. Historical evidence
+may retain its original legacy namespace and must not be rewritten.
 
 ---
 
@@ -885,12 +885,12 @@ Current audit:
   the plant input boundary.
 - Gyroscopic moment, body drag, and angular damping remain follow-up modules.
 
-New project-owned experimental models:
+Current canonical project-owned experimental models:
 
 ```text
-QuadrotorExperiments.Sunray150RflyStyleRotorDynamics
-QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke
-QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke
+MoSimQuadrotorModel.Dynamics.RotorActuatorCore
+MoSimQuadrotorModel.Dynamics.HoverSmoke
+MoSimQuadrotorModel.Dynamics.YawStepSmoke
 ```
 
 Implemented structure:
@@ -915,7 +915,7 @@ are acceptable for current model-structure checks and short hover/yaw smoke
 tests. They are not final Sunray150 truth, and reports must keep the
 `SDF_migration` label until PX4 ULog or bench evidence replaces it.
 
-Verification:
+Historical verification record (2026-06-05; legacy namespace preserved):
 
 ```text
 source=MWORKS_MCP
@@ -946,18 +946,20 @@ Migration rule:
 QuadrotorModel
   -> keep as official/upstream baseline and dependency.
 
-QuadrotorExperiments
-  -> keep as legacy experiment/compatibility source during migration.
-
 MoSimQuadrotorModel
-  -> formal project-owned package. Classify and rename useful experiments into
-     Baseline, Dynamics, Missions, Controllers, Robustness, Planning,
-     SceneTrace, System, Formation, Support, and LegacyCompatibility.
+  -> sole active project-owned implementation root for Baseline, Dynamics,
+     Missions, Controllers, Robustness, Planning, SceneTrace, System,
+     Formation, Support, ExperimentRunner and LiveIntegration.
+
+QuadrotorExperiments / QuadrotorControllerBlocks / MworksLive
+  -> hidden `extends` compatibility facades only; do not add implementation or
+     load them as independent packages.
 ```
 
-The first package skeleton uses alias/extends wrappers so existing evidence and
-scenario references are not broken. Physical file moves and class renames must
-be done in bounded batches. Each batch needs:
+The root migration is complete as a static namespace consolidation. Compatibility
+facades keep historical callers readable; each canonical class still needs its
+own MWORKS check or simulation evidence before any physics or performance claim.
+Each future change needs:
 
 1. mapping from old class name to new `MoSimQuadrotorModel.*` name;
 2. updated scenario/script/docs references where the new name becomes
