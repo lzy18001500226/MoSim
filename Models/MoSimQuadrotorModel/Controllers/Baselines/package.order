@@ -1,0 +1,12 @@
+AntiWindupFeedforwardCore
+Example1AWFFBaseline
+Example2AWFFBaseline
+Example2HelixTunedAWFFBaseline
+Example3AWFFBaseline
+Example1ImprovedPIDBaseline
+Example1EnhancedPIDBaseline
+Example2ImprovedPIDBaseline
+Example2EnhancedPIDBaseline
+Example2HelixTunedEnhancedPIDBaseline
+Example3ImprovedPIDBaseline
+Example3EnhancedPIDBaseline

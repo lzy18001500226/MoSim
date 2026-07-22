@@ -3,7 +3,7 @@ model LinearMPCRotorAdapter
   extends MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialRotorCommandController;
   parameter Real hover_speed = 53.562090367172424;
   parameter Real command_scale = hover_speed / 13.985413115099604;
-  QuadrotorControllerBlocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock core;
+  MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock core;
 equation
   core.x_error = position_ref[1] - position_mea[1];
   core.y_error = position_ref[2] - position_mea[2];

@@ -1,7 +1,7 @@
 within MoSimQuadrotorModel.Controllers.IntegratedChains;
 
 model FixedAwffL1Indi
-  "Formal public alias; source implementation remains in QuadrotorExperiments"
-  extends QuadrotorExperiments.OfficialScenarios.Example1INDISysblockClosedLoop;
+  "Canonical scenario composition alias"
+  extends MoSimQuadrotorModel.Missions.Official.Example1INDISysblockClosedLoop;
   annotation(__MWORKS(hide=false));
 end FixedAwffL1Indi;
