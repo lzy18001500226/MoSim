@@ -1,8 +1,13 @@
-# Classic Controller Family Closeout
+# Classic Controller Family Closeout (Historical Snapshot)
 
-Status: closed with blockers, 2026-07-18 CST.
+Status: frozen historical evidence snapshot, 2026-07-18 CST.
+>
+> This file records the 2026-07-17/18 closeout only. It does not authorize a current model entry,
+> a G5 graphical layout result, a current MWORKS run, a report screenshot, a whole-aircraft claim,
+> or the retirement of a legacy model root. Current execution is owned by
+> `Docs/Workflows/controller_evidence_closeout.md` and its D2 harness map.
 
-## 1. Scope
+## 1. Historical Scope
 
 This workflow closes a bounded canonical controller set. It does not interpret
 "all controllers" as every named variant in the literature. A controller is
@@ -19,7 +24,7 @@ fopid
 h2_state_feedback
 ```
 
-Current executable state, 2026-07-17 CST:
+Historical executable state, 2026-07-17 CST:
 
 - all five source identity/lifecycle gates pass;
 - all five real graphical Sysblock MIL fixtures pass `CheckModel` and live
@@ -52,7 +57,7 @@ Current executable state, 2026-07-17 CST:
   diagnosis, but no failed final row is promoted to a selectable accepted
   controller.
 
-The current machine-readable authorities are:
+The historical machine-readable authorities are:
 
 ```text
 Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json
@@ -151,7 +156,7 @@ at its declared tier. In particular:
 - Neural-SMC has no frozen trained artifact and remains blocked.
 - DOB/ESO, L1-AWFF and DFBC variants retain their current bounded claim ceilings.
 
-## 5. Runtime Policy
+## 5. Historical Runtime Policy
 
 Gazebo runs are serial and use the current Ubuntu-20.04 ROS1 Sunray lane. Run
 only after the MWORKS/codegen/SIL gate for that exact controller passes. The
@@ -163,7 +168,7 @@ If the official/shared baseline fails before controller selection, preserve a
 shared-baseline blocker. Do not classify unexecuted controller rows as failed
 controller performance and do not relax the baseline threshold.
 
-## 6. Documentation Updates
+## 6. Historical Documentation Updates
 
 Update this workflow after every completed evidence tier. Update
 `Docs/Workflows/mainline_operations_board.md` only when the executable state or

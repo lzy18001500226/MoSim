@@ -33,6 +33,10 @@ INVENTORY_PATH = (
     / "CONTROL_SCHEME_EXECUTION_INVENTORY.json"
 )
 CURRENT_MAP_PATH = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
+HARNESS_MAP_PATH = ROOT / "Config" / "control_platform" / "formal_closed_loop_harness_map.json"
+HISTORICAL_CAPTURE_PATH = WORKFLOW_ROOT / "controller_document_evidence_capture_20260720.md"
+HISTORICAL_CLASSIC_CLOSEOUT_PATH = WORKFLOW_ROOT / "classic_controller_family_closeout.md"
+CONTROLLER_DESIGN_README_PATH = CONTROLLER_DESIGN_ROOT / "README.md"
 
 EXPECTED_ENTRY_TYPE_COUNTS = {
     "competition_primary_route": 43,
@@ -83,6 +87,7 @@ def load_inputs() -> dict[str, Any]:
         "scheme_catalog": read_json(SCHEME_CATALOG_PATH),
         "inventory": read_json(INVENTORY_PATH),
         "current_model_map": read_json(CURRENT_MAP_PATH),
+        "formal_harness_map": read_json(HARNESS_MAP_PATH),
         "active_docs": active_document_texts(),
     }
 
@@ -100,6 +105,7 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
     scheme_catalog = inputs.get("scheme_catalog")
     inventory = inputs.get("inventory")
     current_model_map = inputs.get("current_model_map")
+    formal_harness_map = inputs.get("formal_harness_map")
     active_docs = inputs.get("active_docs")
 
     for phrase in (
@@ -109,6 +115,12 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
         "46 条当前 MWORKS 路线",
         "2026-07-16 的旧",
         "历史 H1-H7",
+        "formal_closed_loop_harness_map.json",
+        "`internal_graphical_probe`",
+        "`resolved_canonical_whole_aircraft_harness`",
+        "Windows 原生整窗截图",
+        "冠军测试壳晋级",
+        "正式根内的核心、Adapter、整机 source harness",
     ):
         if phrase not in closeout:
             add("CCEC-DOC-01", f"closeout workflow is missing contract marker: {phrase}")
@@ -119,6 +131,9 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
         "not the 49-scheme current-model-entry registry",
         "G4 is non-destructive",
         "does not open MWORKS",
+        "formal_closed_loop_harness_map.json",
+        "internal_graphical_probe",
+        "champion-specific core/Adapter/plant binding",
     ):
         if phrase not in model_index:
             add("CCEC-DOC-02", f"model structure index is missing G4 contract marker: {phrase}")
@@ -143,6 +158,22 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
         historical_text = str(active_docs.get(portable(historical_interface), ""))
         if "历史 H1-H7" not in historical_text or "当前 G1-G7" not in historical_text:
             add("CCEC-DOC-09", "old interface-closeout numbering must remain explicitly historical H1-H7")
+        historical_capture = str(active_docs.get(portable(HISTORICAL_CAPTURE_PATH), ""))
+        if (
+            "历史快照" not in historical_capture
+            or "controller_evidence_closeout.md" not in historical_capture
+            or "formal_closed_loop_harness_map.json" not in historical_capture
+        ):
+            add("CCEC-DOC-10", "old screenshot-capture workflow must remain an explicit historical redirect")
+        historical_classic = str(active_docs.get(portable(HISTORICAL_CLASSIC_CLOSEOUT_PATH), ""))
+        if (
+            "Historical Snapshot" not in historical_classic
+            or "controller_evidence_closeout.md" not in historical_classic
+        ):
+            add("CCEC-DOC-11", "classic-controller closeout must remain an explicit historical snapshot")
+        controller_readme = str(active_docs.get(portable(CONTROLLER_DESIGN_README_PATH), ""))
+        if "当前 49 条方案与历史 67 条分层路线" not in controller_readme:
+            add("CCEC-DOC-12", "controller design README must distinguish current 49 schemes from historical 67 routes")
 
     if not isinstance(operation_catalog, dict):
         add("CCEC-CATALOG-01", "model operation catalog must be an object")
@@ -235,6 +266,75 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
                     add("CCEC-MAP-08", f"{scheme_id}: resolved current model must live below Models/")
                 if eligible is True and (mapping_state != "resolved_current_model" or not current_file.startswith("Models/")):
                     add("CCEC-MAP-09", f"{scheme_id}: unresolved or Results-backed model cannot enable MWORKS")
+    if not isinstance(formal_harness_map, dict):
+        add("CCEC-HARNESS-01", "formal closed-loop harness map must be a readable object")
+    else:
+        harness_rows = formal_harness_map.get("schemes")
+        if (
+            formal_harness_map.get("schema") != "mosim.formal_closed_loop_harness_map.v1"
+            or not isinstance(harness_rows, list)
+        ):
+            add("CCEC-HARNESS-02", "formal harness map schema or scheme list is invalid")
+        else:
+            harness_ids = {
+                str(row.get("scheme_id"))
+                for row in harness_rows
+                if isinstance(row, dict) and row.get("scheme_id")
+            }
+            if len(harness_ids) != 49 or harness_ids != catalog_ids:
+                add("CCEC-HARNESS-03", "formal harness map must cover the frozen 49 catalog scheme IDs")
+            harness_state_counts: dict[str, int] = {}
+            for row in harness_rows:
+                if not isinstance(row, dict):
+                    continue
+                state = str(row.get("formal_harness_state"))
+                harness_state_counts[state] = harness_state_counts.get(state, 0) + 1
+            if harness_state_counts != {
+                "missing_closed_loop_harness": 41,
+                "resolved_canonical_whole_aircraft_harness": 5,
+                "blocked_before_harness_mapping": 2,
+                "not_applicable_runtime_baseline": 1,
+            }:
+                add("CCEC-HARNESS-04", "formal harness map must retain 41 internal-only cores and 5 whole-aircraft harnesses")
+            graphical_rows = [
+                row
+                for row in harness_rows
+                if isinstance(row, dict)
+                and row.get("formal_harness_state") == "missing_closed_loop_harness"
+            ]
+            integrated_rows = [
+                row
+                for row in harness_rows
+                if isinstance(row, dict)
+                and row.get("formal_harness_state") == "resolved_canonical_whole_aircraft_harness"
+            ]
+            if len(graphical_rows) != 41 or len(integrated_rows) != 5:
+                add("CCEC-HARNESS-05", "formal harness map candidate split must remain 46 = 41 graphical cores + 5 fixed integrated chains")
+            for row in graphical_rows:
+                target = row.get("topology_review_target")
+                target_file = str(target.get("model_file") or "") if isinstance(target, dict) else ""
+                if (
+                    row.get("minimum_whole_aircraft_closure_eligible") is not False
+                    or not isinstance(row.get("internal_probe"), dict)
+                    or row.get("canonical_closed_loop_harness") is not None
+                    or not target_file.startswith("Models/MoSimQuadrotorModel/")
+                ):
+                    add("CCEC-HARNESS-06", f"{row.get('scheme_id')}: graphical core must remain an internal-only formal-root probe")
+            for row in integrated_rows:
+                harness = row.get("canonical_closed_loop_harness")
+                public_file = str(harness.get("public_entry_file") or "") if isinstance(harness, dict) else ""
+                source_file = str(harness.get("whole_aircraft_source_file") or "") if isinstance(harness, dict) else ""
+                if (
+                    row.get("minimum_whole_aircraft_closure_eligible") is not True
+                    or not isinstance(harness, dict)
+                    or not isinstance(row.get("formal_adapter"), dict)
+                    or not public_file.startswith("Models/MoSimQuadrotorModel/")
+                    or not source_file.startswith("Models/MoSimQuadrotorModel/")
+                ):
+                    add("CCEC-HARNESS-07", f"{row.get('scheme_id')}: integrated chain must retain its formal whole-aircraft harness")
+        promotion = formal_harness_map.get("champion_harness_promotion")
+        if not isinstance(promotion, dict) or promotion.get("state") != "required_before_g6":
+            add("CCEC-HARNESS-08", "champion formal-harness promotion gate must remain required before G6")
     return errors
 
 

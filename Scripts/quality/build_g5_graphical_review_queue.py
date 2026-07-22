@@ -28,7 +28,7 @@ from current_model_entry_map_lib import ROOT, model_declaration
 
 
 MAP_PATH = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
-CONTROLLER_BLOCKS_ROOT = ROOT / "Models" / "QuadrotorControllerBlocks"
+CANONICAL_SYSBLOCKS_ROOT = ROOT / "Models" / "MoSimQuadrotorModel" / "Controllers" / "Sysblocks"
 DEFAULT_OUTPUT = (
     ROOT
     / "Results"
@@ -121,9 +121,9 @@ def fixed_internal_target(source_wrapper_path: Path) -> dict[str, Any]:
     if not match:
         raise QueueError(f"Cannot locate controller3_2 inside fixed source wrapper: {source_wrapper_path}")
     controller_name = match.group(1)
-    controller_path = CONTROLLER_BLOCKS_ROOT / f"{controller_name}.mo"
+    controller_path = CANONICAL_SYSBLOCKS_ROOT / f"{controller_name}.mo"
     indicators = static_indicators(controller_path)
-    if indicators["model_class"] != controller_name:
+    if indicators["model_class"].rsplit(".", 1)[-1] != controller_name:
         raise QueueError(
             f"Fixed source wrapper {source_wrapper_path} references {controller_name}, but target declares {indicators['model_class']}"
         )
@@ -355,6 +355,8 @@ def validate_queue(queue: dict[str, Any]) -> list[str]:
             errors.append(f"{row.get('scheme_id')}: live review target is missing")
         elif not (ROOT / str(target["model_file"])).is_file():
             errors.append(f"{row.get('scheme_id')}: review target file is missing")
+        elif not str(target["model_file"]).startswith("Models/MoSimQuadrotorModel/"):
+            errors.append(f"{row.get('scheme_id')}: live review target must stay below the formal model root")
     for row in pending:
         if row.get("category") == "fixed_integrated" and "wrapper_static_indicators" not in row:
             errors.append(f"{row.get('scheme_id')}: fixed chain must declare wrapper risk")

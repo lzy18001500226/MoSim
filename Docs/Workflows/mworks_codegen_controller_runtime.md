@@ -318,8 +318,8 @@ tool. Do not use `ClearAll` or `ChangeDirectory`.
 import os
 import mworks.sysplorer as ModelingPy
 
-model_name = "AWFF_PID_Sysblock_Demo"
-model_path = r"C:\Users\HP\Desktop\MoSim\Models\QuadrotorControllerBlocks\AWFF_PID_Sysblock_Demo.mo"
+model_name = "MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_PID_Sysblock_Demo"
+model_path = r"C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Controllers\Sysblocks\AWFF_PID_Sysblock_Demo.mo"
 out_dir = r"C:\Users\HP\Desktop\MoSim\Results\codegen_probe\AWFF_PID_Sysblock_Demo_api"
 
 os.makedirs(out_dir, exist_ok=True)

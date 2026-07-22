@@ -28,6 +28,10 @@ Use this index only when a task explicitly needs historical recovery, old
 context disambiguation, or a pointer from memory/cache to the current source of
 truth.
 
+When a recovery row names `Models/QuadrotorExperiments/`, `Models/QuadrotorControllerBlocks/`,
+or `Models/MworksLive/`, treat it only as historical provenance. The sole current opening root is
+`Models/MoSimQuadrotorModel/`, governed by `Docs/Index/simulation_model_structure_index.md` and the current closeout workflow.
+
 Do not read raw Codex session JSONL files or old chat dumps as routine context.
 They contain many superseded parameters, failed attempts, and rejected routes.
 

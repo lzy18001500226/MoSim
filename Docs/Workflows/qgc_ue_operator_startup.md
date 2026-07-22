@@ -1,4 +1,14 @@
-# MoSim Flight Console 独立操作流程
+# MoSim Flight Console 二维任务规划流程
+
+> 当前入口：二维任务规划。根目录 `启动MoSim地面站.cmd` 只启动 Flight
+> Console，并默认打开原生 QGC Plan View 的 Factory L2 本地二维图；不启动
+> UE、不启动 Gazebo、PX4、MAVROS 或 RViz。
+>
+> 航点和地理围栏仅保存为任务草稿。Factory 图的地理锚点仍需运行时往返门禁，
+> 因此本阶段禁止把 QGC 的 Upload 视为 Gazebo 任务发布或飞行执行证据。
+> 单机 FUEL 与三机固定编队继续通过各自的 ROS1 自助脚本启动、审核和停止。
+>
+> 下文保留的是此前 UE/运行时编排的历史操作说明，不是当前默认入口。
 
 本文是比赛版 Flight Console/QGC 的操作者入口。目标是操作者只使用根目录脚本和 QGC 完成飞行，不需要临时补终端命令。
 
@@ -86,7 +96,7 @@ QGC 中显示为可用的任务不能只是界面占位。每个任务必须同�
 - 三机编队 Profile 显示目标中心、编队间距和逐机状态。
 - 实际轨迹、预期轨迹和任务阶段来自当前 `run_id`，不得复用上一任务的数据。
 - RViz 点云和栅格地图从“显示”页按需打开；UE 是展示层，Gazebo/PX4/MAVROS/RViz日志是飞行与规划成功的权威证据。
-- MWORKS 实时曲线当前由 Model Studio 启动。Flight Console 中该显示项保持禁用，直到它能真实拉起 `MworksLive.RTTelemetryScope50Hz`、确认当前 `run_id` 数据并打开原生曲线窗口；不能用 `prepared` 占位冒充窗口已打开。
+- MWORKS 实时曲线当前由 Model Studio 启动。Flight Console 中该显示项保持禁用，直到它能真实拉起 `MoSimQuadrotorModel.LiveIntegration.RTTelemetryScope50Hz`、确认当前 `run_id` 数据并打开原生曲线窗口；不能用 `prepared` 占位冒充窗口已打开。
 
 ## 5. 异常处理
 

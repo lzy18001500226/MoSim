@@ -20,7 +20,11 @@ dynamics, and realtime bridge resources now resolve under
 `Models/MoSimQuadrotorModel/`. The three legacy roots remain only to preserve
 existing callers while they are retired deliberately; no new source, scenario,
 or formal entry may be added there. Later legacy paths in historical evidence
-records remain provenance, not current opening instructions.
+records remain provenance, not current opening instructions. The retirement
+sequence is owned by the post-G7 R1 gate in
+`Docs/Workflows/controller_evidence_closeout.md`: do not archive these three
+facades before new-root experiment evidence, active-reference audit, and
+post-archive smoke validation all pass.
 This file answers two practical questions:
 
 1. Where are the simulation files?
@@ -118,9 +122,16 @@ G4 static mapping result: the checked map currently has 49 rows with
 `46 resolved_current_model`, `2 blocked_missing_current_model` (`mu_synthesis`
 and `neural_smc`), and one `not_applicable_runtime_baseline` (`px4ctrl`). It
 contains 41 imported controller cores and five existing fixed integrated
-whole-aircraft entries. All 49 rows remain `mworks_run_eligible=false`; G5 must
-still inspect internal topology and establish the first minimum closed-loop
-evidence or preserve its blocker.
+whole-aircraft entries. All 49 rows remain `mworks_run_eligible=false`. D2 generates
+`Config/control_platform/formal_closed_loop_harness_map.json`: 41 `GraphicalMIL` cores
+remain `missing_closed_loop_harness` and may only receive an `internal_graphical_probe`,
+while 5 fixed integrated chains are `resolved_canonical_whole_aircraft_harness` and may
+enter a named formal whole-aircraft minimum closure. A bare `GraphicalMIL` core does not
+gain an aircraft harness merely because its source file exists or opens. After G5 chooses a
+nominal-family champion, its formal-root whole-aircraft harness must be added and validated
+before seven-scenario A/B; a fixed integrated chain or historical result cannot substitute
+for that champion-specific core/Adapter/plant binding. The active sequence is defined by
+`Docs/Workflows/controller_evidence_closeout.md`.
 
 ## 3. Formal Package: `Models/MoSimQuadrotorModel/`
 
