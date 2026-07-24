@@ -1,5 +1,11 @@
 # Project Structure Refactor
 
+> Status: frozen by user, 2026-07-25. This document is a long-term design
+> reference only. Do not execute any phase in it until the current experiments
+> finish and the user explicitly reopens the refactor. The root-level `cmd/`
+> launcher organization is a scoped entrypoint cleanup, not execution of this
+> plan.
+
 This project is moving from a competition experiment repository toward a
 RflySim-like simulation product. Directory structure must therefore separate
 product runtime, MWORKS evidence, Unreal rendering, automation, references, and

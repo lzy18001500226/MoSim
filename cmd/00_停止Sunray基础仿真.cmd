@@ -2,8 +2,8 @@
 setlocal
 title Stop MoSim Sunray Basic Runtime
 
-set "MOSIM_ROOT=%~dp0"
-set "STOPPER=%MOSIM_ROOT%Scripts\sunray\stop_sunray_ros1_foundation.ps1"
+for %%I in ("%~dp0..") do set "MOSIM_ROOT=%%~fI"
+set "STOPPER=%MOSIM_ROOT%\Scripts\sunray\stop_sunray_ros1_foundation.ps1"
 
 echo.
 echo [MoSim] Stopping only the managed Sunray basic runtime.

@@ -2,8 +2,8 @@
 setlocal
 title Stop All MoSim Simulation
 
-set "MOSIM_ROOT=%~dp0"
-set "STOPPER=%MOSIM_ROOT%Scripts\ui\stop_all_simulation.ps1"
+for %%I in ("%~dp0..") do set "MOSIM_ROOT=%%~fI"
+set "STOPPER=%MOSIM_ROOT%\Scripts\ui\stop_all_simulation.ps1"
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%STOPPER%"
 set "EXIT_CODE=%ERRORLEVEL%"

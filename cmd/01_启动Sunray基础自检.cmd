@@ -2,8 +2,8 @@
 setlocal
 title MoSim Sunray Basic Check (No UE)
 
-set "MOSIM_ROOT=%~dp0"
-set "LAUNCHER=%MOSIM_ROOT%Scripts\sunray\start_sunray_ros1_foundation.ps1"
+for %%I in ("%~dp0..") do set "MOSIM_ROOT=%%~fI"
+set "LAUNCHER=%MOSIM_ROOT%\Scripts\sunray\start_sunray_ros1_foundation.ps1"
 
 echo.
 echo [MoSim] Starting Sunray ROS1 basic check without UE or flight control.

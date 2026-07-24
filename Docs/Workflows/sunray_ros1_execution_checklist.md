@@ -90,13 +90,13 @@ Scripts/sunray/start_mid360_fastlio_review.sh
 Use `Scripts/gazebo/` only when a current Sunray ROS1 workflow explicitly
 points there. Do not choose old ROS2/Gazebo scripts by name similarity.
 
-For a self-service no-flight infrastructure check, use the repository-root
+For a self-service no-flight infrastructure check, use the root-level `cmd/`
 Windows entrypoints instead of manually composing terminal commands:
 
 ```text
-01_启动Sunray基础自检.cmd
-02_启动Sunray基础可视化审核.cmd
-00_停止Sunray基础仿真.cmd
+cmd/01_启动Sunray基础自检.cmd
+cmd/02_启动Sunray基础可视化审核.cmd
+cmd/00_停止Sunray基础仿真.cmd
 ```
 
 The first entry proves only `Gazebo + PX4 + MAVROS + nonempty MID360` in a

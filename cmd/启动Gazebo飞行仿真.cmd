@@ -2,8 +2,8 @@
 setlocal
 title MoSim Flight Simulation Status
 
-set "MOSIM_ROOT=%~dp0"
-set "LAUNCHER=%MOSIM_ROOT%Scripts\ui\start_flight_simulation.ps1"
+for %%I in ("%~dp0..") do set "MOSIM_ROOT=%%~fI"
+set "LAUNCHER=%MOSIM_ROOT%\Scripts\ui\start_flight_simulation.ps1"
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%LAUNCHER%"
 set "EXIT_CODE=%ERRORLEVEL%"

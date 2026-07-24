@@ -32,7 +32,7 @@ def test_qgc_start_ack_opens_separate_runtime_status_terminal() -> None:
 
     assert "void MoSimOrchestratorBridge::launchRuntimeStatusTerminal()" in bridge
     assert "launchRuntimeStatusTerminal();" in bridge
-    assert 'QStringLiteral("启动Gazebo飞行仿真.cmd")' in bridge
+    assert 'QStringLiteral("cmd/启动Gazebo飞行仿真.cmd")' in bridge
     assert 'QStringLiteral("cmd.exe")' in bridge
     assert "QProcess::startDetached" in bridge
     assert "void launchRuntimeStatusTerminal();" in header
@@ -54,13 +54,14 @@ def test_ground_station_reconciles_duplicate_managed_unreal_processes() -> None:
 
 
 def test_operator_cmd_entrypoints_are_explicit() -> None:
-    flight_cmd = Path("\u542f\u52a8Gazebo\u98de\u884c\u4eff\u771f.cmd").read_text(encoding="utf-8")
-    ground_cmd = Path("\u542f\u52a8MoSim\u5730\u9762\u7ad9.cmd").read_text(encoding="utf-8")
-    stop_cmd = Path("\u505c\u6b62\u6240\u6709\u4eff\u771f.cmd").read_text(encoding="utf-8")
-    compatibility = Path("Start_MoSim_QGC.cmd").read_text(encoding="utf-8")
+    flight_cmd = Path("cmd/\u542f\u52a8Gazebo\u98de\u884c\u4eff\u771f.cmd").read_text(encoding="utf-8")
+    ground_cmd = Path("cmd/\u542f\u52a8MoSim\u5730\u9762\u7ad9.cmd").read_text(encoding="utf-8")
+    stop_cmd = Path("cmd/\u505c\u6b62\u6240\u6709\u4eff\u771f.cmd").read_text(encoding="utf-8")
+    compatibility = Path("cmd/Start_MoSim_QGC.cmd").read_text(encoding="utf-8")
 
     assert "start_flight_simulation.ps1" in flight_cmd
-    assert "run_qgc_with_ue.ps1" in ground_cmd
+    assert "run_flight_console.ps1" in ground_cmd
+    assert "run_qgc_with_ue.ps1" not in ground_cmd
     assert "Review the error above and the startup logs" in ground_cmd
     assert "stop_all_simulation.ps1" in stop_cmd
     assert "\u542f\u52a8MoSim\u5730\u9762\u7ad9.cmd" in compatibility

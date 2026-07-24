@@ -381,7 +381,7 @@ void MoSimOrchestratorBridge::startRun()
 void MoSimOrchestratorBridge::launchRuntimeStatusTerminal()
 {
 #ifdef Q_OS_WIN
-    const QString launcher = QDir(_projectRoot).filePath(QStringLiteral("启动Gazebo飞行仿真.cmd"));
+    const QString launcher = QDir(_projectRoot).filePath(QStringLiteral("cmd/启动Gazebo飞行仿真.cmd"));
     if (!QFileInfo::exists(launcher)) {
         _reasonCode = QStringLiteral("runtime_status_terminal_missing");
         _statusText = launcher;
