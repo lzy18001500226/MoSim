@@ -1,0 +1,423 @@
+{
+  "schema": "mosim.native_structure_screenshot_materialization.v1",
+  "scope": "Current G5 packet-bound native structure screenshots only; no simulation result is claimed.",
+  "source": "G5_REVIEW_PACKET.evidence.mworks_phase_screenshots[0]",
+  "target_root": "Docs/报告/图/控制器",
+  "count": 46,
+  "records": [
+    {
+      "scheme_id": "cascade_pid",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/cascade_pid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_PID_CASCADE_PID_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/01_PID族/cascade_pid/01_图形模型.png",
+      "sha256": "360ea4b06a8f419ddb877486ba36f3e79efdfb2b26a334437c09994dc269526a",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "fuzzy_pid",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_pid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_PID_FUZZY_PID_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/01_PID族/fuzzy_pid/01_图形模型.png",
+      "sha256": "58f3bfb03da279897bf7bf1aa141317bc1edee0605b4c348604e1b2bf8dadb56",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "gain_scheduled_pid",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/gain_scheduled_pid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/01_PID族/gain_scheduled_pid/01_图形模型.png",
+      "sha256": "f85e565cfb93b34e9f0050011a64bede2a3fcf9e098eaefe740eacf9b24453a5",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "neural_pid",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/neural_pid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_PID_NEURAL_PID_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/01_PID族/neural_pid/01_图形模型.png",
+      "sha256": "27e0829c0b9fc4c050b71b9dac15532b13beb5948b6b98660d9501ccc4f2f985",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "official_pid",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/official_pid/screenshots/native_current_20260724/82880_0x16BC0A30_AWFF_PID_Sysblock_Demo_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/01_PID族/official_pid/01_图形模型.png",
+      "sha256": "1d60472a946cf52f5720aff02fcc4b544d701d7f5c370976da9448371d32b83e",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "adaptive_backstepping",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_backstepping/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/adaptive_backstepping/01_图形模型.png",
+      "sha256": "bea7cef55a1b440edbd4fad28b1c0ce5fdf4e8a7a27636d319d0053e51da81c6",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "backstepping_baseline",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/backstepping_baseline/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/backstepping_baseline/01_图形模型.png",
+      "sha256": "71b448845272d850510135238fe0e453347060d1a97a3a5f5ad7735fc3a8357d",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "feedback_linearization",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/feedback_linearization/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/feedback_linearization/01_图形模型.png",
+      "sha256": "51e8e2f6d94d8e3d840add58fbe15d5ca1c9a624b054939c4bb6f77b2c608c4b",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "fopid",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fopid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/fopid/01_图形模型.png",
+      "sha256": "68bd0253eec8d385c5e206a37cf876e0f767e59c7b037ae67d9a6b2a7f4b73f2",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "h2_state_feedback",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/h2_state_feedback/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/h2_state_feedback/01_图形模型.png",
+      "sha256": "5a1ec7be44efa6001b8ae6f755d5c4da8355c88ab0c669cb3fee2d83b4a6ddfd",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "hinf_hover_wrench",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/hinf_hover_wrench/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/hinf_hover_wrench/01_图形模型.png",
+      "sha256": "abb060c93b7363900ede937716a97d839712255ab2911286728a5f34d28a670d",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "lqg",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqg/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_P2_LQG_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/lqg/01_图形模型.png",
+      "sha256": "b3fa17aa527c03e9753e686c1d510d4093ea32673397e455d4e908308994a04f",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "lqi_baseline",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqi_baseline/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/lqi_baseline/01_图形模型.png",
+      "sha256": "6f00d7209485fa00436abc055ee74320b6bc712205da32b43658103bd8972f4a",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "lqr_baseline",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqr_baseline/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/lqr_baseline/01_图形模型.png",
+      "sha256": "27e9b2f375bd359316023f803614aa6e03c3779f12d83f47d149d0fdd889cae2",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "mrac",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mrac/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/mrac/01_图形模型.png",
+      "sha256": "16956b205c256994d3e5b07f46d683176cd2681620c0f553a017770228c9d2bd",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "ndi",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ndi/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/ndi/01_图形模型.png",
+      "sha256": "d83d07618c1bc45ac955b67eb1f113dd00c13364e80e5a14b50062118477dc28",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "passivity_based_control",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/passivity_based_control/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/passivity_based_control/01_图形模型.png",
+      "sha256": "0c4ad2edfcf51d793c8ee5514eb202db6b0ea5ddf71fdaccc651502b559c04eb",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "pole_placement_luenberger",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/pole_placement_luenberger/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/02_线性与鲁棒/pole_placement_luenberger/01_图形模型.png",
+      "sha256": "8a6974b5f5745e0769c627913c7383dc95c6f5fb7c7dcb3fe1473f188a4b04d5",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "adaptive_smc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_smc/screenshots/41224_0x4A201E4_MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/03_滑模控制/adaptive_smc/01_图形模型.png",
+      "sha256": "919fb3d240d587273243a33c71be97d5e0e7cd21cb34ab984ff2f90fba39e9c7",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "fuzzy_smc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_smc/screenshots/41224_0x4A201E4_MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/03_滑模控制/fuzzy_smc/01_图形模型.png",
+      "sha256": "9d881fd838d2b037b95a809d52aa15db09821450641423927e3191bf6357a385",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "integral_smc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/integral_smc/screenshots/41224_0x4A201E4_MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/03_滑模控制/integral_smc/01_图形模型.png",
+      "sha256": "637eabc310b04d1675d9d05ee6d425bb1d25a39e1fdfbaaaf8380019a9c368e9",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "nonsingular_terminal_smc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nonsingular_terminal_smc/screenshots/41224_0x4A201E4_MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/03_滑模控制/nonsingular_terminal_smc/01_图形模型.png",
+      "sha256": "2e35a39e022f5926fc3348d346411a6f6f061a3a8de195a5eeaaf1f414fc449f",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "smc_boundary_layer",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/smc_boundary_layer/screenshots/41224_0x4A201E4_MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/03_滑模控制/smc_boundary_layer/01_图形模型.png",
+      "sha256": "f3fe7bf8f65af55d68504fc5816d9538a31350918d3a413872943825e261ee33",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "super_twisting_smc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/super_twisting_smc/screenshots/41224_0x4A201E4_MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/03_滑模控制/super_twisting_smc/01_图形模型.png",
+      "sha256": "05ce04e6f8c36728f4f82a33183b1337239ec515242e6b799d3bbb1398512371",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "terminal_smc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/terminal_smc/screenshots/41224_0x4A201E4_MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/03_滑模控制/terminal_smc/01_图形模型.png",
+      "sha256": "5a7a690ae988e486febaac2435fbde5931a2903aa258e02511538ffaad0e392c",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "adaptive_mpc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_mpc/screenshots/41224_0x4A201E4_MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/04_MPC族/adaptive_mpc/01_图形模型.png",
+      "sha256": "7ddbfcec052995705a2a65030fc474e27be73a3cf913aab1751e4560fa12d5dd",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "explicit_gain_scheduled_mpc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/explicit_gain_scheduled_mpc/screenshots/41224_0x4A201E4_MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/04_MPC族/explicit_gain_scheduled_mpc/01_图形模型.png",
+      "sha256": "0094be8570da82f9d278803adcaaa5ca3f79b0c6272912f1f359b2324864d4d6",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "ilqr",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ilqr/screenshots/41224_0x4A201E4_MoSim_P4_ILQR_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/04_MPC族/ilqr/01_图形模型.png",
+      "sha256": "80983b1060b88b34b6f5b036c6131255a57655aeec83e39caef9220b640d55b3",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "linear_mpc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/linear_mpc/screenshots/41224_0x4A201E4_MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/04_MPC族/linear_mpc/01_图形模型.png",
+      "sha256": "22fcfa7d54fd43107bbcdec7b74e0bca0140799c481fce696660e473026e6425",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "mppi",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mppi/screenshots/41224_0x4A201E4_MoSim_P4_MPPI_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/04_MPC族/mppi/01_图形模型.png",
+      "sha256": "fb97100688c0875b106fddef469282140e11444e693379e9f964edc1df011c72",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "nmpc_outer",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nmpc_outer/screenshots/41224_0x4A201E4_MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/04_MPC族/nmpc_outer/01_图形模型.png",
+      "sha256": "29f302a2cc82ba55a77981d942279a3f573056d4e2998f0ca68550697d959d87",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "robust_mpc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/robust_mpc/screenshots/41224_0x4A201E4_MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/04_MPC族/robust_mpc/01_图形模型.png",
+      "sha256": "09d17da2f2ce456cf7d139e85361e52cb1b0dee8ee5eb4effc4d6df33f1f9acf",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "tube_mpc",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/tube_mpc/screenshots/41224_0x4A201E4_MoSim_P4_TUBE_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/04_MPC族/tube_mpc/01_图形模型.png",
+      "sha256": "a2e67cb30acdd46fe25b88fe7fe9897214eb9b5bddc595abcc9b4981648120de",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "dfbc_basic",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_basic/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G9_DFBC_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/05_几何与平坦/dfbc_basic/01_图形模型.png",
+      "sha256": "e43efa8a948832c3c581176e3470cb13446138537a53ec79f9740fae2e85c37f",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "dfbc_high_order_attitude",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_attitude/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_attitude/01_图形模型.png",
+      "sha256": "0206f29fb323227338385db455bedab2e1fda380ef64c4605256f54cd1f6af56",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "dfbc_high_order_bodyrate",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_bodyrate/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_bodyrate/01_图形模型.png",
+      "sha256": "144d9f173fb57b5658ff4d5e2b47591ec0382b737b367932542da33f345c04b8",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_attitude",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_attitude/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_attitude/01_图形模型.png",
+      "sha256": "3f8a92603ac2f2a26cbd9a3dabc7160e56349ff2c94a3dda913fb024bfee9838",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_bodyrate",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_bodyrate/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_bodyrate/01_图形模型.png",
+      "sha256": "ff19173afb63d0cfdfe7dc639c033f64414860bd65628ffc7c5c41c03aaec592",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "se3_basic",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/se3_basic/screenshots/41224_0x4A201E4_MoSim_G9_SE3_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/05_几何与平坦/se3_basic/01_图形模型.png",
+      "sha256": "079b8ce969bd609ec09b4a85e4fb9980c61ee98b89297dbddf95260d05541be2",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "rl_gain_scheduler",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/rl_gain_scheduler/screenshots/41224_0x4A201E4_MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/06_学习控制/rl_gain_scheduler/01_图形模型.png",
+      "sha256": "3943ad822af40e152343b8de414b3b072a7676bf9a8eb2936f3b331251798900",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "trained_neural_residual",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/trained_neural_residual/screenshots/41224_0x4A201E4_MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/06_学习控制/trained_neural_residual/01_图形模型.png",
+      "sha256": "4bf4fbd0ba806c8a12f9195bea15c507bbc3d57b8bf4b2f50d8ba34503d8fbba",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "fixed_awff_l1_indi",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_indi/screenshots/native_current_20260724/41224_0x4A201E4_AWFF_INDIControllerGraphical_Sysblock_MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_InnovationGraphicalControllers_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_indi/01_图形模型.png",
+      "sha256": "f725928139da672ac59b42e077f585bf3b8fa3d1e40edcf3d781a1cc1645095d",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "fixed_awff_l1_residual",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_residual/screenshots/native_current_20260724/41224_0x4A201E4_AWFF_L1ResidualControllerGraphical_Sysblock_MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_InnovationGraphicalControllers_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_residual/01_图形模型.png",
+      "sha256": "8c46e96172939b78aefb886259176191215364a15b2b8d2b6c848af31000c19d",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "fixed_awff_pid",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_pid/screenshots/native_current_20260724/41224_0x4A201E4_AWFF_FullControllerFlatGraphical_Sysblock_MoSimQuadrotorModel.Controllers.Sysblocks_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_pid/01_图形模型.png",
+      "sha256": "bcf5304ba027e5071565aaad5db576fafe818e3c89ac4907b8c4ba65968ec4af",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_linear_mpc_l1_indi/screenshots/native_current_20260724/41224_0x4A201E4_AWFF_LinearMPCControllerGraphical_Sysblock_MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_InnovationGraphicalControllers_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/07_固定集成链/fixed_linear_mpc_l1_indi/01_图形模型.png",
+      "sha256": "8d70a7c96dc473b0ef2c61ab5df27803f13dfd8e9f4577844e629b16f2d7f30f",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    },
+    {
+      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "source": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_qp_nmpc_l1_indi_cbf/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
+      "target": "Docs/报告/图/控制器/07_固定集成链/fixed_qp_nmpc_l1_indi_cbf/01_图形模型.png",
+      "sha256": "93eb6c8dff1b90a25841fc5f3fdae2df03fe0a25b11efbf55538fab7e1dc8020",
+      "width": 2578,
+      "height": 1398,
+      "copied": false
+    }
+  ]
+}

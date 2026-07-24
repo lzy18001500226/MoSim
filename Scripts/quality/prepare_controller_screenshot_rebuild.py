@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Archive legacy controller exports and build the 46-route screenshot ledger."""
+"""Archive legacy exports and materialize current G5 native screenshots."""
 
 from __future__ import annotations
 
@@ -17,9 +17,11 @@ MAP_PATH = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
 ACTIVE_ROOT = ROOT / "Docs" / "报告" / "图" / "控制器"
 ARCHIVE_ROOT = ROOT / "Docs" / "报告" / "图" / "归档" / "控制器旧导出资产_20260722"
 ARCHIVE_MANIFEST = ARCHIVE_ROOT / "LEGACY_CONTROLLER_EXPORT_ARCHIVE_MANIFEST.json"
-OUTPUT_ROOT = ROOT / "Results" / "control_platform" / "controller_screenshot_rebuild_20260722"
+OUTPUT_ROOT = ROOT / "Docs" / "报告" / "审计" / "控制器原生截图归位"
 OUTPUT_JSON = OUTPUT_ROOT / "CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json"
 OUTPUT_MD = OUTPUT_ROOT / "CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.md"
+G5_REVIEW_ROOT = ROOT / "Results" / "control_platform" / "g5_graphical_structure_review_20260722" / "reviews"
+MATERIALIZATION_JSON = OUTPUT_ROOT / "NATIVE_STRUCTURE_SCREENSHOT_MATERIALIZATION.json"
 SLOT_GITKEEP_NAME = ".gitkeep"
 SLOT_GITKEEP_CONTENT = "# Keeps this controller screenshot slot in version control until native evidence is captured.\n"
 
@@ -67,6 +69,60 @@ def digest(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             result.update(chunk)
     return result.hexdigest()
+
+
+def png_dimensions(path: Path) -> tuple[int, int]:
+    with path.open("rb") as stream:
+        header = stream.read(24)
+    if header[:8] != b"\x89PNG\r\n\x1a\n" or header[12:16] != b"IHDR":
+        raise RebuildError(f"invalid PNG: {rp(path)}")
+    width, height = struct.unpack(">II", header[16:24])
+    if width <= 0 or height <= 0:
+        raise RebuildError(f"PNG has invalid dimensions: {rp(path)}")
+    return width, height
+
+
+def g5_structure_source(scheme_id: str) -> tuple[Path, dict[str, Any]]:
+    packet_path = G5_REVIEW_ROOT / scheme_id / "G5_REVIEW_PACKET.json"
+    if not packet_path.is_file():
+        raise RebuildError(f"{scheme_id}: missing current G5 packet: {rp(packet_path)}")
+    packet = read(packet_path)
+    screenshots = packet.get("evidence", {}).get("mworks_phase_screenshots")
+    if not isinstance(screenshots, list) or len(screenshots) != 1 or not isinstance(screenshots[0], str):
+        raise RebuildError(f"{scheme_id}: current G5 packet must bind exactly one native structure screenshot")
+    source = ROOT / screenshots[0]
+    rp(source)
+    if not source.is_file():
+        raise RebuildError(f"{scheme_id}: native structure screenshot is missing: {screenshots[0]}")
+    width, height = png_dimensions(source)
+    source_sha256 = digest(source)
+    capture_manifest = packet.get("evidence", {}).get("screenshot_manifest")
+    capture_manifest_path = ROOT / str(capture_manifest) if isinstance(capture_manifest, str) else None
+    if capture_manifest_path is None:
+        raise RebuildError(f"{scheme_id}: current G5 packet has no screenshot manifest")
+    rp(capture_manifest_path)
+    if not capture_manifest_path.is_file():
+        raise RebuildError(f"{scheme_id}: current G5 screenshot manifest is missing: {capture_manifest}")
+    capture = read(capture_manifest_path)
+    captures = capture.get("captures")
+    if not isinstance(captures, list) or len(captures) != 1 or not isinstance(captures[0], dict):
+        raise RebuildError(f"{scheme_id}: current G5 screenshot manifest must bind exactly one capture")
+    manifest_capture = captures[0]
+    manifest_path = manifest_capture.get("path")
+    manifest_sha256 = manifest_capture.get("sha256")
+    if not isinstance(manifest_path, str) or (ROOT / manifest_path).resolve() != source.resolve():
+        raise RebuildError(f"{scheme_id}: packet and screenshot-manifest paths disagree")
+    if not isinstance(manifest_sha256, str) or manifest_sha256.lower() != source_sha256.lower():
+        raise RebuildError(f"{scheme_id}: packet capture hash does not match source screenshot")
+    return source, {
+        "g5_review_packet": rp(packet_path),
+        "source_screenshot": rp(source),
+        "source_sha256": source_sha256,
+        "source_width": width,
+        "source_height": height,
+        "capture_manifest": rp(capture_manifest_path) if capture_manifest_path else None,
+        "capture_manifest_sha256": manifest_sha256,
+    }
 
 
 def current_rows() -> list[dict[str, Any]]:
@@ -155,8 +211,8 @@ def write_readmes() -> None:
     ACTIVE_ROOT.mkdir(parents=True, exist_ok=True)
     (ACTIVE_ROOT / "README.md").write_text(
         "# 当前控制器原生窗口截图\n\n"
-        "本目录仅接收 46 条当前 MWORKS 图审对象的 Windows MCP 原生整窗/桌面截图。截图必须保持窗口原生宽高比，不得使用 MWORKS 导出画布、报告副本、历史结果图或裁切变形图。具体槽位、冻结模型入口和入库规则见 Results/control_platform/controller_screenshot_rebuild_20260722/CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.md。\n\n"
-        "旧导出图片和旧阻塞说明已归档到同级归档目录，不能复制回本目录；已有 G5 packet 仅作历史结构审查追溯，不能替代当前报告截图。\n",
+        "本目录保存 46 条当前 MWORKS 图审对象的 G5 packet 绑定原生整窗截图。每条路线的 01_图形模型.png 必须保持原生窗口宽高比，不得使用 MWORKS 导出画布、报告副本、历史结果图或裁切变形图。具体来源、冻结模型入口和哈希见 Docs/报告/审计/控制器原生截图归位/CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json。\n\n"
+        "02_最小闭环结果原生窗口.png 只允许在 G6 正式仿真后写入；当前结构截图不代表仿真、代码生成或运行时通过。旧导出图片和旧阻塞说明已归档到同级归档目录，不能复制回本目录。\n",
         encoding="utf-8",
         newline="\n",
     )
@@ -219,12 +275,13 @@ def screenshot_slot(row: dict[str, Any]) -> dict[str, Any]:
     if family is None:
         raise RebuildError(f"{scheme_id}: unsupported category {category}")
     if role == "graphical_controller_core":
-        name, kind = "01_内部控制律原生窗口.png", "internal_control_law"
+        name, kind = "01_图形模型.png", "internal_control_law"
     elif role == "fixed_integrated_whole_aircraft_closed_loop":
-        name, kind = "01_固定集成整机结构原生窗口.png", "fixed_integrated_whole_aircraft"
+        name, kind = "01_图形模型.png", "fixed_integrated_whole_aircraft"
     else:
         raise RebuildError(f"{scheme_id}: unsupported model role {role}")
     directory = ACTIVE_ROOT / family / scheme_id
+    _, source_metadata = g5_structure_source(scheme_id)
     return {
         "scheme_id": scheme_id,
         "display_name_zh": row.get("display_name_zh"),
@@ -242,9 +299,10 @@ def screenshot_slot(row: dict[str, Any]) -> dict[str, Any]:
         "required_assets": {
             "structure_native_window": rp(directory / name),
             "minimum_closed_loop_result_native_window": rp(directory / "02_最小闭环结果原生窗口.png"),
-            "capture_manifest": f"Results/control_platform/g5_graphical_structure_review_20260722/reviews/{scheme_id}/screenshot_manifest.json",
-            "g5_review_packet": f"Results/control_platform/g5_graphical_structure_review_20260722/reviews/{scheme_id}/G5_REVIEW_PACKET.json",
+            "capture_manifest": source_metadata["capture_manifest"],
+            "g5_review_packet": source_metadata["g5_review_packet"],
         },
+        "source_capture": source_metadata,
         "capture_rules": {
             "allowed_source": "windows_mcp_direct_whole_window_capture_only",
             "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -269,6 +327,60 @@ def sync_slot_directories(slots: list[dict[str, Any]]) -> None:
             encoding="utf-8",
             newline="\n",
         )
+
+
+def materialize_native_structure(slots: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Copy the packet-bound native window capture into the report asset tree."""
+    records: list[dict[str, Any]] = []
+    for slot in slots:
+        source = ROOT / str(slot["source_capture"]["source_screenshot"])
+        target = ROOT / str(slot["required_assets"]["structure_native_window"])
+        source_sha256 = str(slot["source_capture"]["source_sha256"])
+        existed = target.exists()
+        if existed:
+            if digest(target).lower() != source_sha256.lower():
+                raise RebuildError(
+                    f"{slot['scheme_id']}: refusing to overwrite a different report screenshot: {rp(target)}"
+                )
+        else:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+        target_width, target_height = png_dimensions(target)
+        target_sha256 = digest(target)
+        if target_sha256.lower() != source_sha256.lower():
+            raise RebuildError(f"{slot['scheme_id']}: materialized screenshot hash drifted")
+        if (target_width, target_height) != (
+            slot["source_capture"]["source_width"],
+            slot["source_capture"]["source_height"],
+        ):
+            raise RebuildError(f"{slot['scheme_id']}: materialized screenshot dimensions drifted")
+        records.append(
+            {
+                "scheme_id": slot["scheme_id"],
+                "source": slot["source_capture"]["source_screenshot"],
+                "target": rp(target),
+                "sha256": target_sha256,
+                "width": target_width,
+                "height": target_height,
+                "copied": not existed,
+            }
+        )
+    MATERIALIZATION_JSON.parent.mkdir(parents=True, exist_ok=True)
+    MATERIALIZATION_JSON.write_text(
+        dump(
+            {
+                "schema": "mosim.native_structure_screenshot_materialization.v1",
+                "scope": "Current G5 packet-bound native structure screenshots only; no simulation result is claimed.",
+                "source": "G5_REVIEW_PACKET.evidence.mworks_phase_screenshots[0]",
+                "target_root": rp(ACTIVE_ROOT),
+                "count": len(records),
+                "records": records,
+            }
+        ),
+        encoding="utf-8",
+        newline="\n",
+    )
+    return records
 
 
 def build_manifest() -> dict[str, Any]:
@@ -379,7 +491,9 @@ def render_markdown(manifest: dict[str, Any]) -> str:
     lines = [
         "# 控制器原生截图重建清单",
         "",
-        "状态：static_rebuild_ready。本清单只定义截图槽位和来源边界，不代表任何路线已通过图审或仿真。",
+        "状态：native_structure_materialized。本清单记录当前 G5 packet 绑定的原生结构截图归位情况；它不代表任何路线已通过最小闭环仿真、代码生成、运行时或报告性能验收。"
+        if summary["structure_capture_count"] == summary["current_screenshot_scope_count"]
+        else "状态：static_rebuild_ready。本清单只定义截图槽位和来源边界，不代表任何路线已通过图审或仿真。",
         "",
         "| 项目 | 数量 |",
         "|---|---:|",
@@ -399,13 +513,20 @@ def render_markdown(manifest: dict[str, Any]) -> str:
     lines.extend(f"| {directory} | {count} |" for directory, count in sorted(counts.items()))
     lines.extend(["", "## 不进入本批截图", ""])
     lines.extend(f"- {row['scheme_id']}：{row['reason_zh']}" for row in manifest["excluded_routes"])
-    lines.extend(["", "截图必须来自冻结模型入口的 Windows MCP 原生整窗/桌面采集，保持窗口原生宽高比，并与 G5 截图 manifest、图审 packet 和最小闭环结果绑定。", ""])
+    lines.extend(
+        [
+            "",
+            "每个 01_图形模型.png 必须来自冻结模型入口的 Windows MCP 原生整窗/桌面采集，保持窗口原生宽高比，并与 G5 截图 manifest、图审 packet 绑定。02_最小闭环结果原生窗口.png 只能在 G6 正式仿真后写入，不能用结构图、历史结果或空白窗口代替。",
+            "",
+        ]
+    )
     return "\n".join(lines)
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive-legacy", action="store_true")
+    parser.add_argument("--materialize-native-structure", action="store_true")
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args(argv)
     try:
@@ -413,6 +534,8 @@ def main(argv: list[str] | None = None) -> int:
         manifest = build_manifest()
         if not args.check:
             sync_slot_directories(manifest["slots"])
+            if args.materialize_native_structure:
+                materialize_native_structure(manifest["slots"])
             manifest = build_manifest()
         errors = validate_manifest(manifest)
         markdown = render_markdown(manifest)

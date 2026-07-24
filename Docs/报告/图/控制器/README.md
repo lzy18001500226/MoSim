@@ -1,5 +1,5 @@
 # 当前控制器原生窗口截图
 
-本目录仅接收 46 条当前 MWORKS 图审对象的原生窗口截图。具体槽位、冻结模型入口和入库规则见 Results/control_platform/controller_screenshot_rebuild_20260722/CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.md。
+本目录保存 46 条当前 MWORKS 图审对象的 G5 packet 绑定原生整窗截图。每条路线的 `01_图形模型.png` 必须保持窗口原生宽高比，不得使用 MWORKS 导出画布、报告副本、历史结果图或裁切变形图。具体来源、冻结模型入口和哈希见 `Docs/报告/审计/控制器原生截图归位/CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json`。
 
-旧导出图片和旧阻塞说明已归档到同级归档目录，不能复制回本目录。
+`02_最小闭环结果原生窗口.png` 只允许在 G6 正式仿真后写入；当前结构截图不代表仿真、代码生成或运行时通过。旧导出图片和旧阻塞说明已归档到同级归档目录，不能复制回本目录。
