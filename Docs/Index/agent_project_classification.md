@@ -4,12 +4,13 @@
 > The retired Agent skills tree formerly under Docs/Skills/Agent has been
 > merged into `References/Agent`; do not recreate a separate Agent skills tree.
 
-Current MoSim engineering work is single-thread and starts from `AGENTS.md`,
-`Docs/Workflows/new_conversation_context.md`, and
-`Docs/Workflows/mainline_operations_board.md`. Use this file only when a task
-explicitly asks for agent-development reference reuse, durable-agent research,
-legacy agent-runtime cleanup, or future UI/workflow inspiration. It must not be
-used to route current ROS1/Sunray/MWORKS engineering work.
+Current MoSim engineering work has one coordinating thread and starts from
+`AGENTS.md`, `Docs/Workflows/new_conversation_context.md`, and
+`Docs/Workflows/mainline_operations_board.md`. That thread can use official
+temporary subagents for independent bounded work. Use this file only when a
+task explicitly asks for agent-development reference reuse, durable-agent
+research, legacy agent-runtime cleanup, or future UI/workflow inspiration. It
+must not be used to route current ROS1/Sunray/MWORKS engineering work.
 
 ## Principle
 

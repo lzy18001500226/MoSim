@@ -14,12 +14,13 @@ patch: a project rule, workflow, skill, or index was improved
 no_patch: sources were checked and no project change was justified
 ```
 
-Current single-thread routing:
+Current coordinating-thread routing:
 
 ```text
-current thread
+coordinating thread
   role: inspect local reference indexes first, then run a scoped audit or
-    web/source lookup only when current work needs it
+    web/source lookup only when current work needs it; use a temporary
+    subagent only for an independent bounded source slice
 
 Docs/Cache/research/
   role: store one-off research notes, source summaries, and unresolved

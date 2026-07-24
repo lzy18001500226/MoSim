@@ -3,7 +3,7 @@
 > PMO-facing short board for current MoSim work. This is not a history ledger,
 > not a packet archive, and not a legacy dispatch surface.
 
-Status: single-thread execution mode is active, 2026-07-01 CST.
+Status: coordinating-thread execution mode is active, 2026-07-01 CST.
 
 ## 1. Startup Loop
 
@@ -222,7 +222,7 @@ failure may be promoted without a new versioned profile and independent run.
 
 | Item | Current Rule |
 |---|---|
-| Execution model | One active Codex thread executes MoSim work. |
+| Execution model | One active coordinating Codex thread executes and integrates MoSim work. Official temporary subagents are available for independent bounded slices and are not the legacy multi-thread system. |
 | Former multi-thread system | Legacy/reference only. No R1/R2/R3 routing, visible-thread dispatch, patrol-owner workflow, or dispatch SLO loop. |
 | Current operating rule | `Docs/Workflows/single_thread_operating_model.md` |
 | Legacy cleanup review | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` |

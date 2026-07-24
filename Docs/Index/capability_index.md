@@ -5,8 +5,8 @@
 > review route to consider for a task. It is an index, not a replacement for the owning
 > workflow, skill, schema, checker, or human approval gate.
 
-Status: current single-thread capability router with machine-readable
-companion, 2026-07-01 CST.
+Status: current coordinating-thread capability router with machine-readable
+companion, 2026-07-24 CST.
 
 Use this after `AGENTS.md`, `Docs/Workflows/new_conversation_context.md`, and
 the current PMO board when a task requires capability selection. Do not bulk
@@ -14,9 +14,10 @@ load every linked skill or workflow; load only the row that matches the task.
 
 ## 1. Operating Rule
 
-Capabilities are shared across task types. In current single-thread MoSim
+Capabilities are shared across task types. In current coordinating-thread MoSim
 work, choose local tools, skills, MCP surfaces, checkers, and evidence scripts
-first. Former visible-thread dispatch, patrol automation, R1/R2/R3 routing,
+first. Official temporary subagents are available for independent bounded
+slices; former visible-thread dispatch, patrol automation, R1/R2/R3 routing,
 and durable department surfaces are legacy/reference only unless the user asks
 for explicit cleanup or historical packet audit.
 
@@ -56,6 +57,7 @@ visible-thread route.
 | Desktop window UI action control | Application API/MCP/CLI, UI Automation, Win32 handle/control messages, foreground or coordinate fallback | Explicitly authorized background click/control invocation, foreground click then minimize, safe low-risk UI operation, dry-run action planning | Do not infer permission from capability; high-risk controls need explicit task authority; stop on ambiguous target, blank/loading UI, or project workflow ban | `Docs/Skills/Desktop/window-ui-action-control/SKILL.md`; MoSim script examples in `Docs/Index/api_index.md#12-desktop-window-screenshot-and-action-helpers` | pre-action target proof, post-action readback, action evidence/blocker |
 | Documentation secretary | `Docs/Index/*`, `Docs/Cache/*`, current documentation governance | Context consistency, dedup, candidate promotion, file organization, index repair | Does not define PMO runtime authority, accept engineering results, or silently rewrite policy | `Docs/Workflows/documentation_governance.md`, session memory workflow | reviewable patch, not hidden policy change |
 | Capability cards and resolution | `Config/capabilities/capability_index.json`, `Config/protocol/templates/capability_template.yaml`, `Config/protocol/templates/capability_resolution.json` | Tool health, route ownership, fallback, claim ceiling, and duplicate-asset prevention before creating skills/workflows/scripts/checkers/MCP adapters | Do not infer health from past success; do not overclaim above health level; do not treat capability resolution as permission | `Docs/Workflows/tooling_assets_governance.md`; legacy protocol templates remain design/audit material only | `Scripts/quality/check_capability_resolution.py`; `Scripts/quality/check_capability_index.py`; legacy packet strict checks only when packet work is explicitly reopened |
+| Official Codex temporary subagent | Native Codex temporary-subagent capability | Independent bounded research, review, inspection, disjoint implementation, or verification when parallel work materially helps | Do not treat as a durable department, visible-thread dispatch route, PMO authority, GUI/runtime/MCP owner, hidden acceptance owner, or parallel editor of shared paths; parent scopes, integrates, and owns final claims | `AGENTS.md`; `Docs/Workflows/single_thread_operating_model.md` | parent integration note; explicit ownership and coordination for stateful work |
 | Review / evidence gate | `Results/runs/<run_id>`, result packets, review packages, screenshots, logs, metrics | Acceptance, blocker classification, claim boundary | Chat summary alone is not acceptance evidence | `Docs/Workflows/agent_project_operating_layers.md`, `Config/profiles/README.md`, domain workflows | `Scripts/quality/check_run_evidence.py`, evidence manifests, legacy packet checker only for packet audit |
 
 ## 3. Legacy / Explicit-Reopen Only Capabilities
@@ -65,10 +67,9 @@ they are not current execution routes.
 
 | Capability Family | Concrete Surface | Use When | Forbidden Or Stop Actions | Owner Doc / Skill | Health Or Checker |
 |---|---|---|---|---|---|
-| Legacy Codex visible thread dispatch | `codex_app.send_message_to_thread`, `read_thread`, thread registry | Explicit legacy cleanup, historical packet review, or user-approved thread lifecycle audit only | Do not use for current single-thread engineering work; do not treat native send success as task success | `Config/protocol/communication_contract.md`, `Docs/Workflows/coagent_ops_patrol_workflow.md`, MoSim adapter `Docs/Workflows/mosim_visible_dispatch_adapter.md` | dispatch ticket under `Results/agent_packets/dispatch_tickets/`; `Scripts/quality/check_dispatch_ticket_slo.py` |
+| Legacy Codex visible thread dispatch | `codex_app.send_message_to_thread`, `read_thread`, thread registry | Explicit legacy cleanup, historical packet review, or user-approved thread lifecycle audit only | Do not use for current coordinating-thread engineering work; do not treat native send success as task success | `Config/protocol/communication_contract.md`, `Docs/Workflows/coagent_ops_patrol_workflow.md`, MoSim adapter `Docs/Workflows/mosim_visible_dispatch_adapter.md` | dispatch ticket under `Results/agent_packets/dispatch_tickets/`; `Scripts/quality/check_dispatch_ticket_slo.py` |
 | Legacy Codex App thread lifecycle | `list_threads`, title/archive/fork/handoff tools when exposed | Route discovery, title repair, archive/fork work only when explicitly approved | Do not create/fork/archive/rename visible threads without PMO/user approval; do not use as normal task execution | `AGENTS.md`, archived notes via `Docs/Workflows/agent_orchestration.md` redirect only | registry review in `Config/legacy/department_threads.json` |
-| Disposable subagent | `multi_agent_v1.spawn_agent` | Bounded parallel research, read-only audits, disjoint implementation slices, focused verification only if explicitly requested | Do not use as durable department, PMO authority, live GUI owner, hidden acceptance owner, or current default workflow | archived notes via `Docs/Workflows/agent_orchestration.md` redirect only | parent review; result must be integrated by the current owning thread before any claim |
-| Legacy automation / recurring patrol | Codex App automation, patrol heartbeat | Explicitly configured reminder, post-restart sweep, or legacy audit only | Do not use as the normal single-thread control loop; do not make automation rewrite PMO policy silently | `Docs/Workflows/coagent_ops_patrol_workflow.md` | patrol packet, board update, dispatch ticket SLO |
+| Legacy automation / recurring patrol | Codex App automation, patrol heartbeat | Explicitly configured reminder, post-restart sweep, or legacy audit only | Do not use as the normal coordinating-thread control loop; do not make automation rewrite PMO policy silently | `Docs/Workflows/coagent_ops_patrol_workflow.md` | patrol packet, board update, dispatch ticket SLO |
 
 ## 4. Stable Capability IDs
 
@@ -81,6 +82,7 @@ compatible unless the capability is explicitly superseded.
 |---|---|---|
 | `codex.visible_thread.dispatch` | Legacy Codex visible thread dispatch | Legacy/reference only: `Config/protocol/communication_contract.md`; `Config/protocol/templates/visible_thread_dispatch_packet.json`; `Config/protocol/templates/visible_thread_dispatch_ticket.json` |
 | `codex.thread_lifecycle` | Legacy Codex App thread lifecycle | `AGENTS.md`; `Config/legacy/department_threads.json`; archived notes via `Docs/Workflows/agent_orchestration.md` redirect only |
+| `codex.subagent` | Official Codex temporary subagent | `AGENTS.md`; `Docs/Workflows/single_thread_operating_model.md`; parent integration before final claims |
 | `automation.recurring_patrol` | Legacy automation / recurring patrol | `Docs/Workflows/coagent_ops_patrol_workflow.md`; Codex App `.codex/automations` user-profile storage |
 | `hooks.preflight` | Native hooks / preflight | `Scripts/hooks/README.md`; `Scripts/hooks/preflight.py`; `Scripts/hooks/codex_native_hook.py` |
 | `mworks.sysplorer_mcp` | MWORKS / Sysplorer MCP | `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md`; `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md` |

@@ -5,7 +5,7 @@ Date: 2026-05-26
 Status: historical/reference research. This file explains why Codex App/WSL/
 VSCode session stores and visible-thread mechanics should not be treated as
 durable project truth. It is not the current MoSim operating model after the
-2026-06-24 single-thread reset. For current execution, start from
+2026-06-24 coordinating-thread reset. For current execution, start from
 `Docs/Workflows/single_thread_operating_model.md`,
 `Docs/Workflows/mainline_operations_board.md`, and the task-specific workflow.
 
@@ -115,7 +115,7 @@ Historical Codex native capability observations after the 2026-06-06 hook audit:
 | MCP/app connectors | Use the native MCP/app surface for live tools and private/authorized data. Keep Sysplorer/Syslab/Unreal/ROS/Windows desktop boundaries in project workflows. |
 | Browser / Windows MCP | Use native Browser for web/local UI targets and Windows MCP plus Win32/UI Automation scripts for MoSim desktop GUI review. Computer Use is deprecated for MoSim desktop GUI monitoring and recovery; do not use it for MWORKS/Sysplorer/Syslab. |
 | Goals | Use for long-running task persistence when the current Codex surface supports it, but keep durable state in project files. |
-| Multi-agent/thread tools | Legacy/reference only for current MoSim. Do not assume App cross-thread send is synchronous RPC. |
+| Legacy visible-thread tools | Legacy/reference only for current MoSim. Official temporary subagents are a separate bounded delegation surface; do not assume App cross-thread send is synchronous RPC. |
 | Automations / thread wakeups | Legacy/reference only unless explicitly configured for a scoped reminder or audit. Automation output must become project evidence before it is trusted. |
 | Workspace dependencies | Use when document/sheet/slide/runtime dependencies are needed instead of guessing local bundled paths. |
 | Native notify | Useful local completion/blocker signal. For MoSim long tasks, sparse email is the default user-facing intervention channel; WeChat is diagnostic or explicitly requested only. |
@@ -126,17 +126,18 @@ expose Codex App native thread-management or automation tools in that
 conversation. In the historical multi-thread model, App-native visible threads
 were the intended surface for `create_thread`, `read_thread`,
 `send_message_to_thread`, `set_thread_title`, `set_thread_archived`, and
-`automation_update` work. In current single-thread MoSim work, these tools are
-not a normal execution route. If a migrated or WSL-origin conversation cannot
-see those tools after `tool_search`, it must not edit Codex private state or
-click through the UI as a substitute.
+`automation_update` work. In current coordinating-thread MoSim work, these
+tools are not a normal execution route. This does not prohibit official
+temporary subagents, which remain a separate bounded delegation surface. If a
+migrated or WSL-origin conversation cannot see those tools after `tool_search`,
+it must not edit Codex private state or click through the UI as a substitute.
 
 Historical adoption priority for MoSim:
 
 | Priority | Surface | Operating Rule |
 | --- | --- | --- |
-| P0 | Worktrees | Historical note for visible threads that wrote code/assets. Current single-thread work still uses path-limited Git hygiene, not multi-thread worktree routing by default. |
-| P0 | Visible threads | Legacy/reference only after the 2026-06-24 single-thread reset. |
+| P0 | Worktrees | Historical note for visible threads that wrote code/assets. Current coordinating-thread work still uses path-limited Git hygiene, not multi-thread worktree routing by default. |
+| P0 | Visible threads | Legacy/reference only after the 2026-06-24 coordinating-thread reset. |
 | P0 | Goals | Use for long-running PMO or department tasks, not for every small implementation step. |
 | P0 | Skills/plugins | Load on demand. They are context reducers, not hard constraints. |
 | P0 | MCP/apps | Use native live tool surfaces for Sysplorer/Syslab/Unreal/Blender/ROS2/Windows desktop work before inventing ad-hoc automation. |
@@ -207,7 +208,8 @@ command with backup and a single explicit direction.
 Historical note: the table immediately below records the 2026-05-26 seven-thread
 department experiment. It is not the current operating model. The later
 historical visible-thread registry is kept below for audit only; current MoSim
-execution is single-thread and uses project files as durable state.
+execution is coordinated by one parent thread and uses project files as durable
+state.
 
 Historical seven-thread layout:
 

@@ -1,11 +1,12 @@
-# Single-Thread Operating Model
+# Coordinating-Thread Operating Model
 
-> Current MoSim operating rule, 2026-07-01. This replaces the former
+> Current MoSim operating rule, 2026-07-24. This replaces the former
 > multi-visible-thread dispatch model for active project work.
 
 ## 1. Current Rule
 
-MoSim now runs as a single active Codex thread project. The active thread owns:
+MoSim now uses one active coordinating Codex thread. The coordinating thread
+owns:
 
 - reading the compact project entry;
 - selecting the next engineering step;
@@ -14,6 +15,20 @@ MoSim now runs as a single active Codex thread project. The active thread owns:
 - producing evidence, blocker notes, figures, scripts, and report materials;
 - asking the user before changing architecture or taking high-risk runtime
   actions.
+
+### Official Temporary Subagents
+
+Official temporary subagents are a current bounded delegation surface, not the
+retired visible-thread system. Use them for independent work with a clear return
+point when parallelism materially improves speed or confidence, such as focused
+research, review, inspection, or disjoint verification.
+
+The coordinating thread defines the scope, integrates every returned finding,
+and owns user communication and final claims. Do not use temporary subagents as
+durable departments, a project backlog, PMO authority, a hidden acceptance
+owner, or a visible-thread dispatch route. Parallel writes, Git mutations, GUI,
+MCP, or live runtime work require explicit ownership and coordination in the
+parent task.
 
 Former visible-thread dispatch concepts are legacy for current work:
 
@@ -56,7 +71,7 @@ substitute the old ROS2/PX4/x500 route, downloaded replacement FAST-LIO, fake
 point clouds, headless-only evidence, or UE screenshots for the current review
 target.
 
-## 4. How The Single Thread Works
+## 4. How The Coordinating Thread Works
 
 For each task:
 

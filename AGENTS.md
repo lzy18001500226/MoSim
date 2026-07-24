@@ -36,14 +36,19 @@ truth; MoSim cache paths are documented in
    means do not read or modify sibling personal directories, token files,
    browser profiles, SSH folders, other drives, `/home/linux`, or WSL/user
    home paths unless the approved infrastructure task names that path and why.
-2. MoSim currently runs as a single active Codex-thread project. Do not use
-   visible-thread dispatch, R1/R2/R3 department routing, legacy ops patrol bounded
-   dispatch, or dispatch-ticket SLOs as active project workflow.
-3. The active thread owns product priority, scope, integration, manual/GUI
+2. MoSim uses one active coordinating Codex thread. The coordinating thread can
+   use official temporary subagents for independent, bounded work when
+   parallelism materially helps. Do not revive visible-thread dispatch,
+   R1/R2/R3 department routing, legacy ops patrol bounded dispatch, or
+   dispatch-ticket SLOs as active project workflow.
+3. The coordinating thread owns product priority, scope, integration, manual/GUI
    action decisions, restart decisions, and blocker escalation to the user.
 4. Non-trivial work should record a local goal, inspect the smallest relevant
    context, run targeted checks, and keep evidence in normal project paths.
-   This is local planning only, not a multi-agent dispatch requirement.
+   This is local planning only, not a legacy multi-agent dispatch requirement.
+   Temporary official subagents need an independent bounded scope and a parent
+   integration point; parallel writes, Git mutations, GUI, MCP, or live runtime
+   work need explicit ownership and coordination in the parent task.
 5. Former AgentOS / visible-thread material is legacy reference only
    unless the current task explicitly asks for cleanup, audit, or historical
    review. Cleanup notes live in
@@ -58,7 +63,7 @@ truth; MoSim cache paths are documented in
    WeChat gateway/message-path threads are historical only and must not be
    scanned, no-oped, recovered, or used unless the user explicitly restores a
    scoped WeChat diagnosis route.
-7. Current single-thread P0 is the ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl
+7. Current coordinating-thread P0 is the ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl
    minimum big-system loop declared by
    `Docs/Workflows/mainline_operations_board.md` and
    `Docs/Design/架构.md`. RViz point-cloud/trajectory review is the current
@@ -100,18 +105,18 @@ truth; MoSim cache paths are documented in
 
 ## 2. Current Operating Mode
 
-Current MoSim work is single-thread execution. The active thread follows
-`Docs/Workflows/mainline_operations_board.md` and the relevant domain workflow.
-Legacy multi-thread routes, department ids, patrol automation, dispatch
-packets, R1/R2/R3 failover, and task ledgers are not current operating
-surfaces.
+Current MoSim work is coordinated by one active thread. That thread follows
+`Docs/Workflows/mainline_operations_board.md` and the relevant domain workflow,
+and can use official temporary subagents for independent bounded slices. Legacy
+multi-thread routes, department ids, patrol automation, dispatch packets,
+R1/R2/R3 failover, and task ledgers are not current operating surfaces.
 
 ## 3. Operating Documents
 
 | Need | Source Of Truth |
 |---|---|
 | Current PMO board and next action | `Docs/Workflows/mainline_operations_board.md` |
-| Current single-thread operating model | `Docs/Workflows/single_thread_operating_model.md` |
+| Current coordinating-thread operating model | `Docs/Workflows/single_thread_operating_model.md` |
 | Current ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl minimum big-system loop | `Docs/Design/架构.md`; `Docs/Workflows/mainline_operations_board.md`; `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; execution checklist at `Docs/Workflows/sunray_ros1_execution_checklist.md`; source index at `Docs/Index/sunray_migration_index.md` |
 | Legacy AgentOS / multi-thread cleanup review | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` |
 | Document placement, migration, and archive rules | `Docs/Workflows/documentation_governance.md` |
@@ -181,8 +186,8 @@ Important MWORKS rules:
   capture, validate size/content, and minimize after; do not maximize except
   for activation/login/license/authorization evidence.
 - Ordinary graphical/layout/result-window review uses DPI-aware screenshot
-  evidence plus written observations in the current single active thread unless
-  the user explicitly reopens multi-thread review.
+  evidence plus written observations in the coordinating thread. Temporary
+  subagents do not own GUI review unless the current task explicitly scopes it.
 - Do not close or restart reusable Sysplorer/Syslab/MWORKS windows unless the
   user/PMO explicitly authorizes it or a documented blocker requires it.
 
@@ -253,7 +258,7 @@ Rules:
 | Directory | Purpose |
 |---|---|
 | `Docs/Design/` | Algorithm, architecture, scope, and evidence design. |
-| `Docs/Workflows/` | Repeatable procedures, current single-thread operating rules, and domain workflows. |
+| `Docs/Workflows/` | Repeatable procedures, current coordinating-thread operating rules, and domain workflows. |
 | `Docs/Cache/` | Review caches, migration notes, archived workflow bodies, and non-startup historical material. |
 | `Docs/Skills/` | Project-local and reference skills. |
 | `Docs/Index/` | Documentation, API, memory, and workflow indexes. |

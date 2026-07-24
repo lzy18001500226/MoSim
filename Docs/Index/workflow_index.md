@@ -100,9 +100,10 @@ Doctor and self-check workflows are cheap preflight gates. They do not replace
 WAL review, evidence review, or Git/quality review for long-running delegated
 tasks.
 
-MoSim currently uses a single active Codex thread. Former AgentOS /
-visible-thread dispatch material is legacy reference and should not be loaded
-for ordinary startup. Legacy workflow bodies moved to
+MoSim currently uses one active coordinating Codex thread. It can use official
+temporary subagents for independent bounded slices, while former AgentOS /
+visible-thread dispatch material remains legacy reference and should not be
+loaded for ordinary startup. Legacy workflow bodies moved to
 `Docs/Cache/agent_legacy/legacy_workflows_20260624/`; `Docs/Workflows/` keeps short redirect
 stubs so old references fail closed instead of reviving old procedure text. Do
 not delete executable legacy runtime, hook, checker, protocol, skill, or
@@ -290,8 +291,8 @@ Bad example:
 
 ## 8. Legacy Parallel-Agent Workflow
 
-MoSim currently uses a single active Codex thread. This section is retained
-only as historical reference for legacy cleanup or audit.
+This section is retained only as historical reference for legacy cleanup or
+audit. It does not describe official temporary subagents.
 
 | Stream | Typical Task | Output |
 |---|---|---|

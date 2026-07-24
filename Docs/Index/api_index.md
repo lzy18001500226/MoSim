@@ -6,8 +6,9 @@ For deciding which native Codex surface, plugin, MCP, skill, script, review
 route, or checker to use for a task, start from
 `Docs/Index/capability_index.md`. Legacy visible-thread, subagent, and
 automation routes are indexed there only for explicit cleanup or audit, not
-ordinary single-thread execution. This file keeps concrete API/tool sequences
-and examples.
+ordinary coordinating-thread execution. Official temporary subagents are a
+current bounded delegation surface and are distinct from those legacy routes.
+This file keeps concrete API/tool sequences and examples.
 
 ---
 

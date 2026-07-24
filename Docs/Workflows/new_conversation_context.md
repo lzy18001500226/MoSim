@@ -4,7 +4,7 @@
 > `C:\Users\HP\Desktop\MoSim`. This file stays short. Load detailed workflows
 > only when the current task needs them.
 
-Status: single-thread operating entry, 2026-07-01 CST.
+Status: coordinating-thread operating entry, 2026-07-01 CST.
 
 ## 0. Startup Chain
 
@@ -24,8 +24,11 @@ explicit legacy cleanup, packet audit, or historical trace-back.
 
 ## 1. Current Operating Mode
 
-MoSim currently uses one active Codex thread for project work. Do not use the
-former multi-thread / visible-department model as active workflow:
+MoSim currently uses one active coordinating Codex thread for project work. It
+can use official temporary subagents for independent bounded slices when
+parallelism materially helps, while the coordinating thread retains scope,
+integration, and final-claim ownership. Do not use the former multi-thread /
+visible-department model as active workflow:
 
 - no R1/R2/R3 route selection;
 - no visible-thread dispatch queue;
@@ -33,7 +36,7 @@ former multi-thread / visible-department model as active workflow:
 - no dispatch ticket SLO as a live PMO control loop;
 - no routine thread patrol or dead-thread recovery policy inside project docs.
 
-The current single-thread rules are in:
+The current coordinating-thread rules are in:
 
 ```text
 Docs/Workflows/single_thread_operating_model.md
@@ -114,7 +117,7 @@ For each non-trivial task:
 | Need | Source |
 |---|---|
 | Current PMO board | `Docs/Workflows/mainline_operations_board.md` |
-| Single-thread operating rule | `Docs/Workflows/single_thread_operating_model.md` |
+| Coordinating-thread operating rule | `Docs/Workflows/single_thread_operating_model.md` |
 | Document placement and archive rule | `Docs/Workflows/documentation_governance.md` |
 | Legacy multi-thread cleanup review | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` |
 | Agent execution/tool/guard/evidence layers | `Docs/Workflows/agent_project_operating_layers.md` |

@@ -5,7 +5,7 @@
 > quality gates, figures, evidence bundles, report updates, and the later UE
 > replay/rendering route.
 
-Status: active workflow, 2026-06-12 CST.
+Status: active workflow, 2026-07-24 CST.
 
 ## 1. Scope
 
@@ -72,7 +72,7 @@ Minimum fields:
   "live_mworks_touched": false,
   "subagent_plan": {
     "decision": "available_but_not_useful",
-    "reason": "single-thread execution requested"
+    "reason": "no independent bounded slice currently benefits from a temporary subagent"
   }
 }
 ```
@@ -416,7 +416,7 @@ it must not send UDP or start Unreal.
 
 ## 12. Long-Run Execution Slices
 
-For a long single-thread run, use this order:
+For a long coordinating-thread run, use this order:
 
 ```text
 Slice 1: write/update workflow and indexes
@@ -433,19 +433,21 @@ Slice 9: report completion, blocker, or review-needed state
 Sub-agent planning decision:
 
 ```text
-default: no visible department dispatch while legacy agent architecture is under maintenance
-disposable subagents: optional only for read-only review or disjoint static checks
+default: no legacy visible-department dispatch while legacy agent architecture is under maintenance
+official temporary subagents: available for independent bounded research, review, disjoint implementation, or verification when the parent scopes work, paths, and integration
 parent responsibility: integrate every returned finding and preserve final authority
 ```
 
-Current 12h+ single-thread execution gate:
+Current 12h+ coordinating-thread execution gate:
 
 ```text
 goal:
   finish the single-UAV MWORKS model/control simulation evidence loop before UE
 
 subagent_plan:
-  visible_subthreads: disabled while legacy agent architecture is under maintenance
+  legacy_visible_thread_dispatch: disabled
+  official_temporary_subagents: available_for_independent_bounded_slices
+  shared_or_stateful_work: requires_parent_scope_and_coordination
   internal_roles:
     - model_iteration: inspect and patch the smallest model/controller surface
     - simulation_evidence: run check_model/SimulateModel-backed scenarios

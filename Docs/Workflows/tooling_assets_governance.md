@@ -4,7 +4,7 @@
 > reference indexes, and capability routing. The legacy long body was
 > archived at `Docs/Cache/agent_legacy/tooling_assets_governance_legacy_20260624.md`.
 
-Status: single-thread project workflow, 2026-06-24 CST.
+Status: coordinating-thread project workflow, 2026-07-24 CST.
 
 ## 1. Scope
 
@@ -74,7 +74,7 @@ When adding or changing a capability:
 2. Update the machine row in `Config/capabilities/capability_index.json`.
 3. If explicitly reopened legacy/design task packets use the capability,
    update `Config/protocol/` templates. Do not update legacy packet templates
-   for ordinary single-thread work.
+   for ordinary coordinating-thread work.
 4. Run:
 
 ```powershell

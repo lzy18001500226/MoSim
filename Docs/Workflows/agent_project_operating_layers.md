@@ -5,7 +5,7 @@
 > `Docs/Design/需求.md`, `Docs/Design/赛题.md`, `Docs/Design/架构.md`, and
 > `Docs/Design/架构/`.
 
-Status: current single-thread workflow, 2026-07-01 CST.
+Status: current coordinating-thread workflow, 2026-07-01 CST.
 
 ## 1. Scope
 
@@ -13,8 +13,10 @@ Use this file after the startup chain when the task asks how to execute,
 tool, guard, or preserve evidence for the current MoSim architecture.
 
 This file must not revive the old visible-thread / CoAgent / R1-R2-R3 dispatch
-model. Current MoSim work uses one active Codex thread. Legacy agent material
-may be read only for explicit cleanup, audit, or historical trace-back.
+model. Current MoSim work uses one active coordinating Codex thread, which can
+use official temporary subagents for independent bounded slices under parent
+scope and integration. Legacy agent material may be read only for explicit
+cleanup, audit, or historical trace-back.
 
 ## 2. Layer Map
 

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "single_thread_machine_readable_index",
-  "updated_at": "2026-06-25",
+  "status": "coordinating_thread_machine_readable_index",
+  "updated_at": "2026-07-24",
   "purpose": "Machine-readable companion to Docs/Index/capability_index.md. It routes agents to existing surfaces, skills, scripts, workflows, and checkers. It does not grant authority.",
   "authority_model": "router_not_authority",
   "consultation_order": [
@@ -19,7 +19,7 @@
       "family": "codex_threading",
       "use_when": [
         "explicit legacy cleanup, audit, or historical packet review is requested",
-        "current single-thread MoSim work must not select this as the execution route"
+        "current coordinating-thread MoSim work must not select this as the execution route"
       ],
       "owner_docs": [
         "Config/protocol/communication_contract.md",
@@ -33,7 +33,7 @@
       "stop_actions": [
         "do_not_treat_native_send_success_as_task_success",
         "do_not_remote_steer_new_work_while_critical_task_runs_without_authority",
-        "do_not_use_for_current_single_thread_engineering_work"
+        "do_not_use_for_current_coordinating_thread_engineering_work"
       ],
       "evidence_gates": [
         "dispatch_ticket",
@@ -53,7 +53,7 @@
       "family": "codex_threading",
       "use_when": [
         "explicit legacy cleanup, audit, or historical packet review is requested",
-        "current single-thread MoSim work must not select this as the execution route"
+        "current coordinating-thread MoSim work must not select this as the execution route"
       ],
       "owner_docs": [
         "AGENTS.md",
@@ -64,7 +64,7 @@
       ],
       "stop_actions": [
         "do_not_create_fork_archive_or_rename_visible_threads_without_pmo_or_user_approval",
-        "do_not_use_for_current_single_thread_engineering_work"
+        "do_not_use_for_current_coordinating_thread_engineering_work"
       ],
       "evidence_gates": [
         "thread_registry_entry",
@@ -77,12 +77,43 @@
       "status": "legacy_reference"
     },
     {
+      "id": "codex.subagent",
+      "display_name": "Official Codex temporary subagent",
+      "family": "codex_threading",
+      "use_when": [
+        "independent bounded research, review, inspection, disjoint implementation, or verification would materially benefit from parallel work",
+        "the coordinating thread can define separate ownership and an integration point"
+      ],
+      "owner_docs": [
+        "AGENTS.md",
+        "Docs/Workflows/single_thread_operating_model.md"
+      ],
+      "existing_assets": [
+        "Codex temporary subagent capability",
+        "Docs/Index/capability_index.md"
+      ],
+      "stop_actions": [
+        "do_not_treat_as_durable_department_or_visible_thread_dispatch",
+        "do_not_assign_user_decisions_or_final_acceptance",
+        "do_not_use_parallel_writes_git_mutations_gui_mcp_or_live_runtime_without_explicit_scope_and_coordination"
+      ],
+      "evidence_gates": [
+        "parent_scope_and_integration_note",
+        "parent_review_before_final_claim"
+      ],
+      "health_or_checker": [
+        "parent_review_and_integration",
+        "Scripts/quality/check_capability_index.py"
+      ],
+      "status": "available"
+    },
+    {
       "id": "automation.recurring_patrol",
       "display_name": "Automation and recurring patrol",
       "family": "automation",
       "use_when": [
         "explicit legacy cleanup, audit, or historical packet review is requested",
-        "current single-thread MoSim work must not select this as the execution route"
+        "current coordinating-thread MoSim work must not select this as the execution route"
       ],
       "owner_docs": [
         "Docs/Workflows/coagent_ops_patrol_workflow.md"
@@ -94,7 +125,7 @@
       "stop_actions": [
         "do_not_rely_on_target_thread_automation_to_interrupt_a_busy_or_wedged_target",
         "do_not_silently_rewrite_pmo_policy",
-        "do_not_use_for_current_single_thread_engineering_work"
+        "do_not_use_for_current_coordinating_thread_engineering_work"
       ],
       "evidence_gates": [
         "patrol_packet_or_board_update",
