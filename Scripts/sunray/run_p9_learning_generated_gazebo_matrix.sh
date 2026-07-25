@@ -41,8 +41,8 @@ for profile in ${PROFILES_TEXT}; do
     gate_rc=0
     injector_rc=0
     checker_rc=0
-    mass_kg="0.67"
-    [[ "${condition}" == "parameter_mismatch" ]] && mass_kg="0.80"
+    mass_kg="1.0"
+    [[ "${condition}" == "parameter_mismatch" ]] && mass_kg="1.20"
 
     RUN_ID="p9_${profile}_${condition}_20260717" \
     RESULT_DIR="${result_dir}" \

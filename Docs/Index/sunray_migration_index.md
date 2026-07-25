@@ -67,15 +67,15 @@ Sysplorer/MWORKS，而不是把 ROS/Gazebo 代码等同于 MWORKS 证据：
 
 | 项 | 路径 / 数值 |
 |---|---|
-| 主机体源 | `References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` |
-| 当前 MWORKS 建模质量 | `1.0 kg`，用于已完成单机控制器复测 |
-| 惯量 | `Ixx=0.0085, Iyy=0.0085, Izz=0.012` |
-| 旋翼位置 | `±0.065 m` |
+| 当前虚拟参数档案 | `Config/plant/sunray150_virtual_px4_classic_profile.json` |
+| 当前 MWORKS / px4ctrl 起飞质量 | `1.000 kg`，MWORKS 为 `0.980 + 4 * 0.005 kg` |
+| 当前惯量 | `Ixx=0.000000975, Iyy=0.000173104, Izz=0.000174004 kg m^2` |
+| 当前旋翼中心 | 见档案 `rotor.gazebo_centers_m`；四点为经 Blender 审核后的装配坐标 |
 | Mid360 安装位置 | 当前装配审计 pose 为 `{-0.000005, 0.032295, 0.050167, 0, 0, 4.712389}`；旧 Sunray SDF pose `{0.036, -0.0155, 0.075, 0, 0, 0}` 已废弃 |
-| 原始电机常数 | `8.54858e-06 N/(rad/s)^2` |
-| SDF 视觉减速 | `rotorVelocitySlowdownSim=10` |
-| MWORKS 折算升力系数 | `0.000854858` |
-| MWORKS 悬停轴转速 | `53.56 rad/s` |
+| 当前物理电机常数 | `5.84e-06 N/(rad/s)^2`；`8.54858e-06` 仅为旧 SDF 历史值，不能用于当前链 |
+| 当前 SDF 视觉减速 | `rotorVelocitySlowdownSim=10` |
+| 当前 MWORKS 视觉升力系数 | `0.000584 N/(rad/s)^2` |
+| 当前 MWORKS 悬停轴转速 | `64.79 rad/s` |
 
 注意：`150.dae` 为约 `139 MB`，超过 GitHub 单文件限制。当前仓库内迁移的是轻量 STL/参数和 MWORKS 可视化资源，不应提交原始 DAE 大文件。
 

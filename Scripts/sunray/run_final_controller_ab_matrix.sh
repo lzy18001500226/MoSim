@@ -67,8 +67,8 @@ for profile in ${PROFILES_TEXT}; do
     gate_rc=0
     injector_rc=0
     provenance_rc=0
-    mass_kg="0.67"
-    [[ "${scenario}" == "parameter_mismatch" ]] && mass_kg="0.80"
+    mass_kg="1.0"
+    [[ "${scenario}" == "parameter_mismatch" ]] && mass_kg="1.20"
 
     common_env=(
       RUN_ID="final_ab_${profile}_${scenario}_20260718"

@@ -268,9 +268,9 @@ Linear MPC-style 质量 +20%、横向阵风、1号旋翼效率85% 边界案例�
 
 ## 2. 当前机体模型迁移状态
 
-2026-05-13 起，项目主机体从官方示例轻量机架迁移为项目内本地源 `References/Sunray/simulation/sunray_simulator/models/drone_models/sunray150_with_mid360` 的 Gazebo/PX4 参数：机体质量 `1.0 kg`，惯量 `Ixx=0.0085, Iyy=0.0085, Izz=0.012`，旋翼位置为 `(±0.065, ±0.065, -0.025) m`。Sunray150 SDF 原始电机常数为 `motorConstant=8.54858e-06 N/(rad/s)^2`，对应 1.0 kg 四旋翼真实悬停电机转速约 `535.62 rad/s`（`5115 rpm`）。由于 SDF 同时设置 `rotorVelocitySlowdownSim=10`，MWORKS 旋翼力模型使用按可视化轴转速折算后的升力系数 `0.000854858`，对应 MWORKS 轴悬停转速 `53.56 rad/s`。`References/MWORKS/QuadrotorModel/Resources/Visualization/` 中新增 `sunray150_mid360_body.stl` 和 `sunray150_mid360_propeller.stl`；Mid360 传感器安装位置按 SDF `{0.036, -0.0155, 0.075}` 在 `QuadChassis` 中添加轻量可视化件。源模型中的 `150.dae` 为 139 MB，超过 GitHub 单文件限制，未迁入仓库。
+当前正式虚拟机体以 `Config/plant/sunray150_virtual_px4_classic_profile.json` 为唯一参数权威：起飞质量 `1.000 kg`，MWORKS 机身质量 `0.980 kg` 加四个 `0.005 kg` 旋翼，惯量为 `Ixx=0.000000975, Iyy=0.000173104, Izz=0.000174004 kg m^2`。经 Blender 审核的四旋翼中心、物理电机常数 `5.84e-06 N/(rad/s)^2`、`rotorVelocitySlowdownSim=10` 和 MWORKS 视觉升力系数 `0.000584 N/(rad/s)^2` 均由该档案统一；对应 MWORKS 悬停轴转速为 `64.79 rad/s`。该档案是用于当前 ROS1/PX4 Classic 链的虚拟种子，不应表述为实机辨识真值。
 
-迁移后，质量 +20% 场景的质量扰动改为 `1.0 kg -> 1.2 kg`；旋翼 85% 退化场景的升力增益改为 `0.000854858 -> 0.0007266293`。本报告后续历史表格是旧机体证据快照，不应继续作为新机体性能结论；正式控制器排名和视频素材需要基于 `sunray150_with_mid360` 重新运行 Sysplorer/MWORKS 仿真后刷新。
+质量 +20% 场景按 `1.0 kg -> 1.2 kg` 定义，旋翼 85% 效率退化按当前升力增益 `0.000584 -> 0.0004964` 定义。下方沿用 `0.000854858 -> 0.0007266293` 或旧惯量/装配参数的表格和日志均为历史证据快照，不作为当前机体性能结论；正式控制器排名和视频素材需要基于当前虚拟参数档案重新运行 Sysplorer/MWORKS 仿真后刷新。
 
 ## 3. 模型与场景
 
@@ -675,7 +675,7 @@ Config/scenarios/robustness/example1_wind_gust_awff_sysblock.yaml
 
 
 
-当前 `robust_rotor1_loss15_example1` 场景用于执行器退化鲁棒性验证：在 Example1 阶梯爬升任务中，将 1 号旋翼对应升力增益 `quadChassisTest17_1.gain2.k` 从当前 Sunray150 nominal `0.000854858` 改为 `0.0007266293`，等效为单旋翼升力效率下降到 `85%`。本节下方历史表格仍是旧轻量机架证据快照；新机体正式结论需要重跑后刷新。
+当前 `robust_rotor1_loss15_example1` 场景用于执行器退化鲁棒性验证：在 Example1 阶梯爬升任务中，将 1 号旋翼对应升力增益 `quadChassisTest17_1.gain2.k` 从当前 Sunray150 nominal `0.000584` 改为 `0.0004964`，等效为单旋翼升力效率下降到 `85%`。本节下方历史表格仍是旧轻量机架证据快照；新机体正式结论需要重跑后刷新。
 
 模型替换位置：
 

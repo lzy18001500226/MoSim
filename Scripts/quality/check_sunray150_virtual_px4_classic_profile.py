@@ -61,6 +61,47 @@ COMPATIBILITY_SDFS = {
     ),
 }
 
+RT1_PROFILE_CONSUMERS = {
+    ROOT / "Scripts" / "mworks_live" / "ros1_rt1_adapter.py": [
+        "load_rt1_controller_defaults",
+        "DEFAULT_MASS_KG, DEFAULT_GRAVITY_MPS2, DEFAULT_HOVER_PERCENTAGE",
+    ],
+    ROOT / "Scripts" / "mworks_live" / "run_rt1_synthetic_shadow.py": [
+        "HOVER_THRUST_N = RT1_MASS_KG * RT1_GRAVITY_MPS2",
+    ],
+    ROOT / "Scripts" / "mworks_live" / "run_rt1_synthetic_mworks_responder.py": [
+        "collective_thrust_n=HOVER_THRUST_N",
+    ],
+    ROOT / "Scripts" / "mworks_live" / "ros1_rt1_adapter_cpp.cpp": [
+        "kSunray150VirtualPx4ClassicMassKg = 1.0",
+        "kSunray150VirtualPx4ClassicGravityMps2 = 9.80665",
+        "kSunray150VirtualPx4ClassicHoverPercentage = 0.37",
+    ],
+}
+
+FREQ100_RUNNERS = tuple(sorted((ROOT / "Scripts" / "sunray").glob("run_freq100_*.sh")))
+AB_MATRIX_RUNNERS = {
+    ROOT / "Scripts" / "sunray" / "run_final_controller_ab_matrix.sh": [
+        'mass_kg="1.0"',
+        'mass_kg="1.20"',
+    ],
+    ROOT / "Scripts" / "sunray" / "run_p9_learning_generated_gazebo_matrix.sh": [
+        'mass_kg="1.0"',
+        'mass_kg="1.20"',
+    ],
+}
+
+
+def find_lift_gain_configs() -> list[Path]:
+    roots = (ROOT / "Config" / "controllers", ROOT / "Config" / "scenarios" / "robustness")
+    paths: list[Path] = []
+    for root in roots:
+        for path in root.rglob("*.yaml"):
+            text = path.read_text(encoding="utf-8")
+            if "nominal_lift_gain:" in text or "degraded_lift_gain:" in text:
+                paths.append(path)
+    return sorted(paths)
+
 FORMAL_PROFILE_FILES = {
     "rotor_core": ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "RotorActuatorCore.mo",
     "command_mapper": ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "ActuatorCommandMapper.mo",
@@ -210,6 +251,17 @@ def parse_sdf_link_masses(path: Path) -> dict[str, float]:
     return masses
 
 
+def parse_sdf_motor_plugins(path: Path) -> list[dict[str, str]]:
+    root = ET.parse(path).getroot()
+    motors: list[dict[str, str]] = []
+    for plugin in root.findall(".//plugin"):
+        if plugin.find("./maxRotVelocity") is None:
+            continue
+        motor = {child.tag: (child.text or "").strip() for child in plugin}
+        motors.append(motor)
+    return motors
+
+
 def validate_profile(profile: dict[str, Any], findings: list[dict[str, str]]) -> dict[str, Any]:
     if profile.get("schema") != "mosim.sunray150_virtual_px4_classic_profile.v1":
         append_finding(findings, "profile_schema", "unexpected profile schema", PROFILE_PATH)
@@ -317,6 +369,17 @@ def validate_profile(profile: dict[str, Any], findings: list[dict[str, str]]) ->
 
 def validate_sdf_models(profile: dict[str, Any], findings: list[dict[str, str]]) -> dict[str, Any]:
     total_mass = float(profile["mass_accounting"]["total_takeoff_mass_kg"])
+    motor = profile["motor_model"]
+    expected_motor_fields = {
+        "timeConstantUp": float(motor["time_constant_up_s"]),
+        "timeConstantDown": float(motor["time_constant_down_s"]),
+        "maxRotVelocity": float(motor["max_rotor_velocity_rad_s"]),
+        "motorConstant": float(motor["motor_constant_n_per_rad_s2"]),
+        "momentConstant": float(motor["moment_constant_ratio_m"]),
+        "rotorDragCoefficient": float(motor["rotor_drag_coefficient"]),
+        "rollingMomentCoefficient": float(motor["rolling_moment_coefficient"]),
+        "rotorVelocitySlowdownSim": float(motor["rotor_velocity_slowdown_sim"]),
+    }
     summaries: dict[str, Any] = {}
     for name, path in COMPATIBILITY_SDFS.items():
         if not path.exists():
@@ -324,6 +387,7 @@ def validate_sdf_models(profile: dict[str, Any], findings: list[dict[str, str]])
             continue
         try:
             masses = parse_sdf_link_masses(path)
+            motors = parse_sdf_motor_plugins(path)
         except (ET.ParseError, ValueError) as exc:
             append_finding(findings, "invalid_sdf", f"cannot parse SDF masses: {exc}", path)
             continue
@@ -333,7 +397,28 @@ def validate_sdf_models(profile: dict[str, Any], findings: list[dict[str, str]])
         summed_mass = sum(masses.values())
         if not close_enough(summed_mass, total_mass):
             append_finding(findings, "sdf_mass_closure", f"link masses sum to {summed_mass!r}, expected {total_mass!r}", path)
-        summaries[name] = {"path": relative(path), "link_masses_kg": masses, "sum_kg": summed_mass}
+        if len(motors) != 4:
+            append_finding(findings, "sdf_motor_count", f"found {len(motors)} motor plugins, expected 4", path)
+        for index, values in enumerate(motors):
+            for field, expected in expected_motor_fields.items():
+                raw = values.get(field)
+                try:
+                    actual = float(raw) if raw is not None else math.nan
+                except ValueError:
+                    actual = math.nan
+                if not close_enough(actual, expected):
+                    append_finding(
+                        findings,
+                        "sdf_motor_parameter",
+                        f"motor {index} {field}={raw!r}, expected {expected!r}",
+                        path,
+                    )
+        summaries[name] = {
+            "path": relative(path),
+            "link_masses_kg": masses,
+            "sum_kg": summed_mass,
+            "motor_plugins": motors,
+        }
     return summaries
 
 
@@ -400,6 +485,36 @@ def build_summary() -> dict[str, Any]:
         relative(path): require_text_anchors(findings, path, anchors, "controller or gate default")
         for path, anchors in CONTROLLER_ANCHORS.items()
     }
+    rt1_missing = {
+        relative(path): require_text_anchors(findings, path, anchors, "RT1 profile consumer")
+        for path, anchors in RT1_PROFILE_CONSUMERS.items()
+    }
+    runner_missing = {
+        relative(path): require_text_anchors(
+            findings,
+            path,
+            ["export SUNRAY_CTRL_QUAD_MASS=1.0"],
+            "frequency runner virtual mass default",
+        )
+        for path in FREQ100_RUNNERS
+    }
+    runner_missing.update(
+        {
+            relative(path): require_text_anchors(
+                findings, path, anchors, "A/B runner virtual mass defaults"
+            )
+            for path, anchors in AB_MATRIX_RUNNERS.items()
+        }
+    )
+    lift_config_missing = {
+        relative(path): require_text_anchors(
+            findings,
+            path,
+            ["nominal_lift_gain: 0.000584", "degraded_lift_gain: 0.0004964"],
+            "lift-gain virtual profile consumer",
+        )
+        for path in find_lift_gain_configs()
+    }
     sdf_summary = validate_sdf_models(profile, findings)
 
     return {
@@ -419,6 +534,9 @@ def build_summary() -> dict[str, Any]:
         "ros1_sync_missing_anchors": sync_missing,
         "graphical_fixture_missing_anchors": graphical_missing,
         "controller_gate_missing_anchors": controller_missing,
+        "rt1_profile_consumer_missing_anchors": rt1_missing,
+        "runner_profile_consumer_missing_anchors": runner_missing,
+        "lift_config_profile_consumer_missing_anchors": lift_config_missing,
         "compatibility_sdf": sdf_summary,
         "claim_boundary": [
             "This verifies static configuration consistency only.",

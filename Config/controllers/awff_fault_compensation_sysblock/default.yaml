@@ -57,8 +57,8 @@ model_interface:
 fault_compensation:
   affected_rotor: rotor_1
   target_component: quadChassisTest17_1.gain2.k
-  nominal_lift_gain: 0.000854858
-  degraded_lift_gain: 0.0007266293
+  nominal_lift_gain: 0.000584
+  degraded_lift_gain: 0.0004964
   rotor1_efficiency: 0.85
   min_rotor_efficiency: 0.50
   rotor1_allocation_blend: 0.52
