@@ -80,7 +80,7 @@ model MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL "H-infinity hover-wrench d
     annotation (Placement(transformation(origin = {-440, -195}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum state_error_z(inputs="+-")
     annotation (Placement(transformation(origin = {-440, -251}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.Sources.Constant hover_force_bias(k=9.8)
+  SysplorerEmbeddedCoder.Sources.Constant hover_force_bias(k=9.80665)
     annotation (Placement(transformation(origin = {-235, 160}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Gain hinf_force_gain_w(k=102.07465646871916)
     annotation (Placement(transformation(origin = {-250, -83}, extent = {{-14, -11}, {14, 11}})));

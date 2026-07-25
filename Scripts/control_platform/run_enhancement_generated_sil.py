@@ -29,7 +29,7 @@ INPUT_VALUES = {
     "reference_acceleration_x": 0.05, "reference_acceleration_y": -0.04,
     "reference_acceleration_z": 0.02, "reference_yaw": 0.3,
     "trajectory_phase_bin": 7.0, "repeat_complete": 0.0,
-    "mass_kg": 0.67, "gravity_mps2": 9.80665, "hover_percentage": 0.294,
+    "mass_kg": 1.0, "gravity_mps2": 9.80665, "hover_percentage": 0.37,
     "max_tilt_rad": 0.65, "min_collective_thrust_n": 0.0,
     "max_collective_thrust_n": 16.0, "enable": 1.0, "reset": 1.0,
 }

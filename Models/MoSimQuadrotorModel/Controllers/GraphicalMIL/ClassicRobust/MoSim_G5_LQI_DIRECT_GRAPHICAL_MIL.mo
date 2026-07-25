@@ -116,19 +116,19 @@ model MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL "LQI outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {-65, -165}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum desired_acceleration_pre_gravity_z(inputs="++")
     annotation (Placement(transformation(origin = {35, -165}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.Sources.Constant gravity_compensation(k=9.8)
+  SysplorerEmbeddedCoder.Sources.Constant gravity_compensation(k=9.80665)
     annotation (Placement(transformation(origin = {35, -95}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum desired_acceleration_z(inputs="++")
     annotation (Placement(transformation(origin = {125, -165}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.MathOperation.Gain roll_from_lateral_acceleration(k=-0.1020408163265306)
+  SysplorerEmbeddedCoder.MathOperation.Gain roll_from_lateral_acceleration(k=-0.10197162129779283)
     annotation (Placement(transformation(origin = {240, 55}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation roll_tilt_limit(lowLimit=-0.5235987755982988,upLimit=0.5235987755982988)
     "Attitude adapter roll limit from lateral acceleration" annotation (Placement(transformation(origin = {325, 55}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain pitch_from_lateral_acceleration(k=0.1020408163265306)
+  SysplorerEmbeddedCoder.MathOperation.Gain pitch_from_lateral_acceleration(k=0.10197162129779283)
     annotation (Placement(transformation(origin = {240, 120}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation pitch_tilt_limit(lowLimit=-0.5235987755982988,upLimit=0.5235987755982988)
     "Attitude adapter pitch limit from lateral acceleration" annotation (Placement(transformation(origin = {325, 120}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain normalized_thrust_pre_limit(k=0.03775510204081632)
+  SysplorerEmbeddedCoder.MathOperation.Gain normalized_thrust_pre_limit(k=0.03772949988018335)
     annotation (Placement(transformation(origin = {240, -55}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation normalized_thrust_limit(lowLimit=0.0,upLimit=1.0)
     "Normalized thrust saturation [0, 1]" annotation (Placement(transformation(origin = {325, -55}, extent = {{-14, -11}, {14, 11}})));

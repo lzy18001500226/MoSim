@@ -11,6 +11,10 @@ extern "C" {
 #define GENERATED_MODEL_HAS_G10_BDE_INPUTS 0
 #endif
 
+#ifndef GENERATED_MODEL_HAS_P10_DFBC_INPUTS
+#define GENERATED_MODEL_HAS_P10_DFBC_INPUTS 0
+#endif
+
 #ifndef GENERATED_MODEL_INPUT_GLOBAL
 #define GENERATED_MODEL_INPUT_GLOBAL GbIn
 #endif
@@ -45,6 +49,8 @@ constexpr int kNmpcOuter = 6;
 constexpr int kL1Awff = 7;
 constexpr int kSafetyFilter = 8;
 constexpr int kFaultAllocation = 9;
+constexpr int kDfbcHighOrder = 10;
+constexpr int kDfbcSmoothRobust = 11;
 
 struct Case
 {
@@ -153,6 +159,10 @@ std::vector<Case> build_cases()
         kSafetyFilter,
         kFaultAllocation,
 #endif
+#if GENERATED_MODEL_HAS_P10_DFBC_INPUTS
+        kDfbcHighOrder,
+        kDfbcSmoothRobust,
+#endif
     };
     const char *controller_names[] = {
         "official_pid",
@@ -165,6 +175,10 @@ std::vector<Case> build_cases()
         "l1_awff",
         "safety_filter",
         "fault_allocation",
+#endif
+#if GENERATED_MODEL_HAS_P10_DFBC_INPUTS
+        "dfbc_high_order",
+        "dfbc_smooth_robust",
 #endif
     };
 
@@ -262,6 +276,16 @@ std::vector<Case> build_cases()
         cases.push_back(Case("fault_allocation_degraded_hover", kFaultAllocation, in));
     }
 #endif
+#if GENERATED_MODEL_HAS_P10_DFBC_INPUTS
+    {
+        auto in = base_input();
+        in.reset = true;
+        in.enable_disturbance_observer = false;
+        in.reference_jerk = Vec3{0.4, -0.2, 0.1};
+        in.reference_snap = Vec3{-0.3, 0.5, -0.1};
+        cases.push_back(Case("dfbc_smooth_robust_no_dob", kDfbcSmoothRobust, in));
+    }
+#endif
     return cases;
 }
 
@@ -315,6 +339,24 @@ CoreParams build_params()
     params.nmpc_increment_limit[0] = 4.0;
     params.nmpc_increment_limit[1] = 3.5;
     params.nmpc_increment_limit[2] = 2.5;
+    params.high_order_body_rate_limit[0] = 2.0;
+    params.high_order_body_rate_limit[1] = 2.1;
+    params.high_order_body_rate_limit[2] = 1.0;
+    params.high_order_body_accel_limit[0] = 20.0;
+    params.high_order_body_accel_limit[1] = 21.0;
+    params.high_order_body_accel_limit[2] = 8.0;
+    params.smooth_feedback_gain[0] = 1.2;
+    params.smooth_feedback_gain[1] = 1.1;
+    params.smooth_feedback_gain[2] = 1.0;
+    params.smooth_feedback_bound[0] = 0.8;
+    params.smooth_feedback_bound[1] = 0.9;
+    params.smooth_feedback_bound[2] = 0.7;
+    params.disturbance_observer_gain[0] = 0.4;
+    params.disturbance_observer_gain[1] = 0.35;
+    params.disturbance_observer_gain[2] = 0.3;
+    params.disturbance_compensation_limit[0] = 0.5;
+    params.disturbance_compensation_limit[1] = 0.6;
+    params.disturbance_compensation_limit[2] = 0.4;
     params.l1_model_decay = 1.15;
     params.l1_filter_T = 0.18;
     params.l1_gain[0] = 0.31;
@@ -339,9 +381,9 @@ CoreParams build_params()
     params.integral_limit[0] = 0.5;
     params.integral_limit[1] = 0.5;
     params.integral_limit[2] = 0.3;
-    params.mass = 0.67;
-    params.gravity = 9.8;
-    params.hover_percentage = 0.294;
+    params.mass = 1.0;
+    params.gravity = 9.80665;
+    params.hover_percentage = 0.37;
     params.min_normalized_thrust = 0.0;
     params.max_normalized_thrust = 0.62;
     params.tilt_limit_rad = 0.35;
@@ -374,6 +416,10 @@ ControllerOutput run_cpp_core(
         return mosim_px4ctrl::calculate_safety_filter_core(params, state, input);
     case kFaultAllocation:
         return mosim_px4ctrl::calculate_fault_allocation_core(params, state, input);
+    case kDfbcHighOrder:
+        return mosim_px4ctrl::calculate_dfbc_high_order_core(params, state, input);
+    case kDfbcSmoothRobust:
+        return mosim_px4ctrl::calculate_dfbc_smooth_robust_core(params, state, input);
     default:
         return ControllerOutput{};
     }
@@ -473,6 +519,26 @@ void set_generated_input(const CoreParams &params, const ControllerInput &input,
     GENERATED_MODEL_INPUT_GLOBAL.nmpc_increment_limit_x_in = params.nmpc_increment_limit[0];
     GENERATED_MODEL_INPUT_GLOBAL.nmpc_increment_limit_y_in = params.nmpc_increment_limit[1];
     GENERATED_MODEL_INPUT_GLOBAL.nmpc_increment_limit_z_in = params.nmpc_increment_limit[2];
+#if GENERATED_MODEL_HAS_P10_DFBC_INPUTS
+    GENERATED_MODEL_INPUT_GLOBAL.high_order_body_rate_limit_x_in = params.high_order_body_rate_limit[0];
+    GENERATED_MODEL_INPUT_GLOBAL.high_order_body_rate_limit_y_in = params.high_order_body_rate_limit[1];
+    GENERATED_MODEL_INPUT_GLOBAL.high_order_body_rate_limit_z_in = params.high_order_body_rate_limit[2];
+    GENERATED_MODEL_INPUT_GLOBAL.high_order_body_accel_limit_x_in = params.high_order_body_accel_limit[0];
+    GENERATED_MODEL_INPUT_GLOBAL.high_order_body_accel_limit_y_in = params.high_order_body_accel_limit[1];
+    GENERATED_MODEL_INPUT_GLOBAL.high_order_body_accel_limit_z_in = params.high_order_body_accel_limit[2];
+    GENERATED_MODEL_INPUT_GLOBAL.smooth_feedback_gain_x_in = params.smooth_feedback_gain[0];
+    GENERATED_MODEL_INPUT_GLOBAL.smooth_feedback_gain_y_in = params.smooth_feedback_gain[1];
+    GENERATED_MODEL_INPUT_GLOBAL.smooth_feedback_gain_z_in = params.smooth_feedback_gain[2];
+    GENERATED_MODEL_INPUT_GLOBAL.smooth_feedback_bound_x_in = params.smooth_feedback_bound[0];
+    GENERATED_MODEL_INPUT_GLOBAL.smooth_feedback_bound_y_in = params.smooth_feedback_bound[1];
+    GENERATED_MODEL_INPUT_GLOBAL.smooth_feedback_bound_z_in = params.smooth_feedback_bound[2];
+    GENERATED_MODEL_INPUT_GLOBAL.disturbance_observer_gain_x_in = params.disturbance_observer_gain[0];
+    GENERATED_MODEL_INPUT_GLOBAL.disturbance_observer_gain_y_in = params.disturbance_observer_gain[1];
+    GENERATED_MODEL_INPUT_GLOBAL.disturbance_observer_gain_z_in = params.disturbance_observer_gain[2];
+    GENERATED_MODEL_INPUT_GLOBAL.disturbance_compensation_limit_x_in = params.disturbance_compensation_limit[0];
+    GENERATED_MODEL_INPUT_GLOBAL.disturbance_compensation_limit_y_in = params.disturbance_compensation_limit[1];
+    GENERATED_MODEL_INPUT_GLOBAL.disturbance_compensation_limit_z_in = params.disturbance_compensation_limit[2];
+#endif
 #if GENERATED_MODEL_HAS_G10_BDE_INPUTS
     GENERATED_MODEL_INPUT_GLOBAL.l1_model_decay_in = params.l1_model_decay;
     GENERATED_MODEL_INPUT_GLOBAL.l1_filter_T_in = params.l1_filter_T;
@@ -597,8 +663,8 @@ int main()
     const double tol = 1.0e-12;
     const CoreParams params = build_params();
 
-    CoreState cpp_states[10];
-    for (int i = 0; i < 10; ++i)
+    CoreState cpp_states[12];
+    for (int i = 0; i < 12; ++i)
     {
         mosim_px4ctrl::reset_thrust_mapping(params, cpp_states[i]);
     }
@@ -640,7 +706,9 @@ int main()
     std::cout << "{\n";
     std::cout << "  \"schema\": \"mosim.px4ctrl_g9_family_generated_c_gate.v1\",\n";
     std::cout << "  \"status\": \"" << (stats.failures == 0 ? "passed" : "failed") << "\",\n";
-#if GENERATED_MODEL_HAS_G10_BDE_INPUTS
+#if GENERATED_MODEL_HAS_P10_DFBC_INPUTS
+    std::cout << "  \"controller_ids\": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],\n";
+#elif GENERATED_MODEL_HAS_G10_BDE_INPUTS
     std::cout << "  \"controller_ids\": [1, 2, 3, 4, 5, 6, 7, 8, 9],\n";
 #else
     std::cout << "  \"controller_ids\": [1, 2, 3, 4, 5, 6],\n";

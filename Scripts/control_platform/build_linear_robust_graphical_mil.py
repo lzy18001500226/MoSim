@@ -48,7 +48,7 @@ PARAMS = {
     "backstepping_k2": (1.8, 1.8, 2.0),
     "adaptive_gain": (0.35, 0.35, 0.45),
     "adaptive_limit": (1.0, 1.0, 1.2),
-    "mass_kg": 0.67,
+    "mass_kg": 1.0,
     "gravity_mps2": 9.80665,
 }
 OUTPUTS = [

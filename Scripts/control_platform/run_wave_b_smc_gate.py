@@ -39,16 +39,16 @@ def oracle() -> list[float]:
         sliding = reference_velocity[i] - velocity[i] + lam[i] * (reference_position[i] - position[i])
         saturated = clamp(sliding / boundary[i], -1.0, 1.0)
         acceleration.append(reference_acceleration[i] + linear_gain[i] * sliding + sliding_gain[i] * saturated)
-    acceleration[2] += 9.8
-    roll = clamp(-acceleration[1] / 9.8, -math.pi / 6, math.pi / 6)
-    pitch = clamp(acceleration[0] / 9.8, -math.pi / 6, math.pi / 6)
+    acceleration[2] += 9.80665
+    roll = clamp(-acceleration[1] / 9.80665, -math.pi / 6, math.pi / 6)
+    pitch = clamp(acceleration[0] / 9.80665, -math.pi / 6, math.pi / 6)
     yaw = 0.3
     cy, sy = math.cos(yaw / 2), math.sin(yaw / 2)
     cp, sp = math.cos(pitch / 2), math.sin(pitch / 2)
     cr, sr = math.cos(roll / 2), math.sin(roll / 2)
     quat = [cy * cp * cr + sy * sp * sr, cy * cp * sr - sy * sp * cr,
             sy * cp * sr + cy * sp * cr, sy * cp * cr - cy * sp * sr]
-    normalized_thrust = clamp(acceleration[2] / (9.8 / 0.37), 0.0, 1.0)
+    normalized_thrust = clamp(acceleration[2] / (9.80665 / 0.37), 0.0, 1.0)
     return acceleration + quat + [normalized_thrust, 1.0]
 
 

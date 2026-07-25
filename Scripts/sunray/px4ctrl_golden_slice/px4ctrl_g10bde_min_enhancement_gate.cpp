@@ -76,7 +76,7 @@ ControllerInput base_input()
 CoreParams base_params()
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.max_normalized_thrust = 2.0;
     params.tilt_limit_rad = 1.2;
     return params;

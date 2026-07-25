@@ -1,6 +1,7 @@
 within MoSimQuadrotorModel.Dynamics;
 model PhysicalWrenchAdapter
   "Apply the project-owned Sunray150 wrapper force and torque to a MultiBody frame"
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
   inner Modelica.Mechanics.MultiBody.World world(
     final enableAnimation = false,
     final animateWorld = false,
@@ -9,15 +10,15 @@ model PhysicalWrenchAdapter
     final axisShowLabels = false,
     n = {0, 0, -1},
     gravityType = Modelica.Mechanics.MultiBody.Types.GravityTypes.UniformGravity,
-    g = 9.81);
-  WrapperSurface wrapper;
+    g = profile.gravity_mps2);
+  WrapperSurface wrapper(profile = profile);
   Modelica.Mechanics.MultiBody.Parts.Body body(
     animation = false,
     r_CM = {0, 0, 0},
     m = wrapper.dynamics.mass_kg,
-    I_11 = 0.0085,
-    I_22 = 0.0085,
-    I_33 = 0.012,
+    I_11 = profile.body_inertia_diagonal_kg_m2[1],
+    I_22 = profile.body_inertia_diagonal_kg_m2[2],
+    I_33 = profile.body_inertia_diagonal_kg_m2[3],
     I_21 = 0,
     I_31 = 0,
     I_32 = 0,

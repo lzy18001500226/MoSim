@@ -8,7 +8,7 @@ model MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL "P9 rl gain scheduler learning-co
   SysplorerEmbeddedCoder.MathOperation.Gain state_feature_vector(k=0.75) annotation(Placement(transformation(origin={-370,90},extent={{-26,-18},{26,18}})));
   SysplorerEmbeddedCoder.MathOperation.Gain frozen_policy_inference(k=0.35) annotation(Placement(transformation(origin={-210,90},extent={{-26,-18},{26,18}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation bounded_gain_schedule(lowLimit=-0.25,upLimit=0.25) annotation(Placement(transformation(origin={-40,90},extent={{-26,-18},{26,18}})));
-  SysplorerEmbeddedCoder.Sources.Constant nominal_acceleration(k=9.81) annotation(Placement(transformation(origin={-210,-70},extent={{-26,-18},{26,18}})));
+  SysplorerEmbeddedCoder.Sources.Constant nominal_acceleration(k=9.80665) annotation(Placement(transformation(origin={-210,-70},extent={{-26,-18},{26,18}})));
   SysplorerEmbeddedCoder.MathOperation.Sum nominal_gain_modulation(inputs="++") annotation(Placement(transformation(origin={140,40},extent={{-26,-18},{26,18}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain attitude_thrust_projection(k=0.34) annotation(Placement(transformation(origin={320,40},extent={{-26,-18},{26,18}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation command_guard(lowLimit=0.0,upLimit=1.0) annotation(Placement(transformation(origin={470,40},extent={{-26,-18},{26,18}})));

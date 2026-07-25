@@ -259,9 +259,9 @@ int main()
     params.integral_limit[0] = 0.5;
     params.integral_limit[1] = 0.5;
     params.integral_limit[2] = 0.3;
-    params.mass = 0.67;
-    params.gravity = 9.8;
-    params.hover_percentage = 0.294;
+    params.mass = 1.0;
+    params.gravity = 9.80665;
+    params.hover_percentage = 0.37;
     params.min_normalized_thrust = 0.0;
     params.max_normalized_thrust = 0.62;
     params.tilt_limit_rad = 0.35;

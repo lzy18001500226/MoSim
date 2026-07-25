@@ -1,23 +1,21 @@
 within MoSimQuadrotorModel.Dynamics;
 model ActuatorMappedWrapperSurface
   "Wrapper surface from normalized actuator command to existing rotor dynamics core"
-  parameter Real mass_kg = 1.0
-    "source=SDF_migration seed shared with mapper/core for static boundary consistency";
-  parameter Real lift_coefficient = 0.000854858
-    "source=SDF_migration visual-speed thrust coefficient seed; not ULog identified";
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real mass_kg = profile.takeoff_mass_kg;
+  parameter Real gravity_mps2 = profile.gravity_mps2;
+  parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
   parameter Real normalized_command_min = 0.0
     "source=interface_seed; lower normalized actuator command bound";
   parameter Real normalized_command_max = 1.0
     "source=interface_seed; upper normalized actuator command bound";
-  parameter Real hover_normalized_command = 0.5
-    "source=interface_seed; hover command placeholder, not measured PWM/throttle evidence";
+  parameter Real hover_normalized_command = profile.mworks_hover_normalized_command;
   parameter Real min_visual_rotor_speed = 0.0
     "source=interface_seed; zero command visual rotor speed seed";
-  parameter Real max_visual_rotor_speed = sqrt(mass_kg * 9.81 / (4 * lift_coefficient)) / hover_normalized_command
-    "source=interface_seed derived from hover_normalized_command; not identified max speed";
-  parameter Real spin_command_sign[4] = {1, -1, 1, -1}
-    "Existing MWORKS signed visual speed convention; not PX4 allocation proof";
+  parameter Real max_visual_rotor_speed = profile.mworks_max_visual_rotor_speed_rad_s;
+  parameter Real spin_command_sign[4] = profile.mworks_spin_command_sign;
   ActuatorCommandMapper actuator_mapper(
+    profile = profile,
     mass_kg = mass_kg,
     lift_coefficient = lift_coefficient,
     normalized_command_min = normalized_command_min,
@@ -26,7 +24,7 @@ model ActuatorMappedWrapperSurface
     min_visual_rotor_speed = min_visual_rotor_speed,
     max_visual_rotor_speed = max_visual_rotor_speed,
     spin_command_sign = spin_command_sign);
-  WrapperSurface wrapper(
+  WrapperSurface wrapper(profile = profile,
     dynamics(
       mass_kg = mass_kg,
       lift_coefficient = lift_coefficient,

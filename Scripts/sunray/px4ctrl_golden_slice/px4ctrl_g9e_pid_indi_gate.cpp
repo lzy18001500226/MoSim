@@ -72,7 +72,7 @@ ControllerInput base_input()
 void run_hover_case(GateStats &stats)
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.min_normalized_thrust = 0.0;
     params.max_normalized_thrust = 1.0;
     params.tilt_limit_rad = 0.8;
@@ -101,7 +101,7 @@ void run_increment_case(GateStats &stats)
     params.kv[0] = 0.0;
     params.kv[1] = 0.0;
     params.kv[2] = 0.0;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.indi_gain[0] = 1.0;
     params.indi_increment_limit[0] = 0.2;
     params.indi_measured_accel_limit[0] = 10.0;
@@ -131,7 +131,7 @@ void run_increment_case(GateStats &stats)
 void run_limit_and_disabled_cases(GateStats &stats)
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.min_normalized_thrust = 0.0;
     params.max_normalized_thrust = 0.40;
     params.kp[2] = 20.0;

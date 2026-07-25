@@ -67,7 +67,7 @@ def build_model(route: str, spec: dict[str, object]) -> str:
         component("SysplorerEmbeddedCoder.MathOperation.Gain", feature, f"k={gains[0]}", -370, 90),
         component("SysplorerEmbeddedCoder.MathOperation.Gain", inference, f"k={gains[1]}", -210, 90),
         component("SysplorerEmbeddedCoder.Discontinuities.Saturation", bounded, "lowLimit=-0.25,upLimit=0.25", -40, 90),
-        component("SysplorerEmbeddedCoder.Sources.Constant", "nominal_acceleration", "k=9.81", -210, -70),
+        component("SysplorerEmbeddedCoder.Sources.Constant", "nominal_acceleration", "k=9.80665", -210, -70),
         summation(merge, 140, 40),
         component("SysplorerEmbeddedCoder.MathOperation.Gain", projection, f"k={gains[4]}", 320, 40),
         component("SysplorerEmbeddedCoder.Discontinuities.Saturation", "command_guard", "lowLimit=0.0,upLimit=1.0", 470, 40),

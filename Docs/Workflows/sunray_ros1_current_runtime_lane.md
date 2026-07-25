@@ -39,6 +39,33 @@ Config/rviz/sunray_ros1_*.rviz
 Results/sunray_ros1/
 ```
 
+### 1.1 Virtual Parameter Contract
+
+The active virtual plant contract is
+`Config/plant/sunray150_virtual_px4_classic_profile.json`: total takeoff mass
+is `1.000 kg`, gravity is `9.80665 m/s^2`, geometry is the user-reviewed
+Blender assembly, and unknown motor dynamics use the pinned PX4 Gazebo Classic
+seed. `0.37` is the current controller thrust-map calibration, not the
+rotor-speed normalized hover command. `Scripts/sunray/sync_assembled_model_into_sunray_ros1.py`
+is the only supported ROS1 SDF synchronization path for this contract.
+
+The ROS1 px4ctrl launch directly loads
+`References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/config/ctrl_param_fpv.yaml`.
+Its nominal profile values are `mass=1.0 kg`, `gra=9.80665 m/s^2`,
+`hover_percentage=0.37`, and `estimate_enable=false`. Do not enable online
+thrust estimation except inside a separately recorded short-hover
+recalibration gate.
+
+All `.67 kg` ROS1/PX4 runs and their metrics predate this 2026-07-25 virtual
+parameter contract. Keep them as historical evidence, but do not reuse them as
+current controller, plant, or A/B performance evidence. The next accepted
+runtime claim must first pass the short hover and yaw-sign recalibration gates
+under the locked profile.
+
+The `Config/scenarios/system/sunray150_*` ROS2/Fortress smoke configurations
+retain older compatibility seeds and are excluded from this current ROS1/PX4
+Classic contract. They cannot be used to override or evaluate this lane.
+
 Do not use the old Ubuntu-22.04 / ROS2 Humble / PX4 `x500_mid360` experiment
 route for this lane. Do not use `Results/external_downloads/fast_lio_main.zip`
 or a fresh online clone as the first source when `References/Lab/localization_slam/FAST_LIO`
@@ -287,12 +314,14 @@ FAST-LIO direct localization mode:
     EV_CTRL=15 as the current retained baseline while attribution continues.
     Do not freeze a new EV_CTRL value until the full error-attribution and
     controller-baseline optimization report accepts it.
-  px4ctrl thrust mapping for the accepted Goal1 gate:
+  historical Goal1 px4ctrl thrust mapping, before the 2026-07-25 virtual
+  parameter contract:
     thrust_model/estimate_enable=false
     thrust_model/hover_percentage=0.30
-    The upstream online thrust estimator stays available, but the current
-    Sunray/Gazebo baseline freezes it because online adaptation was observed
-    to move the normalized thrust away from a reproducible hover mapping.
+    That run froze the upstream online thrust estimator because online
+    adaptation was observed to move the normalized thrust away from a
+    reproducible hover mapping. Keep this as run provenance only: the active
+    nominal profile is the Section 1.1 mapping of `hover_percentage=0.37`.
   current 20Hz retained command trim:
     --command-x-bias-m -0.006
     --command-y-bias-m 0.012
@@ -1070,7 +1099,8 @@ max height, hover error, XY drift, final height, landing slip
 MID360 status if point-cloud review is bundled into the same run
 ```
 
-Current accepted hover baseline, 2026-06-21:
+Historical accepted hover baseline, 2026-06-21 (before the virtual parameter
+contract):
 
 ```text
 run:
@@ -1094,12 +1124,13 @@ steady hover:
   status=passed
 ```
 
-This proves the accepted assembled Sunray150+MID360 plant can take off, hover,
-and land inside the current 2cm-RMSE/5cm-max hover boundary. It does not prove
-figure-8, spiral climb, FAST-LIO feedback, or MWORKS generated-controller
-deployment.
+This historical run proved that its then-active assembled Sunray150+MID360
+plant could take off, hover, and land inside the 2cm-RMSE/5cm-max hover
+boundary. It does not validate the 2026-07-25 virtual profile, figure-8,
+spiral climb, FAST-LIO feedback, or MWORKS generated-controller deployment.
 
-Current accepted px4ctrl + FAST-LIO/PX4-EKF Goal1 baseline, 2026-06-23:
+Historical accepted px4ctrl + FAST-LIO/PX4-EKF Goal1 baseline, 2026-06-23
+(before the virtual parameter contract):
 
 ```text
 run:
@@ -1155,10 +1186,11 @@ FAST-LIO aligned odometry vs Gazebo/Sunray truth:
   Z RMSE=0.002669 m
 ```
 
-This is the first accepted takeoff-hover-land gate where FAST-LIO feeds PX4
-EKF and px4ctrl consumes the PX4/MAVROS fused local state. It does not prove
-figure-8, spiral, EGO, EGOv2, Diff-Planner, swarm, MWORKS generated code, or
-direct FAST-LIO controller feedback.
+This historical run was the first accepted takeoff-hover-land gate where
+FAST-LIO fed PX4 EKF and px4ctrl consumed the PX4/MAVROS fused local state. It
+does not validate the locked virtual profile, figure-8, spiral, EGO, EGOv2,
+Diff-Planner, swarm, MWORKS generated code, or direct FAST-LIO controller
+feedback.
 
 ### Figure-8
 
@@ -1174,7 +1206,8 @@ MID360 nonempty PointCloud2 if the task asks for point-cloud/RViz review
 
 Shape-only pass is a review aid. It is not final controller-performance proof.
 
-Current accepted figure-8 baseline, 2026-06-21:
+Historical accepted figure-8 baseline, 2026-06-21 (before the virtual
+parameter contract):
 
 ```text
 run:
@@ -1212,12 +1245,14 @@ metrics:
   status=passed
 ```
 
-This proves the current Sunray native PID baseline can run the accepted
-figure-8 inside the current 5cm strict time-sync max boundary. It does not
-prove MWORKS generated-controller deployment, FAST-LIO feedback, planner
-readiness, UE acceptance, or multi-UAV readiness.
+This historical run showed that its then-current Sunray native PID baseline
+could run the accepted figure-8 inside the 5cm strict time-sync max boundary.
+It does not validate the locked virtual profile, MWORKS generated-controller
+deployment, FAST-LIO feedback, planner readiness, UE acceptance, or multi-UAV
+readiness.
 
-Current spiral-climb tuning status, 2026-06-21:
+Historical spiral-climb tuning status, 2026-06-21 (before the virtual
+parameter contract):
 
 ```text
 best current review run:

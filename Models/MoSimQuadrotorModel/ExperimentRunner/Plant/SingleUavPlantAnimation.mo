@@ -2,9 +2,14 @@ within MoSimQuadrotorModel.ExperimentRunner.Plant;
 model SingleUavPlantAnimation
   "One shared Sunray150 plant used by every offline controller boundary"
 
-  parameter Real initial_rotor_speed[4] = {53.562090367172424, -53.562090367172424, 53.562090367172424, -53.562090367172424};
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real initial_rotor_speed[4] = {
+    profile.mworks_hover_visual_rotor_speed_rad_s,
+    -profile.mworks_hover_visual_rotor_speed_rad_s,
+    profile.mworks_hover_visual_rotor_speed_rad_s,
+    -profile.mworks_hover_visual_rotor_speed_rad_s};
   parameter Real rotor_effectiveness[4] = {1, 1, 1, 1};
-  parameter Real lift_coefficient = 0.000854858;
+  parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
   parameter Real gust_force[3] = {0, 0, 0};
   parameter Real gust_start_s = 15;
   parameter Real gust_duration_s = 4;
@@ -15,6 +20,7 @@ model SingleUavPlantAnimation
   Modelica.Blocks.Interfaces.RealOutput rotor_speed[4];
 
   Sunray150GazeboAlignedVisualChassis aircraft(
+    profile = profile,
     gain2(k = lift_coefficient * rotor_effectiveness[1]),
     gain3(k = lift_coefficient * rotor_effectiveness[2]),
     gain4(k = lift_coefficient * rotor_effectiveness[3]),

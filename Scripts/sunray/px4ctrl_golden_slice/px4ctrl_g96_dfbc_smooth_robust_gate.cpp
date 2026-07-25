@@ -72,7 +72,7 @@ ControllerInput base_input()
 void run_hover_case(GateStats &stats)
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.tilt_limit_rad = 0.8;
     CoreState state;
     mosim_px4ctrl::reset_thrust_mapping(params, state);
@@ -90,7 +90,7 @@ void run_hover_case(GateStats &stats)
 void run_smooth_feedback_case(GateStats &stats)
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.tilt_limit_rad = 1.2;
     params.smooth_feedback_gain[0] = 5.0;
     params.smooth_feedback_bound[0] = 0.8;
@@ -112,7 +112,7 @@ void run_smooth_feedback_case(GateStats &stats)
 void run_disturbance_observer_case(GateStats &stats)
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.tilt_limit_rad = 1.2;
     params.indi_accel_lpf_alpha = 1.0;
     params.indi_measured_accel_limit[0] = 6.0;
@@ -138,7 +138,7 @@ void run_disturbance_observer_case(GateStats &stats)
 void run_high_order_and_disabled_cases(GateStats &stats)
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.high_order_body_rate_limit[0] = 2.0;
     params.high_order_body_rate_limit[1] = 2.0;
     params.high_order_body_rate_limit[2] = 1.0;

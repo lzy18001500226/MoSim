@@ -31,7 +31,7 @@ void mosim_wave_b_hinf_default_params(MosimWaveBHinfParams *params)
         memcpy(params->gain[row], gain[row], sizeof(gain[row]));
     }
     params->mass = 1.0;
-    params->gravity = 9.8;
+    params->gravity = 9.80665;
     params->force_min_n = 0.0;
     params->force_max_n = 25.0;
     params->torque_limit_nm = 8.0;

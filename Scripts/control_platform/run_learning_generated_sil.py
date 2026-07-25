@@ -25,7 +25,7 @@ INPUT_VALUES = {
     "reference_velocity_x": 0.1, "reference_velocity_y": -0.2, "reference_velocity_z": 0.0,
     "reference_acceleration_x": 0.05, "reference_acceleration_y": -0.04,
     "reference_acceleration_z": 0.02, "reference_yaw": 0.3,
-    "mass_kg": 0.67, "gravity_mps2": 9.80665, "hover_percentage": 0.294,
+    "mass_kg": 1.0, "gravity_mps2": 9.80665, "hover_percentage": 0.37,
     "max_tilt_rad": 0.5235987755982988,
     "min_collective_thrust_n": 0.0, "max_collective_thrust_n": 22.35,
     "enable": 1.0, "learning_enable": 1.0, "reset": 1.0,
@@ -73,7 +73,7 @@ static void print_case(int mode) {{
     MosimLearningAttitudeThrustOutput out; int result;
     memset(&state,0,sizeof(state)); memset(&in,0,sizeof(in));
     in.mode=mode; in.dt=0.01; in.enable=1; in.learning_enable=1; in.reset=1;
-    in.mass_kg=0.67; in.gravity_mps2=9.80665; in.hover_percentage=0.294;
+    in.mass_kg=1.0; in.gravity_mps2=9.80665; in.hover_percentage=0.37;
     in.max_tilt_rad=0.5235987755982988;
     in.min_collective_thrust_n=0.0; in.max_collective_thrust_n=22.35;
     in.position_enu_m.x=0.2; in.position_enu_m.y=-0.1; in.position_enu_m.z=0.7;

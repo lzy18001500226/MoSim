@@ -2,7 +2,8 @@ within MoSimQuadrotorModel.ExperimentRunner.Adapters;
 model OfflineAttitudeRateAllocator
   "MWORKS offline attitude/rate inner loop plus allocator; not PX4 evidence"
 
-  parameter Real hover_speed = 53.562090367172424;
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
   parameter Real command_scale = hover_speed / 13.985413115099604;
   parameter Real kp_attitude = 14.142;
   parameter Real kd_attitude = 1.414;

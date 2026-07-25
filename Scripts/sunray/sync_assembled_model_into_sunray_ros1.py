@@ -36,10 +36,13 @@ import re
 import shutil
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
 
 PROJECT_ROOT_DEFAULT = Path("/mnt/c/Users/HP/Desktop/MoSim")
 SUNRAY_WS_DEFAULT = Path("/tmp/mosim_sunray_build_20260620_114615/Sunray")
+LOCAL_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+VIRTUAL_PROFILE_RELATIVE_PATH = Path("Config/plant/sunray150_virtual_px4_classic_profile.json")
 
 
 BODY_VISUAL = """      <visual name='base_link_assembled_visual'>
@@ -242,6 +245,96 @@ def replace_one_if_present(pattern: str, repl: str, text: str) -> tuple[str, int
     return re.subn(pattern, repl, text, count=1, flags=re.DOTALL)
 
 
+def format_scalar(value: object) -> str:
+    """Render profile numbers consistently for SDF text without losing precision."""
+    return f"{float(value):.12g}"
+
+
+def format_pose(values: object) -> str:
+    if not isinstance(values, list) or len(values) != 6:
+        raise ValueError(f"expected six-component pose, got {values!r}")
+    return " ".join(format_scalar(value) for value in values)
+
+
+def format_xyz_pose(values: object) -> str:
+    if not isinstance(values, list) or len(values) != 3:
+        raise ValueError(f"expected three-component position, got {values!r}")
+    return " ".join(format_scalar(value) for value in values) + " 0 0 0"
+
+
+def format_link_pose(values: object) -> str:
+    if isinstance(values, list) and len(values) == 3:
+        return format_xyz_pose(values)
+    return format_pose(values)
+
+
+def load_virtual_profile(project_root: Path) -> dict[str, Any]:
+    """Load the project-owned virtual plant contract used by every sync."""
+    profile_path = project_root / VIRTUAL_PROFILE_RELATIVE_PATH
+    if not profile_path.exists():
+        raise FileNotFoundError(profile_path)
+    profile = json.loads(profile_path.read_text(encoding="utf-8"))
+    if profile.get("schema") != "mosim.sunray150_virtual_px4_classic_profile.v1":
+        raise RuntimeError(f"unsupported virtual profile schema in {profile_path}")
+    if profile.get("profile_id") != "sunray150_virtual_px4_classic_v1":
+        raise RuntimeError(f"unsupported virtual profile id in {profile_path}")
+    return profile
+
+
+def replace_link_pose(text: str, link_name: str, pose: object, label: str) -> tuple[str, int]:
+    return replace_one(
+        rf"(<link\s+name=['\"]{re.escape(link_name)}['\"]>.*?<pose>)\s*[^<]+(\s*</pose>)",
+        rf"\g<1>{format_link_pose(pose)}\g<2>",
+        text,
+        label,
+    )
+
+
+def replace_link_inertial_scalar(
+    text: str,
+    link_name: str,
+    field_name: str,
+    value: object,
+    label: str,
+) -> tuple[str, int]:
+    return replace_one(
+        rf"(<link\s+name=['\"]{re.escape(link_name)}['\"]>.*?<inertial>.*?<{field_name}>)\s*[^<]+(\s*</{field_name}>)",
+        rf"\g<1>{format_scalar(value)}\g<2>",
+        text,
+        label,
+    )
+
+
+def replace_plugin_scalar(
+    text: str,
+    plugin_name: str,
+    field_name: str,
+    value: object,
+    label: str,
+) -> tuple[str, int]:
+    return replace_one(
+        rf"(<plugin\s+name=['\"]{re.escape(plugin_name)}['\"]\s+filename=['\"]libgazebo_motor_model\.so['\"]>.*?<{field_name}>)\s*[^<]+(\s*</{field_name}>)",
+        rf"\g<1>{format_scalar(value)}\g<2>",
+        text,
+        label,
+    )
+
+
+def replace_plugin_text(
+    text: str,
+    plugin_name: str,
+    field_name: str,
+    value: str,
+    label: str,
+) -> tuple[str, int]:
+    return replace_one(
+        rf"(<plugin\s+name=['\"]{re.escape(plugin_name)}['\"]\s+filename=['\"]libgazebo_motor_model\.so['\"]>.*?<{field_name}>)\s*[^<]+(\s*</{field_name}>)",
+        rf"\g<1>{value}\g<2>",
+        text,
+        label,
+    )
+
+
 def sync_meshes(source_model: Path, target_model: Path) -> list[str]:
     source_meshes = source_model / "meshes"
     target_meshes = target_model / "meshes"
@@ -276,12 +369,114 @@ def sync_meshes(source_model: Path, target_model: Path) -> list[str]:
     return copied
 
 
-def patch_drone_model_text(text: str) -> tuple[str, dict[str, int]]:
+def patch_drone_model_text(
+    text: str,
+    profile: dict[str, Any] | None = None,
+    mid360_sensor_mode: str | None = None,
+) -> tuple[str, dict[str, int]]:
     original = text
     replacements: dict[str, int] = {}
 
-    text, count = replace_one_if_present(r"<mass>1\.0</mass>", "<mass>0.67</mass>", text)
+    if profile is None:
+        profile = load_virtual_profile(LOCAL_PROJECT_ROOT)
+    sensor_mode = mid360_sensor_mode or SUNRAY_MID360_SENSOR_MODE
+    if sensor_mode not in {"inline", "nested"}:
+        raise RuntimeError(f"unsupported MID360 sensor mode {sensor_mode!r}")
+
+    mass_accounting = profile["mass_accounting"]
+    ros1_accounting = mass_accounting["ros1_gazebo_classic"]
+    mode_accounting = ros1_accounting[f"{sensor_mode}_mid360"]
+    inertia = profile["inertia"]["diagonal_kg_m2"]
+    rotor = profile["rotor"]
+    motor = profile["motor_model"]
+
+    text, count = replace_link_inertial_scalar(
+        text,
+        "base_link",
+        "mass",
+        mode_accounting["base_link_mass_kg"],
+        "ROS1 base-link mass from the virtual profile",
+    )
     replacements["base_mass"] = count
+    for field_name, value in zip(("ixx", "iyy", "izz"), inertia):
+        text, count = replace_link_inertial_scalar(
+            text,
+            "base_link",
+            field_name,
+            value,
+            f"ROS1 base-link inertia {field_name} from the virtual profile",
+        )
+        replacements[f"base_inertia_{field_name}"] = count
+
+    rotor_inertia = rotor["inertia_diagonal_kg_m2"]
+    gazebo_centers = rotor["gazebo_centers_m"]
+    gazebo_order = rotor["gazebo_order"]
+    turning_directions = rotor["gazebo_turning_direction"]
+    if not all(isinstance(value, list) and len(value) == 4 for value in (gazebo_centers, gazebo_order, turning_directions)):
+        raise RuntimeError("virtual profile must define four Gazebo rotor centers, names, and turning directions")
+
+    for index, rotor_name in enumerate(gazebo_order):
+        link_name = f"rotor_{index}"
+        text, count = replace_link_pose(
+            text,
+            link_name,
+            gazebo_centers[index],
+            f"ROS1 {link_name} pose from the virtual profile",
+        )
+        replacements[f"{link_name}_pose"] = count
+        text, count = replace_link_inertial_scalar(
+            text,
+            link_name,
+            "mass",
+            rotor["mass_kg_each"],
+            f"ROS1 {link_name} mass from the virtual profile",
+        )
+        replacements[f"{link_name}_mass"] = count
+        for field_name, value in zip(("ixx", "iyy", "izz"), rotor_inertia):
+            text, count = replace_link_inertial_scalar(
+                text,
+                link_name,
+                field_name,
+                value,
+                f"ROS1 {link_name} inertia {field_name} from the virtual profile",
+            )
+            replacements[f"{link_name}_inertia_{field_name}"] = count
+
+        plugin_name = f"{rotor_name}_motor_model"
+        text, count = replace_plugin_text(
+            text,
+            plugin_name,
+            "turningDirection",
+            str(turning_directions[index]),
+            f"ROS1 {plugin_name} direction from the virtual profile",
+        )
+        replacements[f"{plugin_name}_direction"] = count
+        for field_name, value in (
+            ("timeConstantUp", motor["time_constant_up_s"]),
+            ("timeConstantDown", motor["time_constant_down_s"]),
+            ("maxRotVelocity", motor["max_rotor_velocity_rad_s"]),
+            ("motorConstant", motor["motor_constant_n_per_rad_s2"]),
+            ("momentConstant", motor["moment_constant_ratio_m"]),
+            ("rotorDragCoefficient", motor["rotor_drag_coefficient"]),
+            ("rollingMomentCoefficient", motor["rolling_moment_coefficient"]),
+            ("rotorVelocitySlowdownSim", motor["rotor_velocity_slowdown_sim"]),
+        ):
+            text, count = replace_plugin_scalar(
+                text,
+                plugin_name,
+                field_name,
+                value,
+                f"ROS1 {plugin_name} {field_name} from the virtual profile",
+            )
+            replacements[f"{plugin_name}_{field_name}"] = count
+
+    text, count = replace_one(
+        r"(<plugin\s+name=['\"]rosbag['\"]\s+filename=['\"]libgazebo_multirotor_base_plugin\.so['\"]>.*?<rotorVelocitySlowdownSim>)\s*[^<]+(\s*</rotorVelocitySlowdownSim>)",
+        rf"\g<1>{format_scalar(motor['rotor_velocity_slowdown_sim'])}\g<2>",
+        text,
+        "ROS1 rosbag rotor velocity slowdown from the virtual profile",
+    )
+    replacements["rosbag_rotorVelocitySlowdownSim"] = count
 
     text, count = replace_one_if_present(
         r"<visual name='base_link_inertia_visual'>.*?</visual>",
@@ -348,7 +543,7 @@ def patch_drone_model_text(text: str) -> tuple[str, dict[str, int]]:
     )
     replacements["inline_mid360_sensor_removed"] = count
 
-    if SUNRAY_MID360_SENSOR_MODE == "nested":
+    if sensor_mode == "nested":
         if "model://livox_mid360" not in text:
             text, count = replace_one(
                 r"(<link name='base_link'>.*?</link>)",
@@ -422,9 +617,13 @@ def patch_drone_model_text(text: str) -> tuple[str, dict[str, int]]:
     return text, replacements
 
 
-def patch_drone_model_file(model_path: Path) -> dict[str, int]:
+def patch_drone_model_file(
+    model_path: Path,
+    profile: dict[str, Any],
+    mid360_sensor_mode: str,
+) -> dict[str, int]:
     text = model_path.read_text(encoding="utf-8")
-    patched, replacements = patch_drone_model_text(text)
+    patched, replacements = patch_drone_model_text(text, profile, mid360_sensor_mode)
     if patched == text:
         replacements["backup_written"] = 0
         return replacements
@@ -436,9 +635,13 @@ def patch_drone_model_file(model_path: Path) -> dict[str, int]:
     return replacements
 
 
-def patch_jinja(jinja_path: Path) -> dict[str, int]:
+def patch_jinja(
+    jinja_path: Path,
+    profile: dict[str, Any],
+    mid360_sensor_mode: str,
+) -> dict[str, int]:
     original = jinja_path.read_text(encoding="utf-8")
-    text, replacements = patch_drone_model_text(original)
+    text, replacements = patch_drone_model_text(original, profile, mid360_sensor_mode)
 
     if text == original:
         replacements["backup_written"] = 0
@@ -796,6 +999,7 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, default=None)
     args = parser.parse_args()
 
+    profile = load_virtual_profile(args.project_root)
     source_model = args.project_root / "Config/gazebo/models/sunray150_assembled"
     target_model = args.sunray_ws / "simulation/sunray_simulator/models/drone_models/sunray150_with_mid360"
     jinja_path = target_model / "sunray150_with_mid360.sdf.jinja"
@@ -823,8 +1027,8 @@ def main() -> int:
     copied = sync_meshes(source_model, target_model)
     control_source_sync = sync_control_runtime_sources(args.project_root, args.sunray_ws)
     runtime_plugin_sync = sync_runtime_plugins(args.project_root, args.sunray_ws)
-    replacements = patch_jinja(jinja_path)
-    sdf_replacements = patch_drone_model_file(sdf_path)
+    replacements = patch_jinja(jinja_path, profile, SUNRAY_MID360_SENSOR_MODE)
+    sdf_replacements = patch_drone_model_file(sdf_path, profile, SUNRAY_MID360_SENSOR_MODE)
     sensor_replacements = delete_default_livox_sensor_shell(sensor_sdf_path)
     launch_replacements = patch_planning_launch_time_arg(planning_launch_path)
     control_launch_replacements = patch_control_launch_tunable_params(control_launch_path)
@@ -834,6 +1038,12 @@ def main() -> int:
         "schema": "mosim.sunray_ros1_assembled_model_sync.v1",
         "status": "synced",
         "timestamp": datetime.now().isoformat(timespec="seconds"),
+        "virtual_profile": {
+            "profile_id": profile["profile_id"],
+            "profile_path": str(args.project_root / VIRTUAL_PROFILE_RELATIVE_PATH),
+            "takeoff_mass_kg": profile["mass_accounting"]["total_takeoff_mass_kg"],
+            "ros1_mass_accounting": profile["mass_accounting"]["ros1_gazebo_classic"],
+        },
         "source_model": str(source_model),
         "target_model": str(target_model),
         "patched_jinja": str(jinja_path),

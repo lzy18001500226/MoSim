@@ -51,24 +51,24 @@ def outer(controller_id: int, integral_scale: float = 1.0) -> list[float]:
             if controller_id == 2:
                 feedback += ki[i] * ep * 0.02 * integral_scale
         acc.append(ra[i] + feedback)
-    acc[2] += 9.8
-    roll = clamp(-acc[1] / 9.8, math.pi / 6)
-    pitch = clamp(acc[0] / 9.8, math.pi / 6)
+    acc[2] += 9.80665
+    roll = clamp(-acc[1] / 9.80665, math.pi / 6)
+    pitch = clamp(acc[0] / 9.80665, math.pi / 6)
     yaw = 0.3
     cy, sy = math.cos(yaw / 2), math.sin(yaw / 2)
     cp, sp = math.cos(pitch / 2), math.sin(pitch / 2)
     cr, sr = math.cos(roll / 2), math.sin(roll / 2)
     quat = [cy * cp * cr + sy * sp * sr, cy * cp * sr - sy * sp * cr,
             sy * cp * sr + cy * sp * cr, sy * cp * cr - cy * sp * sr]
-    thrust = max(0.0, min(1.0, acc[2] / (9.8 / 0.37)))
-    return acc + quat + [0.0, 0.0, 0.0, thrust, thrust * 0.67 * 9.8 / 0.37, 1.0, 0.0, 0.0]
+    thrust = max(0.0, min(1.0, acc[2] / (9.80665 / 0.37)))
+    return acc + quat + [0.0, 0.0, 0.0, thrust, thrust * 1.0 * 9.80665 / 0.37, 1.0, 0.0, 0.0]
 
 
 def so3() -> list[float]:
     angle = 0.4
     qe = [math.cos(angle / 2), 0.0, math.sin(angle / 2), 0.0]
     rates = [0.1, -0.05 + 2 * 3.0 * qe[2], 0.02]
-    thrust = 6.8 / (0.67 * 9.8 / 0.37)
+    thrust = 6.8 / (1.0 * 9.80665 / 0.37)
     return [0.0, 0.0, 0.0] + qe + rates + [thrust, 6.8, 2.0, 0.0, 0.0]
 
 

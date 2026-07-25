@@ -3,7 +3,7 @@ model Example1Rotor4Loss15WindGustL1MultiFaultIsolationSysblockClosedLoop
   "Example1 rotor 4 lift efficiency 85% plus lateral gust with L1 multi-fault isolation controller"
   parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604
     "Original MWORKS-equivalent hover command before Sunray150 SDF motorConstant calibration";
-  parameter Real hover_motor_speed_cmd = 53.562090367172424
+  parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s
     "MWORKS visual rotor hover speed; physical Sunray150 motor speed is 10x by rotorVelocitySlowdownSim";
   parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd
     "Scale legacy controller speed increments to the Sunray150 SDF motorConstant speed domain";

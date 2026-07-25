@@ -10,7 +10,7 @@ model MoSim_G9_SE3_GRAPHICAL_OVERVIEW "SE3 readable algorithm topology"
   SysplorerEmbeddedCoder.MathOperation.Gain geometric_velocity_error(k=1.5) annotation(Placement(transformation(origin={-220,0},extent={{-22,-16},{22,16}})));
   SysplorerEmbeddedCoder.MathOperation.Sum desired_force(isSaturate=false,inputs="++") annotation(Placement(transformation(origin={-70,50},extent={{-22,-16},{22,16}})),__MWORKS(BlockSystem(Instance(u(u1(Type(ref="double"),Dimension=1),u2(Type(ref="double"),Dimension=1)),y(Type(ref="double"),Dimension=1)),Type(overflowKind=SysplorerEmbeddedCoder.Types.OverflowKind.wrap),SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.Discontinuities.Saturation tilt_limit(lowLimit=-0.5236,upLimit=0.5236) annotation(Placement(transformation(origin={80,50},extent={{-22,-16},{22,16}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain attitude_projection(k=0.67) annotation(Placement(transformation(origin={220,50},extent={{-22,-16},{22,16}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain attitude_projection(k=1.0) annotation(Placement(transformation(origin={220,50},extent={{-22,-16},{22,16}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation thrust_limit(lowLimit=0.0,upLimit=1.0) annotation(Placement(transformation(origin={380,50},extent={{-22,-16},{22,16}})));
   SysplorerEmbeddedCoder.Port.Outport command annotation(Placement(transformation(origin={520,20},extent={{-12,-10},{12,10}})));
   model ModelWorkspace

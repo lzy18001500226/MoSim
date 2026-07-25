@@ -911,25 +911,28 @@ package Plant "四旋翼无人机模型"
         Diagram(coordinateSystem(extent = {{-200.0, -200.0}, {200.0, 200.0}},
           grid = {2.0, 2.0})),
         experiment(Algorithm = Dassl, Interval = 0.001, StartTime = 0, StopTime = 30, Tolerance = 1e-10));
+      parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile
+        "Source-labeled virtual plant profile; not identified real-aircraft truth";
       inner Modelica.Mechanics.MultiBody.World world(
         animateWorld = false,
         animateGravity = false,
         n = {0, 0, -1},
         gravityType = Modelica.Mechanics.MultiBody.Types.GravityTypes.UniformGravity,
-        g = 9.81)
+        g = profile.gravity_mps2)
 
         annotation (Placement(transformation(origin = {124.60787940430421, 90.30849111731482},
           extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-      parameter Real lift_cofficient = 0.000854858 "Sunray150 motorConstant scaled by rotorVelocitySlowdownSim^2 for MWORKS visual rotor speed";
+      parameter Real lift_cofficient = profile.mworks_visual_thrust_coefficient
+        "PX4 Gazebo Classic physical Ct scaled by rotorVelocitySlowdownSim squared for MWORKS visual speed";
       Modelica.Mechanics.MultiBody.Parts.BodyShape body(
         animation = true,
         animateSphere = false,
         r = {0, 0, 0},
         r_CM = {0, 0, 0},
-        m = 1.0,
-        I_11 = 0.0085,
-        I_22 = 0.0085,
-        I_33 = 0.012,
+        m = profile.mworks_quad_chassis_body_mass_kg,
+        I_11 = profile.body_inertia_diagonal_kg_m2[1],
+        I_22 = profile.body_inertia_diagonal_kg_m2[2],
+        I_33 = profile.body_inertia_diagonal_kg_m2[3],
         I_21 = 0,
         I_31 = 0,
         I_32 = 0,
@@ -950,10 +953,10 @@ package Plant "四旋翼无人机模型"
         animation = true,
         animateSphere = false,
         r = {0, 0, 0},
-        m = 0.005,
-        I_11 = 9.75e-7,
-        I_22 = 0.000173104,
-        I_33 = 0.000174004,
+        m = profile.rotor_mass_kg,
+        I_11 = profile.rotor_inertia_diagonal_kg_m2[1],
+        I_22 = profile.rotor_inertia_diagonal_kg_m2[2],
+        I_33 = profile.rotor_inertia_diagonal_kg_m2[3],
         I_21 = 0,
         I_31 = 0,
         I_32 = 0,
@@ -977,7 +980,7 @@ package Plant "四旋翼无人机模型"
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed1(
         animation = false,
-        r = {0.053745, -0.05374, -0.014052})
+        r = {profile.mworks_rotor_center_m[1, 1], profile.mworks_rotor_center_m[1, 2], profile.mworks_rotor_center_m[1, 3]})
         annotation (Placement(transformation(origin = {73.77694849419791, 99.5026214436419},
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute2(
@@ -988,7 +991,7 @@ package Plant "四旋翼无人机模型"
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed2(
         animation = false,
-        r = {0.053746, 0.053759, -0.014052})
+        r = {profile.mworks_rotor_center_m[2, 1], profile.mworks_rotor_center_m[2, 2], profile.mworks_rotor_center_m[2, 3]})
         annotation (Placement(transformation(origin = {73.77694849419791, 39.502621443641885},
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute3(
@@ -999,7 +1002,7 @@ package Plant "四旋翼无人机模型"
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed3(
         animation = false,
-        r = {-0.053761, 0.05376, -0.014052})
+        r = {profile.mworks_rotor_center_m[3, 1], profile.mworks_rotor_center_m[3, 2], profile.mworks_rotor_center_m[3, 3]})
         annotation (Placement(transformation(origin = {73.77694849419791, -40.497378556358086},
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Joints.Revolute revolute4(
@@ -1010,7 +1013,7 @@ package Plant "四旋翼无人机模型"
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Parts.FixedTranslation Dronefixed4(
         animation = false,
-        r = {-0.053761, -0.053739, -0.014052})
+        r = {profile.mworks_rotor_center_m[4, 1], profile.mworks_rotor_center_m[4, 2], profile.mworks_rotor_center_m[4, 3]})
         annotation (Placement(transformation(origin = {73.7769484941979, -100.49737855635811},
           extent = {{10.0, -10.0}, {-10.0, 10.0}})));
       Modelica.Mechanics.MultiBody.Forces.WorldForce force1(resolveInFrame=Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.frame_b, animation=false) annotation (Placement(transformation(origin = {-43.68550815051444, 80.71820959281155},
@@ -1106,10 +1109,10 @@ package Plant "四旋翼无人机模型"
         animation = true,
         animateSphere = false,
         r = {0, 0, 0},
-        m = 0.005,
-        I_11 = 9.75e-7,
-        I_22 = 0.000173104,
-        I_33 = 0.000174004,
+        m = profile.rotor_mass_kg,
+        I_11 = profile.rotor_inertia_diagonal_kg_m2[1],
+        I_22 = profile.rotor_inertia_diagonal_kg_m2[2],
+        I_33 = profile.rotor_inertia_diagonal_kg_m2[3],
         I_21 = 0,
         I_31 = 0,
         I_32 = 0,
@@ -1130,10 +1133,10 @@ package Plant "四旋翼无人机模型"
         animation = true,
         animateSphere = false,
         r = {0, 0, 0},
-        m = 0.005,
-        I_11 = 9.75e-7,
-        I_22 = 0.000173104,
-        I_33 = 0.000174004,
+        m = profile.rotor_mass_kg,
+        I_11 = profile.rotor_inertia_diagonal_kg_m2[1],
+        I_22 = profile.rotor_inertia_diagonal_kg_m2[2],
+        I_33 = profile.rotor_inertia_diagonal_kg_m2[3],
         I_21 = 0,
         I_31 = 0,
         I_32 = 0,
@@ -1154,10 +1157,10 @@ package Plant "四旋翼无人机模型"
         animation = true,
         animateSphere = false,
         r = {0, 0, 0},
-        m = 0.005,
-        I_11 = 9.75e-7,
-        I_22 = 0.000173104,
-        I_33 = 0.000174004,
+        m = profile.rotor_mass_kg,
+        I_11 = profile.rotor_inertia_diagonal_kg_m2[1],
+        I_22 = profile.rotor_inertia_diagonal_kg_m2[2],
+        I_33 = profile.rotor_inertia_diagonal_kg_m2[3],
         I_21 = 0,
         I_31 = 0,
         I_32 = 0,

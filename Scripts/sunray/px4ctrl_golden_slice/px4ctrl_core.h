@@ -70,8 +70,8 @@ struct CoreParams
     double fault_min_efficiency{0.50};
     double fault_thrust_comp_limit{0.25};
     double integral_limit[3]{0.5, 0.5, 0.3};
-    double mass{0.67};
-    double gravity{9.8};
+    double mass{1.0};
+    double gravity{9.80665};
     double hover_percentage{0.37};
     double min_normalized_thrust{0.0};
     double max_normalized_thrust{1.0};
@@ -80,7 +80,7 @@ struct CoreParams
 
 struct CoreState
 {
-    double thr2acc{9.8 / 0.37};
+    double thr2acc{9.80665 / 0.37};
     double covariance{1.0e6};
     Vec3 integral_position_error;
     Vec3 previous_velocity;

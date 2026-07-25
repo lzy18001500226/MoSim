@@ -105,7 +105,7 @@ DEFAULTS = {
     "nmpc_increment_limit_x": 4.0, "nmpc_increment_limit_y": 4.0,
     "nmpc_increment_limit_z": 2.5,
     "integral_limit_x": 0.5, "integral_limit_y": 0.5, "integral_limit_z": 0.3,
-    "mass": 0.67, "gravity": 9.8, "hover_percentage": 0.37,
+    "mass": 1.0, "gravity": 9.80665, "hover_percentage": 0.37,
     "min_normalized_thrust": 0.0, "max_normalized_thrust": 1.0,
     "tilt_limit_rad": 0.5235987755982988,
 }
@@ -286,7 +286,7 @@ def topology_text(route: str, label: str) -> str:
             ("Gain", "geometric_velocity_error", "k=1.5", -220, 0),
             ("Sum", "desired_force", 'inputs="++"', -70, 50),
             ("Saturation", "tilt_limit", "lowLimit=-0.5236,upLimit=0.5236", 80, 50),
-            ("Gain", "attitude_projection", "k=0.67", 220, 50),
+            ("Gain", "attitude_projection", "k=1.0", 220, 50),
             ("Saturation", "thrust_limit", "lowLimit=0.0,upLimit=1.0", 380, 50),
         ]
 

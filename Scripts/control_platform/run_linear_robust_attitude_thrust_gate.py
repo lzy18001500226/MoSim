@@ -47,7 +47,7 @@ def expected_acceleration(controller_id: int) -> tuple[list[float], list[float],
             disturbance[axis] = gamma[axis] * sliding * 0.02
             feedback = k1[axis] * ev + k2[axis] * sliding + disturbance[axis]
         if controller_id == 3:
-            storage += 0.5 * 0.67 * ev * ev + 0.5 * kp[axis] * ep * ep
+            storage += 0.5 * 1.0 * ev * ev + 0.5 * kp[axis] * ep * ep
         acceleration.append(reference_acceleration[axis] + feedback)
     acceleration[2] += 9.80665
     horizontal = math.hypot(acceleration[0], acceleration[1])
@@ -128,8 +128,8 @@ def main() -> int:
             "return_code": (return_code, 0.0),
             "status_code": (status_code, 0.0),
             "quaternion_norm": (math.sqrt(sum(value * value for value in quaternion)), 1.0),
-            "collective_thrust": (collective_thrust, 0.67 * math.sqrt(sum(value * value for value in acceleration))),
-            "normalized_thrust": (normalized_thrust, collective_thrust / (0.67 * 9.80665 / 0.291)),
+            "collective_thrust": (collective_thrust, 1.0 * math.sqrt(sum(value * value for value in acceleration))),
+            "normalized_thrust": (normalized_thrust, collective_thrust / (1.0 * 9.80665 / 0.37)),
             "storage_function": (storage_function, expected_storage),
         }
         for axis, (actual, expected) in enumerate(zip(acceleration, expected_accel, strict=True)):

@@ -65,8 +65,13 @@ The approved mass accounting is representation-specific but must always close
 to exactly `1.000 kg`:
 
 ```text
-ROS1 Sunray SDF:
-  base_link = 0.965 kg + imu = 0.015 kg + 4 * rotor = 0.005 kg
+ROS1 Sunray SDF, nested MID360:
+  base_link = 0.953 kg + flight IMU = 0.015 kg + 4 * rotor = 0.005 kg
+  + nested MID360 = 0.010 kg + 2 * camera model = 0.001 kg
+
+ROS1 Sunray SDF, inline MID360:
+  base_link = 0.963 kg + flight IMU = 0.015 kg + 4 * rotor = 0.005 kg
+  + 2 * camera model = 0.001 kg
 
 Gazebo Sim assembled compatibility profile:
   base_link = 0.980 kg + 4 * rotor = 0.005 kg
@@ -78,12 +83,41 @@ MWORKS PhysicalWrench path and px4ctrl runtime:
   one rigid-body total = 1.000 kg
 ```
 
-The inertia source needs a separate explicit semantic decision before values are
-changed: a PX4 Iris inertia must not be copied verbatim into a `1.000 kg`
-YunZong-geometry model. The final profile must record whether each inertia is a
-PX4 default seed or a geometry/mass-consistent derived seed, and whether it is
-the base-link inertia or the aggregate whole-aircraft inertia after rotor bodies
-are attached. No such value may be presented as measured Sunray150 truth.
+The executable parameter authority is
+`Config/plant/sunray150_virtual_px4_classic_profile.json`. Its Modelica mirror
+is `MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic`. Do not add a
+new local mass, gravity, rotor-order, motor, or hover-map default without
+updating both the profile and its static consistency checker. The profile is a
+locked virtual seed, not a claim of measured aircraft truth.
+
+The active ROS1 px4ctrl launch directly loads
+`References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/config/ctrl_param_fpv.yaml`.
+Its nominal virtual settings are `mass=1.0 kg`, `gra=9.80665 m/s^2`,
+`hover_percentage=0.37`, and `estimate_enable=false`. The last field prevents
+online thrust estimation from silently changing the declared virtual mapping.
+Only a separately recorded short-hover recalibration may enable it.
+
+`Config/scenarios/system/sunray150_single_uav_competition_light.yaml` and
+`Config/scenarios/system/sunray150_gazebo_ros2_smoke.yaml` remain historical
+ROS2/Fortress smoke definitions with older motor-model seeds. They are not
+consumers of this ROS1/PX4 Classic profile and must not be used as parameter
+authority for current results.
+
+Run `python Scripts/quality/check_sunray150_virtual_px4_classic_profile.py`
+after any static profile change. It validates the profile, Modelica mirrors,
+formal consumers, ROS1 synchronization source, controller defaults, and local
+compatibility SDF mass closure without starting a simulator.
+
+The locked profile records the existing YunZong SDF diagonal as an unidentified
+virtual inertia seed. It is used as the one-body inertia and the QuadChassis
+central-body seed with the representation boundary stated in the profile; it is
+not an aggregate, measured Sunray150 inertia. Any future replacement needs an
+explicit semantic decision: a PX4 Iris inertia must not be copied verbatim into
+a `1.000 kg` YunZong-geometry model. The revised profile must state whether the
+new value is a PX4 default seed or a geometry/mass-consistent derived seed, and
+whether it is the base-link inertia or the aggregate whole-aircraft inertia
+after rotor bodies are attached. No such value may be presented as measured
+Sunray150 truth.
 
 Controller gains, scenario disturbance/fault values, and PX4 plugin command
 interfaces are not interchangeable "physical defaults". They remain governed
@@ -283,11 +317,11 @@ parameters:
     - [0.053746, 0.053759, -0.014052]
     - [-0.053761, -0.053739, -0.014052]
   rotor_directions:
-    - cw
-    - cw
     - ccw
     - ccw
-  thrust_coefficient_n_per_rad_s2: 8.54858e-06
+    - cw
+    - cw
+  thrust_coefficient_n_per_rad_s2: 5.84e-06
   moment_coefficient_nm_per_rad_s2: null
   thrust_to_moment_ratio_m: null
   motor_time_constant_s: null
@@ -314,7 +348,7 @@ modifiers. Do not silently overwrite the official baseline.
 
 | Identified YAML field | MWORKS target | Notes |
 |---|---|---|
-| `mass_kg` | `QuadChassis.body.m` or wrapper modifier `quadChassisTest17_1(body(m=...))` | Current Sunray migration seed is `1.0 kg`; mass-disturbance scenarios may intentionally override this. |
+| `mass_kg` | `QuadChassis.body.m` or wrapper modifier `quadChassisTest17_1(body(m=...))` | Current virtual profile closes `0.980 kg + 4 * 0.005 kg = 1.000 kg`; mass-disturbance scenarios may intentionally override this. |
 | `inertia_kg_m2.Ixx/Iyy/Izz` | `QuadChassis.body.I_11/I_22/I_33` or equivalent body inertia fields after model inspection | Verify exact field names through MCP/model text before editing. |
 | `rotor_positions_m` | rotor/propeller placements inside `QuadChassis` | Must preserve motor order and sign convention before changing control allocation. |
 | `rotor_directions` | yaw torque sign and allocation matrix direction signs | Confirm against current project order and MWORKS positive torque convention. |
@@ -327,46 +361,28 @@ Current known Sunray/MWORKS seed values:
 
 | Parameter | Current seed | Source/risk |
 |---|---:|---|
-| mass | `1.0 kg` | SDF migration seed, not ULog-identified |
-| inertia | `Ixx=0.0085`, `Iyy=0.0085`, `Izz=0.012` | SDF migration seed, payload/battery sensitive |
+| mass | `1.0 kg` | User-locked virtual takeoff-mass assumption, not ULog-identified |
+| inertia | `Ixx=0.0085`, `Iyy=0.0085`, `Izz=0.012` | YunZong SDF seed, payload/battery sensitive |
 | rotor arm location | DAE-reviewed centers around `(±0.05375, ±0.05375, -0.014052) m` | User-reviewed DAE screw-pair fit migrated to MWORKS/SDF geometry; verify motor order |
-| SDF motor constant | `8.54858e-06 N/(rad/s)^2` | Physical rotor-speed coefficient from Sunray SDF |
-| MWORKS lift coefficient seed | `0.000854858` | Converted by `rotorVelocitySlowdownSim=10`; high risk if shaft-speed convention changes |
-| experiment rotor-loss overrides | `0.0007266293` in selected loss cases | Scenario-specific degraded coefficient, not nominal truth |
+| PX4 Classic motor constant | `5.84e-06 N/(rad/s)^2` | Pinned PX4 Gazebo Classic Iris seed, not a Sunray thrust-stand result |
+| MWORKS visual lift coefficient | `0.000584` | `5.84e-06 * rotorVelocitySlowdownSim^2`, valid only for the documented visual-speed convention |
+| controller hover map | `0.37` | Existing virtual command-to-thrust calibration; validate by a short px4ctrl hover before performance claims |
 
-2026-06-04 local audit result:
+2026-07-25 virtual-profile audit result:
 
-- Current `MoSimQuadrotorModel.Plant.Mechanics.QuadChassis` nominal body parameters are
-  still `m=1.0`, `I_11=0.0085`, `I_22=0.0085`, `I_33=0.012`.
-- Current rotor placement has been updated from the old Sunray SDF seed to the
-  user-reviewed DAE screw-pair assembly centers: rotor 0
-  `(0.053745,-0.05374,-0.014052)`, rotor 1
-  `(-0.053761,0.05376,-0.014052)`, rotor 2
-  `(0.053746,0.053759,-0.014052)`, rotor 3
-  `(-0.053761,-0.053739,-0.014052)` m. Propeller inertia and thrust/motor
-  constants remain unchanged from the SDF seed.
-- The MWORKS lift seed `0.000854858` is exactly the Sunray SDF
-  `motorConstant=8.54858e-06` multiplied by `rotorVelocitySlowdownSim^2=100`.
-- The same Sunray motor constant, rotor drag coefficient, time constants, and
-  often the same `1.0 kg / 0.0085 / 0.0085 / 0.012` inertia block appear across
-  multiple Sunray150, Sunray300, and fake UAV SDF variants. Treat this as a
-  reused Gazebo/PX4-style baseline, not measured Sunray150 truth.
-- Local evidence supports the risk that these are reference/simulation seed
-  values. It does not yet prove every field is byte-for-byte identical to a
-  specific PX4 `iris.sdf`; exact Iris comparison needs the local or upstream
-  Iris SDF pinned by commit before making that narrower claim.
-- Follow-up online/source audit against current
-  `PX4/PX4-SITL_gazebo-classic/models/iris/iris.sdf.jinja` shows Sunray is not
-  a full copy of current PX4 Iris: Iris uses `m=1.5`,
-  `Ixx/Iyy/Izz=0.029125/0.029125/0.055225`, rotor positions about
-  `(0.13,-0.22,0.023)`, `maxRotVelocity=1100`,
-  `motorConstant=5.84e-06`, and `rotorDragCoefficient=0.000175`. Sunray150
-  uses the smaller `1.0 kg / 0.0085 / 0.0085 / 0.012` block, compact
-  old `(±0.065,±0.065,-0.025)` rotor seed, `maxRotVelocity=1500`,
-  `motorConstant=8.54858e-06`, and `rotorDragCoefficient=0.000806428`.
-  Therefore the correct statement is: Sunray reuses a Gazebo/PX4-style
-  multirotor parameter structure and repeated seed values, but it is not
-  byte-for-byte the current PX4 Iris parameter set.
+- Geometry is fixed from the user-reviewed Blender assembly; it supplies rotor
+  centers and MID360 pose only.
+- The MWORKS central-body inertia remains the YunZong SDF seed
+  `0.0085/0.0085/0.012 kg.m^2`; it is not aggregate multi-body inertia or a
+  measured Sunray150 value.
+- Unknown motor dynamics use the pinned PX4 Gazebo Classic Iris seed:
+  `maxRotVelocity=1100`, `motorConstant=5.84e-06`,
+  `momentConstant=0.06`, up/down lags `0.0125/0.025 s`,
+  `rotorDragCoefficient=0.000175`, `rollingMomentCoefficient=1e-6`, and
+  `rotorVelocitySlowdownSim=10`.
+- MWORKS visual thrust uses `0.000584` and the corresponding hover visual
+  rotor speed is `64.79237784 rad/s`; neither is the controller-side `0.37`
+  hover-map calibration.
 - Do not fix slow-looking propellers by changing `lift_cofficient`,
   `hover_motor_speed_cmd`, or SDF-migrated thrust constants. The current
   MWORKS command domain already documents that `hover_motor_speed_cmd` is a
@@ -420,11 +436,11 @@ logs into usable MWORKS parameters. Use this table as the working plan:
 
 | Parameter | Why current value is suspect | Minimum data route | Preferred method | MWORKS update target |
 |---|---|---|---|---|
-| `mass_kg` | Current `1.0 kg` is an SDF migration seed; Sunray150 laser version public mass is about `1.08 kg`, and battery/Mid360/guard changes matter | Direct weighing of the exact flight configuration; hover ULog for sanity | Weighing first, then hover-thrust consistency check from `hover_thrust_estimate`, acceleration, battery voltage | `QuadChassis.body.m` or wrapper modifier |
+| `mass_kg` | Current `1.0 kg` is a user-locked virtual assumption; public hardware mass and battery/MID360/guard changes matter | Direct weighing of the exact flight configuration; hover ULog for sanity | Weighing first, then hover-thrust consistency check from `hover_thrust_estimate`, acceleration, battery voltage | `QuadChassis.body.m` or wrapper modifier |
 | `inertia_kg_m2` | Current `Ixx/Iyy/Izz` are SDF seeds and very sensitive to battery, Mid360, payload, frame, and prop guards | PX4 ULog attitude/rate excitation with `vehicle_angular_velocity`, attitude, actuator outputs | ARPL `data-driven-system-identification` / nonlinear least squares on angular dynamics; validate on held-out rate maneuvers | `body.I_11/I_22/I_33` or equivalent body inertia fields |
 | `rotor_positions_m` | Current arm values come from model geometry and may not match actual motor-axis-to-CG after payload shift | Frame measurement plus motor order / rotor direction | Manual geometry measurement; cross-check yaw/roll/pitch signs in PX4 logs | rotor placement and allocation matrix |
 | `rotor_directions` / motor order | Wrong order/sign can make fault isolation and allocation look valid only by accident | PX4 actuator ordering, mixer/control allocation output, motor spin direction | Vendor/PX4 airframe config plus small motor command sanity test | yaw torque signs and fault allocation mapping |
-| `thrust_coefficient` / `lift_cofficient` | Current `0.000854858` is converted from SDF `8.54858e-06` using `rotorVelocitySlowdownSim=10`; it depends on whether MWORKS signal is visual shaft speed or physical rotor speed | Hover ULog plus mass; better with ESC RPM or thrust stand | If RPM exists: fit `T=k_f*omega^2`. If only normalized actuator command: fit command-to-thrust map and keep source label `command_model` | `lift_cofficient`, rotor gains, or wrapper thrust map |
+| `thrust_coefficient` / `lift_cofficient` | Current `0.000584` is converted from the pinned PX4 Classic `5.84e-06` seed using `rotorVelocitySlowdownSim=10`; it depends on whether MWORKS signal is visual shaft speed or physical rotor speed | Hover ULog plus mass; better with ESC RPM or thrust stand | If RPM exists: fit `T=k_f*omega^2`. If only normalized actuator command: fit command-to-thrust map and keep source label `command_model` | `lift_cofficient`, rotor gains, or wrapper thrust map |
 | `moment_coefficient` / yaw torque | Usually copied from PX4/Gazebo and hard to infer from position tracking alone | Yaw-rate excitation ULog, motor commands, preferably RPM | Fit angular z dynamics jointly with inertia and thrust/yaw coefficient ratio | yaw allocation / mixer coefficient |
 | `motor_time_constant_s` | Current model may omit or simplify actuator lag; affects aggressive and fault scenarios | Motor command step/chirp logs; ESC RPM if available | First-order lag fit from command to RPM; without RPM fit closed-loop residual only and mark low confidence | actuator lag block or controller-side motor model |
 | `fuselage_drag` | Current plant likely lacks identified drag; outdoor logs mix drag with wind | calm translational passes in x/y, local velocity, acceleration, attitude, wind note | data-driven-dynamics residual force fit; validate on independent figure-eight/forward-back passes | wrapper-level drag/disturbance block |
@@ -749,9 +765,11 @@ Current priority order for Sunray150:
 
 Current audit result: no YunZong/Sunray real ULog files are present in the
 repository. The only usable local ULog-like material is reference/sample data
-under `References/Log`, so all current MWORKS model values remain
-`source=SDF_migration` until vendor/user logs are provided and the pipeline
-passes held-out validation.
+under `References/Log`, so no current virtual-profile value is identified
+Sunray150 truth. Preserve the per-field labels in the locked profile: mass is
+`source=user_locked_project_assumption`, inertia is a YunZong SDF seed, and
+motor/aerodynamic values are `source=PX4_Gazebo_default_seed`, until vendor or
+user logs support held-out validation.
 
 Hard blockers before claiming identified Sunray150 parameters:
 
@@ -792,9 +810,10 @@ No motor order / actuator signal meaning
 No mass for the exact Sunray150 configuration
 ```
 
-In that case, keep the current parameters labeled as `source=SDF_migration` or
-`source=reference_repo`, and mark MWORKS results as sensitivity tests rather
-than identified-parameter evidence.
+In that case, keep each current parameter's explicit profile provenance
+(`source=user_locked_project_assumption`, `source=SDF_migration`,
+`source=PX4_Gazebo_default_seed`, or `source=reference_repo`) and mark MWORKS
+results as sensitivity tests rather than identified-parameter evidence.
 
 ---
 
@@ -867,10 +886,10 @@ Current MWORKS state after Sunray150 SDF/DAE geometry migration:
 
 | Item | Current MWORKS status |
 |---|---|
-| Base mass/inertia | `QuadChassis.body`: `m=1.0`, `Ixx=0.0085`, `Iyy=0.0085`, `Izz=0.012`, from Sunray SDF style values. |
-| Rotor inertias | `m=0.005`, `Ixx=9.75e-7`, `Iyy=0.000173104`, `Izz=0.000174004`, from Sunray SDF style values. |
+| Base mass/inertia | `QuadChassis.body`: `m=0.980`, `Ixx=0.0085`, `Iyy=0.0085`, `Izz=0.012`; virtual mass closes with four `0.005 kg` rotors. |
+| Rotor inertias | `m=0.005`, `Ixx=9.75e-7`, `Iyy=0.000173104`, `Izz=0.000174004`; YunZong SDF seeds, not identified values. |
 | Rotor centers | DAE/SDF-aligned centers around `(+/-0.05375, +/-0.05375, -0.014052)` m. |
-| Thrust force | `WorldForce` per rotor using `lift_cofficient=0.000854858`, currently Sunray `motorConstant=8.54858e-06` scaled by `rotorVelocitySlowdownSim^2=100`. |
+| Thrust force | `WorldForce` per rotor uses `lift_cofficient=0.000584`, the PX4 Classic `motorConstant=5.84e-06` seed scaled by `rotorVelocitySlowdownSim^2=100`. |
 | Yaw reaction torque | Not yet confirmed as implemented in `QuadChassis`; treat as missing until model text and simulation prove otherwise. |
 | Motor lag | Not yet implemented in the plant layer unless an upstream controller/input module adds it. |
 | Drag and angular damping | Not yet implemented in the base plant layer. |
@@ -895,18 +914,19 @@ ModelParam_uavCCm = [0.0035, 0.0039, 0.0034]
 ModelParam_uavDearo = 0.12
 ```
 
-Sunray150 SDF uses a different parameter family:
+The locked virtual profile combines the user-locked mass, reviewed geometry,
+and YunZong inertia seed with the pinned PX4 Gazebo Classic motor seed:
 
 ```text
 mass = 1.0 kg
 inertia = diag(0.0085, 0.0085, 0.012)
 rotor centers ~= (+/-0.05375, +/-0.05375, -0.014052) m
-motorConstant = 8.54858e-06
+motorConstant = 5.84e-06
 momentConstant = 0.06
 timeConstantUp = 0.0125 s
 timeConstantDown = 0.025 s
-maxRotVelocity = 1500 rad/s
-rotorDragCoefficient = 0.000806428
+maxRotVelocity = 1100 rad/s
+rotorDragCoefficient = 0.000175
 rollingMomentCoefficient = 1e-06
 rotorVelocitySlowdownSim = 10
 ```
@@ -914,8 +934,10 @@ rotorVelocitySlowdownSim = 10
 Therefore the correct migration path is:
 
 ```text
-1. Keep Sunray/SDF/DAE geometry and mass/inertia as the current baseline.
-2. Add missing actuator dynamics and yaw torque using Sunray SDF coefficients.
+1. Keep user-reviewed DAE/Blender geometry, the user-locked virtual mass, and
+   the YunZong inertia seed as distinct profile fields.
+2. Add missing actuator dynamics and yaw torque using the pinned PX4 Gazebo
+   Classic motor seed.
 3. Add RflySim-style drag/angular damping as tunable optional modules.
 4. Keep fault/dynamic parameter changes in scenario wrappers.
 5. Validate hover, yaw, step response, and small trajectory cases before using
@@ -961,13 +983,15 @@ Parameter labels remain conservative:
 | Parameter family | Current label |
 |---|---|
 | rotor centers | `source=user-reviewed DAE screw-pair fit` |
-| mass, lift coefficient, yaw moment ratio, motor lag constants | `source=SDF_migration` |
+| mass | `source=user_locked_project_assumption` |
+| inertia | `source=SDF_migration` |
+| lift coefficient, yaw moment ratio, motor lag constants | `source=PX4_Gazebo_default_seed` |
 | identified flight/bench parameters | not available; do not label as `source=PX4_ULog_sysid` |
 
 Engineering continuation rule: the Sunray/YunZong open-source seed parameters
 are acceptable for current model-structure checks and short hover/yaw smoke
-tests. They are not final Sunray150 truth, and reports must keep the
-`SDF_migration` label until PX4 ULog or bench evidence replaces it.
+tests. They are not final Sunray150 truth, and reports must retain each
+field's profile provenance until PX4 ULog or bench evidence replaces it.
 
 Historical verification record (2026-06-05; legacy namespace preserved):
 

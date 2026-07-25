@@ -1,24 +1,20 @@
 within MoSimQuadrotorModel.Dynamics;
 model ActuatorCommandMapper
   "Map normalized actuator command to signed MWORKS visual rotor speed"
-  parameter Real mass_kg = 1.0
-    "source=SDF_migration seed used only to derive hover visual speed; not identified truth";
-  parameter Real lift_coefficient = 0.000854858
-    "source=SDF_migration visual-speed thrust coefficient seed; not ULog identified";
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real mass_kg = profile.takeoff_mass_kg;
+  parameter Real gravity_mps2 = profile.gravity_mps2;
+  parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
   parameter Real normalized_command_min = 0.0
     "source=interface_seed; lower bound for normalized actuator/throttle command";
   parameter Real normalized_command_max = 1.0
     "source=interface_seed; upper bound for normalized actuator/throttle command";
-  parameter Real hover_normalized_command = 0.5
-    "source=interface_seed; placeholder until real actuator command/RPM evidence exists";
+  parameter Real hover_normalized_command = profile.mworks_hover_normalized_command;
   parameter Real min_visual_rotor_speed = 0.0
     "source=interface_seed; zero normalized command maps to stopped visual rotor";
-  parameter Real hover_visual_rotor_speed = sqrt(mass_kg * 9.81 / (4 * lift_coefficient))
-    "Derived MWORKS visual rotor hover-speed seed, not physical RPM truth";
-  parameter Real max_visual_rotor_speed = hover_visual_rotor_speed / hover_normalized_command
-    "source=interface_seed derived from hover_normalized_command; not identified max speed";
-  parameter Real spin_command_sign[4] = {1, -1, 1, -1}
-    "Existing MWORKS signed visual speed convention; not PX4 allocation proof";
+  parameter Real hover_visual_rotor_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
+  parameter Real max_visual_rotor_speed = profile.mworks_max_visual_rotor_speed_rad_s;
+  parameter Real spin_command_sign[4] = profile.mworks_spin_command_sign;
   input Real normalized_command[4]
     "Normalized actuator/throttle command surface, expected in [0, 1]";
   Real saturated_normalized_command[4]

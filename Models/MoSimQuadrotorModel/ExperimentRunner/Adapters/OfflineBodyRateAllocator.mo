@@ -2,7 +2,8 @@ within MoSimQuadrotorModel.ExperimentRunner.Adapters;
 model OfflineBodyRateAllocator
   "MWORKS offline body-rate inner loop plus allocator; not PX4 evidence"
 
-  parameter Real hover_speed = 53.562090367172424;
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
   parameter Real command_scale = hover_speed / 13.985413115099604;
   parameter Real rate_gain = command_scale * 0.707 * 1.414;
   parameter Real max_rate_term = command_scale * 0.707 * 7;

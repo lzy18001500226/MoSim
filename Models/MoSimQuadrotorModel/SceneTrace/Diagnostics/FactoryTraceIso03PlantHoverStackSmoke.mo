@@ -3,7 +3,7 @@ model FactoryTraceIso03PlantHoverStackSmoke
   "Incremental trace isolation 03: Iso01 plus open-loop hover plant, actuators, sensors, and speed sensors"
   extends FactoryTraceIso01FullDisplaySmoke;
 
-  parameter Real hover_motor_speed_cmd = 53.562090367172424
+  parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s
     "MWORKS visual rotor hover speed; copied from project-owned Factory smoke wrapper without changing parameters";
 
   MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisTest17_1(

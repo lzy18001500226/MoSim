@@ -3,7 +3,7 @@ model OpenBlocksLinearMPCVehicle
   "Reusable whole-aircraft Linear-MPC tracking vehicle for multi-UAV planning experiments"
   parameter Real initial_position[3] = {0, 0, 0.22};
   parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604;
-  parameter Real hover_motor_speed_cmd = 53.562090367172424;
+  parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s;
   parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd;
 
   Modelica.Blocks.Interfaces.RealInput position_reference[3]

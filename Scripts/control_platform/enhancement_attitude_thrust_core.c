@@ -131,9 +131,9 @@ void mosim_enhancement_default_params(MosimEnhancementParams *params)
     params->schedule_error_threshold = 0.35;
     params->schedule_high_gain_scale = 1.35;
     params->ilc_forgetting_factor = 0.995;
-    params->mass_kg = 0.67;
+    params->mass_kg = 1.0;
     params->gravity_mps2 = 9.80665;
-    params->hover_percentage = 0.294;
+    params->hover_percentage = 0.37;
     params->max_tilt_rad = 0.65;
     params->min_collective_thrust_n = 0.0;
     params->max_collective_thrust_n = 2.5 * params->mass_kg * params->gravity_mps2;

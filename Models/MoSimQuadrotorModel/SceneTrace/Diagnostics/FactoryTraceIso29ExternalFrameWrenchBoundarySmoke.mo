@@ -8,7 +8,7 @@ model FactoryTraceIso29ExternalFrameWrenchBoundarySmoke
     animateGravity = false,
     n = {0, 0, -1},
     gravityType = Modelica.Mechanics.MultiBody.Types.GravityTypes.UniformGravity,
-    g = 9.81);
+    g = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_gravity_mps2);
   Modelica.Mechanics.MultiBody.Parts.Body external_test_body(
     animation = false,
     r_CM = {0, 0, 0},

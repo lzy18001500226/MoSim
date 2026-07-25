@@ -3,9 +3,10 @@ model RT1OfficialPidShadow50Hz
   "50 Hz Official PID MWORKS Live shadow controller"
 
   parameter Real samplePeriod=0.02;
-  parameter Real mass=0.67;
-  parameter Real gravity=9.81;
-  parameter Real hoverPercentage=0.294;
+  parameter Real mass=MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_mass_kg;
+  parameter Real gravity=MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_gravity_mps2;
+  parameter Real hoverPercentage=
+    MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_mworks_controller_hover_percentage;
   parameter Real kp[3]={11, 11, 4};
   parameter Real kv[3]={6.5, 6.5, 4};
 

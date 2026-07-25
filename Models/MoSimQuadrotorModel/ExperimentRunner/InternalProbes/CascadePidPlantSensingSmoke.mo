@@ -9,8 +9,10 @@ model CascadePidPlantSensingSmoke
   Real status_code;
 
 equation
-  plant.rotor_command = {53.562090367172424, -53.562090367172424,
-    53.562090367172424, -53.562090367172424};
+  plant.rotor_command = {MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s,
+    -MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s,
+    MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s,
+    -MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s};
   controller.position_ref = {1.0, -0.5, 0.8};
   connect(plant.position, controller.position_mea);
   connect(plant.attitude, controller.attitude_mea);

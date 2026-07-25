@@ -350,8 +350,8 @@ int main()
     params.kv[0] = 1.5;
     params.kv[1] = 1.5;
     params.kv[2] = 1.5;
-    params.mass = 0.67;
-    params.gravity = 9.8;
+    params.mass = 1.0;
+    params.gravity = 9.80665;
     params.hover_percentage = 0.37;
 
     CoreState ref_state;

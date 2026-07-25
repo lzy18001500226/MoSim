@@ -1,0 +1,132 @@
+{
+  "schema": "mosim.sunray150_virtual_px4_classic_profile.v1",
+  "profile_id": "sunray150_virtual_px4_classic_v1",
+  "status": "locked_virtual_seed_pending_runtime_recalibration",
+  "scope": {
+    "purpose": "One reproducible virtual Sunray150 plant for MWORKS and the ROS1 Gazebo Classic runtime lane.",
+    "not_real_aircraft_truth": true,
+    "requires_runtime_recalibration": [
+      "px4ctrl hov_percent short-hover calibration",
+      "motor order and yaw-sign small-step check",
+      "controller-family reruns before accepting any old metrics"
+    ]
+  },
+  "provenance": {
+    "takeoff_mass": {
+      "value_source": "user_locked_project_assumption",
+      "claim": "1.000 kg virtual takeoff mass"
+    },
+    "geometry": {
+      "value_source": "user-reviewed DAE/Blender assembly",
+      "audit_asset": "UE5/MoSimSceneLibrary/SourceAssets/Sunray150/Audit/sunray150_dae_mid360_realistic_material_audit.blend",
+      "claim": "Rotor centers and MID360 mechanical pose only. It does not identify dynamics.",
+      "mid360_mount_pose_m_rpy": [-0.000005, 0.032295, 0.050167, 0.0, 0.0, 4.712389],
+      "mid360_inline_ray_sensor_pose_m_rpy": [-0.000005, 0.032295, 0.150167, 0.0, 0.0, 4.712389]
+    },
+    "inertia": {
+      "value_source": "YunZong SDF seed",
+      "claim": "Unidentified virtual inertia seed, not measured Sunray150 truth."
+    },
+    "motor_aerodynamic_seed": {
+      "value_source": "PX4_Gazebo_default_seed",
+      "repository": "https://github.com/PX4/PX4-SITL_gazebo-classic",
+      "commit": "807b67bb3007113ea52fd36ec2cefae4a5fa3f85",
+      "path": "models/iris/iris.sdf.jinja",
+      "verified_utc": "2026-07-25",
+      "claim": "Pinned Gazebo Classic Iris motor-model seed. It is not a Sunray150 thrust-stand or flight-log identification result."
+    }
+  },
+  "gravity_mps2": 9.80665,
+  "mass_accounting": {
+    "total_takeoff_mass_kg": 1.0,
+    "rotor_count": 4,
+    "rotor_mass_kg_each": 0.005,
+    "mworks_quad_chassis": {
+      "body_mass_kg": 0.98,
+      "closure": "0.980 + 4 * 0.005 = 1.000 kg"
+    },
+    "mworks_physical_wrench": {
+      "one_body_mass_kg": 1.0,
+      "closure": "one rigid body = 1.000 kg"
+    },
+    "ros1_gazebo_classic": {
+      "nested_mid360": {
+        "base_link_mass_kg": 0.953,
+        "flight_imu_mass_kg": 0.015,
+        "mid360_nested_model_mass_kg": 0.01,
+        "camera_sensor_model_mass_kg_each": 0.001,
+        "camera_sensor_model_count": 2,
+        "closure": "0.953 + 0.015 + 4 * 0.005 + 0.010 + 2 * 0.001 = 1.000 kg"
+      },
+      "inline_mid360": {
+        "base_link_mass_kg": 0.963,
+        "flight_imu_mass_kg": 0.015,
+        "camera_sensor_model_mass_kg_each": 0.001,
+        "camera_sensor_model_count": 2,
+        "closure": "0.963 + 0.015 + 4 * 0.005 + 2 * 0.001 = 1.000 kg"
+      }
+    },
+    "gazebo_sim_assembled_compatibility": {
+      "base_link_mass_kg": 0.98,
+      "closure": "0.980 + 4 * 0.005 = 1.000 kg",
+      "boundary": "Visual/compatibility model only; ROS1 Gazebo Classic is the active runtime plant."
+    },
+    "gazebo_sim_assembled_motor_test_compatibility": {
+      "base_link_mass_kg": 0.98,
+      "closure": "0.980 + 4 * 0.005 = 1.000 kg",
+      "boundary": "Compatibility motor-model test only; it is not the active ROS1 Gazebo Classic runtime plant."
+    },
+    "px4ctrl_runtime_mass_kg": 1.0
+  },
+  "inertia": {
+    "diagonal_kg_m2": [0.0085, 0.0085, 0.012],
+    "semantic": "Existing YunZong SDF seed used by the one-body wrench adapter and the QuadChassis central body. Multi-body aggregate inertia is not claimed to be physically identified."
+  },
+  "rotor": {
+    "mass_kg_each": 0.005,
+    "inertia_diagonal_kg_m2": [0.000000975, 0.000173104, 0.000174004],
+    "gazebo_order": ["front_right", "back_left", "front_left", "back_right"],
+    "mworks_order": ["front_right", "front_left", "back_left", "back_right"],
+    "gazebo_to_mworks_indices": [0, 2, 1, 3],
+    "gazebo_centers_m": [
+      [0.053745, -0.05374, -0.014052],
+      [-0.053761, 0.05376, -0.014052],
+      [0.053746, 0.053759, -0.014052],
+      [-0.053761, -0.053739, -0.014052]
+    ],
+    "mworks_centers_m": [
+      [0.053745, -0.05374, -0.014052],
+      [0.053746, 0.053759, -0.014052],
+      [-0.053761, 0.05376, -0.014052],
+      [-0.053761, -0.053739, -0.014052]
+    ],
+    "gazebo_turning_direction": ["ccw", "ccw", "cw", "cw"],
+    "mworks_spin_command_sign": [1, -1, 1, -1],
+    "mworks_yaw_direction": [1, -1, 1, -1],
+    "acceptance_note": "The static mapping is coherent. A small yaw step remains mandatory before making a runtime yaw-sign claim."
+  },
+  "motor_model": {
+    "max_rotor_velocity_rad_s": 1100.0,
+    "motor_constant_n_per_rad_s2": 0.00000584,
+    "moment_constant_ratio_m": 0.06,
+    "time_constant_up_s": 0.0125,
+    "time_constant_down_s": 0.025,
+    "rotor_drag_coefficient": 0.000175,
+    "rolling_moment_coefficient": 0.000001,
+    "rotor_velocity_slowdown_sim": 10.0,
+    "mworks_visual_thrust_coefficient_n_per_rad_s2": 0.000584,
+    "hover_physical_rotor_speed_rad_s": 647.923778389665,
+    "hover_visual_rotor_speed_rad_s": 64.7923778389665,
+    "max_visual_rotor_speed_rad_s": 110.0,
+    "hover_normalized_command": 0.589021616717877,
+    "max_total_thrust_n": 28.2656
+  },
+  "controller_calibration": {
+    "mworks_controller_hover_percentage": 0.37,
+    "px4ctrl_hov_percent": 0.37,
+    "px4ctrl_thrust_estimate_enable": false,
+    "px4ctrl_runtime_config": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/config/ctrl_param_fpv.yaml",
+    "source": "existing virtual control calibration",
+    "boundary": "The MWORKS controller thrust-map percentage and px4ctrl hov_percent share the current 0.37 virtual calibration. Do not derive either value from mass, motor coefficient, or visual rotor-speed normalization. The nominal ROS1 px4ctrl configuration disables online thrust estimation so the virtual mapping is reproducible; a short, recorded hover recalibration may explicitly reopen it."
+  }
+}

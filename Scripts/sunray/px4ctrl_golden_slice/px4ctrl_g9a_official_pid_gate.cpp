@@ -88,9 +88,9 @@ void run_compatibility_case(GateStats &stats)
     params.ki[0] = 0.0;
     params.ki[1] = 0.0;
     params.ki[2] = 0.0;
-    params.mass = 0.67;
-    params.gravity = 9.8;
-    params.hover_percentage = 0.294;
+    params.mass = 1.0;
+    params.gravity = 9.80665;
+    params.hover_percentage = 0.37;
     params.max_normalized_thrust = 2.0;
     params.tilt_limit_rad = 1.2;
 
@@ -124,7 +124,7 @@ void run_integral_case(GateStats &stats)
     params.kv[2] = 0.1;
     params.ki[2] = 1.0;
     params.integral_limit[2] = 0.5;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.max_normalized_thrust = 2.0;
     params.tilt_limit_rad = 1.2;
 
@@ -161,7 +161,7 @@ void run_limit_and_disabled_cases(GateStats &stats)
     CoreParams params;
     params.kp[0] = 15.0;
     params.kp[2] = 20.0;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.max_normalized_thrust = 0.42;
     params.tilt_limit_rad = 0.05;
 

@@ -1,28 +1,18 @@
 within MoSimQuadrotorModel.Dynamics;
 model RotorActuatorCore
   "Experimental Sunray150 rotor dynamics core: command lag, thrust, yaw reaction torque, and rotor-center moment"
-  parameter Real mass_kg = 1.0
-    "source=SDF_migration; not a measured Sunray150 takeoff mass";
-  parameter Real lift_coefficient = 0.000854858
-    "source=SDF_migration; Sunray motorConstant scaled by rotorVelocitySlowdownSim^2 for MWORKS visual rotor speed";
-  parameter Real moment_constant = 0.06
-    "source=SDF_migration; Gazebo/Sunray yaw moment ratio seed, not ULog identified";
-  parameter Real time_constant_up = 0.0125
-    "source=SDF_migration; Sunray SDF motor plugin timeConstantUp";
-  parameter Real time_constant_down = 0.025
-    "source=SDF_migration; Sunray SDF motor plugin timeConstantDown";
-  parameter Real hover_motor_speed_cmd = sqrt(mass_kg * 9.81 / (4 * lift_coefficient))
-    "MWORKS visual rotor hover speed seed; physical Sunray rotor speed is 10x by rotorVelocitySlowdownSim";
-  parameter Real rotor_center[4, 3] = [
-    0.053745, -0.053740, -0.014052;
-    0.053746,  0.053759, -0.014052;
-   -0.053761,  0.053760, -0.014052;
-   -0.053761, -0.053739, -0.014052]
-    "source=user-reviewed DAE screw-pair fit, mapped to MWORKS Dronefixed1..4 order";
-  parameter Real spin_command_sign[4] = {1, -1, 1, -1}
-    "Existing MWORKS actuator command sign convention; requires PX4 motor-order validation before allocation claims";
-  parameter Real yaw_direction[4] = {1, -1, 1, -1}
-    "source=Sunray SDF turningDirection mapped to MWORKS Dronefixed1..4 order; positive is an experimental convention";
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile
+    "Source-labeled virtual plant profile; not identified real-aircraft truth";
+  parameter Real mass_kg = profile.takeoff_mass_kg;
+  parameter Real gravity_mps2 = profile.gravity_mps2;
+  parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
+  parameter Real moment_constant = profile.moment_constant_ratio_m;
+  parameter Real time_constant_up = profile.motor_time_constant_up_s;
+  parameter Real time_constant_down = profile.motor_time_constant_down_s;
+  parameter Real hover_motor_speed_cmd = sqrt(mass_kg * gravity_mps2 / (4 * lift_coefficient));
+  parameter Real rotor_center[4, 3] = profile.mworks_rotor_center_m;
+  parameter Real spin_command_sign[4] = profile.mworks_spin_command_sign;
+  parameter Real yaw_direction[4] = profile.mworks_yaw_direction;
   parameter Real thrust_effectiveness[4] = {1, 1, 1, 1}
     "Per-rotor thrust effectiveness for degradation/fault studies; default preserves nominal dynamics";
   parameter Real reaction_moment_effectiveness[4] = {1, 1, 1, 1}
@@ -65,7 +55,7 @@ equation
   total_moment_body[1] = sum({rotor_arm_moment[i, 1] for i in 1:4});
   total_moment_body[2] = sum({rotor_arm_moment[i, 2] for i in 1:4});
   total_moment_body[3] = sum({rotor_arm_moment[i, 3] for i in 1:4});
-  hover_thrust_error = total_thrust - mass_kg * 9.81;
+  hover_thrust_error = total_thrust - mass_kg * gravity_mps2;
   minimum_thrust_effectiveness = min(thrust_effectiveness);
   minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness);
   annotation(__MWORKS(hide=true,version="26.3.0"));

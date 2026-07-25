@@ -83,7 +83,7 @@ Vec3 b3_from_quat(const Quat &q_raw)
 void run_hover_case(GateStats &stats)
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.min_normalized_thrust = 0.0;
     params.max_normalized_thrust = 1.0;
     params.tilt_limit_rad = 0.8;
@@ -112,7 +112,7 @@ void run_horizontal_error_case(GateStats &stats)
     params.kv[0] = 0.0;
     params.kv[1] = 0.0;
     params.kv[2] = 0.0;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.tilt_limit_rad = 0.8;
     CoreState state;
     mosim_px4ctrl::reset_thrust_mapping(params, state);
@@ -131,7 +131,7 @@ void run_horizontal_error_case(GateStats &stats)
 void run_yaw_and_feedforward_cases(GateStats &stats)
 {
     CoreParams params;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.tilt_limit_rad = 1.2;
     CoreState state;
     mosim_px4ctrl::reset_thrust_mapping(params, state);
@@ -160,7 +160,7 @@ void run_limit_and_disabled_cases(GateStats &stats)
 {
     CoreParams params;
     params.kp[0] = 20.0;
-    params.hover_percentage = 0.294;
+    params.hover_percentage = 0.37;
     params.min_normalized_thrust = 0.0;
     params.max_normalized_thrust = 0.45;
     params.tilt_limit_rad = 0.20;

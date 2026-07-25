@@ -3,7 +3,8 @@ model AWFFRotorAdapter
   "AWFF Sysblock bridge with explicit ROTOR_COMMAND output"
 
   extends MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialRotorCommandController;
-  parameter Real hover_speed = 53.562090367172424;
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
   parameter Real command_scale = hover_speed / 13.985413115099604;
   MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FullControllerEquation_Sysblock core;
   annotation(__MWORKS(version="26.3.0"));

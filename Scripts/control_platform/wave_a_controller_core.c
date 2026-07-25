@@ -132,7 +132,7 @@ void mosim_wave_a_default_params(MosimWaveAParams *params)
     const MosimWaveAParams defaults = {
         {1.6, 1.6, 2.2}, {1.8, 1.8, 2.0}, {0.20, 0.20, 0.30}, {0.50, 0.50, 0.35},
         {1.1, 1.1, 1.3}, {1.8, 1.8, 2.0}, {3.0, 3.0, 1.8}, {5.0, 5.0, 3.0},
-        0.67, 9.8, 0.37, 0.5235987755982988
+        1.0, 9.80665, 0.37, 0.5235987755982988
     };
     if (params != NULL) *params = defaults;
 }

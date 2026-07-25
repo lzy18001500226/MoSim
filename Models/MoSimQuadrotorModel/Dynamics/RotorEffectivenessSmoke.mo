@@ -5,7 +5,7 @@ model RotorEffectivenessSmoke
     "1-based rotor index used for the smoke degradation";
   parameter Real degraded_rotor_thrust_effectiveness = 0.85
     "Smoke value only; not an identified Sunray150 fault model";
-  parameter Real expected_nominal_total_thrust(unit = "N") = 9.81
+  parameter Real expected_nominal_total_thrust(unit = "N") = 9.80665
     "Reference hover thrust for the default mass seed";
   RotorActuatorCore dynamics(
     thrust_effectiveness = {

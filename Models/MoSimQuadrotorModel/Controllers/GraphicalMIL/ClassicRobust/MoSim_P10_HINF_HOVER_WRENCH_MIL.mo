@@ -32,14 +32,14 @@ model MoSim_P10_HINF_HOVER_WRENCH_MIL
   SysplorerEmbeddedCoder.Sources.Constant enable_source(k=1.0) annotation(Placement(transformation(origin={-600,-120.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant reset_source(k=0.0) annotation(Placement(transformation(origin={-600,-144.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant mass_source(k=1.0) annotation(Placement(transformation(origin={-600,-168.00},extent={{-8,-8},{8,8}})));
-  SysplorerEmbeddedCoder.Sources.Constant gravity_source(k=9.8) annotation(Placement(transformation(origin={-600,-192.00},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant gravity_source(k=9.80665) annotation(Placement(transformation(origin={-600,-192.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant force_min_n_source(k=0.0) annotation(Placement(transformation(origin={-600,-216.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant force_max_n_source(k=25.0) annotation(Placement(transformation(origin={-600,-240.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant torque_limit_nm_source(k=8.0) annotation(Placement(transformation(origin={-600,-264.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant roll_stiffness_nm_per_rad_source(k=30.0) annotation(Placement(transformation(origin={-600,-288.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant pitch_stiffness_nm_per_rad_source(k=30.0) annotation(Placement(transformation(origin={-600,-312.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant yaw_stiffness_nm_per_rad_source(k=40.0) annotation(Placement(transformation(origin={-600,-336.00},extent={{-8,-8},{8,8}})));
-  SysplorerEmbeddedCoder.Sources.Constant hover_percentage_source(k=0.294) annotation(Placement(transformation(origin={-600,-360.00},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant hover_percentage_source(k=0.37) annotation(Placement(transformation(origin={-600,-360.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant tilt_limit_rad_source(k=0.35) annotation(Placement(transformation(origin={-600,-384.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant yaw_correction_limit_rad_source(k=0.2) annotation(Placement(transformation(origin={-600,-408.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant min_normalized_thrust_source(k=0.0) annotation(Placement(transformation(origin={-600,-432.00},extent={{-8,-8},{8,8}})));

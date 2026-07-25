@@ -98,7 +98,7 @@ model MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL "H2 state-feedback direct 
     annotation (Placement(transformation(origin = {230, 130}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation pitch_tilt_limit(lowLimit=-0.5235987755982988,upLimit=0.5235987755982988)
     annotation (Placement(transformation(origin = {320, 130}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain vertical_force_allocation(k=0.67)
+  SysplorerEmbeddedCoder.MathOperation.Gain vertical_force_allocation(k=1.0)
     annotation (Placement(transformation(origin = {230, -45}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation collective_thrust_limit(lowLimit=0.0,upLimit=16.0)
     annotation (Placement(transformation(origin = {320, -45}, extent = {{-14, -11}, {14, 11}})));

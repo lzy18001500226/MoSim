@@ -139,9 +139,9 @@ model MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL
   SysplorerEmbeddedCoder.Sources.Constant integral_limit_x_source(k=0.5) annotation(Placement(transformation(origin={-600,-1476.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant integral_limit_y_source(k=0.5) annotation(Placement(transformation(origin={-600,-1500.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant integral_limit_z_source(k=0.3) annotation(Placement(transformation(origin={-600,-1524.00},extent={{-8,-8},{8,8}})));
-  SysplorerEmbeddedCoder.Sources.Constant mass_source(k=0.67) annotation(Placement(transformation(origin={-600,-1548.00},extent={{-8,-8},{8,8}})));
-  SysplorerEmbeddedCoder.Sources.Constant gravity_source(k=9.8) annotation(Placement(transformation(origin={-600,-1572.00},extent={{-8,-8},{8,8}})));
-  SysplorerEmbeddedCoder.Sources.Constant hover_percentage_source(k=0.294) annotation(Placement(transformation(origin={-600,-1596.00},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant mass_source(k=1.0) annotation(Placement(transformation(origin={-600,-1548.00},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant gravity_source(k=9.80665) annotation(Placement(transformation(origin={-600,-1572.00},extent={{-8,-8},{8,8}})));
+  SysplorerEmbeddedCoder.Sources.Constant hover_percentage_source(k=0.37) annotation(Placement(transformation(origin={-600,-1596.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant min_normalized_thrust_source(k=0.0) annotation(Placement(transformation(origin={-600,-1620.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant max_normalized_thrust_source(k=0.62) annotation(Placement(transformation(origin={-600,-1644.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant tilt_limit_rad_source(k=0.35) annotation(Placement(transformation(origin={-600,-1668.00},extent={{-8,-8},{8,8}})));

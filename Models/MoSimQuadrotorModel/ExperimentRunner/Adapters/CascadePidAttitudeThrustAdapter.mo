@@ -4,14 +4,16 @@ model CascadePidAttitudeThrustAdapter
 
   extends MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialAttitudeThrustController;
 
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
   parameter Real sample_time_s = 0.01;
-  parameter Real mass_kg = 1.0;
-  parameter Real gravity_mps2 = 9.80665;
+  parameter Real mass_kg = profile.takeoff_mass_kg;
+  parameter Real gravity_mps2 = profile.gravity_mps2;
   parameter Real max_tilt_rad = 0.5235987755982989;
   parameter Real min_collective_thrust_n = 0.0;
-  parameter Real max_collective_thrust_n = 19.6133;
-  parameter Real hover_speed = 53.562090367172424;
-  parameter Real lift_coefficient = 0.000854858;
+  parameter Real max_collective_thrust_n = 2 * mass_kg * gravity_mps2
+    "Controller safety limit; below the virtual plant physical maximum thrust";
+  parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
+  parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
   parameter Real max_rotor_speed_delta = 30.0;
   parameter Real hover_collective_thrust_n = 4 * lift_coefficient * hover_speed ^ 2;
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;

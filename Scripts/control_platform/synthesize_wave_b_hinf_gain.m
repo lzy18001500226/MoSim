@@ -4,7 +4,7 @@ function synthesize_wave_b_hinf_gain(upstream_dir, output_path)
 addpath(upstream_dir);
 
 mass = 1.0;
-gravity = 9.8;
+gravity = 9.80665;
 inertia_x = 0.01466;
 inertia_y = 0.01466;
 inertia_z = 0.02848;

@@ -36,7 +36,7 @@ static MosimLearningAttitudeThrustInput base_input(int mode) {
   MosimLearningAttitudeThrustInput input;
   memset(&input, 0, sizeof(input));
   input.mode = mode; input.dt = 0.01; input.enable = 1; input.learning_enable = 1;
-  input.mass_kg = 0.67; input.gravity_mps2 = 9.80665; input.hover_percentage = 0.294;
+  input.mass_kg = 1.0; input.gravity_mps2 = 9.80665; input.hover_percentage = 0.37;
   input.max_tilt_rad = 0.5235987755982988;
   input.min_collective_thrust_n = 0.0; input.max_collective_thrust_n = 22.35;
   input.attitude_enu_flu_wxyz.w = 1.0;

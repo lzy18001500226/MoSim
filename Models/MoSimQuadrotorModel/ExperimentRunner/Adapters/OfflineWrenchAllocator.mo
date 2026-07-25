@@ -2,7 +2,8 @@ within MoSimQuadrotorModel.ExperimentRunner.Adapters;
 model OfflineWrenchAllocator
   "MWORKS offline wrench-to-rotor allocator"
 
-  parameter Real hover_speed = 53.562090367172424;
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
   parameter Real torque_to_command = hover_speed / 13.985413115099604 * 0.707;
   Modelica.Blocks.Interfaces.RealInput body_force[3];
   Modelica.Blocks.Interfaces.RealInput body_torque[3];

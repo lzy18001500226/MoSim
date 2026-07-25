@@ -1,15 +1,10 @@
 within MoSimQuadrotorModel.Dynamics;
 model WrapperSurface
   "Project-owned wrapper surface for the Sunray150 Rfly-style rotor dynamics core"
-  parameter Real expected_yaw_direction[4] = {1, -1, 1, -1}
-    "MWORKS wrapper yaw direction convention validated only as a source-labeled smoke gate";
-  parameter Real expected_rotor_center[4, 3] = [
-    0.053745, -0.053740, -0.014052;
-    0.053746,  0.053759, -0.014052;
-   -0.053761,  0.053760, -0.014052;
-   -0.053761, -0.053739, -0.014052]
-    "source=user-reviewed DAE screw-pair fit, in MWORKS Dronefixed1..4 order";
-  RotorActuatorCore dynamics;
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real expected_yaw_direction[4] = profile.mworks_yaw_direction;
+  parameter Real expected_rotor_center[4, 3] = profile.mworks_rotor_center_m;
+  RotorActuatorCore dynamics(profile = profile);
   Real motor_command[4](each unit = "rad/s")
     "Signed MWORKS visual rotor speed command surface";
   Real commanded_thrust[4](each unit = "N")
@@ -54,7 +49,7 @@ equation
   commanded_total_moment_body[1] = sum({commanded_rotor_arm_moment[i, 1] for i in 1:4});
   commanded_total_moment_body[2] = sum({commanded_rotor_arm_moment[i, 2] for i in 1:4});
   commanded_total_moment_body[3] = sum({commanded_rotor_arm_moment[i, 3] for i in 1:4});
-  commanded_hover_thrust_error = commanded_total_thrust - dynamics.mass_kg * 9.81;
+  commanded_hover_thrust_error = commanded_total_thrust - dynamics.mass_kg * dynamics.gravity_mps2;
   yaw_moment_gate = total_moment_body[3];
   commanded_yaw_moment_gate = commanded_total_moment_body[3];
   minimum_thrust_effectiveness = dynamics.minimum_thrust_effectiveness;

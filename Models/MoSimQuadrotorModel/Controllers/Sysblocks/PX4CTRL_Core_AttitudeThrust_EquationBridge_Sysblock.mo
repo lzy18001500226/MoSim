@@ -14,9 +14,9 @@ model PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock
   parameter Real kv_x = 1.5;
   parameter Real kv_y = 1.5;
   parameter Real kv_z = 1.5;
-  parameter Real mass = 0.67;
-  parameter Real gravity = 9.8;
-  parameter Real hover_percentage = 0.37;
+  parameter Real mass = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_mass_kg;
+  parameter Real gravity = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_gravity_mps2;
+  parameter Real hover_percentage = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_px4ctrl_hover_percentage;
   parameter Real eps = 1e-12;
 
   SysplorerEmbeddedCoder.Port.Inport px annotation(Placement(transformation(origin={-400,330},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));

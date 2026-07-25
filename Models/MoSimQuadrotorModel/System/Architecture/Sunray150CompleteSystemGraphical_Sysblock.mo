@@ -3,7 +3,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
   "Sunray150 complete graphical system with project AWFF Sysblock data flow"
   parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604
     "Original MWORKS-equivalent hover command before Sunray150 SDF motorConstant calibration";
-  parameter Real hover_motor_speed_cmd = 53.562090367172424
+  parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s
     "MWORKS visual rotor hover speed; physical Sunray150 motor speed is 10x by rotorVelocitySlowdownSim";
   parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd
     "Scale legacy controller speed increments to the Sunray150 SDF motorConstant speed domain";
@@ -83,7 +83,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
       annotation (Placement(transformation(origin = {110, -135}, extent = {{-5, -5}, {5, 5}})));
     Real position_est_state[3](start = {0, 0, 0}, fixed = {true, true, true});
     Real attitude_est_state[3](start = {0, 0, 0}, fixed = {true, true, true});
-    Real motor_speed_est_state[4](start = {53.562090367172424, -53.562090367172424, 53.562090367172424, -53.562090367172424}, fixed = {true, true, true, true});
+    Real motor_speed_est_state[4](start = {MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s, -MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s, MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s, -MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s}, fixed = {true, true, true, true});
   equation
     for i in 1:3 loop
       der(position_est_state[i]) = if gps_valid > 0.5 then (gps_position[i] - position_est_state[i]) / estimator_position_T else 0;
@@ -287,7 +287,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
 
   block AWFFControllerModule
     "Encapsulated AWFF graphical controller, error generation, hover trim, and motor command scaling"
-    parameter Real hover_motor_speed_cmd = 53.562090367172424;
+    parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s;
     parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604;
     parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd;
     Modelica.Blocks.Interfaces.RealInput reference_position[3]
@@ -361,7 +361,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
 
   model MotorDriveModule
     "Motor actuator with speed feedback, shown as one top-level motor block"
-    parameter Real initial_speed = 53.562090367172424;
+    parameter Real initial_speed = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s;
     Modelica.Blocks.Interfaces.RealInput command
       annotation (Placement(transformation(origin = {-110, 0}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput speed

@@ -354,7 +354,7 @@ void mosim_wave_b_hinf_default_params(MosimWaveBHinfParams *params)
         memcpy(params->gain[row], gain[row], sizeof(gain[row]));
     }
     params->mass = 1.0;
-    params->gravity = 9.8;
+    params->gravity = 9.80665;
     params->force_min_n = 0.0;
     params->force_max_n = 25.0;
     params->torque_limit_nm = 8.0;
@@ -456,14 +456,14 @@ void mosim_p10_hinf_adapter_default_params(MosimP10HinfAdapterParams *params)
     if (params == NULL) return;
     memset(params, 0, sizeof(*params));
     params->mass = 1.0;
-    params->gravity = 9.8;
+    params->gravity = 9.80665;
     params->force_min_n = 0.0;
     params->force_max_n = 25.0;
     params->torque_limit_nm = 8.0;
     params->attitude_stiffness[0] = 30.0;
     params->attitude_stiffness[1] = 30.0;
     params->attitude_stiffness[2] = 40.0;
-    params->hover_percentage = 0.294;
+    params->hover_percentage = 0.37;
     params->tilt_limit_rad = 0.35;
     params->yaw_correction_limit_rad = 0.20;
     params->min_normalized_thrust = 0.0;

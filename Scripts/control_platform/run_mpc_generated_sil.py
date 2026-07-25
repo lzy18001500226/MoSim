@@ -27,7 +27,7 @@ INPUT_VALUES = {
     "reference_velocity_y": -0.2, "reference_velocity_z": 0.0,
     "reference_acceleration_x": 0.05, "reference_acceleration_y": -0.04,
     "reference_acceleration_z": 0.02, "reference_yaw": 0.3,
-    "mass_kg": 0.67, "gravity_mps2": 9.80665, "hover_percentage": 0.291,
+    "mass_kg": 1.0, "gravity_mps2": 9.80665, "hover_percentage": 0.37,
     "max_tilt_rad": 0.5235987755982988,
     "min_collective_thrust_n": 0.0, "max_collective_thrust_n": 16.0,
     "enable": 1.0, "reset": 0.0,
@@ -75,7 +75,7 @@ static void print_case(int id) {{
     MosimMpcInput in = {{0.01, {{0.2,-0.1,0.7}}, {{-0.3,0.2,-0.1}},
         {{1.0,0.5,1.2}}, {{0.1,-0.2,0.0}}, {{0.05,-0.04,0.02}}, 0.3, 1, 0}};
     mosim_mpc_default_params(&p); mosim_mpc_reset(&s);
-    p.mass_kg = 0.67; p.gravity_mps2 = 9.80665; p.hover_percentage = 0.291;
+    p.mass_kg = 1.0; p.gravity_mps2 = 9.80665; p.hover_percentage = 0.37;
     p.max_tilt_rad = 0.5235987755982988;
     p.min_collective_thrust_n = 0.0; p.max_collective_thrust_n = 16.0;
     for (step=0; step<3; ++step) (void)mosim_mpc_step(id, &p, &s, &in, &output);
