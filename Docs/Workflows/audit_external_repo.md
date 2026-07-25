@@ -75,8 +75,9 @@ integration recommendation:
 next validation:
 ```
 
-For agent, skill, or workflow-runtime repositories, use the three-pass audit
-structure from `Docs/Workflows/agent_orchestration.md`:
+For agent, skill, or workflow-runtime repositories, use this three-pass audit
+structure. It is part of this workflow; do not load retired orchestration
+documents:
 
 ```text
 PASS 1 inventory:

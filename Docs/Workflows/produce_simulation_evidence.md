@@ -63,12 +63,24 @@ load/check/simulate/plot/result/animation phases; if the target is minimized,
 restore it only enough to paint, capture, validate size/content, then minimize
 after.
 
-After the run finishes, use `Docs/Workflows/post_simulation_task_flow.md` as
-the total post-run queue. It owns the order for result inventory, raw CSV
-extraction, metric calculation, quality classification, figure/replay
-generation, evidence-bundle audit, report update candidates, and UE transition
-readiness. Do not skip directly from `simulate_model ok` to report wording or
-UE rendering.
+After the run finishes, complete the post-run chain in this order. Do not skip
+directly from `simulate_model ok` to report wording or UE rendering:
+
+```text
+result inventory
+  -> raw CSV extraction
+  -> metric calculation
+  -> quality classification
+  -> figures/replay when justified
+  -> evidence-bundle audit
+  -> report/manual candidate or explicit limitation
+  -> optional UE replay preparation after the evidence gate passes
+```
+
+For a non-trivial post-run task, keep the inventory, missing-artifact notes, and
+derived outputs under the same experiment's `logs/`, `raw/`, `metrics/`,
+`figures/`, `replay/`, and `screenshots/` directories. Do not create a separate
+project-wide post-run plan or progress document.
 
 Project entrypoints:
 

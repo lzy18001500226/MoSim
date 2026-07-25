@@ -1,6 +1,8 @@
 # Add Controller Workflow
 
-> Status: current G9 controller-family workflow, single active Codex thread.
+> Status: reusable controller-addition workflow. Its G9 family sequence is
+> historical trace-back, while current evidence selection follows
+> `Docs/Workflows/controller_evidence_closeout.md` and the current board.
 > This workflow is static-first. It does not start ROS, Gazebo, PX4, MAVROS,
 > RViz, UE, or MWORKS unless the current user request explicitly opens that live
 > scope.
@@ -11,7 +13,7 @@ Add one controller or one bounded augmentation to MoSim without breaking the
 frozen G8 generated-core baseline or the Diff-Planner single/three-UAV runtime
 baseline.
 
-Current G9 first batch:
+Historical G9 first batch:
 
 ```text
 G9-0: controller registry, ExperimentProfile, Launch Plan, Run Manifest, static gates
@@ -25,14 +27,10 @@ G9-F: NMPC outer loop
 
 The current execution selector is
 `Docs/Workflows/mainline_operations_board.md`, not this workflow by itself.
-As of the current board, G9.5/G9.6 closeout evidence and the G9 family
-MWORKS/codegen plus ROS/Sunray runtime reinjection evidence have already been
-recorded. The next controller-side work is therefore a bounded enhancement
-reopen: L1/AWFF, Safety Filter, and Fault Allocation must each start from the
-smallest Gazebo-verified gate, then accepted enhancements can be promoted
-through the MWORKS/codegen chain. Do not restart old G10 static-only probes or
-the earlier G11 closure sequence unless the board or user explicitly reopens
-that evidence.
+Before promoting a new controller into the active evidence matrix, read
+`Docs/Workflows/controller_evidence_closeout.md` for the frozen model-root,
+claim boundary, and G1-G7 gates. Do not restart historical G9/G10/G11
+sequences unless the board or user explicitly reopens that evidence.
 
 Do not treat a roadmap entry or a `ControllerProfile` entry as an implemented
 controller. Planned controllers must stay blocked by `C-CTRL-01` until source
@@ -258,7 +256,7 @@ G11:
   candidate, and do not treat generated source or static adapter shape as
   runtime replacement.
 
-  Current G9 family codegen evidence has three completed static/offline gates:
+  Historical G9 family codegen evidence has three completed static/offline gates:
   MWORKS GenerateModelCode at
   `Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work`,
   generated-C equivalence at

@@ -23,8 +23,8 @@
       ],
       "owner_docs": [
         "Config/protocol/communication_contract.md",
-        "Docs/Workflows/coagent_ops_patrol_workflow.md",
-        "Docs/Workflows/mosim_visible_dispatch_adapter.md"
+        "Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md",
+        "Docs/Cache/agent_legacy/legacy_workflows_20260624/mosim_visible_dispatch_adapter.md"
       ],
       "existing_assets": [
         "Config/protocol/templates/visible_thread_dispatch_packet.json",
@@ -57,7 +57,7 @@
       ],
       "owner_docs": [
         "AGENTS.md",
-        "Docs/Workflows/agent_orchestration.md"
+        "Docs/Cache/agent_legacy/legacy_workflows_20260624/agent_orchestration.md"
       ],
       "existing_assets": [
         "Config/legacy/department_threads.json"
@@ -116,7 +116,7 @@
         "current coordinating-thread MoSim work must not select this as the execution route"
       ],
       "owner_docs": [
-        "Docs/Workflows/coagent_ops_patrol_workflow.md"
+        "Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md"
       ],
       "existing_assets": [
         "Docs/Workflows/mainline_operations_board.md",
@@ -535,7 +535,7 @@
         "acceptance, blocker classification, or claim-boundary review is needed"
       ],
       "owner_docs": [
-        "Docs/Workflows/agent_project_operating_layers.md",
+        "Docs/Workflows/single_thread_operating_model.md",
         "Config/profiles/README.md",
         "Docs/Workflows/pre_submit_check.md"
       ],

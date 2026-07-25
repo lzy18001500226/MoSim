@@ -11,11 +11,12 @@ not by simulator names.
 | Order | Path | Purpose |
 |---:|---|---|
 | 1 | `../Cache/cosim/cosim_rebuild_plan_20260614.md` | Rebuild goal, captured user requirements, and preservation rules. |
-| 2 | `research/README.md` | Short, template-based research conclusions and backend decisions. |
-| 3 | `00_platform/00_CoSim总体蓝图.md` | Product-level blueprint and authority tree. |
-| 4 | `10_shared_core/01_共享内核与数据契约.md` | Shared kernel, contracts, clock, logs, replay, and evidence. |
-| 5 | `20_vehicle_families/README.md` | Vehicle-family capability tree. |
-| 6 | `30_backend_adapters/README.md` | Backend adapter decisions and comparison matrix. |
+| 2 | `research/raw/CoSim设计.md` | Preserved three-phase platform roadmap. Keep it intact; it is future direction, not current MoSim completion status. |
+| 3 | `research/README.md` | Short, template-based research conclusions and backend decisions. |
+| 4 | `00_platform/00_CoSim总体蓝图.md` | Product-level blueprint and authority tree. |
+| 5 | `10_shared_core/01_共享内核与数据契约.md` | Shared kernel, contracts, clock, logs, replay, and evidence. |
+| 6 | `20_vehicle_families/README.md` | Vehicle-family capability tree. |
+| 7 | `30_backend_adapters/README.md` | Backend adapter decisions and comparison matrix. |
 
 ## Directory Map
 

@@ -631,16 +631,19 @@ Portable agent protocol does not own MWORKS, ROS2, UE, or asset-specific enginee
 truth. Host projects must keep those rules in host adapters, workflows, skills,
 or checkers and point task packets to them.
 
-For MoSim, the host adapter is:
+For legacy MoSim visible-department packet audits, the historical host adapter
+is:
 
 ```text
-Docs/Workflows/mosim_visible_dispatch_adapter.md
+Docs/Cache/agent_legacy/legacy_workflows_20260624/mosim_visible_dispatch_adapter.md
 ```
 
-It contains the current MWORKS/Sysplorer/Syslab live gate, ROS2/RViz2/FAST-LIO
-runtime boundary, UE source/build/runtime/review boundary, Sunray150 asset/PBR
-boundary, R2/R3 failover specialization, and engineering-output requirements.
-Other projects should provide their own equivalent host adapter.
+It preserves the previous MWORKS/Sysplorer/Syslab, ROS2/RViz2/FAST-LIO, UE,
+Sunray150, R2/R3, and engineering-output gate wording for trace-back only. It
+does not define the current MoSim runtime or task route. Current work follows
+`AGENTS.md`, `Docs/Workflows/single_thread_operating_model.md`, and the
+selected topic workflow. Other projects should provide their own current host
+adapter when they use this legacy protocol.
 
 Host-specific gates may still have machine checks. For example, MoSim live
 MWORKS packets are checked with:

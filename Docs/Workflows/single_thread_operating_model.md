@@ -1,103 +1,66 @@
 # Coordinating-Thread Operating Model
 
-> Current MoSim operating rule, 2026-07-24. This replaces the former
-> multi-visible-thread dispatch model for active project work.
+> Current operating rule for MoSim work. This is a practical work loop, not a
+> second architecture document or a historical dispatch handbook.
 
-## 1. Current Rule
+## 1. Ownership
 
-MoSim now uses one active coordinating Codex thread. The coordinating thread
-owns:
+One coordinating Codex thread owns task scope, engineering priority,
+integration, user communication, and final claims. Official temporary
+subagents may handle independent bounded research, inspection, or verification;
+the coordinating thread still owns integration and may not use them as durable
+departments, hidden acceptance owners, or parallel writers of shared paths.
 
-- reading the compact project entry;
-- selecting the next engineering step;
-- running local tools and checks;
-- updating project docs when a reusable rule changes;
-- producing evidence, blocker notes, figures, scripts, and report materials;
-- asking the user before changing architecture or taking high-risk runtime
-  actions.
+Former visible-thread dispatch, patrol automation, R1/R2/R3 departments, and
+task-ledger routing are historical only. Their records belong in `Docs/Cache/`.
 
-### Official Temporary Subagents
-
-Official temporary subagents are a current bounded delegation surface, not the
-retired visible-thread system. Use them for independent work with a clear return
-point when parallelism materially improves speed or confidence, such as focused
-research, review, inspection, or disjoint verification.
-
-The coordinating thread defines the scope, integrates every returned finding,
-and owns user communication and final claims. Do not use temporary subagents as
-durable departments, a project backlog, PMO authority, a hidden acceptance
-owner, or a visible-thread dispatch route. Parallel writes, Git mutations, GUI,
-MCP, or live runtime work require explicit ownership and coordination in the
-parent task.
-
-Former visible-thread dispatch concepts are legacy for current work:
-
-- no R1/R2/R3 department routing;
-- no visible-thread dispatch queue;
-- no patrol-owner bounded dispatch;
-- no dispatch ticket SLO as an active PMO control loop;
-- no routine thread patrol, recovery, or restart policy inside project docs.
-
-## 2. Startup Chain
-
-Use this startup chain for ordinary MoSim work:
+## 2. Normal Work Loop
 
 ```text
-1. AGENTS.md
-2. Docs/Workflows/new_conversation_context.md
-3. Docs/Workflows/mainline_operations_board.md
-4. Topic-specific workflow / skill / design docs only as needed
+user objective
+  -> local goal and owner layer
+  -> smallest relevant source/design/workflow/result context
+  -> one bounded edit, check, or runtime gate
+  -> evidence or precise blocker
+  -> update the owner document only when a reusable fact changed
 ```
 
-Do not load retired agent-OS internals, retired dispatch internals, or
-`Docs/Workflows/agent_task_ledger.md` during normal startup unless the task is
-explicitly about legacy cleanup, packet audit, or historical recovery.
+The current board selects the task. Topic workflows explain how to act after a
+task is selected; they do not create priority or authorize unrelated work.
 
-## 3. Current Engineering Priority
+## 3. Avoid Process Inflation
 
-Follow the current board. As of this rule, the active runtime lane is:
+Do not turn a straightforward task into a chain of new plans, smoke tests,
+packages, scripts, or progress documents.
 
-```text
-Docs/Design/架构.md
-Docs/Workflows/mainline_operations_board.md
-Docs/Workflows/sunray_ros1_current_runtime_lane.md
-References/Sunray
-References/Lab/localization_slam/FAST_LIO
-```
+Before creating any new artifact, identify all three:
 
-This means Ubuntu-20.04 / ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS
-/ px4ctrl with RViz point-cloud, trajectory, map, and frame evidence. Do not
-substitute the old ROS2/PX4/x500 route, downloaded replacement FAST-LIO, fake
-point clouds, headless-only evidence, or UE screenshots for the current review
-target.
+1. its reader or executable consumer;
+2. the specific decision, contract, or evidence gap it owns;
+3. why an existing owner file, model, profile, script, test, or result path
+   cannot own it.
 
-## 4. How The Coordinating Thread Works
+If a focused inspection produces no new factual finding, stop widening the
+search. Choose one of: a small observable probe, targeted source/official
+research, an existing recovery action, or the next independent task. Do not
+repeat the same diagnosis or add paperwork to appear active.
 
-For each task:
+New experiments use the canonical model root, existing configuration/profile
+layout, and `Results/` evidence layout. A single experiment never justifies a
+second top-level Modelica package or a new project-wide workflow.
 
-1. State the local goal when the task is non-trivial.
-2. Inspect the smallest relevant docs/source/evidence set.
-3. Run the narrowest useful check before broad changes.
-4. Add logs/prints/checkpoints when debugging runtime behavior.
-5. If an API, tool behavior, or runtime issue is unclear, consult local docs
-   first, then official docs or targeted web/community sources when needed.
-6. Stop and ask the user before changing the agreed architecture, switching
-   to an equivalent substitute, deleting large structures, or performing
-   disruptive GUI/runtime actions.
-7. Record durable evidence in the normal project locations.
-8. When a named small task, goal, gate, or review packet reaches completion,
-   blocker, or review-required state, send one short Chinese email through
-   `Scripts/agent/send_gateway_email_alert.py`. Use a unique task/gate
-   `--cooldown-key`; for explicit terminal notices, use
-   `--cooldown-minutes 0` when the default cooldown could suppress a distinct
-   small-task result. Do not send email for ordinary chat replies or
-   intermediate observations.
+## 4. Quality And Stop Rules
 
-## 5. Legacy Boundaries
+- Use the narrowest relevant check before broad changes.
+- Separate source/static, GUI/review, and live-runtime claims.
+- Stop for architecture changes, unapproved broad deletion/moves, unknown
+  license/login/authorization state, or a required live action outside scope.
+- For a recoverable tool/UI issue, try the documented local recovery first;
+  report a blocker only after the bounded recovery path has produced evidence.
+- Record durable evidence in `Results/`, not in a growing operations narrative.
 
-Legacy multi-thread documents may still be useful as research history, but
-they are not active project instructions unless the current task explicitly
-says so.
+## 5. Completion
 
-Keep executable hook/checker/script paths untouched until a separate cleanup
-pass proves they are unused or replaces their references.
+For a changed project path: inspect the scoped diff, run the relevant checks,
+stage exact files, commit, push, and verify publication. A documentation cleanup
+does not imply runtime, controller, planner, or simulation acceptance.

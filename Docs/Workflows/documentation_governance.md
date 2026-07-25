@@ -39,6 +39,12 @@ truth until checked against current files or evidence.
 If a document is not meant to be loaded during normal work, put it under
 `Docs/Cache/` or make the active file a short redirect stub.
 
+An active document may be removed rather than left as a redirect stub when its
+historical body is already preserved in `Docs/Cache/`, no current executable or
+human-facing path requires the old filename, and all active references have
+been updated. Use redirect stubs only for externally referenced paths that
+must fail closed during a transition.
+
 ## 3. When To Update Docs
 
 Update documentation when a task discovers a reusable fact:
@@ -84,6 +90,24 @@ what to do when blocked
 
 Avoid long essays, repeated hotfix paragraphs, and old incident history inside
 active workflows. Put historical material in `Docs/Cache/`.
+
+## 4.1 Avoid Process Inflation
+
+Do not create a workflow, smoke test, script, model root, task plan, or progress
+document merely because ordinary work has started or encountered a routine
+failure. Before adding a persistent artifact, identify its reader or executable
+consumer, the exact responsibility it owns, and why the existing owner cannot
+hold that responsibility.
+
+When a focused inspection stops producing new facts, do not widen the reading
+set indefinitely. Select one bounded next action: inspect the owner source,
+run a small observable probe, consult targeted official/reference material, use
+the documented recovery step, or move to an independent task. Record only the
+resulting reusable fact, evidence, or blocker.
+
+Use the canonical model root, profile/configuration path, and result layout for
+new experiments. A temporary experiment must not introduce another top-level
+package, project root, or permanent process document.
 
 ## 5. Skill Shape
 

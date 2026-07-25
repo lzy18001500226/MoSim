@@ -325,8 +325,8 @@ Historical deleted or absent thread note:
   user on 2026-06-07 after MoSim moved to email-only notifications, then
   deleted by the user on 2026-06-08. Reusable
   gateway procedures remain historical in AGENTS.md,
-  Docs/Workflows/debug_mcp.md, Docs/Workflows/coagent_meta_maintenance.md, and
-  Results/coagent_gateway/.
+  Docs/Workflows/debug_mcp.md, the archived AgentOS material under
+  Docs/Cache/agent_legacy/, and Results/coagent_gateway/.
 019e3dac-de0e-7180-98ad-d7137e8a6275: old WSL-migrated MoSim｜Codex 上下文维护部,
   superseded for current dispatch by App-native `MoSim｜Codex 上下文维护部`
   019eab73-c5bc-7740-a6d1-5e0541bdb0c5. Reusable
@@ -336,12 +336,12 @@ Historical deleted or absent thread note:
 019e74cf-fb50-7d71-912c-f586b4dd5f06: old MoSim｜开源项目探针, superseded by
   App-native R2 019e9be3-94de-7dc3-b067-92a78b678287. The old thread had a
   mismatched early bootstrap prompt; current probe duties are landed in
-  Docs/Workflows/tooling_assets_governance.md,
-  Docs/Workflows/coagent_meta_maintenance.md, and Docs/Workflows/org_operating_model.md.
+  Docs/Workflows/tooling_assets_governance.md and the archived AgentOS
+  material under Docs/Cache/agent_legacy/.
 019e74de-a83c-7fc2-8987-06c95577a1d3: old MoSim｜开源项目学习部, superseded by
   App-native R2 019e9be4-56d0-7981-b71c-a5ded1c7ec76. Current learning/adoption
-  evaluation duties are landed in Docs/Workflows/tooling_assets_governance.md,
-  Docs/Workflows/coagent_meta_maintenance.md, and Docs/Workflows/org_operating_model.md.
+  evaluation duties are landed in Docs/Workflows/tooling_assets_governance.md;
+  former multi-thread details are archived under Docs/Cache/agent_legacy/.
 019e74ce-6e2e-7e71-902d-f6cee64e8a61
 019e74d2-ec4b-7603-a41b-596508ab6982
 019e74d5-d833-7e41-a65b-2868fd841ea1

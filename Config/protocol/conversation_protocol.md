@@ -18,7 +18,7 @@ MoSim execution starts from `AGENTS.md`,
 ## Approved Conversation Roles
 
 The table below is the V1 protocol vocabulary and historical compatibility
-layer. The current concrete 11-agent role design is defined in
+layer. The former concrete 11-agent role design is preserved in
 `Docs/Cache/agent_legacy/coagent_deprecation_selection_review_20260624.md`.
 
 | Role | Lifetime | Primary Work | Must Not Do |
@@ -33,9 +33,9 @@ layer. The current concrete 11-agent role design is defined in
 | `DedicatedTask` | task-long | one high-context task under a parent department | create child durable agents without approval |
 | `Subagent` | one-shot | bounded research, review, or execution slice | own durable state |
 
-Existing user-facing thread labels remain governed by
-`Docs/Workflows/org_operating_model.md`, with MoSim adapter notes in
-`Docs/Workflows/org_operating_model.md`.
+Existing user-facing thread labels are historical material under
+`Docs/Cache/agent_legacy/`; current MoSim work follows the single-thread
+operating model instead.
 
 ## Historical Concrete Agent Profiles
 
@@ -65,8 +65,8 @@ gateway-operations owner. The user deleted both WeChat routes on 2026-06-08
 after MoSim moved to email-only notifications. Do not dispatch, patrol, no-op,
 recover, or treat their absence as an outage unless the user explicitly
 restores WeChat diagnosis with a new scoped route. Testing, security, and
-toolchain/MCP upkeep are task-local gates or MoSim Agent Protocol meta-maintenance duties
-unless PMO explicitly creates a scoped visible thread for a high-impact task.
+toolchain/MCP upkeep are task-local gates. This legacy protocol does not
+authorize creating a scoped visible thread for a current MoSim task.
 `MoSim｜文档秘书部`, R-suffixed context-maintenance titles, and
 `MoSim｜知识秘书` are alias/history only; current context-maintenance dispatch
 uses `MoSim｜Codex 上下文维护部`.
@@ -74,8 +74,6 @@ uses `MoSim｜Codex 上下文维护部`.
 These historical profiles are documented by:
 
 ```text
-Docs/Cache/agent_legacy/coagent_deprecation_selection_review_20260624.md
-Docs/Cache/agent_legacy/coagent_deprecation_selection_review_20260624.md
 Docs/Cache/agent_legacy/coagent_deprecation_selection_review_20260624.md
 Config/protocol/templates/agent_profile.yaml
 Config/protocol/templates/task_scoped_agent_profile.yaml

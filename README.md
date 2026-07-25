@@ -119,21 +119,32 @@ Model Studio / ExperimentProfile
 | `Scripts/` | 运行编排、质量检查、结果提取、绘图与测试。 |
 | `cmd/` | Windows 双击入口；只做启动和停止转发。 |
 | `apps/` | Flight Console、Model Studio 和项目应用代码。 |
+| `src/` | 可复用的项目编排代码；不能绕过 `Models/`、`Config/` 或运行时权威边界。 |
+| `mcp-wrappers/` | 兼容性 MCP 启动包装器；配置与具体工具说明仍以 `Docs/Skills/` 和 API 索引为准。 |
+| `build/` | 本地应用构建或候选目录；不是模型、配置或正式证据的唯一来源。 |
+| `Tools/` | 外部工具与运行支持资产；不作为竞赛算法或模型实现入口。 |
+| `image/` | 原始视觉资产；报告采用的图件必须仍能追溯到 `Results/` 或 `Docs/报告/`。 |
+| `UE5/` | UE 显示、场景与桥接工程；属于展示/审核层，不替代运行时证据。 |
 | `Results/` | 可追溯的日志、指标、图件、回放、数据包与审核资产。 |
 | `Docs/Design/` | 赛题、架构、控制器、接口和证据设计。 |
-| `Docs/Workflows/` | 可复现流程、当前运行链路和操作约束。 |
+| `Docs/Workflows/` | 正常工程操作、质量门和当前运行链路，不承担仓库说明或历史日志。 |
 | `Docs/Index/` | 模型、文档、工作流和外部参考入口。 |
 | `References/` | 上游案例、外部仓库和参考资料；不是项目正式实现根。 |
+| `CoAgent/` | 已退役的多线程 AgentOS 材料，仅供依赖审计与历史追溯。 |
 
-## 阅读与复现
+`.agents/`、`.codex/`、`.tmp/`、`.tools/`、`.venv/` 和类似隐藏目录是本机工作
+状态或工具缓存，不是项目阅读、运行或提交入口。
+
+## 阅读与操作
 
 建议按以下顺序进入项目：
 
-1. [`Docs/Design/赛题.md`](Docs/Design/赛题.md)：比赛目标、评分和交付边界。
-2. [`Docs/Design/架构.md`](Docs/Design/架构.md)：软件与证据权威边界。
-3. [`Docs/Index/simulation_model_structure_index.md`](Docs/Index/simulation_model_structure_index.md)：模型、场景、runner 和结果的对应关系。
-4. [`Docs/Workflows/mainline_operations_board.md`](Docs/Workflows/mainline_operations_board.md)：当前 P0 与下一项工程门。
-5. [`Docs/Workflows/sunray_ros1_current_runtime_lane.md`](Docs/Workflows/sunray_ros1_current_runtime_lane.md) 和 [`Docs/Workflows/sunray_ros1_execution_checklist.md`](Docs/Workflows/sunray_ros1_execution_checklist.md)：ROS1/Sunray/Gazebo/PX4/RViz 运行约束。
+1. [`Docs/README.md`](Docs/README.md)：文档职责和按角色的阅读路径。
+2. [`Docs/Design/赛题.md`](Docs/Design/赛题.md)：比赛目标、评分和交付边界。
+3. [`Docs/Design/架构.md`](Docs/Design/架构.md)：软件与证据权威边界。
+4. [`Docs/Index/simulation_model_structure_index.md`](Docs/Index/simulation_model_structure_index.md)：模型、场景、runner 和结果的对应关系。
+5. [`Docs/Workflows/mainline_operations_board.md`](Docs/Workflows/mainline_operations_board.md)：当前工程选择与下一项门。
+6. [`Docs/Workflows/sunray_ros1_current_runtime_lane.md`](Docs/Workflows/sunray_ros1_current_runtime_lane.md) 和 [`Docs/Workflows/sunray_ros1_execution_checklist.md`](Docs/Workflows/sunray_ros1_execution_checklist.md)：ROS1/Sunray/Gazebo/PX4/RViz 运行约束。
 
 ## 实验与归档边界
 

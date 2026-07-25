@@ -242,7 +242,7 @@
       "mission": "Periodically crawl, inventory, and classify relevant open-source projects or requested URLs. Return manifests and candidate learning queues, not adoption decisions.",
       "accountable_to": "legacy ops patrol",
       "supersedes_thread_id": "019e74cf-fb50-7d71-912c-f586b4dd5f06",
-      "supersedes_note": "Old probe thread had an early mismatched initialization prompt. Current probe duties are landed in Docs/Workflows/tooling_assets_governance.md, Docs/Workflows/coagent_meta_maintenance.md, Docs/Workflows/org_operating_model.md, and current registry docs."
+      "supersedes_note": "Old probe thread had an early mismatched initialization prompt. Current work uses Docs/Workflows/tooling_assets_governance.md and the single-thread operating model; former multi-thread details are archived under Docs/Cache/agent_legacy/."
     },
     {
       "department": "legacy ops patrol",
@@ -266,7 +266,7 @@
       "mission": "Learn crawled projects/vendor articles and return adopt/adapt/reference-only/reject proposals with evidence.",
       "accountable_to": "legacy ops patrol",
       "supersedes_thread_id": "019e74de-a83c-7fc2-8987-06c95577a1d3",
-      "supersedes_note": "Old learning thread had an early external-intelligence bootstrap prompt. Current learn/adopt/adapt/reference-only/reject duties are landed in Docs/Workflows/tooling_assets_governance.md, Docs/Workflows/coagent_meta_maintenance.md, Docs/Workflows/org_operating_model.md, and current registry docs."
+      "supersedes_note": "Old learning thread had an early external-intelligence bootstrap prompt. Current research adoption uses Docs/Workflows/tooling_assets_governance.md and the single-thread operating model; former multi-thread details are archived under Docs/Cache/agent_legacy/."
     },
     {
       "department": "CodexContextMaintenanceAgent",

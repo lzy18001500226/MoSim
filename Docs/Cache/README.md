@@ -18,6 +18,7 @@ Do not put current operating rules here. Current rules belong in
 | `design_intake/` | Reviewed design intake records before promotion into formal design docs. |
 | `runtime_summaries/` | Small cached runtime summaries that are not authoritative result evidence. |
 | `session_memory_migration/` | Reviewed memory/session promotion and rejection records. |
+| `workflow_history/` | Superseded current-board bodies and one-off workflow snapshots retained for trace-back. |
 
 ## Rules
 
