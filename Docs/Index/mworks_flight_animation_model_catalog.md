@@ -12,6 +12,21 @@
 
 ## 1. 先加载什么，实际运行什么
 
+### 1.1 交付前旧副本：外部依赖边界
+
+已经发给评委的 `MoSim\Models` 是重构前的历史副本，不能按本页的现行源树
+说明被称为独立交付包。它没有随包提供官方 `QuadrotorModel/package.mo`，而其
+`MoSimQuadrotorModel` 根仍显式依赖 `QuadrotorModel`、`QuadrotorExperiments` 和
+`QuadrotorControllerBlocks`。因此不能向评委承诺“直接加载一个 package 即可运行”。
+
+只有评委已有 API 兼容的官方 `QuadrotorModel` 时，才可在干净 Sysplorer 会话中先
+加载该官方库，再加载交付副本中的项目库并执行 **Check Model**。交付副本中也没有
+可替代本次仿真的原生 `Result.msr` 或动画视频。对外说明和条件化操作步骤见
+`Docs\Cache\reviewer_delivery_dependency_notice_20260725.md`；该说明不应复制进已提交的
+`MoSim` 文件夹。
+
+### 1.2 现行源树
+
 只需按下列顺序加载 **两个** 库根，不需要把每个 `.mo` 单独作为库加载，更不
 需要加载三个 package：
 
