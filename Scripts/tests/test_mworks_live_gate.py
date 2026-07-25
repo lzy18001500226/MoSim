@@ -381,7 +381,7 @@ def test_live_return_accepts_phase_screenshots_and_observations(tmp_path: Path) 
             "after simulate/plot screenshot capture, result plot window was visible and no activation dialog appeared",
         ],
         "actual_engineering_outputs": [
-            "References/MWORKS/QuadrotorModel/package.mo",
+            "Models/MoSimQuadrotorModel/package.mo",
             "check_model passed",
             "SimulateModel data=true",
             "native_result/Result.msr",

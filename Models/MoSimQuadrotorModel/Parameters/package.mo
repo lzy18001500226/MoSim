@@ -70,5 +70,7 @@ package Parameters
       "not_identified; retain source labels until PX4 ULog, bench, weighing, or validated system-identification evidence replaces seeds";
     parameter String do_not_promote_boundary =
       "RflySim/Gazebo/YunZong/SDF values are structure or seed references only, not Sunray150 truth";
+    annotation(__MWORKS(version="26.3.0"));
   end Sunray150ParameterProvenance;
+  annotation(__MWORKS(version="26.3.0"));
 end Parameters;

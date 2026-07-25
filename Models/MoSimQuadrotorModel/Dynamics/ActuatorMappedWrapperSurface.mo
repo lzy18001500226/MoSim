@@ -77,5 +77,5 @@ equation
   minimum_reaction_moment_effectiveness = wrapper.minimum_reaction_moment_effectiveness;
   motor_order_gate_error = wrapper.motor_order_gate_error;
   yaw_direction_gate_error = wrapper.yaw_direction_gate_error;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end ActuatorMappedWrapperSurface;

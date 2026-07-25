@@ -8,7 +8,7 @@ model:
   source_package: MoSimQuadrotorModel
   model_name: MoSimQuadrotorModel.Robustness.Scenarios.Example1Mass20L1SysblockClosedLoop
   model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/Example1Mass20L1SysblockClosedLoop.mo
-  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 阶梯爬升 +20% 机体质量摄动 AWFF + L1-inspired residual Sysblock
 
 controller:

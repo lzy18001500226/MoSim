@@ -584,13 +584,13 @@ model Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
       {-10.3, -2.45, 3.5}, {9.85, 9.99, 3.5}, {-7.83, -21.04, 3.5},
       {-17.33, -9.67, 3.5}, {17.73, 9.04, 3.5}, {35, -7, 3.5},
       {-25, 23, 3.5}, {14.32, 23.32, 3.5}});
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisTest17_1(
     body(color = {135, 206, 235}, r_0(start = {-41, -26, 1.5}, fixed = {true, true, true})));
-  QuadrotorModel.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Sensors.Sensors sensors1_1;
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Sensors.Sensors sensors1_1;
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor[4];
   Modelica.Blocks.Sources.Constant hover_u1(k = hover_motor_speed_cmd);
   Modelica.Blocks.Sources.Constant hover_u2(k = -hover_motor_speed_cmd);
@@ -658,5 +658,5 @@ equation
   connect(actuator1_4.flange_a, speedSensor[4].flange);
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 80.1247340259, Tolerance = 0.0001, Interval = 0.05));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop;

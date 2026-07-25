@@ -10,7 +10,7 @@ model:
   live_load_strategy: minimal_dynamics_only
   model_name: MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke
   model_path_hint: Models/MoSimQuadrotorModel/package.mo
-  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: formal Dynamics wrapper hover smoke
 
 simulation:

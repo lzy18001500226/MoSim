@@ -1,6 +1,0 @@
-within QuadrotorExperiments.FormationScenarios;
-model FormationTriangleFigure8LinearMPCSysblockClosedLoop
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop"
-  extends MoSimQuadrotorModel.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop;
-  annotation(__MWORKS(hide=true));
-end FormationTriangleFigure8LinearMPCSysblockClosedLoop;

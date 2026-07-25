@@ -6,5 +6,5 @@ model Example2HelixTunedAntiWindupFeedforwardPID
       roll_pitch_cmd_limit = 15 / 57.3,
       attitude_cmd_limit = 7.0,
       yaw_cmd_limit = 7.0));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Example2HelixTunedAntiWindupFeedforwardPID;

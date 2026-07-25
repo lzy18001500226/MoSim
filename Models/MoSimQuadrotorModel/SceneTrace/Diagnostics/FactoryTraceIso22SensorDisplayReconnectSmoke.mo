@@ -18,5 +18,5 @@ equation
   display_reference_x = planningReference.position_command[1];
   display_reference_y = planningReference.position_command[2];
   display_reference_z = planningReference.position_command[3];
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso22SensorDisplayReconnectSmoke;

@@ -11,6 +11,7 @@ protected
   Real roll_term;
   Real pitch_term;
   Real yaw_term;
+  annotation(__MWORKS(version="26.3.0"));
 equation
   roll_term = torque_to_command * body_torque[1];
   pitch_term = torque_to_command * body_torque[2];

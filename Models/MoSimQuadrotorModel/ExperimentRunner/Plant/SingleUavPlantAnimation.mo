@@ -14,16 +14,16 @@ model SingleUavPlantAnimation
   Modelica.Blocks.Interfaces.RealOutput attitude[3];
   Modelica.Blocks.Interfaces.RealOutput rotor_speed[4];
 
-  QuadrotorModel.Mechanics.QuadChassis aircraft(
+  Sunray150GazeboAlignedVisualChassis aircraft(
     gain2(k = lift_coefficient * rotor_effectiveness[1]),
     gain3(k = lift_coefficient * rotor_effectiveness[2]),
     gain4(k = lift_coefficient * rotor_effectiveness[3]),
     gain5(k = lift_coefficient * rotor_effectiveness[4]));
-  QuadrotorModel.Electricals.Actuator actuator1(dcpm(wMechanical(start = initial_rotor_speed[1])));
-  QuadrotorModel.Electricals.Actuator actuator2(dcpm(wMechanical(start = initial_rotor_speed[2])));
-  QuadrotorModel.Electricals.Actuator actuator3(dcpm(wMechanical(start = initial_rotor_speed[3])));
-  QuadrotorModel.Electricals.Actuator actuator4(dcpm(wMechanical(start = initial_rotor_speed[4])));
-  QuadrotorModel.Sensors.Sensors sensors;
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1(dcpm(wMechanical(start = initial_rotor_speed[1])));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator2(dcpm(wMechanical(start = initial_rotor_speed[2])));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator3(dcpm(wMechanical(start = initial_rotor_speed[3])));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator4(dcpm(wMechanical(start = initial_rotor_speed[4])));
+  MoSimQuadrotorModel.Plant.Sensors.Sensors sensors;
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speed_sensor[4];
   Modelica.Mechanics.MultiBody.Forces.WorldForce gust(
     resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.world,

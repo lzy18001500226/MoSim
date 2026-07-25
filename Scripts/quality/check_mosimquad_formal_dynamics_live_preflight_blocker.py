@@ -167,7 +167,7 @@ def build_summary() -> dict[str, Any]:
                 "formal Dynamics smoke scenarios must explicitly request the minimal Dynamics load strategy",
                 target=rel(path),
             )
-        if base_model != "References/MWORKS/QuadrotorModel/package.mo":
+        if base_model != "Models/MoSimQuadrotorModel/package.mo":
             add_finding(
                 findings,
                 "unexpected_base_model_path",

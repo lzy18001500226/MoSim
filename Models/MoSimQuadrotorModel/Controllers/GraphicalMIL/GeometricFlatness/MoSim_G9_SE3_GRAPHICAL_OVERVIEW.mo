@@ -1,10 +1,9 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness;
-
 model MoSim_G9_SE3_GRAPHICAL_OVERVIEW "SE3 readable algorithm topology"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true),OutputInterval=0.01),SysblockVersion="1.0"),experiment(Algorithm=Euler,Interval=0.01,IntegratorStep=0.01,StartTime=0,StopTime=0.20,StoreEventValue=0),Diagram(coordinateSystem(extent={{-560,-180},{560,180}},grid={2,2})));
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true),OutputInterval=0.01),SysblockVersion="1.0"),experiment(Algorithm=Euler,Interval=0.01,IntegratorStep=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-560,-180},{560,180}},grid={2,2})));
   SysplorerEmbeddedCoder.Sources.Constant position_error_source(k=0.15) annotation(Placement(transformation(origin={-480,100},extent={{-14,-11},{14,11}})));
   SysplorerEmbeddedCoder.Sources.Constant velocity_error_source(k=-0.03) annotation(Placement(transformation(origin={-480,0},extent={{-14,-11},{14,11}})));
   SysplorerEmbeddedCoder.MathOperation.Gain geometric_position_error(k=1.5) annotation(Placement(transformation(origin={-220,100},extent={{-22,-16},{22,16}})));

@@ -1,6 +1,0 @@
-within QuadrotorExperiments.PlanningScenarios;
-model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Planning.Scenarios.ThreeUavOpenBlocksReconfigurableFormationLinearMPC"
-  extends MoSimQuadrotorModel.Planning.Scenarios.ThreeUavOpenBlocksReconfigurableFormationLinearMPC;
-  annotation(__MWORKS(hide=true));
-end ThreeUavOpenBlocksReconfigurableFormationLinearMPC;

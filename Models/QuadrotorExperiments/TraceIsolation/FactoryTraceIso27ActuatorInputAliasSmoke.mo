@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso27ActuatorInputAliasSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso27ActuatorInputAliasSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso27ActuatorInputAliasSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso27ActuatorInputAliasSmoke;

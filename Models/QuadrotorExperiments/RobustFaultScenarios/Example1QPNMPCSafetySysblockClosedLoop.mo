@@ -1,6 +1,0 @@
-within QuadrotorExperiments.RobustFaultScenarios;
-model Example1QPNMPCSafetySysblockClosedLoop
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop"
-  extends MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop;
-  annotation(__MWORKS(hide=true));
-end Example1QPNMPCSafetySysblockClosedLoop;

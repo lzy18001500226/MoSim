@@ -91,7 +91,7 @@
 | Sunray source tree | `References/Sunray/` |
 | PX4 source reference index | `Docs/Index/px4_reference_index.md` |
 | PX4 source family | `References/PX4/`; PX4-Autopilot tree: `References/PX4/PX4/` |
-| CUAV/PX6C/V6X/Mid360/ORIN visual references | Source images: `References/CUAV/`; normalized model icons: `References/MWORKS/QuadrotorModel/Resources/Images/` |
+| CUAV/PX6C/V6X/Mid360/ORIN visual references | Source images: `References/CUAV/`; normalized model icons: `Models/MoSimQuadrotorModel/Plant/Resources/Images/` |
 
 ## Design Docs
 

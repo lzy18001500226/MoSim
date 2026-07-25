@@ -7,4 +7,5 @@ partial model PartialAttitudeThrustController
   Modelica.Blocks.Interfaces.RealInput attitude_mea[3];
   Modelica.Blocks.Interfaces.RealOutput attitude_ref[3];
   Modelica.Blocks.Interfaces.RealOutput collective_thrust_delta;
+  annotation(__MWORKS(version="26.3.0"));
 end PartialAttitudeThrustController;

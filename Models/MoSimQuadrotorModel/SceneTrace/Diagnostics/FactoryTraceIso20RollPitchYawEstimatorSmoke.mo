@@ -12,13 +12,13 @@ model FactoryTraceIso20RollPitchYawEstimatorSmoke
   parameter Real attitude_extraction_T = 0.03
     "Project-owned probe extraction time constant; not a controller gain";
 
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest20_1(
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisTest20_1(
     body(color = {135, 206, 235}, r_0(start = {-55.58, -24.48, 1.9}, fixed = {true, true, true})));
-  QuadrotorModel.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Sensors.Sensors sensors1_1;
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Sensors.Sensors sensors1_1;
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor[4];
   Modelica.Blocks.Sources.Constant hover_u1(k = hover_motor_speed_cmd);
   Modelica.Blocks.Sources.Constant hover_u2(k = -hover_motor_speed_cmd);
@@ -100,5 +100,5 @@ equation
   motor_cmd_2 = motor2_hover_sum.y;
   motor_cmd_3 = motor3_hover_sum.y;
   motor_cmd_4 = motor4_hover_sum.y;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso20RollPitchYawEstimatorSmoke;

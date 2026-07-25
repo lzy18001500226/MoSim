@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso15TableAttitudeInputSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso15TableAttitudeInputSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso15TableAttitudeInputSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso15TableAttitudeInputSmoke;

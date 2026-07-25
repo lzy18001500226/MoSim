@@ -1,5 +1,0 @@
-model AWFF_FaultCompensationControllerEquation_Sysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FaultCompensationControllerEquation_Sysblock"
-  extends MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FaultCompensationControllerEquation_Sysblock;
-  annotation(__MWORKS(hide=true));
-end AWFF_FaultCompensationControllerEquation_Sysblock;

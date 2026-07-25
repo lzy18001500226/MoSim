@@ -1,4 +1,4 @@
-TraceInline
-TraceTable
-TraceLookupStandalone
-EchoMcpState
+EchoMcpStateSmoke
+TraceInlineReference
+TraceLookupStandaloneSmoke
+TraceTableReference

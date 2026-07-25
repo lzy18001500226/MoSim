@@ -1,10 +1,9 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust;
-
 model MoSim_WaveA_LQR_MIL
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.03,StoreEventValue=0),Diagram(coordinateSystem(extent={{-320,-180},{320,300}},grid={2,2})));
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-320,-180},{320,300}},grid={2,2})));
   MoSim_WaveA_CFunction_Sysblock controller annotation(Placement(transformation(origin={0,40},extent={{-25,-25},{25,25}})));
   SysplorerEmbeddedCoder.Sources.Constant controller_id_source(k=1.0) annotation(Placement(transformation(origin={-260,260},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant dt_source(k=0.01) annotation(Placement(transformation(origin={-260,248},extent={{-8,-8},{8,8}})));

@@ -47,5 +47,5 @@ equation
   connect(actual_position.y, navigationDisplay.actual_position);
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 2.0, Tolerance = 0.0001, Interval = 0.05));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryLiteTraceSmoke;

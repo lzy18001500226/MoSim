@@ -44,7 +44,7 @@ Recommended config format:
 experiment_id: official_example3_pid_baseline
 scene_id: official_example3
 controller_id: pid_baseline
-model_name: QuadrotorModel.Examples.Example3
+model_name: MoSimQuadrotorModel.Plant.Examples.Example3
 start_time: 0
 stop_time: 30
 step_size: 0.01
@@ -132,8 +132,6 @@ use this direct MCP sequence:
 python Scripts\agent\check_mworks_gui_sentinel.py --output Results\mworks_gui_incidents\<request_id>\sentinel.json
 capture a maximized or foreground screenshot of the target reusable Sysplorer/MWORKS main window, and verify the image content actually shows that target window
 session_manager(action="health")
-model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\References\\MWORKS\\QuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
-model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\Controllers\\Sysblocks\\AWFF_FullControllerFlatGraphical_Sysblock.mo", force_reload=true, auto_load_deps=true)
 model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
 model_manager(action="open", model_name="MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock")
 check_model(model_name="MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock", stop_on_error=false)
@@ -148,9 +146,10 @@ MWORKS is activated. If the target reusable Sysplorer/MWORKS main window cannot
 be maximized or the screenshot content does not match it, stop before live MCP
 work and return a license/window-evidence blocker.
 
-Load the canonical root package once, rather than loading a legacy alias and its
-canonical implementation together. Mixing both roots can cause
-`错误(1401): 模型重复定义`; the formal entry is
+Load the canonical root package once. Its embedded `Plant` package contains the
+official baseline plant and resources, so do not load an external
+`QuadrotorModel` package or any legacy facade alongside it. Mixing roots can
+cause `错误(1401): 模型重复定义`; the formal entry is
 `MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock`.
 
 Review-result interpretation:
@@ -159,14 +158,14 @@ Review-result interpretation:
 |---|---|---|
 | `open ok=true` and no `1401` | The review model loads and opens | Continue visual review |
 | `错误(1401): 模型重复定义` | A duplicate standalone model file exists or was loaded | Delete the standalone file and load only the package |
-| `组件的类型 QuadrotorModel... 查找不到` | Dependencies were not loaded first | Load `References/MWORKS/QuadrotorModel/package.mo` before `MoSimQuadrotorModel/package.mo` |
-| `组件的类型 AWFF_FullControllerFlatGraphical_Sysblock 查找不到` | Graphical controller was not loaded first | Load `Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo` before `MoSimQuadrotorModel/package.mo` |
+| `组件的类型 MoSimQuadrotorModel.Plant... 查找不到` | The canonical package did not finish loading | Force-reload only `Models/MoSimQuadrotorModel/package.mo`, then inspect its internal `Plant` entry and package order. Do not add a second package root. |
+| `组件的类型 AWFF_FullControllerFlatGraphical_Sysblock 查找不到` | The canonical package did not finish loading or its internal controller order is stale | Force-reload only `Models/MoSimQuadrotorModel/package.mo`, then inspect the internal `Controllers/Sysblocks` package order. Do not load a standalone controller file as a second root. |
 | `组件引用 x_sum.u1 / y_sum.u1 / thrust_sum.u1 查找不到` | Known Sysplorer limitation for embedded graphical Sysblock multi-input ports | Do not treat as image/load failure; keep Equation controller for executable closed-loop evidence |
 
 Graphical layout acceptance for this model:
 
 ```text
-1. Resource images are copied directly from References/CUAV/ to References/MWORKS/QuadrotorModel/Resources/Images/ and keep transparent PNG alpha.
+1. Resource images are copied directly from References/CUAV/ to Models/MoSimQuadrotorModel/Plant/Resources/Images/ and keep transparent PNG alpha.
 2. Do not convert transparent images to white-background RGB files.
 3. GPS and Mid360 must be separate top-level modules, not one combined perception picture block. GPS feeds the flight-controller position input; Mid360 feeds local position and obstacle margin into mission computing.
 4. Top-level hardware module placements must use equal x/y scaling unless there is a model-level reason; otherwise the bitmap icon is visibly stretched.
@@ -953,9 +952,9 @@ metrics against the reference columns.
 Official scenario configs:
 
 ```text
-Config/scenarios/official/example1_pid_baseline.yaml  -> QuadrotorModel.Examples.Example1
-Config/scenarios/official/example2_pid_baseline.yaml  -> QuadrotorModel.Examples.Example2
-Config/scenarios/official/example3_pid_baseline.yaml  -> QuadrotorModel.Examples.Example3
+Config/scenarios/official/example1_pid_baseline.yaml  -> MoSimQuadrotorModel.Plant.Examples.Example1
+Config/scenarios/official/example2_pid_baseline.yaml  -> MoSimQuadrotorModel.Plant.Examples.Example2
+Config/scenarios/official/example3_pid_baseline.yaml  -> MoSimQuadrotorModel.Plant.Examples.Example3
 ```
 
 Smoke logs may cover only a short interval such as 0-1 s. Full official
@@ -990,7 +989,7 @@ Use this for fast validation:
 experiment_id: official_example1_mcp_smoke
 scene_id: official_example1
 controller_id: pid_baseline
-model_name: QuadrotorModel.Examples.Example1
+model_name: MoSimQuadrotorModel.Plant.Examples.Example1
 stop_time: 1
 step_size: 0.01
 ```

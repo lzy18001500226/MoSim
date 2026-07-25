@@ -2,3 +2,5 @@ AttitudeThrustRunner
 BodyRateThrustRunner
 WrenchRunner
 RotorCommandRunner
+OfficialPidFormalRunner
+CascadePidFormalRunner

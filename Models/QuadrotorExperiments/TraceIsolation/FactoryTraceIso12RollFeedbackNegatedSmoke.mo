@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso12RollFeedbackNegatedSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso12RollFeedbackNegatedSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso12RollFeedbackNegatedSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso12RollFeedbackNegatedSmoke;

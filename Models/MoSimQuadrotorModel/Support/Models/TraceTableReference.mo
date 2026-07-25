@@ -33,5 +33,5 @@ equation
       Line(points = {{-80, -20}, {-20, 30}, {30, -5}, {80, 28}}, color = {32, 88, 130}, thickness = 1.2),
       Text(extent = {{-92, -60}, {92, -86}}, textString = "Trace Table", textColor = {32, 88, 130})}),
     Diagram(coordinateSystem(extent = {{-120, -80}, {120, 80}})));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end TraceTableReference;

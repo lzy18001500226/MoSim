@@ -9,7 +9,7 @@ model:
   source_package: MoSimQuadrotorModel
   model_name: MoSimQuadrotorModel.Missions.Official.Example1PlanarFigure8TrailSysblockClosedLoop
   model_path_hint: Models/MoSimQuadrotorModel/Missions/Official/Example1PlanarFigure8TrailSysblockClosedLoop.mo
-  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 官方 EightPath 同款 8 字轨迹 + LinearMPC 控制器 + 原生三维参考线 + 实际/参考位置标记 GUI 审查
 
 controller:
@@ -38,7 +38,7 @@ reference:
   y_omega: 0.04
   raw_output_sample_rate_hz: 20
   native_gui_reference_trail_sample_rate_hz: 5
-  note: 复用官方 QuadrotorModel.PathPlanning.EightPath 的 x/y 轨迹口径；实验模型初始高度设为 1 m，z_ref 全程恒为 1 m；x/y 参考通过 10 s 延迟后开始 2.5 m 幅值横 8 字运动，完整轨迹宽度约 5 m。模型使用 Sunray150 SDF 电机常数并折算 rotorVelocitySlowdownSim=10：MWORKS 可视轴悬停转速约 53.56 rad/s，等效真实电机转速约 535.62 rad/s。CSV 中 u1..u4 保留控制器增量输出，实际电机输入为悬停偏置与增量之和。20 Hz 原生几何线段在当前 MWORKS GUI 中会显著拖慢求解器，正式数值输出保持 20 Hz，GUI 参考线采用 5 Hz 低负载显示。
+  note: 复用官方 MoSimQuadrotorModel.Plant.PathPlanning.EightPath 的 x/y 轨迹口径；实验模型初始高度设为 1 m，z_ref 全程恒为 1 m；x/y 参考通过 10 s 延迟后开始 2.5 m 幅值横 8 字运动，完整轨迹宽度约 5 m。模型使用 Sunray150 SDF 电机常数并折算 rotorVelocitySlowdownSim=10：MWORKS 可视轴悬停转速约 53.56 rad/s，等效真实电机转速约 535.62 rad/s。CSV 中 u1..u4 保留控制器增量输出，实际电机输入为悬停偏置与增量之和。20 Hz 原生几何线段在当前 MWORKS GUI 中会显著拖慢求解器，正式数值输出保持 20 Hz，GUI 参考线采用 5 Hz 低负载显示。
 
 result:
   raw_file: Results/official/example1_planar_figure8/official_example1_planar_figure8_trail_sysblock/raw/official_example1_planar_figure8_trail_sysblock.csv

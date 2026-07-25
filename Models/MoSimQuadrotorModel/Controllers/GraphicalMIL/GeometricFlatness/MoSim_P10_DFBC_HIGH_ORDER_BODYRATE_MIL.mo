@@ -1,10 +1,9 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness;
-
 model MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.07,StoreEventValue=0),Diagram(coordinateSystem(extent={{-760,-1728.00},{760,1728.00}},grid={2,2})));
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-760,-1728.00},{760,1728.00}},grid={2,2})));
   MoSim_P10_DFBC_Family_CFunction_Sysblock controller annotation(Placement(transformation(origin={0,0},extent={{-80,-1668.00},{80,1668.00}})));
   SysplorerEmbeddedCoder.Sources.Constant controller_id_source(k=10.0) annotation(Placement(transformation(origin={-600,1668.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant dt_source(k=0.01) annotation(Placement(transformation(origin={-600,1644.00},extent={{-8,-8},{8,8}})));

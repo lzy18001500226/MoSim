@@ -21,6 +21,7 @@ model OfflineWrenchController
   Real desired_body_rate[3];
   Real altitude_integral(start = 0, fixed = true);
   Real collective_unsaturated;
+  annotation(__MWORKS(version="26.3.0"));
 equation
   connect(position_mea, velocity_estimator.u);
   connect(attitude_mea, body_rate_estimator.u);

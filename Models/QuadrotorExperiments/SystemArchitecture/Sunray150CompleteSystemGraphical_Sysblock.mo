@@ -1,6 +1,0 @@
-within QuadrotorExperiments.SystemArchitecture;
-model Sunray150CompleteSystemGraphical_Sysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock"
-  extends MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGraphical_Sysblock;
-  annotation(__MWORKS(hide=true));
-end Sunray150CompleteSystemGraphical_Sysblock;

@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization;
-
 model MoSim_P4_ILQR_GRAPHICAL_MIL "P4 native graphical fixed-budget MPC controller core: ilqr"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

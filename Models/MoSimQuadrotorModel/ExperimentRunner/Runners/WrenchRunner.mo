@@ -7,7 +7,7 @@ model WrenchRunner
   Controller controller;
   MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineWrenchAllocator offline_allocator;
   MoSimQuadrotorModel.ExperimentRunner.Plant.SingleUavPlantAnimation plant;
-  QuadrotorModel.PathPlanning.ClimbPath reference(gain(k = 1));
+  MoSimQuadrotorModel.Plant.PathPlanning.ClimbPath reference(gain(k = 1));
   Real position_ref[3];
   Real position[3];
   Real attitude[3];
@@ -27,5 +27,5 @@ equation
   position_error_norm = sqrt((position_ref[1] - position[1]) ^ 2
     + (position_ref[2] - position[2]) ^ 2
     + (position_ref[3] - position[3]) ^ 2);
-  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01),__MWORKS(version="26.3.0"));
 end WrenchRunner;

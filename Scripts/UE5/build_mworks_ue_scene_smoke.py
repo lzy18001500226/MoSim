@@ -171,7 +171,7 @@ def build_model(scene_id: str, scene_dir: Path, model_name: str) -> dict[str, An
             "  source_package: MoSimQuadrotorModel",
             f"  model_name: MoSimQuadrotorModel.SceneTrace.Scenarios.{model_name}",
             f"  model_path_hint: {rel(output_model)}",
-            "  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo",
+            "  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo",
             "  extra_model_files:",
             "    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlannedQuinticReference.mo",
             "    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlanningNavigationDisplay.mo",

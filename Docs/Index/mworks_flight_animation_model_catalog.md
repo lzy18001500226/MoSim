@@ -12,48 +12,33 @@
 
 ## 1. 先加载什么，实际运行什么
 
-### 1.1 交付前旧副本：外部依赖边界
+### 1.1 现行源树：一个正式加载根
 
-已经发给评委的 `MoSim\Models` 是重构前的历史副本，不能按本页的现行源树
-说明被称为独立交付包。它没有随包提供官方 `QuadrotorModel/package.mo`，而其
-`MoSimQuadrotorModel` 根仍显式依赖 `QuadrotorModel`、`QuadrotorExperiments` 和
-`QuadrotorControllerBlocks`。因此不能向评委承诺“直接加载一个 package 即可运行”。
+当前源树只需加载一个 package：
 
-只有评委已有 API 兼容的官方 `QuadrotorModel` 时，才可在干净 Sysplorer 会话中先
-加载该官方库，再加载交付副本中的项目库并执行 **Check Model**。交付副本中也没有
-可替代本次仿真的原生 `Result.msr` 或动画视频。对外说明和条件化操作步骤见
-`Docs\Cache\reviewer_delivery_dependency_notice_20260725.md`；该说明不应复制进已提交的
-`MoSim` 文件夹。
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\package.mo`
 
-### 1.2 现行源树
-
-只需按下列顺序加载 **两个** 库根，不需要把每个 `.mo` 单独作为库加载，更不
-需要加载三个 package：
-
-1. 官方基础库（必须先加载一次）：
-   `C:\Users\HP\Desktop\MoSim\References\MWORKS\QuadrotorModel\package.mo`
-2. 项目模型库（随后加载一次）：
-   `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\package.mo`
+其中 `MoSimQuadrotorModel.Plant` 已包含官方四旋翼基线的模型、图标和 STL
+资源。审查时不再加载外部官方包、单个 `.mo` 文件或任何旧包作为第二个库根。
+当前只有这一棵项目模型树可作为审查或复现入口。
 
 加载后，在 Sysplorer 的库树中选择本目录给出的**完整模型类名**，而不是双击
 下方列出的控制器、`QuadChassis`、`OpenBlocksLinearMPCVehicle` 或结构图文件。
-项目的兼容根 `Models\QuadrotorExperiments\` 不是独立的首选库，不要再把它当成
-第三个必须加载的 package。
 
 ### 人工运行步骤
 
-1. 先打开上述官方 `package.mo`，确认库树中出现 `QuadrotorModel`。
-2. 再打开项目 `package.mo`，确认出现 `MoSimQuadrotorModel`。
-3. 在库树中按本目录的类名找到一个**完整模型**，例如
+1. 打开上述项目 `package.mo`，确认库树中出现 `MoSimQuadrotorModel`，并可展开
+   `Plant`。
+2. 在库树中按本目录的类名找到一个**完整模型**，例如
    `MoSimQuadrotorModel.Missions.Official.Example3AWFF`。
-4. 对该模型执行 **Check Model**。失败时停在错误信息，不要用其它模型或旧结果
+3. 对该模型执行 **Check Model**。失败时停在错误信息，不要用其它模型或旧结果
    顶替。
-5. Check Model 通过后执行 **Simulate**。模型源码中的 `experiment(...)` 已设置
+4. Check Model 通过后执行 **Simulate**。模型源码中的 `experiment(...)` 已设置
    仿真时长；首次可优先用表中较短的 50 s 场景。
-6. 仿真完成后，在当前结果中打开 `Result.msr` 的结果查看器，并创建/打开三维
+5. 仿真完成后，在当前结果中打开 `Result.msr` 的结果查看器，并创建/打开三维
    动画窗口；动画窗口打开后由人工点击播放。只有无人机在三维窗口中真实运动，
    才算“看到了飞行画面”。模型结构图、单独曲线、桨叶静止图都不算。
-7. 若要保存视频，保持当前动画窗口为前台并用本机录屏。不要把旧 `Result.msr`
+6. 若要保存视频，保持当前动画窗口为前台并用本机录屏。不要把旧 `Result.msr`
    或旧动画窗口误当作刚运行模型的结果。
 
 正常 GUI 路径会产生原生 `Result.msr`。项目脚本生成的外部结果路径不一定能被
@@ -77,16 +62,16 @@
 
 ## 3. 完整飞行入口总表
 
-### 3.1 官方原始基线：3 个
+### 3.1 嵌入官方原始基线：3 个
 
 源码均在：
-`C:\Users\HP\Desktop\MoSim\References\MWORKS\QuadrotorModel\package.mo`
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Plant\package.mo`
 
 | 类名 | 任务 | 控制器 | 场景 | 时长 | 说明 |
 |---|---|---|---|---:|---|
-| `QuadrotorModel.Examples.Example1` | 阶梯爬升 | `Blocks.Controller.Controller` 六自由度 PID | 空白多体场景 | 50 s | 原始官方基线；项目别名为 `MoSimQuadrotorModel.Baseline.OfficialExample1`。 |
-| `QuadrotorModel.Examples.Example2` | 螺旋爬升 | 同一六自由度 PID | 空白多体场景 | 50 s | 项目别名为 `MoSimQuadrotorModel.Baseline.OfficialExample2`。 |
-| `QuadrotorModel.Examples.Example3` | 8 字运动 | 同一六自由度 PID | 空白多体场景 | 120 s | 项目别名为 `MoSimQuadrotorModel.Baseline.OfficialExample3`。 |
+| `MoSimQuadrotorModel.Plant.Examples.Example1` | 阶梯爬升 | `Blocks.Controller.Controller` 六自由度 PID | 空白多体场景 | 50 s | 嵌入官方基线；这是唯一正式入口。 |
+| `MoSimQuadrotorModel.Plant.Examples.Example2` | 螺旋爬升 | 同一六自由度 PID | 空白多体场景 | 50 s | 嵌入官方基线；这是唯一正式入口。 |
+| `MoSimQuadrotorModel.Plant.Examples.Example3` | 8 字运动 | 同一六自由度 PID | 空白多体场景 | 120 s | 嵌入官方基线；这是唯一正式入口。 |
 
 这三个是最朴素的参考动画：没有障碍物或城市地图，但能看到整机真实多体运动。
 
@@ -234,7 +219,7 @@ Rotor4WindGustLinearMPCOnlineFaultAllocation
 
 | 路径 / 类别 | 为什么不该作为首选 |
 |---|---|
-| `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\System\Architecture\Sunray150CompleteSystemGraphical_Sysblock.mo` | 完整系统**结构图**，不是普通可播放飞行入口；此前还出现过缺少 `QuadrotorModel` 的加载错误。 |
+| `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\System\Architecture\Sunray150CompleteSystemGraphical_Sysblock.mo` | 完整系统**结构图**，不是普通可播放飞行入口；当前应只从正式根加载。 |
 | `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\ExperimentRunner\Plant\SingleUavPlantAnimation.mo` | 共享机体组件，有外部旋翼命令输入，不是自带任务的闭环场景。 |
 | `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Planning\Scenarios\OpenBlocksLinearMPCVehicle.mo` | 多机规划场景的复用整机，有外部参考输入，不是独立实验。 |
 | `Models\MoSimQuadrotorModel\SceneTrace\Diagnostics\FactoryTraceIso*.mo` | 接线/姿态/hover smoke，目的是诊断，不是给用户审看的飞行动画。 |
@@ -244,7 +229,7 @@ Rotor4WindGustLinearMPCOnlineFaultAllocation
 
 ## 5. 选择建议
 
-1. 只想先确认三维动画链路：选 `QuadrotorModel.Examples.Example3` 或
+1. 只想先确认三维动画链路：选 `MoSimQuadrotorModel.Plant.Examples.Example3` 或
    `MoSimQuadrotorModel.Missions.Official.Example3AWFF`。
 2. 想看更有“飞行视频”感的单机画面：选 `Example1HelicalFigure8Trail` 或
    `Example2HelixTunedAWFF`。

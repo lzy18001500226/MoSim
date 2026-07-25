@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust;
-
 model MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL "P2 fixed-input graphical controller core for passivity_based_control"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

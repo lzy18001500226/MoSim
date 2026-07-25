@@ -1,10 +1,9 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning;
-
 model MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL "P9 trained neural residual learning-control signal chain"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true),OutputInterval=0.02),SysblockVersion="1.0"),experiment(Algorithm=Euler,Interval=0.02,IntegratorStep=0.02,StartTime=0,StopTime=0.4,StoreEventValue=0),Diagram(coordinateSystem(extent={{-690,-150},{690,150}},grid={2,2})));
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true),OutputInterval=0.02),SysblockVersion="1.0"),experiment(Algorithm=Euler,Interval=0.02,IntegratorStep=0.02,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-690,-150},{690,150}},grid={2,2})));
   SysplorerEmbeddedCoder.Sources.Constant measured_state(k=0.55) annotation(Placement(transformation(origin={-520,90},extent={{-26,-18},{26,18}})));
   SysplorerEmbeddedCoder.MathOperation.Gain feature_normalization(k=0.8) annotation(Placement(transformation(origin={-370,90},extent={{-26,-18},{26,18}})));
   SysplorerEmbeddedCoder.MathOperation.Gain hidden_layer_inference(k=0.45) annotation(Placement(transformation(origin={-210,90},extent={{-26,-18},{26,18}})));

@@ -82,5 +82,5 @@ model FactoryTraceIso01FullDisplaySmoke
       wall_arm1_max = {{0.0, 0.0, 0.0}},
       wall_arm2_min = {{0.0, 0.0, 0.0}},
       wall_arm2_max = {{0.0, 0.0, 0.0}}));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso01FullDisplaySmoke;

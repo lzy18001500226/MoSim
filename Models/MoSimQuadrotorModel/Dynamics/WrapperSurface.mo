@@ -61,5 +61,5 @@ equation
   minimum_reaction_moment_effectiveness = dynamics.minimum_reaction_moment_effectiveness;
   motor_order_gate_error = sum({abs(dynamics.rotor_center[i, j] - expected_rotor_center[i, j]) for i in 1:4, j in 1:3});
   yaw_direction_gate_error = sum({abs(dynamics.yaw_direction[i] - expected_yaw_direction[i]) for i in 1:4});
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end WrapperSurface;

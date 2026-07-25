@@ -23,5 +23,5 @@ equation
   actuator_input_error_3 = actuator_input_3 - pre_actuator_command_3;
   actuator_input_error_4 = actuator_input_4 - pre_actuator_command_4;
   actuator_input_abs_error_sum = abs(actuator_input_error_1) + abs(actuator_input_error_2) + abs(actuator_input_error_3) + abs(actuator_input_error_4);
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso27ActuatorInputAliasSmoke;

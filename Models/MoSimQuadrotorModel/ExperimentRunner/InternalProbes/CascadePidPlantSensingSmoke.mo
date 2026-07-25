@@ -1,0 +1,25 @@
+within MoSimQuadrotorModel.ExperimentRunner.InternalProbes;
+model CascadePidPlantSensingSmoke
+  "Plant-to-cascade-PID sensing-only startup isolation"
+
+  MoSimQuadrotorModel.ExperimentRunner.Adapters.CascadePidAttitudeThrustAdapter controller;
+  MoSimQuadrotorModel.ExperimentRunner.Plant.SingleUavPlantAnimation plant;
+  Real attitude_ref[3];
+  Real collective_thrust_delta;
+  Real status_code;
+
+equation
+  plant.rotor_command = {53.562090367172424, -53.562090367172424,
+    53.562090367172424, -53.562090367172424};
+  controller.position_ref = {1.0, -0.5, 0.8};
+  connect(plant.position, controller.position_mea);
+  connect(plant.attitude, controller.attitude_mea);
+  attitude_ref = controller.attitude_ref;
+  collective_thrust_delta = controller.collective_thrust_delta;
+  status_code = controller.status_code;
+
+  annotation(
+    experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.2, Tolerance = 0.0001,
+      Interval = 0.01),
+    __MWORKS(version = "26.3.0"));
+end CascadePidPlantSensingSmoke;

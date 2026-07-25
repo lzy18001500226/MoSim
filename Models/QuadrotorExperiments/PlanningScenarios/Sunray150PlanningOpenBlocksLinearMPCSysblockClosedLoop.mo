@@ -1,6 +1,0 @@
-within QuadrotorExperiments.PlanningScenarios;
-model Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop"
-  extends MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop;
-  annotation(__MWORKS(hide=true));
-end Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop;

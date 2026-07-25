@@ -44,6 +44,9 @@ model AWFF_QPNMPCSafetyController_Sysblock
   SysplorerEmbeddedCoder.Port.Outport return_ref_y annotation(Placement(transformation(origin={280,-180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.Port.Outport return_ref_z annotation(Placement(transformation(origin={280,-220},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1,SampleTime(group="D1")=0.01)));
 
+  // This plant-level closure uses the checked equation bridge. The graphical
+  // Linear-MPC topology remains the controller-design evidence and is not
+  // promoted as a whole-aircraft result until its native Sysblock port model is repaired.
   AWFF_LinearMPCOuterLoopControllerEquation_Sysblock nominal_mpc annotation(Placement(transformation(origin={-40,20},extent={{-80,-80},{80,80}})));
 
   Real position_error_norm;

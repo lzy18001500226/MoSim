@@ -1,10 +1,9 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust;
-
 model MoSim_Classic_NDI_MIL
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.03,StoreEventValue=0),Diagram(coordinateSystem(extent={{-620,-480},{620,480}},grid={2,2})));
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-620,-480},{620,480}},grid={2,2})));
   MoSim_Classic_CFunction_Sysblock controller annotation(Placement(transformation(origin={0,0},extent={{-110,-440},{110,440}})));
   SysplorerEmbeddedCoder.Sources.Constant controller_id_source(k=3.0) annotation(Placement(transformation(origin={{-500,420}},extent={{-10,-10},{10,10}})));
   SysplorerEmbeddedCoder.Sources.Constant dt_source(k=0.01) annotation(Placement(transformation(origin={{-500,376}},extent={{-10,-10},{10,10}})));

@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso04ControllerPlantWiringSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso04ControllerPlantWiringSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso04ControllerPlantWiringSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso04ControllerPlantWiringSmoke;

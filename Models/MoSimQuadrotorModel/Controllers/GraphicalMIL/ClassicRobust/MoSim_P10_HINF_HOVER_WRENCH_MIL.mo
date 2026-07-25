@@ -1,10 +1,9 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust;
-
 model MoSim_P10_HINF_HOVER_WRENCH_MIL
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.07,StoreEventValue=0),Diagram(coordinateSystem(extent={{-760,-516.00},{760,516.00}},grid={2,2})));
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-760,-516.00},{760,516.00}},grid={2,2})));
   MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock controller annotation(Placement(transformation(origin={0,0},extent={{-80,-456.00},{80,456.00}})));
   SysplorerEmbeddedCoder.Sources.Constant state_roll_source(k=0.001) annotation(Placement(transformation(origin={-600,456.00},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant state_pitch_source(k=-0.001) annotation(Placement(transformation(origin={-600,432.00},extent={{-8,-8},{8,8}})));

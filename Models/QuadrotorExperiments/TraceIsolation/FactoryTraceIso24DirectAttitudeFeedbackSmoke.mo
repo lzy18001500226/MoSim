@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso24DirectAttitudeFeedbackSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso24DirectAttitudeFeedbackSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso24DirectAttitudeFeedbackSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso24DirectAttitudeFeedbackSmoke;

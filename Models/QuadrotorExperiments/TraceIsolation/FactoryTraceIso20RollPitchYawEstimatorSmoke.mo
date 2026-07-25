@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso20RollPitchYawEstimatorSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso20RollPitchYawEstimatorSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso20RollPitchYawEstimatorSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso20RollPitchYawEstimatorSmoke;

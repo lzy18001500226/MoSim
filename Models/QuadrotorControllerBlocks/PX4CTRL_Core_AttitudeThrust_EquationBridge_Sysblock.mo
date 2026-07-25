@@ -1,5 +1,0 @@
-model PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Controllers.Sysblocks.PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock"
-  extends MoSimQuadrotorModel.Controllers.Sysblocks.PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock;
-  annotation(__MWORKS(hide=true));
-end PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock;

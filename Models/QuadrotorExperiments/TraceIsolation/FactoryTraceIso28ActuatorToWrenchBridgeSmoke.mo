@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso28ActuatorToWrenchBridgeSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso28ActuatorToWrenchBridgeSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso28ActuatorToWrenchBridgeSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso28ActuatorToWrenchBridgeSmoke;

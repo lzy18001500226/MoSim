@@ -1,6 +1,0 @@
-within QuadrotorExperiments.SystemArchitecture;
-model Sunray150CompleteSystemGeofenceBreachSysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGeofenceBreachSysblock"
-  extends MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGeofenceBreachSysblock;
-  annotation(__MWORKS(hide=true));
-end Sunray150CompleteSystemGeofenceBreachSysblock;

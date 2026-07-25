@@ -18,7 +18,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 FORMAL_DYNAMICS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics"
 FORMAL_PARAMETERS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters"
-COMPAT_DIR = ROOT / "Models" / "QuadrotorExperiments" / "DynamicsUpgrade"
+RETIRED_ROOTS = (
+    ROOT / "Models" / "QuadrotorExperiments",
+    ROOT / "Models" / "QuadrotorControllerBlocks",
+    ROOT / "Models" / "MworksLive",
+)
 ROOT_CONSOLIDATION_DIR = (
     ROOT
     / "Results"
@@ -33,22 +37,6 @@ FORMAL_PACKAGE_ORDER = [
     "RotorActuatorCore",
     "HoverSmoke",
     "YawStepSmoke",
-    "RotorEffectivenessSmoke",
-    "WrapperSurface",
-    "ActuatorCommandMapper",
-    "ActuatorMappedWrapperSurface",
-    "OptionalDampingGyroLayer",
-    "WrapperHoverSmoke",
-    "WrapperYawStepSmoke",
-    "PhysicalWrenchAdapter",
-    "PhysicalWrenchHoverSmoke",
-    "PhysicalWrenchYawStepSmoke",
-]
-
-COMPAT_PACKAGE_ORDER = [
-    "RotorDynamicsCore",
-    "RotorHoverSmoke",
-    "RotorYawStepSmoke",
     "RotorEffectivenessSmoke",
     "WrapperSurface",
     "ActuatorCommandMapper",
@@ -490,22 +478,20 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
     findings: list[str] = []
     formal_package = read_text(FORMAL_DYNAMICS_DIR / "package.mo")
     formal_order = read_order(FORMAL_DYNAMICS_DIR / "package.order")
-    compat_package = read_text(COMPAT_DIR / "package.mo")
-    compat_order = read_order(COMPAT_DIR / "package.order")
     parameter_package = read_text(FORMAL_PARAMETERS_DIR / "package.mo")
     parameter_order = read_order(FORMAL_PARAMETERS_DIR / "package.order")
 
     if formal_order != FORMAL_PACKAGE_ORDER:
         findings.append(f"formal Dynamics package.order mismatch: {formal_order!r}")
-    if compat_order != COMPAT_PACKAGE_ORDER:
-        findings.append(f"compat DynamicsUpgrade package.order mismatch: {compat_order!r}")
+    for retired_root in RETIRED_ROOTS:
+        if retired_root.exists():
+            findings.append(f"retired top-level model root remains present: {rel(retired_root)}")
     if parameter_order != ["Sunray150ParameterProvenance"]:
         findings.append(f"Parameters package.order mismatch: {parameter_order!r}")
 
     matrix: list[dict[str, Any]] = []
     for target in TARGETS:
         formal_name = target["formal_name"]
-        compat_name = target["compat_name"]
         implementation_model = target["implementation_model"]
         implementation_path = FORMAL_DYNAMICS_DIR / target["implementation_file"]
         implementation_text = read_text(implementation_path)
@@ -532,18 +518,6 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
         )
         assert_contains(
             findings,
-            compat_package,
-            f"model {compat_name}",
-            f"QuadrotorExperiments.DynamicsUpgrade.{compat_name}",
-        )
-        assert_contains(
-            findings,
-            compat_package,
-            f"extends MoSimQuadrotorModel.Dynamics.{formal_name}",
-            f"QuadrotorExperiments.DynamicsUpgrade.{compat_name}",
-        )
-        assert_contains(
-            findings,
             implementation_text,
             f"model {implementation_model}",
             f"{target['implementation_file']}",
@@ -559,7 +533,7 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
         matrix.append(
             {
                 "formal_target": f"MoSimQuadrotorModel.Dynamics.{formal_name}",
-                "compat_alias": f"QuadrotorExperiments.DynamicsUpgrade.{compat_name}",
+                "retired_predecessor": target["compat_name"],
                 "implementation_model": f"MoSimQuadrotorModel.Dynamics.{implementation_model}",
                 "implementation_file": rel(implementation_path),
                 "formal_source_file": rel(formal_source_path) if formal_source_present else rel(FORMAL_DYNAMICS_DIR / "package.mo"),
@@ -601,7 +575,7 @@ def build_future_surface(matrix: list[dict[str, Any]]) -> dict[str, Any]:
             "Stop on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown GUI/API state.",
             "Use targeted model_manager(load_file, force_reload=true) followed by check_model(model_names=[...]); avoid check_model(reload_mo_path=...).",
             "Do not call ClearAll or ChangeDirectory.",
-            "Do not edit References/MWORKS/QuadrotorModel.",
+            "Do not edit References/MWORKS/MoSimQuadrotorModel.Plant.",
         ],
         "check_model_target_order": check_targets,
         "minimal_simulate_order_after_all_checks_pass": sim_targets,
@@ -700,12 +674,12 @@ def write_source_materialization_rationale(path: Path) -> None:
     lines = [
         "# Source Anchor Materialization Rationale",
         "",
-        "023 inspects the canonical `MoSimQuadrotorModel.Dynamics` implementation package, `package.order`, the `MoSimQuadrotorModel.Parameters` provenance record, and hidden legacy aliases only as compatibility checks.",
+        "023 inspects the canonical `MoSimQuadrotorModel.Dynamics` implementation package, `package.order`, and the `MoSimQuadrotorModel.Parameters` provenance record.",
         "",
         "The current formal source-surface rule is:",
         "",
         "- All formal Dynamics entries are canonical project-owned implementation `.mo` files.",
-        "- Legacy DynamicsUpgrade aliases must not own equations or become a source of truth.",
+        "- Retired top-level model roots must be absent from `Models/`.",
         "",
         "Current materialized dedicated surfaces:",
         "",
@@ -728,7 +702,7 @@ def write_source_materialization_rationale(path: Path) -> None:
         "- The 13 formal Dynamics entries are present and ordered in `Models/MoSimQuadrotorModel/Dynamics/package.order`.",
         "- All formal Dynamics entries exist as canonical source files with their own implementation anchors.",
         "- `Dynamics/package.mo` is a package shell and does not duplicate model definitions.",
-        "- Each compatibility alias extends its canonical model under `Models/MoSimQuadrotorModel/Dynamics/`.",
+        "- No second package is needed to load any Dynamics entry.",
         "- The formal smoke surface can be prepared as a target matrix, expected variable manifest, and future live validation queue without duplicating dynamics behavior.",
         "",
         "This rationale remains static-only. Live `check_model` and `SimulateModel` acceptance are still future gates.",

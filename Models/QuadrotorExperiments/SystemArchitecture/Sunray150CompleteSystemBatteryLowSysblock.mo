@@ -1,6 +1,0 @@
-within QuadrotorExperiments.SystemArchitecture;
-model Sunray150CompleteSystemBatteryLowSysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemBatteryLowSysblock"
-  extends MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemBatteryLowSysblock;
-  annotation(__MWORKS(hide=true));
-end Sunray150CompleteSystemBatteryLowSysblock;

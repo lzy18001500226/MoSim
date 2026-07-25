@@ -13,5 +13,5 @@ equation
     wrapper.motor_command[i] = wrapper.dynamics.spin_command_sign[i] * rotor_speed_mag[i];
   end for;
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 0.25, Tolerance = 0.0001, Interval = 0.001));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end WrapperYawStepSmoke;

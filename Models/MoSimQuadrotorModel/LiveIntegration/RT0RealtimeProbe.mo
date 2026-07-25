@@ -67,5 +67,5 @@ algorithm
 
   annotation(
     experiment(StartTime=0, StopTime=12, Interval=0.01, Tolerance=1e-6),
-    Documentation(info="<html><p>This model is only an RT0 transport and timing probe. It does not control Gazebo or a vehicle. A valid RT0 run must use Sysplorer real-time simulation mode 2 and the companion probe client.</p></html>"));
+    Documentation(info="<html><p>This model is only an RT0 transport and timing probe. It does not control Gazebo or a vehicle. A valid RT0 run must use Sysplorer real-time simulation mode 2 and the companion probe client.</p></html>"),__MWORKS(version="26.3.0"));
 end RT0RealtimeProbe;

@@ -30,7 +30,7 @@ REQUIRED_DIRS = [
     "Docs",
     "Docs/Index",
     "Docs/MworksDocs/converted",
-    "References/MWORKS/QuadrotorModel",
+    "Models/MoSimQuadrotorModel/Plant",
     "Models/MoSimQuadrotorModel",
     "Docs/Workflows",
 ]
@@ -99,9 +99,9 @@ RECOMMENDED_TESTS = [
 ]
 
 OFFICIAL_MODELS = [
-    "QuadrotorModel.Examples.Example1",
-    "QuadrotorModel.Examples.Example2",
-    "QuadrotorModel.Examples.Example3",
+    "MoSimQuadrotorModel.Plant.Examples.Example1",
+    "MoSimQuadrotorModel.Plant.Examples.Example2",
+    "MoSimQuadrotorModel.Plant.Examples.Example3",
 ]
 
 OFFICIAL_SCENARIOS = [
@@ -583,20 +583,20 @@ def check_wrappers() -> bool:
 
 
 def check_official_case(root: Path) -> bool:
-    print("\n== Official quadrotor case ==")
+    print("\n== Embedded official quadrotor baseline ==")
     ok = True
-    package_path = root / "References" / "MWORKS" / "QuadrotorModel" / "package.mo"
+    package_path = root / "Models" / "MoSimQuadrotorModel" / "Plant" / "package.mo"
     if not package_path.exists():
-        print(f"[FAIL] Missing official package: {package_path}")
+        print(f"[FAIL] Missing embedded Plant package: {package_path}")
         return False
 
     package_text = package_path.read_text(encoding="utf-8-sig", errors="replace")
     for model_name in OFFICIAL_MODELS:
         short_name = model_name.rsplit(".", 1)[-1]
         if f"model {short_name} " in package_text:
-            print(f"[OK] Official model present: {model_name}")
+            print(f"[OK] Embedded baseline model present: {model_name}")
         else:
-            print(f"[FAIL] Official model missing: {model_name}")
+            print(f"[FAIL] Embedded baseline model missing: {model_name}")
             ok = False
 
     for item in OFFICIAL_SCENARIOS:

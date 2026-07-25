@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Validate the canonical ownership of the former Dynamics Batch A surface.
 
-This file-only checker proves that the active implementation is now under
-``MoSimQuadrotorModel.Dynamics`` while the former
-``QuadrotorExperiments.DynamicsUpgrade`` names remain hidden compatibility
-aliases. It does not call MWORKS, Sysplorer, MCP, check_model, or simulate.
+This file-only checker proves that the active implementation is under
+``MoSimQuadrotorModel.Dynamics`` and that no second top-level Modelica root
+remains. It does not call MWORKS, Sysplorer, MCP, check_model, or simulate.
 """
 
 from __future__ import annotations
@@ -90,12 +89,12 @@ def write_markdown_matrix(path: Path, matrix: dict[str, Any]) -> None:
         "",
         f"Status: `{matrix['status']}`",
         "",
-        "| Canonical target | Canonical source | Legacy compatibility alias | Legacy compatibility file | Migration state |",
-        "|---|---|---|---|---|",
+        "| Canonical target | Canonical source | Retired predecessor | Migration state |",
+        "|---|---|---|---|",
     ]
     for item in matrix["targets"]:
         lines.append(
-            "| `{formal_target}` | `{formal_source}` | `{legacy_alias}` | `{legacy_file}` | `{migration_state}` |".format(
+            "| `{formal_target}` | `{formal_source}` | `{retired_predecessor}` | `{migration_state}` |".format(
                 **item
             )
         )
@@ -106,7 +105,7 @@ def write_markdown_matrix(path: Path, matrix: dict[str, Any]) -> None:
             "",
             "- Batch A is static source migration only.",
             "- `RotorActuatorCore` and `WrapperSurface` are canonical project-owned implementations.",
-            "- Legacy `QuadrotorExperiments.DynamicsUpgrade` files are retained only as hidden compatibility aliases.",
+            "- The former compatibility package has been retired; only the canonical root is loadable.",
             "- No live MWORKS load, `check_model`, `SimulateModel`, result variables, graphical/layout review, controller performance, planner readiness, runtime ack, mission success, or closed loop is claimed.",
         ]
     )
@@ -125,18 +124,17 @@ def validate_batch_a() -> dict[str, Any]:
             {
                 "formal_target": check["formal_target"],
                 "formal_source": check["formal_source"],
-                "legacy_alias": check["legacy_alias"],
-                "legacy_file": check["legacy_file"],
+                "retired_predecessor": check["retired_predecessor"]["class_name"],
                 "canonical_source_owns_implementation": authority["canonical_source_owns_implementation"],
-                "legacy_alias_preserved": authority["legacy_aliases_preserved"],
+                "retired_roots_absent": authority["retired_roots_absent"],
                 "canonical_anchors": check["canonical_anchors"],
                 "related_canonical_anchors": check["related_canonical_anchors"],
-                "migration_state": "canonical_implementation_with_hidden_legacy_alias",
+                "migration_state": "canonical_single_root",
             }
         )
 
     return {
-        "schema": "mosim.mworks.dynamics_batch_a_source_migration_matrix.v2",
+        "schema": "mosim.mworks.dynamics_batch_a_source_migration_matrix.v3",
         "request_id": REQUEST_ID,
         "status": "passed_static" if not findings else "failed_static",
         "static_only": True,
@@ -158,8 +156,7 @@ def validate_batch_a() -> dict[str, Any]:
         "targets": targets,
         "source_surface_policy": {
             "formal_sources_are_canonical_implementations": True,
-            "legacy_aliases_preserved": True,
-            "legacy_aliases_are_hidden": True,
+            "retired_roots_absent": True,
             "dynamics_equations_changed_by_namespace_consolidation": False,
             "numeric_parameters_changed_by_namespace_consolidation": False,
         },
@@ -177,9 +174,10 @@ def changed_files_manifest(output_dir: Path) -> dict[str, Any]:
             "Models/MoSimQuadrotorModel/Dynamics/package.mo",
             "Models/MoSimQuadrotorModel/Dynamics/package.order",
         ],
-        "legacy_compatibility_files_checked": [
-            "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
-            "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+        "retired_model_roots_checked_absent": [
+            "Models/QuadrotorExperiments",
+            "Models/QuadrotorControllerBlocks",
+            "Models/MworksLive",
         ],
         "evidence_files_written": [
             rel(output_dir / "batch_a_source_migration_matrix.json"),

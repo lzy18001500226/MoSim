@@ -166,31 +166,23 @@ MCP/GUI 观察。失败、发散、接口不匹配和缺测试壳均保留为失
 每个单独的候选在其最小闭环失败、接口缺失、模型不稳定或许可证出现阻塞时立即止损，
 切换到下一路线；不要让单个失败控制器阻塞整个报告主线。
 
-### E4 / R1 旧模型根退休与归档
+### E4 / R1 单根模型卫生
 
-R1 只能在 G5-G7 已产生终态证据后执行，不能为了整理目录跳过实验。退休对象仅为：
-`Models/QuadrotorExperiments/`、`Models/QuadrotorControllerBlocks/` 和
-`Models/MworksLive/`；正式实现根始终是 `Models/MoSimQuadrotorModel/`。
+正式 Modelica 实现只有一个根：`Models/MoSimQuadrotorModel/package.mo`。此前三个顶层
+兼容 facade 不拥有独立实现，已从 `Models/` 退休，不能作为保留旧实验的理由或第二加载
+入口。这个目录收敛动作不替代 G5-G7，也不声明任何控制器实验已完成。
 
-R1 的前置门：
+R1 的持续门是：
 
-1. 41 条图形核均已有 `internal_graphical_probe` 终态证据或明确 blocker，5 条固定集成链
-   均已有真实整机最小闭环证据或明确 blocker；六族冠军场景和 G7 代表实验也均从正式根
-   产生终态记录。
-2. `python Scripts/quality/consolidate_mosimquad_model_root.py --check`、
+1. `python Scripts/quality/consolidate_mosimquad_model_root.py --check`、
    `python Scripts/quality/build_current_model_entry_map.py --check` 和
    `python Scripts/quality/check_current_model_entry_map.py` 均通过。
-3. 对 `Models/`、`Config/`、`Scripts/`、活跃 `Docs/` 和测试执行路径做引用审计；
-   旧根只能出现在历史 cache、已归档证据或明确的迁移清单中，不能仍是可执行导入、
-   runner、配置或正式模型依赖。审计同时覆盖 `.mo` 的 `within`/`extends`/引用、
-   `package.order`、配置模型类、Python/PowerShell runner 和测试；不能只搜索文档。
-4. 使用正式根完成一次真实 MWORKS `check_model` 与最小闭环复核；静态检查、旧截图、
-   旧 `Result.msr` 或迁移映射都不能替代该门。
-
-归档操作必须先写入旧根文件清单、SHA-256、迁移映射和恢复位置，再将三个旧根整体
-移入 `Docs/Cache/model_legacy/retired_model_roots_<date>/`。归档后立即在旧根缺席的
-状态下重跑正式根的静态检查与最小 MWORKS 烟雾；任一活动引用或正式根加载失败即恢复，
-保留 blocker，不宣称退休完成。
+2. 任何当前模型、配置、runner、测试和操作文档只引用正式根；历史结果或缓存中记录的旧
+   名称只能作为当时 provenance，不能变成新的加载说明。
+3. 自动恢复副本位于 `Models/` 之外的 cache，永远不作为 package、source candidate 或
+   MWORKS 加载目录。
+4. 每次结构调整后，用正式根做一次最小 MWORKS load/check。该检查只证明根可加载/可检查，
+   不代替最小闭环、七场景 A/B 或 G7 代表实验。
 
 ## 完成条件
 
@@ -203,6 +195,5 @@ G7 交接前必须满足：
 - 安全、故障和编队各保留至少一条可信代表实验或明确 blocker，不以静态图替代。
 - 任何缺失路线、未运行路线、超阈值或失败结果均在审计/矩阵中保留明确状态。
 
-R1 退休完成还必须满足：旧根归档前后都有可追溯 manifest，所有活动路径已切换到
-`MoSimQuadrotorModel`，正式根在旧根缺席时通过对应烟雾验证；否则旧根继续作为隐藏
-兼容 facade 保留，不能以“已迁移”替代验证。
+R1 的单根卫生完成只要求所有活动路径已切换到 `MoSimQuadrotorModel`，并在没有第二根的
+状态下通过对应静态和最小 MWORKS load/check 验证。它不能以“已迁移”替代 G5-G7 的实验验证。

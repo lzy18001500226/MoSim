@@ -5,6 +5,8 @@ OfflineBodyRateAllocator
 OfflineWrenchController
 OfflineWrenchAllocator
 OfficialPIDRotorAdapter
+PidAttitudeThrustCFunction
+CascadePidAttitudeThrustAdapter
 ImprovedPIDRotorAdapter
 AWFFRotorAdapter
 INDIRotorAdapter

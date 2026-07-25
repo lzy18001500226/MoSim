@@ -8,7 +8,7 @@ model:
   source_package: MoSimQuadrotorModel
   model_name: MoSimQuadrotorModel.Controllers.Baselines.Example2HelixTunedAntiWindupFeedforwardPID
   model_path_hint: Models/MoSimQuadrotorModel/package.mo
-  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 螺旋爬升 AWFF PID 横向权限调优
 
 controller:

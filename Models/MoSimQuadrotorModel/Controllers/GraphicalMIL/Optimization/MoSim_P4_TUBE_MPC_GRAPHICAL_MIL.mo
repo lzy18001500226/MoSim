@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization;
-
 model MoSim_P4_TUBE_MPC_GRAPHICAL_MIL "P4 native graphical fixed-budget MPC controller core: tube_mpc"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

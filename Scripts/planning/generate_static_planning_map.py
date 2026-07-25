@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = ROOT / "Config/planners/astar_min_snap/map_open_blocks.yaml"
 DEFAULT_OUTPUT_DIR = ROOT / "Results/planning/single_obstacle_astar_awff/figures/static_map"
 DEFAULT_STL = ROOT / "Results/planning/single_obstacle_astar_awff/figures/static_map/map_open_blocks_static_ground_0p2_obstacle_columns_0p2_h2p8_3p5_combined_review_only.stl"
-DEFAULT_ASSET_DIR = ROOT / "References/MWORKS/QuadrotorModel/Resources/Visualization"
+DEFAULT_ASSET_DIR = ROOT / "Models/MoSimQuadrotorModel/Plant/Resources/Visualization"
 TERRAIN_BAND_COUNT = 5
 TERRAIN_BAND_STLS = [
     DEFAULT_ASSET_DIR / f"map_open_blocks_static_terrain_band_{index}_ground_0p2.stl"

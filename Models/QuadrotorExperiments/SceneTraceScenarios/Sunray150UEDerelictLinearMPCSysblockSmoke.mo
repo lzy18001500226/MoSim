@@ -1,6 +1,0 @@
-within QuadrotorExperiments.SceneTraceScenarios;
-model Sunray150UEDerelictLinearMPCSysblockSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Scenarios.Sunray150UEDerelictLinearMPCSysblockSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Scenarios.Sunray150UEDerelictLinearMPCSysblockSmoke;
-  annotation(__MWORKS(hide=true));
-end Sunray150UEDerelictLinearMPCSysblockSmoke;

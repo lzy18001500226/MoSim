@@ -47,16 +47,16 @@ model Example1PlanarFigure8TrailSysblockClosedLoop
       if reference_trail_segment_length[i] > 1e-6 then reference_trail_segment_vector[i, 3] else 0.0
     } for i in 1:online_trail_points - 1};
 
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisTest17_1(
     body(r_0(start = {0, 0, mission_altitude_m}, fixed = {true, true, true})));
-  QuadrotorModel.PathPlanning.EightPath climbePath(
+  MoSimQuadrotorModel.Plant.PathPlanning.EightPath climbePath(
     XAMP = mission_figure8_x_scale_m,
     YAMP = mission_figure8_y_scale_m);
-  QuadrotorModel.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Sensors.Sensors sensors1_1;
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Sensors.Sensors sensors1_1;
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor[4];
   Real figure8_phase_time;
   Real figure8_vx_ref;
@@ -207,5 +207,5 @@ equation
   connect(actuator1_4.flange_a, speedSensor[4].flange);
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 120, Tolerance = 0.0001, Interval = 0.05));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Example1PlanarFigure8TrailSysblockClosedLoop;

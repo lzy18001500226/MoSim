@@ -6,13 +6,13 @@ model FactoryTraceIso03PlantHoverStackSmoke
   parameter Real hover_motor_speed_cmd = 53.562090367172424
     "MWORKS visual rotor hover speed; copied from project-owned Factory smoke wrapper without changing parameters";
 
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisTest17_1(
     body(color = {135, 206, 235}, r_0(start = {-55.58, -24.48, 1.9}, fixed = {true, true, true})));
-  QuadrotorModel.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Sensors.Sensors sensors1_1;
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Sensors.Sensors sensors1_1;
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor[4];
   Modelica.Blocks.Sources.Constant hover_u1(k = hover_motor_speed_cmd);
   Modelica.Blocks.Sources.Constant hover_u2(k = -hover_motor_speed_cmd);
@@ -35,5 +35,5 @@ equation
   connect(actuator1_2.flange_a, speedSensor[2].flange);
   connect(actuator1_3.flange_a, speedSensor[3].flange);
   connect(actuator1_4.flange_a, speedSensor[4].flange);
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso03PlantHoverStackSmoke;

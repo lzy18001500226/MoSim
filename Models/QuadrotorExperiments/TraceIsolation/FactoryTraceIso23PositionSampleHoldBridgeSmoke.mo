@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso23PositionSampleHoldBridgeSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso23PositionSampleHoldBridgeSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso23PositionSampleHoldBridgeSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso23PositionSampleHoldBridgeSmoke;

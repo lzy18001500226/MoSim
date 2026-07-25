@@ -21,5 +21,5 @@ algorithm
 
   annotation(
     experiment(StartTime=0, StopTime=12, Interval=0.005, Tolerance=1e-6),
-    Documentation(info="<html><p>Candidate-only 200 Hz real-time transport and timing probe. Promotion requires an accepted RT0 analysis and a new versioned profile/hash.</p></html>"));
+    Documentation(info="<html><p>Candidate-only 200 Hz real-time transport and timing probe. Promotion requires an accepted RT0 analysis and a new versioned profile/hash.</p></html>"),__MWORKS(version="26.3.0"));
 end RT0RealtimeProbe200Hz;

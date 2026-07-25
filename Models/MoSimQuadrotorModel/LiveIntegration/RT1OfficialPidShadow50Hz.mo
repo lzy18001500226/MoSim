@@ -105,5 +105,5 @@ algorithm
 
   annotation(
     experiment(StartTime=0, StopTime=120, Interval=0.02, Tolerance=1e-6),
-    Documentation(info="<html><p>Runs the Official PID translational outer loop inside MWORKS at 50 Hz. The default ROS adapter is shadow-only, so this model cannot own MAVROS output until a separate ground-only takeover gate passes.</p></html>"));
+    Documentation(info="<html><p>Runs the Official PID translational outer loop inside MWORKS at 50 Hz. The default ROS adapter is shadow-only, so this model cannot own MAVROS output until a separate ground-only takeover gate passes.</p></html>"),__MWORKS(version="26.3.0"));
 end RT1OfficialPidShadow50Hz;

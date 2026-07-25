@@ -14,5 +14,5 @@ equation
   direct_roll_mea = sensors1_1.AngleMea[1];
   direct_pitch_mea = sensors1_1.AngleMea[2];
   direct_yaw_mea = sensors1_1.AngleMea[3];
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso24DirectAttitudeFeedbackSmoke;

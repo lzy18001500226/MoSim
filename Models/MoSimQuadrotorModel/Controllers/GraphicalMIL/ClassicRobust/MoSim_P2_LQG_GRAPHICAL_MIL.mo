@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust;
-
 model MoSim_P2_LQG_GRAPHICAL_MIL "P2 fixed-input graphical controller core for lqg"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

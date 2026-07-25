@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust;
-
 model MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL "P2 fixed-input graphical controller core for feedback_linearization"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

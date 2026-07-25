@@ -2,7 +2,7 @@
 
 This file records how MWORKS/Sysplorer result variable names map to the project-standard CSV schema.
 
-The `Model Result Variable` column below is a candidate mapping derived from `References/MWORKS/QuadrotorModel/package.mo`.
+The `Model Result Variable` column below is a candidate mapping derived from the embedded baseline package `Models/MoSimQuadrotorModel/Plant/package.mo`.
 After the first successful Sysplorer MCP simulation, confirm the exact names with `result_manager`.
 
 | Standard Name | Model Result Variable | Required | Notes |
@@ -43,9 +43,9 @@ The three official examples use the same component names for result extraction:
 
 | Example | Model | Path Component | Sensor Component | Controller Component |
 |---|---|---|---|---|
-| Example1 | `QuadrotorModel.Examples.Example1` | `climbePath` (`PathPlanning.ClimbPath`) | `sensors1_1` | `controller3_2` |
-| Example2 | `QuadrotorModel.Examples.Example2` | `climbePath` (`PathPlanning.CirclePath`) | `sensors1_1` | `controller3_2` |
-| Example3 | `QuadrotorModel.Examples.Example3` | `climbePath` (`PathPlanning.EightPath`) | `sensors1_1` | `controller3_2` |
+| Example1 | `MoSimQuadrotorModel.Plant.Examples.Example1` | `climbePath` (`PathPlanning.ClimbPath`) | `sensors1_1` | `controller3_2` |
+| Example2 | `MoSimQuadrotorModel.Plant.Examples.Example2` | `climbePath` (`PathPlanning.CirclePath`) | `sensors1_1` | `controller3_2` |
+| Example3 | `MoSimQuadrotorModel.Plant.Examples.Example3` | `climbePath` (`PathPlanning.EightPath`) | `sensors1_1` | `controller3_2` |
 | Planning | `MoSimQuadrotorModel.Planning.Scenarios.Sunray150Planning*SysblockClosedLoop` | `planningReference` (`PlannedQuinticReference`) | `sensors1_1` | `controller3_2` |
 
 First `result_manager` query list:

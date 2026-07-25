@@ -1,6 +1,0 @@
-within QuadrotorExperiments.SystemArchitecture;
-model Sunray150CompleteSystemGPSDropoutSysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGPSDropoutSysblock"
-  extends MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemGPSDropoutSysblock;
-  annotation(__MWORKS(hide=true));
-end Sunray150CompleteSystemGPSDropoutSysblock;

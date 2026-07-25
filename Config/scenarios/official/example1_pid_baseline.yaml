@@ -4,9 +4,9 @@ controller_id: pid_baseline
 priority: P0
 
 model:
-  source_package: QuadrotorModel
-  model_name: QuadrotorModel.Examples.Example1
-  model_path_hint: References/MWORKS/QuadrotorModel/package.mo
+  source_package: MoSimQuadrotorModel
+  model_name: MoSimQuadrotorModel.Plant.Examples.Example1
+  model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 阶梯爬升运动
 
 simulation:

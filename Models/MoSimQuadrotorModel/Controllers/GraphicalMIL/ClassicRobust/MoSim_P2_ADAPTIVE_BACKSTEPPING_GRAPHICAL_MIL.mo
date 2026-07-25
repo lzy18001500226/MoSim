@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust;
-
 model MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL "P2 fixed-input graphical controller core for adaptive_backstepping"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

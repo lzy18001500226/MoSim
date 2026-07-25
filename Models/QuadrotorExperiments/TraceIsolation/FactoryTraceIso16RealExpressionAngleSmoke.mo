@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso16RealExpressionAngleSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso16RealExpressionAngleSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso16RealExpressionAngleSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso16RealExpressionAngleSmoke;

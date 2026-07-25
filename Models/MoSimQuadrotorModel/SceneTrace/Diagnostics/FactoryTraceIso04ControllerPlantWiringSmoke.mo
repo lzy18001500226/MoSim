@@ -66,5 +66,5 @@ equation
   motor_cmd_2 = motor2_hover_sum.y;
   motor_cmd_3 = motor3_hover_sum.y;
   motor_cmd_4 = motor4_hover_sum.y;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso04ControllerPlantWiringSmoke;

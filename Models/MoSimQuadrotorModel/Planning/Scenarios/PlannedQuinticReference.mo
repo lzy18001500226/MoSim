@@ -126,5 +126,5 @@ equation
       Ellipse(extent = {{72, 22}, {84, 34}}, lineColor = {32, 88, 130}, fillColor = {255, 191, 0}, fillPattern = FillPattern.Solid),
       Text(extent = {{-92, -60}, {92, -86}}, textString = "A* Quintic Ref", textColor = {32, 88, 130})}),
     Diagram(coordinateSystem(extent = {{-120, -80}, {120, 80}})));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end PlannedQuinticReference;

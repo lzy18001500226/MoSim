@@ -24,5 +24,5 @@ equation
   attitude_bridge_roll = attitude_hold[1].y;
   attitude_bridge_pitch = attitude_hold[2].y;
   attitude_bridge_yaw = attitude_hold[3].y;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso25SampleHoldAttitudeFeedbackSmoke;

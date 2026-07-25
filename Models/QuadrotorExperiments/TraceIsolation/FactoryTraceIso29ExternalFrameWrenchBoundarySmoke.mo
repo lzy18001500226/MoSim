@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso29ExternalFrameWrenchBoundarySmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso29ExternalFrameWrenchBoundarySmoke;

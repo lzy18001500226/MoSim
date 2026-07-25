@@ -15,6 +15,7 @@ protected
   Real roll_term;
   Real pitch_term;
   Real yaw_term;
+  annotation(__MWORKS(version="26.3.0"));
 equation
   connect(attitude_mea, body_rate_estimator.u);
   roll_term = min(max(rate_gain * (body_rate_estimator[1].y - body_rate_ref[1]), -max_rate_term), max_rate_term);

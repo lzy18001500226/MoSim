@@ -1,7 +1,7 @@
 within MoSimQuadrotorModel.Robustness.Scenarios.PIDBaselines;
 model Example1Rotor1Loss15EnhancedPID
   "Example1 enhanced PID with rotor 1 lift efficiency reduced to 85%"
-  extends QuadrotorModel.Examples.Example1(
+  extends MoSimQuadrotorModel.Plant.Examples.Example1(
     quadChassisTest17_1.gain2(k = 0.0007266293),
     controller3_2.PID3(KP = 1.65, KI = 0, KD = 1.0, der1(T = 0.05)),
     controller3_2.PID4(KP = 1.65, KI = 0, KD = 1.0, der1(T = 0.05)),
@@ -14,5 +14,5 @@ model Example1Rotor1Loss15EnhancedPID
     controller3_2.limiter4(uMax = 6.5, uMin = -6.5),
     controller3_2.limiter5(uMax = 6.5, uMin = -6.5));
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Example1Rotor1Loss15EnhancedPID;

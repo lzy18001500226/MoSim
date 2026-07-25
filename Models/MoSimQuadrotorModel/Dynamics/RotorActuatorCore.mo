@@ -68,5 +68,5 @@ equation
   hover_thrust_error = total_thrust - mass_kg * 9.81;
   minimum_thrust_effectiveness = min(thrust_effectiveness);
   minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness);
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end RotorActuatorCore;

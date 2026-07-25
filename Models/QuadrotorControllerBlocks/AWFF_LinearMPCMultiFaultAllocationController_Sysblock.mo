@@ -1,5 +1,0 @@
-model AWFF_LinearMPCMultiFaultAllocationController_Sysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_LinearMPCMultiFaultAllocationController_Sysblock"
-  extends MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_LinearMPCMultiFaultAllocationController_Sysblock;
-  annotation(__MWORKS(hide=true));
-end AWFF_LinearMPCMultiFaultAllocationController_Sysblock;

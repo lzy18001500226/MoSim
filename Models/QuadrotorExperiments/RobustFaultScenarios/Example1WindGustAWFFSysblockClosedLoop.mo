@@ -1,6 +1,0 @@
-within QuadrotorExperiments.RobustFaultScenarios;
-model Example1WindGustAWFFSysblockClosedLoop
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Robustness.Scenarios.Example1WindGustAWFFSysblockClosedLoop"
-  extends MoSimQuadrotorModel.Robustness.Scenarios.Example1WindGustAWFFSysblockClosedLoop;
-  annotation(__MWORKS(hide=true));
-end Example1WindGustAWFFSysblockClosedLoop;

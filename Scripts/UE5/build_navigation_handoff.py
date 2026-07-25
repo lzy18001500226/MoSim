@@ -206,7 +206,7 @@ def write_control_interface_package(scene_dir: Path, handoff: dict[str, Any]) ->
             "model:",
             "  source_package: MoSimQuadrotorModel",
             "  model_name: TBD.UEAcceptedSceneLinearMPCClosedLoop",
-            "  base_model_path_hint: References/MWORKS/QuadrotorModel/package.mo",
+            "  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo",
             "  extra_model_files:",
             "    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlannedQuinticReference.mo",
             "",

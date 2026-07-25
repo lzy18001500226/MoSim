@@ -12,5 +12,5 @@ model Example1WindGustEnhancedPID
     controller3_2.limiter3(uMax = 6.5, uMin = -6.5),
     controller3_2.limiter4(uMax = 6.5, uMin = -6.5),
     controller3_2.limiter5(uMax = 6.5, uMin = -6.5));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Example1WindGustEnhancedPID;

@@ -93,5 +93,5 @@ algorithm
 
   annotation(
     experiment(StartTime=0, StopTime=300, Interval=0.02, Tolerance=1e-6),
-    Documentation(info="<html><p>Read-only observer for same-run ROS1 flight telemetry on the existing allowed UDP port 49020. The model never publishes a control command and must not run concurrently with the RT1 control model that owns the same port. Select actualPosition/referencePosition, actualVelocity, targetThrust, positionErrorNorm, attitudeErrorRad, sourceAgeMs, commandAgeMs and roundTripMs in the native MWORKS Scope/result curve window.</p></html>"));
+    Documentation(info="<html><p>Read-only observer for same-run ROS1 flight telemetry on the existing allowed UDP port 49020. The model never publishes a control command and must not run concurrently with the RT1 control model that owns the same port. Select actualPosition/referencePosition, actualVelocity, targetThrust, positionErrorNorm, attitudeErrorRad, sourceAgeMs, commandAgeMs and roundTripMs in the native MWORKS Scope/result curve window.</p></html>"),__MWORKS(version="26.3.0"));
 end RTTelemetryScope50Hz;

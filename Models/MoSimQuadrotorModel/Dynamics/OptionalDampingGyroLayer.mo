@@ -133,5 +133,5 @@ equation
     + abs(total_moment_body[3] - base_moment_body[3]);
   motor_order_gate_error = mapped_wrapper.motor_order_gate_error;
   yaw_direction_gate_error = mapped_wrapper.yaw_direction_gate_error;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end OptionalDampingGyroLayer;

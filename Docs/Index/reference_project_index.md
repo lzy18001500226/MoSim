@@ -373,7 +373,7 @@ These rows keep the machine-checkable index aligned with the current
 |---|---|---|
 | 2025中国大学生软件设计大赛 | `References/MWORKS/2025中国大学生软件设计大赛` | competition background materials |
 | MWORKS高校星火计划资料包 | `References/MWORKS/MWORKS高校星火计划资料包` | official docs/material package |
-| QuadrotorModel | `References/MWORKS/QuadrotorModel` | official quadrotor case |
+| Embedded quadrotor baseline | `Models/MoSimQuadrotorModel/Plant` | project-owned migrated copy of the official quadrotor case; load only through the MoSim formal root |
 | 具身智能无人船平台部署资料 | `References/MWORKS/具身智能无人船平台部署资料` | communication/ROS/MWORKS reference |
 | 智能无人系统应用挑战赛培训配套文档及案例 | `References/MWORKS/智能无人系统应用挑战赛培训配套文档及案例` | official challenge training reference |
 | 用于远程巡逻及异常检测的智能无人机 | `References/MWORKS/用于远程巡逻及异常检测的智能无人机` | auxiliary reference |

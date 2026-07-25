@@ -1,6 +1,0 @@
-within QuadrotorExperiments.RobustFaultScenarios.RotorLoss;
-model Example1Rotor3Loss15WindGustAWFFSysblockClosedLoop
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor3Loss15WindGustAWFFSysblockClosedLoop"
-  extends MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor3Loss15WindGustAWFFSysblockClosedLoop;
-  annotation(__MWORKS(hide=true));
-end Example1Rotor3Loss15WindGustAWFFSysblockClosedLoop;

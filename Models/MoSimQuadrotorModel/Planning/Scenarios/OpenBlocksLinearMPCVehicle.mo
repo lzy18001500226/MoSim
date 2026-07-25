@@ -17,13 +17,13 @@ model OpenBlocksLinearMPCVehicle
   Modelica.Blocks.Interfaces.RealOutput tracking_error_m
     annotation(Placement(transformation(origin = {120, 10}, extent = {{-20, -20}, {20, 20}})));
 
-  QuadrotorModel.Mechanics.QuadChassis chassis(
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis chassis(
     body(r_0(start = initial_position, fixed = {true, true, true})));
-  QuadrotorModel.Electricals.Actuator actuator1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Sensors.Sensors sensors;
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Sensors.Sensors sensors;
 
   Modelica.Blocks.Math.Feedback x_error;
   Modelica.Blocks.Math.Feedback y_error;
@@ -100,5 +100,5 @@ equation
       Line(points = {{35, 35}, {-35, -35}}, color = {28, 74, 96}, thickness = 1.2),
       Text(extent = {{-90, -62}, {90, -88}}, textString = "Linear MPC UAV", textColor = {28, 74, 96})}),
     Diagram(coordinateSystem(extent = {{-140, -100}, {140, 100}})));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end OpenBlocksLinearMPCVehicle;

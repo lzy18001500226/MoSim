@@ -1,6 +1,0 @@
-within QuadrotorExperiments.SystemArchitecture;
-model Sunray150CompleteSystemOffboardLossSysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemOffboardLossSysblock"
-  extends MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemOffboardLossSysblock;
-  annotation(__MWORKS(hide=true));
-end Sunray150CompleteSystemOffboardLossSysblock;

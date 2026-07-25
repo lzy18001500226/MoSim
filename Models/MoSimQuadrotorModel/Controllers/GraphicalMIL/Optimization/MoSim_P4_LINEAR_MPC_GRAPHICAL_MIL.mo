@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization;
-
 model MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL "P4 native graphical fixed-budget MPC controller core: linear_mpc"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

@@ -1,6 +1,0 @@
-within QuadrotorExperiments.ControllerBaselines;
-model Example2HelixTunedAntiWindupFeedforwardPID
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Controllers.Baselines.Example2HelixTunedAntiWindupFeedforwardPID"
-  extends MoSimQuadrotorModel.Controllers.Baselines.Example2HelixTunedAntiWindupFeedforwardPID;
-  annotation(__MWORKS(hide=true));
-end Example2HelixTunedAntiWindupFeedforwardPID;

@@ -8,4 +8,5 @@ model AWFF_FaultCompensationControllerEquation_Sysblock
     l1_comp_limit_z = 0,
     rotor1_efficiency = 0.85,
     rotor1_allocation_blend = 0.52);
+  annotation(__MWORKS(version="26.3.0"));
 end AWFF_FaultCompensationControllerEquation_Sysblock;

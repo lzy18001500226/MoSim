@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily;
-
 model MoSim_PID_CASCADE_PID_GRAPHICAL_MIL "Exact fixed-input graphical MIL for cascade_pid"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

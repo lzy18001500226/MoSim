@@ -283,5 +283,5 @@ equation
   z_ref_rate = traceLookup(traceData, time, 6);
 
   annotation(Diagram(coordinateSystem(extent = {{-120, -80}, {120, 80}})));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end TraceInlineReference;

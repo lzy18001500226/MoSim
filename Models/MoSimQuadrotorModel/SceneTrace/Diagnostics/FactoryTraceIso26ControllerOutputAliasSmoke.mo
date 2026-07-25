@@ -31,5 +31,5 @@ equation
   pre_actuator_command_3 = motor3_hover_sum.y;
   pre_actuator_command_4 = motor4_hover_sum.y;
   pre_actuator_command_sum = pre_actuator_command_1 + pre_actuator_command_2 + pre_actuator_command_3 + pre_actuator_command_4;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso26ControllerOutputAliasSmoke;

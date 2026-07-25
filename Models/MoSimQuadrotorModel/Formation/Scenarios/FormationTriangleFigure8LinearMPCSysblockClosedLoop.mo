@@ -41,29 +41,29 @@ model FormationTriangleFigure8LinearMPCSysblockClosedLoop
   Real inter_uav_distance_12_m;
   Real min_inter_uav_distance_m;
 
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1(
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisTest17_1(
     body(r_0(start = {x_scale_m * sin(x_phase_offset * Modelica.Constants.pi), 0, mission_altitude_m}, fixed = {true, true, true})));
-  QuadrotorModel.Mechanics.QuadChassis quadChassisFollower1(
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisFollower1(
     body(r_0(start = {x_scale_m * sin(x_phase_offset * Modelica.Constants.pi) + follower1_offset_x, follower1_offset_y, mission_altitude_m}, fixed = {true, true, true})));
-  QuadrotorModel.Mechanics.QuadChassis quadChassisFollower2(
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisFollower2(
     body(r_0(start = {x_scale_m * sin(x_phase_offset * Modelica.Constants.pi) + follower2_offset_x, follower2_offset_y, mission_altitude_m}, fixed = {true, true, true})));
 
-  QuadrotorModel.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator follower1Actuator1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator follower1Actuator2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator follower1Actuator3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator follower1Actuator4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator follower2Actuator1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator follower2Actuator2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator follower2Actuator3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator follower2Actuator4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator follower1Actuator1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator follower1Actuator2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator follower1Actuator3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator follower1Actuator4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator follower2Actuator1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator follower2Actuator2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator follower2Actuator3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator follower2Actuator4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
 
-  QuadrotorModel.Sensors.Sensors sensors1_1;
-  QuadrotorModel.Sensors.Sensors follower1Sensors;
-  QuadrotorModel.Sensors.Sensors follower2Sensors;
+  MoSimQuadrotorModel.Plant.Sensors.Sensors sensors1_1;
+  MoSimQuadrotorModel.Plant.Sensors.Sensors follower1Sensors;
+  MoSimQuadrotorModel.Plant.Sensors.Sensors follower2Sensors;
 
   Modelica.Blocks.Sources.RealExpression leader_x_ref_src(y = leader_x_ref);
   Modelica.Blocks.Sources.RealExpression leader_y_ref_src(y = leader_y_ref);
@@ -266,5 +266,5 @@ equation
   connect(follower2_motor4_hover_sum.y, follower2Actuator4.u);
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 80, Tolerance = 0.0001, Interval = 0.02));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FormationTriangleFigure8LinearMPCSysblockClosedLoop;

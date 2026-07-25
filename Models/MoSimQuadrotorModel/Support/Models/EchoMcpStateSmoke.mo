@@ -27,5 +27,5 @@ equation
   not_closed_loop = 1;
   echo_state_keepalive = 0.001 * (accepted_mworks_owned_count + no_pose_overwrite_status - forbidden_pose_status);
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end EchoMcpStateSmoke;

@@ -58,5 +58,5 @@ equation
   hover_weight_balance_error = wrapper.total_thrust - wrapper.dynamics.mass_kg * world.g;
   motor_order_gate_error = wrapper.motor_order_gate_error;
   yaw_direction_gate_error = wrapper.yaw_direction_gate_error;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end PhysicalWrenchAdapter;

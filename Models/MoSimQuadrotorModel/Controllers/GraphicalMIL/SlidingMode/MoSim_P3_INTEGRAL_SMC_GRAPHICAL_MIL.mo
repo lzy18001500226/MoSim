@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode;
-
 model MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL "P3 native graphical sliding-mode controller core: integral_smc"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

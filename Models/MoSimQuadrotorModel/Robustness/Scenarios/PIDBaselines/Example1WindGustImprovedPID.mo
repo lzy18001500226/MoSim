@@ -7,5 +7,5 @@ model Example1WindGustImprovedPID
     controller3_2.PID5(KP = 14.142, KI = 0, KD = 1.70),
     controller3_2.PID6(KP = 14.142, KI = 0, KD = 1.70),
     controller3_2.PID7(KP = 8.0, KI = 6.0, KD = 4.0));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Example1WindGustImprovedPID;

@@ -13,5 +13,5 @@ model Sunray150PlanningOpenBlocksColorMapReview
       local_costmap_fade_radius_m = 9));
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 80.1247340259, Tolerance = 0.0001, Interval = 0.05));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Sunray150PlanningOpenBlocksColorMapReview;

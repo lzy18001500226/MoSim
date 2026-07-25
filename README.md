@@ -71,7 +71,6 @@ MoSimQuadrotorModel/
   LiveIntegration/          MWORKS Live 受控实时桥接入口
   SceneTrace/               场景留痕与诊断
   Support/                  支持模型与参考夹具
-  LegacyCompatibility/      隐藏兼容元数据，不作为新模型入口
 ```
 
 推荐的离线打开链路是：
@@ -85,8 +84,8 @@ Model Studio / ExperimentProfile
   -> shared plant / result contract
 ```
 
-`Models/QuadrotorControllerBlocks/`、`Models/QuadrotorExperiments/` 和
-`Models/MworksLive/` 只保留旧调用兼容 facade；不得为新工作继续添加独立实现。
+`Models/` 下不保留控制器、实验或 Live 的第二个 Modelica 包根。自动恢复副本和
+旧命名的历史证据只保留在 `Docs/Cache/`、`Results/` 中，均不得作为加载入口。
 参数目录中的 SDF、Gazebo 或参考项目数值必须保留来源标签，在获得称重、台架、ULog
 或有效系统辨识证据前不得写成真实机体参数。
 

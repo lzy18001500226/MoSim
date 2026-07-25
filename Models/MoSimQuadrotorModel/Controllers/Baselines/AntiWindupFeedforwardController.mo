@@ -131,5 +131,5 @@ equation
   y1 = saturate(u2_raw, output_limit);
   y2 = saturate(u3_raw, output_limit);
   y3 = saturate(u4_raw, output_limit);
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end AntiWindupFeedforwardController;

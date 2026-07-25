@@ -6,7 +6,8 @@ model OfficialPIDRotorAdapter
   parameter Real legacy_hover_speed = 13.985413115099604;
   parameter Real hover_speed = 53.562090367172424;
   parameter Real command_scale = hover_speed / legacy_hover_speed;
-  QuadrotorModel.Blocks.Controller.Controller core;
+  MoSimQuadrotorModel.Plant.Blocks.Controller.Controller core;
+  annotation(__MWORKS(version="26.3.0"));
 equation
   connect(position_ref, core.position_command);
   connect(position_mea, core.position);

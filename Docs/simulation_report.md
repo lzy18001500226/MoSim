@@ -1,12 +1,18 @@
 # 仿真分析报告
 
-## 0. 2026-07-18 最终非前端证据摘要
+> 状态：历史报告草稿，非当前证据权威。下文的 67 行统计、旧图表和阶段结论只保留
+> 追溯价值，不能作为当前 G5-G7、R1 或正式报告的完成声明。当前报告素材必须来自
+> `Docs/Workflows/controller_evidence_closeout.md` 所定义的正式根真实实验、指标、原生整窗
+> 截图和 manifest；待证据冻结后再重写本文。本文后续出现的
+> `References/MWORKS/QuadrotorModel`、`QuadrotorExperiments`、
+> `QuadrotorControllerBlocks` 或 `MworksLive` 仅为历史记录，绝不是当前加载路径。
 
-本节覆盖本文后续历史阶段文字中的状态判断。后续章节仍保留用于说明控制器
-演进、旧 MWORKS 实验和设计过程，但不得覆盖本节的当前权威矩阵、运行状态
-或结论边界。
+## 0. 2026-07-18 历史非前端证据摘要
 
-当前权威入口：
+本节仅覆盖本文后续历史阶段文字中的状态判断。后续章节仍保留用于说明控制器
+演进、旧 MWORKS 实验和设计过程，不得被误读为当前权威矩阵、运行状态或结论边界。
+
+该历史快照当时的权威入口：
 
 ```text
 Results/control_platform/non_frontend_evidence_index_20260718/README.md
@@ -17,7 +23,7 @@ Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_DELIV
 
 ### 0.1 控制器与统一 A/B 状态
 
-67 行控制器权威矩阵当前冻结为：
+2026-07-18 的 67 行控制器历史矩阵冻结为：
 
 | 状态 | 数量 | 报告使用方式 |
 |---|---:|---|

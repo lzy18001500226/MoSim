@@ -34,5 +34,5 @@ equation
   display_bridge_x = display_position_hold[1].y;
   display_bridge_y = display_position_hold[2].y;
   display_bridge_z = display_position_hold[3].y;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso23PositionSampleHoldBridgeSmoke;

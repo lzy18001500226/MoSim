@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -19,9 +18,7 @@ except ImportError:  # pragma: no cover
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MODEL_FILE = ROOT / "References/MWORKS/QuadrotorModel/package.mo"
-DEFAULT_EXTRA_MODEL_FILE = ROOT / "Models/MoSimQuadrotorModel/package.mo"
-MINIMAL_DYNAMICS_BUILD_ROOT = ROOT / "Results/generated_mworks/minimal_dynamics_only"
+DEFAULT_MODEL_FILE = ROOT / "Models/MoSimQuadrotorModel/package.mo"
 MINIMAL_DYNAMICS_STRATEGY = "minimal_dynamics_only"
 
 
@@ -94,55 +91,6 @@ def windows_path(repo_path: str, *, default: Path | None = None) -> str:
     return to_windows_path(ROOT / repo_path)
 
 
-def copy_tree_files(source: Path, target: Path) -> None:
-    if not source.exists():
-        raise FileNotFoundError(f"Minimal Dynamics source directory not found: {source}")
-    target.mkdir(parents=True, exist_ok=True)
-    for item in sorted(source.iterdir()):
-        if item.is_file() and item.suffix in {".mo", ".order"}:
-            shutil.copy2(item, target / item.name)
-
-
-def write_minimal_root_package(path: Path, *, package_name: str, description: str, uses: list[str]) -> None:
-    uses_text = ""
-    if uses:
-        uses_lines = ",\n    ".join(uses)
-        uses_text = f"\n  annotation(uses(\n    {uses_lines}));"
-    text = (
-        f"package {package_name}\n"
-        f"  \"{description}\"\n\n"
-        "  extends Modelica.Icons.Package;"
-        f"{uses_text}\n"
-        f"end {package_name};\n"
-    )
-    path.write_text(text, encoding="utf-8", newline="\n")
-
-
-def build_minimal_dynamics_load_tree() -> Path:
-    """Build a canonical Dynamics-only load tree for bounded live smoke checks.
-
-    The official project source remains under Models/. This tree prevents a
-    Dynamics smoke check from loading Controllers, System, or Planning while
-    preserving the sole active MoSimQuadrotorModel namespace.
-    """
-    formal_root = MINIMAL_DYNAMICS_BUILD_ROOT / "MoSimQuadrotorModel"
-    formal_root.mkdir(parents=True, exist_ok=True)
-
-    write_minimal_root_package(
-        formal_root / "package.mo",
-        package_name="MoSimQuadrotorModel",
-        description="Generated canonical Dynamics-only live-load package",
-        uses=["Modelica(version = \"4.0.0.TY.1\")"],
-    )
-    (formal_root / "package.order").write_text("Dynamics\n", encoding="utf-8", newline="\n")
-    copy_tree_files(
-        ROOT / "Models/MoSimQuadrotorModel/Dynamics",
-        formal_root / "Dynamics",
-    )
-
-    return formal_root / "package.mo"
-
-
 def default_result_base(config: dict[str, Any], experiment_id: str) -> Path:
     scene_id = str(config.get("scene_id", "") or "")
     controller_id = str(config.get("controller_id", "") or "")
@@ -207,11 +155,9 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
     model_file = windows_path(str(model.get("base_model_path_hint") or model.get("model_path_hint", "")), default=DEFAULT_MODEL_FILE)
     extra_model_files: list[str] = []
     if live_load_strategy == MINIMAL_DYNAMICS_STRATEGY:
-        # Keep the official baseline as the primary package and add only the
-        # generated canonical Dynamics package for a bounded smoke load.
+        # The canonical project root owns both Plant and Dynamics. A second
+        # generated package root would create a duplicate Modelica namespace.
         model_file = to_windows_path(DEFAULT_MODEL_FILE)
-        formal_package = build_minimal_dynamics_load_tree()
-        extra_model_files.append(to_windows_path(formal_package))
     else:
         for extra_model_file in model.get("extra_model_files", []) or []:
             extra_model_files.append(windows_path(str(extra_model_file)))
@@ -220,8 +166,6 @@ def scenario_command(args: argparse.Namespace, config: dict[str, Any]) -> list[s
             extra_model_files.append(windows_path(sysblock_controller_file))
         for extra_model_file in controller.get("extra_sysblock_controller_files", []) or []:
             extra_model_files.append(windows_path(str(extra_model_file)))
-        if str(model.get("source_package", "")) != "QuadrotorModel":
-            extra_model_files.append(windows_path(str(model.get("model_path_hint", "")), default=DEFAULT_EXTRA_MODEL_FILE))
 
     default_evidence_level = (
         str(config.get("evidence_level", ""))

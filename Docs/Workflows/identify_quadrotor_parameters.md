@@ -9,7 +9,7 @@
 ## 1. Goal And Evidence Boundary
 
 Use PX4 flight logs to identify or validate the Sunray150 airframe parameters
-used by `QuadrotorModel.Mechanics.QuadChassis` and project experiments.
+used by `MoSimQuadrotorModel.Plant.Mechanics.QuadChassis` and project experiments.
 
 Primary target:
 
@@ -49,9 +49,9 @@ Current formal model ownership:
 
 | Package | Role |
 |---|---|
-| `QuadrotorModel` | Official/upstream baseline and regression reference. Keep it loadable and avoid destructive MoSim-specific edits. |
-| `MoSimQuadrotorModel` | Sole active project-owned Sunray150/MoSim implementation and public entry root. It contains the formal dynamics, controller, planner, fault, scene-trace, system and live-integration domains. |
-| `QuadrotorExperiments` / `QuadrotorControllerBlocks` / `MworksLive` | Hidden compatibility facades only. They preserve old callers through aliases, but no new source, scenario, or formal load entry may be placed there. |
+| `MoSimQuadrotorModel.Plant` | Project-owned migrated copy of the official/upstream baseline and regression reference. It is loaded only through the formal root. |
+| `MoSimQuadrotorModel` | Sole active project-owned Sunray150/MoSim implementation and public entry root. It contains `Plant`, formal dynamics, controller, planner, fault, scene-trace, system and live-integration domains. |
+| `QuadrotorExperiments` / `QuadrotorControllerBlocks` / `MworksLive` | Retired roots. Historical results may retain these names, but no source, scenario, or formal load entry exists there. |
 
 Do not treat presence under `MoSimQuadrotorModel` as accepted dynamics evidence.
 For each canonical class, record whether it is static organization only, a
@@ -282,7 +282,7 @@ Current known Sunray/MWORKS seed values:
 
 2026-06-04 local audit result:
 
-- Current `QuadrotorModel.Mechanics.QuadChassis` nominal body parameters are
+- Current `MoSimQuadrotorModel.Plant.Mechanics.QuadChassis` nominal body parameters are
   still `m=1.0`, `I_11=0.0085`, `I_22=0.0085`, `I_33=0.012`.
 - Current rotor placement has been updated from the old Sunray SDF seed to the
   user-reviewed DAE screw-pair assembly centers: rotor 0
@@ -323,7 +323,7 @@ Current known Sunray/MWORKS seed values:
 Before editing a model, inspect:
 
 ```bash
-rg -n "QuadChassis|lift_cofficient|gain[2-5]\\(k|body\\(m|I_11|I_22|I_33" models QuadrotorModel
+rg -n "QuadChassis|lift_cofficient|gain[2-5]\\(k|body\\(m|I_11|I_22|I_33" Models/MoSimQuadrotorModel/Plant
 ```
 
 Then verify with Sysplorer MCP:
@@ -523,8 +523,8 @@ Current project geometry audit:
 
 | Item | Local source | Current value / observation |
 |---|---|---|
-| Body visual STL | `References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_body.stl` and original `sunray.stl` | Raw STL bbox `8.3268 x 8.4508 x 6.3742`; SDF visual scale `0.03`, giving about `0.2498 x 0.2535 x 0.1912 m`. |
-| Propeller visual STL | `References/MWORKS/QuadrotorModel/Resources/Visualization/sunray150_mid360_propeller.stl` and original `sunray_cw.stl` | Raw STL bbox `71.1655 x 80.5003 x 7.3182`; SDF visual scale `0.001`, giving about `0.0712 x 0.0805 x 0.0073 m`. |
+| Body visual STL | `Models/MoSimQuadrotorModel/Plant/Resources/Visualization/sunray150_mid360_body.stl` and original `sunray.stl` | Raw STL bbox `8.3268 x 8.4508 x 6.3742`; SDF visual scale `0.03`, giving about `0.2498 x 0.2535 x 0.1912 m`. |
+| Propeller visual STL | `Models/MoSimQuadrotorModel/Plant/Resources/Visualization/sunray150_mid360_propeller.stl` and original `sunray_cw.stl` | Raw STL bbox `71.1655 x 80.5003 x 7.3182`; SDF visual scale `0.001`, giving about `0.0712 x 0.0805 x 0.0073 m`. |
 | Rotor positions | `Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json` and migrated MWORKS/SDF files | rotor 0 `(0.053745,-0.05374,-0.014052)`, rotor 1 `(-0.053761,0.05376,-0.014052)`, rotor 2 `(0.053746,0.053759,-0.014052)`, rotor 3 `(-0.053761,-0.053739,-0.014052)`. |
 | Rotor directions | same SDF motor plugins | rotor 0/1 `ccw`, rotor 2/3 `cw`; confirm against PX4 motor order before changing allocation. |
 | Front/down camera poses | same DAE parameter manifest and migrated SDF | front camera candidate `(0,0.1032,0.0185,0,0,0)`; down camera candidate `(0,0.0145,-0.0263,0,1.5707963,3.14)`. |
@@ -877,7 +877,7 @@ replacing the official baseline plant.
 
 Current audit:
 
-- `QuadrotorModel.Mechanics.QuadChassis` applies per-rotor `WorldForce` at
+- `MoSimQuadrotorModel.Plant.Mechanics.QuadChassis` applies per-rotor `WorldForce` at
   the DAE-reviewed rotor centers, so rotor-arm `r x F` is already represented
   by the multibody force application.
 - Explicit yaw reaction torque was still not present in the base plant audit.
@@ -919,7 +919,7 @@ Historical verification record (2026-06-05; legacy namespace preserved):
 
 ```text
 source=MWORKS_MCP
-check_model QuadrotorModel.Mechanics.QuadChassis: ok
+check_model MoSimQuadrotorModel.Plant.Mechanics.QuadChassis: ok
 check_model QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke: ok
 check_model QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke: ok
 simulate hover 0.25 s: dynamics.hover_thrust_error = 1.7763568394002505e-15 N
@@ -943,22 +943,23 @@ Models/MoSimQuadrotorModel/package.mo
 Migration rule:
 
 ```text
-QuadrotorModel
-  -> keep as official/upstream baseline and dependency.
+MoSimQuadrotorModel.Plant
+  -> project-owned migrated official/upstream baseline. It is part of the
+     single formal root, not a second load dependency.
 
 MoSimQuadrotorModel
   -> sole active project-owned implementation root for Baseline, Dynamics,
-     Missions, Controllers, Robustness, Planning, SceneTrace, System,
+     Plant, Missions, Controllers, Robustness, Planning, SceneTrace, System,
      Formation, Support, ExperimentRunner and LiveIntegration.
 
 QuadrotorExperiments / QuadrotorControllerBlocks / MworksLive
-  -> hidden `extends` compatibility facades only; do not add implementation or
-     load them as independent packages.
+  -> retired package roots. Preserve old names only as historical provenance;
+     do not restore or load them as independent packages.
 ```
 
-The root migration is complete as a static namespace consolidation. Compatibility
-facades keep historical callers readable; each canonical class still needs its
-own MWORKS check or simulation evidence before any physics or performance claim.
+The root migration is complete as a static namespace consolidation. Each
+canonical class still needs its own MWORKS check or simulation evidence before
+any physics or performance claim.
 Each future change needs:
 
 1. mapping from old class name to new `MoSimQuadrotorModel.*` name;

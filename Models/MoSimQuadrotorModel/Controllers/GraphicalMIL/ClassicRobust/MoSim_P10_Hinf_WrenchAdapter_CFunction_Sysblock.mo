@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust;
-
 model MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

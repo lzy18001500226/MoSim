@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso30ExternalBodyStateBoundarySmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso30ExternalBodyStateBoundarySmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso30ExternalBodyStateBoundarySmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso30ExternalBodyStateBoundarySmoke;

@@ -7,13 +7,13 @@ model Example3LinearMPCSysblockClosedLoop
     "MWORKS visual rotor hover speed; physical Sunray150 motor speed is 10x by rotorVelocitySlowdownSim";
   parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd
     "Scale legacy controller speed increments to the Sunray150 SDF motorConstant speed domain";
-  QuadrotorModel.PathPlanning.EightPath climbePath;
-  QuadrotorModel.Mechanics.QuadChassis quadChassisTest17_1;
-  QuadrotorModel.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
-  QuadrotorModel.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
-  QuadrotorModel.Sensors.Sensors sensors1_1;
+  MoSimQuadrotorModel.Plant.PathPlanning.EightPath climbePath;
+  MoSimQuadrotorModel.Plant.Mechanics.QuadChassis quadChassisTest17_1;
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_3(dcpm(wMechanical(start = hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Electricals.Actuator actuator1_4(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
+  MoSimQuadrotorModel.Plant.Sensors.Sensors sensors1_1;
   Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor[4];
   Modelica.Blocks.Sources.Constant hover_u1(k = hover_motor_speed_cmd);
   Modelica.Blocks.Sources.Constant hover_u2(k = -hover_motor_speed_cmd);
@@ -84,5 +84,5 @@ equation
   connect(actuator1_4.flange_a, speedSensor[4].flange);
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 120, Tolerance = 0.0001, Interval = 0.01));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Example3LinearMPCSysblockClosedLoop;

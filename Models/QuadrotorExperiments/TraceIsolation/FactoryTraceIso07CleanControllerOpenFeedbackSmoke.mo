@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso07CleanControllerOpenFeedbackSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso07CleanControllerOpenFeedbackSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso07CleanControllerOpenFeedbackSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso07CleanControllerOpenFeedbackSmoke;

@@ -1,8 +1,17 @@
 # Model Studio Offline Expansion Goal
 
-Status: active
+Status: historical design reference and future backlog; not an active execution workflow
 
 Baseline commit: `7384e2161d0704c7e2dc022f359b74154c6d4ab9`
+
+> Supersession: current model-root migration is no longer deferred. The active
+> controller evidence path is `Docs/Workflows/controller_evidence_closeout.md`
+> (G5-G7, then R1 legacy-root retirement). This document remains design history
+> for a later Model Studio composition expansion; its P0-P10 sequence must not
+> select current model migration, screenshots, or MWORKS experiments.
+> Every unqualified `current`, `active`, P0-P10, checkpoint, run, and blocker
+> statement below belongs to its dated historical phase record. It must not
+> override the current controller-evidence workflow or reopen an old live task.
 
 ## 1. Objective
 
@@ -13,14 +22,12 @@ combination must have a legal Profile, an explicit output-boundary Adapter, a
 real MWORKS run, `Result.msr`, strict metrics, and native animation-window
 evidence.
 
-Directory consolidation is complete. `Models/MoSimQuadrotorModel/` is the sole
-active implementation root; `Models/QuadrotorControllerBlocks/`,
-`Models/QuadrotorExperiments/`, and `Models/MworksLive/` are hidden
-compatibility facades. Do not add new source to any legacy root or load it as an
-independent library. The hash-verified `MworksLive` upgrade snapshot is under
-`Docs/Cache/model_legacy/MworksLive_backup_20260722/`. Any old root path later
-in this dated phase log is historical checkpoint provenance only, not a current
-loading instruction.
+Implementation consolidation and legacy-root retirement are complete.
+`Models/MoSimQuadrotorModel/` is the sole implementation and loading root.
+`QuadrotorControllerBlocks`, `QuadrotorExperiments`, and `MworksLive` are
+historical names only; any occurrence below belongs to the dated phase record,
+not a current opening instruction. Recovery and upgrade snapshots remain under
+`Docs/Cache/` and are never loaded as libraries.
 
 ## 2. Rollback And Ownership Boundary
 

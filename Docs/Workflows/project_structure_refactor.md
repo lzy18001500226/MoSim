@@ -21,7 +21,7 @@ The current top level mixes different ownership classes:
 ```text
 Config/controllers/      controller parameter configs
 Models/           project MWORKS/Sysplorer model extensions
-References/MWORKS/QuadrotorModel/   official MWORKS case model
+Models/MoSimQuadrotorModel/Plant/   official MWORKS case model
 Config/planners/         planning configs and small planner modules
 Config/scenarios/        experiment scenario configs
 Scripts/          batch runners, metrics, plotting, UE tools, docs tools
@@ -107,7 +107,7 @@ Results/
 | `Config/planners/` | `configs/planners/` plus `src/planning/` | Medium. Scripts reference current paths. |
 | `Config/scenarios/` | `configs/scenarios/` | Medium. Batch scripts reference current paths. |
 | `Models/` | `sim/mworks/extensions/` | High. MWORKS model paths and load scripts may break. |
-| `References/MWORKS/QuadrotorModel/` | `sim/mworks/official/QuadrotorModel/` or keep as compatibility alias | High. Many scripts and Sysplorer load paths depend on it. |
+| `Models/MoSimQuadrotorModel/Plant/` | A future product layout may relocate the in-root Plant ownership group, but must preserve one formal `MoSimQuadrotorModel` load root and must not restore an external or compatibility package. | High. Many scripts and Sysplorer load paths depend on it. |
 | `UE5/MoSimSceneLibrary/` | `sim/UE5/renderer/` | High. UE project paths and scripts depend on it. |
 | `UE5/Bridge/` | `sim/UE5/bridge/` | High. UE plugin paths and build scripts depend on it. |
 | `Scripts/` | split into `tools/*` and `src/orchestration/*` | Medium/high. Tests and docs reference scripts. |
@@ -196,7 +196,7 @@ Only after Phase 1-3:
 
 ```text
 Models/                -> sim/mworks/extensions/
-References/MWORKS/QuadrotorModel/         -> sim/mworks/official/QuadrotorModel/ or retained as alias
+Models/MoSimQuadrotorModel/Plant/         -> future in-root Plant ownership group only; never an external or compatibility alias
 UE5/MoSimSceneLibrary/ -> sim/UE5/renderer/
 UE5/Bridge/ -> sim/UE5/bridge/
 ```
@@ -240,7 +240,7 @@ Never move report-backed evidence without updating `Docs/simulation_report.md`,
 
 ## Immediate Recommendation
 
-Do not start with `Models/`, `References/MWORKS/QuadrotorModel/`, or `UE5/`. Start with:
+Do not start with `Models/`, `Models/MoSimQuadrotorModel/Plant/`, or `UE5/`. Start with:
 
 ```text
 Phase 0: commit current cleanup

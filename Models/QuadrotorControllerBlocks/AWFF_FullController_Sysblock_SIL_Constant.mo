@@ -1,5 +1,0 @@
-model AWFF_FullController_Sysblock_SIL_Constant
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FullController_Sysblock_SIL_Constant"
-  extends MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FullController_Sysblock_SIL_Constant;
-  annotation(__MWORKS(hide=true));
-end AWFF_FullController_Sysblock_SIL_Constant;

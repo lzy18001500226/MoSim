@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run an official QuadrotorModel simulation through Sysplorer MCP.
+"""Run an embedded MoSim quadrotor baseline simulation through Sysplorer MCP.
 
 The script writes project-local raw CSV, metrics, and MCP JSONL evidence.
 By default it keeps the Windows Sysplorer GUI/session reusable between runs to
@@ -53,8 +53,8 @@ def default_wrapper_candidates() -> list[str]:
 
 
 DEFAULT_WRAPPER_CANDIDATES = default_wrapper_candidates()
-DEFAULT_MODEL_FILE = r"C:\Users\HP\Desktop\MoSim\References\MWORKS\QuadrotorModel\package.mo"
-DEFAULT_MODEL_NAME = "QuadrotorModel.Examples.Example1"
+DEFAULT_MODEL_FILE = r"C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\package.mo"
+DEFAULT_MODEL_NAME = "MoSimQuadrotorModel.Plant.Examples.Example1"
 GUI_ANIMATION_TIMEOUT_S = 180
 WINDOWS_NATIVE_RESULT_PATH_LIMIT = 180
 DEFAULT_VARIABLES = {

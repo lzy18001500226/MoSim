@@ -1,6 +1,0 @@
-within QuadrotorExperiments.PlanningScenarios;
-model Sunray150PlanningOpenBlocksColorMapReview
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningOpenBlocksColorMapReview"
-  extends MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningOpenBlocksColorMapReview;
-  annotation(__MWORKS(hide=true));
-end Sunray150PlanningOpenBlocksColorMapReview;

@@ -1,5 +1,0 @@
-model PX4CTRL_TemplateCopy_Probe_Sysblock
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Controllers.Sysblocks.PX4CTRL_TemplateCopy_Probe_Sysblock"
-  extends MoSimQuadrotorModel.Controllers.Sysblocks.PX4CTRL_TemplateCopy_Probe_Sysblock;
-  annotation(__MWORKS(hide=true));
-end PX4CTRL_TemplateCopy_Probe_Sysblock;

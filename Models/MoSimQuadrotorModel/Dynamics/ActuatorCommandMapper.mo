@@ -48,5 +48,5 @@ equation
     hover_command_error[i] =
       saturated_normalized_command[i] - hover_normalized_command;
   end for;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end ActuatorCommandMapper;

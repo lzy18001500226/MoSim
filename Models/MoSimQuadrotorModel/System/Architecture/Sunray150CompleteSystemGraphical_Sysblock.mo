@@ -50,8 +50,8 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {0, 100, 150}, fillColor = {242, 252, 255}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {-58, 18}, extent = {{-48, -48}, {48, 48}}, fileName = "modelica://QuadrotorModel/Resources/Images/GPS.png"),
-        Bitmap(origin = {58, 18}, extent = {{-48, -48}, {48, 48}}, fileName = "modelica://QuadrotorModel/Resources/Images/MId360.png"),
+        Bitmap(origin = {-58, 18}, extent = {{-48, -48}, {48, 48}}, fileName = "modelica://MoSimQuadrotorModel/Plant/Resources/Images/GPS.png"),
+        Bitmap(origin = {58, 18}, extent = {{-48, -48}, {48, 48}}, fileName = "modelica://MoSimQuadrotorModel/Plant/Resources/Images/MId360.png"),
         Text(origin = {0, -78}, extent = {{-100, 14}, {100, -14}}, textString = "GPS + Mid360", textColor = {0, 100, 150})}));
     annotation(__MWORKS(hide=true));
   end PerceptionInterfaceModule;
@@ -101,7 +101,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {100, 70, 20}, fillColor = {255, 248, 235}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 14}, extent = {{-96, -54}, {96, 54}}, fileName = "modelica://QuadrotorModel/Resources/Images/V6X.png"),
+        Bitmap(origin = {0, 14}, extent = {{-96, -54}, {96, 54}}, fileName = "modelica://MoSimQuadrotorModel/Plant/Resources/Images/V6X.png"),
         Text(origin = {0, -78}, extent = {{-95, 14}, {95, -14}}, textString = "V6X / PX6C", textColor = {100, 70, 20})}));
     annotation(__MWORKS(hide=true));
   end V6XFlightControllerModule;
@@ -139,7 +139,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
       annotation (Placement(transformation(origin = {110, -160}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput event_code
       annotation (Placement(transformation(origin = {110, -185}, extent = {{-5, -5}, {5, 5}})));
-    QuadrotorModel.PathPlanning.ClimbPath trajectory(gain(k = 1));
+    MoSimQuadrotorModel.Plant.PathPlanning.ClimbPath trajectory(gain(k = 1));
     Real degraded_nav_active;
     Real obstacle_avoid_active;
   equation
@@ -158,7 +158,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {80, 80, 80}, fillColor = {248, 248, 248}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 14}, extent = {{-96, -72}, {96, 72}}, fileName = "modelica://QuadrotorModel/Resources/Images/ORIN_NX.png"),
+        Bitmap(origin = {0, 14}, extent = {{-96, -72}, {96, 72}}, fileName = "modelica://MoSimQuadrotorModel/Plant/Resources/Images/ORIN_NX.png"),
         Text(origin = {0, -82}, extent = {{-95, 14}, {95, -14}}, textString = "ORIN NX", textColor = {80, 80, 80})}));
     annotation(__MWORKS(hide=true));
   end ORINNXMissionComputerModule;
@@ -242,7 +242,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {80, 80, 80}, fillColor = {250, 250, 250}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 8}, extent = {{-96, -62}, {96, 62}}, fileName = "modelica://QuadrotorModel/Resources/Images/Battery.png"),
+        Bitmap(origin = {0, 8}, extent = {{-96, -62}, {96, 62}}, fileName = "modelica://MoSimQuadrotorModel/Plant/Resources/Images/Battery.png"),
         Text(origin = {0, -78}, extent = {{-90, 14}, {90, -14}}, textString = "Battery", textColor = {80, 80, 80})}));
     annotation(__MWORKS(hide=true));
   end BatteryPowerModule;
@@ -280,7 +280,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {70, 70, 120}, fillColor = {246, 246, 255}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 8}, extent = {{-96, -62}, {96, 62}}, fileName = "modelica://QuadrotorModel/Resources/Images/ESC.png"),
+        Bitmap(origin = {0, 8}, extent = {{-96, -62}, {96, 62}}, fileName = "modelica://MoSimQuadrotorModel/Plant/Resources/Images/ESC.png"),
         Text(origin = {0, -78}, extent = {{-90, 14}, {90, -14}}, textString = "ESC", textColor = {70, 70, 120})}));
     annotation(__MWORKS(hide=true));
   end ESCDriveModule;
@@ -368,7 +368,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
       annotation (Placement(transformation(origin = {110, -45}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Mechanics.Rotational.Interfaces.Flange_b flange
       annotation (Placement(transformation(origin = {110, 45}, extent = {{-5, -5}, {5, 5}})));
-    QuadrotorModel.Electricals.Actuator actuator(dcpm(wMechanical(start = initial_speed)));
+    MoSimQuadrotorModel.Plant.Electricals.Actuator actuator(dcpm(wMechanical(start = initial_speed)));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor;
   equation
     connect(command, actuator.u);
@@ -378,7 +378,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {130, 0, 130}, fillColor = {252, 244, 255}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 14}, extent = {{-96, -55}, {96, 55}}, fileName = "modelica://QuadrotorModel/Resources/Images/motor.png"),
+        Bitmap(origin = {0, 14}, extent = {{-96, -55}, {96, 55}}, fileName = "modelica://MoSimQuadrotorModel/Plant/Resources/Images/motor.png"),
         Text(origin = {0, -80}, extent = {{-80, 14}, {80, -14}}, textString = "%name", textColor = {130, 0, 130})}));
     annotation(__MWORKS(hide=true));
   end MotorDriveModule;
@@ -391,8 +391,8 @@ model Sunray150CompleteSystemGraphical_Sysblock
       annotation (Placement(transformation(origin = {110, 45}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput attitude[3]
       annotation (Placement(transformation(origin = {110, 0}, extent = {{-5, -5}, {5, 5}})));
-    QuadrotorModel.Mechanics.QuadChassis chassis;
-    QuadrotorModel.Sensors.Sensors sensors;
+    MoSimQuadrotorModel.Plant.Mechanics.QuadChassis chassis;
+    MoSimQuadrotorModel.Plant.Sensors.Sensors sensors;
   equation
     connect(rotor_flange[1], chassis.flange_a);
     connect(rotor_flange[2], chassis.flange_a1);
@@ -404,7 +404,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation (
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {160, 80, 0}, fillColor = {255, 250, 240}, fillPattern = FillPattern.Solid),
-        Bitmap(origin = {0, 10}, extent = {{-96, -96}, {96, 96}}, fileName = "modelica://QuadrotorModel/Resources/Images/Sunray150.png"),
+        Bitmap(origin = {0, 10}, extent = {{-96, -96}, {96, 96}}, fileName = "modelica://MoSimQuadrotorModel/Plant/Resources/Images/Sunray150.png"),
         Text(origin = {0, -86}, extent = {{-95, 14}, {95, -14}}, textString = "Sunray150", textColor = {160, 80, 0})}));
     annotation(__MWORKS(hide=true));
   end Sunray150AirframeSensorModule;
@@ -631,5 +631,5 @@ extent={{-130,14},{130,-14}},
 textString="Sunray150 airframe",
 textColor={160,80,0})}),
     experiment(Algorithm = Dassl, StartTime = 0, StopTime = 1, Tolerance = 0.0001, Interval = 0.01));
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Sunray150CompleteSystemGraphical_Sysblock;

@@ -23,5 +23,5 @@ equation
   controller_roll_accel_probe = controller3_2.roll_accel_hat;
   controller_pitch_accel_probe = controller3_2.pitch_accel_hat;
   controller_yaw_accel_probe = controller3_2.yaw_accel_hat;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso21ControllerRateAliasSmoke;

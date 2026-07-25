@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso18ProjectAttitudeEstimatorSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso18ProjectAttitudeEstimatorSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso18ProjectAttitudeEstimatorSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso18ProjectAttitudeEstimatorSmoke;

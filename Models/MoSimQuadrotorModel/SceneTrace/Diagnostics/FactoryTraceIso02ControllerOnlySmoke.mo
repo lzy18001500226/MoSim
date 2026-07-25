@@ -36,5 +36,5 @@ equation
   motor_delta_2 = controller3_2.y1;
   motor_delta_3 = controller3_2.y2;
   motor_delta_4 = controller3_2.y3;
-  annotation(__MWORKS(hide=true));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end FactoryTraceIso02ControllerOnlySmoke;

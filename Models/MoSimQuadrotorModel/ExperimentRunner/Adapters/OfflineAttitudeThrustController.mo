@@ -15,6 +15,7 @@ model OfflineAttitudeThrustController
   Real position_error[3];
   Real altitude_integral(start = 0, fixed = true);
   Real collective_unsaturated;
+  annotation(__MWORKS(version="26.3.0"));
 equation
   connect(position_mea, velocity_estimator.u);
   position_error = position_ref - position_mea;

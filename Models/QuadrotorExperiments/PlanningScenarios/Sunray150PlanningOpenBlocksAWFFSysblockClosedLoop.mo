@@ -1,6 +1,0 @@
-within QuadrotorExperiments.PlanningScenarios;
-model Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop"
-  extends MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop;
-  annotation(__MWORKS(hide=true));
-end Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop;

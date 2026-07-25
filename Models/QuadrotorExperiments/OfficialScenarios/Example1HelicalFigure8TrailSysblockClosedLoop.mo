@@ -1,6 +1,0 @@
-within QuadrotorExperiments.OfficialScenarios;
-model Example1HelicalFigure8TrailSysblockClosedLoop
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.Missions.Official.Example1HelicalFigure8TrailSysblockClosedLoop"
-  extends MoSimQuadrotorModel.Missions.Official.Example1HelicalFigure8TrailSysblockClosedLoop;
-  annotation(__MWORKS(hide=true));
-end Example1HelicalFigure8TrailSysblockClosedLoop;

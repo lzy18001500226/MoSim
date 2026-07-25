@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso22SensorDisplayReconnectSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso22SensorDisplayReconnectSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso22SensorDisplayReconnectSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso22SensorDisplayReconnectSmoke;

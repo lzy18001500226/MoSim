@@ -1,6 +1,0 @@
-within QuadrotorExperiments.TraceIsolation;
-model FactoryTraceIso21ControllerRateAliasSmoke
-  "Deprecated compatibility alias; canonical implementation is MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso21ControllerRateAliasSmoke"
-  extends MoSimQuadrotorModel.SceneTrace.Diagnostics.FactoryTraceIso21ControllerRateAliasSmoke;
-  annotation(__MWORKS(hide=true));
-end FactoryTraceIso21ControllerRateAliasSmoke;

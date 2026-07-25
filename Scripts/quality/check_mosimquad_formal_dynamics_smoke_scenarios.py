@@ -118,8 +118,8 @@ def validate_binding(
             "formal dynamics smoke must explicitly request the minimal Dynamics load strategy",
             target,
         )
-    if model.get("base_model_path_hint") != "References/MWORKS/QuadrotorModel/package.mo":
-        add_finding(findings, "wrong_base_model_path_hint", "scenario does not load the official baseline package first", target)
+    if model.get("base_model_path_hint") != "Models/MoSimQuadrotorModel/package.mo":
+        add_finding(findings, "wrong_base_model_path_hint", "scenario does not load the canonical formal root", target)
     if model.get("model_path_hint") != "Models/MoSimQuadrotorModel/package.mo":
         add_finding(findings, "wrong_model_path_hint", "scenario does not identify the canonical MoSim package", target)
     if config.get("controller_id") != "diagnostics_no_controller":
@@ -153,9 +153,7 @@ def validate_binding(
     command_text = " ".join(command)
     required_fragments = [
         "--model-file",
-        "References\\MWORKS\\QuadrotorModel\\package.mo",
-        "--extra-model-file",
-        "Results\\generated_mworks\\minimal_dynamics_only\\MoSimQuadrotorModel\\package.mo",
+        "Models\\MoSimQuadrotorModel\\package.mo",
         "--no-gui-result-viewer",
         "--no-gui-open",
     ]
@@ -205,8 +203,8 @@ def validate(scenario_dir: Path, probe_plan_path: Path) -> dict[str, Any]:
         "runner_support_status": "minimal_dynamics_strategy_consumed",
         "runner_support_boundary": [
             "Scenario YAML now declares model.live_load_strategy=minimal_dynamics_only.",
-            "run_mworks_scenario generates a temporary minimal load tree under Results/generated_mworks/minimal_dynamics_only.",
-            "The generated live command loads the official baseline package plus the generated canonical MoSimQuadrotorModel.Dynamics surface; it never uses a legacy compatibility package as an implementation source.",
+            "run_mworks_scenario loads the single canonical MoSimQuadrotorModel root; its embedded Plant and Dynamics remain in one namespace.",
+            "The generated live command does not load an external QuadrotorModel package, a generated second package root, or a legacy compatibility package.",
             "Do not treat this as check_model or SimulateModel evidence until a live run succeeds.",
         ],
         "findings": findings,
