@@ -29,11 +29,65 @@ Evidence labels:
 | `source=PX4_ULog_sysid` | Parameters estimated from real or bench PX4 ULog data |
 | `source=reference_repo` | Parameter structure or sample values copied from a reference repository |
 | `source=SDF_migration` | Parameters migrated from Gazebo/PX4 SDF files |
+| `source=PX4_Gazebo_default_seed` | Unknown dynamics seeded from one pinned PX4 Gazebo Classic model/version; not identified physical truth |
+| `source=PX4_Gazebo_default_derived` | A PX4 Gazebo default transformed only to preserve the approved vehicle mass and documented geometry; not identified physical truth |
 | `source=MWORKS_MCP` | MWORKS model check/simulation evidence after parameters are applied |
 
 Do not describe a parameter set as Sunray150 identified truth until the matching
 ULog files, identification config, output YAML, and MWORKS verification result
 are all saved in the project evidence bundle.
+
+### 1.1 Approved no-real-data simulation seed policy
+
+Until real vehicle measurements or PX4 ULog data are supplied, the project uses
+one explicitly virtual Sunray150 simulation profile. This policy supports
+consistent MWORKS and PX4/Gazebo controller comparison; it does not establish
+real-aircraft parameters or flight performance.
+
+Source priority for that profile is:
+
+```text
+1. User-locked project assumption: complete takeoff mass = 1.000 kg.
+2. Existing YunZong documentation and reviewed assembly: vehicle topology,
+   documented dimensions, rotor/sensor placement, and visible component layout.
+3. One pinned PX4 Gazebo Classic default model/version: unknown dynamics seeds
+   such as motor model, lag, aerodynamic defaults, and other simulator values.
+4. Current Sunray ROS1 SDF only supplies required plugin/interface details
+   (joint names, rotor order/direction, topics, and plugin semantics) unless a
+   value is separately documented by YunZong.
+```
+
+Do not mix numerical fields from PX4 Gazebo Classic, Gazebo Sim, different PX4
+releases, or unrelated airframes. In particular, the active P0 ROS1 route uses
+Gazebo Classic; Gazebo Sim motor-plugin values are not a substitute source.
+
+The approved mass accounting is representation-specific but must always close
+to exactly `1.000 kg`:
+
+```text
+ROS1 Sunray SDF:
+  base_link = 0.965 kg + imu = 0.015 kg + 4 * rotor = 0.005 kg
+
+Gazebo Sim assembled compatibility profile:
+  base_link = 0.980 kg + 4 * rotor = 0.005 kg
+
+MWORKS QuadChassis:
+  body = 0.980 kg + 4 * rotor body = 0.005 kg
+
+MWORKS PhysicalWrench path and px4ctrl runtime:
+  one rigid-body total = 1.000 kg
+```
+
+The inertia source needs a separate explicit semantic decision before values are
+changed: a PX4 Iris inertia must not be copied verbatim into a `1.000 kg`
+YunZong-geometry model. The final profile must record whether each inertia is a
+PX4 default seed or a geometry/mass-consistent derived seed, and whether it is
+the base-link inertia or the aggregate whole-aircraft inertia after rotor bodies
+are attached. No such value may be presented as measured Sunray150 truth.
+
+Controller gains, scenario disturbance/fault values, and PX4 plugin command
+interfaces are not interchangeable "physical defaults". They remain governed
+by their controller, scenario, and backend contracts respectively.
 
 Architecture boundary: `Docs/Design/架构/01_控制器平台/控制体系总览.md` is the
 current compact entry for deciding whether a value is geometry, Gazebo plugin
