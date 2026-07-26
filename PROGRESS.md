@@ -31,9 +31,9 @@ this file does not select a competing task.
   with each of its 46 route bundles under that route's `superseded/` directory.
   `G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json` binds the old 46/46 passed
   record to the current source-path transition. The active current-root matrix
-  and status now have five passed PID-family graphical fixed-input probes
-  (`official_pid`, `cascade_pid`, `gain_scheduled_pid`, `fuzzy_pid`, and
-  `neural_pid`) and 41 pending rows. Their fresh records are under
+  and status now have 18 passed graphical fixed-input probes: all five
+  PID-family routes and all 13 classic/robust routes; 28 rows remain pending.
+  Their fresh records are under
   `Results/model_library_refactor/controller_route_execution_current/runs/`;
   they establish only internal controller responses, so new MWORKS executions
   are still required before any controller-family, champion, A/B, or runtime

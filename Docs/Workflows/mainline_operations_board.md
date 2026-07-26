@@ -9,8 +9,8 @@ are documented. The project-owned Modelica surface is now the canonical
 eight-layer root; static migration gates and the current-root Official PID plus
 four-Runner baseline gate pass. The old 46-route G6 evidence has been archived
 after the source-path migration, and the refreshed current-root matrix is
-now at 5/46 passed terminal rows (the PID-family probes) and 41/46 pending
-rows,
+now at 18/46 passed terminal rows (the PID and classic/robust probes) and
+28/46 pending rows,
 2026-07-27 CST.
 
 ## 0. Task Authority and Evidence Snapshot
@@ -41,16 +41,15 @@ requirements. These five records validate the common Plant/Runner boundaries;
 they do not promote a controller family or establish flight-runtime behavior.
 
 The current-root 46-route MWORKS evidence matrix is frozen at
-`Results/model_library_refactor/controller_route_execution_current/` with five
-current-root passed PID-family rows: `official_pid`, `cascade_pid`,
-`gain_scheduled_pid`, `fuzzy_pid`, and `neural_pid`; 41 rows remain pending.
-Each fresh record contains an MWORKS native result, model and result-window
-captures, and verified dedicated-session closure. They are internal fixed-input
-controller responses only, not whole-aircraft or runtime results. The prior
-46/46 terminal record, including each route bundle, was archived by
-`G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json`; it is trace-back evidence
-only. Do not treat a static namespace migration or an old-hash result as a
-current MWORKS simulation.
+`Results/model_library_refactor/controller_route_execution_current/` with 18
+current-root passed rows: all five PID-family probes and all 13 classic/robust
+probes; 28 rows remain pending. Each fresh record contains an MWORKS native
+result, model and result-window captures, and verified dedicated-session
+closure. They are internal fixed-input controller responses only, not
+whole-aircraft or runtime results. The prior 46/46 terminal record, including
+each route bundle, was archived by `G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json`;
+it is trace-back evidence only. Do not treat a static namespace migration or an
+old-hash result as a current MWORKS simulation.
 
 The pre-migration Official PID `ClimbPath` 50 s reference reached the declared
 stop time with terminal position error `0.00651 m`, final-5-s RMSE `0.01703 m`,
