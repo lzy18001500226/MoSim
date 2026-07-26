@@ -31,10 +31,11 @@ this file does not select a competing task.
   with each of its 46 route bundles under that route's `superseded/` directory.
   `G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json` binds the old 46/46 passed
   record to the current source-path transition. The active current-root matrix
-  and status now have one passed `official_pid` graphical fixed-input probe and
-  45 pending rows. Its fresh record is
-  `Results/model_library_refactor/controller_route_execution_current/runs/official_pid/RUN_RECORD.json`;
-  it establishes only an internal controller response, so new MWORKS executions
+  and status now have five passed PID-family graphical fixed-input probes
+  (`official_pid`, `cascade_pid`, `gain_scheduled_pid`, `fuzzy_pid`, and
+  `neural_pid`) and 41 pending rows. Their fresh records are under
+  `Results/model_library_refactor/controller_route_execution_current/runs/`;
+  they establish only internal controller responses, so new MWORKS executions
   are still required before any controller-family, champion, A/B, or runtime
   claim.
 - `Config/control_platform/formal_closed_loop_harness_map.json` has 0/6
