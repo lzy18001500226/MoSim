@@ -22,16 +22,21 @@ this file does not select a competing task.
   Their evidence is under
   `Results/control_platform/g6_formal_closed_loop_20260724/official_pid_climb_path_50s/`
   and `Results/control_platform/g6_runner_boundary_baseline_20260727/`.
-- The next current-root evidence gate is the 46-route graphical/internal
+- The next current-root evidence gate is the serial 46-route graphical/internal
   matrix. The five baseline records validate the shared Plant/Runner boundaries
   only; they do not select six champions, establish seven-scenario A/B, or
   prove code-generation, Gazebo, PX4, ROS, MAVROS, or px4ctrl runtime behavior.
-- The preserved G6 execution record at
-  `Results/model_library_refactor/controller_route_execution_current/G6_EXECUTION_STATUS.json`
-  has 46/46 terminal passed rows: 41 internal fixed-input probes and 5 named
-  whole-aircraft minimum closures. Those records predate the canonical-root
-  migration and their source hashes must be regenerated; they are not current
-  46 controller-to-aircraft closures or runtime acceptance.
+- The old G6 execution record is preserved under
+  `Results/model_library_refactor/controller_route_execution_current/matrix_superseded/source_migration_20260727_031318/`,
+  with each of its 46 route bundles under that route's `superseded/` directory.
+  `G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json` binds the old 46/46 passed
+  record to the current source-path transition. The active current-root matrix
+  and status now have one passed `official_pid` graphical fixed-input probe and
+  45 pending rows. Its fresh record is
+  `Results/model_library_refactor/controller_route_execution_current/runs/official_pid/RUN_RECORD.json`;
+  it establishes only an internal controller response, so new MWORKS executions
+  are still required before any controller-family, champion, A/B, or runtime
+  claim.
 - `Config/control_platform/formal_closed_loop_harness_map.json` has 0/6
   provisional champion minimum closures passed. The six candidate probes are
   awaiting the current matrix, and champion test-harness promotion plus

@@ -90,6 +90,38 @@ python Scripts/mworks/run_g6_controller_execution.py `
   --repair-native-whitespace
 ```
 
+### Canonical-root source-migration supersession
+
+When an approved atomic model-library migration changes a route's project-owned
+model path or class, neither a plain `--write` nor a metadata-only refresh may
+reuse the terminal record. First generate the current matrix in memory and use
+the restricted source-migration command:
+
+```powershell
+python Scripts/quality/build_g6_controller_execution_matrix.py `
+  --output-root Results/model_library_refactor/controller_route_execution_current `
+  --write --supersede-source-migration
+python Scripts/quality/build_g6_controller_execution_matrix.py `
+  --output-root Results/model_library_refactor/controller_route_execution_current `
+  --check
+```
+
+This command accepts only a 46-route transition in which the scheme IDs,
+families, evidence classes, probe contracts, result destinations and claim
+boundaries are unchanged, while at least one target/core/prerequisite path
+moves within `Models/MoSimQuadrotorModel/`. It rejects hash-only edits and any
+non-source matrix change. It copies the prior matrix and status to
+`matrix_superseded/source_migration_*`, moves each terminal route bundle to
+`runs/<scheme>/superseded/source_migration_*`, and records
+`G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json`.
+
+The active status is then reset to 46 pending rows. Existing report images are
+not blindly overwritten: each remains in place and can only be refreshed by a
+new same-route native capture when its archived run record proves the old image
+binding. The migration manifest is provenance only; every refreshed row still
+requires a new MWORKS execution and no controller-equivalence or performance
+claim follows from the move.
+
 ### Post-G6 metadata-only refresh
 
 The formal harness map also records later champion selection, Official PID

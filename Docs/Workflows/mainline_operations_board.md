@@ -7,8 +7,10 @@
 Status: the 47-Profile target, seven-family taxonomy and enhancement boundary
 are documented. The project-owned Modelica surface is now the canonical
 eight-layer root; static migration gates and the current-root Official PID plus
-four-Runner baseline gate pass. The 46-route current-hash evidence matrix is
-the next executable gate, 2026-07-27 CST.
+four-Runner baseline gate pass. The old 46-route G6 evidence has been archived
+after the source-path migration, and the refreshed current-root matrix is
+now at 1/46 passed terminal row (`official_pid`) and 45/46 pending rows,
+2026-07-27 CST.
 
 ## 0. Task Authority and Evidence Snapshot
 
@@ -37,9 +39,16 @@ passed a 50 s, 5,001-sample current-root run with the same result and cleanup
 requirements. These five records validate the common Plant/Runner boundaries;
 they do not promote a controller family or establish flight-runtime behavior.
 
-The next executable gate is the current-hash 46-route MWORKS evidence matrix.
-Do not treat a static namespace migration or an old-hash result as a current
-MWORKS simulation.
+The current-root 46-route MWORKS evidence matrix is frozen at
+`Results/model_library_refactor/controller_route_execution_current/` with one
+current-root passed row (`official_pid`) and 45 pending rows. Its fresh
+`OfficialPidFixedInputProbe` record contains an MWORKS native result, model and
+result-window captures, and verified dedicated-session closure. It is an
+internal fixed-input controller response only, not a whole-aircraft or runtime
+result. The prior 46/46 terminal record, including each route bundle, was
+archived by `G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json`; it is trace-back
+evidence only. Do not treat a static namespace migration or an old-hash result
+as a current MWORKS simulation.
 
 The pre-migration Official PID `ClimbPath` 50 s reference reached the declared
 stop time with terminal position error `0.00651 m`, final-5-s RMSE `0.01703 m`,
@@ -51,7 +60,7 @@ A/B baseline.
 `Config/control_platform/controller_route_interface_matrix.json` records the
 46 current route interfaces. The preserved pre-migration G6 execution record
 contains 46/46 terminal constrained rows: 41 `internal_fixed_input_probe`
-records and 5 named `whole_aircraft_minimum_closure` records. Their model hashes
+records and 5 named `whole_aircraft_minimum_closure` records. Its model hashes
 do not constitute current-root evidence after the atomic namespace migration.
 They are not a 46-route whole-aircraft closure, seven-scenario comparison,
 code-generation, or runtime-acceptance result. In particular,
@@ -85,7 +94,7 @@ current completion.
 
 Continue the user-approved controller-evidence plan in this order:
 
-1. re-run the current-hash graphical/internal evidence matrix for the 46
+1. serially run the frozen current-hash graphical/internal evidence matrix for the 46
    resolved MWORKS routes, keeping the two missing-source blockers and
    `px4ctrl` runtime baseline explicit;
 2. promote only a current-probe-passing candidate from each nominal family to

@@ -42,6 +42,7 @@ OUTPUT_PATH = OUTPUT_ROOT / "G6_EXECUTION_MATRIX.json"
 STATUS_PATH = OUTPUT_ROOT / "G6_EXECUTION_STATUS.json"
 NATIVE_HASH_REFRESH_MANIFEST = OUTPUT_ROOT / "G6_NATIVE_HASH_REFREEZE_MANIFEST.json"
 METADATA_ONLY_REFRESH_MANIFEST = OUTPUT_ROOT / "G6_METADATA_ONLY_REFRESH_MANIFEST.json"
+SOURCE_MIGRATION_SUPERSESSION_MANIFEST = OUTPUT_ROOT / "G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json"
 OFFICIAL_PID_PROBE = {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Probes/OfficialPidFixedInputProbe.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Probes.OfficialPidFixedInputProbe",
@@ -100,6 +101,14 @@ MATRIX_ROUTE_BINDING_FIELDS = (
     "state",
     "claim_boundary",
 )
+SOURCE_MIGRATION_MUTABLE_FIELDS = (
+    "target",
+    "controller_core",
+    "model_load_prerequisites",
+)
+SOURCE_MIGRATION_IMMUTABLE_FIELDS = tuple(
+    field for field in MATRIX_ROUTE_BINDING_FIELDS if field not in SOURCE_MIGRATION_MUTABLE_FIELDS
+)
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -135,6 +144,7 @@ def configure_output_root(value: Path | None) -> None:
 
     global OUTPUT_ROOT, OUTPUT_PATH, STATUS_PATH
     global NATIVE_HASH_REFRESH_MANIFEST, METADATA_ONLY_REFRESH_MANIFEST
+    global SOURCE_MIGRATION_SUPERSESSION_MANIFEST
     candidate = DEFAULT_OUTPUT_ROOT if value is None else value
     if not candidate.is_absolute():
         candidate = ROOT / candidate
@@ -149,6 +159,7 @@ def configure_output_root(value: Path | None) -> None:
     STATUS_PATH = OUTPUT_ROOT / "G6_EXECUTION_STATUS.json"
     NATIVE_HASH_REFRESH_MANIFEST = OUTPUT_ROOT / "G6_NATIVE_HASH_REFREEZE_MANIFEST.json"
     METADATA_ONLY_REFRESH_MANIFEST = OUTPUT_ROOT / "G6_METADATA_ONLY_REFRESH_MANIFEST.json"
+    SOURCE_MIGRATION_SUPERSESSION_MANIFEST = OUTPUT_ROOT / "G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json"
 
 
 def top_level_outports(path: Path) -> list[str]:
@@ -719,6 +730,287 @@ def prepare_metadata_only_refresh(
     }
 
 
+def source_migration_binding(row: dict[str, Any]) -> dict[str, Any]:
+    """Project the only route fields allowed to change during a root migration."""
+
+    return {field: row.get(field) for field in SOURCE_MIGRATION_MUTABLE_FIELDS}
+
+
+def source_migration_model_paths(binding: dict[str, Any], scheme_id: str) -> list[str]:
+    """Validate and return every model path participating in a source migration."""
+
+    paths: list[str] = []
+    for field in ("target", "controller_core"):
+        source = binding.get(field)
+        if not isinstance(source, dict):
+            raise ValueError(f"{scheme_id}: source migration {field} is not an object")
+        model_file = source.get("model_file")
+        model_class = source.get("model_class")
+        model_hash = source.get("model_sha256")
+        if not all(isinstance(value, str) and value for value in (model_file, model_class, model_hash)):
+            raise ValueError(f"{scheme_id}: source migration {field} is incomplete")
+        paths.append(model_file)
+
+    prerequisites = binding.get("model_load_prerequisites")
+    if not isinstance(prerequisites, list):
+        raise ValueError(f"{scheme_id}: source migration model_load_prerequisites is not a list")
+    for index, source in enumerate(prerequisites):
+        if not isinstance(source, dict):
+            raise ValueError(f"{scheme_id}: source migration prerequisite {index} is not an object")
+        model_file = source.get("model_file")
+        model_class = source.get("model_class")
+        model_hash = source.get("model_sha256")
+        if not all(isinstance(value, str) and value for value in (model_file, model_class, model_hash)):
+            raise ValueError(f"{scheme_id}: source migration prerequisite {index} is incomplete")
+        paths.append(model_file)
+    return paths
+
+
+def source_migration_transition(previous: dict[str, Any], refreshed: dict[str, Any]) -> dict[str, Any]:
+    """Prove that a re-freeze changes only model-source bindings.
+
+    This is intentionally stricter than a generic source refresh.  It permits
+    the controller-root namespace move, but not a controller-law, probe,
+    evidence-destination, or claim-boundary change hidden behind the migration.
+    """
+
+    previous_rows = matrix_route_binding_projection(previous)["rows"]
+    refreshed_rows = matrix_route_binding_projection(refreshed)["rows"]
+    previous_by_id = {str(row["scheme_id"]): row for row in previous_rows}
+    refreshed_by_id = {str(row["scheme_id"]): row for row in refreshed_rows}
+    if set(previous_by_id) != set(refreshed_by_id):
+        raise ValueError("G6 source migration cannot add, remove, or rename matrix routes")
+
+    changed_routes: list[dict[str, Any]] = []
+    unchanged_routes: list[str] = []
+    for scheme_id in sorted(previous_by_id):
+        old_row = previous_by_id[scheme_id]
+        new_row = refreshed_by_id[scheme_id]
+        for field in SOURCE_MIGRATION_IMMUTABLE_FIELDS:
+            if canonical_json(old_row.get(field)) != canonical_json(new_row.get(field)):
+                raise ValueError(
+                    f"{scheme_id}: source migration cannot change route field {field}"
+                )
+
+        old_binding = source_migration_binding(old_row)
+        new_binding = source_migration_binding(new_row)
+        if canonical_json(old_binding) == canonical_json(new_binding):
+            unchanged_routes.append(scheme_id)
+            continue
+
+        old_paths = source_migration_model_paths(old_binding, scheme_id)
+        new_paths = source_migration_model_paths(new_binding, scheme_id)
+        if old_paths == new_paths:
+            raise ValueError(
+                f"{scheme_id}: source migration requires a model path move, not only a hash change"
+            )
+        if any(not path.startswith("Models/MoSimQuadrotorModel/") for path in old_paths + new_paths):
+            raise ValueError(
+                f"{scheme_id}: source migration may only bind project-owned MoSimQuadrotorModel sources"
+            )
+        changed_routes.append(
+            {
+                "scheme_id": scheme_id,
+                "previous": old_binding,
+                "refreshed": new_binding,
+                "previous_model_paths": old_paths,
+                "refreshed_model_paths": new_paths,
+            }
+        )
+
+    if not changed_routes:
+        raise ValueError("G6 source migration requested but no source bindings changed")
+    return {
+        "previous_route_binding_sha256": value_sha256(matrix_route_binding_projection(previous)),
+        "refreshed_route_binding_sha256": value_sha256(matrix_route_binding_projection(refreshed)),
+        "changed_route_count": len(changed_routes),
+        "unchanged_route_count": len(unchanged_routes),
+        "changed_routes": changed_routes,
+        "unchanged_routes": unchanged_routes,
+    }
+
+
+def report_asset_metadata(row: dict[str, Any]) -> dict[str, Any]:
+    """Record, but never replace, a legacy report image during a re-freeze."""
+
+    artifacts = row.get("required_artifacts")
+    report_path = artifacts.get("report_result_screenshot") if isinstance(artifacts, dict) else None
+    if not isinstance(report_path, str) or not report_path:
+        raise ValueError(f"{row.get('scheme_id')}: source migration report artifact is absent")
+    path = ROOT / report_path
+    result: dict[str, Any] = {"path": report_path, "exists": path.is_file()}
+    if path.is_file():
+        result.update({"sha256": sha256(path), "bytes": path.stat().st_size})
+    return result
+
+
+def validate_source_migration_terminal_evidence(previous: dict[str, Any]) -> tuple[dict[str, Any], list[dict[str, str]]]:
+    """Verify that the old terminal records can be preserved before a new matrix starts."""
+
+    if not STATUS_PATH.is_file():
+        raise ValueError("G6 source migration requires the existing execution status")
+    status = read_json(STATUS_PATH)
+    status_summary = status.get("summary")
+    if not isinstance(status_summary, dict) or status_summary.get("route_count") != 46:
+        raise ValueError("G6 source migration requires a 46-route execution status")
+    if status_summary.get("terminal_count") != 46 or status_summary.get("pending_count") != 0:
+        raise ValueError("G6 source migration requires all prior routes to be terminal")
+    if status.get("matrix") != relative(OUTPUT_PATH) or status.get("matrix_sha256") != sha256(OUTPUT_PATH):
+        raise ValueError("G6 source migration requires the status table to bind the prior matrix")
+
+    status_rows = status.get("rows")
+    previous_rows = previous.get("rows")
+    if not isinstance(status_rows, list) or not isinstance(previous_rows, list):
+        raise ValueError("G6 source migration requires matrix and status row lists")
+    status_by_id = {str(row.get("scheme_id")): row for row in status_rows if isinstance(row, dict)}
+    previous_by_id = {str(row.get("scheme_id")): row for row in previous_rows if isinstance(row, dict)}
+    if set(status_by_id) != set(previous_by_id) or len(status_by_id) != 46:
+        raise ValueError("G6 source migration status rows do not match the prior matrix")
+
+    records = run_record_inventory(previous)
+    for item in records:
+        scheme_id = item["scheme_id"]
+        record_path = ROOT / item["path"]
+        record = read_json(record_path)
+        status_value = status_by_id[scheme_id].get("status")
+        if not isinstance(status_value, str) or status_value == "pending":
+            raise ValueError(f"{scheme_id}: source migration found a non-terminal status row")
+        if record.get("status") != status_value:
+            raise ValueError(f"{scheme_id}: source migration RUN_RECORD status differs from status table")
+        record_matrix = record.get("matrix")
+        record_target = record_matrix.get("target") if isinstance(record_matrix, dict) else None
+        if canonical_json(record_target) != canonical_json(previous_by_id[scheme_id].get("target")):
+            raise ValueError(f"{scheme_id}: source migration RUN_RECORD target differs from prior matrix")
+    return status, records
+
+
+def prepare_source_migration_supersession(
+    previous: dict[str, Any],
+    refreshed: dict[str, Any],
+    refreshed_text: str,
+) -> dict[str, Any]:
+    """Archive terminal G6 evidence and reset only the current-root execution state.
+
+    Historical matrices and route bundles remain reachable under ``superseded``.
+    The active run roots are deliberately cleared of terminal records so the
+    executor cannot silently skip current-root simulation.  Existing report
+    images stay in place; their archived run records authorize a later same-
+    route replacement only when the image hash is proven to be old G6 evidence.
+    """
+
+    transition = source_migration_transition(previous, refreshed)
+    status, records = validate_source_migration_terminal_evidence(previous)
+    records_by_id = {item["scheme_id"]: item for item in records}
+    previous_rows = {str(row["scheme_id"]): row for row in previous["rows"]}
+    refreshed_rows = {str(row["scheme_id"]): row for row in refreshed["rows"]}
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    archive_root = OUTPUT_ROOT / "matrix_superseded" / f"source_migration_{stamp}"
+    archive_root.mkdir(parents=True, exist_ok=False)
+    matrix_archive = archive_root / OUTPUT_PATH.name
+    status_archive = archive_root / STATUS_PATH.name
+    shutil.copy2(OUTPUT_PATH, matrix_archive)
+    shutil.copy2(STATUS_PATH, status_archive)
+
+    route_archives: list[dict[str, Any]] = []
+    try:
+        for change in transition["changed_routes"]:
+            scheme_id = str(change["scheme_id"])
+            old_row = previous_rows[scheme_id]
+            new_row = refreshed_rows[scheme_id]
+            run_dir = ROOT / str(old_row["result_root"])
+            previous_record_path = run_dir / "RUN_RECORD.json"
+            if not previous_record_path.is_file():
+                raise ValueError(f"{scheme_id}: source migration active run record is missing")
+            route_archive = run_dir / "superseded" / f"source_migration_{stamp}"
+            route_archive.mkdir(parents=True, exist_ok=False)
+            moved_entries: list[dict[str, str]] = []
+            for source in sorted(run_dir.iterdir(), key=lambda path: path.name):
+                if source.name == "superseded":
+                    continue
+                destination = route_archive / source.name
+                source_relative = relative(source) or str(source)
+                destination_relative = relative(destination) or str(destination)
+                shutil.move(str(source), str(destination))
+                moved_entries.append(
+                    {
+                        "from": source_relative,
+                        "to": destination_relative,
+                    }
+                )
+            archived_record = route_archive / "RUN_RECORD.json"
+            if not archived_record.is_file() or previous_record_path.exists():
+                raise ValueError(f"{scheme_id}: source migration could not relocate the terminal run bundle")
+            route_manifest = {
+                "schema": "mosim.g6_controller_execution_source_migration_route_archive.v1",
+                "archived_at": datetime.now(timezone.utc).isoformat(),
+                "scheme_id": scheme_id,
+                "active_result_root": relative(run_dir),
+                "archive_root": relative(route_archive),
+                "previous_run_record": {
+                    "path": relative(archived_record),
+                    "sha256": records_by_id[scheme_id]["sha256"],
+                },
+                "previous_target": old_row["target"],
+                "refreshed_target": new_row["target"],
+                "moved_entries": moved_entries,
+                "report_result_asset": report_asset_metadata(old_row),
+                "claim_boundary": "Archived historical evidence only; it cannot satisfy the refreshed matrix.",
+            }
+            write_path = route_archive / "SOURCE_MIGRATION_ARCHIVE_MANIFEST.json"
+            write_path.write_text(dump(route_manifest), encoding="utf-8", newline="\n")
+            route_archives.append(
+                {
+                    "scheme_id": scheme_id,
+                    "archive_manifest": relative(write_path),
+                    "archive_root": relative(route_archive),
+                    "previous_run_record": route_manifest["previous_run_record"],
+                    "report_result_asset": route_manifest["report_result_asset"],
+                }
+            )
+    except Exception as exc:
+        failure = {
+            "schema": "mosim.g6_controller_execution_source_migration_failure.v1",
+            "recorded_at": datetime.now(timezone.utc).isoformat(),
+            "error": str(exc),
+            "archive_root": relative(archive_root),
+            "completed_route_archives": route_archives,
+            "recovery_rule": "The prior matrix and status remain active. Inspect the listed archive roots before retrying; do not overwrite them.",
+        }
+        (archive_root / "G6_SOURCE_MIGRATION_SUPERSESSION_FAILURE.json").write_text(
+            dump(failure), encoding="utf-8", newline="\n"
+        )
+        raise
+
+    return {
+        "schema": "mosim.g6_controller_execution_source_migration_supersession.v1",
+        "recorded_at": datetime.now(timezone.utc).isoformat(),
+        "reason": (
+            "The canonical model-library migration changed G6 controller source paths/classes. "
+            "All prior terminal evidence is retained as historical trace-back, and every refreshed route starts pending."
+        ),
+        "previous_matrix": {"path": relative(matrix_archive), "sha256": sha256(matrix_archive)},
+        "previous_status": {"path": relative(status_archive), "sha256": sha256(status_archive)},
+        "previous_status_summary": status.get("summary"),
+        "previous_run_records": {
+            "count": len(records),
+            "inventory_sha256": value_sha256(records),
+            "records": records,
+        },
+        "source_binding_transition": transition,
+        "route_archives": route_archives,
+        "refreshed_matrix": {
+            "path": relative(OUTPUT_PATH),
+            "sha256": hashlib.sha256(refreshed_text.encode("utf-8")).hexdigest(),
+            "sources": refreshed.get("sources"),
+        },
+        "refreshed_status_rule": "A fresh all-pending 46-route status is written after the refreshed matrix; old status rows are never reused.",
+        "claim_boundary": (
+            "Source-migration provenance only. It does not establish current MWORKS simulation, "
+            "champion selection, seven-scenario A/B, code generation, or runtime acceptance."
+        ),
+    }
+
+
 def validate_status_matrix_continuity() -> None:
     """Accept either direct status binding or one verified metadata-only bridge."""
     if not STATUS_PATH.is_file():
@@ -781,6 +1073,14 @@ def main() -> int:
         action="store_true",
         help="refresh only post-G6 map metadata after proving all 46 route bindings and evidence files are unchanged",
     )
+    parser.add_argument(
+        "--supersede-source-migration",
+        action="store_true",
+        help=(
+            "archive terminal route evidence and re-freeze a new all-pending matrix only when "
+            "the 46 route changes are restricted to project-root model-source bindings"
+        ),
+    )
     args = parser.parse_args()
     configure_output_root(args.output_root)
     if args.write == args.check:
@@ -789,8 +1089,16 @@ def main() -> int:
         parser.error("--refresh-native-serialization requires --write")
     if args.refresh_metadata_only and not args.write:
         parser.error("--refresh-metadata-only requires --write")
-    if args.refresh_native_serialization and args.refresh_metadata_only:
-        parser.error("metadata-only and native-serialization refresh modes are mutually exclusive")
+    if args.supersede_source_migration and not args.write:
+        parser.error("--supersede-source-migration requires --write")
+    if sum(
+        (
+            args.refresh_native_serialization,
+            args.refresh_metadata_only,
+            args.supersede_source_migration,
+        )
+    ) > 1:
+        parser.error("G6 refresh modes are mutually exclusive")
     try:
         matrix = build()
         expected = dump(matrix)
@@ -798,6 +1106,7 @@ def main() -> int:
             OUTPUT_ROOT.mkdir(parents=True, exist_ok=True)
             native_refresh_manifest = None
             metadata_refresh_manifest = None
+            source_migration_manifest = None
             if args.refresh_native_serialization:
                 if not OUTPUT_PATH.is_file():
                     raise ValueError("G6 native hash refresh requires an existing frozen matrix")
@@ -808,12 +1117,18 @@ def main() -> int:
                 metadata_refresh_manifest = prepare_metadata_only_refresh(
                     read_json(OUTPUT_PATH), matrix, expected
                 )
+            elif args.supersede_source_migration:
+                if not OUTPUT_PATH.is_file():
+                    raise ValueError("G6 source migration supersession requires an existing frozen matrix")
+                source_migration_manifest = prepare_source_migration_supersession(
+                    read_json(OUTPUT_PATH), matrix, expected
+                )
             elif OUTPUT_PATH.is_file() and status_has_terminal_results():
                 raise ValueError(
                     "G6 matrix has terminal evidence; use --refresh-metadata-only only when all 46 route bindings are unchanged, or the explicit native/source supersession workflow"
                 )
             OUTPUT_PATH.write_text(expected, encoding="utf-8", newline="\n")
-            if not STATUS_PATH.is_file() or not status_has_terminal_results():
+            if source_migration_manifest is not None or not STATUS_PATH.is_file() or not status_has_terminal_results():
                 STATUS_PATH.write_text(
                     dump(initial_execution_status(matrix)), encoding="utf-8", newline="\n"
                 )
@@ -829,12 +1144,17 @@ def main() -> int:
                 METADATA_ONLY_REFRESH_MANIFEST.write_text(
                     dump(metadata_refresh_manifest), encoding="utf-8", newline="\n"
                 )
+            if source_migration_manifest is not None:
+                SOURCE_MIGRATION_SUPERSESSION_MANIFEST.write_text(
+                    dump(source_migration_manifest), encoding="utf-8", newline="\n"
+                )
             report = {
                 "ok": True,
                 "matrix": relative(OUTPUT_PATH),
                 "summary": matrix["summary"],
                 "native_hash_refresh": native_refresh_manifest,
                 "metadata_only_refresh": metadata_refresh_manifest,
+                "source_migration_supersession": source_migration_manifest,
             }
         else:
             if not OUTPUT_PATH.is_file() or not equals_for_check(
