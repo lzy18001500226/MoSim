@@ -31,13 +31,13 @@ this file does not select a competing task.
   with each of its 46 route bundles under that route's `superseded/` directory.
   `G6_SOURCE_MIGRATION_SUPERSESSION_MANIFEST.json` binds the old 46/46 passed
   record to the current source-path transition. The active current-root matrix
-  and status now have 33 passed graphical fixed-input probes: all five
-  PID-family, all 13 classic/robust, all seven sliding-mode, and all eight
-  optimization/MPC routes; 13 rows remain pending. Their fresh records are under
-  `Results/model_library_refactor/controller_route_execution_current/runs/`;
-  they establish only internal controller responses, so new MWORKS executions
-  are still required before any controller-family, champion, A/B, or runtime
-  claim.
+  and status now have all 46 current-root rows passed: 41 internal fixed-input
+  probes and 5 fixed whole-aircraft minimum closures. Their fresh records are
+  under `Results/model_library_refactor/controller_route_execution_current/runs/`;
+  the G6 evidence audit passes with 46 bound native-result screenshots and no
+  errors. These results establish controller-level readiness only: champion
+  selection, seven-scenario A/B, code generation, and runtime validation still
+  require their own evidence.
 - `Config/control_platform/formal_closed_loop_harness_map.json` has 0/6
   provisional champion minimum closures passed. The six candidate probes are
   awaiting the current matrix, and champion test-harness promotion plus
