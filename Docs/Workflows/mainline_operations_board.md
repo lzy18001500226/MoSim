@@ -6,8 +6,9 @@
 
 Status: the 47-Profile target, seven-family taxonomy and enhancement boundary
 are documented. The project-owned Modelica surface is now the canonical
-eight-layer root and its static migration gates pass; current-root MWORKS
-execution evidence has not yet been regenerated, 2026-07-27 CST.
+eight-layer root; static migration gates and the current-root Official PID plus
+four-Runner baseline gate pass. The 46-route current-hash evidence matrix is
+the next executable gate, 2026-07-27 CST.
 
 ## 0. Task Authority and Evidence Snapshot
 
@@ -26,10 +27,19 @@ formal load root is `Models/MoSimQuadrotorModel/package.mo`, with
 `Deployment` / `Visualization` / `Common`; retired roots and active old-path
 references are rejected by `consolidate_mosimquad_model_root.py --check`.
 
-The next executable gate is live current-root evidence: load the relevant
-MWORKS workflow, then re-run the Official PID baseline and the four Runner
-output contracts before any controller-family promotion. Do not treat a static
-namespace migration or an old-hash result as a current MWORKS simulation.
+The current-root Official PID `ClimbPath` 50 s baseline at
+`Results/control_platform/g6_formal_closed_loop_20260724/official_pid_climb_path_50s/`
+passed with a readable native result, two MWORKS captures, valid metrics, and
+verified dedicated-session closure. The `ATTITUDE_THRUST`, `BODY_RATE_THRUST`,
+`ROTOR_COMMAND`, and `WRENCH` Runner contracts under
+`Results/control_platform/g6_runner_boundary_baseline_20260727/` also each
+passed a 50 s, 5,001-sample current-root run with the same result and cleanup
+requirements. These five records validate the common Plant/Runner boundaries;
+they do not promote a controller family or establish flight-runtime behavior.
+
+The next executable gate is the current-hash 46-route MWORKS evidence matrix.
+Do not treat a static namespace migration or an old-hash result as a current
+MWORKS simulation.
 
 The pre-migration Official PID `ClimbPath` 50 s reference reached the declared
 stop time with terminal position error `0.00651 m`, final-5-s RMSE `0.01703 m`,
@@ -75,20 +85,17 @@ current completion.
 
 Continue the user-approved controller-evidence plan in this order:
 
-1. re-run `Sunray150Assembly`, Official PID and the four Runner output
-   contracts from the canonical root; preserve failed loads or simulations as
-   explicit evidence rather than substituting an old result;
-2. re-run the current-hash graphical/internal evidence matrix for the 46
+1. re-run the current-hash graphical/internal evidence matrix for the 46
    resolved MWORKS routes, keeping the two missing-source blockers and
    `px4ctrl` runtime baseline explicit;
-3. promote only a current-probe-passing candidate from each nominal family to
+2. promote only a current-probe-passing candidate from each nominal family to
    a champion-specific core/Adapter/plant harness, then establish its minimum
    whole-aircraft closure;
-4. compare each accepted champion with Official PID in hover, step, figure-8,
+3. compare each accepted champion with Official PID in hover, step, figure-8,
    spiral, wind, parameter-mismatch and motor-efficiency-fault scenarios;
-5. run the required ESO ablation trio, then export accepted candidates and
+4. run the required ESO ablation trio, then export accepted candidates and
    validate the declared ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl runtime path;
-6. collect report/software-documentation material from the resulting evidence,
+5. collect report/software-documentation material from the resulting evidence,
    then archive no-longer-used source only after a dependency audit.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant

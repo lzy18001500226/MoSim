@@ -14,12 +14,14 @@ modularity and are not separate projects or duplicate package roots.
 
 | Namespace | Responsibility |
 |---|---|
-| `Parameters`, `Plant`, `Dynamics`, `System` | vehicle parameters, plant, actuator/dynamics, system modules and architecture |
-| `Controllers` | baselines, graphical MIL controllers, Sysblocks, and integrated control chains |
-| `ExperimentRunner` | typed adapters, formal runners, shared plant/result contracts, and test composition |
-| `Missions`, `Robustness`, `Planning`, `Formation` | official tasks and scenario-specific compositions |
-| `LiveIntegration` | controlled MWORKS Live bridge entry; disabled unless its explicit gates pass |
-| `SceneTrace`, `Support` | diagnostics, supporting models, fixtures, and reusable helpers |
+| `Parameters` | vehicle parameters and source provenance |
+| `Vehicle` | Sunray150 assembly, physical plant, actuators, sensors, and dynamics |
+| `Control` | baselines, graphical MIL controllers, Sysblocks, adapters, bridges, and allocation |
+| `Experiment` | formal runners, scenario composition, result contracts, and test fixtures |
+| `Guidance` | trajectories, planning, formation, and task guidance |
+| `Deployment` | controlled MWORKS Live and code-generation integration entries |
+| `Visualization` | scene trace, review, and visualization support |
+| `Common` | reusable helpers and shared model types |
 
 ## Rules
 

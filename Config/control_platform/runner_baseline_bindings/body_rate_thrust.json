@@ -57,7 +57,7 @@
     {
       "role": "plant_sensor_surface",
       "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
-      "expected_sha256": "afe8291bdb2a09a56e7b2049635c433669bf63e352ba3091de615ff57b8befed"
+      "expected_sha256": "c185e8a73eebb2de6925bef15e5285f030832d560805742f4127d367595d486b"
     },
     {
       "role": "virtual_px4_classic_profile",
@@ -67,7 +67,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "12814dc84f5815a1956c16933388ea98a662900c54fd35d1f8804664da4f99e6"
+      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
     }
   ],
   "model_layout_boundary": {

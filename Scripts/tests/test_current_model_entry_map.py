@@ -60,3 +60,22 @@ def test_import_equivalence_accepts_only_known_sysplorer_whitespace_rewrite() ->
     assert library.import_equivalence_text(expected) == library.import_equivalence_text(sysplorer_normalized)
     assert library.import_equivalence_text(expected) == library.import_equivalence_text(trailing_whitespace)
     assert library.import_equivalence_text(expected) != library.import_equivalence_text(altered_body)
+
+
+def test_approved_project_variant_is_exactly_hash_bound() -> None:
+    library = load_library()
+    catalog = library.read_json(library.CATALOG_PATH)
+    inventory = library.read_json(library.INVENTORY_PATH)
+    item = next(
+        row for row in library.import_plan(catalog, inventory) if row["scheme_id"] == "lqr_baseline"
+    )
+    target = item["target_file"]
+    expected = library.expected_import_text(item)
+    variants = library.read_approved_graphical_import_variants()
+
+    assert library.approved_graphical_import_variant(item, target, expected, variants=variants)
+
+    mutated = copy.deepcopy(variants)
+    key = library.import_item_identity(item)
+    mutated[key]["current_model_sha256"] = "0" * 64
+    assert library.approved_graphical_import_variant(item, target, expected, variants=mutated) is None
