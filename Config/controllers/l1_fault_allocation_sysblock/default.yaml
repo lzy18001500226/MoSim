@@ -9,7 +9,7 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop
   sysblock_controller: AWFF_L1FaultAllocationControllerEquation_Sysblock
   verification_scope: real MWORKS_MCP 50 s full run complete for rotor-1 85% efficiency degradation; quality_status pass
   limitation: >
@@ -70,7 +70,7 @@ verified_evidence:
   source: MWORKS_MCP
   rotor1_loss15_full:
     scenario_file: Config/scenarios/robustness/example1_rotor1_loss15_l1_fault_allocation_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15L1FaultAllocationSysblockClosedLoop
     raw_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/raw/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock.csv
     metrics_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/metrics/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock.json
     mcp_log: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_fault_allocation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_fault_allocation_sysblock_20260511.jsonl

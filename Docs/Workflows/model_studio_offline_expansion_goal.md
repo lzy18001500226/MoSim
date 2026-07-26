@@ -50,8 +50,8 @@ Scripts/quality/check_offline_runner_interface_contract.py
 Scripts/quality/check_offline_batch_a_adapter_backlog.py
 Scripts/mworks/generate_offline_profile_wrapper.py
 Scripts/mworks/run_offline_profile_certification.py
-Models/MoSimQuadrotorModel/ExperimentRunner/Adapters/OfflineAttitudeThrustController.mo
-Models/MoSimQuadrotorModel/ExperimentRunner/Adapters/OfflineAttitudeRateAllocator.mo
+Models/MoSimQuadrotorModel/Control/Baselines/OfflineAttitudeThrustController.mo
+Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo
 Results/control_platform/offline_expansion_goal_20260719/requests/*.json
 Scripts/tests/test_offline_expansion_inventory.py
 Scripts/tests/test_offline_composition_catalog.py
@@ -382,7 +382,7 @@ revoked, and WRENCH remains `not_evaluated` rather than failed.
 P2 live checkpoint 5 supersedes the WRENCH blocked audit for this continuation.
 The restored Sysplorer call surface passed a fresh read-only probe and health
 check (`api_ready=true`). The four existing packages were loaded without source
-mutation, and `MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner`
+mutation, and `MoSimQuadrotorModel.Experiment.Runners.WrenchRunner`
 passed a single-model `CheckModel`.
 
 The dedicated WRENCH certification then completed a real 50-second MWORKS

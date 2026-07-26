@@ -6,7 +6,7 @@ evidence_level: real_sysplorer_mcp_robust_wind_gust_ablation
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Robustness.Scenarios.PIDBaselines.Example1WindGustImprovedPID
+  model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.PIDBaselines.Example1WindGustImprovedPID
   model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 阶梯爬升 15-19s 横向阵风 improved PID

@@ -1,0 +1,78 @@
+{
+  "schema": "mosim.runner_boundary_baseline_binding.v1",
+  "controller_id": "runner_fixture_attitude_thrust",
+  "controller_category": "runner_boundary_fixture",
+  "scenario": {
+    "scenario_id": "climb_path_50s",
+    "reference_owner": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50
+  },
+  "target": {
+    "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
+    "model_class": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
+    "model_sha256": "eb4c4149dff9a5d9338b23d5fc220fe6fb7570c537d42902ed5aa4206d87c5cc"
+  },
+  "formal_adapter": {
+    "model_file": "Models/MoSimQuadrotorModel/Control/Baselines/OfflineAttitudeThrustController.mo",
+    "model_class": "MoSimQuadrotorModel.Control.Baselines.OfflineAttitudeThrustController",
+    "model_sha256": "b54761076a6710ee3dbb39013c2df25d8a429f03320e4327e3f59cc4412d14f5",
+    "output_boundary": "ATTITUDE_THRUST"
+  },
+  "source_bindings": [
+    {
+      "role": "runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
+      "expected_sha256": "eb4c4149dff9a5d9338b23d5fc220fe6fb7570c537d42902ed5aa4206d87c5cc"
+    },
+    {
+      "role": "fixture_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Baselines/OfflineAttitudeThrustController.mo",
+      "expected_sha256": "b54761076a6710ee3dbb39013c2df25d8a429f03320e4327e3f59cc4412d14f5"
+    },
+    {
+      "role": "offline_inner_allocator",
+      "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
+      "expected_sha256": "e09e6eba1b259260d21d216f89873db5bf17b94c4ee8c3e5a330f75883cde62b"
+    },
+    {
+      "role": "shared_plant",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "expected_sha256": "77a0b0d52d4b79b99fbd4b0239c173c465a15a2f3c54a6959a35f20197c82913"
+    },
+    {
+      "role": "physical_wrench_adapter",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo",
+      "expected_sha256": "f5b87ac12e07d401b7fb6daae04b220b4c0f39c4d6235bcb33ac14464f77d7cd"
+    },
+    {
+      "role": "wrapper_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
+      "expected_sha256": "b78ad9bce5dcdc22ffdecef440dd33ba4aa4ec4fe82b78fed7a507805197bc53"
+    },
+    {
+      "role": "rotor_actuator_core",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
+      "expected_sha256": "39fefc145ef07c3a9a2cda7a651d168959d6ef5eb040a0a8cdee5c496e8c9083"
+    },
+    {
+      "role": "plant_sensor_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
+      "expected_sha256": "afe8291bdb2a09a56e7b2049635c433669bf63e352ba3091de615ff57b8befed"
+    },
+    {
+      "role": "virtual_px4_classic_profile",
+      "path": "Models/MoSimQuadrotorModel/Parameters/Sunray150VirtualPx4Classic.mo",
+      "expected_sha256": "d567beb9d8443f5fa57728d210d57d96d6dc52370f8e31bb6a3ec08f15c863cd"
+    },
+    {
+      "role": "climb_path_reference",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "expected_sha256": "12814dc84f5815a1956c16933388ea98a662900c54fd35d1f8804664da4f99e6"
+    }
+  ],
+  "model_layout_boundary": {
+    "state": "shared_runner_and_fixture_not_controller_graphical_topology",
+    "reason": "The capture verifies the shared ATTITUDE_THRUST runner, fixture adapter, allocator and Plant closure. It is not the topology evidence for a competition controller."
+  },
+  "claim_boundary": "Real offline MWORKS shared-Plant ATTITUDE_THRUST runner-boundary baseline. It validates this fixture closure only, not a controller-family champion, Gazebo, PX4, ROS or flight-runtime performance."
+}

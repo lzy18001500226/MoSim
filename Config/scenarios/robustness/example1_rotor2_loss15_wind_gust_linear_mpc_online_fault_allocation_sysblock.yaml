@@ -6,8 +6,8 @@ evidence_level: real_sysplorer_mcp_sysblock_linear_mpc_online_fault_allocation_r
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/RotorLoss/Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/Scenarios/Robustness/RotorLoss/Example1Rotor2Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 阶梯爬升 2号旋翼升力效率85% + 15-19s横向阵风 LinearMPC在线故障分配 Sysblock
 
@@ -15,12 +15,12 @@ controller:
   params_file: Config/controllers/linear_mpc_online_fault_allocation_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_rotor2_loss15_wind_gust_example1_awff_sysblock
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCMultiFaultAllocationController_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_LinearMPCMultiFaultAllocationController_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo
   extra_sysblock_controller_files:
-    - Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
-    - Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo
+    - Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+    - Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_LinearMPCOnlineFaultAllocationController_Sysblock.mo
 
 disturbance:
   type: combined_actuator_efficiency_loss_and_lateral_world_force_gust

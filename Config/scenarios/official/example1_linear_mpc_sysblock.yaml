@@ -6,8 +6,8 @@ evidence_level: real_sysplorer_mcp_sysblock_linear_mpc_full
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Missions.Official.Example1LinearMPCSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Missions/Official/Example1LinearMPCSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.Templates.Official.Example1LinearMPCSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1LinearMPCSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 阶梯爬升 linear MPC-style outer loop + INDI-like attitude Sysblock full validation
 
@@ -15,9 +15,9 @@ controller:
   params_file: Config/controllers/linear_mpc_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: official_example1_awff_indi_sysblock
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

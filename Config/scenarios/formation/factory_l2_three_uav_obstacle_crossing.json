@@ -1,73 +1,350 @@
 {
   "schema": "mosim.factory_l2_three_uav_formation_obstacle_crossing.v1",
   "status": "static_scenario_ready_runtime_pending",
+  "runtime_contract": {
+    "swarm_trajectory_receiver_time_tolerance_s": 2.0,
+    "r52_observed_max_receive_age_s": 1.676,
+    "receiver_age_safety_margin_s": 0.32400000000000007,
+    "semantics": "Factory-L2-only receive-age envelope. The relay keeps its configured future offset, and the receiving planner preserves the received trajectory start_time and phase; this does not rewrite timestamps or reset trajectory phase."
+  },
+  "mission_target_contract": {
+    "target_reached_radius_m": 0.25,
+    "target_hold_s": 2.0,
+    "semantics": "A shared center waypoint may advance only after the translated formation holds within this radius and velocity gate. The radius is intentionally tighter than the generic mission default because the container corridor is narrow."
+  },
   "world": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
   "formation": {
     "type": "three_uav_equilateral_subset_of_normal_hexagon",
-    "scale": 0.75,
-    "expected_min_pair_distance_m": 1.5,
+    "scale": 0.7,
+    "rotation_deg": -4.0,
+    "relative_positions_unit": {
+      "1": [
+        0.0,
+        0.0
+      ],
+      "2": [
+        1.6581242177109163,
+        -1.1183892384320235
+      ],
+      "3": [
+        -0.1395129474882506,
+        -1.9951281005196484
+      ]
+    },
+    "rigid_footprint_radius_m": 1.4000298214323863,
+    "expected_min_pair_distance_m": 1.4,
     "start_center_xy_m": [
-      -12.575025,
-      -19.36313
+      -72.4,
+      5.04
     ],
     "preferred_single_uav_center_xy_m": [
       -10.575025,
       -19.36313
     ],
-    "runtime_proven_start_center_xy_m": [
-      -12.575025,
-      -19.36313
+    "legacy_r46_start_center_xy_m": [
+      -12.436636952397642,
+      -19.330257533097587
     ],
-    "start_center_shift_from_preferred_m": 2.0,
+    "start_center_shift_from_preferred_m": 66.46683599771788,
     "start_positions_xy_m": {
       "1": [
-        -12.575025,
-        -19.36313
+        -72.4,
+        5.04
       ],
       "2": [
-        -11.27595,
-        -20.11313
+        -71.23931304760237,
+        4.2571275330975835
       ],
       "3": [
-        -12.575025,
-        -20.86313
+        -72.49765906324178,
+        3.6434103296362466
       ]
     },
     "target_center_xy_m": [
-      -16.679266719908025,
-      -8.0868185505691
+      -85.6,
+      3.44
     ],
     "target_positions_xy_m": {
       "1": [
-        -16.679266719908025,
-        -8.0868185505691
+        -85.6,
+        3.44
       ],
       "2": [
-        -15.380191719908025,
-        -8.8368185505691
+        -84.43931304760235,
+        2.6571275330975834
       ],
       "3": [
-        -16.679266719908025,
-        -9.5868185505691
+        -85.69765906324177,
+        2.043410329636246
       ]
     },
     "z_m": 1.2
   },
+  "scenario_selection": {
+    "preferred_target_center_xy_m": [
+      -12.27082453062655,
+      -5.44209645694079
+    ],
+    "selected_replay_compatible_leader_route": false,
+    "selected_static_astar_ready": true,
+    "selected_center_route_kind": "explicit_catalog_fixed_path",
+    "selected_start_source": "static_rigid_catalog_container_west_aisle_lower_corridor_v2",
+    "selected_catalog_id": "container_west_aisle_lower_corridor_v2",
+    "selected_rationale": "Leader UAV direct path is blocked by SM_Container01_100. This fixed lower corridor remains statically clear for the complete rigid formation at the live 1.70 m field and moves the container passage 0.40 m south of r60's route.",
+    "legacy_r46_spawn_anchor": {
+      "reference_run_id": "factory_l2_swarm_formation_envelope_r46_20260722",
+      "uav_id": "2",
+      "requested_start_xy_m": [
+        -11.27595,
+        -20.11313
+      ],
+      "observed_truth_start_xy_m": [
+        -11.316647810326522,
+        -20.11095083884625
+      ],
+      "semantics": "Historical stable spawn only. It is not evidence that the selected catalog start is physically ready."
+    },
+    "selected_spawn_preflight": {
+      "status": "required",
+      "semantics": "Gazebo truth pose, takeoff and hover gates must pass for all selected start positions before obstacle traversal is attempted."
+    },
+    "semantics": "The selected route is statically clear for every member and for the common rigid center path at the live 1.70 m inflated field. It remains runtime-pending until the Gazebo/PX4/MAVROS/MID360 gate passes."
+  },
+  "static_path_contract": {
+    "status": "passed",
+    "clearance_margin_m": 1.7,
+    "grid_step_m": 0.2,
+    "search_padding_m": 5.0,
+    "per_uav": {
+      "1": {
+        "start_endpoint_clear": true,
+        "target_endpoint_clear": true,
+        "path_found": true,
+        "direct_distance_m": 13.296616110875718,
+        "relevant_obstacle_count": 51,
+        "free_cell_count": 3183,
+        "waypoint_count": 75,
+        "path_length_m": 14.800000000000189,
+        "detour_excess_m": 1.5033838891244713,
+        "start_snap_error_m": 2.700120828046884e-13,
+        "target_snap_error_m": 7.105982447430965e-14
+      },
+      "2": {
+        "start_endpoint_clear": true,
+        "target_endpoint_clear": true,
+        "path_found": true,
+        "direct_distance_m": 13.296616110875718,
+        "relevant_obstacle_count": 63,
+        "free_cell_count": 3340,
+        "waypoint_count": 75,
+        "path_length_m": 14.800000000000189,
+        "detour_excess_m": 1.5033838891244713,
+        "start_snap_error_m": 2.700120828046884e-13,
+        "target_snap_error_m": 7.105566134123854e-14
+      },
+      "3": {
+        "start_endpoint_clear": true,
+        "target_endpoint_clear": true,
+        "path_found": true,
+        "direct_distance_m": 13.296616110875718,
+        "relevant_obstacle_count": 64,
+        "free_cell_count": 3295,
+        "waypoint_count": 75,
+        "path_length_m": 14.800000000000189,
+        "detour_excess_m": 1.5033838891244713,
+        "start_snap_error_m": 2.7000952641331336e-13,
+        "target_snap_error_m": 7.105566134123854e-14
+      }
+    },
+    "claim_boundary": "Static UE collision truth is used only to select a feasible obstacle-crossing scenario. Live Swarm-Formation still consumes per-UAV MID360 world clouds and occupancy maps."
+  },
+  "rigid_center_path_contract": {
+    "status": "passed",
+    "route_selection": "explicit_catalog_fixed_path",
+    "clearance_margin_m": 1.7,
+    "segment_sample_step_m": 0.05,
+    "formation_footprint_radius_m": 1.4000298214323863,
+    "center_waypoints_xy_m": [
+      [
+        -72.4,
+        5.04
+      ],
+      [
+        -74.4,
+        5.04
+      ],
+      [
+        -76.4,
+        5.04
+      ],
+      [
+        -78.4,
+        5.04
+      ],
+      [
+        -80.4,
+        5.04
+      ],
+      [
+        -80.8,
+        3.44
+      ],
+      [
+        -82.8,
+        3.44
+      ],
+      [
+        -84.8,
+        3.44
+      ],
+      [
+        -85.6,
+        3.44
+      ]
+    ],
+    "center_waypoint_count": 9,
+    "center_path_length_m": 14.44924225024706,
+    "detour_excess_m": 1.1526261393713426,
+    "waypoint_checks": [
+      {
+        "index": 0,
+        "xy_m": [
+          -72.4,
+          5.04
+        ],
+        "status": "passed"
+      },
+      {
+        "index": 1,
+        "xy_m": [
+          -74.4,
+          5.04
+        ],
+        "status": "passed"
+      },
+      {
+        "index": 2,
+        "xy_m": [
+          -76.4,
+          5.04
+        ],
+        "status": "passed"
+      },
+      {
+        "index": 3,
+        "xy_m": [
+          -78.4,
+          5.04
+        ],
+        "status": "passed"
+      },
+      {
+        "index": 4,
+        "xy_m": [
+          -80.4,
+          5.04
+        ],
+        "status": "passed"
+      },
+      {
+        "index": 5,
+        "xy_m": [
+          -80.8,
+          3.44
+        ],
+        "status": "passed"
+      },
+      {
+        "index": 6,
+        "xy_m": [
+          -82.8,
+          3.44
+        ],
+        "status": "passed"
+      },
+      {
+        "index": 7,
+        "xy_m": [
+          -84.8,
+          3.44
+        ],
+        "status": "passed"
+      },
+      {
+        "index": 8,
+        "xy_m": [
+          -85.6,
+          3.44
+        ],
+        "status": "passed"
+      }
+    ],
+    "segment_checks": [
+      {
+        "start_index": 0,
+        "end_index": 1,
+        "length_m": 2.0,
+        "status": "passed"
+      },
+      {
+        "start_index": 1,
+        "end_index": 2,
+        "length_m": 2.0,
+        "status": "passed"
+      },
+      {
+        "start_index": 2,
+        "end_index": 3,
+        "length_m": 2.0,
+        "status": "passed"
+      },
+      {
+        "start_index": 3,
+        "end_index": 4,
+        "length_m": 2.0,
+        "status": "passed"
+      },
+      {
+        "start_index": 4,
+        "end_index": 5,
+        "length_m": 1.6492422502470623,
+        "status": "passed"
+      },
+      {
+        "start_index": 5,
+        "end_index": 6,
+        "length_m": 2.0,
+        "status": "passed"
+      },
+      {
+        "start_index": 6,
+        "end_index": 7,
+        "length_m": 2.0,
+        "status": "passed"
+      },
+      {
+        "start_index": 7,
+        "end_index": 8,
+        "length_m": 0.7999999999999972,
+        "status": "passed"
+      }
+    ],
+    "blockers": [],
+    "claim_boundary": "The exact common center path is selected and audited from static collision truth only. At runtime, each UAV still uses its own MID360/FAST-LIO/local occupancy input; the fixed chain is a known-route formation traversal, not autonomous exploration."
+  },
   "obstacle_crossing_contract": {
     "direct_center_segment_blocked": true,
-    "clearance_margin_m": 1.0,
+    "clearance_margin_m": 1.7,
     "intersecting_proxy_count": 1,
     "intersecting_proxies": [
-      "SM_CargoCart_back"
+      "SM_Container01_100"
     ],
-    "maximum_hit_planar_span_m": 8.67849,
+    "maximum_hit_planar_span_m": 5.997720000000001,
     "member_intersecting_proxies": {
       "1": [
-        "SM_CargoCart_back"
+        "SM_Container01_100"
       ],
-      "2": [
-        "SM_CargoCart_back"
-      ],
+      "2": [],
       "3": []
     },
     "endpoint_formation_positions_clear": true,

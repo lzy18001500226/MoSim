@@ -99,9 +99,9 @@ RECOMMENDED_TESTS = [
 ]
 
 OFFICIAL_MODELS = [
-    "MoSimQuadrotorModel.Plant.Examples.Example1",
-    "MoSimQuadrotorModel.Plant.Examples.Example2",
-    "MoSimQuadrotorModel.Plant.Examples.Example3",
+    "MoSimQuadrotorModel.Vehicle.Examples.Example1",
+    "MoSimQuadrotorModel.Vehicle.Examples.Example2",
+    "MoSimQuadrotorModel.Vehicle.Examples.Example3",
 ]
 
 OFFICIAL_SCENARIOS = [

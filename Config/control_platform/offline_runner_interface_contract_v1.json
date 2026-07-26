@@ -1,11 +1,36 @@
 {
   "schema": "mosim.offline_runner_interface_contract.v1",
   "version": 1,
-  "status": "static_source_frozen_live_mworks_blocked",
-  "claim_boundary": "Static source contract for current offline MWORKS Runner surfaces. It is not a model-check, simulation, code-generation, online co-simulation, PX4, MAVROS, or physical-unit acceptance.",
+  "status": "static_source_frozen_live_runner_baseline_verified",
+  "claim_boundary": "Static source contract with real offline MWORKS 50 s baseline evidence for all four shared-Plant Runner boundaries and the separate Official PID whole-aircraft baseline. It is not evidence that any of the 46 controller routes has been migrated, nor code-generation, online co-simulation, PX4, MAVROS, or physical-unit acceptance.",
+  "live_runner_baseline_evidence": {
+    "status": "passed",
+    "scenario_id": "climb_path_50s",
+    "source": "MWORKS_MCP",
+    "shared_plant": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly",
+    "completed_at": "2026-07-26T02:36:09+08:00",
+    "runner_runs": {
+      "ATTITUDE_THRUST": "Results/model_library_refactor/20260726_plant_runner_baseline/attitude_thrust/RUN_RECORD.json",
+      "BODY_RATE_THRUST": "Results/model_library_refactor/20260726_plant_runner_baseline/body_rate_thrust/RUN_RECORD.json",
+      "WRENCH": "Results/model_library_refactor/20260726_plant_runner_baseline/wrench/RUN_RECORD.json",
+      "ROTOR_COMMAND": "Results/model_library_refactor/20260726_plant_runner_baseline/rotor_command/RUN_RECORD.json"
+    },
+    "official_pid_run": "Results/model_library_refactor/20260726_plant_runner_baseline/official_pid_climb_path_50s/RUN_RECORD.json",
+    "post_run_gui_sentinel": "Results/model_library_refactor/20260726_plant_runner_baseline/post_run_gui_sentinel.json",
+    "acceptance": {
+      "check_model": "passed",
+      "duration_s": 50,
+      "runner_fixture_result_rows": 5001,
+      "official_pid_result_rows": 25001,
+      "nan_count": 0,
+      "dedicated_sessions_closed": true
+    },
+    "claim_boundary": "This validates only the shared Plant/Runner interface fixtures and the separately bound Official PID baseline. It does not promote controller-family topology, champion selection, seven-scenario A/B, code generation, Gazebo, PX4, ROS, frame semantics, or physical command units."
+  },
   "shared_plant": {
-    "model": "MoSimQuadrotorModel.ExperimentRunner.Plant.SingleUavPlantAnimation",
-    "source": "Models/MoSimQuadrotorModel/ExperimentRunner/Plant/SingleUavPlantAnimation.mo",
+    "model": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly",
+    "source": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+    "legacy_compatibility_alias": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly",
     "animation_owner": "MWORKS native MultiBody plant",
     "plant_input": {
       "name": "rotor_command",
@@ -25,10 +50,10 @@
   ],
   "boundaries": {
     "ATTITUDE_THRUST": {
-      "interface": "MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialAttitudeThrustController",
-      "interface_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Interfaces/PartialAttitudeThrustController.mo",
-      "runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-      "runner_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Runners/AttitudeThrustRunner.mo",
+      "interface": "MoSimQuadrotorModel.Control.Interfaces.PartialAttitudeThrustController",
+      "interface_source": "Models/MoSimQuadrotorModel/Control/Interfaces/PartialAttitudeThrustController.mo",
+      "runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
+      "runner_source": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
       "outputs": [
         {"name": "attitude_ref", "dimension": 3, "unit_semantics": "roll_pitch_yaw_rad_offline_only"},
         {"name": "collective_thrust_delta", "dimension": 1, "unit_semantics": "legacy_scaled_delta_not_newtons"}
@@ -37,10 +62,10 @@
       "physical_online_mapping_state": "not_verified"
     },
     "BODY_RATE_THRUST": {
-      "interface": "MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialBodyRateThrustController",
-      "interface_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Interfaces/PartialBodyRateThrustController.mo",
-      "runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.BodyRateThrustRunner",
-      "runner_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Runners/BodyRateThrustRunner.mo",
+      "interface": "MoSimQuadrotorModel.Control.Interfaces.PartialBodyRateThrustController",
+      "interface_source": "Models/MoSimQuadrotorModel/Control/Interfaces/PartialBodyRateThrustController.mo",
+      "runner": "MoSimQuadrotorModel.Experiment.Runners.BodyRateThrustRunner",
+      "runner_source": "Models/MoSimQuadrotorModel/Experiment/Runners/BodyRateThrustRunner.mo",
       "outputs": [
         {"name": "body_rate_ref", "dimension": 3, "unit_semantics": "legacy_scaled_body_rate_command_not_verified_rad_per_s"},
         {"name": "collective_thrust_delta", "dimension": 1, "unit_semantics": "legacy_scaled_delta_not_newtons"}
@@ -49,10 +74,10 @@
       "physical_online_mapping_state": "not_verified"
     },
     "WRENCH": {
-      "interface": "MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialWrenchController",
-      "interface_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Interfaces/PartialWrenchController.mo",
-      "runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner",
-      "runner_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Runners/WrenchRunner.mo",
+      "interface": "MoSimQuadrotorModel.Control.Interfaces.PartialWrenchController",
+      "interface_source": "Models/MoSimQuadrotorModel/Control/Interfaces/PartialWrenchController.mo",
+      "runner": "MoSimQuadrotorModel.Experiment.Runners.WrenchRunner",
+      "runner_source": "Models/MoSimQuadrotorModel/Experiment/Runners/WrenchRunner.mo",
       "outputs": [
         {"name": "body_force", "dimension": 3, "unit_semantics": "legacy_scaled_body_force_not_verified_newtons"},
         {"name": "body_torque", "dimension": 3, "unit_semantics": "legacy_scaled_body_torque_not_verified_newton_meters"}
@@ -61,10 +86,10 @@
       "physical_online_mapping_state": "not_verified"
     },
     "ROTOR_COMMAND": {
-      "interface": "MoSimQuadrotorModel.ExperimentRunner.Interfaces.PartialRotorCommandController",
-      "interface_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Interfaces/PartialRotorCommandController.mo",
-      "runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner",
-      "runner_source": "Models/MoSimQuadrotorModel/ExperimentRunner/Runners/RotorCommandRunner.mo",
+      "interface": "MoSimQuadrotorModel.Control.Interfaces.PartialRotorCommandController",
+      "interface_source": "Models/MoSimQuadrotorModel/Control/Interfaces/PartialRotorCommandController.mo",
+      "runner": "MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner",
+      "runner_source": "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo",
       "outputs": [
         {"name": "rotor_command", "dimension": 4, "unit_semantics": "legacy_signed_actuator_command_unverified"}
       ],
@@ -163,7 +188,7 @@
     "invalid_stale_nan_inf_rejection_not_implemented_at_runner_boundary",
     "fallback_diagnostics_not_exposed",
     "time_and_solver_statistics_not_bound_to_run_manifest",
-    "four_boundary_live_check_model_and_simulation_blocked_by_sysplorer_probe_timeout"
+    "forty_six_controller_route_adapters_and_minimum_closures_not_yet_executed"
   ],
   "online_alignment": {
     "state": "candidate_only",

@@ -6,8 +6,8 @@ evidence_level: real_sysplorer_mcp_sysblock_qp_nmpc_safety_full
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/Example1QPNMPCSafetySysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1QPNMPCSafetySysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/Scenarios/Robustness/Example1QPNMPCSafetySysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 阶梯爬升 QP/NMPC + CBF Safety Filter + 模式切换 Sysblock full validation
 
@@ -15,11 +15,11 @@ controller:
   params_file: Config/controllers/nmpc_indi_l1/default.yaml
   replacement_component: controller3_2
   baseline_experiment: official_example1_linear_mpc_sysblock
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_QPNMPCSafetyController_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_QPNMPCSafetyController_Sysblock.mo
   extra_sysblock_controller_files:
-    - Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+    - Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

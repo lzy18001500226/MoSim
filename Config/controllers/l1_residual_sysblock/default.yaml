@@ -10,11 +10,11 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - MoSimQuadrotorModel.Missions.Official.Example1L1SysblockClosedLoop
-    - MoSimQuadrotorModel.Missions.Official.Example3L1SysblockClosedLoop
-    - MoSimQuadrotorModel.Robustness.Scenarios.Example1Mass20L1SysblockClosedLoop
-    - MoSimQuadrotorModel.Robustness.Scenarios.Example1WindGustL1SysblockClosedLoop
-    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15L1SysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Templates.Official.Example3L1SysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1Mass20L1SysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1WindGustL1SysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15L1SysblockClosedLoop
   sysblock_controller: AWFF_L1ResidualControllerEquation_Sysblock
   verification_scope: >
     Full MWORKS_MCP evidence complete for nominal Example1, Example3 figure-8,
@@ -85,7 +85,7 @@ verified_evidence:
   source: MWORKS_MCP
   nominal_full:
     scenario_file: Config/scenarios/official/example1_l1_residual_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Missions.Official.Example1L1SysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop
     raw_file: Results/official/example1_step/official_example1_l1_residual_sysblock/raw/official_example1_l1_residual_sysblock.csv
     metrics_file: Results/official/example1_step/official_example1_l1_residual_sysblock/metrics/official_example1_l1_residual_sysblock.json
     mcp_log: Results/official/example1_step/official_example1_l1_residual_sysblock/logs/sysplorer_example1_l1_residual_sysblock_full_20260510.jsonl
@@ -97,7 +97,7 @@ verified_evidence:
     quality_status: pass
   figure8_full:
     scenario_file: Config/scenarios/official/example3_l1_residual_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Missions.Official.Example3L1SysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Templates.Official.Example3L1SysblockClosedLoop
     raw_file: Results/official/example3_figure8/official_example3_l1_residual_sysblock/raw/official_example3_l1_residual_sysblock.csv
     metrics_file: Results/official/example3_figure8/official_example3_l1_residual_sysblock/metrics/official_example3_l1_residual_sysblock.json
     mcp_log: Results/official/example3_figure8/official_example3_l1_residual_sysblock/logs/sysplorer_example3_l1_residual_sysblock_full_20260511.jsonl
@@ -108,7 +108,7 @@ verified_evidence:
     quality_status: pass
   mass20_full:
     scenario_file: Config/scenarios/robustness/example1_mass20_l1_residual_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Robustness.Scenarios.Example1Mass20L1SysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1Mass20L1SysblockClosedLoop
     raw_file: Results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/raw/robust_mass20_example1_l1_residual_sysblock.csv
     metrics_file: Results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/metrics/robust_mass20_example1_l1_residual_sysblock.json
     mcp_log: Results/robustness/mass20_example1/robust_mass20_example1_l1_residual_sysblock/logs/sysplorer_robust_mass20_example1_l1_residual_sysblock_20260511.jsonl
@@ -120,7 +120,7 @@ verified_evidence:
     quality_status: pass
   wind_full:
     scenario_file: Config/scenarios/robustness/example1_wind_gust_l1_residual_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Robustness.Scenarios.Example1WindGustL1SysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1WindGustL1SysblockClosedLoop
     raw_file: Results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/raw/robust_wind_gust_example1_l1_residual_sysblock.csv
     metrics_file: Results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/metrics/robust_wind_gust_example1_l1_residual_sysblock.json
     mcp_log: Results/robustness/wind_gust_example1/robust_wind_gust_example1_l1_residual_sysblock/logs/sysplorer_robust_wind_gust_example1_l1_residual_sysblock_20260510.jsonl
@@ -132,7 +132,7 @@ verified_evidence:
     quality_status: pass
   rotor1_loss15_full:
     scenario_file: Config/scenarios/robustness/example1_rotor1_loss15_l1_residual_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15L1SysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15L1SysblockClosedLoop
     raw_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/raw/robust_rotor1_loss15_example1_l1_residual_sysblock.csv
     metrics_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/metrics/robust_rotor1_loss15_example1_l1_residual_sysblock.json
     mcp_log: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_residual_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_residual_sysblock_20260511.jsonl

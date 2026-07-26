@@ -107,15 +107,14 @@ def render_modelica_package(path: Path, examples: list[int], candidates: list[di
         "",
         "  extends Modelica.Icons.Package;",
         "  annotation(uses(",
-        '    Modelica(version = "4.0.0.TY.1"),',
-        "    QuadrotorModel));",
+        '    Modelica(version = "4.0.0.TY.1")));',
         "",
     ]
     for candidate in candidates:
         cid = str(candidate["id"])
         for example in examples:
             stop_time = 50 if example == 1 else 120
-            base = f"QuadrotorModel.Examples.Example{example}"
+            base = f"MoSimQuadrotorModel.Vehicle.Examples.Example{example}"
             cls = class_name(cid, example)
             lines.extend(
                 [

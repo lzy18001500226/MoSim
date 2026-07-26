@@ -13,6 +13,12 @@
         "min_y_m": -284.65,
         "max_y_m": 246.35
       },
+      "indoor_task_overlay_bounds_m": {
+        "min_x_m": -98.40496,
+        "max_x_m": 77.25491,
+        "min_y_m": -51.36291,
+        "max_y_m": 12.63665
+      },
       "simulation_geodetic_anchor": {
         "latitude_deg": 47.397742,
         "longitude_deg": 8.545594,

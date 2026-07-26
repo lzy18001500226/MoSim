@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check that MoSim exposes one formal MWORKS Modelica root.
+"""Check that MoSim exposes one formal eight-layer MWORKS Modelica root.
 
 The project is reviewed and reproduced by loading exactly one package:
 ``Models/MoSimQuadrotorModel/package.mo``.  This check intentionally rejects
@@ -21,18 +21,21 @@ CANONICAL_ROOT = MODELS / "MoSimQuadrotorModel"
 MANIFEST_PATH = REPO_ROOT / "Config" / "control_platform" / "model_namespace_migration.json"
 
 REQUIRED_TOP_LEVEL = (
-    "Plant",
-    "Dynamics",
     "Parameters",
-    "Missions",
+    "Vehicle",
+    "Control",
+    "Experiment",
+    "Guidance",
+    "Deployment",
+    "Visualization",
+    "Common",
+)
+
+RETIRED_NESTED_TOP_LEVEL = (
     "Controllers",
-    "Robustness",
-    "Planning",
-    "Formation",
     "ExperimentRunner",
-    "LiveIntegration",
-    "SceneTrace",
-    "Support",
+    "Missions",
+    "Robustness",
     "System",
 )
 
@@ -53,6 +56,12 @@ EXTERNAL_PLANT_REFERENCE = re.compile(
 )
 RETIRED_NAMESPACE_REFERENCE = re.compile(
     r"(?<![A-Za-z0-9_])QuadrotorModel(?:\.|[\\/])"
+)
+RETIRED_NESTED_NAMESPACE_REFERENCE = re.compile(
+    r"\bMoSimQuadrotorModel\.(?:Plant|Dynamics|Controllers|ExperimentRunner|Missions|Robustness|System)(?:\.|(?=[\s;\"']))"
+)
+RETIRED_RESOURCE_URI = re.compile(
+    r"modelica://MoSimQuadrotorModel/(?:Plant|LiveIntegration)/Resources/"
 )
 CANONICAL_RESOURCE_URI = re.compile(r"modelica://MoSimQuadrotorModel/([^\"'\s,)]+)")
 PACKAGE_DECLARATION = re.compile(r"(?m)^\s*package\s+([A-Za-z_]\w*)\b")
@@ -131,12 +140,18 @@ def active_reference_paths() -> list[Path]:
     for root in (
         REPO_ROOT / "Config" / "scenarios",
         REPO_ROOT / "Config" / "control_platform",
-        REPO_ROOT / "Scripts" / "mworks",
-        REPO_ROOT / "Scripts" / "quality",
-        REPO_ROOT / "Scripts" / "tests",
+        REPO_ROOT / "Scripts",
     ):
         if root.is_dir():
-            paths.update(path for path in root.rglob("*") if path.suffix in {".json", ".yaml", ".yml", ".py"})
+            paths.update(
+                path
+                for path in root.rglob("*")
+                if path.is_file()
+                and (
+                    path.suffix in {".json", ".yaml", ".yml", ".py", ".sh", ".ps1", ".cmake"}
+                    or path.name == "CMakeLists.txt"
+                )
+            )
 
     paths.update(
         path
@@ -159,6 +174,10 @@ def active_reference_paths() -> list[Path]:
             # This static migration audit names retired paths only to verify
             # that they are absent; it is not an MWORKS loading entry point.
             REPO_ROOT / "Scripts" / "mworks" / "validate_mosimquad_dynamics_batch_a_source_migration.py",
+            # This checker deliberately maps the retired Dynamics namespace
+            # into Vehicle.Dynamics while reading historical probe plans. Its
+            # literal is a diagnostic rule, not an active Modelica dependency.
+            REPO_ROOT / "Scripts" / "quality" / "check_mosimquad_formal_dynamics_smoke_scenarios.py",
         }
     )
     return sorted(paths)
@@ -175,14 +194,16 @@ def check_manifest(errors: list[str]) -> None:
         return
 
     expected = {
-        "schema_version": 2,
-        "status": "canonical_single_root",
+        "schema_version": 3,
+        "status": "canonical_eight_layer_root",
         "canonical_model_root": "Models/MoSimQuadrotorModel",
         "formal_load_file": "Models/MoSimQuadrotorModel/package.mo",
     }
     for key, value in expected.items():
         if manifest.get(key) != value:
             errors.append(f"canonical-root manifest {key!r} must be {value!r}")
+    if manifest.get("top_level_packages") != list(REQUIRED_TOP_LEVEL):
+        errors.append("canonical-root manifest top_level_packages must match the eight-layer root order")
 
 
 def check_canonical_root(errors: list[str]) -> None:
@@ -203,13 +224,8 @@ def check_canonical_root(errors: list[str]) -> None:
         errors.append("canonical package.order is missing")
         return
     order = [line.strip() for line in read_text(order_path).splitlines() if line.strip()]
-    for name in (*REQUIRED_TOP_LEVEL, "saturate"):
-        if name not in order:
-            errors.append(f"canonical package.order omits {name}")
-    if "LegacyCompatibility" in order:
-        errors.append("canonical package.order retains LegacyCompatibility")
-    if "Baseline" in order:
-        errors.append("canonical package.order retains the redundant Baseline facade")
+    if order != list(REQUIRED_TOP_LEVEL):
+        errors.append("canonical package.order must match the eight-layer root order exactly")
 
     for name in REQUIRED_TOP_LEVEL:
         package = CANONICAL_ROOT / name / "package.mo"
@@ -233,6 +249,10 @@ def check_canonical_root(errors: list[str]) -> None:
             errors.append(f"canonical source retains an external plant reference: {rel(source)}")
         if RETIRED_NAMESPACE_REFERENCE.search(text):
             errors.append(f"canonical source retains a retired QuadrotorModel namespace: {rel(source)}")
+        if RETIRED_NESTED_NAMESPACE_REFERENCE.search(text):
+            errors.append(f"canonical source retains a former nested namespace: {rel(source)}")
+        if RETIRED_RESOURCE_URI.search(text):
+            errors.append(f"canonical source retains a former resource URI: {rel(source)}")
         for resource_relative in CANONICAL_RESOURCE_URI.findall(text):
             resource = CANONICAL_ROOT / resource_relative
             if not resource.exists():
@@ -252,12 +272,21 @@ def check_retirement(errors: list[str]) -> None:
         if root.exists():
             errors.append(f"retired Modelica root remains under Models: {rel(root)}")
 
+    for name in RETIRED_NESTED_TOP_LEVEL:
+        nested = CANONICAL_ROOT / name
+        if nested.exists():
+            errors.append(f"retired nested package remains under the canonical root: {rel(nested)}")
+
     for path in active_reference_paths():
         text = read_text(path)
         if LEGACY_REFERENCE.search(text):
             errors.append(f"active file retains a retired model-root reference: {rel(path)}")
         if RETIRED_NAMESPACE_REFERENCE.search(text):
             errors.append(f"active file retains a retired QuadrotorModel namespace: {rel(path)}")
+        if RETIRED_NESTED_NAMESPACE_REFERENCE.search(text):
+            errors.append(f"active file retains a former nested namespace: {rel(path)}")
+        if RETIRED_RESOURCE_URI.search(text):
+            errors.append(f"active file retains a former resource URI: {rel(path)}")
 
 
 def validate() -> list[str]:

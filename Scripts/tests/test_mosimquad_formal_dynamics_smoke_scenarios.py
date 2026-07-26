@@ -36,15 +36,15 @@ class FormalDynamicsSmokeScenarioTest(unittest.TestCase):
         self.assertEqual(summary["runner_support_status"], "minimal_dynamics_strategy_consumed")
 
         targets = {item["target"] for item in summary["bindings"]}
-        self.assertIn("MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke", targets)
+        self.assertIn("MoSimQuadrotorModel.Vehicle.Dynamics.RotorEffectivenessSmoke", targets)
         for binding in summary["bindings"]:
             self.assertEqual(binding["live_load_strategy"], "minimal_dynamics_only")
             command_text = " ".join(binding["dry_run_command"])
             self.assertIn("--no-gui-result-viewer", command_text)
             self.assertIn("--no-gui-open", command_text)
             command_text_normalized = command_text.replace("\\", "/")
-            self.assertIn("Results/generated_mworks/minimal_dynamics_only/MoSimQuadrotorModel/package.mo", command_text_normalized)
-            self.assertNotIn("Models/MoSimQuadrotorModel/package.mo", command_text_normalized)
+            self.assertIn("Models/MoSimQuadrotorModel/package.mo", command_text_normalized)
+            self.assertNotIn("Results/generated_mworks/minimal_dynamics_only/MoSimQuadrotorModel/package.mo", command_text_normalized)
             self.assertFalse(binding["missing_extra_variable_mappings"])
 
     def test_cli_writes_summary(self) -> None:

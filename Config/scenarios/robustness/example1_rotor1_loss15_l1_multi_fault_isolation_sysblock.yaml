@@ -6,8 +6,8 @@ evidence_level: real_sysplorer_mcp_sysblock_l1_multi_fault_isolation_rotor_loss_
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/RotorLoss/Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/Scenarios/Robustness/RotorLoss/Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 阶梯爬升 1号旋翼升力效率85% L1 residual + four-rotor eta_hat isolation Sysblock
 
@@ -15,9 +15,9 @@ controller:
   params_file: Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_rotor1_loss15_example1_l1_residual_sysblock
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_L1MultiFaultIsolationControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 disturbance:
   type: actuator_efficiency_loss

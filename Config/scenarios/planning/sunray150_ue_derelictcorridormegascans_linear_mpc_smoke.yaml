@@ -8,20 +8,20 @@ evidence_level: real_sysplorer_mcp_ue_scene_control_smoke
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.SceneTrace.Scenarios.Sunray150UEDerelictLinearMPCSysblockSmoke
-  model_path_hint: Models/MoSimQuadrotorModel/SceneTrace/Scenarios/Sunray150UEDerelictLinearMPCSysblockSmoke.mo
+  model_name: MoSimQuadrotorModel.Visualization.Scenarios.Sunray150UEDerelictLinearMPCSysblockSmoke
+  model_path_hint: Models/MoSimQuadrotorModel/Visualization/Scenarios/Sunray150UEDerelictLinearMPCSysblockSmoke.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlannedQuinticReference.mo
-    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlanningNavigationDisplay.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlannedQuinticReference.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlanningNavigationDisplay.mo
 
 controller:
   params_file: Config/controllers/linear_mpc_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0

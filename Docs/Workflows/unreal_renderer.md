@@ -79,7 +79,8 @@ uav1/uav2/uav3 Gazebo truth -> UDP 5005/5006/5007 at 100 Hz target
 default view              -> three-UAV geometric-centroid orbit
 camera offset             -> 231.25 cm rear + 95 cm up = approximately 2.5 m
 Q                         -> centroid overview -> uav1 -> uav2 -> uav3
-arrow keys                -> orbit while preserving camera-target radius
+embedded follow view      -> arrow keys orbit; W/A/S/D orbit is disabled
+standalone free view      -> retains native WASD movement; arrow keys rotate the camera
 render cap                -> 30 FPS, BelowNormal process priority
 trajectory overlay        -> hidden in UE; ROS/Gazebo/RViz remain evidence authority
 ```

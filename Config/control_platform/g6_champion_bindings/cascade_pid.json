@@ -1,0 +1,105 @@
+{
+  "schema": "mosim.g6_formal_champion_binding.v1",
+  "controller_id": "cascade_pid",
+  "controller_category": "pid_family",
+  "scenario": {
+    "scenario_id": "climb_path_50s",
+    "reference_owner": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50
+  },
+  "target": {
+    "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo",
+    "model_class": "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
+    "model_sha256": "dd20ea4d993ac162a3ab488a6c2361ad6c3f6f504b2b4c6c37557a3db68d79be"
+  },
+  "formal_adapter": {
+    "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
+    "model_class": "MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter",
+    "model_sha256": "67028d62b570a8e3c9abf4f0df9a86eda3bfada56d5ee064d2492bd06e6f2286",
+    "output_boundary": "ATTITUDE_THRUST",
+    "implementation": {
+      "kind": "direct_model_reference"
+    }
+  },
+  "formal_harness_feedback_boundary": {
+    "kind": "sampled_controller_inputs",
+    "sample_period_s": 0.01,
+    "initial_measurement": "zero",
+    "signals": [
+      "reference.position_command -> controller.position_ref",
+      "plant.position -> controller.position_mea",
+      "plant.attitude -> controller.attitude_mea"
+    ],
+    "reason": "The discrete C-function cascade core receives explicit 100 Hz UnitDelay boundaries on its reference and plant measurements. The shared inner attitude-rate allocator keeps direct plant attitude feedback so its stabilizing loop is not delayed.",
+    "continuous_inner_loop_signals": [
+      "plant.attitude -> offline_inner_allocator.attitude_mea"
+    ]
+  },
+  "source_bindings": [
+    {
+      "role": "formal_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo",
+      "expected_sha256": "dd20ea4d993ac162a3ab488a6c2361ad6c3f6f504b2b4c6c37557a3db68d79be"
+    },
+    {
+      "role": "formal_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
+      "expected_sha256": "67028d62b570a8e3c9abf4f0df9a86eda3bfada56d5ee064d2492bd06e6f2286"
+    },
+    {
+      "role": "current_root_cfunction_core",
+      "path": "Models/MoSimQuadrotorModel/Control/Bridges/PidAttitudeThrustCFunction.mo",
+      "expected_sha256": "70b83de4736fa08f894d2de826e1b16f4ee2667d71a9db7c87a50e1b005ae75a"
+    },
+    {
+      "role": "shared_attitude_rate_allocator",
+      "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
+      "expected_sha256": "e09e6eba1b259260d21d216f89873db5bf17b94c4ee8c3e5a330f75883cde62b"
+    },
+    {
+      "role": "shared_sunray150_assembly",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "expected_sha256": "77a0b0d52d4b79b99fbd4b0239c173c465a15a2f3c54a6959a35f20197c82913"
+    },
+    {
+      "role": "physical_wrench_adapter",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo",
+      "expected_sha256": "f5b87ac12e07d401b7fb6daae04b220b4c0f39c4d6235bcb33ac14464f77d7cd"
+    },
+    {
+      "role": "wrapper_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
+      "expected_sha256": "b78ad9bce5dcdc22ffdecef440dd33ba4aa4ec4fe82b78fed7a507805197bc53"
+    },
+    {
+      "role": "rotor_actuator_core",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
+      "expected_sha256": "39fefc145ef07c3a9a2cda7a651d168959d6ef5eb040a0a8cdee5c496e8c9083"
+    },
+    {
+      "role": "plant_sensor_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
+      "expected_sha256": "afe8291bdb2a09a56e7b2049635c433669bf63e352ba3091de615ff57b8befed"
+    },
+    {
+      "role": "virtual_px4_classic_profile",
+      "path": "Models/MoSimQuadrotorModel/Parameters/Sunray150VirtualPx4Classic.mo",
+      "expected_sha256": "d567beb9d8443f5fa57728d210d57d96d6dc52370f8e31bb6a3ec08f15c863cd"
+    },
+    {
+      "role": "climb_path_reference",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "expected_sha256": "12814dc84f5815a1956c16933388ea98a662900c54fd35d1f8804664da4f99e6"
+    },
+    {
+      "role": "adapter_source_import_manifest",
+      "path": "Results/control_platform/g6_formal_champion_promotion_20260725/cascade_pid/adapter_source_import.json",
+      "expected_sha256": "6f73179ffa6da5673a7c91b9c4f6bc6dcd74c7e6fa307c9d7b780d625e7af4ba"
+    }
+  ],
+  "model_layout_boundary": {
+    "state": "formal_runner_sampled_feedback_harness_not_controller_graphical_topology",
+    "reason": "CascadePidFormalRunner is a readable sampled-feedback whole-aircraft harness. Its screenshot proves only the named formal closure entry and sample boundary; MoSim_PID_CASCADE_PID_GRAPHICAL_MIL remains the separate G5 controller topology evidence."
+  },
+  "claim_boundary": "Real offline MWORKS formal whole-aircraft minimum closure for the selected cascade_pid candidate. It is not PX4, Gazebo, ROS, or flight-runtime evidence."
+}

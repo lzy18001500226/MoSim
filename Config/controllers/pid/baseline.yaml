@@ -5,7 +5,7 @@ priority: P0
 description: Official MWORKS quadrotor PID baseline used as the comparison anchor.
 
 model_interface:
-  source_model: QuadrotorModel.Blocks.Controller.Controller
+  source_model: MoSimQuadrotorModel.Vehicle.Blocks.Controller.Controller
   replacement_component: controller3_2
   replacement_policy: preserve_official_baseline
   inputs:

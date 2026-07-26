@@ -9,7 +9,9 @@ Use this skill for graphical Sysblock controller work. It is adapted from the of
 
 ## Scope
 
-- Graphical Sysblock controller diagrams under `models/QuadrotorControllerBlocks/`.
+- Graphical Sysblock controller diagrams under
+  `Models/MoSimQuadrotorModel/Controllers/Sysblocks/` and
+  `Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/`.
 - Hybrid integration where a graphical Sysblock controller is paired with a Modelica plant wrapper.
 - Repair of missing connections, red-box components, port mismatch, and behavior-equivalence gaps.
 
@@ -75,7 +77,7 @@ Before claiming a graphical Sysblock controller is ready:
 2. **Context gate**: identify model name, file path, controller role, ports, sample-time/continuous assumption, and replacement location.
 3. **Modeling-path gate**: classify the target as Sysblock internal diagram, Modelica physical/wrapper model, or hybrid integration before editing.
 4. **Topology gate**: verify visible blocks and wires exist in Sysplorer, not only equations.
-5. **Diagram gate**: after `check_model`, inspect whether the diagram has meaningful visible semantics; if layout is poor or missing, use API layout/smart-layout rather than text-only patches.
+5. **Diagram gate**: after `check_model`, inspect whether the diagram has meaningful visible semantics. A dense native diagram may use its current model source/component names to establish real internal topology; it does not need a full-screen cosmetic relayout. Repair only when the internal law or its actual connections cannot be established, not for alignment, whitespace, or harmless wire crossings. When repair is necessary, use API layout/smart-layout rather than text-only patches.
 6. **Phase screenshot gate**: during or after graphical layout review, capture and inspect phase screenshots. Ordinary phase screenshots use DPI-aware background capture with `-RestoreMinimized -MinimizeAfter`, size/nonblank validation, and no maximize. Use foreground/maximized evidence only when activation/login/license/authorization evidence or explicitly requested full wiring/layout review is needed, because background `PrintWindow` can miss composited panes. R2 must check for missing wires, disconnected blocks, unreadable routing, wrong active window, stretched icons, hidden empty child diagrams, and new license/login/error dialogs. Return `mworks_phase_screenshots`, `mworks_phase_observations`, and `screenshot_manifest` when `live_mworks_touched=true`.
 7. **Structure gate**: run `scripts/check_sysblock_graphics.py`.
 8. **MCP gate**: run `scripts/check_graphical_sysblock_mcp.py` or a targeted `check_model` through Sysplorer MCP.

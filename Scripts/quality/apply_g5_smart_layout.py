@@ -60,6 +60,16 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def read_utf8(path: Path) -> str:
+    """Preserve source line endings so reported hashes bind on-disk bytes."""
+
+    return path.read_bytes().decode("utf-8")
+
+
+def write_utf8(path: Path, text: str) -> None:
+    path.write_bytes(text.encode("utf-8"))
+
+
 def scan_call_end(text: str, open_paren: int) -> int:
     """Return the exclusive end of a balanced function call."""
 
@@ -333,6 +343,30 @@ def build_summary(source_path: Path, layout_path: Path, source: str, updated: st
     }
 
 
+def in_place_summary_matches(summary_path: Path, expected: dict[str, Any]) -> bool:
+    """Validate durable provenance after an in-place visual rewrite.
+
+    A first in-place write correctly records the pre-layout hash.  A later
+    deterministic check reads the already-laid-out file, so rebuilding the
+    summary would use the post-layout hash as ``before_sha256``.  The semantic
+    proof is instead that the recorded output hash and all immutable layout
+    facts still match the current deterministic result.
+    """
+
+    recorded = json.loads(summary_path.read_text(encoding="utf-8"))
+    immutable_keys = (
+        "schema",
+        "claim_boundary",
+        "source_model",
+        "layout_json",
+        "after_sha256",
+        "component_placement_count",
+        "connection_line_count",
+        "non_visual_text_equivalent",
+    )
+    return all(recorded.get(key) == expected.get(key) for key in immutable_keys)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source", required=True, type=Path, help="project-relative Modelica .mo source")
@@ -351,7 +385,7 @@ def main(argv: list[str] | None = None) -> int:
             raise LayoutApplyError("source and layout inputs must exist")
         if source_path == output_path and not args.allow_in_place:
             raise LayoutApplyError("in-place write requires --allow-in-place")
-        source = source_path.read_text(encoding="utf-8")
+        source = read_utf8(source_path)
         layout = json.loads(layout_path.read_text(encoding="utf-8"))
         if not isinstance(layout, dict):
             raise LayoutApplyError("layout JSON object required")
@@ -361,17 +395,19 @@ def main(argv: list[str] | None = None) -> int:
         if args.check:
             if not output_path.is_file():
                 errors.append(f"layout output is missing: {repo_path(output_path)}")
-            elif output_path.read_text(encoding="utf-8") != updated:
+            elif read_utf8(output_path) != updated:
                 errors.append("existing layout output differs from deterministic visual rewrite")
             if args.summary_output:
                 summary_path = resolve_project_path(args.summary_output)
                 if not summary_path.is_file():
                     errors.append(f"layout summary is missing: {repo_path(summary_path)}")
-                elif json.loads(summary_path.read_text(encoding="utf-8")) != summary:
+                elif source_path == output_path and not in_place_summary_matches(summary_path, summary):
+                    errors.append("in-place layout summary no longer matches deterministic output")
+                elif source_path != output_path and json.loads(summary_path.read_text(encoding="utf-8")) != summary:
                     errors.append("layout summary differs from deterministic visual rewrite")
         else:
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            output_path.write_text(updated, encoding="utf-8")
+            write_utf8(output_path, updated)
             if args.summary_output:
                 summary_path = resolve_project_path(args.summary_output)
                 summary_path.parent.mkdir(parents=True, exist_ok=True)

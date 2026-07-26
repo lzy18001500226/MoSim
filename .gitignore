@@ -54,6 +54,9 @@ UE5/MoSimSceneLibrary/*.sln
 *.cache
 *.bak
 *.old
+# Local compiler objects and patch/merge backup files.
+*.o
+*.orig
 Docs/Mworks/extracted/
 Docs/Mworks/tmp/
 Docs/Mworks/raw/
@@ -406,3 +409,5 @@ References/**/*.db3
 # FAST_LIO runtime outputs; keep analysis scripts and documentation tracked.
 References/UAVStacks/Prometheus/Modules/FAST_LIO/Log/*.txt
 References/UAVStacks/Prometheus/Modules/FAST_LIO/PCD/
+
+References/超维空间科技

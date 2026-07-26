@@ -7,8 +7,8 @@ evidence_level: real_sysplorer_mcp_native_gui_helical_figure8_trail
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Missions.Official.Example1HelicalFigure8TrailSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Missions/Official/Example1HelicalFigure8TrailSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.Templates.Official.Example1HelicalFigure8TrailSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1HelicalFigure8TrailSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 官方 EightPath 同款 x/y 8 字 + 单调螺旋上升高度 + LinearMPC 控制器 + 原生三维参考线 GUI 审查
 
@@ -16,9 +16,9 @@ controller:
   params_file: Config/controllers/linear_mpc_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_LinearMPCOuterLoopControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 simulation:
   start_time_s: 0.0
@@ -39,7 +39,7 @@ reference:
   y_omega: 0.04
   raw_output_sample_rate_hz: 20
   native_gui_reference_trail_sample_rate_hz: 5
-  note: 复用官方 MoSimQuadrotorModel.Plant.PathPlanning.EightPath 的 x/y 轨迹口径；实验模型初始高度设为 1 m，前 10 s 原地保持，随后沿 8 字轨迹从 1 m 单调上升到 3 m，形成螺旋上升 8 字视觉审查轨迹；x/y 参考通过 10 s 延迟后开始 2.5 m 幅值横 8 字运动，完整轨迹宽度约 5 m。模型使用 Sunray150 SDF 电机常数并折算 rotorVelocitySlowdownSim=10：MWORKS 可视轴悬停转速约 53.56 rad/s，等效真实电机转速约 535.62 rad/s。CSV 中 u1..u4 保留控制器增量输出，实际电机输入为悬停偏置与增量之和。20 Hz 原生几何线段在当前 MWORKS GUI 中会显著拖慢求解器，正式数值输出保持 20 Hz，GUI 参考线采用 5 Hz 低负载显示。
+  note: 复用官方 MoSimQuadrotorModel.Guidance.Trajectories.EightPath 的 x/y 轨迹口径；实验模型初始高度设为 1 m，前 10 s 原地保持，随后沿 8 字轨迹从 1 m 单调上升到 3 m，形成螺旋上升 8 字视觉审查轨迹；x/y 参考通过 10 s 延迟后开始 2.5 m 幅值横 8 字运动，完整轨迹宽度约 5 m。模型使用 Sunray150 SDF 电机常数并折算 rotorVelocitySlowdownSim=10：MWORKS 可视轴悬停转速约 53.56 rad/s，等效真实电机转速约 535.62 rad/s。CSV 中 u1..u4 保留控制器增量输出，实际电机输入为悬停偏置与增量之和。20 Hz 原生几何线段在当前 MWORKS GUI 中会显著拖慢求解器，正式数值输出保持 20 Hz，GUI 参考线采用 5 Hz 低负载显示。
 
 result:
   raw_file: Results/official/example1_helical_figure8/official_example1_helical_figure8_trail_sysblock/raw/official_example1_helical_figure8_trail_sysblock.csv

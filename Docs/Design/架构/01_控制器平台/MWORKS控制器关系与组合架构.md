@@ -1,6 +1,6 @@
 # MWORKS控制器关系与组合架构
 
-> 状态：当前控制关系和组合语义权威，2026-07-21。
+> 状态：当前控制关系和组合语义权威，2026-07-26。
 >
 > 本文回答“控制器在整机链路的哪个位置、能替换什么、如何组合、APP 当前实际能
 > 配置和运行什么”。它以项目控制责任、`Model Studio` 源码和已登记 Profile 为准；
@@ -19,38 +19,79 @@ MoSim 不把历史 67 条分层证据路线平铺成 67 个可互换的“控制
   -> 编队参考 (可选，多机状态 -> 每机参考)                            |
   -> 参考约束 (可选，如 Reference Governor)                           |
                                                                           v
-状态 / 传感器 -> [位置 / 平动外环: 恰好一个] -> 期望姿态 + 总推力
-  -> [普通增强/消融: 0..1；或控制方案内部的固定集成链]
-  -> [命令安全: 一项已声明策略] -> [姿态/角速度 owner: 恰好一个]
+状态 / 传感器 -> [AWFF / 参考前馈: Profile 内可选]
+  -> [名义位置 / 平动控制器: 恰好一个] -> 期望姿态 + 总推力
+  -> [残差补偿: 最多一个，L1 或 ESO 或学习残差]
+  -> [INDI: Profile 内可选，且位于残差补偿之后]
+  -> [固定物理限幅 / 安全检查] -> [姿态 / 角速度 owner: 恰好一个]
                                                                           |
                                                                           v
                     [分配 owner: 由输出边界决定] -> [Adapter] -> 电机 -> 机体 / 传感器
 
-故障侧链：扰动/故障注入 -> 执行器响应与健康 -> FDI -> 重构分配或安全动作
-          它横向观察并干预上述链路，不是另一个并列的名义控制器。
+电机效率下降、风扰和参数失配首先是场景注入。它们不能自动推导出 FDI、
+故障隔离、故障重构或主动容错已经完成。
 ```
 
 这张图同时适用于 MWORKS 离线整机模型、MWORKS Live 和 ROS1/PX4 运行链。不同
 后端的差异只能发生在已声明的 owner 和 Adapter，不能靠 UI 名称或模型文件名推断。
 
-### 1.1 已冻结的方案数：49
+### 1.1 目标目录：47 个 Control Profile，七个控制器族
 
-报告和后续 Model Studio 只使用一个“完整控制方案”数字：**49**。机器可读权威是
-`Config/control_platform/control_scheme_catalog.json`，由
-`Scripts/quality/check_control_scheme_catalog.py` 固定校验。
+对外比较和后续报告使用的对象是完整、可命名、可追溯的 **Control Profile**，不是把
+名义控制器、增强模块和场景做笛卡尔积。批准后的目标目录为 47 个 Profile：
 
-| 组成 | 数量 | 计入原因 |
+| 控制器族 | 目标数量 | 目录归属与组成 |
 | --- | ---: | --- |
-| 历史 67 条证据矩阵中可独立承担名义控制职责的路线 | 43 | 每次运行恰好选择一条主跟踪控制律 |
-| `px4ctrl` 工程基线 | 1 | 当前 ROS1/Sunray/PX4 主线需要单独可见，且不在 43 条比赛矩阵中 |
-| 有固定顺序、接口、限幅、fallback 和源配置的集成链 | 5 | 每条链作为一个完整方案，而不是把其内部模块另行相乘 |
-| 合计 | **49** | 唯一对外的方案数 |
+| PID 与智能 PID | 10 | 当前五个 PID 路线、FOPID、三个 PID 固定链，以及计划中的 `PidAwffLinearEso` |
+| 线性与鲁棒状态反馈 | 6 | LQR、LQI、LQG、H2、H-infinity、极点配置 / Luenberger |
+| 非线性与自适应控制 | 6 | 反步、反馈线性化、MRAC、NDI、无源控制等 |
+| 滑模控制 | 7 | 边界层、积分、终端、超扭曲、自适应和模糊滑模等 |
+| 最优与预测控制 | 10 | 当前八条优化路线，以及两个已命名的 MPC/NMPC 固定 Profile |
+| 几何与微分平坦控制 | 6 | SE(3) 与 DFBC 系列 |
+| 智能与学习残差控制 | 2 | RL 增益调度与训练后神经残差 |
+| 合计 | **47** | 一个运行一次只选择一个完整 Profile |
 
-五条固定集成链依次为：抗积分饱和与参考前馈 PID；该 PID 加 L1 启发式残差；该 PID
-加 L1 残差与 INDI 姿态校正；线性 MPC 外环加 L1 残差与 INDI 姿态校正；QP/NMPC 外环
-加 L1、INDI 与 CBF 风格安全投影（可见但数值门通过前禁用）。`MPC/NMPC` 是名义优化
-外环家族，不是增强层复选框。通用 AWFF、L1、INDI、ADRC、ILC 等只用于受控消融或已
-命名固定链；安全、故障、编队、规划、注入、分配器和 Adapter 都不作为乘法维度。
+`Official PID` 属于 PID 族，`role=reference_baseline`；`px4ctrl` 是 ROS1/PX4
+部署基线，不计入 MWORKS 的 47 个比赛 Profile。原 `fixed_integrated` 不再是一个
+控制器族：PID 固定链归入 PID 族，MPC/NMPC 固定链归入最优与预测控制族。
+
+原子迁移时，旧 `fixed_integrated` 标识按下表改为语义化 Profile 名，而不是保留一个
+平行目录：
+
+| 当前 `scheme_id` | 目标 `profile_id` | 归属 |
+| --- | --- | --- |
+| `fixed_awff_pid` | `PidAwff` | PID 与智能 PID |
+| `fixed_awff_l1_residual` | `PidAwffL1Residual` | PID 与智能 PID |
+| `fixed_awff_l1_indi` | `PidAwffL1Indi` | PID 与智能 PID |
+| `fixed_linear_mpc_l1_indi` | `LinearMpcL1Indi` | 最优与预测控制 |
+| `fixed_qp_nmpc_l1_indi_cbf` | `QpNmpcL1IndiCbf` | 最优与预测控制，`research_only` |
+| 新增 | `PidAwffLinearEso` | PID 与智能 PID，`planned` |
+
+当前 `Config/control_platform/controller_route_interface_matrix.json` 仍记录 46 条
+尚未迁移的路线，保留历史分类名以便追溯。第 47 条 `PidAwffLinearEso` 只有已批准的
+文档设计，尚无模型、配置或实验结果。因此 **47 是目标目录，不是当前已实现或已通过的
+证据数量**；模型库原子迁移时必须同步更新配置、Registry、图形模型和证据矩阵。
+
+每个 Profile 至少声明 `profile_id`、`family`、`role`、`nominal_controller`、
+`augmentation_chain`、输出边界、Adapter、场景和 `implementation_status`。其中
+`role` 只能说明 `reference_baseline`、`candidate`、`planned` 或 `research_only`，
+不能代替闭环、代码生成或部署证据。
+
+批准的增强组合语法固定为：
+
+```text
+trajectory/reference
+  -> AWFF/reference feedforward
+  -> exactly one nominal controller
+  -> at most one residual compensator: L1 OR ESO OR learned residual
+  -> optional INDI after residual compensation
+  -> fixed physical limiter / safety check
+  -> Adapter / Plant
+```
+
+禁止 `L1 + ESO`、`ESO + neural residual`、`L1 + neural residual`、两个名义控制器
+串联，以及标准界面中的任意多增强勾选。`CBF` 保留为体系结构和研究候选；在没有真实
+约束场景及触发证据前，`fixed_qp_nmpc_l1_indi_cbf` 不得宣称安全收益或进入冠军比较。
 
 ## 2. 槽位、替换边界与当前事实
 
@@ -60,13 +101,13 @@ MoSim 不把历史 67 条分层证据路线平铺成 67 个可互换的“控制
 | 编队参考 | 0..1 | 多机状态/编队目标 -> 每机 `ReferenceFrame` | 更换编队参考算法 | 只有多机才可启用；当前三机案例是固定规模领航-跟随参考，不等于分布式通信证明 |
 | 参考约束 | 0..1 | 原始参考/约束 -> 受约束参考 | 如 Reference Governor | 逻辑上在名义控制器前；即使 Registry 将其归入 safety，也不能画到命令末端 |
 | 位置/平动外环 | 恰好 1 | 状态、参考 -> `CommandFrame` | 替换主跟踪控制律 | PID、改进 PID、Linear MPC、fault compensation 等在当前 APP 中由此槽位选择 |
-| 增强/扰动补偿 | 标准选择 0..1 | 状态、参考、候选命令 -> 修正项/命令 | 只能挂到模块声明的作用点 | AWFF、PID-INDI、L1 等不替代外环；多模块只允许作为已登记固定链内部结构，不能在标准 UI 任意叠加 |
+| 前馈、残差与内环增强 | 仅按已命名 Profile 解析 | 状态、参考、候选命令 -> 修正项/命令 | 只能挂到声明的作用点和顺序 | AWFF 位于名义控制前；L1、ESO、学习残差三选一；INDI 只可位于残差之后；标准 UI 不提供任意叠加 |
 | 命令安全 | 1 项已声明策略 | 参考或候选命令 -> 通过/修改/拒绝 | 参考侧或命令侧必须显式标注 | 当前已认证组合使用 `basic_limiter`；CBF 等待独立兼容和数值门 |
 | 姿态/角速度内环 | 恰好 1 owner | 姿态误差/姿态参考 -> 角速度参考或力矩语义 | 可以由 MWORKS 模型或 PX4 后端拥有 | 离线预设使用“模型内部姿态/角速度环”；当前 Live 合同使用 PX4 内置姿态/角速度环 |
 | 控制分配 | 由输出决定 | `WRENCH` -> `ROTOR_COMMAND` | WRENCH/ROTOR 路线必须声明 allocator owner | 当前离线预设标记 `px4_control_allocator`；不能据此推断已替换 ROS1/PX4 实时分配器 |
 | Command Adapter | 恰好 1 | 类型化 `CommandFrame` -> 后端命令 | 只做语义、坐标、单位和时序映射 | 不得偷偷改变控制律 |
 | 植物/传感器 | 1 | 电机命令 -> 状态/观测 | 后端或场景替换，不是控制器替换 | MWORKS 离线模型与 Gazebo/PX4 是不同证据层 |
-| 故障管理侧链 | 0..1 管理策略 | 健康/响应 -> 事件、重构或安全动作 | 需同时具备注入、检测、隔离和响应合同 | 当前 APP 的“风扰/电机效率下降”首先是场景注入，不自动证明 FDI 或 FTC |
+| 故障管理侧链 | 0..1 管理策略 | 健康/响应 -> 事件、重构或安全动作 | 需同时具备注入、检测、隔离和响应合同 | 当前七场景中的风扰、电机效率下降首先是场景注入，不自动证明 FDI 或 FTC |
 
 ### 2.1 PX4 串联基线
 
@@ -107,39 +148,29 @@ MoSim 当前最成熟的项目侧替换点是“位置/平动外环”。因此�
 
 ## 3.1 模型库边界与入口
 
-控制责任和文件位置必须同时说明。当前正式 Modelica 实现只有一个根；旧三个目录
-保留为隐藏兼容 facade，不再拥有独立实现：
+控制责任和文件位置必须同时说明。当前正式 Modelica 实现只有一个根，审查和复现只加载
+这个根的 `package.mo`：
 
 ```text
 Models/MoSimQuadrotorModel/
   唯一活动实现与正式加载入口：Baseline、Controllers、Dynamics、
   ExperimentRunner、LiveIntegration、Formation、Missions、Parameters、
-  Planning、Robustness、SceneTrace、Support、System、LegacyCompatibility
-
-Models/QuadrotorControllerBlocks/
-  隐藏兼容别名 -> MoSimQuadrotorModel.Controllers.Sysblocks
-
-Models/QuadrotorExperiments/
-  隐藏兼容别名 -> Controllers.Baselines、Missions.Official、Robustness.Scenarios、
-  Planning.Scenarios、Formation.Scenarios、SceneTrace、Support、System 等正式域
-
-Models/MworksLive/
-  隐藏兼容别名 -> MoSimQuadrotorModel.LiveIntegration
+  Planning、Robustness、SceneTrace、Support、System、Plant
 ```
 
 离线 Profile 的推荐打开链路是：
 
 ```text
 Model Studio
-  -> MoSimQuadrotorModel.ExperimentRunner.Runners.*
+  -> MoSimQuadrotorModel.Experiment.Runners.*
   -> typed Adapter
   -> controller wrapper/source
   -> shared plant/result contract
 ```
 
-活动 Profile、脚本、配置和人工打开操作必须使用 `MoSimQuadrotorModel.*`。旧命名空间
-只用于兼容已有调用；历史 Results、旧运行记录和已归档证据中的旧全限定名必须保留其
-原样，并且只能说明当时的来源，不能重新作为当前正式加载入口。
+活动 Profile、脚本、配置和人工打开操作必须使用 `MoSimQuadrotorModel.*`。历史 Results、
+旧运行记录和已归档证据中的旧全限定名保留其原样作为当时的 provenance，但不能重新作为
+当前正式加载入口。
 
 ## 4. 当前 Model Studio 与统一目标
 
@@ -164,7 +195,7 @@ APP 改造完成前，任何报告、截图或 agent 回报都必须使用“目
 
 | UI 字段/目标控件 | 它映射的项目概念 | 不是什么 |
 | --- | --- | --- |
-| 主控制器 / 控制器方案 | 从 49 条完整方案中选择一个；内部 owner 与固定链由目录解析 | 不是所有环路的无条件总开关，也不是 43 x N 个任意组合 |
+| 主控制器 / 控制器方案 | 从 47 个目标 Profile 中选择一个；内部 owner 与固定链由目录解析 | 不是所有环路的无条件总开关，也不是任意组合 |
 | UAV 数量、地图、任务轨迹 | 场景和参考来源 | 控制器槽位 |
 | 位置环、速度环、姿态环、角速度环 | 从 Registry/Profile 解析出的职责 owner；默认禁用且只读 | 四个可以随意拼接的名义控制器 |
 | 控制分配/输出边界 | 命令类型和下游 owner | 单纯的显示格式 |
@@ -221,14 +252,15 @@ applied 值。
 
 | 状态 | APP 当前实际行为 | 可作出的结论 |
 | --- | --- | --- |
-| 研究候选组合 | 标准 UI 不提供多增强复选；候选必须保存为显式配置并精确匹配已解析的 Registry/Adapter 链 | 只说明候选组合被描述，不能计入 49，也不能说明已仿真、已代码生成或可运行 |
+| 研究候选组合 | 标准 UI 不提供多增强复选；候选必须保存为显式配置并精确匹配已解析的 Registry/Adapter 链 | 只说明候选组合被描述，不能计入 47，也不能说明已仿真、已代码生成或可运行 |
 | 认证/验证预设 | 选择预设会填充所有字段；只有字段仍与该预设完全匹配，离线 MIL 才可启动 | 该精确组合的认证记录可追溯；改任一字段即成为新候选 |
 | 当前禁用预设 | `QP/NMPC Safety` 等候选仍可见禁用；场景注入控件也默认关闭 | 不能通过改名或换 UI 位置绕过门禁 |
 | Live 可准备 | 还需连接预检和实时合同通过 | 当前只允许单机、无编队、`official_pid`、PX4 inner、`ATTITUDE_THRUST` 的 50 Hz 合同 |
 
 因此，“APP 支持自由组合”的准确表述是：**可以记录受控研究候选，并由兼容性、预设
-一致性和后端合同决定能否运行**；不是任意笛卡尔积，也不是标准 UI 的多增强选择。对外
-方案数始终保持 49，候选只有在形成新的固定拓扑、源配置和独立证据后才可申请进入目录。
+一致性和后端合同决定能否运行**；不是任意笛卡尔积，也不是标准 UI 的多增强选择。目标
+目录固定为 47 个 Profile；候选只有在形成新的固定拓扑、源配置和独立证据后才可申请进入
+目录。
 
 ### 4.2 当前离线认证预设
 
@@ -280,8 +312,10 @@ Profile 的结果提升新组合的证据等级。
 `65/67` 只是通过相应 codegen/SIL 门的路线数，不是 65 个同级且已接受的整机控制器。
 具体状态、首个 blocker 和声明上限只在 `控制器证据矩阵.md` 与其 JSON 权威中维护。
 
-因此 `67` 和 `49` 并不冲突：前者是覆盖名义控制、增强、安全、故障、编队等责任层的
-证据矩阵，后者是让评委和 APP 能够选择、解释和比较的完整控制方案目录。
+因此历史 `67` 条路线与目标 `47` 个 Profile 并不冲突：前者是覆盖名义控制、增强、
+安全、故障、编队等责任层的证据路线，后者是将当前 46 条路线按控制责任重新归族并加入
+一个计划 ESO Profile 后，用于选择、解释和比较的完整目录。两者不是一一映射，也不能
+由历史图形探针直接推导整机闭环、代码生成或部署状态。
 
 ## 7. 文档分工与阅读顺序
 

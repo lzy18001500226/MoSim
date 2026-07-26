@@ -9,7 +9,7 @@
 ## 1. Goal And Evidence Boundary
 
 Use PX4 flight logs to identify or validate the Sunray150 airframe parameters
-used by `MoSimQuadrotorModel.Plant.Mechanics.QuadChassis` and project experiments.
+used by `MoSimQuadrotorModel.Vehicle.Mechanics.QuadChassis` and project experiments.
 
 Primary target:
 
@@ -593,8 +593,8 @@ Current project geometry audit:
 
 | Item | Local source | Current value / observation |
 |---|---|---|
-| Body visual STL | `Models/MoSimQuadrotorModel/Plant/Resources/Visualization/sunray150_mid360_body.stl` and original `sunray.stl` | Raw STL bbox `8.3268 x 8.4508 x 6.3742`; SDF visual scale `0.03`, giving about `0.2498 x 0.2535 x 0.1912 m`. |
-| Propeller visual STL | `Models/MoSimQuadrotorModel/Plant/Resources/Visualization/sunray150_mid360_propeller.stl` and original `sunray_cw.stl` | Raw STL bbox `71.1655 x 80.5003 x 7.3182`; SDF visual scale `0.001`, giving about `0.0712 x 0.0805 x 0.0073 m`. |
+| Body visual STL | `Models/MoSimQuadrotorModel/Vehicle/Resources/Visualization/sunray150_mid360_body.stl` and original `sunray.stl` | Raw STL bbox `8.3268 x 8.4508 x 6.3742`; SDF visual scale `0.03`, giving about `0.2498 x 0.2535 x 0.1912 m`. |
+| Propeller visual STL | `Models/MoSimQuadrotorModel/Vehicle/Resources/Visualization/sunray150_mid360_propeller.stl` and original `sunray_cw.stl` | Raw STL bbox `71.1655 x 80.5003 x 7.3182`; SDF visual scale `0.001`, giving about `0.0712 x 0.0805 x 0.0073 m`. |
 | Rotor positions | `Results/unreal_scene_mapping/sunray150_dae_assembly_parameters_20260604.json` and migrated MWORKS/SDF files | rotor 0 `(0.053745,-0.05374,-0.014052)`, rotor 1 `(-0.053761,0.05376,-0.014052)`, rotor 2 `(0.053746,0.053759,-0.014052)`, rotor 3 `(-0.053761,-0.053739,-0.014052)`. |
 | Rotor directions | same SDF motor plugins | rotor 0/1 `ccw`, rotor 2/3 `cw`; confirm against PX4 motor order before changing allocation. |
 | Front/down camera poses | same DAE parameter manifest and migrated SDF | front camera candidate `(0,0.1032,0.0185,0,0,0)`; down camera candidate `(0,0.0145,-0.0263,0,1.5707963,3.14)`. |
@@ -953,7 +953,7 @@ replacing the official baseline plant.
 
 Current audit:
 
-- `MoSimQuadrotorModel.Plant.Mechanics.QuadChassis` applies per-rotor `WorldForce` at
+- `MoSimQuadrotorModel.Vehicle.Mechanics.QuadChassis` applies per-rotor `WorldForce` at
   the DAE-reviewed rotor centers, so rotor-arm `r x F` is already represented
   by the multibody force application.
 - Explicit yaw reaction torque was still not present in the base plant audit.
@@ -964,9 +964,9 @@ Current audit:
 Current canonical project-owned experimental models:
 
 ```text
-MoSimQuadrotorModel.Dynamics.RotorActuatorCore
-MoSimQuadrotorModel.Dynamics.HoverSmoke
-MoSimQuadrotorModel.Dynamics.YawStepSmoke
+MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore
+MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke
+MoSimQuadrotorModel.Vehicle.Dynamics.YawStepSmoke
 ```
 
 Implemented structure:
@@ -997,7 +997,7 @@ Historical verification record (2026-06-05; legacy namespace preserved):
 
 ```text
 source=MWORKS_MCP
-check_model MoSimQuadrotorModel.Plant.Mechanics.QuadChassis: ok
+check_model MoSimQuadrotorModel.Vehicle.Mechanics.QuadChassis: ok
 check_model QuadrotorExperiments.Sunray150DynamicsUpgradeHoverSmoke: ok
 check_model QuadrotorExperiments.Sunray150DynamicsUpgradeYawStepSmoke: ok
 simulate hover 0.25 s: dynamics.hover_thrust_error = 1.7763568394002505e-15 N

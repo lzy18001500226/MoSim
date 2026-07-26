@@ -1,0 +1,108 @@
+{
+  "schema": "mosim.g6_formal_champion_binding.v1",
+  "controller_id": "lqr_baseline",
+  "controller_category": "classic_robust",
+  "scenario": {
+    "scenario_id": "climb_path_50s",
+    "reference_owner": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50
+  },
+  "target": {
+    "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo",
+    "model_class": "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
+    "model_sha256": "16e2c9c4ab19f3f03501d38614961e3b5077af4e37e2946b604f7f982851b6b7"
+  },
+  "formal_adapter": {
+    "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
+    "model_class": "MoSimQuadrotorModel.Control.Adapters.LqrBaselineAttitudeThrustAdapter",
+    "model_sha256": "f74a4f08437b560f9b124ced13ef0995cf0ac073b6ac9cc74d50109227760dbc",
+    "output_boundary": "ATTITUDE_THRUST",
+    "implementation": {
+      "kind": "equation_bridge",
+      "bridge_class": "MoSimQuadrotorModel.Control.Bridges.LqrBaselineEquationBridge",
+      "graphical_core_role": "graphical_controller_core",
+      "reason": "The readable direct graphical LQR core passes as a top-level G5 model, but MWORKS does not materialize its Sysblock Sum child ports when it is nested in the whole-aircraft adapter. The bridge retains the same scalar equations, gains, saturations, enable gate, and full input/output boundary while the named graphical core remains the topology evidence."
+    }
+  },
+  "formal_harness_feedback_boundary": {
+    "kind": "sampled_controller_inputs",
+    "sample_period_s": 0.01,
+    "initial_measurement": "zero",
+    "signals": [
+      "reference.position_command -> controller.position_ref",
+      "plant.position -> controller.position_mea",
+      "plant.attitude -> controller.attitude_mea"
+    ],
+    "continuous_inner_loop_signals": [
+      "plant.attitude -> offline_inner_allocator.attitude_mea"
+    ],
+    "reason": "The promoted formal runner samples only the reference and plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
+  },
+  "source_bindings": [
+    {
+      "role": "formal_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo",
+      "expected_sha256": "16e2c9c4ab19f3f03501d38614961e3b5077af4e37e2946b604f7f982851b6b7"
+    },
+    {
+      "role": "formal_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
+      "expected_sha256": "f74a4f08437b560f9b124ced13ef0995cf0ac073b6ac9cc74d50109227760dbc"
+    },
+    {
+      "role": "graphical_controller_core",
+      "path": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
+      "expected_sha256": "b991cd5a9d77ec8cb9afbc83e83e390d0ef502fbb24b7ae12d622f3e6a6799d4"
+    },
+    {
+      "role": "shared_attitude_rate_allocator",
+      "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
+      "expected_sha256": "e09e6eba1b259260d21d216f89873db5bf17b94c4ee8c3e5a330f75883cde62b"
+    },
+    {
+      "role": "shared_sunray150_assembly",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "expected_sha256": "77a0b0d52d4b79b99fbd4b0239c173c465a15a2f3c54a6959a35f20197c82913"
+    },
+    {
+      "role": "physical_wrench_adapter",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo",
+      "expected_sha256": "f5b87ac12e07d401b7fb6daae04b220b4c0f39c4d6235bcb33ac14464f77d7cd"
+    },
+    {
+      "role": "wrapper_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
+      "expected_sha256": "b78ad9bce5dcdc22ffdecef440dd33ba4aa4ec4fe82b78fed7a507805197bc53"
+    },
+    {
+      "role": "rotor_actuator_core",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
+      "expected_sha256": "39fefc145ef07c3a9a2cda7a651d168959d6ef5eb040a0a8cdee5c496e8c9083"
+    },
+    {
+      "role": "plant_sensor_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
+      "expected_sha256": "afe8291bdb2a09a56e7b2049635c433669bf63e352ba3091de615ff57b8befed"
+    },
+    {
+      "role": "virtual_px4_classic_profile",
+      "path": "Models/MoSimQuadrotorModel/Parameters/Sunray150VirtualPx4Classic.mo",
+      "expected_sha256": "d567beb9d8443f5fa57728d210d57d96d6dc52370f8e31bb6a3ec08f15c863cd"
+    },
+    {
+      "role": "climb_path_reference",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "expected_sha256": "12814dc84f5815a1956c16933388ea98a662900c54fd35d1f8804664da4f99e6"
+    },
+    {
+      "role": "equation_bridge",
+      "path": "Models/MoSimQuadrotorModel/Control/Bridges/LqrBaselineEquationBridge.mo",
+      "expected_sha256": "7bac9cde4888c6fdc81617f208b331b375c3c59f6c9a5e6d4da57f386a290359"
+    }
+  ],
+  "model_layout_boundary": {
+    "state": "formal_runner_sampled_feedback_harness_not_controller_graphical_topology",
+    "reason": "MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL remains the G5 readable controller topology evidence. The named runner proves only its sampled whole-aircraft closure entry."
+  },
+  "claim_boundary": "Real offline MWORKS formal whole-aircraft minimum closure for the selected lqr_baseline candidate. It is not PX4, Gazebo, ROS, or flight-runtime evidence."
+}

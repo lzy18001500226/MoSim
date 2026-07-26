@@ -8,20 +8,20 @@ inactive_reason: AWFF planning closed-loop is retained as a controller-suitabili
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Planning.Scenarios.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Planning/Scenarios/Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Guidance.Planning.Scenarios.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/Sunray150PlanningCorridorGateAWFFSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlannedQuinticReference.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlannedQuinticReference.mo
   official_description: Sunray150 单机 corridor gate A* 轨迹 AWFF Sysblock 闭环
 
 controller:
   params_file: Config/controllers/awff_sysblock/default.yaml
   replacement_component: controller3_2
   require_baseline_improvement: false
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
 
 simulation:
   start_time_s: 0.0

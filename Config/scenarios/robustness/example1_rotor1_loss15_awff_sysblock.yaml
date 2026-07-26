@@ -6,20 +6,20 @@ evidence_level: real_sysplorer_mcp_sysblock_robust_rotor_loss_ablation
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15AWFFSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/RotorLoss/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15AWFFSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/Scenarios/Robustness/RotorLoss/Example1Rotor1Loss15AWFFSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Controllers/Sysblocks/package.mo
+    - Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/package.mo
   official_description: 阶梯爬升 1号旋翼升力效率85% AWFF Sysblock
 
 controller:
   params_file: Config/controllers/awff_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_rotor1_loss15_example1_pid_baseline
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
 
 disturbance:
   type: actuator_efficiency_loss

@@ -8,20 +8,20 @@ inactive_reason: pending_real_mworks_mcp_run_blocked_by_wsl_windows_exe_interop
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/RotorLoss/Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/Scenarios/Robustness/RotorLoss/Example1Rotor1Loss15WindGustAWFFFaultCompensationSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_L1FaultAllocationControllerEquation_Sysblock.mo
+    - Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_L1FaultAllocationControllerEquation_Sysblock.mo
   official_description: 阶梯爬升 1号旋翼升力效率85% + 15-19s横向阵风 AWFF已知故障补偿 Sysblock
 
 controller:
   params_file: Config/controllers/awff_fault_compensation_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_rotor1_loss15_wind_gust_example1_awff_sysblock
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FaultCompensationControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FaultCompensationControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo
 
 disturbance:
   type: combined_actuator_efficiency_loss_and_lateral_world_force_gust

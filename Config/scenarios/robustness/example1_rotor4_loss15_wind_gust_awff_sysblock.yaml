@@ -6,8 +6,8 @@ evidence_level: real_sysplorer_mcp_sysblock_rotor_loss_wind_gust_boundary
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Robustness/Scenarios/RotorLoss/Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/Scenarios/Robustness/RotorLoss/Example1Rotor4Loss15WindGustAWFFSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 阶梯爬升 4号旋翼升力效率85% + 15-19s横向阵风 AWFF Sysblock
 
@@ -15,9 +15,9 @@ controller:
   params_file: Config/controllers/awff_sysblock/default.yaml
   replacement_component: controller3_2
   baseline_experiment: robust_wind_gust_example1_awff_sysblock
-  sysblock_controller_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
+  sysblock_controller_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
   graphical_sysblock_model: AWFF_FullControllerFlatGraphical_Sysblock
-  graphical_sysblock_file: Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
+  graphical_sysblock_file: Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo
 
 disturbance:
   type: combined_actuator_efficiency_loss_and_lateral_world_force_gust

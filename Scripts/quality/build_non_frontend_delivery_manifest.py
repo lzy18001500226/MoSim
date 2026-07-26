@@ -104,9 +104,18 @@ def build() -> dict[str, Any]:
     ab = load_json(AUTHORITY["final_ab"])
 
     controller_counts = controller.get("counts", {})
-    required_counts = {"accepted": 27, "executed_blocked": 25, "not_run": 15}
-    if controller_counts != required_counts:
-        raise ValueError(f"controller matrix drifted: {controller_counts} != {required_counts}")
+    if matrix.get("controller_matrix_counts") != controller_counts:
+        raise ValueError(
+            "requirement matrix and controller authority disagree: "
+            f"{matrix.get('controller_matrix_counts')} != {controller_counts}"
+        )
+    if source.get("controller_summary", {}).get("counts") != controller_counts:
+        raise ValueError(
+            "report source and controller authority disagree: "
+            f"{source.get('controller_summary', {}).get('counts')} != {controller_counts}"
+        )
+    if sum(int(value) for value in controller_counts.values()) != 67:
+        raise ValueError(f"controller authority must contain 67 rows: {controller_counts}")
 
     figures = [
         "Results/control_platform/non_frontend_evidence_index_20260718/figures/controller_status_counts.png",

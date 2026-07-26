@@ -10,10 +10,10 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop
-    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop
-    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop
-    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop
   sysblock_controller: AWFF_L1MultiFaultIsolationControllerEquation_Sysblock
   verification_scope: real MWORKS_MCP 50 s full runs complete for rotor-1..4 85% efficiency degradation; quality_status pass; fault_index correct after initial detection
   limitation: >
@@ -115,7 +115,7 @@ verified_evidence:
   source: MWORKS_MCP
   rotor1_loss15_full:
     scenario_file: Config/scenarios/robustness/example1_rotor1_loss15_l1_multi_fault_isolation_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15L1MultiFaultIsolationSysblockClosedLoop
     raw_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock.csv
     metrics_file: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock.json
     mcp_log: Results/robustness/rotor1_loss15_example1/robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor1_loss15_example1_l1_multi_fault_isolation_sysblock_20260511.jsonl
@@ -134,7 +134,7 @@ verified_evidence:
     fault_index_accuracy_5_50s: 1.0
   rotor2_loss15_full:
     scenario_file: Config/scenarios/robustness/example1_rotor2_loss15_l1_multi_fault_isolation_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor2Loss15L1MultiFaultIsolationSysblockClosedLoop
     raw_file: Results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.csv
     metrics_file: Results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock.json
     mcp_log: Results/robustness/rotor2_loss15_example1/robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor2_loss15_example1_l1_multi_fault_isolation_sysblock_20260511.jsonl
@@ -147,7 +147,7 @@ verified_evidence:
     fault_index_accuracy_5_50s: 1.0
   rotor3_loss15_full:
     scenario_file: Config/scenarios/robustness/example1_rotor3_loss15_l1_multi_fault_isolation_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor3Loss15L1MultiFaultIsolationSysblockClosedLoop
     raw_file: Results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock.csv
     metrics_file: Results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock.json
     mcp_log: Results/robustness/rotor3_loss15_example1/robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor3_loss15_example1_l1_multi_fault_isolation_sysblock_20260511.jsonl
@@ -160,7 +160,7 @@ verified_evidence:
     fault_index_accuracy_5_50s: 1.0
   rotor4_loss15_full:
     scenario_file: Config/scenarios/robustness/example1_rotor4_loss15_l1_multi_fault_isolation_sysblock.yaml
-    model_name: MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop
+    model_name: MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor4Loss15L1MultiFaultIsolationSysblockClosedLoop
     raw_file: Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/raw/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock.csv
     metrics_file: Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/metrics/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock.json
     mcp_log: Results/robustness/rotor4_loss15_example1/robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock/logs/sysplorer_robust_rotor4_loss15_example1_l1_multi_fault_isolation_sysblock_20260511.jsonl

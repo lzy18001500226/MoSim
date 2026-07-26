@@ -1,24 +1,19 @@
 {
-  "schema_version": 2,
-  "status": "canonical_single_root",
+  "schema_version": 3,
+  "status": "canonical_eight_layer_root",
   "canonical_model_root": "Models/MoSimQuadrotorModel",
   "formal_load_file": "Models/MoSimQuadrotorModel/package.mo",
-  "load_policy": "Load this package once. Its embedded Plant, Controllers, scenario packages, and LiveIntegration resources are the complete project-owned Modelica surface.",
+  "load_policy": "Load this package once. Its Parameters, Vehicle, Control, Experiment, Guidance, Deployment, Visualization, and Common packages are the complete project-owned Modelica surface.",
   "top_level_packages": [
-    "Plant",
-    "Dynamics",
     "Parameters",
-    "Missions",
-    "Controllers",
-    "Robustness",
-    "Planning",
-    "Formation",
-    "ExperimentRunner",
-    "LiveIntegration",
-    "SceneTrace",
-    "Support",
-    "System"
+    "Vehicle",
+    "Control",
+    "Experiment",
+    "Guidance",
+    "Deployment",
+    "Visualization",
+    "Common"
   ],
-  "retirement_policy": "No compatibility package or external plant package is part of the active load path. Automatic crash-recovery copies are cache only and remain outside Models.",
+  "retirement_policy": "No compatibility package, external plant package, or former Plant/Dynamics/Controllers/ExperimentRunner/Missions/Robustness/System namespace is part of the active load path. Automatic crash-recovery copies are cache only and remain outside Models.",
   "claim_boundary": "This manifest defines source ownership and loading only. It does not prove model checks, simulations, controller performance, code generation, or runtime success."
 }

@@ -5,13 +5,13 @@
   "source_files": {
     "control_scheme_catalog": "Config/control_platform/control_scheme_catalog.json",
     "g1_execution_inventory": "Results/control_platform/g1_control_scheme_execution_inventory_20260722/CONTROL_SCHEME_EXECUTION_INVENTORY.json",
-    "graphical_import_package": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL",
+    "graphical_import_package": "Models/MoSimQuadrotorModel/Control/Implementations",
     "graphical_support_imports": [
       {
         "support_id": "wave_a_cfunction_sysblock",
         "source_file": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_CFunction_Sysblock.mo",
-        "target_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_WaveA_CFunction_Sysblock.mo",
-        "target_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_WaveA_CFunction_Sysblock",
+        "target_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_WaveA_CFunction_Sysblock.mo",
+        "target_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_WaveA_CFunction_Sysblock",
         "purpose": "Shared CFunction bridge required by the WaveA LQR, LQI, and backstepping graphical wrappers.",
         "required_by_scheme_ids": [
           "lqr_baseline",
@@ -22,8 +22,8 @@
       {
         "support_id": "classic_cfunction_sysblock",
         "source_file": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_CFunction_Sysblock.mo",
-        "target_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_CFunction_Sysblock.mo",
-        "target_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_CFunction_Sysblock",
+        "target_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_Classic_CFunction_Sysblock.mo",
+        "target_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_Classic_CFunction_Sysblock",
         "purpose": "Shared CFunction bridge required by the classic FOPID, H2, MRAC, NDI, and pole-placement graphical wrappers.",
         "required_by_scheme_ids": [
           "fopid",
@@ -36,11 +36,34 @@
       {
         "support_id": "hinf_wrench_adapter_cfunction_sysblock",
         "source_file": "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/models/MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock.mo",
-        "target_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock.mo",
-        "target_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock",
+        "target_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock.mo",
+        "target_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock",
         "purpose": "Shared CFunction bridge required by the P10 H-infinity hover-wrench graphical wrapper.",
         "required_by_scheme_ids": [
           "hinf_hover_wrench"
+        ]
+      },
+      {
+        "support_id": "dfbc_family_cfunction_sysblock",
+        "source_file": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_Family_CFunction_Sysblock.mo",
+        "target_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_P10_DFBC_Family_CFunction_Sysblock.mo",
+        "target_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_P10_DFBC_Family_CFunction_Sysblock",
+        "purpose": "Shared executable DFBC bridge required by the four P10 high-order and smooth-robust DFBC wrappers. It restores model-check dependency resolution only; G5 still requires a separately readable internal control-law topology.",
+        "required_by_scheme_ids": [
+          "dfbc_high_order_attitude",
+          "dfbc_high_order_bodyrate",
+          "dfbc_smooth_robust_attitude",
+          "dfbc_smooth_robust_bodyrate"
+        ]
+      },
+      {
+        "support_id": "fixed_qp_nmpc_safety_graphical_review_core",
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/fixed_chain/MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
+        "target_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
+        "target_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL",
+        "purpose": "Readable native graphical QP/NMPC safety control-law core for the fixed QP/NMPC/L1/INDI/CBF chain. It replaces no whole-aircraft alias and is used only for G5 internal-topology review.",
+        "required_by_scheme_ids": [
+          "fixed_qp_nmpc_l1_indi_cbf"
         ]
       }
     ]
@@ -51,7 +74,9 @@
     "graphical_support_imports": {
       "wave_a_cfunction_sysblock": "1777d6aba530a8300c23f8190d7babe5d3d1c9f9e190ee9ea59a4e8118af15d2",
       "classic_cfunction_sysblock": "0da89e2eaa78572ba26161979689f712cfb9f4a68ae30046363c492b00011212",
-      "hinf_wrench_adapter_cfunction_sysblock": "1e83f534231a9029e1dbb019aa5c026e3df9b5b80e5850089348eb01c418e0b9"
+      "hinf_wrench_adapter_cfunction_sysblock": "1e83f534231a9029e1dbb019aa5c026e3df9b5b80e5850089348eb01c418e0b9",
+      "dfbc_family_cfunction_sysblock": "1d654db917faff3dd85abbcc8747cf8cfa76bb513ca64e936d4d4373a7038db5",
+      "fixed_qp_nmpc_safety_graphical_review_core": "078170a30db0b509b594bba21aba0c2121affbd34239556d7cec425ee483b7cc"
     }
   },
   "summary": {
@@ -62,7 +87,7 @@
       "resolved_current_model": 46
     },
     "graphical_controller_core_import_count": 41,
-    "graphical_support_import_count": 3,
+    "graphical_support_import_count": 5,
     "fixed_integrated_whole_aircraft_count": 5,
     "mworks_run_eligible_count": 0
   },
@@ -74,9 +99,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
-      "current_model_sha256": "ff711adbc781bba981898ff609ae645a6b3e06ed4ebc53797bdfdd63c93729f3",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
+      "current_model_sha256": "3f282db51fd7411c01b018bc19ab07e95380f3a0e30cdcc023148ce317dd04e6",
+      "current_model_topology_sha256": "7e1cbd50a97c8a6da671fd838af9b8202b6643d37f28b487d1de2ffdd51caa01",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -84,7 +110,8 @@
         "source_model_class": "MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
         "source_sha256": "04dda5a113945a4ee88627fde5d8be68079a0ff0592f53da67d96e8dcd66fb56",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -95,9 +122,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
-      "current_model_sha256": "04860f9a4f9fe3a7f7eadda3c3c3a5d7304a39018f938dd93741eb4f461d3c19",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
+      "current_model_sha256": "064e82602d0d642b06c42d95dc031d3a9ac4ea049385537c11e057e62f4ef795",
+      "current_model_topology_sha256": "12853fd735e81d1cfe4609a07b13a9e7fcfd8047f420ac08b16ce6837a08d554",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -105,7 +133,8 @@
         "source_model_class": "MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
         "source_sha256": "b390de1137b7f28fd0b2d40acb63ce0b2d73db91e26162498e36e1f162f4de30",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -116,9 +145,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
-      "current_model_sha256": "86f6142714ab4d991d26835a85df7a76402bcde2c310b11e8b79f7da095cc9d7",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
+      "current_model_sha256": "04445fd51d4e53d89163e895b8dffa5b337a548714cc86b8b95e9bf77473a367",
+      "current_model_topology_sha256": "063b20bf371aa2f0384f5039a6670a7306ca699dfec75a57d894405b64e98c33",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -126,7 +156,8 @@
         "source_model_class": "MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
         "source_sha256": "a6f258fba768f905f03256b35e02ffc8fdbdfd04a8472181c7f304bfcd50a1d7",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -137,9 +168,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
-      "current_model_sha256": "2de2dce839a99bdb6adf584e9a9b7a21f49d1ff4d6cf8f9af8a5e8e7b0f4c9e2",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
+      "current_model_sha256": "ad4d64ee72961ce944dedfc60407cb198b345c837177da16ccd29cc79354a9c8",
+      "current_model_topology_sha256": "86664a602e2205676bf1b4e05ce0595ed54c6e89b221ab71cc2d95631da49250",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -147,7 +179,8 @@
         "source_model_class": "MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
         "source_sha256": "242aa02ca508092e6c29f883d88099e2f631a38e166c60a804699fb401421115",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -158,17 +191,19 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/AWFF_PID_Sysblock_Demo.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.AWFF_PID_Sysblock_Demo",
-      "current_model_sha256": "bceaf4bd2dc4985f84c8daf22e23cbb54620766c9611bd6a1a091384079c352e",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/AWFF_PID_Sysblock_Demo.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.AWFF_PID_Sysblock_Demo",
+      "current_model_sha256": "c4173126d27aa834595f0e781118270d97a45dc6e03e526bc930c7fcc8f3ece6",
+      "current_model_topology_sha256": "e44b9b7f3b5debf40dfecbdd1c1ea01b87afc4a888bd8e5ad28a0c4affc74d4b",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
-        "source_file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_PID_Sysblock_Demo.mo",
+        "source_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/AWFF_PID_Sysblock_Demo.mo",
         "source_model_class": "AWFF_PID_Sysblock_Demo",
-        "source_sha256": "0c7fdf610f672d7722ccf84195c7f5a22d5ad4b7c66554edc227664e0e376ebc",
+        "source_sha256": "c4173126d27aa834595f0e781118270d97a45dc6e03e526bc930c7fcc8f3ece6",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "code_generation_output_setting_only"
+        "source_results_reference_kind": "code_generation_output_setting_only",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -179,9 +214,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_LQG_GRAPHICAL_MIL",
-      "current_model_sha256": "18e5042e2723ea7ac74e9ad6a34258575d3a915c85ecd8d261485dde7384afd6",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_LQG_GRAPHICAL_MIL",
+      "current_model_sha256": "3247d271e5b3c87f2df71327231bbb20e36ee95d09c5cab4fd306351f302d45b",
+      "current_model_topology_sha256": "b61eb93c921345d47772d8f014e0b63b14016828cbbce19a197158e3dedbaed3",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -189,7 +225,8 @@
         "source_model_class": "MoSim_P2_LQG_GRAPHICAL_MIL",
         "source_sha256": "b43cbdafeeeff9bebac1dd9f0a77fd3d79d1720379e3c0618347e42bb616533a",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -200,9 +237,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
-      "current_model_sha256": "bbb627bc285de0b88f803bca95dfcdb51cb44d71eed5bbc8192cabe93317ee82",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
+      "current_model_sha256": "c037370469a36b0bfb99278ca06b9c985e7525e238ddd5cfc774cf5962beb838",
+      "current_model_topology_sha256": "d35c73e9923fac52168ed21a22df8b71a3d2ee7c4973f35804410d2a3d4e906e",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -210,7 +248,8 @@
         "source_model_class": "MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
         "source_sha256": "402298bead2c8c28e86933b4ad80761c9ac97e478b2fd6614bd60dc6606fc77e",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -221,9 +260,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
-      "current_model_sha256": "c5056a04f011e050fad53b32162b6e6fb6762d63d174109799a4b0d83a131df0",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
+      "current_model_sha256": "dcf04c348276fd4106c33aa9dae5e576f5907c56c80869ef0d49b2bbe3d94a30",
+      "current_model_topology_sha256": "0ecb28c5a1c5113d283e1f9147ceb29261163d00f4abfb0314b5293eab5411ff",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -231,7 +271,8 @@
         "source_model_class": "MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
         "source_sha256": "ae23961c909275f2285ccb4f4c7140134105a69451be47180b7e4c7aaf1164d0",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -242,9 +283,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
-      "current_model_sha256": "7e12f31fba5ed1a862aff8dc59160baf8c4a44e94bb3bedd45c7b182fe700c7a",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
+      "current_model_sha256": "ce67f5b2f8b92fe02262825be63b2d297b2972cdc1c7706f90e3790037ea7372",
+      "current_model_topology_sha256": "4f2c34ecc2678a747846fb3490fd204f764fd9c904764d5ed57903a19c9b221b",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -252,7 +294,8 @@
         "source_model_class": "MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
         "source_sha256": "1bf052b460ad6a45cd891d735766bae831115eebcd5791125b025231d22d649a",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -263,17 +306,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_WaveA_LQR_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_WaveA_LQR_MIL",
-      "current_model_sha256": "60f014561f252161188cc50d9f2733f1384a2f65690fb17faa35345fd9f3b1d3",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "b991cd5a9d77ec8cb9afbc83e83e390d0ef502fbb24b7ae12d622f3e6a6799d4",
+      "current_model_topology_sha256": "39955c99eddaa1f8f0a9a1894f9167306bfb737f1a21172bf9f827c43f7f8c85",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQR_MIL.mo",
-        "source_model_class": "MoSim_WaveA_LQR_MIL",
-        "source_sha256": "6a8d6f3f167627ddc49c0f93f639909a79bfb29557ce1c89a8772dc8723fd299",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/wave_a/MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "f888a22798d3490fd038546f48efd4aede4dbdf4ee495467d51da01c3d061d47",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "f888a22798d3490fd038546f48efd4aede4dbdf4ee495467d51da01c3d061d47",
+          "current_model_sha256": "b991cd5a9d77ec8cb9afbc83e83e390d0ef502fbb24b7ae12d622f3e6a6799d4",
+          "expected_import_delta_sha256": "cdf64607f85255ebde09797cf8835b37f97c826f479d914428a5c45601632770",
+          "change_summary": "LQR projection and thrust calibration are recomputed for gravity 9.80665 and the 1 kg Sunray assembly.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "lqr_baseline"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -284,17 +343,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_WaveA_LQI_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_WaveA_LQI_MIL",
-      "current_model_sha256": "074e16ff49061dd6eb7ba7c310a1fd7f2ce47f5f22605a8ca8502f96202818f4",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "09d7ed43c3c2ecdb7f6280b3920a9664af7dc3a0b4d73dbdd406be178e27e43e",
+      "current_model_topology_sha256": "29a90ad66e7076839486f9134f8ee2e6a017c4bba32e688f550ce321b036d0db",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_LQI_MIL.mo",
-        "source_model_class": "MoSim_WaveA_LQI_MIL",
-        "source_sha256": "d3cb0b323f675226c94249b0f69ed3072fc087daa1658f7804986b9b0c2d1ba5",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/wave_a/MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "e7cfee5ae2af28bac176f0ca3c96ca0a258da5d86986074e7e19215b1821a029",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "e7cfee5ae2af28bac176f0ca3c96ca0a258da5d86986074e7e19215b1821a029",
+          "current_model_sha256": "09d7ed43c3c2ecdb7f6280b3920a9664af7dc3a0b4d73dbdd406be178e27e43e",
+          "expected_import_delta_sha256": "f8d85caeac546ded5fe287b004d8e031bd16bbe57e3c63904c2177b175fa4f4d",
+          "change_summary": "LQI projection and thrust calibration are recomputed for gravity 9.80665 and the 1 kg Sunray assembly.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "lqi_baseline"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -305,17 +380,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P10_HINF_HOVER_WRENCH_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P10_HINF_HOVER_WRENCH_MIL",
-      "current_model_sha256": "55ce37e4084102e6ce9a5c173936a402f99d9b81b00851f52ae4332ac6f40f5a",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "a37b0b507d871aa1f18b16e27a89f6ee5403f45f534193eb23e6ac6c650698d3",
+      "current_model_topology_sha256": "89e32092f8770ac9155d6da533241604a512a21faa624668a8a38dd1813ec4fd",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/models/MoSim_P10_HINF_HOVER_WRENCH_MIL.mo",
-        "source_model_class": "MoSim_P10_HINF_HOVER_WRENCH_MIL",
-        "source_sha256": "45c89eab344cf18c8745829925d2e00056ee04c466dc0a8c98a0cb3fda18cf37",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/classic/MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "06cb404b9220cab34be666cc158261e86b745417607bebf316d896f08c447079",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "06cb404b9220cab34be666cc158261e86b745417607bebf316d896f08c447079",
+          "current_model_sha256": "a37b0b507d871aa1f18b16e27a89f6ee5403f45f534193eb23e6ac6c650698d3",
+          "expected_import_delta_sha256": "55d983acd2b5980e03fb0dc43905bf6b06f8bbf8734ba145c51c86c280cee8b1",
+          "change_summary": "The H-infinity hover wrench bias uses 9.80665 N for the 1 kg project assembly.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": true
+          },
+          "scheme_id": "hinf_hover_wrench"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -338,17 +429,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_WaveA_BACKSTEPPING_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_WaveA_BACKSTEPPING_MIL",
-      "current_model_sha256": "2d384a0846c79044c7a010c4669cf688c9caa49c7ec9c2d54eac836484b39e2d",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "dc48965156e70db3e13d7b71e4a109b206d1f415271f81e5c15c71cf241d5da9",
+      "current_model_topology_sha256": "4c39c5811d45e8a21518bd9973c5ab7a1e443d7f929eae9ca81b9f0d71d44b3e",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL.mo",
-        "source_model_class": "MoSim_WaveA_BACKSTEPPING_MIL",
-        "source_sha256": "3d935adb7fbe71686a10da1629a99c5e93a412fe0d486e5293e8154822548a3c",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/wave_a/MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "f668509fc66b99967bba58892855fca767c918c0a7eaa10457f73eacc4cb9e46",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "f668509fc66b99967bba58892855fca767c918c0a7eaa10457f73eacc4cb9e46",
+          "current_model_sha256": "dc48965156e70db3e13d7b71e4a109b206d1f415271f81e5c15c71cf241d5da9",
+          "expected_import_delta_sha256": "9df24232ac2d57651dfff11f997c7d293fa049f28bd1db090cd50731f01e4ad3",
+          "change_summary": "Backstepping projection and thrust calibration are recomputed for gravity 9.80665 and the 1 kg Sunray assembly.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "backstepping_baseline"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -359,17 +466,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL",
-      "current_model_sha256": "0ae9fd3fc2f78fe15a8ecf0e481a318611853ed457dc516d04ecd182dd3bfb34",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "9ff511dc6ef30399f9614e41403f1f2d957e975ba6790fe5be8e54e84aa35d75",
+      "current_model_topology_sha256": "8144c4cd764bb5ff26fce5248d5ae598e65434c1ad9b0af21b286860a383720e",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL.mo",
-        "source_model_class": "MoSim_Classic_POLE_PLACEMENT_LUENBERGER_MIL",
-        "source_sha256": "3d754d36e1ce875bfefc713694f2ff5a09fa80d98e81fbb3c42fec4b7709c0b8",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/classic/MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "56c93faceff34ee673a9600b78ef489ad8495d6127759eb9199b4db600311a01",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "56c93faceff34ee673a9600b78ef489ad8495d6127759eb9199b4db600311a01",
+          "current_model_sha256": "9ff511dc6ef30399f9614e41403f1f2d957e975ba6790fe5be8e54e84aa35d75",
+          "expected_import_delta_sha256": "b2a31506b59a5b9c333ccdcb4d14a75a4892697ce2fe93b0fe3a31f9493e86e3",
+          "change_summary": "Vertical-force allocation is changed from the historical partial allocation to the 1 kg project allocation and needs a typed adapter review.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "pole_placement_luenberger"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -380,17 +503,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_MRAC_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_MRAC_MIL",
-      "current_model_sha256": "3843a68e9240e6d031ac5a10c513a0485168876ec5a04354ae72dbb36d4ba929",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "0f3a073a8a62a6fbdcbde3f36a5833ce860aa8ed565633ffb930dc57ff93beb4",
+      "current_model_topology_sha256": "6205047dd1ae54497f620314242e43880e383a7499213e5fdd8eeade9b90d15b",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_MRAC_MIL.mo",
-        "source_model_class": "MoSim_Classic_MRAC_MIL",
-        "source_sha256": "87f9ab4d3489e69070c4b7c267e0b79b4b13934d8820442dda04c75254820cbc",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/classic/MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "5e3a55605a6028db00fd2244934b516b7627c1953d97c0eb5128a584f883bc0c",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "5e3a55605a6028db00fd2244934b516b7627c1953d97c0eb5128a584f883bc0c",
+          "current_model_sha256": "0f3a073a8a62a6fbdcbde3f36a5833ce860aa8ed565633ffb930dc57ff93beb4",
+          "expected_import_delta_sha256": "37506fadd106f4ef0352f5147032fdfe6a26b56aa46a600dd0800ed47f3c283b",
+          "change_summary": "Vertical-force allocation is changed from the historical partial allocation to the 1 kg project allocation and needs a typed adapter review.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "mrac"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -401,17 +540,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_NDI_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_NDI_MIL",
-      "current_model_sha256": "2530d79cb6492461d4b1d26c9eb39b7543fa5b4ea50f88cd6783163365b7e5a1",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "3645fa9a6eaf2f482e3404af076c9556d827570cf7aca2d081e276af589d7077",
+      "current_model_topology_sha256": "0b9f81d08b8f0ae40279eadfc2abb1c2f47d778f25b527a22a077de50d7a7bd1",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_NDI_MIL.mo",
-        "source_model_class": "MoSim_Classic_NDI_MIL",
-        "source_sha256": "ea18b9d7aa64658947473ba792c4621de9fa63f27dff0079438ca33ea36df636",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/classic/MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "98ca1e82b0a9b0ce582d66648616c8c90938bd200fa34fd4577e5e1e497a88c6",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "98ca1e82b0a9b0ce582d66648616c8c90938bd200fa34fd4577e5e1e497a88c6",
+          "current_model_sha256": "3645fa9a6eaf2f482e3404af076c9556d827570cf7aca2d081e276af589d7077",
+          "expected_import_delta_sha256": "d3d1ea7b0b72a0cfb9e2637c325297f990f8ade5aed3b9543d41eeceb8052024",
+          "change_summary": "Vertical-force allocation is changed from the historical partial allocation to the 1 kg project allocation and needs a typed adapter review.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "ndi"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -422,17 +577,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_FOPID_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_FOPID_MIL",
-      "current_model_sha256": "457bd12f3eda29e1c62e592b77030ada79bf8466f65917ce2c0bf71d299b5f04",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "0e40874de02cb98cac39af2f76e8e950ed668d473a705cd940293cc59711c705",
+      "current_model_topology_sha256": "996e62fca9a87cac2fc588d68ce7747cc73093def52ca79ed710268e244fc226",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_FOPID_MIL.mo",
-        "source_model_class": "MoSim_Classic_FOPID_MIL",
-        "source_sha256": "3cdceb8fbbaa638827cebeef786abcb1f63d484417ea0f0a860f09f0c9de646f",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/classic/MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "f461c54bc3838955575513010f8fc00ae9e9d5682f0de380620851ae0fc36114",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "f461c54bc3838955575513010f8fc00ae9e9d5682f0de380620851ae0fc36114",
+          "current_model_sha256": "0e40874de02cb98cac39af2f76e8e950ed668d473a705cd940293cc59711c705",
+          "expected_import_delta_sha256": "58e6be1a0f2fa81657715acf8199a4d3659582c4988a479714821a83163cf568",
+          "change_summary": "Vertical-force allocation is changed from the historical partial allocation to the 1 kg project allocation and needs a typed adapter review.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "fopid"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -443,17 +614,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_Classic_H2_STATE_FEEDBACK_MIL",
-      "current_model_sha256": "c9014d279f66c28c21d060a0e0c4a549da375680131caeec3b7d61858cb9ed53",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "4c29a87128d8e8cb4ad762ee85088b28f6bbc7405bab650f22cee6ed0040927c",
+      "current_model_topology_sha256": "a1431421e9af81f8c131fc3329cfddb2aa9c888ef259ab372b4b027f74eab6c2",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
-        "source_file": "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo",
-        "source_model_class": "MoSim_Classic_H2_STATE_FEEDBACK_MIL",
-        "source_sha256": "307b707b92a4d918579d6ee8dda7c3ca3704fc23f6d9dd611922c9ec0669f771",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/classic/MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "383991428d53b3ad39254316363a9c50e9d9aea3f55de798e30a93943868702b",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "383991428d53b3ad39254316363a9c50e9d9aea3f55de798e30a93943868702b",
+          "current_model_sha256": "4c29a87128d8e8cb4ad762ee85088b28f6bbc7405bab650f22cee6ed0040927c",
+          "expected_import_delta_sha256": "03ade0ec31ee45ee34d2fbacf30b0ae1201e70fbeeea11d8988add5f89e67fef",
+          "change_summary": "Vertical-force allocation is changed from the historical partial allocation to the 1 kg project allocation and needs a typed adapter review.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "h2_state_feedback"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -464,9 +651,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
-      "current_model_sha256": "1a2a00dc369a9ca565e7e29ff9e72ba8726f63ecf4b418d2e40c0608a1ccc9ab",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
+      "current_model_sha256": "494028dd7f2d3b03964ed3364c1b4da4bb80a699c4b890e746734e537d572c19",
+      "current_model_topology_sha256": "a9e91a06e276f48c62c1aa313c15db66f208f6d8d3ddf44c13e00ef2c9c1c89f",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -474,7 +662,8 @@
         "source_model_class": "MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
         "source_sha256": "d30fe11edd81dfc263e876e2a86f3be4f53655c6dae1b2d00b22bff03839ae3b",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -485,9 +674,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
-      "current_model_sha256": "d5d0d124bc5be6c58b91df1145ae00363f50519f2e6bb9601fe4d58b084e40a7",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
+      "current_model_sha256": "038bc37ae1b79de102fd0f5709270bace168da74758bffb4919f9c05f7c59369",
+      "current_model_topology_sha256": "91cdfc70c20ffba80e8ad1bada87492493d5891fb54ef2f7a4712587017865ea",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -495,7 +685,8 @@
         "source_model_class": "MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
         "source_sha256": "5ee2f6e9f5f3c5f8c8881cc96b8e6bbb10cb3327af0f6563fc208498cc2c2ece",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -506,9 +697,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
-      "current_model_sha256": "3e13a9ea89f5cdef803e43fd600dd0fa339a0630558339af1db8228d72bb37c2",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
+      "current_model_sha256": "033063b80a62b017dc11ee02902fcdddc7a32af6f73648d5df22e08cc2317c42",
+      "current_model_topology_sha256": "44b2a4c2a9e594c29e6aeb14752650be74ce51ffba3bdca0fb3be5b98db06ec2",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -516,7 +708,8 @@
         "source_model_class": "MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
         "source_sha256": "824092e6faba8c92c0ec1dcff321c1f369cc3b47a1ededf50b38f6d5f31e9c12",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -527,9 +720,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
-      "current_model_sha256": "a2c06b21276a6144e887c7c83fdc9fd676268e6c13ac5f5a1cd098a2c6aabd20",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
+      "current_model_sha256": "fb9527f47fce76e2ef5f77a9ea907d1315a6c56bbb6959672fd4d95cea539f3d",
+      "current_model_topology_sha256": "1c6d1a06fa79bd11750b2f38a51fae3b22f153bdf23ab4b4b1f548ea3dd892ac",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -537,7 +731,8 @@
         "source_model_class": "MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
         "source_sha256": "5776921e249fe13768e77771097e4a000566642163e68cb0ae8ea7af854c06d2",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -548,9 +743,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
-      "current_model_sha256": "41245cb155ac57c6b3787405843a693a1c6b8e2755ec4148a2c2ef42c700d4dd",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
+      "current_model_sha256": "0678b181a8d13c455ceb5522d3aaf275c79e7603c5fcdffdf85082b5ddd15a03",
+      "current_model_topology_sha256": "ee9857f6816f9f9783501e3af41e1a7161504adc563c1ebecc8c2a3c7fba5497",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -558,7 +754,8 @@
         "source_model_class": "MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
         "source_sha256": "397a456ebce887838746de9634e77fb3dee034cb6c8b651353bf88345a601f11",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -569,9 +766,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
-      "current_model_sha256": "d2427f9012314dd2853b0bd02ff91d4aab82236102c8f691cd3e91946ba1b610",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
+      "current_model_sha256": "f44a784cc150e1563eff9b032dd2ba817e7e1f7eb9c76259925338f1fb09a24e",
+      "current_model_topology_sha256": "2521f2966a43810d4c6cf01c6f16cf562704cabb73d9e548ba85f25e57fff0ff",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -579,7 +777,8 @@
         "source_model_class": "MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
         "source_sha256": "2ef927f191e4cc7412cd590ec4031ff4159bb4725ebc692c1b23793f7b7e422f",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -602,17 +801,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
-      "current_model_sha256": "7aa5d81431f3e884dc1dc8475cb2f433fe6250b3ce0e57dc3d67b72a40b8ebfc",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+      "current_model_sha256": "c42cc5f743ece1e5636092ac3e573a587a80224353a644e9e981ef71d53695a5",
+      "current_model_topology_sha256": "7101a0de0387e40a74129ec2a744f3574ac6961f0e62f7523bce4a5cc0b2bd58",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
         "source_file": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
         "source_model_class": "MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
         "source_sha256": "8b72f849fdd9a703eb56de278377c4f492513f3152ade36ad2201753d8a2e3bc",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "8b72f849fdd9a703eb56de278377c4f492513f3152ade36ad2201753d8a2e3bc",
+          "current_model_sha256": "c42cc5f743ece1e5636092ac3e573a587a80224353a644e9e981ef71d53695a5",
+          "expected_import_delta_sha256": "2df618df4cf0cddda0bda61d180bc6d054b97f35303b0a935f42f1b0c1bb5a52",
+          "change_summary": "The project model records an equivalent native numeric serialization of the 0.2 s probe window; its control law remains subject to the normal closure gate.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": false,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "smc_boundary_layer"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -623,9 +838,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
-      "current_model_sha256": "99c1ee53aeea94d743603776952f7bad7073fadd26eb3a7d5e6959b7d3932d22",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
+      "current_model_sha256": "1f4dc37c6a1f9328ed3618126adc9bfc1069caded25c6d9a9bf16e5a00d7dd7e",
+      "current_model_topology_sha256": "1454c3807f9e0778c857cb5c4cf3d79edd9c15d587e09da97b3684f440559923",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -633,7 +849,8 @@
         "source_model_class": "MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
         "source_sha256": "0095a49ba9f410d06a74481b6930a0b4eb6eb89cca466470bba57546f19feb4f",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -644,9 +861,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
-      "current_model_sha256": "3ef1375e4b17b637d8ddb7a01ecf2ebe680a7127217e98358ffa30d26d72966f",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
+      "current_model_sha256": "45e6e4e7c00b36276ee3b5f3a90b24bd437a16429853a012508ed82629a1841e",
+      "current_model_topology_sha256": "8350ac2acd6b02108d23231646fd7d1887e4b9770be0226e907019f8ced87942",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -654,7 +872,8 @@
         "source_model_class": "MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
         "source_sha256": "97557191b0f5dfe13e97b981d99a167af83bb904baaf439aed2db85d4ca94cc3",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -665,9 +884,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
-      "current_model_sha256": "080396ee52ff089e7c0c6a669c64aa53bee86fe4adde97fcfc10c10a2341ab5d",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
+      "current_model_sha256": "ad8aea2e840f7423613caa3752accb6901b47289699377181315fddea6893636",
+      "current_model_topology_sha256": "5318183ad0203793542d90392f8e02bea9a92cf84ab8b8679acf5bf642926351",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -675,7 +895,8 @@
         "source_model_class": "MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
         "source_sha256": "3b67514839ae0f4d3053aebd7fe00e1aa4b5c33309e6d08df19710bb0ab654ed",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -686,9 +907,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
-      "current_model_sha256": "bef4d7d7cc8955775d9adcc558811a0a155a1dff6869df34ed6b637acee1e1da",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
+      "current_model_sha256": "d89404d404cc8f1a92a9c94618f00147cb7247f02afea99bdcbed0c581f49d2c",
+      "current_model_topology_sha256": "21854deb1460c7074c1da3026f598dfbcf7f6c75c1bdbdd652cf63fca2ea37df",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -696,7 +918,8 @@
         "source_model_class": "MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
         "source_sha256": "b2b468441de67b6ea05f04f37d04bee8759973aaa84ef65dafdb993182fee3e8",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -707,9 +930,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
-      "current_model_sha256": "72d53043689f5b021669b6825a8028bf6568fa5868d77c17679e07fae4dd7d28",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
+      "current_model_sha256": "b73f99e0d5ce292a9aab9aa7fd9fd7dc54f22cde5743663136f13e42b46acd48",
+      "current_model_topology_sha256": "d88234b995f4d8af1bf3617eee55ccd5d07d71f0fb0d7aaf5d0ad4174fda7e0d",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -717,7 +941,8 @@
         "source_model_class": "MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
         "source_sha256": "c6c70dc69d05672922885ba2a24d5f0285b7675e26e76a19b2710f31ed582971",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -728,9 +953,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ILQR_GRAPHICAL_MIL",
-      "current_model_sha256": "e24adb837fe4154978a814c031d5e4bfdd42f8be6eb78518c562c013d23070a1",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ILQR_GRAPHICAL_MIL",
+      "current_model_sha256": "6a7d15ea2c12c4b165ca1a21ee69c98c32b0683e3c3bdc857ac07afd9aef2898",
+      "current_model_topology_sha256": "95ba796fe5e122fd7da772c11c791b7ca79dc91e1a7b2976d0657392fdaf8abb",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -738,7 +964,8 @@
         "source_model_class": "MoSim_P4_ILQR_GRAPHICAL_MIL",
         "source_sha256": "d100fee0a0fa0a0d4304152dbb71b2c12995f58f65dc1802c87526860fac2fa7",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -749,9 +976,10 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_MPPI_GRAPHICAL_MIL",
-      "current_model_sha256": "bf135fe338d36ab61c0f7d801bc0263c21555dc35148aba585fcd16a5f62deff",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_MPPI_GRAPHICAL_MIL",
+      "current_model_sha256": "37e05419ee3d439ed7071206876efbf72439d1491e8b83335d422432483b7efc",
+      "current_model_topology_sha256": "ad6522c2c8b634de7cd8ae666e35c544764c02a1b068d9cf425295ee1649be97",
       "current_model_role": "graphical_controller_core",
       "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
       "source_provenance": {
@@ -759,7 +987,8 @@
         "source_model_class": "MoSim_P4_MPPI_GRAPHICAL_MIL",
         "source_sha256": "f0c3809c106a89ef5ab2d21ad18f2508b3ebf4100d54007bfdce2db094267ccd",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -770,17 +999,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
-      "current_model_sha256": "db8aaf0d3883dbad91589fb1a85130cb2bf6e86ae6bd94c83b493a8313ce9c21",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+      "current_model_sha256": "06adcc55285ab7b942093617c9dd2bf4e974c34c3bc37c6cea40a937a7e98eb7",
+      "current_model_topology_sha256": "610a335ef4abf8ad50dc25094f3909e04257422b96c7462bfb28586d573add3b",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
         "source_file": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
         "source_model_class": "MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
         "source_sha256": "8c1f532c3556dbad8294a22a313a03be5b2d633e04bba20689b5a7eea903c1b4",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "8c1f532c3556dbad8294a22a313a03be5b2d633e04bba20689b5a7eea903c1b4",
+          "current_model_sha256": "06adcc55285ab7b942093617c9dd2bf4e974c34c3bc37c6cea40a937a7e98eb7",
+          "expected_import_delta_sha256": "2df618df4cf0cddda0bda61d180bc6d054b97f35303b0a935f42f1b0c1bb5a52",
+          "change_summary": "The project model records an equivalent native numeric serialization of the 0.2 s probe window; its control law remains subject to the normal closure gate.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": false,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "nmpc_outer"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -791,17 +1036,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
-      "current_model_sha256": "40fc0433745d3fe025f9c2ccc8652562329005af3d48ac62b01af154c29e82e5",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
+      "current_model_sha256": "8cbc0f5b1fc425d7e87bc5c87ea2db9a31f40fdcd2dc1f5d931e2bd3fa897473",
+      "current_model_topology_sha256": "a5ca9cd82c8f58e69d60f0f20778687aea894d4a63598d3806aedbc68c750b6f",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
         "source_file": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
         "source_model_class": "MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
         "source_sha256": "fd96581c081a4526f377f3ae5a8c593f075eecdf442a62debedd4736cd8b1b02",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "fd96581c081a4526f377f3ae5a8c593f075eecdf442a62debedd4736cd8b1b02",
+          "current_model_sha256": "8cbc0f5b1fc425d7e87bc5c87ea2db9a31f40fdcd2dc1f5d931e2bd3fa897473",
+          "expected_import_delta_sha256": "2b11201e72abc74ec4b66b237d77aa284831fb9031a47f5ac06042bc388934da",
+          "change_summary": "SE3 attitude projection is updated from the historical partial allocation to the project 1 kg allocation.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "se3_basic"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -812,17 +1073,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
-      "current_model_sha256": "f74c9166d729eb8794c01f3de036124275861985b932fab8d5c28e2fa050fd8e",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
+      "current_model_sha256": "5c3e45fad198b13098dc333bc73bd6533b6b0e4df29ed7fd961411f664f25a37",
+      "current_model_topology_sha256": "55fca111191e31abd71085a7a5cf672b4cba15b06de3f007374e2db26fbca889",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
         "source_file": "Results/control_platform/controller_document_evidence_20260720/G9_CORE_COMPARISON/g9_route_report_evidence/models/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
         "source_model_class": "MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
         "source_sha256": "c489eba88587c30087fb756936f17a32c8649293e2498e4a7cbaf7b551e6928f",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "c489eba88587c30087fb756936f17a32c8649293e2498e4a7cbaf7b551e6928f",
+          "current_model_sha256": "5c3e45fad198b13098dc333bc73bd6533b6b0e4df29ed7fd961411f664f25a37",
+          "expected_import_delta_sha256": "2df618df4cf0cddda0bda61d180bc6d054b97f35303b0a935f42f1b0c1bb5a52",
+          "change_summary": "The project model records an equivalent native numeric serialization of the 0.2 s probe window; its control law remains subject to the normal closure gate.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": false,
+            "requires_fresh_codegen_review": false
+          },
+          "scheme_id": "dfbc_basic"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -833,17 +1110,19 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL",
-      "current_model_sha256": "a1e9433198ec7d0db6ac3db2156fe8cb5ae040493152bc1193c7093f9ddad943",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "7ed96eb2d51a911abc77e54e45cf280ba0abbd56840e0af05d8ea4d7592c07fe",
+      "current_model_topology_sha256": "dbf7d0179ed1bd387fa1fd368d9273a090d167eb027cd04fddbcdbae993dc366",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "g5_direct_graphical_source_import",
       "source_provenance": {
-        "source_file": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL.mo",
-        "source_model_class": "MoSim_P10_DFBC_HIGH_ORDER_ATTITUDE_MIL",
-        "source_sha256": "81898d25a312fd38857c26338f328f7b34a385973ff1a7981ea502804359e760",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/dfbc/MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "a17aa26753c3870946b6fdd6f7e7240ef645c1a2585e1a20ca6dc777d16f0f7a",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -854,17 +1133,19 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL",
-      "current_model_sha256": "863aace8ec8912b31ddc879622261bf985988a58ba3f2a98496af759c58cad91",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "7466fa62e2ac3ff846998c071077ca326e62d79be4628f826e1193688ace6cd4",
+      "current_model_topology_sha256": "eb78161b8748df95c762aac4e778565baa0c3b1ec3826306c4d81036d09fc17b",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "g5_direct_graphical_source_import",
       "source_provenance": {
-        "source_file": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL.mo",
-        "source_model_class": "MoSim_P10_DFBC_HIGH_ORDER_BODYRATE_MIL",
-        "source_sha256": "2884345baae7e10a95050e333546813189bfc23e6ee2ba5af0ae8efb43a2bb81",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/dfbc/MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "9e9b38f261da96ac4c4ca594cfa8fa63ad922f333703aef3de992e46a7a8cb09",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -875,17 +1156,19 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL",
-      "current_model_sha256": "c63e1dc2b1309897370a559a1a7cdceab5b346cb5429911b96ebc191816d057c",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "055bc1abd18056076c86d9a3bf462b4e5d739f9775a6e3313b47cafc91765378",
+      "current_model_topology_sha256": "1882fce29ca402e885c94bf8e52f08e8993ef4b9fe4bfff3839587778215632b",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "g5_direct_graphical_source_import",
       "source_provenance": {
-        "source_file": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL.mo",
-        "source_model_class": "MoSim_P10_DFBC_SMOOTH_ROBUST_ATTITUDE_MIL",
-        "source_sha256": "8b91808c2651524d7c87451069fc7ff1bcb18bb0cdb085547f74d0d56b49bd77",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/dfbc/MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "2b2fc33d5e76aef1096b922e4f66d79d9b0565ebe8802391253ef46b723dc3e8",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -896,17 +1179,19 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL",
-      "current_model_sha256": "1c346294f61ed4b8e93c3770a7f4a11833562625de69a2da5c165240c78e7477",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL",
+      "current_model_sha256": "3af86b0077144fa692367db21680cf9636d6619ed603a4c45f83092d8e154145",
+      "current_model_topology_sha256": "059b61474dd2714ad38f0ab00fdda1c771e84d2447d7026f402181ccef82a323",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "g5_direct_graphical_source_import",
       "source_provenance": {
-        "source_file": "Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/models/MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL.mo",
-        "source_model_class": "MoSim_P10_DFBC_SMOOTH_ROBUST_BODYRATE_MIL",
-        "source_sha256": "6639904f3ec913460b0ab8e41145abfcb8438b4193a2d6552d0701a7abc38178",
-        "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/dfbc/MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+        "source_model_class": "MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL",
+        "source_sha256": "b96d3c7b2aa154740ada7126f9975881d5ef4772159a190bfbbc3c1d2fa72e90",
+        "import_mode": "official_sysplorer_direct_graphical_source_import",
+        "source_results_reference_kind": "none",
+        "approved_project_variant": null
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -917,17 +1202,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Learning/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning.MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL",
-      "current_model_sha256": "4926f9fee668df045ca6445e65e2aa5a302cb5f9512b8b3e6933cf38b6309b27",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Learning/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Learning.MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL",
+      "current_model_sha256": "e1266350d91b8780599e89456c280374e371c21dcff612ef3ec36f90c2413ba4",
+      "current_model_topology_sha256": "02a346e4dd91a06bdb514b492ef072515657100b32938c42b5eec59097e5f103",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
         "source_file": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
         "source_model_class": "MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL",
         "source_sha256": "197729f72424bda1bc8616c15900922a2a108174a2f90214af04727e2ddd269b",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "197729f72424bda1bc8616c15900922a2a108174a2f90214af04727e2ddd269b",
+          "current_model_sha256": "e1266350d91b8780599e89456c280374e371c21dcff612ef3ec36f90c2413ba4",
+          "expected_import_delta_sha256": "035bebccf91d99d72155bac35a8b846baf136eac7f73544bdcc75f853c6cdb21",
+          "change_summary": "The learned residual host uses project gravity 9.80665 and a bounded 0.2 s internal probe before any host-adapter promotion.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": true
+          },
+          "scheme_id": "trained_neural_residual"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -938,17 +1239,33 @@
       "entry_type": "competition_primary_route",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Learning/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning.MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL",
-      "current_model_sha256": "c43c627a889f89558cd9ea1f837f473cd1667805900926ff2602df339843267e",
+      "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Learning/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
+      "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Learning.MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL",
+      "current_model_sha256": "d63ec026341845cecb2f8dce35b15d02736703353acd31e714d89f2cbd5b0413",
+      "current_model_topology_sha256": "e549cfb647668bc65b5d695bf297e2c7416e90a4a6ce7bf82a978fdc5568ff59",
       "current_model_role": "graphical_controller_core",
-      "compatibility_decision": "g4_exact_source_copy_with_package_context_only",
+      "compatibility_decision": "approved_project_variant",
       "source_provenance": {
         "source_file": "Results/control_platform/p9_learning_mworks_20260717/models/graphical_variants/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
         "source_model_class": "MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL",
         "source_sha256": "eb26c4d5ad4432204a5df6330518555095fbee673a020acd9724d00a6445d84e",
         "import_mode": "non_destructive_copy_with_package_context",
-        "source_results_reference_kind": "none"
+        "source_results_reference_kind": "none",
+        "approved_project_variant": {
+          "decision_file": "Config/control_platform/approved_graphical_import_variants.json",
+          "import_item_kind": "graphical_controller_core",
+          "source_sha256": "eb26c4d5ad4432204a5df6330518555095fbee673a020acd9724d00a6445d84e",
+          "current_model_sha256": "d63ec026341845cecb2f8dce35b15d02736703353acd31e714d89f2cbd5b0413",
+          "expected_import_delta_sha256": "035bebccf91d99d72155bac35a8b846baf136eac7f73544bdcc75f853c6cdb21",
+          "change_summary": "The RL gain scheduler host uses project gravity 9.80665 and a bounded 0.2 s internal probe before any host-adapter promotion.",
+          "required_revalidation": {
+            "requires_fresh_model_check": true,
+            "requires_fresh_simulation": true,
+            "requires_adapter_boundary_review": true,
+            "requires_fresh_codegen_review": true
+          },
+          "scheme_id": "rl_gain_scheduler"
+        }
       },
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
@@ -969,16 +1286,17 @@
       "entry_type": "fixed_integrated_scheme",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffPid.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffPid",
-      "current_model_sha256": "76232f6cf8a48de5275465d203547d55c49693b95bd45b6a53cf37f0ea40cc6b",
+      "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo",
+      "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffPid",
+      "current_model_sha256": "aabc69ad0eb27b9c27464fc197b28a30987b4f770a23aa78d4a4f7e318843cac",
+      "current_model_topology_sha256": "8c414c971c3bc8aa184d486edace9d59879bd0ef10af496fc74f3e8f39280df4",
       "current_model_role": "fixed_integrated_whole_aircraft_closed_loop",
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/awff_pid/default.yaml",
-        "source_file": "Models/MoSimQuadrotorModel/Missions/Official/Example1AWFFSysblockClosedLoop.mo",
-        "source_sha256": "3fb07e06c14a4b483c7c79fa27a07d29feacd0f81730ca36bdf9e25f547e999e",
-        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1AWFFSysblockClosedLoop",
+        "source_file": "Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1AWFFSysblockClosedLoop.mo",
+        "source_sha256": "8d20cea177a53d8dd8325b900ffdbb720a2d44c2d51de057ce191c4136d0891a",
+        "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1AWFFSysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."
@@ -990,16 +1308,17 @@
       "entry_type": "fixed_integrated_scheme",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffL1Residual.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffL1Residual",
-      "current_model_sha256": "c33498595e8dcf48d03b069cc393bfae43d4a9041a844ce9d2075fd430b8d1db",
+      "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Residual.mo",
+      "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Residual",
+      "current_model_sha256": "e9c4eb5a8dd08bb45db715d409564fac2ea9440f8e3f71d14c21203c06d14655",
+      "current_model_topology_sha256": "6c1b83343374a2fcbea357cb1d4fd68f05055d57378e4869e654a5047730f820",
       "current_model_role": "fixed_integrated_whole_aircraft_closed_loop",
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/l1_residual_sysblock/default.yaml",
-        "source_file": "Models/MoSimQuadrotorModel/Missions/Official/Example1L1SysblockClosedLoop.mo",
-        "source_sha256": "f67ca5bf6476c3045e8d634670e069354ae1dd0f1299b672741731106d034764",
-        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1L1SysblockClosedLoop",
+        "source_file": "Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1L1SysblockClosedLoop.mo",
+        "source_sha256": "1f35c9b11ddf260a53db4f41b17efa956133c0b75461bbd03b9d6d6a5512d9e9",
+        "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."
@@ -1011,16 +1330,17 @@
       "entry_type": "fixed_integrated_scheme",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffL1Indi.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffL1Indi",
-      "current_model_sha256": "db943af2b4beb39c71628db77233dda195cd14114d1857bae78f8c6fbc4629d7",
+      "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Indi.mo",
+      "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Indi",
+      "current_model_sha256": "5a31cc2822c3be194d2db8242600f66b71a7704d79789be5d4a3f67e07e8e800",
+      "current_model_topology_sha256": "025d33bb79c7c0a8511fdaf9ada9b75cba599810047f3e77576435e2dee852c6",
       "current_model_role": "fixed_integrated_whole_aircraft_closed_loop",
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/awff_indi_sysblock/default.yaml",
-        "source_file": "Models/MoSimQuadrotorModel/Missions/Official/Example1INDISysblockClosedLoop.mo",
-        "source_sha256": "b72a2047eab1105e58da148cd58ab76d6dbd129fd86f01dcabeba5b7cbcb3688",
-        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1INDISysblockClosedLoop",
+        "source_file": "Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1INDISysblockClosedLoop.mo",
+        "source_sha256": "55e5c15475bd04f20f5128cd01b5b21d8b59f8fc878564e5c58a68260ffc846f",
+        "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1INDISysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."
@@ -1032,16 +1352,17 @@
       "entry_type": "fixed_integrated_scheme",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedLinearMpcL1Indi.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedLinearMpcL1Indi",
-      "current_model_sha256": "7e31aecc7befc4acaca76e537a94993b316408c428a40e306e29f833b63a9256",
+      "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedLinearMpcL1Indi.mo",
+      "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedLinearMpcL1Indi",
+      "current_model_sha256": "7fb0d81a65124a99e1c357e3ef3b87428e570b71f404977eb8587fa662ca49d6",
+      "current_model_topology_sha256": "cfcd95e517b283d7218aaa4ea136b37acda713ab2f59c36b4ae0403560e6c4f4",
       "current_model_role": "fixed_integrated_whole_aircraft_closed_loop",
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/linear_mpc_sysblock/default.yaml",
-        "source_file": "Models/MoSimQuadrotorModel/Missions/Official/Example1LinearMPCSysblockClosedLoop.mo",
-        "source_sha256": "69ab5d48cc2e7c115a87d06491b423abb54a9669206e7c431aa744f6f1fe1291",
-        "source_model_class": "MoSimQuadrotorModel.Missions.Official.Example1LinearMPCSysblockClosedLoop",
+        "source_file": "Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1LinearMPCSysblockClosedLoop.mo",
+        "source_sha256": "fbba8b256488f97299e4d77ff95d33702358aabddc0548281d844f07c6e96d13",
+        "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1LinearMPCSysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."
@@ -1053,16 +1374,17 @@
       "entry_type": "fixed_integrated_scheme",
       "mworks_run_eligible": false,
       "mapping_state": "resolved_current_model",
-      "current_model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
-      "current_model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedQpNmpcL1IndiCbf",
-      "current_model_sha256": "dcdfb833c5b3ff52686f438fbd96b36c7134a251cb6934768e3e03f968b900d6",
+      "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
+      "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedQpNmpcL1IndiCbf",
+      "current_model_sha256": "f5a0d32afa08e10dc69c49a85f120907fbfd5056e73110c9a7b29644fcbed3fc",
+      "current_model_topology_sha256": "87d5632503646d46a5b45978a50cb3935d4668f17ce23dbc2f6895dc6ac52558",
       "current_model_role": "fixed_integrated_whole_aircraft_closed_loop",
       "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
       "source_provenance": {
         "source_config": "Config/controllers/nmpc_indi_l1/default.yaml",
-        "source_file": "Models/MoSimQuadrotorModel/Robustness/Scenarios/Example1QPNMPCSafetySysblockClosedLoop.mo",
-        "source_sha256": "ec8d22746079b144a3e4ae3f89ef0ec8b6924d5d600cb8256038116e3d26f9b6",
-        "source_model_class": "MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop",
+        "source_file": "Models/MoSimQuadrotorModel/Experiment/Scenarios/Robustness/Example1QPNMPCSafetySysblockClosedLoop.mo",
+        "source_sha256": "296930950754fe8f7e8bb96a8aa197f423d59449faeb0c3652e0475132f2ac6f",
+        "source_model_class": "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1QPNMPCSafetySysblockClosedLoop",
         "import_mode": "formal_alias_extends_existing_project_model"
       },
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates the fixed-chain minimum MWORKS closed loop."

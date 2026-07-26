@@ -42,7 +42,7 @@ class MoSimQuadrotorLiveGateRunnerPlanTest(unittest.TestCase):
             self.assertEqual(len(plan["future_check_model_plan"]), 14)
             self.assertEqual(len(plan["future_simulate_model_plan"]), 7)
             self.assertIn(
-                "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
+                "MoSimQuadrotorModel.Vehicle.Dynamics.RotorEffectivenessSmoke",
                 [item["target"] for item in plan["future_simulate_model_plan"]],
             )
             self.assertIn("target_resolution_manifest", plan)

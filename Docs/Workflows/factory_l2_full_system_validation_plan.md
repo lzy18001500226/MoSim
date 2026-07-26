@@ -106,11 +106,11 @@ background object that polluted the old Gazebo mesh bounds to +/-16384 m. It
 does not intentionally remove factory doors, walls, outdoor space, machines,
 floors, or other physical map geometry.
 
-2026-07-02 correction: `启动Diff工厂UE实时审核.cmd` previously opened the
+2026-07-02 correction: `cmd/启动Diff工厂UE实时审核.cmd` previously opened the
 Factory UE mirror while the underlying Diff/Sunray runner still inherited the
 default pillar `planning_test.world`. That mixed two different scenes and is
 not valid Factory coordinate evidence. F0.5 must not use flight/control proof.
-Use `启动Factory坐标静态审核.cmd` for UE-only static calibration-rig review.
+Use `cmd/启动Factory坐标静态审核.cmd` for UE-only static calibration-rig review.
 If a later scoped runtime display is required, the launcher must explicitly set
 the clean Factory `WORLD_FILE` and Factory `GAZEBO_MODEL_PATH`; otherwise the
 run is a non-Factory regression and cannot be cited for Factory alignment.
@@ -189,7 +189,7 @@ user responsibility:
 Current F0.5 user-facing entry:
 
 ```text
-启动Factory坐标静态审核.cmd
+cmd/启动Factory坐标静态审核.cmd
 ```
 
 This entry opens UE Factory display with the source calibration-rig CSV drawn
@@ -1215,7 +1215,7 @@ scripts:
   Scripts/sunray/generate_factory_l2_clearance_route_waypoints.py
   Scripts/sunray/start_factory_diff_lawnmower_coverage_probe.ps1
   Scripts/sunray/run_px4ctrl_ego_single_gate.sh
-  启动Factory单机同飞行覆盖建图.cmd
+  cmd/启动Factory单机同飞行覆盖建图.cmd
 
 route policy:
   planner=Diff-Planner multipoint
@@ -1379,7 +1379,7 @@ full_route_dry_run:
   planned_sensor_footprint_coverage_ratio=0.9950284090909091
 
 user_entry:
-  启动Factory单机同飞行覆盖建图.cmd
+  cmd/启动Factory单机同飞行覆盖建图.cmd
 
 long_run_policy:
   superseded by clearance-route full coverage because the straight full route
@@ -1398,7 +1398,7 @@ active_backend:
   Diff-Planner supervised interactive goal-chain
   Scripts/sunray/start_factory_diff_interactive_coverage_probe.ps1
   route generator: Scripts/sunray/generate_factory_l2_clearance_route_waypoints.py
-  user entry: 启动Factory单机同飞行覆盖建图.cmd
+  user entry: cmd/启动Factory单机同飞行覆盖建图.cmd
 
 why_not_z3:
   Source-truth connectivity checks showed that the z=3 flight band cannot be
@@ -1496,7 +1496,7 @@ active_backend:
   Scripts/sunray/start_factory_fuel_same_flight_coverage_probe.ps1
   underlying launcher: Scripts/sunray/start_factory_fuel_single_exploration_review.ps1
   supervisor: Scripts/sunray/factory_l2_same_flight_coverage_supervisor.py
-  user entry: 启动Factory单机同飞行覆盖建图.cmd
+  user entry: cmd/启动Factory单机同飞行覆盖建图.cmd
 
 source_truth:
   FUEL's /waypoint_generator/waypoints topic is a trigger for the exploration
@@ -1578,7 +1578,7 @@ long_gate_diagnostic:
 
 target_chain_entry:
   user entry:
-    启动Factory单机同飞行覆盖建图.cmd
+    cmd/启动Factory单机同飞行覆盖建图.cmd
   implementation:
     Scripts/sunray/start_factory_diff_interactive_coverage_probe.ps1
   classification:
@@ -2554,3 +2554,94 @@ a bounded RACER multi-UAV gate with the MID360/frame/Hybrid-Z chain, recovery,
 freshness, emergency telemetry, and coverage evidence ported explicitly. If
 RACER repeats the disconnected-map failure, open the documented known-map
 partitioned coverage fallback rather than claiming autonomous coverage.
+
+### 2026-07-16 RACER MID360 input and long-run PVA gate
+
+The three-UAV RACER sensor migration is accepted through the independent live
+chains:
+
+```text
+MID360 -> FAST-LIO -> /uavN/mosim/racer/local_cloud -> RACER /map_ros/cloud
+```
+
+The synchronized cloud and pose samples are non-empty in `world`, measured
+timestamp delta is zero, Hybrid-Z uses truth height, and the default depth
+camera topics are intentionally unused. The current input gate is:
+
+`Results/sunray_ros1/factory_l2_racer_fastlio_grid8_spacing3_infl035_nativeff_slew2_odom060_gate120_r55_20260715/RACER_FASTLIO_INPUT_GATE.json`
+
+The accepted 30 s and 120 s runtime baselines are r54 and r55. r55 completed
+120.019 s with 2.268 m minimum inter-UAV distance, 41.94/34.42/42.83 deg truth
+attitude peaks, fresh trajectories, and 19.4247% diagnostic full-indoor sensor
+coverage.
+
+The 300 s r56 run at
+`Results/sunray_ros1/factory_l2_racer_fastlio_grid8_spacing3_infl035_nativeff_slew2_odom060_gate300_r56_20260716/`
+is blocked. It completed 300.02 s, retained fresh trajectories and 2.724 m
+minimum inter-UAV distance, and reached 31.0724% diagnostic coverage, but UAV3
+reached 59.58 deg and 3.75 m/s. Near simulation time 102.378 s, a reverse
+replan generated px4ctrl desired acceleration of 17.38 m/s^2 in X and
+6.59 m/s^2 in Y. The static 0.60 m XY odometry-window guard bounds position
+separation but does not guarantee velocity/acceleration continuity.
+
+The next bounded A/B regenerates command dynamics from the guarded position
+stream with 2.0 m/s velocity, 1.2 m/s^2 acceleration and lateral acceleration,
+and 6.0 m/s^3 jerk limits. It must pass 30 s, then 120 s, before a new 300 s
+run. r60-r63 are not algorithm results: Gazebo did not finish loading the
+0.735 GB clean Factory STL set while an unrelated host scan saturated CPU, so
+PX4 never connected to simulator TCP 4560 and RACER never started. Do not use
+those attempts to assess coverage or PVA behavior.
+
+Before the next live run, the limiter was replayed against all recorded r56
+adapted-command position samples. The first hard-velocity implementation was
+rejected because terminal speed clipping caused 38.9-42.7 m/s^3 jerk. The
+accepted implementation reserves a jerk-aware braking margin before the speed
+boundary and does not apply a discontinuous terminal velocity clip. Evidence:
+
+`Results/sunray_ros1/factory_l2_racer_fastlio_grid8_spacing3_infl035_nativeff_slew2_odom060_gate300_r56_20260716/RACER_COMMAND_DYNAMICS_REPLAY_PVA_A12_J6.json`
+
+The replay covers 11277/11280/11304 `ego_execute` rows for UAV1/UAV2/UAV3.
+Maximum replayed speed is 1.88/1.90/1.89 m/s, maximum acceleration is
+1.20 m/s^2, and maximum jerk is 6.00 m/s^3. In the UAV3 100-105 s reverse-replan
+window, maxima are 1.69 m/s, 1.20 m/s^2, and 6.00 m/s^3. This is an offline
+command-dynamics preflight only. It does not prove px4ctrl tracking, attitude,
+collision avoidance, freshness, or coverage; those claims still require the
+30 s, 120 s, and 300 s Gazebo gates.
+
+#### Live PVA and inter-UAV safety closeout
+
+r65-r67 were bounded wrapper diagnostics rather than planner results. They
+identified an outer timeout that incorrectly consumed startup time, a redundant
+ROS-master `/run_id` probe, and a mission process that could survive cleanup.
+The wrapper now records independent startup, mission, and wall budgets in
+`WRAPPER_TIMEOUT_BUDGET.json`, latches ROS-master readiness once, and terminates
+the actual `px4ctrl_ego_swarm_mission_node.py` process during cleanup.
+
+r68 completed the 30 s live PVA gate but is rejected as unsafe. RACER's raw
+commands retained `3.162 m` separation, independently regenerated commands
+reduced it to `0.929 m`, and Gazebo truth reached `0.466 m`. The independent
+time reshaping therefore broke RACER's coordinated temporal separation even
+though the backend still used the legacy generic `0.45 m` pass threshold.
+
+The replacement safety chain uses MAVROS/FAST-LIO odometry, relative closing
+speed, braking distance, and a configured margin. A predicted violation
+disables all PVA adapters, commands current-position team hover, lands, records
+`inter_uav_emergency_hold`, and blocks the run. Gazebo truth is retained only
+for evaluation. RACER planning clearance is `2.5 m`, initial vehicle spacing is
+`3.0 m`, and physical acceptance remains `1.5 m`; these values are distinct and
+must not be collapsed into one threshold.
+
+The resulting r69 smoke is accepted at:
+
+`Results/sunray_ros1/factory_l2_racer_fastlio_infl035_pvaregen_v3_a12_j6_spacing3_safedist25_pairhold_smoke30_r69_20260716/`
+
+It completed `30.01 s` of fresh exploration with `2.993 m` minimum separation,
+zero emergency holds, truth attitude peaks `39.00/42.92/44.87 deg`, live PVA
+limits of `1.20 m/s^2` acceleration and `6.00 m/s^3` jerk, and passed the
+MID360/FAST-LIO input and runtime-log gates. Diagnostic sensor-footprint and
+path coverage were `6.108%` and `0.781%`; the smoke intentionally used a zero
+coverage threshold because it is a safety promotion gate, not full-map
+acceptance. Promote exactly this parameter set to 120 s, report actual
+coverage, and open 300 s only after 120 s passes without emergency hold,
+sub-1.5 m separation, attitude above 45 deg, stale trajectories, input-gate
+failure, or incomplete landing.

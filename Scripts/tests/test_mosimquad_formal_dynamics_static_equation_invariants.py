@@ -30,7 +30,7 @@ class FormalDynamicsStaticEquationInvariantsTest(unittest.TestCase):
         self.assertEqual(summary["status"], "passed")
         self.assertFalse(summary["live_mworks_touched"])
         self.assertEqual(summary["findings"], [])
-        self.assertEqual(len(summary["anchor_groups"]), 4)
+        self.assertEqual(len(summary["anchor_groups"]), 5)
         self.assertEqual(len(summary["model_sources"]), 7)
         for group in summary["anchor_groups"]:
             self.assertEqual(group["missing_anchors"], [])

@@ -51,6 +51,7 @@ SLOT_TO_CATALOG_SECTION = {
 
 OPTIONAL_SLOT_TO_CATALOG_SECTION = {
     "localization_eval_profile": "state_source_profiles",
+    "formation_profile": "formation_profiles",
 }
 
 
@@ -200,6 +201,15 @@ def build_launch_plan_skeleton(
                 "id": "planner",
                 "template": "planner_adapter.launch",
                 "profile": profile["planner_profile"],
+            }
+        )
+
+    if "formation_profile" in profile:
+        steps.append(
+            {
+                "id": "formation",
+                "template": "formation_controller.launch",
+                "profile": profile["formation_profile"],
             }
         )
 
@@ -774,11 +784,14 @@ def validate_experiment(
     registered_modules = registry_profiles(control_module_registry)
     if control_module_registry is not None:
         for slot, expected_kind in (
+            ("formation_profile", "formation_controller"),
             ("controller_profile", "nominal_controller"),
             ("augmentation_profile", "augmentation"),
             ("safety_profile", "safety_filter"),
             ("adapter_profile", "command_adapter"),
         ):
+            if slot not in profile:
+                continue
             profile_id = str(profile[slot])
             if profile_id == "none":
                 continue

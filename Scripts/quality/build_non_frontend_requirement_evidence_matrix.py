@@ -59,6 +59,20 @@ def build_matrix() -> dict[str, Any]:
 
     controller = loaded["controller_matrix"]
     ab = loaded["final_ab"]
+    controller_counts = controller.get("counts", {})
+    expected_statuses = {"accepted", "executed_blocked", "not_run"}
+    if set(controller_counts) != expected_statuses:
+        raise ValueError(f"controller matrix has unexpected status keys: {controller_counts}")
+    if sum(int(controller_counts[key]) for key in expected_statuses) != 67:
+        raise ValueError(f"controller matrix must contain 67 rows: {controller_counts}")
+    observed_counts = {
+        status: sum(1 for row in controller.get("rows", []) if row.get("status") == status)
+        for status in expected_statuses
+    }
+    if observed_counts != controller_counts:
+        raise ValueError(
+            f"controller matrix counts do not match rows: counts={controller_counts}, rows={observed_counts}"
+        )
     rows = [
         {
             "requirement_id": "REQ-MW-01/04/07/11",
@@ -72,7 +86,11 @@ def build_matrix() -> dict[str, Any]:
             "area": "Controller-family coverage",
             "status": "partial",
             "evidence": [AUTHORITIES["controller_matrix"]],
-            "claim_ceiling": "67 rows are visible: 27 accepted, 25 executed-blocked, 15 not-run; only accepted rows may be presented as selectable Gazebo controllers.",
+            "claim_ceiling": "67 rows are visible: {accepted} accepted, {blocked} executed-blocked, {not_run} not-run; only accepted rows may be presented as selectable Gazebo controllers.".format(
+                accepted=controller_counts["accepted"],
+                blocked=controller_counts["executed_blocked"],
+                not_run=controller_counts["not_run"],
+            ),
         },
         {
             "requirement_id": "REQ-TRAJ-01..04",
@@ -146,10 +164,6 @@ def build_matrix() -> dict[str, Any]:
         },
     ]
 
-    expected = {"accepted": 27, "executed_blocked": 25, "not_run": 15}
-    actual = controller.get("counts", {})
-    if {key: actual.get(key) for key in expected} != expected:
-        raise ValueError(f"controller matrix counts drifted: {actual}")
     if not ab.get("counts"):
         raise ValueError("final A/B matrix has no counts")
 
@@ -160,7 +174,7 @@ def build_matrix() -> dict[str, Any]:
         "scope": "all current non-frontend engineering and submission work",
         "authority_files": AUTHORITIES,
         "authority_states": {key: authority_state(value) for key, value in loaded.items()},
-        "controller_matrix_counts": expected,
+        "controller_matrix_counts": controller_counts,
         "final_ab_counts": ab.get("counts", {}),
         "rows": rows,
         "global_claim_boundary": [

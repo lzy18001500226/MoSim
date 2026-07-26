@@ -1,0 +1,73 @@
+{
+  "schema": "mosim.runner_boundary_baseline_binding.v1",
+  "controller_id": "runner_fixture_rotor_command",
+  "controller_category": "runner_boundary_fixture",
+  "scenario": {
+    "scenario_id": "climb_path_50s",
+    "reference_owner": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50
+  },
+  "target": {
+    "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo",
+    "model_class": "MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner",
+    "model_sha256": "09841c4e185b28f318a9c5e57403d922ad6b51289ad2bc55befd2ad544cf42b2"
+  },
+  "formal_adapter": {
+    "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+    "model_class": "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter",
+    "model_sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+    "output_boundary": "ROTOR_COMMAND"
+  },
+  "source_bindings": [
+    {
+      "role": "runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo",
+      "expected_sha256": "09841c4e185b28f318a9c5e57403d922ad6b51289ad2bc55befd2ad544cf42b2"
+    },
+    {
+      "role": "fixture_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+      "expected_sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4"
+    },
+    {
+      "role": "shared_plant",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "expected_sha256": "77a0b0d52d4b79b99fbd4b0239c173c465a15a2f3c54a6959a35f20197c82913"
+    },
+    {
+      "role": "physical_wrench_adapter",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo",
+      "expected_sha256": "f5b87ac12e07d401b7fb6daae04b220b4c0f39c4d6235bcb33ac14464f77d7cd"
+    },
+    {
+      "role": "wrapper_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
+      "expected_sha256": "b78ad9bce5dcdc22ffdecef440dd33ba4aa4ec4fe82b78fed7a507805197bc53"
+    },
+    {
+      "role": "rotor_actuator_core",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
+      "expected_sha256": "39fefc145ef07c3a9a2cda7a651d168959d6ef5eb040a0a8cdee5c496e8c9083"
+    },
+    {
+      "role": "plant_sensor_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
+      "expected_sha256": "afe8291bdb2a09a56e7b2049635c433669bf63e352ba3091de615ff57b8befed"
+    },
+    {
+      "role": "virtual_px4_classic_profile",
+      "path": "Models/MoSimQuadrotorModel/Parameters/Sunray150VirtualPx4Classic.mo",
+      "expected_sha256": "d567beb9d8443f5fa57728d210d57d96d6dc52370f8e31bb6a3ec08f15c863cd"
+    },
+    {
+      "role": "climb_path_reference",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "expected_sha256": "12814dc84f5815a1956c16933388ea98a662900c54fd35d1f8804664da4f99e6"
+    }
+  ],
+  "model_layout_boundary": {
+    "state": "shared_runner_and_fixture_not_controller_graphical_topology",
+    "reason": "The capture verifies the shared ROTOR_COMMAND runner and Official PID adapter closure. It is separate from the OfficialPidFormalRunner A/B baseline wrapper."
+  },
+  "claim_boundary": "Real offline MWORKS shared-Plant ROTOR_COMMAND runner-boundary baseline. It validates the direct runner and its default adapter, not a controller-family champion, Gazebo, PX4, ROS or flight-runtime performance."
+}

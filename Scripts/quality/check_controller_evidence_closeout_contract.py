@@ -335,6 +335,81 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
         promotion = formal_harness_map.get("champion_harness_promotion")
         if not isinstance(promotion, dict) or promotion.get("state") != "required_before_g6":
             add("CCEC-HARNESS-08", "champion formal-harness promotion gate must remain required before G6")
+        provisional = formal_harness_map.get("provisional_champion_selection")
+        if not isinstance(provisional, dict):
+            add("CCEC-HARNESS-09", "provisional six-family champion selection is missing")
+        else:
+            candidates = provisional.get("candidates")
+            expected_categories = {
+                "pid_family",
+                "classic_robust",
+                "sliding_mode",
+                "optimization",
+                "geometric_flatness",
+                "learning",
+            }
+            categories = {
+                str(candidate.get("category"))
+                for candidate in candidates
+                if isinstance(candidate, dict)
+            } if isinstance(candidates, list) else set()
+            selection_state = provisional.get("state")
+            valid_selection_states = {
+                "candidate_slate_pending_current_matrix",
+                "candidate_slate_ready_for_family_selection",
+            }
+            if (
+                provisional.get("schema") != "mosim.g6_provisional_champion_selection.v1"
+                or selection_state not in valid_selection_states
+                or not isinstance(candidates, list)
+                or len(candidates) != 6
+                or categories != expected_categories
+            ):
+                add("CCEC-HARNESS-10", "candidate slate must cover six nominal families with a valid current-matrix state")
+            probe_statuses: list[object] = []
+            for candidate in candidates if isinstance(candidates, list) else []:
+                if not isinstance(candidate, dict):
+                    continue
+                scheme_id = str(candidate.get("scheme_id") or "<missing>")
+                mapped = next(
+                    (
+                        row
+                        for row in harness_rows
+                        if isinstance(row, dict) and row.get("scheme_id") == scheme_id
+                    ),
+                    None,
+                )
+                probe = candidate.get("g6_probe")
+                probe_status = probe.get("status") if isinstance(probe, dict) else None
+                probe_statuses.append(probe_status)
+                expected_promotion = (
+                    "adapter_binding_pending"
+                    if probe_status == "passed"
+                    else "awaiting_current_g6_probe"
+                )
+                if (
+                    not isinstance(mapped, dict)
+                    or mapped.get("formal_harness_state") != "missing_closed_loop_harness"
+                    or not isinstance(probe, dict)
+                    or probe.get("evidence_class") != "internal_fixed_input_probe"
+                    or candidate.get("promotion_state") != expected_promotion
+                ):
+                    add("CCEC-HARNESS-11", f"{scheme_id}: candidate state does not match the current probe and adapter prerequisite")
+            if isinstance(candidates, list) and len(candidates) == 6:
+                all_probes_passed = all(status == "passed" for status in probe_statuses)
+                if selection_state == "candidate_slate_pending_current_matrix" and all_probes_passed:
+                    add("CCEC-HARNESS-10", "candidate slate remains pending although every current-matrix probe passed")
+                if selection_state == "candidate_slate_ready_for_family_selection" and not all_probes_passed:
+                    add("CCEC-HARNESS-10", "candidate slate is ready although a current-matrix probe is not passed")
+            baseline = provisional.get("official_pid_baseline")
+            if (
+                not isinstance(baseline, dict)
+                or baseline.get("scheme_id") != "official_pid"
+                or baseline.get("binding_state") != "formal_binding_ready_for_validation"
+                or not isinstance(baseline.get("formal_adapter"), dict)
+                or not isinstance(baseline.get("whole_aircraft_source_harness"), dict)
+            ):
+                add("CCEC-HARNESS-12", "Official PID A/B baseline must remain a separately bound formal runner")
     return errors
 
 

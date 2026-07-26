@@ -8,7 +8,7 @@ postprocess_profile: diagnostics_smoke
 model:
   source_package: MoSimQuadrotorModel
   live_load_strategy: minimal_dynamics_only
-  model_name: MoSimQuadrotorModel.Dynamics.HoverSmoke
+  model_name: MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke
   model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: formal Dynamics hover smoke

@@ -10,10 +10,10 @@ description: >
 
 implementation_status:
   current_mworks_model:
-    - MoSimQuadrotorModel.Missions.Official.Example1AWFFSysblockClosedLoop
-    - MoSimQuadrotorModel.Missions.Official.Example2AWFFSysblockClosedLoop
-    - MoSimQuadrotorModel.Missions.Official.Example2HelixTunedAWFFSysblockClosedLoop
-    - MoSimQuadrotorModel.Missions.Official.Example3AWFFSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Templates.Official.Example1AWFFSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Templates.Official.Example2AWFFSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Templates.Official.Example2HelixTunedAWFFSysblockClosedLoop
+    - MoSimQuadrotorModel.Experiment.Templates.Official.Example3AWFFSysblockClosedLoop
   sysblock_controller: AWFF_FullControllerEquation_Sysblock
   graphical_sysblock_controller:
     hierarchical: AWFF_FullController_Sysblock
@@ -42,7 +42,7 @@ implementation_status:
 
 model_interface:
   replacement_component: controller3_2
-  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  compatible_source_model: MoSimQuadrotorModel.Vehicle.Blocks.Controller.Controller
   implementation_target:
     - Sysblock controller component
     - Project-owned Example1 closed-loop wrapper

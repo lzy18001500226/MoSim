@@ -83,7 +83,7 @@ Scripts/
 Docs/
 Docs/Index/
 Docs/MworksDocs/converted/
-Models/MoSimQuadrotorModel/Plant/
+Models/MoSimQuadrotorModel/Vehicle/
 Docs/Workflows/
 ```
 

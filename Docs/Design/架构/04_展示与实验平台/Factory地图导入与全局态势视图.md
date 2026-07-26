@@ -275,7 +275,7 @@ review source semantics:
 当前Factory FUEL单机探索审核入口：
 
 ```text
-启动Factory单机FUEL自主探索审核.cmd
+cmd/启动Factory单机FUEL自主探索审核.cmd
 Config/rviz/sunray_ros1_factory_fuel_pointcloud_review.rviz
 Config/rviz/sunray_ros1_factory_fuel_grid3d_review.rviz
 ```

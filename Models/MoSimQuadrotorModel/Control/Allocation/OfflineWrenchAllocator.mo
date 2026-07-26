@@ -1,0 +1,24 @@
+within MoSimQuadrotorModel.Control.Allocation;
+model OfflineWrenchAllocator
+  "MWORKS offline wrench-to-rotor allocator"
+
+  parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
+  parameter Real torque_to_command = hover_speed / 13.985413115099604 * 0.707;
+  Modelica.Blocks.Interfaces.RealInput body_force[3];
+  Modelica.Blocks.Interfaces.RealInput body_torque[3];
+  Modelica.Blocks.Interfaces.RealOutput rotor_command[4];
+protected
+  Real roll_term;
+  Real pitch_term;
+  Real yaw_term;
+  annotation(__MWORKS(version="26.3.0"));
+equation
+  roll_term = torque_to_command * body_torque[1];
+  pitch_term = torque_to_command * body_torque[2];
+  yaw_term = torque_to_command * body_torque[3];
+  rotor_command[1] = hover_speed + body_force[3] - yaw_term - pitch_term + roll_term;
+  rotor_command[2] = -hover_speed - body_force[3] - yaw_term + pitch_term + roll_term;
+  rotor_command[3] = hover_speed + body_force[3] - yaw_term + pitch_term - roll_term;
+  rotor_command[4] = -hover_speed - body_force[3] - yaw_term - pitch_term - roll_term;
+end OfflineWrenchAllocator;

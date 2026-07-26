@@ -20,7 +20,7 @@ Models/MoSimQuadrotorModel/package.mo
 |---|---|---|
 | `Models/MoSimQuadrotorModel/` | 唯一正式 Modelica 实现根 | 打开根目录的 `package.mo`，再按命名空间选择模型。 |
 | `Config/scenarios/` | 场景和实验配置 | 配置中的模型类必须指向正式根。 |
-| `Config/control_platform/` | 控制方案、入口映射和接口配置 | 49 条方案和正式测试壳以机器可读映射为准。 |
+| `Config/control_platform/` | 控制方案、入口映射和接口配置 | 冻结的 49 条方案注册、46 条当前 MWORKS 路线和冠军测试壳状态以机器可读映射为准。 |
 | `Scripts/mworks/` | MWORKS 检查、执行、结果提取脚本 | 先读对应工作流，再运行最小检查。 |
 | `Scripts/quality/` | 结构和证据质量门 | `consolidate_mosimquad_model_root.py --check` 检查单根布局。 |
 | `Results/` | 结果、日志、截图和审查包 | 结果只能证明其明确记录的证据层。 |
@@ -30,34 +30,51 @@ Models/MoSimQuadrotorModel/package.mo
 
 ```text
 MoSimQuadrotorModel
-  Plant/              physical baseline, resources, and official examples
-  Baseline/           baseline aliases and comparison anchors
-  Controllers/        Baselines, Sysblocks, GraphicalMIL, IntegratedChains
-  Dynamics/           actuator, wrench, and dynamics diagnostic surfaces
-  Parameters/         source-labeled parameter provenance
-  Missions/           official single-UAV scenarios
-  Robustness/         disturbance, safety, and fault scenarios
-  Planning/           reference and obstacle/planning scenarios
-  Formation/          multi-UAV reference/scenario models
-  System/             full-system architecture models
-  SceneTrace/         trace scenarios and diagnostic isolation models
-  ExperimentRunner/   typed adapters, plant shells, and formal runners
-  LiveIntegration/    real-time transport probes and native include resources
-  Support/            support and smoke models
+  Parameters/         source-labeled Sunray150 and runtime parameter sets
+  Vehicle/            physical plant, actuators, sensors, resources and examples
+  Control/            baseline, graphical, robust, learning and adapter modules
+  Experiment/         typed runners, templates, probes and scenario test shells
+  Guidance/           trajectory, planning and formation reference modules
+  Deployment/         live I/O, code-generation and transport resource surface
+  Visualization/      graphical scenario and diagnostic visualization models
+  Common/             shared limits and support models
 ```
 
 | Namespace | Use it for | Do not infer |
 |---|---|---|
-| `MoSimQuadrotorModel.Plant.Examples.*` | 官方机体/任务基线和资源审查 | 已完成控制器优化或部署验证。 |
-| `MoSimQuadrotorModel.Controllers.*` | 控制器源、Sysblock 和图形化核心 | 图形化核心已具备整机闭环。 |
-| `MoSimQuadrotorModel.ExperimentRunner.*` | 适配器、输出边界和正式测试壳 | 与 PX4 运行时 owner 等价。 |
-| `MoSimQuadrotorModel.Missions.*` | 单机正式任务场景 | 其他场景的性能结论。 |
-| `MoSimQuadrotorModel.Robustness.*` | 扰动、安全、故障实验 | 已完成 FDI/FTC 闭环。 |
-| `MoSimQuadrotorModel.Planning.*` | 路径/轨迹/障碍场景 | 在线规划或真实传感闭环。 |
-| `MoSimQuadrotorModel.Formation.*` | 多机参考与编队场景 | 分布式通信或集群避障已验证。 |
-| `MoSimQuadrotorModel.LiveIntegration.*` | 实时 I/O 探针 | 车辆控制或飞行验收。 |
+| `MoSimQuadrotorModel.Parameters.*` | 参数来源、版本和虚拟 PX4/Gazebo 对齐记录 | 参数已由实物飞行辨识确认。 |
+| `MoSimQuadrotorModel.Vehicle.Examples.*` | 官方机体/任务基线和资源审查 | 已完成控制器优化或部署验证。 |
+| `MoSimQuadrotorModel.Control.*` | 控制器源、Sysblock、图形化核心、接口、分配器与适配器 | 图形化核心已具备整机闭环。 |
+| `MoSimQuadrotorModel.Experiment.Runners.*` | 输出边界和正式测试壳 | 与 PX4 运行时 owner 等价。 |
+| `MoSimQuadrotorModel.Experiment.Templates.*` | 单机正式任务模板 | 其他场景的性能结论。 |
+| `MoSimQuadrotorModel.Experiment.Scenarios.Robustness.*` | 扰动、安全、故障实验 | 已完成 FDI/FTC 闭环。 |
+| `MoSimQuadrotorModel.Guidance.Planning.*` | 路径/轨迹/障碍场景 | 在线规划或真实传感闭环。 |
+| `MoSimQuadrotorModel.Guidance.Formation.*` | 多机参考与编队场景 | 分布式通信或集群避障已验证。 |
+| `MoSimQuadrotorModel.Deployment.*` | 实时 I/O 探针 | 车辆控制或飞行验收。 |
+| `MoSimQuadrotorModel.Visualization.*` | 图形化场景和诊断显示 | GUI 可读性或原生窗口审查已通过。 |
+| `MoSimQuadrotorModel.Common.*` | 跨层限制和公共支撑模型 | 独立控制或仿真闭环。 |
 
-## 4. Reproduction Sequence
+## 4. G4 Current Model Entry Mapping and Non-destructive Refactor Contract
+
+G4 Current Model Entry Mapping and Non-destructive Refactor Contract uses
+`Config/control_platform/current_model_entry_map.json` as the frozen entry
+registry. The operation catalog is not the 49-scheme current-model-entry registry;
+it only lists allowlisted Model Studio operations.
+
+G4 is non-destructive: it migrates qualified namespaces and updates references
+without asserting a controller result. It does not open MWORKS, call
+`CheckModel`, or create a simulation record. A graphical controller core is
+tracked as an `internal_graphical_probe` until it has an explicit runner and
+plant-coupled evidence record.
+
+The current registry distinguishes 46 resolved MWORKS routes, two missing-source
+blockers, and the separate `px4ctrl` runtime baseline. The 47-Profile target is
+future scope, not a retroactive claim that every target already has a current
+MWORKS run. A six-family candidate cannot enter A/B testing until its
+champion-specific core/Adapter/plant binding has passed the required minimum
+whole-aircraft closure.
+
+## 5. Reproduction Sequence
 
 ```text
 1. Load Models/MoSimQuadrotorModel/package.mo once.
@@ -72,7 +89,7 @@ For controller experiments, the expected chain is:
 ```text
 scenario configuration
   -> canonical model class
-  -> ExperimentRunner adapter and whole-aircraft harness when required
+  -> Experiment Runner and whole-aircraft harness when required
   -> MWORKS result/native artifact
   -> metrics and review screenshot
 ```
@@ -85,7 +102,7 @@ python Scripts/quality/consolidate_mosimquad_model_root.py --check
 
 It confirms only layout and active-reference hygiene. Use the relevant MWORKS workflow for live `CheckModel`, simulation, graphical review, and result evidence.
 
-## 5. Scenario Configs
+## 6. Scenario Configs
 
 ```text
 Config/scenarios/
@@ -108,10 +125,10 @@ Config/control_platform/formal_closed_loop_harness_map.json
 Docs/Workflows/controller_evidence_closeout.md
 ```
 
-## 6. Historical Material
+## 7. Historical Material
 
 Historical results may retain the model names recorded when they were produced. They are provenance only and must never be used as an opening instruction or a substitute for a current canonical run. Automatic MWORKS crash-recovery copies likewise remain outside `Models/`; they are recovery cache, not source or a second package root.
 
-## 7. Maintenance Rule
+## 8. Maintenance Rule
 
 Update this index whenever a canonical package, current scenario binding, formal runner, or stable result location changes. Do not add aliases, duplicate roots, empty placeholder directories, or a flat experiment pool to make an old command work. Update the command/configuration to the canonical namespace instead.

@@ -24,32 +24,32 @@ ROOT = Path(__file__).resolve().parents[2]
 MODELS = [
     {
         "model_name": "AWFF_PositionOuterLoop_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_PositionOuterLoop_Sysblock.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_PositionOuterLoop_Sysblock.mo",
         "verify_result_var": "thrust_ref",
     },
     {
         "model_name": "AWFF_AttitudeInnerLoop_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_AttitudeInnerLoop_Sysblock.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_AttitudeInnerLoop_Sysblock.mo",
         "verify_result_var": "roll_cmd",
     },
     {
         "model_name": "AWFF_MotorMixer_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_MotorMixer_Sysblock.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_MotorMixer_Sysblock.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_FullController_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullController_Sysblock.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullController_Sysblock.mo",
         "verify_result_var": "y",
         "extra_files": [
-            "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_PositionOuterLoop_Sysblock.mo",
-            "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_AttitudeInnerLoop_Sysblock.mo",
-            "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_MotorMixer_Sysblock.mo",
+            "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_PositionOuterLoop_Sysblock.mo",
+            "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_AttitudeInnerLoop_Sysblock.mo",
+            "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_MotorMixer_Sysblock.mo",
         ],
     },
     {
         "model_name": "AWFF_FullControllerFlatGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
         "verify_result_var": "y",
     },
 ]
@@ -58,82 +58,82 @@ MODELS = [
 INNOVATION_MODELS = [
     {
         "model_name": "AWFF_InnovationGraphicalControllers",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "l1_residual_overview.y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.MotorMixerBlock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.INDIAttitudeInnerLoopBlock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "roll_cmd",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.KnownRotorFaultMixerBlock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.RotorFaultIsolationBlock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "fault_index",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AdaptiveFaultMixerBlock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.LinearMPCOuterLoopBlock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "thrust_ref",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.Rotor1OnlineEfficiencyEstimatorBlock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "eta_hat",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1FaultAllocationControllerGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1MultiFaultIsolationControllerGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "fault_index",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_L1OnlineFaultAllocationControllerGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "eta_hat",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_FaultCompensationControllerGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "y",
     },
     {
         "model_name": "AWFF_InnovationGraphicalControllers.AWFF_LinearMPCOnlineFaultAllocationControllerGraphical_Sysblock",
-        "file": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "verify_result_var": "eta_hat",
     },
 ]

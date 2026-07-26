@@ -7,12 +7,12 @@ quality_profile: system_mode
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.System.Architecture.Sunray150CompleteSystemBatteryLowSysblock
+  model_name: MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemBatteryLowSysblock
   model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: Sunray150 complete system with battery voltage margin dropping below return threshold
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
+    - Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo
 
 controller:
   replacement_component: controller

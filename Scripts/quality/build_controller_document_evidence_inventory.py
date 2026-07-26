@@ -91,7 +91,7 @@ TERMINAL_BLOCKER_SOURCES = {
 }
 
 EXACT_MODEL_SOURCES = {
-    "official_pid": ["Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_PID_Sysblock_Demo.mo"],
+    "official_pid": ["Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_PID_Sysblock_Demo.mo"],
 }
 
 G9_ROUTE_EVIDENCE_BATCH = (

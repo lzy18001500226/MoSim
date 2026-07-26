@@ -2,7 +2,7 @@
 """Validate the canonical ownership of the former Dynamics Batch A surface.
 
 This file-only checker proves that the active implementation is under
-``MoSimQuadrotorModel.Dynamics`` and that no second top-level Modelica root
+``MoSimQuadrotorModel.Vehicle.Dynamics`` and that no second top-level Modelica root
 remains. It does not call MWORKS, Sysplorer, MCP, check_model, or simulate.
 """
 
@@ -51,7 +51,7 @@ TARGETS: tuple[dict[str, Any], ...] = (
         "legacy_file_name": "Sunray150DynamicsWrapperSurface.mo",
         "legacy_file_model": "Sunray150DynamicsWrapperSurface",
         "primary_anchors": (
-            "RotorActuatorCore dynamics;",
+            "RotorActuatorCore dynamics(profile = profile);",
             "dynamics.motor_command = motor_command",
             "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
             "commanded_total_moment_body[3]",
@@ -142,16 +142,16 @@ def validate_batch_a() -> dict[str, Any]:
         "mworks_window_evidence_touched": False,
         "batch_scope": [item["formal_target"] for item in targets],
         "deferred_targets": [
-            "MoSimQuadrotorModel.Dynamics.HoverSmoke",
-            "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
-            "MoSimQuadrotorModel.Dynamics.ActuatorCommandMapper",
-            "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
-            "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
-            "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
-            "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
-            "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
-            "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
-            "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.YawStepSmoke",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.ActuatorCommandMapper",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.ActuatorMappedWrapperSurface",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.OptionalDampingGyroLayer",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperHoverSmoke",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperYawStepSmoke",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchHoverSmoke",
+            "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchYawStepSmoke",
         ],
         "targets": targets,
         "source_surface_policy": {
@@ -169,10 +169,10 @@ def changed_files_manifest(output_dir: Path) -> dict[str, Any]:
         "schema": "mosim.changed_files_manifest.v2",
         "request_id": REQUEST_ID,
         "modelica_source_files_in_batch_a_surface": [
-            "Models/MoSimQuadrotorModel/Dynamics/RotorActuatorCore.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/package.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/package.order",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/package.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/package.order",
         ],
         "retired_model_roots_checked_absent": [
             "Models/QuadrotorExperiments",

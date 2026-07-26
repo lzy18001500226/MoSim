@@ -5,7 +5,7 @@ priority: P0
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Plant.Examples.Example3
+  model_name: MoSimQuadrotorModel.Vehicle.Examples.Example3
   model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 8字形运动
 

@@ -20,15 +20,18 @@ SCENARIO_DIR = ROOT / "Config" / "scenarios" / "diagnostics"
 SCENARIO_CHECK = (
     ROOT
     / "Results"
-    / "mworks_model_hygiene"
-    / "20260611_mosimquad_formal_dynamics_smoke_scenario_bindings"
+    / "model_library_refactor"
+    / "20260726_plant_runner_baseline"
+    / "static_checks"
     / "static_validation_summary.json"
 )
 BATCH_MANIFEST = (
     ROOT
     / "Results"
-    / "mworks_model_hygiene"
-    / "20260611_mosimquad_formal_dynamics_smoke_batch_manifest"
+    / "model_library_refactor"
+    / "20260726_plant_runner_baseline"
+    / "static_checks"
+    / "dynamics_smoke_batch_manifest"
     / "formal_dynamics_smoke_batch_manifest.json"
 )
 LIVE_PREFLIGHT_BLOCKER = (
@@ -41,9 +44,10 @@ LIVE_PREFLIGHT_BLOCKER = (
 DEFAULT_OUTPUT = (
     ROOT
     / "Results"
-    / "mworks_model_hygiene"
-    / "20260611_mosimquad_formal_dynamics_live_smoke_readiness"
-    / "live_smoke_readiness.json"
+    / "model_library_refactor"
+    / "20260726_plant_runner_baseline"
+    / "static_checks"
+    / "dynamics_smoke_readiness.json"
 )
 
 sys.path.insert(0, str(ROOT / "Scripts" / "mworks"))

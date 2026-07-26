@@ -97,6 +97,8 @@ def build_status() -> dict[str, Any]:
                 "scheme_id": scheme_id,
                 "category": planned_by_id[scheme_id].get("category"),
                 "verdict": packet.get("verdict"),
+                "terminal_status": packet.get("terminal_status"),
+                "processing_state": packet.get("processing_state", "screened_only"),
                 "packet": repo_path(path),
                 "next_action": packet.get("next_action"),
             }
@@ -106,6 +108,8 @@ def build_status() -> dict[str, Any]:
 
     reviews.sort(key=lambda item: item["scheme_id"])
     reviewed_ids = {item["scheme_id"] for item in reviews}
+    processing_counts = Counter(str(item["processing_state"]) for item in reviews)
+    graphical_ready_count = processing_counts["graphical_ready"]
     by_category: dict[str, dict[str, Any]] = {}
     category_rows: dict[str, list[str]] = defaultdict(list)
     for scheme_id in sorted(pending_ids):
@@ -117,6 +121,9 @@ def build_status() -> dict[str, Any]:
             "reviewed_count": len(category_reviews),
             "pending_scheme_ids": [scheme_id for scheme_id in scheme_ids if scheme_id not in reviewed_ids],
             "verdict_counts": dict(sorted(Counter(str(item["verdict"]) for item in category_reviews).items())),
+            "terminal_status_counts": dict(
+                sorted(Counter(str(item["terminal_status"]) for item in category_reviews if item.get("terminal_status")).items())
+            ),
         }
 
     non_live = [
@@ -130,7 +137,7 @@ def build_status() -> dict[str, Any]:
     ]
     return {
         "schema": "mosim.g5_graphical_review_status.v1",
-        "scope": "Evidence-backed current G5 layout-review status only. It excludes pre-normalization historical packets and does not promote any route to simulation, code generation, runtime, or report performance acceptance.",
+        "scope": "Evidence-backed current G5 screening and processing status. A reviewed row is only screened unless processing_state=graphical_ready. This status excludes pre-normalization historical packets and does not promote any route to simulation, code generation, runtime, or report performance acceptance.",
         "queue": repo_path(QUEUE_PATH),
         "historical_packet_archive": {
             "path": repo_path(HISTORICAL_REVIEW_ROOT),
@@ -143,6 +150,13 @@ def build_status() -> dict[str, Any]:
             "reviewed_count": len(reviews),
             "pending_count": len(pending_ids - reviewed_ids),
             "verdict_counts": dict(sorted(Counter(str(item["verdict"]) for item in reviews).items())),
+            "terminal_status_counts": dict(
+                sorted(Counter(str(item["terminal_status"]) for item in reviews if item.get("terminal_status")).items())
+            ),
+            "processing_state_counts": dict(sorted(processing_counts.items())),
+            "graphical_ready_count": graphical_ready_count,
+            "graphical_processing_pending_count": len(pending_ids) - graphical_ready_count,
+            "g6_unlocked": graphical_ready_count == len(pending_ids),
         },
         "families": by_category,
         "reviewed": reviews,
@@ -177,6 +191,13 @@ def validate_status(status: dict[str, Any]) -> list[str]:
         errors.append("summary.reviewed_count does not match reviewed rows")
     if summary.get("pending_count") != 46 - len(reviewed_ids):
         errors.append("summary.pending_count does not match reviewed rows")
+    ready_count = summary.get("graphical_ready_count")
+    if not isinstance(ready_count, int) or ready_count < 0 or ready_count > 46:
+        errors.append("summary.graphical_ready_count must be an integer in [0, 46]")
+    if summary.get("graphical_processing_pending_count") != 46 - ready_count:
+        errors.append("summary.graphical_processing_pending_count does not match graphical_ready_count")
+    if summary.get("g6_unlocked") != (ready_count == 46):
+        errors.append("summary.g6_unlocked must remain false until all 46 routes are graphical_ready")
     return errors
 
 

@@ -13,7 +13,7 @@ Config/controllers/
 Config/planners/
 Config/scenarios/
 Scripts/
-Models/MoSimQuadrotorModel/Plant/
+Models/MoSimQuadrotorModel/Vehicle/
 Docs/
 Docs/Workflows/
 Scripts/tests/

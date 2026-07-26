@@ -1,7 +1,7 @@
 {
   "schema": "mosim.mworks_codegen_runtime_schema.v1",
-  "model_name": "MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FullControllerEquation_Sysblock",
-  "source_model_path": "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo",
+  "model_name": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_FullControllerEquation_Sysblock",
+  "source_model_path": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo",
   "sample_time_s": 0.01,
   "input_global": "",
   "output_global": "",

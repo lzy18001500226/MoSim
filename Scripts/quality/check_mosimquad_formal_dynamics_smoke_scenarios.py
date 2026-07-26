@@ -16,6 +16,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 SCENARIO_DIR = ROOT / "Config" / "scenarios" / "diagnostics"
+LEGACY_DYNAMICS_NAMESPACE = "MoSimQuadrotorModel.Dynamics."
+CURRENT_DYNAMICS_NAMESPACE = "MoSimQuadrotorModel.Vehicle.Dynamics."
 PROBE_PLAN = (
     ROOT
     / "Results"
@@ -26,8 +28,9 @@ PROBE_PLAN = (
 DEFAULT_OUTPUT = (
     ROOT
     / "Results"
-    / "mworks_model_hygiene"
-    / "20260722_mosimquad_model_root_consolidation/dynamics_smoke_scenario_bindings"
+    / "model_library_refactor"
+    / "20260726_plant_runner_baseline"
+    / "static_checks"
     / "static_validation_summary.json"
 )
 
@@ -72,16 +75,33 @@ def add_finding(findings: list[dict[str, Any]], code: str, message: str, target:
     findings.append(finding)
 
 
-def expected_simulate_probes(probe_plan: dict[str, Any]) -> dict[str, list[str]]:
+def canonical_dynamics_target(target: str) -> str:
+    if target.startswith(LEGACY_DYNAMICS_NAMESPACE):
+        return CURRENT_DYNAMICS_NAMESPACE + target[len(LEGACY_DYNAMICS_NAMESPACE) :]
+    return target
+
+
+def expected_simulate_probes(probe_plan: dict[str, Any]) -> tuple[dict[str, list[str]], list[dict[str, str]]]:
     probes: dict[str, list[str]] = {}
+    namespace_migrations: list[dict[str, str]] = []
     for item in probe_plan.get("probes", []):
         if item.get("probe_phase") != "after_simulate_model":
             continue
         target = item.get("target")
         variables = item.get("expected_result_variables", [])
         if isinstance(target, str) and isinstance(variables, list):
-            probes[target] = [str(variable) for variable in variables]
-    return probes
+            canonical_target = canonical_dynamics_target(target)
+            if canonical_target in probes:
+                raise ValueError(f"duplicate canonical Dynamics smoke target: {canonical_target}")
+            probes[canonical_target] = [str(variable) for variable in variables]
+            if canonical_target != target:
+                namespace_migrations.append(
+                    {
+                        "historical_probe_target": target,
+                        "current_target": canonical_target,
+                    }
+                )
+    return probes, namespace_migrations
 
 
 def load_scenarios(scenario_dir: Path) -> dict[str, dict[str, Any]]:
@@ -175,7 +195,7 @@ def validate_binding(
 def validate(scenario_dir: Path, probe_plan_path: Path) -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
     probe_plan = read_probe_plan(probe_plan_path)
-    expected = expected_simulate_probes(probe_plan)
+    expected, namespace_migrations = expected_simulate_probes(probe_plan)
     scenarios = load_scenarios(scenario_dir)
 
     expected_targets = set(expected)
@@ -196,6 +216,7 @@ def validate(scenario_dir: Path, probe_plan_path: Path) -> dict[str, Any]:
         "live_mworks_touched": False,
         "mworks_window_evidence_touched": False,
         "probe_plan": rel(probe_plan_path),
+        "probe_plan_namespace_migrations": namespace_migrations,
         "scenario_dir": rel(scenario_dir),
         "expected_simulate_target_count": len(expected_targets),
         "scenario_target_count": len(scenario_targets),
@@ -203,7 +224,7 @@ def validate(scenario_dir: Path, probe_plan_path: Path) -> dict[str, Any]:
         "runner_support_status": "minimal_dynamics_strategy_consumed",
         "runner_support_boundary": [
             "Scenario YAML now declares model.live_load_strategy=minimal_dynamics_only.",
-            "run_mworks_scenario loads the single canonical MoSimQuadrotorModel root; its embedded Plant and Dynamics remain in one namespace.",
+            "run_mworks_scenario loads the single canonical MoSimQuadrotorModel root; Vehicle.Dynamics is part of the canonical eight-layer namespace.",
             "The generated live command does not load an external QuadrotorModel package, a generated second package root, or a legacy compatibility package.",
             "Do not treat this as check_model or SimulateModel evidence until a live run succeeds.",
         ],

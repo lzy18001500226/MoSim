@@ -107,7 +107,12 @@ FORMAL_PROFILE_FILES = {
     "command_mapper": ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "ActuatorCommandMapper.mo",
     "wrapper_surface": ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "WrapperSurface.mo",
     "physical_wrench": ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "PhysicalWrenchAdapter.mo",
-    "plant_adapter": ROOT / "Models" / "MoSimQuadrotorModel" / "Plant" / "package.mo",
+    # Plant/package.mo is deliberately a thin namespace after the package
+    # split.  The canonical shared assembly is the actual physical consumer
+    # of the virtual PX4 Classic parameter record.
+    "shared_sunray150_assembly": (
+        ROOT / "Models" / "MoSimQuadrotorModel" / "Plant" / "Sunray150Assembly.mo"
+    ),
 }
 
 DFBC_GRAPHICAL_MODELS = [

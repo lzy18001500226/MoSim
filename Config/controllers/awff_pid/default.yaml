@@ -17,13 +17,13 @@ features:
 
 implementation_status:
   current_mworks_models:
-    - MoSimQuadrotorModel.Controllers.Baselines.Example1AntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Controllers.Baselines.Example2AntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Controllers.Baselines.Example2HelixTunedAntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Controllers.Baselines.Example3AntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Robustness.Scenarios.Example1Mass20AntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Robustness.Scenarios.Example1WindGustAntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.Example1Rotor1Loss15AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Control.Baselines.Example1AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Control.Baselines.Example2AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Control.Baselines.Example2HelixTunedAntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Control.Baselines.Example3AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1Mass20AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1WindGustAntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15AntiWindupFeedforwardPID
   base_controller: Config/controllers/enhanced_pid/default.yaml
   verification_scope: >
     Full Example1/2/3 official scenarios and mass/wind/rotor-loss robustness
@@ -33,7 +33,7 @@ implementation_status:
 
 model_interface:
   replacement_component: controller3_2
-  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  compatible_source_model: MoSimQuadrotorModel.Vehicle.Blocks.Controller.Controller
   implementation_target:
     - Modelica project-owned controller
     - Modelica project-owned Example1/2/3 and robustness clones

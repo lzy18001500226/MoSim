@@ -20,7 +20,7 @@ implementation_status:
 
 model_interface:
   replacement_component: controller3_2
-  compatible_source_model: QuadrotorModel.Blocks.Controller.Controller
+  compatible_source_model: MoSimQuadrotorModel.Vehicle.Blocks.Controller.Controller
   implementation_target:
     - Sysblock subsystem
     - Modelica controller class

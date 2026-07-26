@@ -24,11 +24,14 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from current_model_entry_map_lib import ROOT, model_declaration
+from current_model_entry_map_lib import ROOT, model_declaration, model_topology_sha256
 
 
 MAP_PATH = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
-CANONICAL_SYSBLOCKS_ROOT = ROOT / "Models" / "MoSimQuadrotorModel" / "Controllers" / "Sysblocks"
+CANONICAL_SYSBLOCKS_ROOT = (
+    ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Implementations" / "Sysblocks"
+)
+GRAPHICAL_ROOT = ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Implementations"
 DEFAULT_OUTPUT = (
     ROOT
     / "Results"
@@ -94,17 +97,20 @@ def repo_path(path: Path) -> str:
         raise QueueError(f"Path escapes project root: {path}") from exc
 
 
-def static_indicators(path: Path) -> dict[str, Any]:
+def static_indicators(path: Path, *, model_class_override: str | None = None) -> dict[str, Any]:
     if not path.is_file():
         raise QueueError(f"Review target is missing: {path}")
     text = path.read_text(encoding="utf-8")
     within, name = model_declaration(text)
-    model_class = f"{within}.{name}" if within else name
+    declared_model_class = f"{within}.{name}" if within else name
+    model_class = model_class_override or declared_model_class
     return {
         "source_kind": "static_source_preflight_only",
         "model_file": repo_path(path),
         "model_class": model_class,
+        "declared_model_class": declared_model_class,
         "model_sha256": sha256_file(path),
+        "model_topology_sha256": model_topology_sha256(path),
         "placement_count": len(re.findall(r"\bPlacement\s*\(", text)),
         "connect_count": len(re.findall(r"\bconnect\s*\(", text)),
         "line_annotation_count": len(re.findall(r"\bLine\s*\(", text)),
@@ -115,23 +121,60 @@ def static_indicators(path: Path) -> dict[str, Any]:
     }
 
 
-def fixed_internal_target(source_wrapper_path: Path) -> dict[str, Any]:
+FIXED_GRAPHICAL_TARGETS: dict[str, dict[str, str]] = {
+    "fixed_awff_pid": {
+        "source_controller": "AWFF_FullControllerEquation_Sysblock",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_FullControllerFlatGraphical_Sysblock",
+        "target_kind": "native_flat_awff_graphical_controller_core",
+    },
+    "fixed_awff_l1_residual": {
+        "source_controller": "AWFF_L1ResidualControllerEquation_Sysblock",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
+        "target_kind": "nested_native_l1_residual_graphical_controller_core",
+    },
+    "fixed_awff_l1_indi": {
+        "source_controller": "AWFF_INDIControllerEquation_Sysblock",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock",
+        "target_kind": "nested_native_l1_indi_graphical_controller_core",
+    },
+    "fixed_linear_mpc_l1_indi": {
+        "source_controller": "AWFF_LinearMPCOuterLoopControllerEquation_Sysblock",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
+        "target_kind": "nested_native_linear_mpc_l1_indi_graphical_controller_core",
+    },
+    "fixed_qp_nmpc_l1_indi_cbf": {
+        "source_controller": "AWFF_QPNMPCSafetyController_Sysblock",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL",
+        "target_kind": "native_direct_qp_nmpc_safety_graphical_controller_core",
+    },
+}
+
+
+def fixed_internal_target(scheme_id: str, source_wrapper_path: Path) -> dict[str, Any]:
+    spec = FIXED_GRAPHICAL_TARGETS.get(scheme_id)
+    if spec is None:
+        raise QueueError(f"No fixed-chain graphical target is registered for {scheme_id}")
     text = source_wrapper_path.read_text(encoding="utf-8")
     match = re.search(r"^\s*([A-Za-z_]\w*)\s+controller3_2\b", text, re.MULTILINE)
     if not match:
         raise QueueError(f"Cannot locate controller3_2 inside fixed source wrapper: {source_wrapper_path}")
     controller_name = match.group(1)
-    controller_path = CANONICAL_SYSBLOCKS_ROOT / f"{controller_name}.mo"
-    indicators = static_indicators(controller_path)
-    if indicators["model_class"].rsplit(".", 1)[-1] != controller_name:
+    if controller_name != spec["source_controller"]:
         raise QueueError(
-            f"Fixed source wrapper {source_wrapper_path} references {controller_name}, but target declares {indicators['model_class']}"
+            f"Fixed source wrapper {source_wrapper_path} references {controller_name}, expected {spec['source_controller']}"
         )
+    controller_path = ROOT / spec["model_file"]
+    indicators = static_indicators(controller_path, model_class_override=spec["model_class"])
     return {
-        "review_target_kind": "internal_controller_referenced_by_whole_aircraft_wrapper",
+        "review_target_kind": spec["target_kind"],
         "review_target": indicators,
-        "wrapper_risk": "The mapped entry is a formal alias of a whole-aircraft closed-loop wrapper. Review the source wrapper's referenced controller3_2 model first; alias and wrapper are integration context only and cannot substitute for an internal controller-layout verdict.",
-        "review_note_zh": "当前入口是固定整机链的正式别名；先审查源整机包装器中 controller3_2 指向的内部控制器，别名和整机包装器只用于核对接入关系。",
+        "wrapper_risk": "The mapped entry is a formal alias of a whole-aircraft closed-loop wrapper. Its equation-shell controller3_2 remains integration provenance only. G5 reviews the registered current graphical control-law core instead; neither the alias nor the whole-aircraft wrapper can substitute for an internal-layout verdict.",
+        "review_note_zh": "当前入口是固定整机链的正式别名；源整机包装器中的 controller3_2 公式壳只用于核对接入来源。G5 审查已登记的当前图形化控制律核，别名和整机包装器不能替代内部结构判定。",
     }
 
 
@@ -144,6 +187,8 @@ def pending_graphical_row(row: dict[str, Any]) -> dict[str, Any]:
         )
     if target["model_sha256"] != row["current_model_sha256"]:
         raise QueueError(f"{row['scheme_id']}: current-map hash drift")
+    if target["model_topology_sha256"] != row["current_model_topology_sha256"]:
+        raise QueueError(f"{row['scheme_id']}: current-map topology fingerprint drift")
     return {
         "scheme_id": row["scheme_id"],
         "display_name_zh": row.get("display_name_zh"),
@@ -194,8 +239,10 @@ def pending_fixed_row(row: dict[str, Any]) -> dict[str, Any]:
         )
     if wrapper["model_sha256"] != row["current_model_sha256"]:
         raise QueueError(f"{row['scheme_id']}: current-map wrapper hash drift")
+    if wrapper["model_topology_sha256"] != row["current_model_topology_sha256"]:
+        raise QueueError(f"{row['scheme_id']}: current-map wrapper topology fingerprint drift")
     source_wrapper_path, source_wrapper = fixed_source_wrapper(row)
-    internal = fixed_internal_target(source_wrapper_path)
+    internal = fixed_internal_target(str(row["scheme_id"]), source_wrapper_path)
     return {
         "scheme_id": row["scheme_id"],
         "display_name_zh": row.get("display_name_zh"),
@@ -357,6 +404,8 @@ def validate_queue(queue: dict[str, Any]) -> list[str]:
             errors.append(f"{row.get('scheme_id')}: review target file is missing")
         elif not str(target["model_file"]).startswith("Models/MoSimQuadrotorModel/"):
             errors.append(f"{row.get('scheme_id')}: live review target must stay below the formal model root")
+        elif not isinstance(target.get("model_topology_sha256"), str) or len(str(target.get("model_topology_sha256"))) != 64:
+            errors.append(f"{row.get('scheme_id')}: review target must include a topology fingerprint")
     for row in pending:
         if row.get("category") == "fixed_integrated" and "wrapper_static_indicators" not in row:
             errors.append(f"{row.get('scheme_id')}: fixed chain must declare wrapper risk")

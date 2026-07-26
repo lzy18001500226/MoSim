@@ -16,7 +16,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 
-FORMAL_DYNAMICS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics"
+FORMAL_DYNAMICS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Dynamics"
 FORMAL_PARAMETERS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters"
 RETIRED_ROOTS = (
     ROOT / "Models" / "QuadrotorExperiments",
@@ -430,24 +430,33 @@ TARGETS: list[dict[str, Any]] = [
 PARAMETER_TARGET = {
     "formal_target": "MoSimQuadrotorModel.Parameters.Sunray150ParameterProvenance",
     "implementation_file": "Models/MoSimQuadrotorModel/Parameters/package.mo",
+    "profile_record_file": "Models/MoSimQuadrotorModel/Parameters/Sunray150VirtualPx4Classic.mo",
     "check_phase": 0,
-    "expected_fields": [
-        "geometry_source",
+    "expected_package_fields": [
+        "Sunray150VirtualPx4Classic",
         "geometry_claim_boundary",
         "rotor_center_mworks_dronefixed",
         "non_geometry_seed_source",
         "mass_kg",
-        "body_inertia_diagonal_kg_m2",
         "sdf_motor_constant",
         "mworks_lift_coefficient",
         "yaw_moment_ratio_seed",
-        "motor_time_constant_up_s",
-        "motor_time_constant_down_s",
         "enable_rotor_gyro_default",
         "enable_body_drag_default",
         "enable_angular_damping_default",
         "identification_status",
         "do_not_promote_boundary",
+    ],
+    "expected_profile_record_fields": [
+        "profile_id",
+        "geometry_source",
+        "body_inertia_diagonal_kg_m2",
+        "gravity_mps2",
+        "mworks_controller_hover_percentage",
+        "px4ctrl_hov_percent",
+        "motor_time_constant_up_s",
+        "motor_time_constant_down_s",
+        "Virtual simulation seed only; not real-aircraft system identification truth",
     ],
     "pass_fail_boundary": "parameter record must remain source-labeled provenance only and not identified Sunray150 truth.",
 }
@@ -479,6 +488,9 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
     formal_package = read_text(FORMAL_DYNAMICS_DIR / "package.mo")
     formal_order = read_order(FORMAL_DYNAMICS_DIR / "package.order")
     parameter_package = read_text(FORMAL_PARAMETERS_DIR / "package.mo")
+    parameter_profile_record = read_text(
+        FORMAL_PARAMETERS_DIR / "Sunray150VirtualPx4Classic.mo"
+    )
     parameter_order = read_order(FORMAL_PARAMETERS_DIR / "package.order")
 
     if formal_order != FORMAL_PACKAGE_ORDER:
@@ -486,7 +498,7 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
     for retired_root in RETIRED_ROOTS:
         if retired_root.exists():
             findings.append(f"retired top-level model root remains present: {rel(retired_root)}")
-    if parameter_order != ["Sunray150ParameterProvenance"]:
+    if parameter_order != ["Sunray150VirtualPx4Classic", "Sunray150ParameterProvenance"]:
         findings.append(f"Parameters package.order mismatch: {parameter_order!r}")
 
     matrix: list[dict[str, Any]] = []
@@ -499,7 +511,7 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
         formal_source_present = formal_source_path.exists()
         if requires_dedicated_formal_source(formal_name) and not formal_source_present:
             findings.append(
-                f"MoSimQuadrotorModel.Dynamics.{formal_name}: missing dedicated formal source file "
+                f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}: missing dedicated formal source file "
                 f"{rel(formal_source_path)!r}"
             )
         formal_text = read_text(formal_source_path) if formal_source_present else formal_package
@@ -508,13 +520,13 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
             findings,
             formal_text,
             f"model {formal_name}",
-            f"MoSimQuadrotorModel.Dynamics.{formal_name}",
+            f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}",
         )
         assert_contains(
             findings,
             formal_text,
-            "within MoSimQuadrotorModel.Dynamics;",
-            f"MoSimQuadrotorModel.Dynamics.{formal_name}",
+            "within MoSimQuadrotorModel.Vehicle.Dynamics;",
+            f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}",
         )
         assert_contains(
             findings,
@@ -532,9 +544,9 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
 
         matrix.append(
             {
-                "formal_target": f"MoSimQuadrotorModel.Dynamics.{formal_name}",
+                "formal_target": f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}",
                 "retired_predecessor": target["compat_name"],
-                "implementation_model": f"MoSimQuadrotorModel.Dynamics.{implementation_model}",
+                "implementation_model": f"MoSimQuadrotorModel.Vehicle.Dynamics.{implementation_model}",
                 "implementation_file": rel(implementation_path),
                 "formal_source_file": rel(formal_source_path) if formal_source_present else rel(FORMAL_DYNAMICS_DIR / "package.mo"),
                 "formal_source_present": formal_source_present,
@@ -549,8 +561,15 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
             }
         )
 
-    for field in PARAMETER_TARGET["expected_fields"]:
+    for field in PARAMETER_TARGET["expected_package_fields"]:
         assert_contains(findings, parameter_package, field, PARAMETER_TARGET["implementation_file"])
+    for field in PARAMETER_TARGET["expected_profile_record_fields"]:
+        assert_contains(
+            findings,
+            parameter_profile_record,
+            field,
+            PARAMETER_TARGET["profile_record_file"],
+        )
 
     return matrix, findings
 
@@ -575,7 +594,7 @@ def build_future_surface(matrix: list[dict[str, Any]]) -> dict[str, Any]:
             "Stop on demo, login, activation, authorization, GUI error-report, mixed license, visible unknown, unavailable, or unknown GUI/API state.",
             "Use targeted model_manager(load_file, force_reload=true) followed by check_model(model_names=[...]); avoid check_model(reload_mo_path=...).",
             "Do not call ClearAll or ChangeDirectory.",
-            "Do not edit References/MWORKS/MoSimQuadrotorModel.Plant.",
+            "Do not edit References/MWORKS/MoSimQuadrotorModel.Vehicle.",
         ],
         "check_model_target_order": check_targets,
         "minimal_simulate_order_after_all_checks_pass": sim_targets,
@@ -586,17 +605,17 @@ def build_future_surface(matrix: list[dict[str, Any]]) -> dict[str, Any]:
         ],
         "optional_probe_queue": [
             {
-                "target": "MoSimQuadrotorModel.Dynamics.ActuatorMappedWrapperSurface",
+                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.ActuatorMappedWrapperSurface",
                 "probe": "normalized_actuator_command feeds signed_visual_rotor_speed_command into wrapper.motor_command",
                 "not_claimed_by_023": True,
             },
             {
-                "target": "MoSimQuadrotorModel.Dynamics.OptionalDampingGyroLayer",
+                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.OptionalDampingGyroLayer",
                 "probe": "default_disabled_force_delta and default_disabled_moment_delta remain zero under default flags",
                 "not_claimed_by_023": True,
             },
             {
-                "target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
+                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter",
                 "probe": "applied_force_body and applied_torque_body reach explicit minimal MultiBody body through WorldForceAndTorque",
                 "not_claimed_by_023": True,
             },
@@ -674,7 +693,7 @@ def write_source_materialization_rationale(path: Path) -> None:
     lines = [
         "# Source Anchor Materialization Rationale",
         "",
-        "023 inspects the canonical `MoSimQuadrotorModel.Dynamics` implementation package, `package.order`, and the `MoSimQuadrotorModel.Parameters` provenance record.",
+        "023 inspects the canonical `MoSimQuadrotorModel.Vehicle.Dynamics` implementation package, `package.order`, and the `MoSimQuadrotorModel.Parameters` provenance record.",
         "",
         "The current formal source-surface rule is:",
         "",
@@ -699,7 +718,7 @@ def write_source_materialization_rationale(path: Path) -> None:
         "",
         "Static acceptance basis:",
         "",
-        "- The 13 formal Dynamics entries are present and ordered in `Models/MoSimQuadrotorModel/Dynamics/package.order`.",
+        "- The 13 formal Dynamics entries are present and ordered in `Models/MoSimQuadrotorModel/Vehicle/Dynamics/package.order`.",
         "- All formal Dynamics entries exist as canonical source files with their own implementation anchors.",
         "- `Dynamics/package.mo` is a package shell and does not duplicate model definitions.",
         "- No second package is needed to load any Dynamics entry.",
@@ -744,14 +763,14 @@ def main() -> int:
         "request_id": REQUEST_ID,
         "source_files_changed_by_023": [],
         "source_files_materialized_by_current_static_alignment": [
-            "Models/MoSimQuadrotorModel/Dynamics/HoverSmoke.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/YawStepSmoke.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/RotorEffectivenessSmoke.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/WrapperHoverSmoke.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/WrapperYawStepSmoke.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchHoverSmoke.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchYawStepSmoke.mo",
-            "Models/MoSimQuadrotorModel/Dynamics/package.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/HoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/YawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorEffectivenessSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperHoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperYawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchHoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchYawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/package.mo",
         ],
         "script_files_changed_by_023": [
             "Scripts/mworks/validate_mosimquad_formal_smoke_surface.py"

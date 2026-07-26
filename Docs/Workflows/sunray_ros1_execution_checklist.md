@@ -253,7 +253,7 @@ Do not use `Publish Point` as a normal target input because it can only select
 rendered point-cloud/geometry surfaces and can place goals inside obstacles.
 `/clicked_point` is diagnostic-only unless the run explicitly enables it.
 
-Use `启动Diff交互审核.cmd` at the repository root as the normal Windows
+Use `cmd/启动Diff交互审核.cmd` as the normal Windows
 double-click entry for manual Diff-Planner review. The implementation script is
 `Scripts/sunray/start_diff_interactive_review.ps1`, but do not double-click the
 `.ps1` file because Windows may open it as text instead of executing it. The
@@ -314,8 +314,8 @@ trajectory in the narrow height band above. If the raw planner still climbs
 toward the ceiling, treat that as a planner/map-parameter problem before tuning
 px4ctrl.
 
-Use `关闭Diff交互审核.cmd` at the repository root to stop an active Diff-Planner
-interactive review. `关闭所有RViz窗口.cmd` only closes RViz windows; it does not
+Use `cmd/关闭Diff交互审核.cmd` to stop an active Diff-Planner
+interactive review. `cmd/关闭所有RViz窗口.cmd` only closes RViz windows; it does not
 stop Gazebo, PX4, MAVROS, Diff-Planner, px4ctrl, or the Goal4 adapter/helper
 nodes. Before starting a new Diff review after a failed or abandoned run, stop
 the previous Diff review first; otherwise stale ROS nodes can keep old
@@ -407,7 +407,7 @@ controller, takeoff, target-hold, separation, or mission failures. Each run
 must retain `STARTUP_ATTEMPT_SUMMARY.json` with per-UAV MAVROS, odom, raw
 LiDAR, and Gazebo `MoSimLivoxLoadEnter` evidence.
 
-Current G9 official-PID generated-family Goal5 runtime reinjection closeout,
+Historical G9 official-PID generated-family Goal5 runtime reinjection closeout,
 2026-06-30 CST:
 
 ```text
@@ -508,10 +508,10 @@ or RViz. Rebuild the closeout package with:
 python Scripts\sunray\px4ctrl_golden_slice\build_g8_mworks_full_loop_closeout.py
 ```
 
-or double-click the repository-root helper:
+or double-click the `cmd/` helper:
 
 ```text
-build_g8_mworks_closeout.cmd
+cmd/build_g8_mworks_closeout.cmd
 ```
 
 Only rerun G7B/G7C runtime gates when a generated controller or scoped

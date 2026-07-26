@@ -54,7 +54,7 @@ def default_wrapper_candidates() -> list[str]:
 
 DEFAULT_WRAPPER_CANDIDATES = default_wrapper_candidates()
 DEFAULT_MODEL_FILE = r"C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\package.mo"
-DEFAULT_MODEL_NAME = "MoSimQuadrotorModel.Plant.Examples.Example1"
+DEFAULT_MODEL_NAME = "MoSimQuadrotorModel.Vehicle.Examples.Example1"
 GUI_ANIMATION_TIMEOUT_S = 180
 WINDOWS_NATIVE_RESULT_PATH_LIMIT = 180
 DEFAULT_VARIABLES = {
@@ -293,6 +293,41 @@ def read_result_series(
     return series_by_alias
 
 
+def open_existing_native_result_for_reading(
+    client: JsonlMcpClient,
+    native_result: Path,
+) -> dict[str, Any]:
+    """Open one project-local Result.msr without loading or simulating a model."""
+    project_root = Path(__file__).resolve().parents[2]
+    resolved = native_result.resolve()
+    try:
+        resolved.relative_to(project_root)
+    except ValueError as exc:
+        raise ValueError(f"--read-native-result must remain under the project root: {resolved}") from exc
+    if not resolved.is_file():
+        raise FileNotFoundError(f"Existing native result is missing: {resolved}")
+
+    source = f"""
+import mworks.sysplorer as ModelingPy
+
+results = {{}}
+try:
+    results["open_result"] = ModelingPy.OpenResult({windows_path(resolved)!r})
+except Exception as exc:
+    results["open_result_error"] = repr(exc)
+RUN_SCRIPT_RESULT = results
+"""
+    result = client.call_tool(
+        "call_code",
+        {"mode": "run_script", "payload": {"python_source": source}},
+        timeout_s=60,
+    )
+    nested = result.get("run_script_result") if isinstance(result.get("run_script_result"), dict) else {}
+    if not result.get("ok") or nested.get("open_result") is not True:
+        raise RuntimeError(f"Native Result.msr OpenResult failed: {result}")
+    return result
+
+
 def simulate_modelingpy(
     client: JsonlMcpClient,
     *,
@@ -302,28 +337,100 @@ def simulate_modelingpy(
     verify_result_var: str,
     verify_time_point: str = "end",
     interval: float | None = None,
+    simulation_api: str = "simulate_model",
+    simulate_ex_options: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if len(target_time) != 2:
         raise ValueError(f"target_time must contain start and stop time, got: {target_time}")
+    if simulation_api not in {"simulate_model", "simulate_model_ex"}:
+        raise ValueError(f"Unsupported simulation_api: {simulation_api}")
     start_time = float(target_time[0])
     stop_time = float(target_time[1])
     result_dir = windows_path(native_result_dir) if native_result_dir is not None else ""
     interval_arg = "None" if interval is None else repr(float(interval))
-    script = f"""
-import mworks.sysplorer as ModelingPy
-
-results = {{}}
-try:
-    results["simulate"] = ModelingPy.SimulateModel(
+    if simulation_api == "simulate_model":
+        api_name = "ModelingPy.SimulateModel"
+        simulation_call = f"""ModelingPy.SimulateModel(
         {model_name!r},
         startTime={start_time!r},
         stopTime={stop_time!r},
         interval={interval_arg},
         simMode=0,
         path={result_dir!r},
-    )
+    )"""
+    else:
+        options = {"startTime": start_time, "stopTime": stop_time}
+        if interval is not None:
+            options["interval"] = float(interval)
+        if simulate_ex_options:
+            protected = {"startTime", "stopTime", "interval"}
+            conflicting = sorted(protected.intersection(simulate_ex_options))
+            if conflicting:
+                raise ValueError(
+                    "SimulateModelEx options must not override target-time fields: "
+                    + ", ".join(conflicting)
+                )
+            options.update(simulate_ex_options)
+        api_name = "ModelingPy.SimulateModelEx"
+        simulation_call = f"ModelingPy.SimulateModelEx({model_name!r}, {options!r})"
+    script = f"""
+import mworks.sysplorer as ModelingPy
+import json
+
+results = {{}}
+results["simulation_api"] = {api_name!r}
+
+def _json_safe(value):
+    try:
+        json.dumps(value, ensure_ascii=False)
+        return value
+    except Exception:
+        return repr(value)
+
+def _capture_simulation_diagnostic(api_name):
+    diagnostic = {{"api": api_name}}
+    try:
+        member = getattr(ModelingPy, api_name)
+        value = member() if callable(member) else member
+        diagnostic["ok"] = True
+        diagnostic["data"] = _json_safe(value)
+    except Exception as exc:
+        diagnostic["ok"] = False
+        diagnostic["error"] = repr(exc)
+    return diagnostic
+
+try:
+    results["simulate"] = {simulation_call}
 except Exception as exc:
     results["simulate_error"] = repr(exc)
+
+# Capture the solver/compiler state before any result APIs can overwrite the
+# active MWORKS diagnostic buffer.  Some formal runners emit a fresh but empty
+# Result.msr after a rejected solver start, so result readability is not a
+# substitute for this immediate state capture.
+results["post_simulation_diagnostics"] = {{
+    api_name: _capture_simulation_diagnostic(api_name)
+    for api_name in (
+        "GetSimulationExitState",
+        "GetSimulationState",
+        "GetCurrentSimTime",
+        "MessageText",
+        "GetLastErrors",
+    )
+}}
+
+last_errors_diagnostic = results["post_simulation_diagnostics"]["GetLastErrors"]
+if last_errors_diagnostic.get("ok"):
+    last_errors = last_errors_diagnostic.get("data")
+    if isinstance(last_errors, (list, tuple)):
+        results["last_errors"] = [str(item) for item in last_errors]
+    elif last_errors is None:
+        results["last_errors"] = []
+    else:
+        results["last_errors"] = [str(last_errors)]
+else:
+    results["last_errors"] = []
+    results["last_errors_error"] = last_errors_diagnostic.get("error")
 
 try:
     results["result_probe_type"] = ModelingPy.GetResultVariableInfo({verify_result_var!r}, "Type")
@@ -349,9 +456,13 @@ RUN_SCRIPT_RESULT = results
     readable = bool(nested.get("has_readable_result")) and "get_var_value_at" in nested
     return {
         "ok": bool(run_result.get("ok")) and (simulate_ok or readable),
-        "api": "ModelingPy.SimulateModel",
+        "api": api_name,
+        "simulation_options": simulate_ex_options if simulation_api == "simulate_model_ex" else None,
         "data": simulate_ok,
         "simulate_api_reported_failure": not simulate_ok,
+        "last_errors": nested.get("last_errors", []),
+        "last_errors_error": nested.get("last_errors_error"),
+        "post_simulation_diagnostics": nested.get("post_simulation_diagnostics", {}),
         "result_verification": {
             "result_probe": {
                 "ok": bool(nested.get("has_readable_result")),
@@ -435,6 +546,58 @@ def write_metrics(
             writer.writerow([key, "" if value is None else value])
 
 
+def export_existing_native_result(
+    args: argparse.Namespace,
+    client: JsonlMcpClient,
+    *,
+    variables: dict[str, str],
+    active_log_output: Path,
+    final_log_output: Path,
+) -> dict[str, Any]:
+    """Export an already-created native result without changing solver state."""
+    if not args.no_gui_result_viewer or not args.no_gui_open:
+        raise ValueError(
+            "--read-native-result requires --no-gui-result-viewer and --no-gui-open; "
+            "this recovery path only reads an existing result and must not create GUI review state"
+        )
+
+    native_result = args.read_native_result.resolve()
+    open_existing_native_result_for_reading(client, native_result)
+    result_series = read_result_series(client, args.model_name, variables)
+    write_csv(result_series, variables, args.raw_output)
+    write_metrics(
+        args.raw_output,
+        args.metrics_json,
+        args.metrics_csv,
+        args.scene_id,
+        args.controller_id,
+        args.evidence_level,
+        args.metrics_profile,
+    )
+    if active_log_output != final_log_output:
+        active_log_output.replace(final_log_output)
+
+    print(f"MCP log: {final_log_output}")
+    print(f"Raw CSV: {args.raw_output}")
+    print(f"Metrics JSON: {args.metrics_json}")
+    print(f"Metrics CSV: {args.metrics_csv}")
+    print(f"Native result: {native_result}")
+    print(f"Rows: {len(result_series['time'])}")
+    print("Check model: skipped; existing native Result.msr was opened read-only")
+    print("Simulate model: skipped; existing native Result.msr was exported")
+    return {
+        "raw_output": args.raw_output,
+        "metrics_json": args.metrics_json,
+        "metrics_csv": args.metrics_csv,
+        "native_result": native_result,
+        "gui_native_result": None,
+        "gui_result": None,
+        "log_output": final_log_output,
+        "rows": len(result_series["time"]),
+        "mode": "read_existing_native_result",
+    }
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -454,6 +617,29 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--model-name", default=DEFAULT_MODEL_NAME)
     parser.add_argument("--target-time", default="0,50", help="Comma-separated simulation target time range")
+    parser.add_argument(
+        "--simulation-interval",
+        type=float,
+        default=None,
+        help=(
+            "Optional SimulateModel output interval for a controlled diagnostic. "
+            "When omitted, the model experiment interval is preserved."
+        ),
+    )
+    parser.add_argument(
+        "--simulation-api",
+        choices=("simulate_model", "simulate_model_ex"),
+        default="simulate_model",
+        help="Use SimulateModel (default) or a bounded SimulateModelEx diagnostic.",
+    )
+    parser.add_argument(
+        "--simulate-ex-options-json",
+        default="{}",
+        help=(
+            "JSON object merged into SimulateModelEx after target-time fields are fixed; "
+            "for example '{\"algorithm\": \"Euler\", \"fixedOrInitStepSize\": 0.01}'."
+        ),
+    )
     parser.add_argument("--raw-output", type=Path, default=Path("Results/official/example1_step/official_example1_pid_baseline/raw/official_example1_pid_baseline.csv"))
     parser.add_argument("--metrics-json", type=Path, default=Path("Results/official/example1_step/official_example1_pid_baseline/metrics/official_example1_pid_baseline.json"))
     parser.add_argument("--metrics-csv", type=Path)
@@ -463,6 +649,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=Path,
         default=None,
         help="Directory for Sysplorer native result files used by GUI result viewer and animation",
+    )
+    parser.add_argument(
+        "--read-native-result",
+        type=Path,
+        default=None,
+        help=(
+            "Open one existing project-local Result.msr and export declared variables without loading, "
+            "checking, or simulating the model. Requires --no-gui-result-viewer and --no-gui-open."
+        ),
     )
     parser.add_argument("--scene-id", default="official_example1_pid_baseline")
     parser.add_argument("--controller-id", default="pid_baseline")
@@ -578,6 +773,18 @@ def wrapper_command(wrapper: str) -> list[str]:
 
 def parse_target_time(target_time: str) -> list[float]:
     return [float(item.strip()) for item in target_time.split(",") if item.strip()]
+
+
+def parse_simulate_ex_options(raw: str) -> dict[str, Any]:
+    try:
+        value = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"--simulate-ex-options-json must be a JSON object: {exc}") from exc
+    if not isinstance(value, dict):
+        raise ValueError("--simulate-ex-options-json must be a JSON object")
+    if any(not isinstance(key, str) for key in value):
+        raise ValueError("--simulate-ex-options-json keys must be strings")
+    return value
 
 
 def prepare_log_output(log_output: Path) -> tuple[Path, Path]:
@@ -737,7 +944,10 @@ RUN_SCRIPT_RESULT = results
     except Exception as exc:
         model_result = {"ok": False, "warning": f"gui_model_open_failed: {exc}"}
 
-    plot_vars = [
+    declared_diagnostic_vars = [
+        value for alias, value in variables.items() if alias != "time"
+    ]
+    plot_vars = declared_diagnostic_vars or [
         variables.get("z", "sensors1_1.PosMea[3]"),
         variables.get("z_ref", "climbePath.position_command[3]"),
         variables.get("x", "sensors1_1.PosMea[1]"),
@@ -858,9 +1068,23 @@ def run_mcp_simulation(
         client.set_log_path(active_log_output)
 
     target_time = parse_target_time(args.target_time)
+    if args.simulation_interval is not None and args.simulation_interval <= 0:
+        raise ValueError("--simulation-interval must be greater than zero when provided")
+    if args.simulation_api == "simulate_model_ex" and args.simulation_interval is not None:
+        raise ValueError(
+            "--simulation-interval applies only to SimulateModel; use --simulate-ex-options-json for SimulateModelEx"
+        )
     variables = {"time": "time"} if args.variable_profile == "diagnostics_declared" else dict(DEFAULT_VARIABLES)
     variables.update(parse_extra_variables(args.override_variable, allow_default_override=True))
     variables.update(parse_extra_variables(args.extra_variable))
+    if args.read_native_result is not None:
+        return export_existing_native_result(
+            args,
+            client,
+            variables=variables,
+            active_log_output=active_log_output,
+            final_log_output=final_log_output,
+        )
     verify_result_var = choose_verify_result_var(args.variable_profile, variables)
     native_result_dir, native_result_manifest = resolve_native_result_dir(
         args.raw_output,
@@ -870,6 +1094,11 @@ def run_mcp_simulation(
     native_result = native_result_file(native_result_dir, args.model_name)
     gui_result_viewer = not args.no_gui_result_viewer
     gui_open = gui_result_viewer and not args.no_gui_open
+    if args.simulation_api == "simulate_model_ex" and gui_result_viewer:
+        raise ValueError(
+            "--simulation-api simulate_model_ex requires --no-gui-result-viewer because "
+            "SimulateModelEx does not bind the diagnostic to a requested native-result path"
+        )
     separate_gui_review = gui_open and (
         should_use_short_gui_review(args, target_time)
         or args.gui_review_native_result_dir is not None
@@ -929,7 +1158,18 @@ def run_mcp_simulation(
         if not check_result.get("ok"):
             raise RuntimeError(f"Model check failed: {check_result}")
 
-        if gui_result_viewer and not separate_gui_review:
+        if args.simulation_api == "simulate_model_ex":
+            sim_result = simulate_modelingpy(
+                client,
+                model_name=args.model_name,
+                target_time=target_time,
+                native_result_dir=None,
+                verify_result_var=verify_result_var,
+                verify_time_point="end",
+                simulation_api=args.simulation_api,
+                simulate_ex_options=args.simulate_ex_options,
+            )
+        elif gui_result_viewer and not separate_gui_review:
             sim_result = simulate_modelingpy(
                 client,
                 model_name=args.model_name,
@@ -937,6 +1177,17 @@ def run_mcp_simulation(
                 native_result_dir=native_result_dir,
                 verify_result_var=verify_result_var,
                 verify_time_point="end",
+                interval=args.simulation_interval,
+            )
+        elif args.simulation_interval is not None:
+            sim_result = simulate_modelingpy(
+                client,
+                model_name=args.model_name,
+                target_time=target_time,
+                native_result_dir=None,
+                verify_result_var=verify_result_var,
+                verify_time_point="end",
+                interval=args.simulation_interval,
             )
         else:
             sim_result = client.call_tool(
@@ -1042,6 +1293,7 @@ def run_mcp_simulation(
 
 def main() -> int:
     args = parse_args()
+    args.simulate_ex_options = parse_simulate_ex_options(args.simulate_ex_options_json)
     if args.metrics_csv is None:
         args.metrics_csv = args.metrics_json.with_suffix(".csv")
     wrapper = resolve_wrapper(args.wrapper)

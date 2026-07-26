@@ -1,6 +1,6 @@
 # MWORKS实时联合仿真与双GUI接口设计
 
-> 状态：设计冻结、能力待验证，2026-07-18。
+> 状态：50 Hz RT0 已通过；RT1与200 Hz能力待验证，2026-07-19。
 >
 > 本文定义MWORKS实时控制器实验路径、Model Studio配置归属、Flight Console操作语义、
 > Orchestrator状态机和安全回退。本文不证明MWORKS已达到实时频率，也不证明任何实时
@@ -240,10 +240,20 @@ draft
 - 起飞后基础设施不得自动重启任务或控制器；
 - 所有按钮请求携带`request_id`并幂等，重复点击返回同一动作状态。
 
-## 10. 实时性、时钟与数据新鲜度
+## 10. 连接门禁、实时性与数据新鲜度
 
-第一版目标控制频率为50至100 Hz，但该数字是验证目标，不是当前能力声明。RT0必须测出
-MWORKS在当前比赛电脑上的稳定单步执行频率、抖动和最坏延迟，再决定是否开放实时路径。
+Model Studio在线页必须允许起飞前编辑`target_host`、`rt1_udp_port`、`ros_master_uri`、
+`local_advertised_ip`和目标频率。点击“测试连接”后由Orchestrator执行分阶段门禁：地址校验、
+解析、ROS Master XML-RPC、RT1正向请求、RT1返回响应、协议版本、Profile/频率兼容性和RT0
+能力证据。单纯`ping`成功、UDP `sendto`成功或ROS Master可访问都不能证明双向控制链可用。
+
+端点只有在prepare通过后才写入不可变RunManifest；QGC只读显示冻结地址、连接状态和失败原因，
+不得在prepare后独立修改另一套IP/端口。Windows/WSL同机默认自动探测，同时保留人工覆盖。
+
+当前RT0已经验证50 Hz：实测输出约50.03 Hz，P99端到端延迟约28.58 ms，最大command age
+约29.95 ms且无丢包。200 Hz是新的目标能力，不是当前默认能力；100 Hz此前未通过。实施采用
+50/100/200 Hz逐级扫描，只有对应频率RT0通过后才能发布新的Profile version/hash。当前50 Hz
+Profile和证据不得原地改成200 Hz。
 
 每一帧必须携带仿真时间、接收时间和序号。Adapter至少统计：
 
@@ -251,6 +261,10 @@ MWORKS在当前比赛电脑上的稳定单步执行频率、抖动和最坏延�
 - 平均、P95、P99和最大端到端延迟；
 - 乱序、重复、丢帧、输入过期和输出超时；
 - Gazebo仿真时间相对墙钟速度；
+- 每条链路payload与估算wire带宽、主机网卡收发带宽；
+- Windows/WSL进程CPU、内存、GPU、磁盘和网络接口负载；
+- UE接收频率、pose age、FPS、Frame/Game/Draw/GPU耗时和hitch；
+- QGC MAVLink遥测率、序号丢失、RTT和UI刷新率；
 - 连续超时次数和最近一次有效命令年龄。
 
 不得只用QGC刷新率或UE帧率推断控制回路频率。运行前由Profile冻结超时阈值；阈值修改必须
@@ -280,8 +294,16 @@ fallback不是简单启动第二个发布者。切换前后必须证明命令权
 | RT4 定点模式 | `W/A/S/D`参考跟踪 | 前后左右、松键保持、失焦超时和降落通过 |
 | RT5 程控模式 | 8字或等价固定参考 | 与generated-C同场景A/B，轨迹和安全指标通过 |
 
-若RT0不能稳定达到50 Hz，停止实时飞行界面实现，只保留离线/影子诊断路径。每一级失败都
+当前50 Hz是可继续RT1/RT2的回退基线；200 Hz未通过时不阻塞50 Hz影子验证，但禁止把50 Hz
+结果包装为200 Hz能力。若最低50 Hz能力回归失败，停止实时飞行实现，只保留离线/影子诊断。
+每一级失败都
 形成明确blocker，不得跳级用UE动画、预录轨迹或QGC状态代替控制证据。
+
+全链路指标合同见`Config/control_platform/runtime_observability_contract_v1.json`，连接合同见
+`Config/control_platform/mworks_live_connection_contract_v1.json`。控制包在当前固定Schema下
+约为296 B状态帧和152 B命令帧；200 Hz双向纯payload约89.6 kB/s，含UDP/IP头约100.8 kB/s。
+这说明控制链更可能受求解与调度时延限制，但仍必须以同run接口计数器实测带宽，不能只采用
+理论值。
 
 ## 13. 实施拆分与完成定义
 

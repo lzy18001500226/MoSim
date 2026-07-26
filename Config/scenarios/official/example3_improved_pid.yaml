@@ -5,7 +5,7 @@ priority: P0
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Controllers.Baselines.Example3ImprovedPID
+  model_name: MoSimQuadrotorModel.Control.Baselines.Example3ImprovedPID
   model_path_hint: Models/MoSimQuadrotorModel/package.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 8字形运动

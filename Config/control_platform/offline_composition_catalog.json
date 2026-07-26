@@ -3,7 +3,8 @@
   "version": 1,
   "claim_boundary": "Offline MWORKS composition only. No entry is PX4, Gazebo, ROS1, mworks_live, or flight evidence.",
   "generated_wrapper_root": "Results/mworks_generated_profiles",
-  "shared_plant_model": "MoSimQuadrotorModel.ExperimentRunner.Plant.SingleUavPlantAnimation",
+  "shared_plant_model": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly",
+  "shared_plant_legacy_compatibility_alias": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly",
   "execution_policy": {
     "composition_fallback_order": [
       "shared_plant_shared_runner_thin_wrapper",
@@ -55,19 +56,19 @@
   },
   "runners": {
     "ATTITUDE_THRUST": {
-      "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+      "model": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
       "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
     },
     "BODY_RATE_THRUST": {
-      "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.BodyRateThrustRunner",
+      "model": "MoSimQuadrotorModel.Experiment.Runners.BodyRateThrustRunner",
       "offline_inner_owner": "mworks_offline_body_rate_inner_and_allocator_v1"
     },
     "WRENCH": {
-      "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner",
+      "model": "MoSimQuadrotorModel.Experiment.Runners.WrenchRunner",
       "offline_inner_owner": "mworks_offline_control_allocator_v1"
     },
     "ROTOR_COMMAND": {
-      "model": "MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner",
+      "model": "MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner",
       "offline_inner_owner": "controller_owned_rotor_command"
     }
   },
@@ -78,7 +79,7 @@
       "adapter_output_variant": "ATTITUDE_THRUST",
       "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1",
       "codegen_online_reuse_state": "fixture_only_not_reusable",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineAttitudeThrustController",
+      "adapter_model": "MoSimQuadrotorModel.Control.Baselines.OfflineAttitudeThrustController",
       "status": "fixture",
       "entry_kind": "boundary_fixture",
       "mapping_state": "NOT_APPLICABLE",
@@ -90,7 +91,7 @@
       "adapter_output_variant": "BODY_RATE_THRUST",
       "offline_inner_owner": "mworks_offline_body_rate_inner_and_allocator_v1",
       "codegen_online_reuse_state": "fixture_only_not_reusable",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineBodyRateThrustController",
+      "adapter_model": "MoSimQuadrotorModel.Control.Baselines.OfflineBodyRateThrustController",
       "status": "fixture",
       "entry_kind": "boundary_fixture",
       "mapping_state": "NOT_APPLICABLE",
@@ -102,7 +103,7 @@
       "adapter_output_variant": "WRENCH",
       "offline_inner_owner": "mworks_offline_control_allocator_v1",
       "codegen_online_reuse_state": "fixture_only_not_reusable",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfflineWrenchController",
+      "adapter_model": "MoSimQuadrotorModel.Control.Baselines.OfflineWrenchController",
       "status": "fixture",
       "entry_kind": "boundary_fixture",
       "mapping_state": "NOT_APPLICABLE",
@@ -115,7 +116,7 @@
       "offline_inner_owner": "legacy_complete_controller_bundle",
       "boundary_conversion_state": "explicit_legacy_bundle_offline_only",
       "codegen_online_reuse_state": "blocked_requires_native_boundary_adapter",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.OfficialPIDRotorAdapter",
+      "adapter_model": "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter",
       "status": "available",
       "entry_kind": "legacy_bundle",
       "mapping_state": "RESOLVED_REGISTRY_MAPPING",
@@ -134,7 +135,7 @@
       "adapter_output_variant": "ROTOR_COMMAND",
       "offline_inner_owner": "legacy_complete_controller_bundle",
       "codegen_online_reuse_state": "blocked_unresolved_registry_mapping",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.ImprovedPIDRotorAdapter",
+      "adapter_model": "MoSimQuadrotorModel.Control.Adapters.ImprovedPIDRotorAdapter",
       "status": "available",
       "entry_kind": "legacy_bundle",
       "mapping_state": "UNRESOLVED_LEGACY_ALIAS",
@@ -148,7 +149,7 @@
       "offline_inner_owner": "legacy_complete_controller_bundle",
       "boundary_conversion_state": "explicit_legacy_bundle_offline_only",
       "codegen_online_reuse_state": "blocked_requires_native_boundary_adapter",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.AWFFRotorAdapter",
+      "adapter_model": "MoSimQuadrotorModel.Control.Adapters.AWFFRotorAdapter",
       "status": "available",
       "entry_kind": "legacy_bundle",
       "mapping_state": "RESOLVED_REGISTRY_MAPPING",
@@ -168,7 +169,7 @@
       "offline_inner_owner": "legacy_complete_controller_bundle",
       "boundary_conversion_state": "explicit_legacy_bundle_offline_only",
       "codegen_online_reuse_state": "blocked_requires_native_boundary_adapter",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.INDIRotorAdapter",
+      "adapter_model": "MoSimQuadrotorModel.Control.Adapters.INDIRotorAdapter",
       "status": "available",
       "entry_kind": "legacy_bundle",
       "mapping_state": "RESOLVED_REGISTRY_MAPPING",
@@ -187,7 +188,7 @@
       "adapter_output_variant": "ROTOR_COMMAND",
       "offline_inner_owner": "legacy_complete_controller_bundle",
       "codegen_online_reuse_state": "blocked_unresolved_registry_mapping",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.LinearMPCRotorAdapter",
+      "adapter_model": "MoSimQuadrotorModel.Control.Adapters.LinearMPCRotorAdapter",
       "status": "available",
       "entry_kind": "legacy_bundle",
       "mapping_state": "UNRESOLVED_LEGACY_ALIAS",
@@ -200,7 +201,7 @@
       "adapter_output_variant": "ROTOR_COMMAND",
       "offline_inner_owner": "legacy_complete_controller_bundle",
       "codegen_online_reuse_state": "blocked_unresolved_registry_mapping",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.L1RotorAdapter",
+      "adapter_model": "MoSimQuadrotorModel.Control.Adapters.L1RotorAdapter",
       "status": "available",
       "entry_kind": "legacy_bundle",
       "mapping_state": "UNRESOLVED_LEGACY_ALIAS",
@@ -222,8 +223,8 @@
       "mapping_blocker": "The QP/NMPC safety bundle is numerically blocked and has no accepted one-to-one registry mapping.",
       "disabled_reason": "Current shared-runner and dedicated-model MWORKS runs are numerically unstable; keep visible but disabled until a versioned implementation passes the short numeric gate.",
       "known_backend_models": [
-        "MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_QPNMPCSafetyController_Sysblock",
-        "MoSimQuadrotorModel.Robustness.Scenarios.Example1QPNMPCSafetySysblockClosedLoop"
+        "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_QPNMPCSafetyController_Sysblock",
+        "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1QPNMPCSafetySysblockClosedLoop"
       ]
     },
     "fault_compensation": {
@@ -232,7 +233,7 @@
       "adapter_output_variant": "ROTOR_COMMAND",
       "offline_inner_owner": "unresolved_legacy_fault_bundle",
       "codegen_online_reuse_state": "blocked_unresolved_registry_mapping",
-      "adapter_model": "MoSimQuadrotorModel.ExperimentRunner.Adapters.FaultCompensationRotorAdapter",
+      "adapter_model": "MoSimQuadrotorModel.Control.Adapters.FaultCompensationRotorAdapter",
       "status": "available",
       "entry_kind": "legacy_bundle",
       "mapping_state": "UNRESOLVED_LEGACY_ALIAS",

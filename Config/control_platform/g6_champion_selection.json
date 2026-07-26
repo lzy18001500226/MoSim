@@ -1,0 +1,83 @@
+{
+  "schema": "mosim.g6_provisional_champion_selection.v1",
+  "scope": "Six-family candidate slate before the active 46-route current-matrix probes finish. No candidate is a family champion or formal whole-aircraft result until its current probe passes, its adapter and named harness pass minimum closure, and the completed family is selected for seven-scenario A/B.",
+  "selection_criteria": [
+    "The current-root graphical core must first pass its active G6 internal fixed-input probe.",
+    "The candidate has a deterministic implementation reference suitable for an explicit adapter.",
+    "The candidate represents its nominal family without borrowing a fixed integrated chain from another family.",
+    "The candidate remains blocked from seven-scenario A/B until its own formal binding passes minimum closure."
+  ],
+  "official_pid_baseline": {
+    "scheme_id": "official_pid",
+    "binding_state": "formal_binding_ready_for_validation",
+    "semantic_boundary": "The G6 graphical official_pid entry is AWFF_PID_Sysblock_Demo, an altitude-loop internal probe. It is not claimed to be the same full controller as this separate Official PID A/B baseline binding.",
+    "core_reference": {
+      "model_class": "MoSimQuadrotorModel.Vehicle.Blocks.Controller.Controller",
+      "source_kind": "reference_package_controller_core"
+    },
+    "formal_adapter": {
+      "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter",
+      "output_boundary": "ROTOR_COMMAND"
+    },
+    "whole_aircraft_source_harness": {
+      "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidFormalRunner.mo",
+      "model_class": "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner"
+    },
+    "minimum_scenario": {
+      "scenario_id": "climb_path_50s",
+      "reference_owner": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+      "duration_s": 50
+    }
+  },
+  "candidates": [
+    {
+      "category": "pid_family",
+      "scheme_id": "cascade_pid",
+      "selection_reason": "Cascade PID is the family-level graphical core; Official PID remains a separate A/B baseline because the current official_pid graphical entry is only an AWFF altitude-loop demo.",
+      "promotion_state": "awaiting_current_g6_probe",
+      "required_adapter_contract": "ATTITUDE_THRUST",
+      "implementation_reference": "Scripts/control_platform/pid_attitude_thrust_core.c"
+    },
+    {
+      "category": "classic_robust",
+      "scheme_id": "lqr_baseline",
+      "selection_reason": "LQR gives a deterministic state-feedback representative for the classic/robust family; its current-root graphical probe must be rerun after namespace migration.",
+      "promotion_state": "awaiting_current_g6_probe",
+      "required_adapter_contract": "ATTITUDE_THRUST",
+      "implementation_reference": "Scripts/control_platform/linear_robust_attitude_thrust_core.c"
+    },
+    {
+      "category": "sliding_mode",
+      "scheme_id": "super_twisting_smc",
+      "selection_reason": "Super-Twisting SMC is the selected reduced-chattering sliding-mode representative; its current-root graphical probe must be rerun after namespace migration.",
+      "promotion_state": "awaiting_current_g6_probe",
+      "required_adapter_contract": "ATTITUDE_THRUST",
+      "implementation_reference": "Scripts/control_platform/sliding_mode_attitude_thrust_core.c"
+    },
+    {
+      "category": "optimization",
+      "scheme_id": "linear_mpc",
+      "selection_reason": "Linear MPC is the deterministic optimization-family representative; advanced variants remain available for later follow-up but are not substituted into this first formal binding.",
+      "promotion_state": "awaiting_current_g6_probe",
+      "required_adapter_contract": "ATTITUDE_THRUST",
+      "implementation_reference": "Scripts/control_platform/mpc_attitude_thrust_core.c"
+    },
+    {
+      "category": "geometric_flatness",
+      "scheme_id": "dfbc_high_order_attitude",
+      "selection_reason": "The high-order attitude-output DFBC route matches the ATTITUDE_THRUST runner boundary; its current-root graphical probe must be rerun after namespace migration.",
+      "promotion_state": "awaiting_current_g6_probe",
+      "required_adapter_contract": "ATTITUDE_THRUST",
+      "implementation_reference": "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_g9_family_core_c.c"
+    },
+    {
+      "category": "learning",
+      "scheme_id": "trained_neural_residual",
+      "selection_reason": "The trained neural residual route has a frozen bounded-learning implementation reference; its current-root graphical probe must be rerun after namespace migration and its fallback must remain observable in the formal adapter.",
+      "promotion_state": "awaiting_current_g6_probe",
+      "required_adapter_contract": "ATTITUDE_THRUST",
+      "implementation_reference": "Scripts/control_platform/learning_attitude_thrust_core.c"
+    }
+  ]
+}

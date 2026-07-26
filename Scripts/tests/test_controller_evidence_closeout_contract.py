@@ -22,6 +22,16 @@ def test_current_g1_g7_contract_passes() -> None:
     assert checker.validate(checker.load_inputs()) == []
 
 
+def test_pending_champion_slate_cannot_claim_adapter_promotion() -> None:
+    checker = load_module()
+    inputs = copy.deepcopy(checker.load_inputs())
+    candidate = inputs["formal_harness_map"]["provisional_champion_selection"]["candidates"][0]
+    assert candidate["promotion_state"] == "awaiting_current_g6_probe"
+    candidate["promotion_state"] = "adapter_binding_pending"
+    codes = {error["code"] for error in checker.validate(inputs)}
+    assert "CCEC-HARNESS-11" in codes
+
+
 def test_operation_catalog_cannot_be_promoted_to_model_entry_authority() -> None:
     checker = load_module()
     inputs = copy.deepcopy(checker.load_inputs())

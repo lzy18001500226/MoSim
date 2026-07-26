@@ -5,6 +5,16 @@
 > 不能与本工作流的当前 goal 混用。R1 不重定义赛题实验 goal；它只在 G5-G7 的真实
 > 证据完成后负责去除旧兼容根。
 
+## 编号与任务指针（唯一解释）
+
+- 当前任务只由 `Docs/Workflows/mainline_operations_board.md` 选择。
+- 当前控制器证据 gate 只使用本文件定义的 G1-G7；它们的顺序和完成条件以本文件为准。
+- `Docs/Workflows/g6_controller_experiment_execution.md` 是当前 G6 的执行合同，
+  不新建另一套 G 编号，也不选择当前任务。
+- `Docs/Design/架构.md` 第 9 节中的 G8-G11、G9.5 和 G9.6 是历史批次标签，
+  不代表当前执行顺序，且与当前 G1-G7 没有一一对应关系。
+- 2026-07-16 的旧 G1-G7 已改标为历史 H1-H7，只能用于来源追溯。
+
 ## 目标与范围
 
 本工作流服务正式技术报告和软件说明书，不是另一份交付报告。它把“模型图存在”
@@ -58,8 +68,8 @@ MWORKS codegen 和 generated-C SIL 门。报告副本中的模型图和结果图
    `Config/control_platform/current_model_entry_map.json` 固定 46 条项目内入口、2 条
    真正缺实现 blocker 和 `px4ctrl` runtime baseline；41 个历史图形控制器核仅作为
    带来源哈希的正式包副本，不作为完整飞机通过证据。
-5. G5：49 条方案都保留入口或状态记录。D2 已冻结为 `46 = 41 + 5`：41 条名义 `GraphicalMIL` 核只能进入 `internal_graphical_probe`，并明确保留 `missing_closed_loop_harness`；5 条固定集成链才解析为 `resolved_canonical_whole_aircraft_harness`，可进入真实整机最小闭环。mu_synthesis、neural_smc 保持实现 blocker，px4ctrl 保持 ROS1/PX4 运行时基线，不伪造 MWORKS 图。
-6. G6：先对 46 条当前路线做最小筛选；再由 PID、经典鲁棒、滑模、优化、几何平坦、学习六个名义控制族各选择一条冠军。冠军不能直接借用五条固定集成链或历史结果进入七场景：必须先按 D2 的冠军测试壳晋级契约，在 `Models/MoSimQuadrotorModel/` 下建立并验证与其核心、Adapter、正式整机植物和最小场景绑定的测试壳，更新映射和检查器后，才可与 Official PID 基线完成同参数、同指标的七场景 A/B。PID 族冠军若就是 Official PID，可复用同一已验证基线壳而不重复计数。固定集成链只在自身最小闭环合格后保留为整机对照，不与六族冠军重复计数。
+5. G5：49 条方案都保留入口或状态记录。D2 已冻结为 `46 = 41 + 5`。本阶段先完成全部 46 条当前 MWORKS 路线的图形处理闭环：打开实际内部控制律，修复包装器、不可读布局和模型检查问题，取得当前模型哈希的 `CheckModel` 与 Windows 原生整窗图，并把每条写成 `graphical_ready`。41 条名义 `GraphicalMIL` 核在这个阶段仍只证明内部图形实现，不得被改写为整机闭环；5 条固定集成链也只完成图形/模型检查，不得在 46 条全部 `graphical_ready` 前启动仿真。mu_synthesis、neural_smc 保持实现 blocker，px4ctrl 保持 ROS1/PX4 运行时基线，不伪造 MWORKS 图。
+6. G6：仅在 46 条当前路线全部完成 G5 图形处理闭环后，才开始任何 `simulate_model`、最小闭环或七场景任务。先为 PID、经典鲁棒、滑模、优化、几何平坦、学习六个名义控制族各选择一条冠军。冠军不能直接借用五条固定集成链或历史结果进入七场景：必须先按 D2 的冠军测试壳晋级契约，在 `Models/MoSimQuadrotorModel/` 下建立并验证与其核心、Adapter、正式整机植物和最小场景绑定的测试壳，更新映射和检查器后，才可与 Official PID 基线完成同参数、同指标的七场景 A/B。PID 族冠军若就是 Official PID，可复用同一已验证基线壳而不重复计数。固定集成链只在自身最小闭环合格后保留为整机对照，不与六族冠军重复计数。
 7. G7：补齐安全、故障、固定三机编队、Syslab 指标和后续部署候选交接；不把它们夸大为联合仿真或现场部署成功。
 
 G1-G7 只负责当前模型证据与实验收敛。其后才可进入 R1：确认正式根在真实实验中
@@ -121,25 +131,34 @@ G4 映射完成后，49 个顶层方案都必须有审查记录。`px4ctrl` 是 
 2. 打开实际控制律内部子模型，不打开 `ExperimentRunner`、`ControllerWrapper` 或只有
    左右端口的接口壳。
 3. 读取/导出内部图，检查误差输入、控制律、关键状态、约束/饱和、输出分配和反馈
-   走线是否可读。接口壳只能记录“已接入”，不得替代内部算法图。
+   走线是否可读。接口壳只能记录“已接入”，不得替代内部算法图。`graphical_ready`
+   的最低标准是：内部控制律真实存在，原生整窗图能显示真实组件与连接，当前模型
+   `CheckModel` 通过。密集图可以由当前 `.mo` 组件/连接名辅助判读，不要求一屏内每个
+   标签都达到报告排版级清晰度；包字段 `layout_passed` 在 G5 表示“内部拓扑已核实”，
+   不表示走线已美化。主信号从左到右、输入/输出置边界是优先布局而非美学门槛；单根线
+   绕远、轻微交叉或留白不单独构成 `needs_relayout`。只有真实组件/连接不能证实、主链
+   缺失/断开，或画面仍是接口壳时才判为 `needs_relayout` 或 `wrapper_only`。
 4. 记录 `layout_passed`、`needs_relayout`、`wrapper_only`、`missing_graphical_counterpart`
    或 `blocked`，并保存 Windows 原生整窗截图和证据 manifest。
 
-对 41 条 `missing_closed_loop_harness` 图形核，可在其自身固定输入合同下运行
-`internal_graphical_probe`，并保存内部响应、首个 blocker 或模型检查结果；这不是整机、植物耦合
-或轨迹跟踪闭环。它们不得进入 E2 的 `check_model -> 最小 MWORKS simulate -> metrics` 整机链。
-对 5 条 `resolved_canonical_whole_aircraft_harness` 固定集成链，E1 图审完成后才进入 E2。
+G5 只处理图形模型，不启动 `simulate_model`。对 41 条 `missing_closed_loop_harness` 图形核，
+本阶段只保存内部图形、`CheckModel` 或首个明确模型 blocker；这不是整机、植物耦合或轨迹
+跟踪闭环。对 5 条 `resolved_canonical_whole_aircraft_harness` 固定集成链同样先完成图审和
+`CheckModel`，不得因其已有测试壳而抢先进入 E2。
 
 不为排版对已通过模型做无谓重构。只有图形确为包装器、走线缺失、错误连接或不可读时
-才修复，并先对该路线运行最小 smoke。
+才修复；不得为了走线美观、对齐或消除无碍阅读的轻微交叉反复调整。仅做布局修复时，
+必须保持组件类型、参数和连接端点不变，记录修复前后结构签名，并重新执行 `CheckModel`
+与原生整窗复核；不能把“线不穿模块”写成算法或仿真性能改善。
 
-### E2 / G5 最小真实仿真复核
+### E2 / G6 最小真实仿真复核
 
-完成 E1 后，先从 D2 的 G5 测试壳映射读取 `canonical_closed_loop_harness`。映射必须
+只有 46 条当前路线全部完成 G5 图形处理闭环后，才从 D2 的测试壳映射读取
+`canonical_closed_loop_harness`。映射必须
 绑定同一正式根下的 controller core、Adapter/接口、整机测试壳和最小场景；固定集成链
 可以以自己的正式整机入口作为测试壳。当前冻结映射只有 5 条固定集成链满足此条件；
 将来新增其他整机壳前，必须先更新并复核 D2 映射。只有映射完整的路线才逐条运行
-`check_model -> 最小 MWORKS simulate -> result variables -> metrics`。每条至少保存：
+`check_model -> 最小 MWORKS simulate -> 新鲜原生结果与完整时间序列 -> metrics`。结果绑定必须同时确认：本次独立根下的 `Result.msr` 已写入、文件时间不早于本次调用、`time` 序列非空并到达声明终点。仅有变量类型、零值 `GetVarValueAt` 或空数组都不是结果就绪证据。每条至少保存：
 核心和测试壳路径/哈希、场景配置、原生结果或可定位结果、时间序列、指标、结果图和
 MCP/GUI 观察。失败、发散、接口不匹配和缺测试壳均保留为失败或 blocker 证据，不重复
 改写成通过。
@@ -157,8 +176,9 @@ MCP/GUI 观察。失败、发散、接口不匹配和缺测试壳均保留为失
 
 优先顺序：
 
-1. 46 条当前路线先按 G5 的分层门完成筛选：41 条名义图形控制器核各自保留
-   `internal_graphical_probe` 证据或首个 blocker，5 条固定集成链各自保留真实整机最小闭环证据或首个 blocker；不借用邻近路线结果。
+1. G5 图形门必须已闭合：46 条当前路线均为 `graphical_ready`，不再存在
+   `needs_relayout`、`wrapper_only` 或 `model_check_failed`。之后才可进行 41 条名义图形核的
+   `internal_graphical_probe` 或正式冠军测试壳晋级，以及 5 条固定集成链的真实整机最小闭环；不借用邻近路线结果。
 2. 从 PID、经典鲁棒、滑模、优化、几何平坦、学习六个名义控制族各选择一条合格冠军；每条先完成冠军测试壳晋级：正式根内的核心、Adapter、整机 source harness、最小场景、模型哈希和 `check_model -> 最小闭环` 记录必须同时存在，并写回 D2 映射。只有随后通过这一门的冠军才与 Official PID 基线完成同参数、同指标的七场景 A/B。Official PID 基线也必须有同版本的正式根测试壳；只有它同时是 PID 族冠军时才可复用该壳而不重复计数。
 3. 固定集成链只在其自身 G5 最小闭环通过后作为命名方案补测，不把内部 L1、INDI 或安全模块拆成任意组合。
 4. 安全、故障和固定三机编队进入 G7：分别记录触发/恢复链、故障时间窗和每机参考、实际轨迹、最小间距与跟踪指标。
@@ -188,7 +208,7 @@ R1 的持续门是：
 
 G7 交接前必须满足：
 
-- 49 条方案均有当前入口或明确 blocker；46 条当前 MWORKS 路线均有 layout_passed、needs_relayout、wrapper_only、missing_graphical_counterpart 或 blocked 状态；两条实现 blocker 与 px4ctrl 保持各自非运行状态。
+- 49 条方案均有当前入口或明确 blocker；46 条当前 MWORKS 路线均已完成 `graphical_ready`，即实际内部控制律可读、当前模型 `CheckModel` 通过、Windows 原生整窗图已归档；两条实现 blocker 与 px4ctrl 保持各自非运行状态。
 - 41 条 `GraphicalMIL` 核均保留内部固定输入探针或 blocker，且未被写成整机闭环；5 条
   固定集成链均保留整机最小闭环证据或 blocker，并与 D2 映射中的正式测试壳一致。
 - 六族冠军与 Official PID 的核心对比均有正式根内的核心/Adapter/整机测试壳绑定、真实模型、结果、指标和同场景记录；任何冠军都不得由五条既有固定集成链或历史结果代替。

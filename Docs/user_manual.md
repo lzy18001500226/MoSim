@@ -1,10 +1,17 @@
 # 用户手册
 
+> 状态：历史草稿，非当前执行或证据权威。本文后续的 67 行统计、旧收尾入口和报告
+> 生成命令只能作为历史记录，不得驱动当前模型实验或报告结论。当前控制器证据以
+> `Docs/Workflows/controller_evidence_closeout.md`、
+> `Config/control_platform/current_model_entry_map.json` 和同版本真实结果为准；本手册将在
+> G5-G7 与 R1 完成后按冻结证据重写。
+
 本文档说明如何检查项目结构、复现官方案例参考轨迹、处理 MWORKS/MCP 导出的仿真结果、生成指标和报告素材。
 
-## 0. 当前非前端收尾入口（2026-07-18）
+## 0. 历史非前端收尾入口（2026-07-18）
 
-当前竞赛收尾采用单线程、证据驱动流程。非前端权威入口为：
+在 2026-07-18 的历史收尾快照中，竞赛收尾采用单线程、证据驱动流程；当时的
+非前端权威入口为：
 
 ```text
 Results/control_platform/non_frontend_evidence_index_20260718/README.md
@@ -15,7 +22,7 @@ Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_SUBMI
 Results/control_platform/non_frontend_evidence_index_20260718/NON_FRONTEND_FINAL_QA_AUDIT.md
 ```
 
-重新生成当前需求矩阵和报告源表：
+在该历史快照中重新生成需求矩阵和报告源表的命令为：
 
 ```bash
 python3 Scripts/quality/build_non_frontend_requirement_evidence_matrix.py
@@ -27,7 +34,7 @@ python3 Scripts/quality/build_non_frontend_final_qa_audit.py
 python3 -m pytest Scripts/tests/test_non_frontend_delivery_manifest.py Scripts/tests/test_non_frontend_requirement_evidence_matrix.py Scripts/tests/test_non_frontend_report_source.py Scripts/tests/test_non_frontend_report_figures.py Scripts/tests/test_non_frontend_submission_package_manifest.py Scripts/tests/test_non_frontend_final_qa_audit.py -q
 ```
 
-当前 67 行控制器矩阵必须保持 `accepted=27`、`executed_blocked=25`、
+在该历史快照中，67 行控制器矩阵记录为 `accepted=27`、`executed_blocked=25`、
 `not_run=15`。`executed_blocked` 和 `not_run` 只能作为受限实验或 blocker
 写入报告，不能升级为验收通过。P7 的单电机效率损失闭环、P6 安全、P8
 三机编队和 P9 学习控制的 claim ceiling 以当前证据索引为准。
@@ -205,12 +212,12 @@ final submission human-review status packet skeleton remains human_review_status
 final submission status-packet dependency summary remains status_packet_dependency_summary_not_execution with dashboard_blocker_count=16, prerequisite_class_count=5, mapped_action_count=6, satisfies_dependencies_now=false, and automated_execution_allowed=false
 ```
 
-## 3. 官方案例入口
+## 3. 当前统一模型入口
 
-官方模型包：
+审查和复现只加载一个模型包：
 
 ```text
-References/MWORKS/QuadrotorModel/package.mo
+Models/MoSimQuadrotorModel/package.mo
 ```
 
 官方场景配置：
@@ -224,21 +231,22 @@ Config/scenarios/official/example3_pid_baseline.yaml  8字形运动，120 s
 对应模型：
 
 ```text
-QuadrotorModel.Examples.Example1
-QuadrotorModel.Examples.Example2
-QuadrotorModel.Examples.Example3
-QuadrotorExperiments.Example1ImprovedPID
-QuadrotorExperiments.Example2ImprovedPID
-QuadrotorExperiments.Example3ImprovedPID
+MoSimQuadrotorModel.Vehicle.Examples.Example1
+MoSimQuadrotorModel.Vehicle.Examples.Example2
+MoSimQuadrotorModel.Vehicle.Examples.Example3
+MoSimQuadrotorModel.Control.Baselines.Example1ImprovedPID
+MoSimQuadrotorModel.Control.Baselines.Example2ImprovedPID
+MoSimQuadrotorModel.Control.Baselines.Example3ImprovedPID
 ```
 
-项目本地实验模型包：
+Vehicle 包含已迁入的官方基线机体、图标和 STL 资源；项目 PID 对比模型位于同一根下的 Control.Baselines。不再加载外部 QuadrotorModel 包，也不加载 QuadrotorExperiments、QuadrotorControllerBlocks 或 MworksLive 作为第二个根。
 
 ```text
-Models/QuadrotorExperiments/package.mo
+MoSimQuadrotorModel.Vehicle
+MoSimQuadrotorModel.Control.Baselines
 ```
 
-该包通过 `extends QuadrotorModel.Examples.*` 派生官方模型，只覆盖 `controller3_2.PID*` 参数，不修改官方 `References/MWORKS/QuadrotorModel/package.mo`。
+改进 PID 模型通过 `extends MoSimQuadrotorModel.Vehicle.Examples.*` 派生基线，只覆盖 `controller3_2.PID*` 参数；基线与改进模型仍在同一个正式包根内。
 
 ## 4. 参考轨迹与 replay JSON
 
@@ -269,7 +277,7 @@ python3 Scripts/results/generate_replay_from_raw.py \
   Results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
   Results/official/example1_step/official_example1_improved_pid/replay/official_example1_improved_pid.json \
   --scene-id official_example1_improved_pid \
-  --model-name QuadrotorExperiments.Example1ImprovedPID \
+  --model-name MoSimQuadrotorModel.Control.Baselines.Example1ImprovedPID \
   --description 'Example1 MCP 参数搜索型 Improved PID 真实轨迹'
 ```
 
@@ -294,7 +302,7 @@ Results/official/example3_figure8/official_example3_improved_pid/replay/official
 
 ```text
 session_manager
-→ model_manager load References/MWORKS/QuadrotorModel/package.mo
+→ model_manager load Models/MoSimQuadrotorModel/package.mo
 → check_model
 → simulate_model
 → result_manager list/read variables
@@ -345,7 +353,7 @@ python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
   --evidence-level real_sysplorer_mcp_full_baseline
 
 python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
-  --model-name QuadrotorModel.Examples.Example2 \
+  --model-name MoSimQuadrotorModel.Vehicle.Examples.Example2 \
   --target-time 0,50 \
   --raw-output Results/official/example2_helix/official_example2_pid_baseline/raw/official_example2_pid_baseline.csv \
   --metrics-json Results/official/example2_helix/official_example2_pid_baseline/metrics/official_example2_pid_baseline.json \
@@ -356,7 +364,7 @@ python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
   --evidence-level real_sysplorer_mcp_full_baseline
 
 python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
-  --model-name QuadrotorModel.Examples.Example3 \
+  --model-name MoSimQuadrotorModel.Vehicle.Examples.Example3 \
   --target-time 0,120 \
   --raw-output Results/official/example3_figure8/official_example3_pid_baseline/raw/official_example3_pid_baseline.csv \
   --metrics-json Results/official/example3_figure8/official_example3_pid_baseline/metrics/official_example3_pid_baseline.json \
@@ -371,8 +379,7 @@ python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
 
 ```bash
 python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
-  --extra-model-file 'C:\Users\HP\Desktop\MoSim\Models\QuadrotorExperiments\package.mo' \
-  --model-name QuadrotorExperiments.Example1ImprovedPID \
+  --model-name MoSimQuadrotorModel.Control.Baselines.Example1ImprovedPID \
   --target-time 0,50 \
   --raw-output Results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
   --metrics-json Results/official/example1_step/official_example1_improved_pid/metrics/official_example1_improved_pid.json \
@@ -383,8 +390,7 @@ python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 
 python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
-  --extra-model-file 'C:\Users\HP\Desktop\MoSim\Models\QuadrotorExperiments\package.mo' \
-  --model-name QuadrotorExperiments.Example2ImprovedPID \
+  --model-name MoSimQuadrotorModel.Control.Baselines.Example2ImprovedPID \
   --target-time 0,50 \
   --raw-output Results/official/example2_helix/official_example2_improved_pid/raw/official_example2_improved_pid.csv \
   --metrics-json Results/official/example2_helix/official_example2_improved_pid/metrics/official_example2_improved_pid.json \
@@ -395,8 +401,7 @@ python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 
 python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
-  --extra-model-file 'C:\Users\HP\Desktop\MoSim\Models\QuadrotorExperiments\package.mo' \
-  --model-name QuadrotorExperiments.Example3ImprovedPID \
+  --model-name MoSimQuadrotorModel.Control.Baselines.Example3ImprovedPID \
   --target-time 0,120 \
   --raw-output Results/official/example3_figure8/official_example3_improved_pid/raw/official_example3_improved_pid.csv \
   --metrics-json Results/official/example3_figure8/official_example3_improved_pid/metrics/official_example3_improved_pid.json \

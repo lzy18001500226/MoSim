@@ -23,7 +23,6 @@ from Scripts.mworks import generate_offline_profile_wrapper as generator
 
 SMOKE_SCRIPT = ROOT / "Scripts" / "mworks" / "run_sysplorer_mcp_smoke.py"
 BASE_MODEL_FILES = [
-    ROOT / "References" / "MWORKS" / "QuadrotorModel" / "package.mo",
     ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo",
 ]
 VARIABLE_OVERRIDES = {
@@ -158,8 +157,6 @@ def build_smoke_command(
         "--model-file",
         str(BASE_MODEL_FILES[0]),
     ]
-    for path in BASE_MODEL_FILES[1:]:
-        command.extend(["--extra-model-file", str(path)])
     if profile.get("execution_kind") != "direct_model":
         command.extend(["--extra-model-file", str(run_dir / "GeneratedProfile.mo")])
     command.extend([

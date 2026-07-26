@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for Dynamics Batch A static source migration validation."""
+"""Tests for Dynamics Batch A canonical source-ownership validation."""
 
 from __future__ import annotations
 
@@ -26,10 +26,7 @@ def load_module():
 class DynamicsBatchASourceMigrationTest(unittest.TestCase):
     def test_validate_batch_a_source_surface(self) -> None:
         module = load_module()
-        temp_parent = module.DEFAULT_OUTPUT_DIR / "_test_tmp"
-        temp_parent.mkdir(parents=True, exist_ok=True)
-
-        with tempfile.TemporaryDirectory(dir=temp_parent) as tmp:
+        with tempfile.TemporaryDirectory() as tmp:
             summary = module.generate(Path(tmp))
 
             self.assertEqual(summary["status"], "passed")
@@ -39,22 +36,23 @@ class DynamicsBatchASourceMigrationTest(unittest.TestCase):
             self.assertEqual(
                 summary["batch_scope"],
                 [
-                    "MoSimQuadrotorModel.Dynamics.RotorActuatorCore",
-                    "MoSimQuadrotorModel.Dynamics.WrapperSurface",
+                    "MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore",
+                    "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperSurface",
                 ],
             )
-            self.assertIn("MoSimQuadrotorModel.Dynamics.HoverSmoke", summary["deferred_targets"])
+            self.assertIn("MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke", summary["deferred_targets"])
 
             matrix = json.loads((Path(tmp) / "batch_a_source_migration_matrix.json").read_text(encoding="utf-8"))
             self.assertEqual(matrix["status"], "passed_static")
             self.assertEqual(matrix["findings"], [])
             self.assertEqual(len(matrix["targets"]), 2)
-            self.assertTrue(matrix["source_surface_policy"]["formal_sources_are_extends_only"])
-            self.assertFalse(matrix["source_surface_policy"]["dynamics_equations_changed_by_batch_a"])
-            self.assertFalse(matrix["source_surface_policy"]["numeric_parameters_changed_by_batch_a"])
-            self.assertTrue(all(item["formal_source_present"] for item in matrix["targets"]))
-            self.assertTrue(all(item["legacy_alias_present"] for item in matrix["targets"]))
-            self.assertTrue(all(item["legacy_implementation_present"] for item in matrix["targets"]))
+            self.assertTrue(matrix["source_surface_policy"]["formal_sources_are_canonical_implementations"])
+            self.assertTrue(matrix["source_surface_policy"]["retired_roots_absent"])
+            self.assertFalse(matrix["source_surface_policy"]["dynamics_equations_changed_by_namespace_consolidation"])
+            self.assertFalse(matrix["source_surface_policy"]["numeric_parameters_changed_by_namespace_consolidation"])
+            self.assertTrue(all(item["canonical_source_owns_implementation"] for item in matrix["targets"]))
+            self.assertTrue(all(item["retired_roots_absent"] for item in matrix["targets"]))
+            self.assertTrue(all(item["migration_state"] == "canonical_single_root" for item in matrix["targets"]))
 
 
 if __name__ == "__main__":

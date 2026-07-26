@@ -18,7 +18,7 @@
 
 `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\package.mo`
 
-其中 `MoSimQuadrotorModel.Plant` 已包含官方四旋翼基线的模型、图标和 STL
+其中 `MoSimQuadrotorModel.Vehicle` 已包含官方四旋翼基线的模型、图标和 STL
 资源。审查时不再加载外部官方包、单个 `.mo` 文件或任何旧包作为第二个库根。
 当前只有这一棵项目模型树可作为审查或复现入口。
 
@@ -28,9 +28,9 @@
 ### 人工运行步骤
 
 1. 打开上述项目 `package.mo`，确认库树中出现 `MoSimQuadrotorModel`，并可展开
-   `Plant`。
+   `Vehicle`。
 2. 在库树中按本目录的类名找到一个**完整模型**，例如
-   `MoSimQuadrotorModel.Missions.Official.Example3AWFF`。
+   `MoSimQuadrotorModel.Experiment.Templates.Official.Example3AWFF`。
 3. 对该模型执行 **Check Model**。失败时停在错误信息，不要用其它模型或旧结果
    顶替。
 4. Check Model 通过后执行 **Simulate**。模型源码中的 `experiment(...)` 已设置
@@ -52,13 +52,13 @@
 
 | 建议 | 完整模型类名 | 任务 / 场景 | 控制器 | 默认仿真时长 | 历史日志 |
 |---|---|---|---|---:|---|
-| 1 | `MoSimQuadrotorModel.Missions.Official.Example3AWFF` | 单机 8 字轨迹，空白多体场景 | AWFF Sysblock | 120 s | `Results\official\example3_figure8\official_example3_awff_sysblock\logs\sysplorer_example3_awff_sysblock_full_20260510.jsonl` |
-| 2 | `MoSimQuadrotorModel.Missions.Official.Example2HelixTunedAWFF` | 单机螺旋爬升，空白多体场景 | 螺旋调参 AWFF | 50 s | `Results\official\example2_helix\official_example2_awff_sysblock_helix_tuned\logs\sysplorer_example2_awff_sysblock_helix_tuned_full_20260511.jsonl` |
-| 3 | `MoSimQuadrotorModel.Missions.Official.Example1HelicalFigure8Trail` | 起飞后螺旋 8 字，带原生轨迹留痕审看 | LinearMPC 风格外环 | 120 s | `Results\official\example1_helical_figure8\official_example1_helical_figure8_trail_sysblock\logs\sysplorer_example1_helical_figure8_trail_sysblock_full_20260514.jsonl` |
-| 4 | `MoSimQuadrotorModel.Planning.Scenarios.OpenBlocksLinearMPC` | 单机 OpenBlocks 静态障碍场 | LinearMPC 风格外环，规划参考 | 80.1247 s | `Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_open_blocks_linear_mpc_sysblock_20260515.jsonl` |
-| 5 | `MoSimQuadrotorModel.Planning.Scenarios.CorridorGateLinearMPC` | 单机走廊门控障碍场 | LinearMPC 风格外环，规划参考 | 23 s | `Results\planning\corridor_gate_astar_awff\sunray150_planning_corridor_gate_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_corridor_gate_linear_mpc_sysblock_20260515.jsonl` |
-| 6 | `MoSimQuadrotorModel.Formation.Scenarios.TriangleFigure8LinearMPC` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | `Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
-| 7 | `MoSimQuadrotorModel.Planning.Scenarios.OpenBlocksThreeUavFormation` | 三机 OpenBlocks 可重构编队 | 三套 LinearMPC 风格外环，规划参考 | 304.8405 s | 本目录只确认该完整源码入口；长仿真先人工 Check Model |
+| 1 | `MoSimQuadrotorModel.Experiment.Templates.Official.Example3AWFFSysblockClosedLoop` | 单机 8 字轨迹，空白多体场景 | AWFF Sysblock | 120 s | `Results\official\example3_figure8\official_example3_awff_sysblock\logs\sysplorer_example3_awff_sysblock_full_20260510.jsonl` |
+| 2 | `MoSimQuadrotorModel.Experiment.Templates.Official.Example2HelixTunedAWFFSysblockClosedLoop` | 单机螺旋爬升，空白多体场景 | 螺旋调参 AWFF | 50 s | `Results\official\example2_helix\official_example2_awff_sysblock_helix_tuned\logs\sysplorer_example2_awff_sysblock_helix_tuned_full_20260511.jsonl` |
+| 3 | `MoSimQuadrotorModel.Experiment.Templates.Official.Example1HelicalFigure8TrailSysblockClosedLoop` | 起飞后螺旋 8 字，带原生轨迹留痕审看 | LinearMPC 风格外环 | 120 s | `Results\official\example1_helical_figure8\official_example1_helical_figure8_trail_sysblock\logs\sysplorer_example1_helical_figure8_trail_sysblock_full_20260514.jsonl` |
+| 4 | `MoSimQuadrotorModel.Guidance.Planning.Scenarios.OpenBlocksLinearMPCVehicle` | 单机 OpenBlocks 静态障碍场 | LinearMPC 风格外环，规划参考 | 80.1247 s | `Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_open_blocks_linear_mpc_sysblock_20260515.jsonl` |
+| 5 | `MoSimQuadrotorModel.Guidance.Planning.Scenarios.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop` | 单机走廊门控障碍场 | LinearMPC 风格外环，规划参考 | 23 s | `Results\planning\corridor_gate_astar_awff\sunray150_planning_corridor_gate_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_corridor_gate_linear_mpc_sysblock_20260515.jsonl` |
+| 6 | `MoSimQuadrotorModel.Guidance.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | `Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
+| 7 | `MoSimQuadrotorModel.Guidance.Planning.Scenarios.ThreeUavOpenBlocksReconfigurableFormationLinearMPC` | 三机 OpenBlocks 可重构编队 | 三套 LinearMPC 风格外环，规划参考 | 304.8405 s | 本目录只确认该完整源码入口；长仿真先人工 Check Model |
 
 ## 3. 完整飞行入口总表
 
@@ -69,16 +69,16 @@
 
 | 类名 | 任务 | 控制器 | 场景 | 时长 | 说明 |
 |---|---|---|---|---:|---|
-| `MoSimQuadrotorModel.Plant.Examples.Example1` | 阶梯爬升 | `Blocks.Controller.Controller` 六自由度 PID | 空白多体场景 | 50 s | 嵌入官方基线；这是唯一正式入口。 |
-| `MoSimQuadrotorModel.Plant.Examples.Example2` | 螺旋爬升 | 同一六自由度 PID | 空白多体场景 | 50 s | 嵌入官方基线；这是唯一正式入口。 |
-| `MoSimQuadrotorModel.Plant.Examples.Example3` | 8 字运动 | 同一六自由度 PID | 空白多体场景 | 120 s | 嵌入官方基线；这是唯一正式入口。 |
+| `MoSimQuadrotorModel.Vehicle.Examples.Example1` | 阶梯爬升 | `Blocks.Controller.Controller` 六自由度 PID | 空白多体场景 | 50 s | 嵌入官方基线；这是唯一正式入口。 |
+| `MoSimQuadrotorModel.Vehicle.Examples.Example2` | 螺旋爬升 | 同一六自由度 PID | 空白多体场景 | 50 s | 嵌入官方基线；这是唯一正式入口。 |
+| `MoSimQuadrotorModel.Vehicle.Examples.Example3` | 8 字运动 | 同一六自由度 PID | 空白多体场景 | 120 s | 嵌入官方基线；这是唯一正式入口。 |
 
 这三个是最朴素的参考动画：没有障碍物或城市地图，但能看到整机真实多体运动。
 
 ### 3.2 项目控制器基线：11 个
 
 源码包：
-`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Controllers\Baselines\package.mo`
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Control\Baselines\package.mo`
 
 这些是单机空白多体场景；按名称即可判断任务和控制器。它们是完整模型别名，不要
 点开 `AntiWindupFeedforwardCore`，后者只是控制器核心。
@@ -89,13 +89,13 @@
 | 螺旋爬升 | `Example2AWFFBaseline`、`Example2HelixTunedAWFFBaseline`、`Example2ImprovedPIDBaseline`、`Example2EnhancedPIDBaseline`、`Example2HelixTunedEnhancedPIDBaseline` | AWFF、螺旋调参 AWFF、改进 PID、增强 PID | `Results\official\example2_helix\` |
 | 8 字轨迹 | `Example3AWFFBaseline`、`Example3ImprovedPIDBaseline`、`Example3EnhancedPIDBaseline` | AWFF / 改进 PID / 增强 PID | `Results\official\example3_figure8\` |
 
-完整类名前缀为 `MoSimQuadrotorModel.Controllers.Baselines.`。例如第一行的完整类名是
-`MoSimQuadrotorModel.Controllers.Baselines.Example1AWFFBaseline`。
+完整类名前缀为 `MoSimQuadrotorModel.Control.Baselines.`。例如第一行的完整类名是
+`MoSimQuadrotorModel.Control.Baselines.Example1AWFFBaseline`。
 
 ### 3.3 正式单机任务模型：15 个
 
 源码包：
-`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Missions\Official\package.mo`
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Experiment\Templates\Official\package.mo`
 
 | 任务 | 可在库树直接选择的完整模型 | 控制器 | 场景 / 时长 | 历史任务族证据 |
 |---|---|---|---|---|
@@ -105,22 +105,22 @@
 | 螺旋爬升 | `Example2AWFF`、`Example2HelixTunedAWFF`、`Example2INDI`、`Example2HelixTunedINDI`、`Example2LinearMPC` | AWFF / 调参 AWFF / INDI-L1 组合 / 调参 INDI-L1 / LinearMPC 风格 | 空白多体场景，50 s | `Results\official\example2_helix\` |
 | 8 字轨迹 | `Example3AWFF`、`Example3INDI`、`Example3L1`、`Example3LinearMPC` | AWFF / INDI-L1 组合 / L1 残差 / LinearMPC 风格 | 空白多体场景，120 s | `Results\official\example3_figure8\` |
 
-完整类名前缀为 `MoSimQuadrotorModel.Missions.Official.`。这 15 个才是普通“阶跃、
+完整类名前缀为 `MoSimQuadrotorModel.Experiment.Templates.Official.`。这 15 个才是普通“阶跃、
 螺旋、8 字”任务应优先打开的项目模型，不需要加载任何障碍场。
 
 ### 3.4 单机避障与多机场景：6 个
 
 源码包：
-`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Planning\Scenarios\package.mo`
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Guidance\Planning\Scenarios\package.mo`
 
 | 完整模型类名 | 场景 | 控制器 / 参考 | 时长 | 状态 |
 |---|---|---|---:|---|
-| `MoSimQuadrotorModel.Planning.Scenarios.OpenBlocksAWFF` | OpenBlocks 静态障碍场 | AWFF，规划参考 | 16 s | 历史 Sysplorer 日志：`Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_awff_sysblock\logs\sysplorer_sunray150_planning_open_blocks_awff_sysblock_20260515.jsonl` |
-| `MoSimQuadrotorModel.Planning.Scenarios.OpenBlocksLinearMPC` | OpenBlocks 静态障碍场 | LinearMPC 风格外环，规划参考 | 80.1247 s | 历史 Sysplorer 日志：`Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_open_blocks_linear_mpc_sysblock_20260515.jsonl` |
-| `MoSimQuadrotorModel.Planning.Scenarios.CorridorGateAWFF` | 走廊门控障碍场 | AWFF，规划参考 | 23 s | 完整源码入口；本目录未把它标为本轮已运行。 |
-| `MoSimQuadrotorModel.Planning.Scenarios.CorridorGateLinearMPC` | 走廊门控障碍场 | LinearMPC 风格外环，规划参考 | 23 s | 历史 Sysplorer 日志：`Results\planning\corridor_gate_astar_awff\sunray150_planning_corridor_gate_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_corridor_gate_linear_mpc_sysblock_20260515.jsonl` |
-| `MoSimQuadrotorModel.Formation.Scenarios.TriangleFigure8LinearMPC` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | 历史 Sysplorer 日志：`Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
-| `MoSimQuadrotorModel.Planning.Scenarios.OpenBlocksThreeUavFormation` | 三机 OpenBlocks 可重构编队 | 三套 LinearMPC 风格外环，规划参考 | 304.8405 s | 完整源码入口；长仿真，先 Check Model，未在本轮重跑。 |
+| `MoSimQuadrotorModel.Guidance.Planning.Scenarios.OpenBlocksAWFF` | OpenBlocks 静态障碍场 | AWFF，规划参考 | 16 s | 历史 Sysplorer 日志：`Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_awff_sysblock\logs\sysplorer_sunray150_planning_open_blocks_awff_sysblock_20260515.jsonl` |
+| `MoSimQuadrotorModel.Guidance.Planning.Scenarios.OpenBlocksLinearMPC` | OpenBlocks 静态障碍场 | LinearMPC 风格外环，规划参考 | 80.1247 s | 历史 Sysplorer 日志：`Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_open_blocks_linear_mpc_sysblock_20260515.jsonl` |
+| `MoSimQuadrotorModel.Guidance.Planning.Scenarios.CorridorGateAWFF` | 走廊门控障碍场 | AWFF，规划参考 | 23 s | 完整源码入口；本目录未把它标为本轮已运行。 |
+| `MoSimQuadrotorModel.Guidance.Planning.Scenarios.CorridorGateLinearMPC` | 走廊门控障碍场 | LinearMPC 风格外环，规划参考 | 23 s | 历史 Sysplorer 日志：`Results\planning\corridor_gate_astar_awff\sunray150_planning_corridor_gate_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_corridor_gate_linear_mpc_sysblock_20260515.jsonl` |
+| `MoSimQuadrotorModel.Guidance.Formation.Scenarios.TriangleFigure8LinearMPC` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | 历史 Sysplorer 日志：`Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
+| `MoSimQuadrotorModel.Guidance.Planning.Scenarios.OpenBlocksThreeUavFormation` | 三机 OpenBlocks 可重构编队 | 三套 LinearMPC 风格外环，规划参考 | 304.8405 s | 完整源码入口；长仿真，先 Check Model，未在本轮重跑。 |
 
 `OpenBlocksLinearMPCVehicle` 是给三机场景复用的**带输入端口整机组件**，不是可直接
 选择的独立任务；不要把它当作第七个场景运行。
@@ -134,7 +134,7 @@ Check Model 后再看的候选”，不要把名字或静态源码当成当前�
 #### 一般扰动与安全：10 个
 
 源码包：
-`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Robustness\Scenarios\package.mo`
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Experiment\Scenarios\Robustness\package.mo`
 
 | 扰动 / 任务 | 完整模型类名后缀 | 控制器 |
 |---|---|---|
@@ -142,16 +142,16 @@ Check Model 后再看的候选”，不要把名字或静态源码当成当前�
 | 横向阵风 | `WindGustAWFFBaseline`、`WindGustAWFF`、`WindGustL1`、`WindGustLinearMPC` | AWFF 基线 / AWFF / L1 / LinearMPC 风格 |
 | 安全滤波、返航降落 | `SafetyQPNMPC`、`SafetyReturnLand` | QP/NMPC 风格安全控制；后者有返航和降落参考 |
 
-完整类名前缀为 `MoSimQuadrotorModel.Robustness.Scenarios.`。安全返航任务族留有历史
+完整类名前缀为 `MoSimQuadrotorModel.Experiment.Scenarios.Robustness.`。安全返航任务族留有历史
 日志，例如：
 `Results\official\example1_step\official_example1_qp_nmpc_safety_return_land_sysblock\logs\sysplorer_example1_qp_nmpc_safety_return_land_sysblock_full_20260514.jsonl`。
 
 #### PID 对比基线：12 个
 
 源码包：
-`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Robustness\Scenarios\PIDBaselines\package.mo`
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Experiment\Scenarios\Robustness\PIDBaselines\package.mo`
 
-完整类名前缀为 `MoSimQuadrotorModel.Robustness.Scenarios.PIDBaselines.`：
+完整类名前缀为 `MoSimQuadrotorModel.Experiment.Scenarios.Robustness.PIDBaselines.`：
 
 ```text
 Mass20PID
@@ -174,9 +174,9 @@ Rotor4LossPID
 #### 旋翼损失 / 故障分配：27 个
 
 源码包：
-`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Robustness\Scenarios\RotorLoss\package.mo`
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Experiment\Scenarios\Robustness\RotorLoss\package.mo`
 
-完整类名前缀为 `MoSimQuadrotorModel.Robustness.Scenarios.RotorLoss.`：
+完整类名前缀为 `MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.`：
 
 ```text
 Rotor1AWFF
@@ -219,18 +219,18 @@ Rotor4WindGustLinearMPCOnlineFaultAllocation
 
 | 路径 / 类别 | 为什么不该作为首选 |
 |---|---|
-| `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\System\Architecture\Sunray150CompleteSystemGraphical_Sysblock.mo` | 完整系统**结构图**，不是普通可播放飞行入口；当前应只从正式根加载。 |
-| `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\ExperimentRunner\Plant\SingleUavPlantAnimation.mo` | 共享机体组件，有外部旋翼命令输入，不是自带任务的闭环场景。 |
-| `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Planning\Scenarios\OpenBlocksLinearMPCVehicle.mo` | 多机规划场景的复用整机，有外部参考输入，不是独立实验。 |
-| `Models\MoSimQuadrotorModel\SceneTrace\Diagnostics\FactoryTraceIso*.mo` | 接线/姿态/hover smoke，目的是诊断，不是给用户审看的飞行动画。 |
-| `Models\MoSimQuadrotorModel\SceneTrace\Scenarios\*Smoke.mo` | UE 场景追踪 smoke；它们不能替代本目录的离线 MWORKS 飞行动画，也不该用于控制器或规划结论。 |
+| `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Experiment\Templates\Architecture\Sunray150CompleteSystemGraphical_Sysblock.mo` | 完整系统**结构图**，不是普通可播放飞行入口；当前应只从正式根加载。 |
+| `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Vehicle\Sunray150Assembly.mo` | 共享机体组件，有外部旋翼命令输入，不是自带任务的闭环场景。 |
+| `C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Guidance\Planning\Scenarios\OpenBlocksLinearMPCVehicle.mo` | 多机规划场景的复用整机，有外部参考输入，不是独立实验。 |
+| `Models\MoSimQuadrotorModel\Visualization\Diagnostics\FactoryTraceIso*.mo` | 接线/姿态/hover smoke，目的是诊断，不是给用户审看的飞行动画。 |
+| `Models\MoSimQuadrotorModel\Visualization\Scenarios\*Smoke.mo` | UE 场景追踪 smoke；它们不能替代本目录的离线 MWORKS 飞行动画，也不该用于控制器或规划结论。 |
 | `HoverSmoke`、`WrapperHoverSmoke`、`PhysicalWrenchHoverSmoke` | 动力学冒烟测试，不是“悬停飞行视频”。 |
 | 控制器核心、`QuadChassis`、`Controller`、`QuinticReference`、`OpenBlocksColorMapReview`、`NavigationDisplay` | 组件、参考轨迹、地图审查或显示支撑，不包含完整可审看的飞行任务。 |
 
 ## 5. 选择建议
 
-1. 只想先确认三维动画链路：选 `MoSimQuadrotorModel.Plant.Examples.Example3` 或
-   `MoSimQuadrotorModel.Missions.Official.Example3AWFF`。
+1. 只想先确认三维动画链路：选 `MoSimQuadrotorModel.Vehicle.Examples.Example3` 或
+   `MoSimQuadrotorModel.Experiment.Templates.Official.Example3AWFF`。
 2. 想看更有“飞行视频”感的单机画面：选 `Example1HelicalFigure8Trail` 或
    `Example2HelixTunedAWFF`。
 3. 想看障碍环境：先选 `OpenBlocksLinearMPC`，再选 `CorridorGateLinearMPC`。
