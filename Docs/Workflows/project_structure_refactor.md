@@ -462,3 +462,28 @@ component_id: sunray_gazebo
           改写审计过的脚本、Profile和ROS overlay路径，并完成受控ROS1验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.16 Sunray Gazebo 插件源码快照复制记录（2026-07-27）
+
+```text
+component_id: sunray_gazebo_plugins
+旧路径: References/Sunray/simulation/gazebo_plugin
+新路径: src/simulation/gazebo/plugins/sunray
+活动路径: References/Sunray/simulation/gazebo_plugin
+迁移状态: copied_pending_activation
+来源: 保留的Yundrone Sunray本地导入包；未恢复嵌套Git元数据或上游URL
+固定版本: 不可恢复；不得宣称已钉定上游Git commit
+许可证: realsense_gazebo_plugin/package.xml声明Apache 2.0；其余三个包声明TODO，且未发现独立许可证文件；发布前必须完成审计
+项目补丁: 无源码、package.xml、CMake、world或配置改动；仅新增迁移元数据与资产清单
+原始包快照: 排除Catkin workspace根CMakeLists.txt后，33个文件、156,781,128字节
+交付源码配置: 排除6个Livox扫描CSV资产后，27个文件、260,098字节，
+              SHA-256清单 d3064a1bb015c1b627db02f15608273ec1effeec8afd79d5ea376662e82033f1
+外置资产: 6个Livox扫描CSV、156,521,030字节，SHA-256清单
+          acd4ff7500c83d1f6b6e02192faafaffc7f43960b787c2aa81b849ecb79f7593；
+          每文件路径、大小与哈希见src/simulation/gazebo/plugins/sunray/ASSET_MANIFEST.json
+静态检查: 源/目标27个源码配置文件SHA-256逐项比对、CSV资产排除检查、JSON解析与路径注册检查通过
+未执行项: 未改写入口，未构建、预检、启动ROS/Gazebo/PX4/MAVROS/QGC/UE或RViz
+激活前置: 选择并发布可验证Livox资产包；审计上游/许可证、isolated overlay、livox_ros_driver依赖及脚本/Profile消费者；
+          改写审计过的路径并完成受控ROS1验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

@@ -20,6 +20,17 @@
         "Scripts/sunray/check_sunray_ros1_runtime_preflight.sh"
       ]
     },
+    "sunray_gazebo_plugins": {
+      "role": "simulation",
+      "canonical_relpath": "src/simulation/gazebo/plugins/sunray",
+      "legacy_relpath": "References/Sunray/simulation/gazebo_plugin",
+      "active_relpath": "References/Sunray/simulation/gazebo_plugin",
+      "migration_state": "copied_pending_activation",
+      "entrypoints": [
+        "Scripts/sunray/check_sunray_ros1_runtime_preflight.sh",
+        "Scripts/sunray/setup_sunray_livox_gazebo_plugin.sh"
+      ]
+    },
     "sunray_uav_control": {
       "role": "flight_stack",
       "canonical_relpath": "src/flight_stack/mavros/sunray_uav_control",

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "component_id": "sunray_gazebo_plugins",
+  "source_relpath": "References/Sunray/simulation/gazebo_plugin",
+  "canonical_relpath": "src/simulation/gazebo/plugins/sunray",
+  "delivery_mode": "external_versioned_asset_pack_required",
+  "install_target": "src/simulation/gazebo/plugins/sunray",
+  "asset_count": 6,
+  "asset_bytes": 156521030,
+  "sha256_tree": "acd4ff7500c83d1f6b6e02192faafaffc7f43960b787c2aa81b849ecb79f7593",
+  "assets": [
+    {
+      "path": "livox_laser_simulation/scan_mode/avia.csv",
+      "bytes": 34863404,
+      "sha256": "9363f7ec8da1541b49214ae18eea840151eda4eed176ebd573bd443eb7970d78"
+    },
+    {
+      "path": "livox_laser_simulation/scan_mode/horizon.csv",
+      "bytes": 34862844,
+      "sha256": "0888f20083b1892702df7c9cbd064ebc53e22dca318190258d864bb1da94af55"
+    },
+    {
+      "path": "livox_laser_simulation/scan_mode/mid360-real-centr.csv",
+      "bytes": 25399988,
+      "sha256": "aa486c66092af45eab59fccb1119421470ba01981434b75d04367dd374576553"
+    },
+    {
+      "path": "livox_laser_simulation/scan_mode/mid40.csv",
+      "bytes": 13266993,
+      "sha256": "8d9079778f549d5be8081d216df71c73ffb1e10a75284810e5a9d049848ef732"
+    },
+    {
+      "path": "livox_laser_simulation/scan_mode/mid70.csv",
+      "bytes": 13266694,
+      "sha256": "c7d2a7a5f02b6387a83225f058dd3e02750fd779c18a648e4e449b225367f6d1"
+    },
+    {
+      "path": "livox_laser_simulation/scan_mode/tele.csv",
+      "bytes": 34861107,
+      "sha256": "23453d2c493d801cb006153390a4aca4c88c85d6553ea8d86ecc51821023c40e"
+    }
+  ]
+}

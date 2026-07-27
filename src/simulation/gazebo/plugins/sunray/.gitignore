@@ -1,0 +1,2 @@
+# Livox scan patterns are delivered separately from this source snapshot.
+livox_laser_simulation/scan_mode/*.csv
