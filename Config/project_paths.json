@@ -147,7 +147,7 @@
       "canonical_relpath": "src/planning/fixed_formation",
       "legacy_relpath": "References/Lab/swarm_coordination/Swarm-Formation",
       "active_relpath": "References/Lab/swarm_coordination/Swarm-Formation",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "Scripts/sunray/build_swarm_formation_ros1_upstream_smoke.sh",
         "Scripts/sunray/swarm_formation_swarm_px4ctrl_d3.launch"
