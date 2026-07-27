@@ -36,7 +36,7 @@
       "canonical_relpath": "src/integration/ros1_launch/sunray_planner_utils",
       "legacy_relpath": "References/Sunray/General_Module/sunray_planner_utils",
       "active_relpath": "References/Sunray/General_Module/sunray_planner_utils",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "Config/profiles/runtime_bindings.json#planner_adapter.launch",
         "Config/profiles/runtime_bindings.json#rviz_review.launch"
