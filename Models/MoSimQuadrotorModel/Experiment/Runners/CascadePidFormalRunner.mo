@@ -8,7 +8,25 @@ model CascadePidFormalRunner
     annotation(Placement(transformation(origin = {-100, 50}, extent = {{-38, -28}, {38, 28}})));
   MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator offline_inner_allocator
     annotation(Placement(transformation(origin = {55, 50}, extent = {{-45, -28}, {45, 28}})));
-  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
+  parameter Real gust_force[3](each unit = "N") = {0, 0, 0};
+  parameter Real gust_start_s(unit = "s") = 0;
+  parameter Real gust_duration_s(unit = "s") = 0;
+  parameter Real mass_scale(min = 0.01) = 1;
+  parameter Real inertia_scale[3](each min = 0.01) = {1, 1, 1};
+  parameter Real rotor_effectiveness[4](each min = 0, each max = 1) = {1, 1, 1, 1};
+  parameter Real fault_start_s(unit = "s") = 1e9;
+  parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
+  parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
+  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant(
+    rotor_effectiveness = rotor_effectiveness,
+    gust_force = gust_force,
+    gust_start_s = gust_start_s,
+    gust_duration_s = gust_duration_s,
+    mass_scale = mass_scale,
+    inertia_scale = inertia_scale,
+    fault_start_s = fault_start_s,
+    fault_rotor_index = fault_rotor_index,
+    fault_rotor_effectiveness = fault_rotor_effectiveness)
     annotation(Placement(transformation(origin = {165, 0}, extent = {{-52, -75}, {52, 75}})));
   replaceable model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
   Trajectory reference

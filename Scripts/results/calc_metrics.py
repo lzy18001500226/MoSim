@@ -22,6 +22,11 @@ DEFAULT_DISTURBANCE_START_S = 15.0
 DEFAULT_DISTURBANCE_END_S = 19.0
 DEFAULT_DISTURBANCE_RECOVERY_TOLERANCE_M = 0.20
 DEFAULT_DISTURBANCE_RECOVERY_HOLD_S = 2.0
+STEP_RESPONSE_TIME_S = 15.0
+STEP_RESPONSE_EVALUATION_END_S = 45.0
+STEP_RESPONSE_SETTLING_FRACTION = 0.05
+STEP_RESPONSE_STEADY_STATE_START_S = 40.0
+MOTOR_FAULT_TIME_S = 15.0
 
 
 def read_csv(path: Path) -> dict[str, list[float]]:
@@ -160,6 +165,141 @@ def axis_overshoot(response: list[float], reference: list[float]) -> float:
     return 100.0 * overshoot / abs(amplitude)
 
 
+def windowed(time: list[float], values: list[float], start_s: float, end_s: float) -> list[float]:
+    """Return finite samples whose timestamps are inside the inclusive window."""
+    return [
+        value
+        for current_time, value in zip(time, values)
+        if start_s - 1e-9 <= current_time <= end_s + 1e-9
+        and math.isfinite(value)
+    ]
+
+
+def value_before(time: list[float], values: list[float], event_time_s: float) -> float:
+    candidates = [
+        value
+        for current_time, value in zip(time, values)
+        if current_time < event_time_s - 1e-9 and math.isfinite(value)
+    ]
+    return candidates[-1] if candidates else math.nan
+
+
+def value_at_or_after(time: list[float], values: list[float], event_time_s: float) -> float:
+    for current_time, value in zip(time, values):
+        if current_time >= event_time_s - 1e-9 and math.isfinite(value):
+            return value
+    return math.nan
+
+
+def signed_step_overshoot_percent(
+    time: list[float],
+    response: list[float],
+    reference: list[float],
+    step_time_s: float,
+    evaluation_end_s: float,
+) -> float:
+    """Overshoot relative to the signed XY step defined by the reference."""
+    initial_ref = value_before(time, reference, step_time_s)
+    target_ref = value_at_or_after(time, reference, step_time_s)
+    amplitude = target_ref - initial_ref
+    if not math.isfinite(amplitude) or abs(amplitude) < 1e-9:
+        return math.nan
+    direction = 1.0 if amplitude > 0 else -1.0
+    responses = windowed(time, response, step_time_s, evaluation_end_s)
+    if not responses:
+        return math.nan
+    signed_peak = max(direction * (value - initial_ref) for value in responses)
+    return 100.0 * max(0.0, signed_peak - abs(amplitude)) / abs(amplitude)
+
+
+def persistent_step_settling_time(
+    time: list[float],
+    x: list[float],
+    y: list[float],
+    x_ref: list[float],
+    y_ref: list[float],
+    step_time_s: float,
+    evaluation_end_s: float,
+    fraction: float,
+) -> float:
+    """Return first post-step time where both XY axes remain inside their 5% bands."""
+    x_initial = value_before(time, x_ref, step_time_s)
+    y_initial = value_before(time, y_ref, step_time_s)
+    x_target = value_at_or_after(time, x_ref, step_time_s)
+    y_target = value_at_or_after(time, y_ref, step_time_s)
+    x_band = fraction * abs(x_target - x_initial)
+    y_band = fraction * abs(y_target - y_initial)
+    if not all(math.isfinite(value) for value in (x_band, y_band, x_target, y_target)):
+        return math.nan
+    if x_band <= 0 or y_band <= 0:
+        return math.nan
+
+    post_indices = [
+        index
+        for index, current_time in enumerate(time)
+        if step_time_s - 1e-9 <= current_time <= evaluation_end_s + 1e-9
+    ]
+    if not post_indices:
+        return math.nan
+    for index in post_indices:
+        remains_inside = True
+        for later_index in post_indices:
+            if later_index < index:
+                continue
+            if (
+                not math.isfinite(x[later_index])
+                or not math.isfinite(y[later_index])
+                or abs(x[later_index] - x_target) > x_band + 1e-9
+                or abs(y[later_index] - y_target) > y_band + 1e-9
+            ):
+                remains_inside = False
+                break
+        if remains_inside:
+            return time[index] - step_time_s
+    return math.nan
+
+
+def compute_step_response_metrics(
+    time: list[float],
+    x: list[float],
+    y: list[float],
+    x_ref: list[float],
+    y_ref: list[float],
+    position_error: list[float],
+) -> dict[str, float]:
+    """Compute the competition step metrics using the frozen 15--45 s contract."""
+    steady_state = windowed(
+        time,
+        position_error,
+        STEP_RESPONSE_STEADY_STATE_START_S,
+        STEP_RESPONSE_EVALUATION_END_S,
+    )
+    overshoot_x = signed_step_overshoot_percent(
+        time, x, x_ref, STEP_RESPONSE_TIME_S, STEP_RESPONSE_EVALUATION_END_S
+    )
+    overshoot_y = signed_step_overshoot_percent(
+        time, y, y_ref, STEP_RESPONSE_TIME_S, STEP_RESPONSE_EVALUATION_END_S
+    )
+    return {
+        "overshoot_percent_x": overshoot_x,
+        "overshoot_percent_y": overshoot_y,
+        "settling_time_s": persistent_step_settling_time(
+            time,
+            x,
+            y,
+            x_ref,
+            y_ref,
+            STEP_RESPONSE_TIME_S,
+            STEP_RESPONSE_EVALUATION_END_S,
+            STEP_RESPONSE_SETTLING_FRACTION,
+        ),
+        "steady_state_error_m": mean(steady_state),
+        "step_response_time_s": STEP_RESPONSE_TIME_S,
+        "step_response_evaluation_end_s": STEP_RESPONSE_EVALUATION_END_S,
+        "step_response_settling_fraction": STEP_RESPONSE_SETTLING_FRACTION,
+    }
+
+
 def score_lower_better(value: float, target: float, fail: float) -> float:
     if math.isnan(value) or math.isinf(value):
         return 0.0
@@ -281,8 +421,10 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
     if time:
         final_window_start = max(time) - max(5.0, 0.2 * (max(time) - min(time)))
         final_error = [error for t, error in zip(time, ep) if t >= final_window_start]
+        tail_error = [error for t, error in zip(time, ep) if t >= max(time) - 5.0]
     else:
         final_error = []
+        tail_error = []
 
     motor_cols = [name for name in MOTOR_COLUMNS if name in data]
     control_norm_sq = []
@@ -333,8 +475,11 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         "x_rmse_m": rmse(ex),
         "y_rmse_m": rmse(ey),
         "z_rmse_m": rmse(ez),
+        "xy_rmse_m": rmse([math.sqrt(x * x + y * y) for x, y in zip(ex, ey)]),
         "max_position_error_m": max(ep) if ep else math.nan,
         "steady_state_error_m": mean(final_error),
+        "tail_rmse_m": rmse(tail_error),
+        "terminal_position_error_m": ep[-1] if ep else math.nan,
         "settling_time_s": settling_time(time, ep, DEFAULT_SETTLING_TOLERANCE_M, DEFAULT_SETTLING_HOLD_S),
         "disturbance_window_start_s": DEFAULT_DISTURBANCE_START_S,
         "disturbance_window_end_s": DEFAULT_DISTURBANCE_END_S,
@@ -383,6 +528,59 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         "nan_count": nan_count,
         "valid": len(time) > 10 and nan_count == 0,
     }
+    if scene_id == "step_response":
+        metrics.update(
+            compute_step_response_metrics(
+                time,
+                data["x"],
+                data["y"],
+                data["x_ref"],
+                data["y_ref"],
+                ep,
+            )
+        )
+    else:
+        metrics.update(
+            {
+                "overshoot_percent_x": math.nan,
+                "overshoot_percent_y": math.nan,
+                "step_response_time_s": math.nan,
+                "step_response_evaluation_end_s": math.nan,
+                "step_response_settling_fraction": math.nan,
+            }
+        )
+
+    if scene_id == "wind_disturbance":
+        metrics["disturbance_window_rmse_m"] = rmse(windowed(time, ep, 0.0, 50.0))
+        metrics["disturbance_window_start_s"] = 0.0
+        metrics["disturbance_window_end_s"] = 50.0
+    else:
+        metrics["disturbance_window_rmse_m"] = math.nan
+
+    if scene_id == "motor_efficiency_fault":
+        pre_fault_error = [
+            error
+            for current_time, error in zip(time, ep)
+            if current_time < MOTOR_FAULT_TIME_S - 1e-9 and math.isfinite(error)
+        ]
+        post_fault_error = windowed(time, ep, MOTOR_FAULT_TIME_S, max(time))
+        metrics.update(
+            {
+                "fault_start_s": MOTOR_FAULT_TIME_S,
+                "pre_fault_rmse_m": rmse(pre_fault_error),
+                "post_fault_rmse_m": rmse(post_fault_error),
+                "post_fault_peak_error_m": max_or_nan(post_fault_error),
+            }
+        )
+    else:
+        metrics.update(
+            {
+                "fault_start_s": math.nan,
+                "pre_fault_rmse_m": math.nan,
+                "post_fault_rmse_m": math.nan,
+                "post_fault_peak_error_m": math.nan,
+            }
+        )
     metrics.update(compute_health_scores(metrics))
     metrics.update(compute_formation_metrics(data))
     return metrics

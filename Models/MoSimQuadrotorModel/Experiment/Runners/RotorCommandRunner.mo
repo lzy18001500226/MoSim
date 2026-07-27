@@ -4,13 +4,27 @@ model RotorCommandRunner
 
   replaceable model Controller = MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter
     constrainedby MoSimQuadrotorModel.Control.Interfaces.PartialRotorCommandController;
-  parameter Real rotor_effectiveness[4] = {1, 1, 1, 1};
-  parameter Real gust_force[3] = {0, 0, 0};
+  parameter Real gust_force[3](each unit = "N") = {0, 0, 0};
+  parameter Real gust_start_s(unit = "s") = 0;
+  parameter Real gust_duration_s(unit = "s") = 0;
+  parameter Real mass_scale(min = 0.01) = 1;
+  parameter Real inertia_scale[3](each min = 0.01) = {1, 1, 1};
+  parameter Real rotor_effectiveness[4](each min = 0, each max = 1) = {1, 1, 1, 1};
+  parameter Real fault_start_s(unit = "s") = 1e9;
+  parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
+  parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
   Controller controller
     annotation(Placement(transformation(origin = {-70, 55}, extent = {{-40, -28}, {40, 28}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant(
     rotor_effectiveness = rotor_effectiveness,
-    gust_force = gust_force)
+    gust_force = gust_force,
+    gust_start_s = gust_start_s,
+    gust_duration_s = gust_duration_s,
+    mass_scale = mass_scale,
+    inertia_scale = inertia_scale,
+    fault_start_s = fault_start_s,
+    fault_rotor_index = fault_rotor_index,
+    fault_rotor_effectiveness = fault_rotor_effectiveness)
     annotation(Placement(transformation(origin = {150, 0}, extent = {{-52, -75}, {52, 75}})));
   replaceable model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
   Trajectory reference

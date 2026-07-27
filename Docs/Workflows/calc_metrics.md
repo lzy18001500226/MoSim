@@ -76,9 +76,34 @@ automation can still produce `Results/{group}/{scene}/{experiment}/metrics/*.jso
 
 ---
 
-## 4. Standard Metrics
+## 4. Seven-Scenario Contract
 
-### 4.1 Tracking Metrics
+For the controlled seven-scenario A/B matrix, use the frozen configuration at
+`Config/control_platform/seven_scenario_injection_contract.json` and its
+versioned profiles. The implementation is in `Scripts/results/calc_metrics.jl`,
+`Scripts/results/calc_metrics.py`, and
+`Scripts/syslab/compare_controllers.jl`. Self-checks are:
+
+`julia Scripts/results/calc_metrics.jl --self-test`
+
+`julia Scripts/syslab/compare_controllers.jl --self-test`
+
+The step response uses signed X/Y overshoot, a persistent plus-or-minus 5
+percent settling band after 15 s, and 40-45 s steady-state position error.
+The wind case uses a 0.25 N world-frame lateral force. The plant mismatch is
+plus 20 percent mass and diagonal inertia while controller parameters remain
+nominal. Rotor 1 changes to 50 percent thrust and reaction-moment
+effectiveness at 15 s.
+
+The scripts and their deterministic fixtures are ready, but no seven-scenario
+MWORKS result CSV exists yet. Do not present the self-tests as controller
+performance evidence.
+
+---
+
+## 5. Standard Metrics
+
+### 5.1 Tracking Metrics
 
 Position error:
 
@@ -114,7 +139,7 @@ E_ss = mean(e_p(t) over final time window)
 
 ---
 
-### 4.2 Step Response Metrics
+### 5.2 Step Response Metrics
 
 Overshoot:
 
@@ -136,7 +161,7 @@ Default tolerance:
 
 ---
 
-### 4.3 Attitude Metrics
+### 5.3 Attitude Metrics
 
 ```text
 roll_rmse
@@ -154,7 +179,7 @@ tilt = sqrt(roll^2 + pitch^2)
 
 ---
 
-### 4.4 Robustness Metrics
+### 5.4 Robustness Metrics
 
 Disturbance recovery time:
 
@@ -176,7 +201,7 @@ improvement = (metric_baseline - metric_proposed) / metric_baseline
 
 ---
 
-### 4.5 Control Effort Metrics
+### 5.5 Control Effort Metrics
 
 Control energy:
 
@@ -198,7 +223,7 @@ saturation_ratio = saturated_samples / total_samples
 
 ---
 
-### 4.6 Safety Metrics
+### 5.6 Safety Metrics
 
 ```text
 constraint_violation_count
@@ -211,7 +236,7 @@ collision_count
 
 ---
 
-### 4.7 Planning Metrics
+### 5.7 Planning Metrics
 
 ```text
 planning_success
@@ -225,7 +250,7 @@ dynamic_violation_count
 
 ---
 
-### 4.8 Formation Metrics
+### 5.8 Formation Metrics
 
 Formation error:
 
@@ -245,7 +270,7 @@ formation_recovery_time
 
 ---
 
-## 5. Procedure
+## 6. Procedure
 
 ### Step 1: Check Syslab MCP
 
@@ -379,7 +404,7 @@ Do not claim improvement without baseline data.
 
 ---
 
-## 6. Output Schema
+## 7. Output Schema
 
 Recommended JSON:
 
@@ -418,7 +443,7 @@ Recommended JSON:
 
 ---
 
-## 7. Pass / Fail Criteria
+## 8. Pass / Fail Criteria
 
 Default pass criteria for a valid experiment:
 
@@ -443,7 +468,7 @@ Constraint violation count must not increase unexpectedly.
 
 ---
 
-## 8. Report Usage
+## 9. Report Usage
 
 Metrics used in the report must match saved files.
 

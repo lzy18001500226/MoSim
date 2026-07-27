@@ -1,0 +1,208 @@
+{
+  "schema": "mosim.seven_scenario_experiment_profiles.v1",
+  "version": 1,
+  "status": "static_and_native_checkmodel_passed_waiting_review",
+  "authority": {
+    "injection_contract": "Config/control_platform/seven_scenario_injection_contract.json",
+    "model_root": "Models/MoSimQuadrotorModel/package.mo",
+    "result_root_template": "Results/control_platform/seven_scenario_ab/<controller_id>/<scenario_id>/"
+  },
+  "common_execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "controller_boundary_period_s": 0.01,
+    "profile_hash_rule": "SHA-256 of this UTF-8 LF JSON document is copied into each future RUN_RECORD.json before simulation.",
+    "pre_simulation_evidence": "Results/control_platform/seven_scenario_preflight_20260727/CHECK_MODEL_RESULTS.json",
+    "scenario_simulation_started": false
+  },
+  "formal_runner_binding": {
+    "style": "parameterized_existing_runner",
+    "rule": "A future run binds one existing formal runner, redeclares the named Trajectory, and applies only the runner_parameter_overrides in this profile. No controller-by-scenario Runner class is generated.",
+    "allowed_runner_classes": [
+      "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner"
+    ],
+    "official_pid_boundary": {
+      "reference_hold_period_s": 0.01,
+      "measurement_hold_period_s": 0.01,
+      "command_hold_period_s": 0.01,
+      "source_core_forward_feed": "not_available_in_supplied_core"
+    }
+  },
+  "profiles": [
+    {
+      "profile_id": "mworks_seven_scenario_hover_v1",
+      "scenario_id": "hover",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.HoverHold",
+      "duration_s": 35.0,
+      "trajectory_parameter_overrides": {
+        "target_altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "hold_duration_s": 30.0
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      },
+      "required_metrics": ["position_rmse_m", "tail_rmse_m", "terminal_position_error_m", "max_position_error_m"]
+    },
+    {
+      "profile_id": "mworks_seven_scenario_step_response_v1",
+      "scenario_id": "step_response",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.StepResponse",
+      "duration_s": 45.0,
+      "trajectory_parameter_overrides": {
+        "hover_altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "step_time_s": 15.0,
+        "x_step_m": 1.0,
+        "y_step_m": -1.0
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      },
+      "required_metrics": ["overshoot_percent_x", "overshoot_percent_y", "settling_time_s", "steady_state_error_m", "position_rmse_m"]
+    },
+    {
+      "profile_id": "mworks_seven_scenario_figure8_v1",
+      "scenario_id": "figure8",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "x_amplitude_m": 2.0,
+        "y_amplitude_m": 1.0,
+        "angular_rate_rad_s": 0.35
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      },
+      "yaw_policy": "fixed_zero_shared_controller_contract",
+      "required_metrics": ["position_rmse_m", "xy_rmse_m", "max_position_error_m", "terminal_position_error_m"]
+    },
+    {
+      "profile_id": "mworks_seven_scenario_spiral_v1",
+      "scenario_id": "spiral",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "radius_m": 1.5,
+        "angular_rate_rad_s": 0.3,
+        "climb_rate_m_s": 0.15
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      },
+      "required_metrics": ["position_rmse_m", "xy_rmse_m", "z_rmse_m", "max_position_error_m"]
+    },
+    {
+      "profile_id": "mworks_seven_scenario_wind_disturbance_v1",
+      "scenario_id": "wind_disturbance",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.WindDisturbance",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "gust_force": [0.25, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 50.0
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.25, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 50.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      },
+      "required_metrics": ["position_rmse_m", "disturbance_window_rmse_m", "max_position_error_m", "terminal_position_error_m"]
+    },
+    {
+      "profile_id": "mworks_seven_scenario_parameter_mismatch_v1",
+      "scenario_id": "parameter_mismatch",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ParameterMismatch",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "mismatch_fraction": 0.2,
+        "use_negative_bias": false,
+        "mass_scale": 1.2,
+        "inertia_scale": [1.2, 1.2, 1.2]
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.2,
+        "inertia_scale": [1.2, 1.2, 1.2],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      },
+      "controller_parameter_scale": 1.0,
+      "required_metrics": ["position_rmse_m", "max_position_error_m", "terminal_position_error_m", "control_energy"]
+    },
+    {
+      "profile_id": "mworks_seven_scenario_motor_efficiency_fault_v1",
+      "scenario_id": "motor_efficiency_fault",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.MotorFault",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "fault_start_s": 15.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 0.5
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 15.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 0.5
+      },
+      "required_metrics": ["pre_fault_rmse_m", "post_fault_rmse_m", "post_fault_peak_error_m", "terminal_position_error_m", "control_energy"]
+    }
+  ]
+}

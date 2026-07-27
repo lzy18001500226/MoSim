@@ -1,88 +1,257 @@
 #!/usr/bin/env julia
 
-# Minimal metrics script for project-standard quadrotor CSV files.
+# Syslab/Julia metrics for the formal quadrotor result CSV contract.
 #
 # Usage:
-#   julia Scripts/results/calc_metrics.jl Results/{group}/{scene}/{experiment}/raw/figure8.csv Results/{group}/{scene}/{experiment}/metrics/figure8.json
+#   julia Scripts/results/calc_metrics.jl <raw_csv> <metrics_json> [scene_id] [controller_id]
 #   julia Scripts/results/calc_metrics.jl --self-test
+#
+# This file intentionally uses Base Julia only so it can run in a clean
+# MWORKS.Syslab session without requiring an unverified package installation.
 
 using Dates
 
-function parse_args()
-    if length(ARGS) == 1 && ARGS[1] == "--self-test"
-        return "Scripts/tests/fixtures/sample_tracking.csv", "Results/samples/tracking_metrics/metrics/sample_tracking_metrics.json", "sample_tracking", "fixture"
-    end
-    if length(ARGS) < 2
-        println(stderr, "Usage: julia Scripts/results/calc_metrics.jl <raw_csv> <metrics_json> [scene_id] [controller_id]")
-        println(stderr, "       julia Scripts/results/calc_metrics.jl --self-test")
-        exit(2)
-    end
-    raw_csv = ARGS[1]
-    metrics_json = ARGS[2]
-    scene_id = length(ARGS) >= 3 ? ARGS[3] : splitext(basename(raw_csv))[1]
-    controller_id = length(ARGS) >= 4 ? ARGS[4] : "unknown"
-    return raw_csv, metrics_json, scene_id, controller_id
-end
+const REQUIRED_COLUMNS = ["time", "x", "y", "z", "x_ref", "y_ref", "z_ref"]
+const MOTOR_COLUMNS = ["u1", "u2", "u3", "u4"]
+const STEP_RESPONSE_TIME_S = 15.0
+const STEP_RESPONSE_EVALUATION_END_S = 45.0
+const STEP_RESPONSE_SETTLING_FRACTION = 0.05
+const STEP_RESPONSE_STEADY_STATE_START_S = 40.0
+const MOTOR_FAULT_TIME_S = 15.0
 
 function read_csv(path::AbstractString)
     lines = readlines(path)
-    if isempty(lines)
-        error("CSV is empty: $path")
-    end
-    header = split(strip(lines[1]), ",")
+    isempty(lines) && error("CSV is empty: $path")
+    header = [String(strip(name)) for name in split(strip(lines[1]), ",")]
+    missing = [name for name in REQUIRED_COLUMNS if !(name in header)]
+    isempty(missing) || error("Missing required CSV columns: $(join(missing, ", "))")
     columns = Dict(name => Float64[] for name in header)
-    for line in lines[2:end]
-        isempty(strip(line)) && continue
-        values = split(strip(line), ",")
+    for (offset, line) in enumerate(lines[2:end])
+        line_no = offset + 1
+        stripped = strip(line)
+        isempty(stripped) && continue
+        values = split(stripped, ",")
+        length(values) == length(header) || error("CSV row $line_no has $(length(values)) values, expected $(length(header))")
         for (name, value) in zip(header, values)
-            push!(columns[name], parse(Float64, value))
+            token = strip(value)
+            push!(columns[name], isempty(token) ? NaN : parse(Float64, token))
         end
     end
     return header, columns
 end
 
-function require_columns(columns, names)
-    missing = [name for name in names if !haskey(columns, name)]
-    if !isempty(missing)
-        error("Missing required CSV columns: $(join(missing, ", "))")
-    end
+finite_values(values) = [Float64(value) for value in values if isfinite(value)]
+mean_value(values) = isempty(values) ? NaN : sum(values) / length(values)
+rmse(values) = begin
+    finite = finite_values(values)
+    isempty(finite) ? NaN : sqrt(mean_value(finite .^ 2))
+end
+max_or_nan(values) = begin
+    finite = finite_values(values)
+    isempty(finite) ? NaN : maximum(finite)
 end
 
-mean_value(values) = isempty(values) ? NaN : sum(values) / length(values)
-rmse(values) = isempty(values) ? NaN : sqrt(mean_value(values .^ 2))
-
 function trapezoid_integral(time, values)
-    if length(time) < 2 || length(values) < 2
-        return NaN
-    end
+    length(time) < 2 && return NaN
+    length(values) < 2 && return NaN
     total = 0.0
-    for i in 2:length(time)
-        dt = time[i] - time[i - 1]
-        total += 0.5 * dt * (values[i] + values[i - 1])
+    for index in 2:length(time)
+        dt = time[index] - time[index - 1]
+        isfinite(dt) && dt > 0 || continue
+        total += 0.5 * dt * (values[index] + values[index - 1])
     end
     return total
 end
 
-function json_escape(text)
-    return replace(string(text), "\\" => "\\\\", "\"" => "\\\"")
+function windowed(time, values, start_s::Real, end_s::Real)
+    return [
+        value
+        for (current_time, value) in zip(time, values)
+        if start_s - 1e-9 <= current_time <= end_s + 1e-9 && isfinite(value)
+    ]
 end
 
-function write_json(path, metrics)
+function value_before(time, values, event_time_s::Real)
+    candidates = [
+        value
+        for (current_time, value) in zip(time, values)
+        if current_time < event_time_s - 1e-9 && isfinite(value)
+    ]
+    return isempty(candidates) ? NaN : candidates[end]
+end
+
+function value_at_or_after(time, values, event_time_s::Real)
+    for (current_time, value) in zip(time, values)
+        if current_time >= event_time_s - 1e-9 && isfinite(value)
+            return value
+        end
+    end
+    return NaN
+end
+
+function signed_step_overshoot_percent(time, response, reference, step_time_s::Real, evaluation_end_s::Real)
+    initial_ref = value_before(time, reference, step_time_s)
+    target_ref = value_at_or_after(time, reference, step_time_s)
+    amplitude = target_ref - initial_ref
+    (!isfinite(amplitude) || abs(amplitude) < 1e-9) && return NaN
+    direction = amplitude > 0 ? 1.0 : -1.0
+    responses = windowed(time, response, step_time_s, evaluation_end_s)
+    isempty(responses) && return NaN
+    signed_peak = maximum(direction * (value - initial_ref) for value in responses)
+    return 100.0 * max(0.0, signed_peak - abs(amplitude)) / abs(amplitude)
+end
+
+function persistent_step_settling_time(time, x, y, x_ref, y_ref, step_time_s::Real, evaluation_end_s::Real, fraction::Real)
+    x_initial = value_before(time, x_ref, step_time_s)
+    y_initial = value_before(time, y_ref, step_time_s)
+    x_target = value_at_or_after(time, x_ref, step_time_s)
+    y_target = value_at_or_after(time, y_ref, step_time_s)
+    x_band = fraction * abs(x_target - x_initial)
+    y_band = fraction * abs(y_target - y_initial)
+    all(isfinite, (x_target, y_target, x_band, y_band)) || return NaN
+    (x_band <= 0 || y_band <= 0) && return NaN
+    indices = [
+        index for index in eachindex(time)
+        if step_time_s - 1e-9 <= time[index] <= evaluation_end_s + 1e-9
+    ]
+    isempty(indices) && return NaN
+    for index in indices
+        stable = true
+        for later_index in indices
+            later_index < index && continue
+            if !isfinite(x[later_index]) || !isfinite(y[later_index]) ||
+               abs(x[later_index] - x_target) > x_band + 1e-9 ||
+               abs(y[later_index] - y_target) > y_band + 1e-9
+                stable = false
+                break
+            end
+        end
+        stable && return time[index] - step_time_s
+    end
+    return NaN
+end
+
+function compute_step_response_metrics(time, x, y, x_ref, y_ref, position_error)
+    return Dict{String, Any}(
+        "overshoot_percent_x" => signed_step_overshoot_percent(time, x, x_ref, STEP_RESPONSE_TIME_S, STEP_RESPONSE_EVALUATION_END_S),
+        "overshoot_percent_y" => signed_step_overshoot_percent(time, y, y_ref, STEP_RESPONSE_TIME_S, STEP_RESPONSE_EVALUATION_END_S),
+        "settling_time_s" => persistent_step_settling_time(
+            time, x, y, x_ref, y_ref, STEP_RESPONSE_TIME_S,
+            STEP_RESPONSE_EVALUATION_END_S, STEP_RESPONSE_SETTLING_FRACTION,
+        ),
+        "steady_state_error_m" => mean_value(windowed(
+            time, position_error, STEP_RESPONSE_STEADY_STATE_START_S,
+            STEP_RESPONSE_EVALUATION_END_S,
+        )),
+        "step_response_time_s" => STEP_RESPONSE_TIME_S,
+        "step_response_evaluation_end_s" => STEP_RESPONSE_EVALUATION_END_S,
+        "step_response_settling_fraction" => STEP_RESPONSE_SETTLING_FRACTION,
+    )
+end
+
+function compute_metrics(columns::Dict{String, Vector{Float64}}; raw_file::AbstractString = "", scene_id::AbstractString = "", controller_id::AbstractString = "unknown")
+    time = columns["time"]
+    isempty(time) && error("Metrics input has no data rows: $raw_file")
+    x = columns["x"]
+    y = columns["y"]
+    z = columns["z"]
+    x_ref = columns["x_ref"]
+    y_ref = columns["y_ref"]
+    z_ref = columns["z_ref"]
+    ex = x .- x_ref
+    ey = y .- y_ref
+    ez = z .- z_ref
+    ep = sqrt.(ex .^ 2 .+ ey .^ 2 .+ ez .^ 2)
+    xy_error = sqrt.(ex .^ 2 .+ ey .^ 2)
+    duration_s = maximum(time) - minimum(time)
+    final_window_start = maximum(time) - max(5.0, 0.2 * duration_s)
+    final_error = windowed(time, ep, final_window_start, maximum(time))
+    tail_error = windowed(time, ep, maximum(time) - 5.0, maximum(time))
+
+    motor_cols = [name for name in MOTOR_COLUMNS if haskey(columns, name)]
+    control_norm_sq = zeros(length(time))
+    if !isempty(motor_cols)
+        for name in motor_cols
+            control_norm_sq .+= columns[name] .^ 2
+        end
+    end
+    nan_count = sum(count(value -> !isfinite(value), values) for values in values(columns))
+
+    metrics = Dict{String, Any}(
+        "generated_at" => string(now()),
+        "raw_file" => raw_file,
+        "scene_id" => scene_id,
+        "controller_id" => controller_id,
+        "row_count" => length(time),
+        "duration_s" => duration_s,
+        "sample_rate_hz" => length(time) > 1 && duration_s > 0 ? (length(time) - 1) / duration_s : NaN,
+        "position_rmse_m" => rmse(ep),
+        "x_rmse_m" => rmse(ex),
+        "y_rmse_m" => rmse(ey),
+        "z_rmse_m" => rmse(ez),
+        "xy_rmse_m" => rmse(xy_error),
+        "max_position_error_m" => max_or_nan(ep),
+        "steady_state_error_m" => mean_value(final_error),
+        "tail_rmse_m" => rmse(tail_error),
+        "terminal_position_error_m" => isempty(ep) ? NaN : ep[end],
+        "control_energy" => isempty(motor_cols) ? NaN : trapezoid_integral(time, control_norm_sq),
+        "nan_count" => nan_count,
+        "valid" => length(time) > 10 && nan_count == 0,
+        "overshoot_percent_x" => NaN,
+        "overshoot_percent_y" => NaN,
+        "step_response_time_s" => NaN,
+        "step_response_evaluation_end_s" => NaN,
+        "step_response_settling_fraction" => NaN,
+        "disturbance_window_rmse_m" => NaN,
+        "fault_start_s" => NaN,
+        "pre_fault_rmse_m" => NaN,
+        "post_fault_rmse_m" => NaN,
+        "post_fault_peak_error_m" => NaN,
+    )
+
+    if scene_id == "step_response"
+        merge!(metrics, compute_step_response_metrics(time, x, y, x_ref, y_ref, ep))
+    end
+    if scene_id == "wind_disturbance"
+        metrics["disturbance_window_start_s"] = 0.0
+        metrics["disturbance_window_end_s"] = 50.0
+        metrics["disturbance_window_rmse_m"] = rmse(windowed(time, ep, 0.0, 50.0))
+    end
+    if scene_id == "motor_efficiency_fault"
+        pre_fault = [
+            error for (current_time, error) in zip(time, ep)
+            if current_time < MOTOR_FAULT_TIME_S - 1e-9 && isfinite(error)
+        ]
+        post_fault = windowed(time, ep, MOTOR_FAULT_TIME_S, maximum(time))
+        metrics["fault_start_s"] = MOTOR_FAULT_TIME_S
+        metrics["pre_fault_rmse_m"] = rmse(pre_fault)
+        metrics["post_fault_rmse_m"] = rmse(post_fault)
+        metrics["post_fault_peak_error_m"] = max_or_nan(post_fault)
+    end
+    return metrics
+end
+
+function json_escape(text)
+    return replace(string(text), "\\" => "\\\\", "\"" => "\\\"", "\n" => "\\n")
+end
+
+function write_json(path::AbstractString, metrics::Dict{String, Any})
     mkpath(dirname(path))
     open(path, "w") do io
         println(io, "{")
         keys_sorted = sort(collect(keys(metrics)))
-        for (i, key) in enumerate(keys_sorted)
+        for (index, key) in enumerate(keys_sorted)
             value = metrics[key]
-            suffix = i == length(keys_sorted) ? "" : ","
-            if value isa Number
-                if isnan(value) || isinf(value)
+            suffix = index == length(keys_sorted) ? "" : ","
+            if value isa Bool
+                rendered = value ? "true" : "false"
+                println(io, "  \"$(json_escape(key))\": $rendered$suffix")
+            elseif value isa Number
+                if !isfinite(value)
                     println(io, "  \"$(json_escape(key))\": null$suffix")
                 else
                     println(io, "  \"$(json_escape(key))\": $(value)$suffix")
                 end
-            elseif value isa Bool
-                println(io, "  \"$(json_escape(key))\": $(value ? "true" : "false")$suffix")
             else
                 println(io, "  \"$(json_escape(key))\": \"$(json_escape(value))\"$suffix")
             end
@@ -91,61 +260,73 @@ function write_json(path, metrics)
     end
 end
 
-function main()
-    raw_csv, metrics_json, scene_id, controller_id = parse_args()
-    header, columns = read_csv(raw_csv)
-    require_columns(columns, ["time", "x", "y", "z", "x_ref", "y_ref", "z_ref"])
-
-    time = columns["time"]
-    ex = columns["x"] .- columns["x_ref"]
-    ey = columns["y"] .- columns["y_ref"]
-    ez = columns["z"] .- columns["z_ref"]
-    ep = sqrt.(ex .^ 2 .+ ey .^ 2 .+ ez .^ 2)
-
-    final_window_start = isempty(time) ? 0.0 : maximum(time) - max(5.0, 0.2 * (maximum(time) - minimum(time)))
-    final_idx = findall(t -> t >= final_window_start, time)
-    final_error = isempty(final_idx) ? Float64[] : ep[final_idx]
-
-    motor_cols = [name for name in ["u1", "u2", "u3", "u4"] if haskey(columns, name)]
-    control_norm_sq = Float64[]
-    saturation_samples = 0
-    if !isempty(motor_cols)
-        n = length(time)
-        control_norm_sq = zeros(n)
-        for name in motor_cols
-            control_norm_sq .+= columns[name] .^ 2
-            saturation_samples += count(u -> u <= 1e-9 || u >= 1.0 - 1e-9, columns[name])
-        end
-    end
-
-    metrics = Dict{String, Any}()
-    metrics["generated_at"] = string(now())
-    metrics["raw_file"] = raw_csv
-    metrics["scene_id"] = scene_id
-    metrics["controller_id"] = controller_id
-    metrics["row_count"] = length(time)
-    metrics["duration_s"] = isempty(time) ? NaN : maximum(time) - minimum(time)
-    metrics["position_rmse_m"] = rmse(ep)
-    metrics["x_rmse_m"] = rmse(ex)
-    metrics["y_rmse_m"] = rmse(ey)
-    metrics["z_rmse_m"] = rmse(ez)
-    metrics["max_position_error_m"] = isempty(ep) ? NaN : maximum(ep)
-    metrics["steady_state_error_m"] = mean_value(final_error)
-    metrics["control_energy"] = isempty(control_norm_sq) ? NaN : trapezoid_integral(time, control_norm_sq)
-    metrics["saturation_ratio"] = isempty(motor_cols) ? NaN : saturation_samples / (length(time) * length(motor_cols))
-    metrics["nan_count"] = sum(count(isnan, values) for values in values(columns))
-    metrics["valid"] = metrics["row_count"] > 10 && metrics["nan_count"] == 0
-
-    write_json(metrics_json, metrics)
-    csv_path = replace(metrics_json, r"\.json$" => ".csv")
-    open(csv_path, "w") do io
+function write_metrics_csv(path::AbstractString, metrics::Dict{String, Any})
+    open(path, "w") do io
         println(io, "metric,value")
         for key in sort(collect(keys(metrics)))
-            println(io, "$key,$(metrics[key])")
+            value = metrics[key]
+            rendered = value isa Number && !isfinite(value) ? "" : string(value)
+            println(io, "$(key),$(replace(rendered, ',' => ';'))")
         end
     end
-    println("Metrics written: $metrics_json")
-    println("Metrics CSV: $csv_path")
 end
 
-main()
+function write_self_test_csv(path::AbstractString)
+    open(path, "w") do io
+        println(io, "time,x,y,z,x_ref,y_ref,z_ref")
+        for time_s in 0.0:1.0:45.0
+            x_ref = time_s < STEP_RESPONSE_TIME_S ? 0.0 : 1.0
+            y_ref = time_s < STEP_RESPONSE_TIME_S ? 0.0 : -1.0
+            x = time_s < STEP_RESPONSE_TIME_S ? 0.0 : 1.0 - exp(-(time_s - STEP_RESPONSE_TIME_S) / 2.0)
+            y = time_s < STEP_RESPONSE_TIME_S ? 0.0 : -1.0 + exp(-(time_s - STEP_RESPONSE_TIME_S) / 2.0)
+            println(io, "$(time_s),$(x),$(y),2.0,$(x_ref),$(y_ref),2.0")
+        end
+    end
+end
+
+function self_test()
+    root = joinpath(pwd(), ".tmp", "calc_metrics_jl_self_test")
+    isdir(root) && rm(root; recursive = true, force = true)
+    try
+        mkpath(root)
+        raw = joinpath(root, "step_response.csv")
+        output = joinpath(root, "metrics.json")
+        write_self_test_csv(raw)
+        _, columns = read_csv(raw)
+        metrics = compute_metrics(columns; raw_file = raw, scene_id = "step_response", controller_id = "self_test")
+        write_json(output, metrics)
+        metrics["overshoot_percent_x"] == 0.0 || error("self-test expected zero x overshoot")
+        metrics["overshoot_percent_y"] == 0.0 || error("self-test expected zero y overshoot")
+        isfinite(metrics["settling_time_s"]) || error("self-test expected a finite settling time")
+        metrics["steady_state_error_m"] < 0.05 || error("self-test expected a small steady-state error")
+        println("[OK] calc_metrics.jl self-test")
+        return 0
+    finally
+        isdir(root) && rm(root; recursive = true, force = true)
+    end
+end
+
+function main(args = ARGS)
+    if length(args) == 1 && args[1] == "--self-test"
+        return self_test()
+    end
+    if length(args) < 2
+        println(stderr, "Usage: julia Scripts/results/calc_metrics.jl <raw_csv> <metrics_json> [scene_id] [controller_id]")
+        println(stderr, "       julia Scripts/results/calc_metrics.jl --self-test")
+        return 2
+    end
+    raw_csv = args[1]
+    metrics_json = args[2]
+    scene_id = length(args) >= 3 ? args[3] : splitext(basename(raw_csv))[1]
+    controller_id = length(args) >= 4 ? args[4] : "unknown"
+    _, columns = read_csv(raw_csv)
+    metrics = compute_metrics(columns; raw_file = raw_csv, scene_id = scene_id, controller_id = controller_id)
+    write_json(metrics_json, metrics)
+    write_metrics_csv(replace(metrics_json, r"\.json$" => ".csv"), metrics)
+    println("Metrics written: $metrics_json")
+    return 0
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    exit(main())
+end

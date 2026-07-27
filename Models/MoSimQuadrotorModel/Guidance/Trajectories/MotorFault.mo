@@ -3,14 +3,14 @@ model MotorFault
   "ClimbPath reference with one rotor reduced to 50 percent effectiveness"
 
   extends MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
-  parameter Integer failed_rotor_index(min = 1, max = 4) = 1;
-  parameter Real failed_rotor_effectiveness(min = 0, max = 1) = 0.5;
-  parameter Real rotor_effectiveness[4] = {
-    if failed_rotor_index == 1 then failed_rotor_effectiveness else 1,
-    if failed_rotor_index == 2 then failed_rotor_effectiveness else 1,
-    if failed_rotor_index == 3 then failed_rotor_effectiveness else 1,
-    if failed_rotor_index == 4 then failed_rotor_effectiveness else 1}
-    "Effectiveness vector read by a Runner when this scenario is bound";
+  parameter Real fault_start_s(unit = "s") = 15
+    "The Runner binds this scheduled fault time into the physical plant";
+  parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
+  parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 0.5;
+
+  // This reference model deliberately does not expose a static effectiveness
+  // vector. The Runner passes the scheduled values to RotorActuatorCore so the
+  // selected rotor remains nominal before t = fault_start_s.
 
   annotation(
     experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50,

@@ -9,9 +9,10 @@ boundary; P0b then passed Official PID and four shared Runner 50 s regressions
 before the later reference-velocity/reference-acceleration contract repair.
 Phase 1 completed its user-approved frozen 46-route matrix on 2026-07-27 CST.
 The pre-P0a matrix and the six-candidate recovery both remain historical
-trace-back only after the forward-reference repair. The new contract and seven
-trajectory definitions passed `CheckModel`; no current-source replay, scenario
-simulation, or A/B comparison ran in that definition gate.
+trace-back only after the forward-reference repair. The new seven-scenario
+contract, Plant/Runner bindings, Official PID hold harness, and trajectory
+definitions passed static validation and native `CheckModel`; no current-source
+replay, scenario simulation, or A/B comparison ran in that pre-simulation gate.
 
 Catalog vocabulary: 48 active entries consist of 47 MWORKS Control Profiles
 (46 existing routes plus planned `pid_awff_linear_eso`) and the `px4ctrl`
@@ -30,7 +31,7 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Seven-Scenario Injection Contract Written - Awaiting Binding Review
+### Seven-Scenario Pre-Simulation Gate Passed - Awaiting User Review
 
 - Workflow: `Docs/Workflows/run_simulation.md`.
 - Frozen matrix driver: `Scripts/mworks/run_phase1_minimum_closure.py`.
@@ -46,32 +47,31 @@ contract. Neither creates another task line or gate meaning.
 - Seven trajectory definitions are present under
   `Models/MoSimQuadrotorModel/Guidance/Trajectories/`: `HoverHold`,
   `StepResponse`, `Figure8`, `SpiralAscent`, `WindDisturbance`,
-  `ParameterMismatch`, and `MotorFault`. The source repair also carries
+  `ParameterMismatch`, and `MotorFault`. The source repair carries
   position, velocity, and acceleration references through the four shared
-  controller contracts and the six champion Formal Runners.
-- `Results/control_platform/seven_scenario_trajectory_contract_20260727/`
-  records current native `CheckModel` passes for `ClimbPath`, all seven new
-  trajectory models, and all six champion Formal Runners. It contains a
-  representative Formal Runner layout capture only; it is not simulation
-  evidence.
-- `WindDisturbance.gust_force`, `ParameterMismatch.mass_scale` /
-  `inertia_scale`, and `MotorFault.rotor_effectiveness` are scenario contracts
-  awaiting explicit Runner-to-plant binding. Do not call any of them injected
-  fault/disturbance experiments before that Phase 3 implementation and run.
+  controller contracts and the six champion Formal Runners. The scenario
+  injection parameters are bound through the Plant and all four shared Runner
+  boundaries.
+- `Results/control_platform/seven_scenario_preflight_20260727/` records
+  static contract validation, a native MWORKS `CheckModel` pass for eight
+  trajectories, four shared Runners, Official PID, and six champion Formal
+  Runners, raw MCP JSONL, clean GUI sentinels before and after, and a
+  DPI-aware native-aspect capture. It contains no solver result or simulation
+  performance claim.
 - `Config/control_platform/seven_scenario_injection_contract.json` now fixes
   the offline scenario semantics and required binding path: persistent 0.25 N
   world-frame lateral force, plant-only +20 percent mass/inertia mismatch, and
   rotor 1 transition to 50 percent effectiveness at 15 s. It additionally
   requires a 0.01 s external hold harness around Official PID and defines the
-  step-response metric semantics. It is a design contract only; no Plant,
-  Runner, metric implementation, or scenario simulation has changed or run.
+  step-response metric semantics. The Plant, Runner, and metric implementation
+  are complete and self-checked; no scenario simulation has run.
 - The recovery ranking and P0b runner results are pre-repair records, not
   current-source performance evidence. The `CheckModel` record proves model
   integrity only, not RMSE improvement, seven-scenario A/B, code-generation,
   Gazebo, ROS, or flight-runtime behavior.
-- Stop: review the injection contract before implementing Plant/Runner
-  bindings. Do not run the other 34 `adapter_missing` rows, seven-scenario A/B,
-  export, runtime validation, G7, or R1.
+- Stop: wait for user review before any current-source replay, the other 34
+  `adapter_missing` rows, seven-scenario A/B, export, runtime validation, G7,
+  or R1.
 
 The approved atomic model-library migration is statically complete. The only
 formal load root is `Models/MoSimQuadrotorModel/package.mo`; retired roots and
@@ -151,10 +151,11 @@ topic workflow and declare the evidence path under `Results/`.
 
 ## 4. Stopping And Handoff Conditions
 
-For the completed trajectory-definition and forward-reference repair gate:
+For the completed seven-scenario pre-simulation gate:
 
-- All eight trajectory models and six Formal Runners passed native `CheckModel`.
-  Commit and push the bounded repair, then wait for user review.
+- Static validation and native `CheckModel` passed for eight trajectories, four
+  shared Runners, Official PID, and six champion Formal Runners. Commit and
+  push the bounded repair, then wait for user review.
 - Do not use P0b or the pre-repair six-candidate RMSE as current-source
   controller-family selection data. Replay is required first.
 - Do not run the candidate/Official PID replay, the other 34 `adapter_missing`

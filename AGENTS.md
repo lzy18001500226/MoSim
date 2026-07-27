@@ -13,16 +13,16 @@ Fast entry cue, 2026-07-27 CST: the six-candidate recovery record at
 `Results/control_platform/champion_candidate_recovery_20260727/`
 predates the shared reference-velocity/reference-acceleration repair. Its
 `ClimbPath` passes and RMSE are trace-back evidence only, not a valid ranking
-for the current source. The user-approved seven-scenario trajectory definitions
-and the repaired reference contract passed `CheckModel`; the current record is
-`Results/control_platform/seven_scenario_trajectory_contract_20260727/CHECK_MODEL_RESULTS.json`.
-`Config/control_platform/seven_scenario_injection_contract.json` now fixes
-the scenario semantics, but `WindDisturbance`, `ParameterMismatch`, and
-`MotorFault` still await Plant/Runner binding; no wind, mismatch, motor-fault,
-or seven-scenario A/B simulation has run. Wait for user review before changing
-Plant/Runner code, replaying the common 50 s candidate/Official PID baseline,
-running the other 34 `adapter_missing` rows, seven-scenario A/B, export,
-runtime validation, G7, or R1.
+for the current source. The user-approved seven-scenario contract is now bound
+through the Plant and four shared Runner classes; the Official PID has a 0.01 s
+external hold harness. Static validation and native `CheckModel` passed for
+eight trajectories, four shared Runners, Official PID, and six champion Formal
+Runners. Current evidence is
+`Results/control_platform/seven_scenario_preflight_20260727/`.
+No current-source replay, seven-scenario simulation, A/B comparison, code
+generation, or Gazebo/ROS runtime validation has run. Wait for user review
+before starting any of those steps, the other 34 `adapter_missing` rows, G7,
+or R1.
 
 `Docs/Workflows/mainline_operations_board.md` is the sole task authority and
 contains the exact scope, evidence, and stopping/handoff conditions. Update this

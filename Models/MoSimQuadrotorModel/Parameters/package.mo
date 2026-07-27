@@ -16,6 +16,12 @@ package Parameters
       mworks_rotor_center_m;
     parameter String non_geometry_seed_source =
       "YunZong SDF inertia seed plus PX4 Gazebo Classic Iris motor-model seed; neither is measured Sunray150 truth.";
+    parameter String official_pid_source_anchor =
+      "Models/MoSimQuadrotorModel/Vehicle/Blocks/package.mo, Vehicle.Blocks.Controller.Controller";
+    parameter String official_pid_case_reference =
+      "Tongyuan MWORKS competition quadrotor case: https://mohub.net/model/2355/summary";
+    parameter String official_pid_provenance_boundary =
+      "The embedded graphical Controller.Controller is retained as the supplied Official PID source. OfficialPIDRotorAdapter only maps its existing position/attitude and rotor-output boundary to the Sunray150 physical plant; it does not replace the PID core. The original source core has no velocity or acceleration feedforward port, so those held formal-runner signals remain intentionally unused by the Official PID baseline.";
     parameter Real mass_kg(unit = "kg") = takeoff_mass_kg;
     parameter Real sdf_motor_constant(unit = "N/(rad/s)^2") =
       motor_constant_n_per_rad_s2;

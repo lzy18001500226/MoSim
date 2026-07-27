@@ -1,8 +1,8 @@
 {
   "schema": "mosim.seven_scenario_injection_contract.v1",
   "version": 1,
-  "status": "design_frozen_runner_plant_binding_pending",
-  "claim_boundary": "This contract fixes offline MWORKS scenario inputs, parameter semantics, metrics, and required binding behavior. It is not evidence that any disturbance, mismatch, motor fault, seven-scenario A/B, px4ctrl equivalence, code generation, or Gazebo runtime run has occurred.",
+  "status": "runner_plant_bound_static_and_checkmodel_passed_waiting_review",
+  "claim_boundary": "This contract fixes offline MWORKS scenario inputs, parameter semantics, metrics, and required binding behavior. The bound source passed static validation and native CheckModel on 2026-07-27, but no disturbance, mismatch, motor fault, seven-scenario A/B, px4ctrl equivalence, code generation, or Gazebo runtime run has occurred.",
   "authority": {
     "workflow": "Docs/Workflows/g6_controller_experiment_execution.md",
     "model_root": "Models/MoSimQuadrotorModel/package.mo",
@@ -24,7 +24,7 @@
       "attitude_mea[3]"
     ],
     "sampling_fairness": {
-      "state": "binding_pending",
+      "state": "external_hold_implemented_static_and_checkmodel_passed_pending_simulation",
       "candidate_formal_runners": "Use a 0.01 s input sample-and-hold boundary wherever a discrete C-function/controller boundary is declared.",
       "official_pid": "Keep the source controller core unchanged, but add a 0.01 s external reference/measurement/command hold harness before formal A/B. The experiment annotation Interval alone is only a result-output interval and does not establish equal controller update semantics.",
       "required_manifest_fields": [
@@ -196,9 +196,17 @@
     "px4ctrl": "Excluded until a behavior- and interface-equivalent MWORKS core passes its explicit equivalence gate."
   },
   "implementation_order": [
-    "Bind the listed injection parameters through all four Runner boundaries and Sunray150Assembly.",
-    "Add the Official PID 0.01 s external hold harness and verify common timing manifest fields.",
-    "Extend Syslab metrics and validate them with deterministic CSV fixtures.",
-    "Run static CheckModel for every bound scenario profile, then stop for review before any seven-scenario simulation."
-  ]
+    "Completed: bind the listed injection parameters through all four Runner boundaries and Sunray150Assembly.",
+    "Completed: add the Official PID 0.01 s external hold harness and verify common timing manifest fields.",
+    "Completed: extend Syslab metrics and validate them with deterministic CSV fixtures.",
+    "Completed: static validation and native CheckModel of eight trajectories, four shared Runners, Official PID, and six champion Formal Runners; evidence is Results/control_platform/seven_scenario_preflight_20260727/.",
+    "Stop: wait for user review before any seven-scenario simulation."
+  ],
+  "pre_simulation_gate": {
+    "status": "passed_waiting_review",
+    "static_evidence": "Results/control_platform/seven_scenario_preflight_20260727/STATIC_PREFLIGHT_VALIDATION.json",
+    "native_check_model_evidence": "Results/control_platform/seven_scenario_preflight_20260727/CHECK_MODEL_RESULTS.json",
+    "native_check_model_scope": "8 trajectories + 4 shared Runners + Official PID + 6 champion Formal Runners",
+    "scenario_simulation_started": false
+  }
 }

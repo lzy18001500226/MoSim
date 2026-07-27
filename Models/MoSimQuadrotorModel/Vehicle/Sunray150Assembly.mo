@@ -14,8 +14,16 @@ model Sunray150Assembly
   parameter Real yaw_reaction_direction[4] = -profile.mworks_yaw_direction
     "Aerodynamic reaction torque opposes the recorded rotor spin direction";
   parameter Real gust_force[3] = {0, 0, 0};
-  parameter Real gust_start_s = 15;
-  parameter Real gust_duration_s = 4;
+  parameter Real gust_start_s(unit = "s") = 0;
+  parameter Real gust_duration_s(unit = "s") = 0;
+  parameter Real mass_scale(min = 0.01) = 1
+    "Plant-only body mass scale for parameter-mismatch experiments";
+  parameter Real inertia_scale[3](each min = 0.01) = {1, 1, 1}
+    "Plant-only diagonal inertia scale for parameter-mismatch experiments";
+  parameter Real fault_start_s(unit = "s") = 1e9
+    "Scheduled motor-fault start time; default is disabled over formal horizons";
+  parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
+  parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
 
   Modelica.Blocks.Interfaces.RealInput rotor_command[4];
   Modelica.Blocks.Interfaces.RealOutput position[3];
@@ -29,7 +37,12 @@ model Sunray150Assembly
     reaction_moment_ratio = reaction_moment_ratio,
     yaw_reaction_direction = yaw_reaction_direction,
     thrust_effectiveness = rotor_effectiveness,
-    reaction_moment_effectiveness = rotor_effectiveness);
+    reaction_moment_effectiveness = rotor_effectiveness,
+    mass_scale = mass_scale,
+    inertia_scale = inertia_scale,
+    fault_start_s = fault_start_s,
+    fault_rotor_index = fault_rotor_index,
+    fault_rotor_effectiveness = fault_rotor_effectiveness);
   MoSimQuadrotorModel.Vehicle.Sensors.Sensors sensors;
   Modelica.Mechanics.MultiBody.Forces.WorldForce gust(
     resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.world,

@@ -1,0 +1,595 @@
+{
+  "checks": [
+    {
+      "actual": "mosim.seven_scenario_injection_contract.v1",
+      "expected": "mosim.seven_scenario_injection_contract.v1",
+      "name": "contract_schema",
+      "ok": true
+    },
+    {
+      "actual": 0.01,
+      "expected": 0.01,
+      "name": "common_result_interval_s",
+      "ok": true
+    },
+    {
+      "actual": [
+        "controller_boundary_period_s"
+      ],
+      "expected": [
+        "controller_boundary_period_s"
+      ],
+      "name": "common_controller_boundary_period_s",
+      "ok": true
+    },
+    {
+      "actual": [
+        "hover",
+        "step_response",
+        "figure8",
+        "spiral",
+        "wind_disturbance",
+        "parameter_mismatch",
+        "motor_efficiency_fault"
+      ],
+      "expected": [
+        "hover",
+        "step_response",
+        "figure8",
+        "spiral",
+        "wind_disturbance",
+        "parameter_mismatch",
+        "motor_efficiency_fault"
+      ],
+      "name": "contract_scenario_order",
+      "ok": true
+    },
+    {
+      "actual": [
+        0.25,
+        0.0,
+        0.0
+      ],
+      "expected": [
+        0.25,
+        0.0,
+        0.0
+      ],
+      "name": "wind_force_n",
+      "ok": true
+    },
+    {
+      "actual": [
+        0.0,
+        50.0
+      ],
+      "expected": [
+        0.0,
+        50.0
+      ],
+      "name": "wind_window",
+      "ok": true
+    },
+    {
+      "actual": [
+        1.2,
+        [
+          1.2,
+          1.2,
+          1.2
+        ],
+        1.0
+      ],
+      "expected": [
+        1.2,
+        [
+          1.2,
+          1.2,
+          1.2
+        ],
+        1.0
+      ],
+      "name": "mismatch_plant_only_scale",
+      "ok": true
+    },
+    {
+      "actual": [
+        1,
+        0.5,
+        15.0
+      ],
+      "expected": [
+        1,
+        0.5,
+        15.0
+      ],
+      "name": "motor_fault_contract",
+      "ok": true
+    },
+    {
+      "actual": [
+        "hover",
+        "step_response",
+        "figure8",
+        "spiral",
+        "wind_disturbance",
+        "parameter_mismatch",
+        "motor_efficiency_fault"
+      ],
+      "expected": [
+        "hover",
+        "step_response",
+        "figure8",
+        "spiral",
+        "wind_disturbance",
+        "parameter_mismatch",
+        "motor_efficiency_fault"
+      ],
+      "name": "profile_scenario_order",
+      "ok": true
+    },
+    {
+      "actual": 0.01,
+      "expected": 0.01,
+      "name": "profile_common_interval_s",
+      "ok": true
+    },
+    {
+      "actual": [
+        "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner"
+      ],
+      "expected": [
+        "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
+        "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner"
+      ],
+      "name": "profile_allowed_formal_runners",
+      "ok": true
+    },
+    {
+      "actual": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "expected": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "name": "hover_runner_override_keys",
+      "ok": true
+    },
+    {
+      "actual": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "expected": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "name": "step_response_runner_override_keys",
+      "ok": true
+    },
+    {
+      "actual": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "expected": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "name": "figure8_runner_override_keys",
+      "ok": true
+    },
+    {
+      "actual": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "expected": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "name": "spiral_runner_override_keys",
+      "ok": true
+    },
+    {
+      "actual": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "expected": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "name": "wind_disturbance_runner_override_keys",
+      "ok": true
+    },
+    {
+      "actual": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "expected": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "name": "parameter_mismatch_runner_override_keys",
+      "ok": true
+    },
+    {
+      "actual": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "expected": [
+        "gust_force",
+        "gust_start_s",
+        "gust_duration_s",
+        "mass_scale",
+        "inertia_scale",
+        "rotor_effectiveness",
+        "fault_start_s",
+        "fault_rotor_index",
+        "fault_rotor_effectiveness"
+      ],
+      "name": "motor_efficiency_fault_runner_override_keys",
+      "ok": true
+    },
+    {
+      "actual": [
+        0.25,
+        0.0,
+        0.0
+      ],
+      "expected": [
+        0.25,
+        0.0,
+        0.0
+      ],
+      "name": "wind_profile_force",
+      "ok": true
+    },
+    {
+      "actual": 1.2,
+      "expected": 1.2,
+      "name": "mismatch_profile_mass_scale",
+      "ok": true
+    },
+    {
+      "actual": [
+        15.0,
+        1,
+        0.5
+      ],
+      "expected": [
+        15.0,
+        1,
+        0.5
+      ],
+      "name": "motor_profile_schedule",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "shared_runner_injection_AttitudeThrustRunner.mo",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "shared_runner_injection_BodyRateThrustRunner.mo",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "shared_runner_injection_RotorCommandRunner.mo",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "shared_runner_injection_WrenchRunner.mo",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "formal_runner_injection_official_pid",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "formal_runner_injection_cascade_pid",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "formal_runner_injection_lqr_baseline",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "formal_runner_injection_super_twisting_smc",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "formal_runner_injection_linear_mpc",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "formal_runner_injection_dfbc_high_order_attitude",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "formal_runner_injection_trained_neural_residual",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "official_pid_external_100hz_harness",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "sunray150_plant_injection",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "physical_mass_and_inertia_mismatch",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "rotor_fault_schedule",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "climb_path_reference_ports",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "trajectory_ports_HoverHold",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "trajectory_ports_StepResponse",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "trajectory_ports_Figure8",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "trajectory_ports_SpiralAscent",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "trajectory_inherits_ports_WindDisturbance",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "trajectory_inherits_ports_ParameterMismatch",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "trajectory_inherits_ports_MotorFault",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "step_response_definition",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "adapter_feedforward_cascade_pid",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "adapter_feedforward_lqr_baseline",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "adapter_feedforward_super_twisting_smc",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "adapter_feedforward_linear_mpc",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "adapter_feedforward_dfbc_high_order_attitude",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "adapter_feedforward_trained_neural_residual",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "official_pid_provenance",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "python_scenario_metrics",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "julia_scenario_metrics",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "syslab_comparison_script",
+      "ok": true
+    },
+    {
+      "missing": [],
+      "name": "required_preflight_paths_exist",
+      "ok": true
+    }
+  ],
+  "claim_boundary": "Static source and configuration validation only. It is not CheckModel or simulation evidence.",
+  "error_count": 0,
+  "errors": [],
+  "live_mworks_touched": false,
+  "scenario_simulation_started": false,
+  "schema": "mosim.seven_scenario_preflight_static_validation.v1",
+  "source_sha256": {
+    "Config/control_platform/seven_scenario_experiment_profiles.json": "2dee46924e5aef7787305b03dc757ca0b5ed5451c631910456d8d4877d6b6761",
+    "Config/control_platform/seven_scenario_injection_contract.json": "ec76ffbaaa0e0ae47f243239a642ca5aca0d06f014294b1a7ce944aaa89910a7",
+    "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo": "eee0d01b9a825fe1d59684c8242c7b3a7b18617289f4c47033b84f9d1b0978b1",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcHighOrderAttitudeThrustAdapter.mo": "abf8ae1fb8e50f0435265e089b10df71dbb0466f46fe6478146c58bcf59b31ca",
+    "Models/MoSimQuadrotorModel/Control/Adapters/LinearMpcAttitudeThrustAdapter.mo": "ab5dba59eea9d479376a9653e045b12d9f7bf6e41b5a541325950f81e3cedd68",
+    "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo": "3c5d887252e5a141876c6e47ef1c1a127a072ff2ded7032b0204f4af21c616bb",
+    "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+    "Models/MoSimQuadrotorModel/Control/Adapters/SuperTwistingSmcAttitudeThrustAdapter.mo": "44b154c582da4b889b80bc295245e4aa446708a784fad1794f41c6d54d9b56e9",
+    "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo": "ecdb4ce39425eb6b67260d355ab58e6b5d7743d58681984bfbf11b861523ab1a",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo": "b655950bbcdb7a9efe5e7d2203ee77d64924eb9f1a943f312b0687a46632a210",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/BodyRateThrustRunner.mo": "712f84cb294e6d53ee7776ec7b78a2825925b912d8750e9c77c7a94d41f7cf43",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo": "85d87c699f7795e08d94e65e908209ffd41b0c5399a88c40f6f8950ebc0adb15",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/DfbcHighOrderFormalRunner.mo": "0528b334233d34cb94d6450892708b2aac8a95646192e879fe0e20f5a7ea61a0",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/LinearMpcFormalRunner.mo": "62e1e1de1c06d4700b269c1793bec21284dfdf26d66768cb986c8ccffb96dea9",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo": "13479d4053f25b206953586a54d136eb947e16535fa055c27cc112f6b5e5082a",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidFormalRunner.mo": "7b1228c781582e6b2c9b9a7e3abf5c3e06b02b458dd35c09989613f899dabfec",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo": "409a640036f1e0667452e8cbabf28a0255f6c4b6d6cbd1e11b7253a5e31b687c",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/SuperTwistingSmcFormalRunner.mo": "2ae952784f5c32c7b863842841576328fc2390a6c0d39606e619015c6f8292af",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/TrainedNeuralResidualFormalRunner.mo": "80d6af60afec3ba3e618be6ba7d19c9e10b9ef7c62eced1205ad7cbabd5e1df8",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/WrenchRunner.mo": "3db180801ba2618ba5955b1f4aae4027cd1a65231684031f28b414814ddbb4c4",
+    "Models/MoSimQuadrotorModel/Guidance/Trajectories/Figure8.mo": "41817040d8153cc66aea204dd92d77de95ed329fab124346543265d4612377d4",
+    "Models/MoSimQuadrotorModel/Guidance/Trajectories/HoverHold.mo": "a780b681f5a6268de543ad098c24856fdfb0e2e2c21d52fe3c144d7b66ed8aad",
+    "Models/MoSimQuadrotorModel/Guidance/Trajectories/MotorFault.mo": "6830dd293327b34f5337d1076fd062fe7db692108099f2f03e3c214805cf0c04",
+    "Models/MoSimQuadrotorModel/Guidance/Trajectories/ParameterMismatch.mo": "ff717afd9afdccb2869a754001cbdfd007f9dd15871ecc6053f8390e17aee86c",
+    "Models/MoSimQuadrotorModel/Guidance/Trajectories/SpiralAscent.mo": "4dfc36e2a5d7bde1380a3cda6004d00d8c7d833fae313db91cc6e22cbc6b262c",
+    "Models/MoSimQuadrotorModel/Guidance/Trajectories/StepResponse.mo": "62656e9e4c08a15c49ed2ddb3220c8d566e0d4ed9e34d77c6c412d2b369e1df5",
+    "Models/MoSimQuadrotorModel/Guidance/Trajectories/WindDisturbance.mo": "527e29fc4155d43f67f8b54747aa24e4730339bf2dc2f21afac34ab4944f48ca",
+    "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+    "Models/MoSimQuadrotorModel/Parameters/package.mo": "f90e440e18f0d083fa9aa12a928da1c2305c46bd52ce9c1bd97208ad3c740884",
+    "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo": "84462d0062e3ed27b97e00d3eda76679aa9248be4590a132f97a5f860842f16b",
+    "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo": "94d13eeaee4ab8b5db5fef001e229301dc019d304c270194f0efbeb593b2b485",
+    "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo": "86fc264706fc99afc7d964aa4999c6c4f0bf527e378e867f2a68992a374929bb",
+    "Scripts/results/calc_metrics.jl": "88606277cf79d470db4d22cb851cecc1a2cd10c7aff666bcacb4982243bdec1e",
+    "Scripts/results/calc_metrics.py": "1a982bf4fb3013c8bdc1a2730ad1b3d151b1b894b0fc17e1baa37993399728b2",
+    "Scripts/syslab/compare_controllers.jl": "901bbf63b1a0236fcaa676dcc858ff9d25b42a9cbc0a52356c268c72e95db492"
+  },
+  "status": "passed"
+}

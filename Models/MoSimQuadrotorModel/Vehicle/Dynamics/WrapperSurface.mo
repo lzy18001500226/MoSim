@@ -35,8 +35,13 @@ equation
   dynamics.motor_command = motor_command;
 
   for i in 1:4 loop
-    commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i];
-    commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.reaction_moment_effectiveness[i] * dynamics.moment_constant * commanded_thrust[i];
+    commanded_thrust[i] = dynamics.fault_effectiveness[i]
+      * dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient
+      * motor_command[i] * motor_command[i];
+    commanded_yaw_reaction_moment[i] = dynamics.fault_effectiveness[i]
+      * dynamics.yaw_direction[i] * dynamics.reaction_moment_effectiveness[i]
+      * dynamics.moment_constant * dynamics.thrust_effectiveness[i]
+      * dynamics.lift_coefficient * motor_command[i] * motor_command[i];
     commanded_rotor_arm_moment[i, 1] = dynamics.rotor_center[i, 2] * commanded_thrust[i];
     commanded_rotor_arm_moment[i, 2] = -dynamics.rotor_center[i, 1] * commanded_thrust[i];
     commanded_rotor_arm_moment[i, 3] = commanded_yaw_reaction_moment[i];

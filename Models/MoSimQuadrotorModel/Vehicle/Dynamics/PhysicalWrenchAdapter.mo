@@ -12,6 +12,13 @@ model PhysicalWrenchAdapter
   parameter Real yaw_reaction_direction[4] = profile.mworks_yaw_direction;
   parameter Real thrust_effectiveness[4] = {1, 1, 1, 1};
   parameter Real reaction_moment_effectiveness[4] = {1, 1, 1, 1};
+  parameter Real mass_scale(min = 0.01) = 1
+    "Physical-body mass multiplier; controller profiles remain nominal";
+  parameter Real inertia_scale[3](each min = 0.01) = {1, 1, 1}
+    "Physical-body principal-inertia multipliers; controller profiles remain nominal";
+  parameter Real fault_start_s(unit = "s") = 1e9;
+  parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
+  parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
   inner Modelica.Mechanics.MultiBody.World world(
     final enableAnimation = false,
     final animateWorld = false,
@@ -30,14 +37,18 @@ model PhysicalWrenchAdapter
       moment_constant = reaction_moment_ratio,
       yaw_direction = yaw_reaction_direction,
       thrust_effectiveness = thrust_effectiveness,
-      reaction_moment_effectiveness = reaction_moment_effectiveness));
+      reaction_moment_effectiveness = reaction_moment_effectiveness,
+      mass_kg = profile.takeoff_mass_kg * mass_scale,
+      fault_start_s = fault_start_s,
+      fault_rotor_index = fault_rotor_index,
+      fault_rotor_effectiveness = fault_rotor_effectiveness));
   Modelica.Mechanics.MultiBody.Parts.Body body(
     animation = false,
     r_CM = {0, 0, 0},
     m = wrapper.dynamics.mass_kg,
-    I_11 = profile.body_inertia_diagonal_kg_m2[1],
-    I_22 = profile.body_inertia_diagonal_kg_m2[2],
-    I_33 = profile.body_inertia_diagonal_kg_m2[3],
+    I_11 = profile.body_inertia_diagonal_kg_m2[1] * inertia_scale[1],
+    I_22 = profile.body_inertia_diagonal_kg_m2[2] * inertia_scale[2],
+    I_33 = profile.body_inertia_diagonal_kg_m2[3] * inertia_scale[3],
     I_21 = 0,
     I_31 = 0,
     I_32 = 0,
