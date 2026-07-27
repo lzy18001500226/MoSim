@@ -161,6 +161,7 @@ component_id
 | `.tools/` | 约 4.119 GiB，含当前工具链与启动链依赖。 | 保留为本机工具目录；后续只可按具体工具和消费者审计。 |
 | `Results/sunray_ros1/workspaces/` | 约 2.853 GiB，仍承载当前 ROS1/Sunray 工作区与运行证据。 | 暂保留，不迁移、不删除。 |
 | `image/AGENTS/` | 12 张历史截图，未发现活动引用；已以无内容改动的 Git 路径重命名归档。 | 根目录已退役；完整清单见 `Docs/Cache/agent_legacy/image_agents_20260603/ARCHIVE_MANIFEST.md`，不得去重、删除或重新激活。 |
+| `src/orchestration/` | 5 个 Python 模块；`Scripts/ui/orchestrator_service.py`、`runtime_sidecar.py`、`orchestrator_cli.py` 及测试仍直接消费，QGC 定制桥接仍走对应 client 协议。 | 保留；“不是比赛主线必需运行依赖”不等于无消费者。只有先移除/替换消费者并通过定向检查后，才能另行审计归档。 |
 
 以上结论只冻结本次处置边界，不代表 Factory L2、构建工具或工作区已经完成最终清理。
 
@@ -171,6 +172,17 @@ component_id
 `Docs/Cache/agent_legacy/image_agents_20260603/`；逐文件 SHA-256、重复内容关系、基线树对象和
 未启动运行时的范围说明见该目录的 `ARCHIVE_MANIFEST.md`。该归档保留原始文件名和重复副本，
 不得被解释为删除、去重或可直接恢复为活动 UI 资源的授权。
+
+#### 5.0.4 `src/orchestration/` 活动消费者审计（2026-07-28）
+
+用户点名的 `src/orchestration/` 不能归档。它的 `core.py`、`runtime_backend.py`、
+`runtime_sidecar_contract.py` 和 `service.py` 仍被 `Scripts/ui/orchestrator_service.py`、
+`Scripts/ui/runtime_sidecar.py`、`Scripts/ui/orchestrator_cli.py` 和多组定向测试直接导入；QGC
+定制层的 `MoSimOrchestratorBridge` 仍通过 `Scripts/ui/orchestrator_client.py` 走同一请求协议。
+`Docs/Design/架构.md` 中“Orchestrator不是比赛与交付主线的必需运行依赖”的边界仅表示当前
+竞赛闭环不得依赖它，不是零消费者或可直接删除的声明。本次未移动、删除、归档或启动任何相关
+服务。若后续决定彻底取消该基础设施，必须先按已确认的“QGC只复制可见终端命令”边界重写
+bridge/client/launcher/runtime wrapper与定向测试，再单独进行依赖审计。
 
 ### 5.1 Diff-Planner 首批复制记录（2026-07-27）
 
