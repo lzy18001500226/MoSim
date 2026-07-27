@@ -14,7 +14,7 @@
       "canonical_relpath": "src/simulation/gazebo/sunray",
       "legacy_relpath": "References/Sunray/simulation/sunray_simulator",
       "active_relpath": "References/Sunray/simulation/sunray_simulator",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "Config/profiles/runtime_bindings.json#sunray_gazebo.launch",
         "Scripts/sunray/check_sunray_ros1_runtime_preflight.sh"

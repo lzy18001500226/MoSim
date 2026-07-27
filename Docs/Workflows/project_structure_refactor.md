@@ -437,3 +437,28 @@ component_id: qgc_mosim_extension
           将其改为受控消费canonical扩展路径，验证工厂地图资源路径并完成受控QGC构建验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.15 Sunray Gazebo 仿真源码快照复制记录（2026-07-27）
+
+```text
+component_id: sunray_gazebo
+旧路径: References/Sunray/simulation/sunray_simulator
+新路径: src/simulation/gazebo/sunray
+活动路径: References/Sunray/simulation/sunray_simulator
+迁移状态: copied_pending_activation
+来源: 保留的Yundrone Sunray本地导入包；未恢复嵌套Git元数据或上游URL
+固定版本: 不可恢复；不得宣称已钉定上游Git commit
+许可证: package.xml声明TODO，且未发现独立许可证文件；发布前必须完成审计
+项目补丁: 无源码、SDF、launch、world、插件、配置或CMake改动；仅新增迁移元数据与资产清单
+原始快照: 1,126个文件、1,008,585,297字节
+交付源码配置: 排除45个本地备份/缓存以及所有二进制运行时资产后，594个文件、2,608,005字节，
+              SHA-256清单 f548c7a3ff46f810621a1ec4a08be039b06bca1cbf7e643b4298485370535349
+外置资产: 487个文件、1,005,559,590字节，SHA-256清单
+          d32fb9ba9e60306afb564caed8a199b8256b01e54b200cc5199e5aab34ba1afc；
+          每文件路径、大小与哈希见src/simulation/gazebo/sunray/ASSET_MANIFEST.json
+静态检查: 源/目标594个源码配置文件SHA-256逐项比对、资产排除检查、JSON解析与路径注册检查通过
+未执行项: 未改写入口，未构建、预检、启动ROS/Gazebo/PX4/MAVROS/QGC/UE或RViz
+激活前置: 选择并发布可验证资产包；审计Sunray上游/许可证与对sunray_common的相邻路径依赖；
+          改写审计过的脚本、Profile和ROS overlay路径，并完成受控ROS1验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

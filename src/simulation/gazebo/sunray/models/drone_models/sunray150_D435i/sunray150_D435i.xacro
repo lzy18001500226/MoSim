@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<robot name="sunray150_with_D435i" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <link name="base_footprint"/>
+  
+  <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="1.0"/>
+      <inertia ixx="0.0085" ixy="0" ixz="0" iyy="0.0085" iyz="0" izz="0.012"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0.0525" rpy="0 0 -1.57"/>
+      <geometry>
+        <mesh filename="package://sunray_simulator/models/drone_models/sunray150_D435i/meshes/sunray.stl" scale="0.03 0.03 0.03"/>
+      </geometry>
+      <material name="robot_white">
+        <color rgba="0.9 0.9 0.9 1.0"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0.065 -0.065 -0.025" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://sunray_simulator/models/drone_models/sunray150_D435i/meshes/sunray_cw.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <visual>
+      <origin xyz="-0.065 0.065 -0.025" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://sunray_simulator/models/drone_models/sunray150_D435i/meshes/sunray_cw.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <visual>
+      <origin xyz="0.065 0.065 -0.025" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://sunray_simulator/models/drone_models/sunray150_D435i/meshes/sunray_cw.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <visual>
+      <origin xyz="-0.065 -0.065 -0.025" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://sunray_simulator/models/drone_models/sunray150_D435i/meshes/sunray_cw.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -0.012" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.2 0.15 0.06"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="imu_link">
+    <inertial>
+      <mass value="0.015"/> <inertia ixx="1e-05" ixy="0" ixz="0" iyy="1e-05" iyz="0" izz="1e-05"/>
+    </inertial>
+  </link>
+  <joint name="imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0.0 0 0.0" rpy="1.57 0 1.57"/>
+      <geometry>
+        <mesh filename="package://sunray_simulator/models/sensor_models/D435i/meshes/realsense_d435.stl" scale="1.0 1.0 1.0"/>
+      </geometry>
+      <material name="camera_grey">
+        <color rgba="0.6 0.6 0.6 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.06 0.03 0.03"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="D435i_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_link"/>
+    <origin xyz="0.14 0 0.03" rpy="0 0 0"/>
+  </joint>
+
+  <link name="camera_down_link"/>
+  <joint name="camera_down_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera_down_link"/>
+    <origin xyz="-0.01 0 -0.02" rpy="0 1.5707963 3.14"/>
+  </joint>
+
+</robot>

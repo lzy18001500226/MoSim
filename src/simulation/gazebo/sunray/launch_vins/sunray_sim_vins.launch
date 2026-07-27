@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!-- 基于Sunray150+D435i实现VINS定位 -->
+<launch>
+      <!-- Gazebo 配置 -->
+      <arg name="gazebo_enable" default="true"/>
+      <!-- 由于电脑性能限制，默认不启动gui -->
+      <arg name="gui" default="false"/>
+      <arg name="world" value="$(find sunray_simulator)/worlds/vins_house.world"/>
+      <!-- 启动 Gazebo -->
+      <group if="$(arg gazebo_enable)">
+            <include file="$(find gazebo_ros)/launch/empty_world.launch">
+                  <arg name="world_name" value="$(arg world)"/>
+                  <arg name="gui" value="$(arg gui)"/>
+                  <arg name="use_sim_time" value="true"/>
+            </include>
+      </group>
+      <!-- 无人机配置 -->
+      <!-- 无人机模型名称 -->
+      <arg name="vehicle" default="sunray150_D435i"/>
+      <!--无人机编号-->
+      <arg name="uav_id" default="1"/>
+      <!-- 无人机初始位置 -->
+      <arg name="uav_init_x" default="0"/>
+      <arg name="uav_init_y" default="0"/>
+      <arg name="uav_init_z" default="0.0"/>
+      <!-- 此处修改，导致启动后imu yaw不为0 -->
+      <arg name="uav_init_yaw" default="0.0"/>
+      <!-- UAV1 -->
+      <include file="$(find sunray_simulator)/launch_basic/sunray_px4_basic.launch">
+            <arg name="uav_id" value="$(arg uav_id)" />
+            <arg name="vehicle" value="$(arg vehicle)" />
+            <arg name="uav_init_x" value="$(arg uav_init_x)"/>
+            <arg name="uav_init_y" value="$(arg uav_init_y)"/>
+            <arg name="uav_init_yaw" value="$(arg uav_init_yaw)"/>
+      </include>
+      <!-- 无人机模型描述，在rviz中可正常显示机体，但也会引入一些不必要的tf树 -->
+      <param name="robot_description" 
+         command="$(find xacro)/xacro '$(find sunray_simulator)/models/drone_models/sunray150_D435i/sunray150_D435i.xacro'" />
+      <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+      <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+      <!-- 为了消除ros中的警告，需要有一个base_footprint关节 -->
+      <node pkg="tf" type="static_transform_publisher" name="vins_linker" 
+      args="0 0 -0.05 0 0 0 1 body base_footprint 100" />
+      <!-- D435i相机内部坐标系的静态变换 -->
+      <node pkg="tf" type="static_transform_publisher" name="body_imu_link" 
+      args="0 0 0 0 0 1.57 1 base_footprint base_link_imu 100" />
+      <node pkg="tf" type="static_transform_publisher" name="depth_body_link" 
+      args="0 0 0 0 0 0 1 base_footprint /camera_depth_frame 100" />
+      <!-- <node pkg="tf" type="static_transform_publisher" name="camera_link_to_color_frame" 
+      args="0 0 0.12 0 0 0 camera_link camera_color_frame 100" />
+      <node pkg="tf" type="static_transform_publisher" name="camera_link_to_depth_frame" 
+      args="0 0 0.12 0 0 0 camera_link camera_depth_frame 100" />
+      <node pkg="tf" type="static_transform_publisher" name="camera_link_to_ired1_frame" 
+      args="0 0.03 0.12 0 0 0 camera_link camera_ired1_frame 100" />
+      <node pkg="tf" type="static_transform_publisher" name="camera_link_to_ired2_frame" 
+      args="0 -0.03 0.12 0 0 0 camera_link camera_ired2_frame 100" /> -->
+      <!-- 添加livox传感器坐标系到无人机机体坐标系的变换 -->
+      <!-- <node pkg="tf" type="static_transform_publisher" name="livox_to_base_link" 
+      args="0.036 -0.0155 0.075 0 0 0 base_link livox_base_link 100" /> -->
+      
+      <!-- 启动rviz -->
+      <arg name="rviz_enable" default="true"/>
+      <group if="$(arg rviz_enable)">
+            <node name="rviz" pkg="rviz" type="rviz" args="-d $(find vins)/launch/sunray.rviz" required="true" />
+      </group>
+</launch>

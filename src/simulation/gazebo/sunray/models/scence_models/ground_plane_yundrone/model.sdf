@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<sdf version="1.7">
+  <model name="ground_plane">
+    <static>true</static>
+    <link name="link">
+      <pose>0 0 0 0 0 -1.5708</pose>
+      <collision name="collision">
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>20 20</size> 
+          </plane>
+        </geometry>
+      </collision>
+      <visual name="visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>20 20</size> 
+          </plane>
+        </geometry>
+        <material>
+          <script>
+            <uri>model://yundrone_logo/yundrone_logo.material</uri>
+            <name>yundrone_logo</name>
+          </script>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

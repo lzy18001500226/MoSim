@@ -1,0 +1,25 @@
+# Gazebo runtime assets are delivered separately from this source snapshot.
+# Verify a supplied asset pack against ASSET_MANIFEST.json before extracting it
+# into this component root.
+*.dae
+*.DAE
+*.stl
+*.STL
+*.obj
+*.OBJ
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.tif
+*.tiff
+*.webp
+*.gif
+*.csv
+*.dds
+*.blend
+*.wav
+*.mp3
+*.ogg
+*.ttf
+*.otf

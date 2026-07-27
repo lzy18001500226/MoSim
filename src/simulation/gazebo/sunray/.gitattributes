@@ -1,0 +1,3 @@
+# Preserve the imported source snapshot whitespace as upstream formatting.
+* -whitespace
+** -whitespace
