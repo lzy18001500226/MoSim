@@ -11,7 +11,8 @@ model AllocatorCollectiveStepPlantSmoke
 equation
   allocator.attitude_ref = {0.0, 0.0, 0.0};
   allocator.attitude_mea = {0.0, 0.0, 0.0};
-  allocator.collective_thrust_delta = 4.962430649880518;
+  // Preserve the historical 4.9624 rad/s collective step at the new N boundary.
+  allocator.collective_thrust_delta = 4.962430649880518 * allocator.collective_thrust_slope;
   connect(allocator.rotor_command, plant.rotor_command);
   position = plant.position;
   attitude = plant.attitude;

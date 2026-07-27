@@ -69,7 +69,7 @@ def main() -> int:
         "compile_stderr": compiled.stderr[-4000:],
         "run_stderr": run.stderr[-4000:] if run else None,
         "reuse_basis": [
-            "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
+            "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
             "Config/controllers/l1_multi_fault_isolation_sysblock/default.yaml",
         ],
         "claim_ceiling": "Deterministic source scenarios prove the unified FDI/isolation/reallocation contract only; MWORKS generated-C and Gazebo actuator evidence remain separate gates.",

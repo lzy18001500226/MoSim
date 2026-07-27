@@ -12,6 +12,9 @@ ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_PATH = ROOT / "Config/control_platform/offline_runner_interface_contract_v1.json"
 EXPECTED_BOUNDARIES = {"ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"}
 REQUIRED_RESULT_NAMES = {"position_ref", "position", "attitude", "rotor_command", "position_error_norm"}
+REQUIRED_CONTROLLER_INPUTS = {"position_ref", "position_mea", "velocity_mea", "attitude_mea"}
+VELOCITY_SEMANTICS = "runner_owned_filtered_position_derivative_m_per_s"
+COLLECTIVE_THRUST_SEMANTICS = "offline_collective_increment_newtons_about_hover_not_online_verified"
 REQUIRED_LIFECYCLE = {"dt", "reset", "enable", "run_id", "profile_hash", "parameter_version", "random_seed"}
 REQUIRED_DIAGNOSTICS = {
     "module_status",
@@ -23,12 +26,62 @@ REQUIRED_DIAGNOSTICS = {
     "reason_code",
 }
 EXPECTED_MODULE_STATUSES = {"disabled", "initializing", "active", "degraded", "fallback", "failed"}
+GENERIC_RUNNERS = {
+    "ATTITUDE_THRUST": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
+    "BODY_RATE_THRUST": "Models/MoSimQuadrotorModel/Experiment/Runners/BodyRateThrustRunner.mo",
+    "WRENCH": "Models/MoSimQuadrotorModel/Experiment/Runners/WrenchRunner.mo",
+    "ROTOR_COMMAND": "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo",
+}
+FORMAL_CHAMPION_RUNNERS = {
+    "cascade_pid": "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo",
+    "dfbc_high_order_attitude": "Models/MoSimQuadrotorModel/Experiment/Runners/DfbcHighOrderFormalRunner.mo",
+    "linear_mpc": "Models/MoSimQuadrotorModel/Experiment/Runners/LinearMpcFormalRunner.mo",
+    "lqr_baseline": "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo",
+    "super_twisting_smc": "Models/MoSimQuadrotorModel/Experiment/Runners/SuperTwistingSmcFormalRunner.mo",
+    "trained_neural_residual": "Models/MoSimQuadrotorModel/Experiment/Runners/TrainedNeuralResidualFormalRunner.mo",
+}
+ATTITUDE_THRUST_ADAPTERS = {
+    "cascade_pid": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
+    "dfbc_high_order_attitude": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcHighOrderAttitudeThrustAdapter.mo",
+    "linear_mpc": "Models/MoSimQuadrotorModel/Control/Adapters/LinearMpcAttitudeThrustAdapter.mo",
+    "lqr_baseline": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
+    "super_twisting_smc": "Models/MoSimQuadrotorModel/Control/Adapters/SuperTwistingSmcAttitudeThrustAdapter.mo",
+    "trained_neural_residual": "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo",
+}
+NONZERO_COLLECTIVE_PROBES = {
+    "collective_step": "Models/MoSimQuadrotorModel/Experiment/Probes/AllocatorCollectiveStepPlantSmoke.mo",
+    "combined_step": "Models/MoSimQuadrotorModel/Experiment/Probes/AllocatorCombinedStepPlantSmoke.mo",
+    "combined_high_step": "Models/MoSimQuadrotorModel/Experiment/Probes/AllocatorCombinedHighStepPlantSmoke.mo",
+}
 
 
 def validate(contract: dict[str, Any], root: Path = ROOT) -> list[str]:
     errors: list[str] = []
     if contract.get("schema") != "mosim.offline_runner_interface_contract.v1":
         errors.append("invalid_schema")
+    shared_inputs = contract.get("shared_controller_inputs", [])
+    input_by_name = {
+        item.get("name"): item
+        for item in shared_inputs
+        if isinstance(item, dict) and isinstance(item.get("name"), str)
+    }
+    if set(input_by_name) != REQUIRED_CONTROLLER_INPUTS:
+        errors.append("shared_controller_inputs_mismatch")
+    elif input_by_name["velocity_mea"].get("dimension") != 3 or input_by_name["velocity_mea"].get(
+        "unit_semantics"
+    ) != VELOCITY_SEMANTICS:
+        errors.append("velocity_measurement_contract_mismatch")
+    velocity_estimator = contract.get("shared_velocity_estimator", {})
+    expected_velocity_estimator = {
+        "owner": "each_generic_runner_and_formal_champion_runner",
+        "source_signal": "plant.position",
+        "model": "Modelica.Blocks.Continuous.Derivative",
+        "gain": 1.0,
+        "time_constant_s": 0.05,
+        "initial_output_m_per_s": 0.0,
+    }
+    if velocity_estimator != expected_velocity_estimator:
+        errors.append("shared_velocity_estimator_contract_mismatch")
     boundaries = contract.get("boundaries", {})
     if set(boundaries) != EXPECTED_BOUNDARIES:
         errors.append("four_explicit_boundaries_required")
@@ -44,19 +97,91 @@ def validate(contract: dict[str, Any], root: Path = ROOT) -> list[str]:
             continue
         for output in outputs:
             semantics = output.get("unit_semantics", "")
-            if not semantics or (
-                output["name"] in {"collective_thrust_delta", "body_force", "body_torque", "rotor_command"}
+            if output.get("name") == "collective_thrust_delta":
+                if semantics != COLLECTIVE_THRUST_SEMANTICS:
+                    errors.append(f"collective_thrust_semantics_mismatch:{boundary}")
+            elif not semantics or (
+                output["name"] in {"body_force", "body_torque", "rotor_command"}
                 and not any(marker in semantics for marker in ("legacy", "not_verified"))
             ):
                 errors.append(f"unverified_physical_unit_overclaim:{boundary}:{output.get('name')}")
         interface_text = (root / declaration["interface_source"]).read_text(encoding="utf-8")
         runner_text = (root / declaration["runner_source"]).read_text(encoding="utf-8")
+        if "Modelica.Blocks.Interfaces.RealInput velocity_mea[3]" not in interface_text:
+            errors.append(f"interface_velocity_missing:{boundary}")
         for output in outputs:
             if output["name"] not in interface_text:
                 errors.append(f"interface_output_missing:{boundary}:{output['name']}")
         for name in REQUIRED_RESULT_NAMES:
             if name not in runner_text:
                 errors.append(f"runner_result_missing:{boundary}:{name}")
+        for token in (
+            "Modelica.Blocks.Continuous.Derivative velocity_estimator[3]",
+            "each T = 0.05",
+            "each initType = Modelica.Blocks.Types.Init.InitialOutput",
+            "each y_start = 0",
+            "connect(plant.position, velocity_estimator.u);",
+            "connect(velocity_estimator.y, controller.velocity_mea);",
+        ):
+            if token not in runner_text:
+                errors.append(f"runner_velocity_estimator_mismatch:{boundary}:{token}")
+
+    for controller_id, relative_path in FORMAL_CHAMPION_RUNNERS.items():
+        path = root / relative_path
+        if not path.is_file():
+            errors.append(f"missing_formal_runner:{controller_id}")
+            continue
+        runner_text = path.read_text(encoding="utf-8")
+        for token in (
+            "Modelica.Blocks.Continuous.Derivative velocity_estimator[3]",
+            "each T = 0.05",
+            "connect(sampled_position.y, velocity_estimator.u);",
+            "connect(velocity_estimator.y, controller.velocity_mea);",
+        ):
+            if token not in runner_text:
+                errors.append(f"formal_runner_velocity_estimator_mismatch:{controller_id}:{token}")
+
+    for controller_id, relative_path in ATTITUDE_THRUST_ADAPTERS.items():
+        path = root / relative_path
+        if not path.is_file():
+            errors.append(f"missing_attitude_thrust_adapter:{controller_id}")
+            continue
+        adapter_text = path.read_text(encoding="utf-8")
+        if "velocity_mea" not in adapter_text or "velocity_estimator" in adapter_text:
+            errors.append(f"adapter_velocity_boundary_mismatch:{controller_id}")
+        if "max_collective_thrust_delta_n" not in adapter_text:
+            errors.append(f"adapter_collective_newton_limit_missing:{controller_id}")
+
+    for probe_id, relative_path in NONZERO_COLLECTIVE_PROBES.items():
+        path = root / relative_path
+        if not path.is_file():
+            errors.append(f"missing_collective_probe:{probe_id}")
+            continue
+        if "* allocator.collective_thrust_slope" not in path.read_text(encoding="utf-8"):
+            errors.append(f"collective_probe_newton_conversion_missing:{probe_id}")
+
+    attitude_allocator = root / "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo"
+    body_rate_allocator = root / "Models/MoSimQuadrotorModel/Control/Allocation/OfflineBodyRateAllocator.mo"
+    if not attitude_allocator.is_file() or not body_rate_allocator.is_file():
+        errors.append("offline_allocator_source_missing")
+    else:
+        attitude_text = attitude_allocator.read_text(encoding="utf-8")
+        body_rate_text = body_rate_allocator.read_text(encoding="utf-8")
+        for token in (
+            "collective_thrust_slope",
+            "rotor_speed_delta = collective_thrust_delta / collective_thrust_slope;",
+            "Roll feedback and mixer signs are locked to Official PID parity",
+            "hover_speed + rotor_speed_delta",
+        ):
+            if token not in attitude_text:
+                errors.append(f"attitude_allocator_newton_boundary_mismatch:{token}")
+        for token in (
+            "collective_thrust_slope",
+            "rotor_speed_delta = collective_thrust_delta / collective_thrust_slope;",
+            "hover_speed + rotor_speed_delta",
+        ):
+            if token not in body_rate_text:
+                errors.append(f"body_rate_allocator_newton_boundary_mismatch:{token}")
 
     result_names = {item.get("name") for item in contract.get("runner_result_surface", [])}
     if result_names != REQUIRED_RESULT_NAMES:

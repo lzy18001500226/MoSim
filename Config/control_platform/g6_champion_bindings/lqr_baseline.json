@@ -10,12 +10,12 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
-    "model_sha256": "16e2c9c4ab19f3f03501d38614961e3b5077af4e37e2946b604f7f982851b6b7"
+    "model_sha256": "b3058e252806a9bfb8ea70361a7791b8b11846d7133eef477a1a29c2af40ff79"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.LqrBaselineAttitudeThrustAdapter",
-    "model_sha256": "f74a4f08437b560f9b124ced13ef0995cf0ac073b6ac9cc74d50109227760dbc",
+    "model_sha256": "fe651cdc9df61730ae285944ef24a7009003a71cd0d5509ae7ffe82c60541c28",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "equation_bridge",
@@ -42,12 +42,12 @@
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo",
-      "expected_sha256": "16e2c9c4ab19f3f03501d38614961e3b5077af4e37e2946b604f7f982851b6b7"
+      "expected_sha256": "b3058e252806a9bfb8ea70361a7791b8b11846d7133eef477a1a29c2af40ff79"
     },
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
-      "expected_sha256": "f74a4f08437b560f9b124ced13ef0995cf0ac073b6ac9cc74d50109227760dbc"
+      "expected_sha256": "fe651cdc9df61730ae285944ef24a7009003a71cd0d5509ae7ffe82c60541c28"
     },
     {
       "role": "graphical_controller_core",
@@ -57,7 +57,7 @@
     {
       "role": "shared_attitude_rate_allocator",
       "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
-      "expected_sha256": "e09e6eba1b259260d21d216f89873db5bf17b94c4ee8c3e5a330f75883cde62b"
+      "expected_sha256": "154c9b19ee5ae3050467e56e6c0e6a08dd364b9e928eb81b5749688c6c2f66ca"
     },
     {
       "role": "shared_sunray150_assembly",
@@ -82,7 +82,7 @@
     {
       "role": "plant_sensor_surface",
       "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
-      "expected_sha256": "afe8291bdb2a09a56e7b2049635c433669bf63e352ba3091de615ff57b8befed"
+      "expected_sha256": "c185e8a73eebb2de6925bef15e5285f030832d560805742f4127d367595d486b"
     },
     {
       "role": "virtual_px4_classic_profile",
@@ -92,7 +92,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "12814dc84f5815a1956c16933388ea98a662900c54fd35d1f8804664da4f99e6"
+      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
     },
     {
       "role": "equation_bridge",

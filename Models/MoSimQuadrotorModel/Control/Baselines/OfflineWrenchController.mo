@@ -14,7 +14,6 @@ model OfflineWrenchController
   parameter Real kd_z = 15.32;
   parameter Real max_collective_force = 45;
   parameter Real integral_limit = 2;
-  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](each k = 1, each T = 0.05);
   Modelica.Blocks.Continuous.Derivative body_rate_estimator[3](each k = 1, each T = 0.02);
   Real position_error[3];
   Real desired_attitude[3];
@@ -23,11 +22,10 @@ model OfflineWrenchController
   Real collective_unsaturated;
   annotation(__MWORKS(version="26.3.0"));
 equation
-  connect(position_mea, velocity_estimator.u);
   connect(attitude_mea, body_rate_estimator.u);
   position_error = position_ref - position_mea;
-  desired_attitude[1] = min(max(-kp_xy * position_error[2] + kd_xy * velocity_estimator[2].y, -max_tilt), max_tilt);
-  desired_attitude[2] = min(max(kp_xy * position_error[1] - kd_xy * velocity_estimator[1].y, -max_tilt), max_tilt);
+  desired_attitude[1] = min(max(-kp_xy * position_error[2] + kd_xy * velocity_mea[2], -max_tilt), max_tilt);
+  desired_attitude[2] = min(max(kp_xy * position_error[1] - kd_xy * velocity_mea[1], -max_tilt), max_tilt);
   desired_attitude[3] = 0;
   desired_body_rate[1] = angle_to_rate_gain * (desired_attitude[1] - attitude_mea[1]);
   desired_body_rate[2] = angle_to_rate_gain * (desired_attitude[2] - attitude_mea[2]);
@@ -35,7 +33,7 @@ equation
   der(altitude_integral) = if (altitude_integral >= integral_limit and position_error[3] > 0)
     or (altitude_integral <= -integral_limit and position_error[3] < 0) then 0 else position_error[3];
   collective_unsaturated = kp_z * position_error[3] + ki_z * altitude_integral
-    - kd_z * velocity_estimator[3].y;
+    - kd_z * velocity_mea[3];
   body_force[1] = 0;
   body_force[2] = 0;
   body_force[3] = min(max(collective_unsaturated, -max_collective_force), max_collective_force);

@@ -4,6 +4,8 @@ partial model PartialWrenchController
 
   Modelica.Blocks.Interfaces.RealInput position_ref[3];
   Modelica.Blocks.Interfaces.RealInput position_mea[3];
+  Modelica.Blocks.Interfaces.RealInput velocity_mea[3]
+    "Runner-owned filtered translational velocity in m/s";
   Modelica.Blocks.Interfaces.RealInput attitude_mea[3];
   Modelica.Blocks.Interfaces.RealOutput body_force[3];
   Modelica.Blocks.Interfaces.RealOutput body_torque[3];

@@ -10,12 +10,12 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/TrainedNeuralResidualFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner",
-    "model_sha256": "ede6bd63a5ed56a594899a42f06b0d1398829f60b3a155a6208eea05d2067412"
+    "model_sha256": "0426e7349dd392170f0d0fdb0fde69e4661976a05c3767190ca6e3fbdb205ec9"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.TrainedNeuralResidualAttitudeThrustAdapter",
-    "model_sha256": "37284f32a79c98eb275abbf942d8b4f151ae7531dd9f7c22034c792b930c4671",
+    "model_sha256": "8f9f0cab98f9addb302b1d43d75575c3ac17b3ed015375b8ba12b08f29228cec",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "direct_model_reference"
@@ -39,12 +39,12 @@
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/TrainedNeuralResidualFormalRunner.mo",
-      "expected_sha256": "ede6bd63a5ed56a594899a42f06b0d1398829f60b3a155a6208eea05d2067412"
+      "expected_sha256": "0426e7349dd392170f0d0fdb0fde69e4661976a05c3767190ca6e3fbdb205ec9"
     },
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo",
-      "expected_sha256": "37284f32a79c98eb275abbf942d8b4f151ae7531dd9f7c22034c792b930c4671"
+      "expected_sha256": "8f9f0cab98f9addb302b1d43d75575c3ac17b3ed015375b8ba12b08f29228cec"
     },
     {
       "role": "current_root_cfunction_core",
@@ -54,7 +54,7 @@
     {
       "role": "shared_attitude_rate_allocator",
       "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
-      "expected_sha256": "e09e6eba1b259260d21d216f89873db5bf17b94c4ee8c3e5a330f75883cde62b"
+      "expected_sha256": "154c9b19ee5ae3050467e56e6c0e6a08dd364b9e928eb81b5749688c6c2f66ca"
     },
     {
       "role": "shared_sunray150_assembly",
@@ -79,7 +79,7 @@
     {
       "role": "plant_sensor_surface",
       "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
-      "expected_sha256": "afe8291bdb2a09a56e7b2049635c433669bf63e352ba3091de615ff57b8befed"
+      "expected_sha256": "c185e8a73eebb2de6925bef15e5285f030832d560805742f4127d367595d486b"
     },
     {
       "role": "virtual_px4_classic_profile",
@@ -89,7 +89,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "12814dc84f5815a1956c16933388ea98a662900c54fd35d1f8804664da4f99e6"
+      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
     },
     {
       "role": "adapter_source_import_manifest",

@@ -15,14 +15,9 @@ model TrainedNeuralResidualAttitudeThrustAdapter
   parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
   parameter Real hover_collective_thrust_n = 4 * lift_coefficient * hover_speed ^ 2;
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
-  parameter Real max_rotor_speed_delta = 30.0;
+  parameter Real max_collective_thrust_delta_n = 30.0 * collective_thrust_slope;
 
   TrainedNeuralResidualCFunction core;
-  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
-    each k = 1,
-    each T = 0.05,
-    each initType = Modelica.Blocks.Types.Init.InitialOutput,
-    each y_start = 0);
   Modelica.Blocks.Continuous.Derivative angular_rate_estimator[3](
     each k = 1,
     each T = 0.02,
@@ -43,7 +38,6 @@ model TrainedNeuralResidualAttitudeThrustAdapter
   Real learning_action_norm;
 
 equation
-  connect(position_mea, velocity_estimator.u);
   connect(attitude_mea, angular_rate_estimator.u);
 
   roll_mea = attitude_mea[1];
@@ -63,9 +57,9 @@ equation
   core.position_x_in = position_mea[1];
   core.position_y_in = position_mea[2];
   core.position_z_in = position_mea[3];
-  core.velocity_x_in = velocity_estimator[1].y;
-  core.velocity_y_in = velocity_estimator[2].y;
-  core.velocity_z_in = velocity_estimator[3].y;
+  core.velocity_x_in = velocity_mea[1];
+  core.velocity_y_in = velocity_mea[2];
+  core.velocity_z_in = velocity_mea[3];
   core.attitude_w_in = q_w;
   core.attitude_x_in = q_x;
   core.attitude_y_in = q_y;
@@ -108,9 +102,8 @@ equation
   attitude_ref[3] = atan2(2 * (core.desired_attitude_w_out * core.desired_attitude_z_out
     + core.desired_attitude_x_out * core.desired_attitude_y_out),
     1 - 2 * (core.desired_attitude_y_out ^ 2 + core.desired_attitude_z_out ^ 2));
-  collective_thrust_delta = min(max(
-    (desired_collective_thrust_n - hover_collective_thrust_n) / collective_thrust_slope,
-    -max_rotor_speed_delta), max_rotor_speed_delta);
+  collective_thrust_delta = min(max(desired_collective_thrust_n - hover_collective_thrust_n,
+    -max_collective_thrust_delta_n), max_collective_thrust_delta_n);
 
   annotation(__MWORKS(version = "26.3.0"));
 end TrainedNeuralResidualAttitudeThrustAdapter;

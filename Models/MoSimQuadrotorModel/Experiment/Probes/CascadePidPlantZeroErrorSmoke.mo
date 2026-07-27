@@ -13,6 +13,7 @@ model CascadePidPlantZeroErrorSmoke
 equation
   controller.position_ref = {0.0, 0.0, 0.0};
   controller.position_mea = {0.0, 0.0, 0.0};
+  controller.velocity_mea = {0.0, 0.0, 0.0};
   controller.attitude_mea = {0.0, 0.0, 0.0};
   allocator.attitude_mea = {0.0, 0.0, 0.0};
   connect(controller.attitude_ref, allocator.attitude_ref);

@@ -10,29 +10,29 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
-    "model_sha256": "eb4c4149dff9a5d9338b23d5fc220fe6fb7570c537d42902ed5aa4206d87c5cc"
+    "model_sha256": "91ae05aad86e0c2ca27e43f0499496445108456f4dbf6b869039b267abf6c4b6"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Baselines/OfflineAttitudeThrustController.mo",
     "model_class": "MoSimQuadrotorModel.Control.Baselines.OfflineAttitudeThrustController",
-    "model_sha256": "b54761076a6710ee3dbb39013c2df25d8a429f03320e4327e3f59cc4412d14f5",
+    "model_sha256": "747b1a36b6f02d1b4d2d7d2d86b2e2d889b33783fc7638b97f0272a96164048c",
     "output_boundary": "ATTITUDE_THRUST"
   },
   "source_bindings": [
     {
       "role": "runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
-      "expected_sha256": "eb4c4149dff9a5d9338b23d5fc220fe6fb7570c537d42902ed5aa4206d87c5cc"
+      "expected_sha256": "91ae05aad86e0c2ca27e43f0499496445108456f4dbf6b869039b267abf6c4b6"
     },
     {
       "role": "fixture_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Baselines/OfflineAttitudeThrustController.mo",
-      "expected_sha256": "b54761076a6710ee3dbb39013c2df25d8a429f03320e4327e3f59cc4412d14f5"
+      "expected_sha256": "747b1a36b6f02d1b4d2d7d2d86b2e2d889b33783fc7638b97f0272a96164048c"
     },
     {
       "role": "offline_inner_allocator",
       "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
-      "expected_sha256": "e09e6eba1b259260d21d216f89873db5bf17b94c4ee8c3e5a330f75883cde62b"
+      "expected_sha256": "154c9b19ee5ae3050467e56e6c0e6a08dd364b9e928eb81b5749688c6c2f66ca"
     },
     {
       "role": "shared_plant",

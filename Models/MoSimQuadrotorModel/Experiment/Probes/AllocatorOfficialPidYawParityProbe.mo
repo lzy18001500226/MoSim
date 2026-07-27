@@ -13,6 +13,7 @@ model AllocatorOfficialPidYawParityProbe
 equation
   official_pid.position_ref = {0.0, 0.0, 0.0};
   official_pid.position_mea = {0.0, 0.0, 0.0};
+  official_pid.velocity_mea = {0.0, 0.0, 0.0};
   official_pid.attitude_mea = {0.0, 0.0, yaw_measurement};
 
   offline_allocator.attitude_ref = {0.0, 0.0, 0.0};

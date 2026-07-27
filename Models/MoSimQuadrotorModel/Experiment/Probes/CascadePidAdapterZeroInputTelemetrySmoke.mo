@@ -49,11 +49,12 @@ model CascadePidAdapterZeroInputTelemetrySmoke
 equation
   controller.position_ref = {0.0, 0.0, 0.0};
   controller.position_mea = {0.0, 0.0, 0.0};
+  controller.velocity_mea = {0.0, 0.0, 0.0};
   controller.attitude_mea = {0.0, 0.0, 0.0};
 
-  velocity_estimate_x = controller.velocity_estimator[1].y;
-  velocity_estimate_y = controller.velocity_estimator[2].y;
-  velocity_estimate_z = controller.velocity_estimator[3].y;
+  velocity_estimate_x = controller.velocity_mea[1];
+  velocity_estimate_y = controller.velocity_mea[2];
+  velocity_estimate_z = controller.velocity_mea[3];
   angular_rate_estimate_x = controller.angular_rate_estimator[1].y;
   angular_rate_estimate_y = controller.angular_rate_estimator[2].y;
   angular_rate_estimate_z = controller.angular_rate_estimator[3].y;

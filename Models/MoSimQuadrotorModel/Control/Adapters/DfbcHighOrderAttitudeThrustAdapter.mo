@@ -11,14 +11,9 @@ model DfbcHighOrderAttitudeThrustAdapter
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
   parameter Real normalized_thrust_scale = 0.03772949988018335
     "Copied from the selected graphical DFBC output adapter";
-  parameter Real max_rotor_speed_delta = 30.0;
+  parameter Real max_collective_thrust_delta_n = 30.0 * collective_thrust_slope;
 
   DfbcHighOrderEquationBridge core(sample_time_s = sample_time_s);
-  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
-    each k = 1,
-    each T = 0.05,
-    each initType = Modelica.Blocks.Types.Init.InitialOutput,
-    each y_start = 0);
   Modelica.Blocks.Continuous.Derivative body_rate_estimator[3](
     each k = 1,
     each T = 0.02,
@@ -29,15 +24,14 @@ model DfbcHighOrderAttitudeThrustAdapter
     "DFBC normalized thrust includes its own gravity compensation";
 
 equation
-  connect(position_mea, velocity_estimator.u);
   connect(attitude_mea, body_rate_estimator.u);
 
   core.position_x = position_mea[1];
   core.position_y = position_mea[2];
   core.position_z = position_mea[3];
-  core.velocity_x = velocity_estimator[1].y;
-  core.velocity_y = velocity_estimator[2].y;
-  core.velocity_z = velocity_estimator[3].y;
+  core.velocity_x = velocity_mea[1];
+  core.velocity_y = velocity_mea[2];
+  core.velocity_z = velocity_mea[3];
   core.reference_position_x = position_ref[1];
   core.reference_position_y = position_ref[2];
   core.reference_position_z = position_ref[3];
@@ -58,8 +52,8 @@ equation
   attitude_ref[3] = 0;
   desired_collective_thrust_n = core.normalized_thrust_out / normalized_thrust_scale;
   collective_thrust_delta = min(max(
-    (desired_collective_thrust_n - 4 * lift_coefficient * hover_speed ^ 2) / collective_thrust_slope,
-    -max_rotor_speed_delta), max_rotor_speed_delta);
+    desired_collective_thrust_n - 4 * lift_coefficient * hover_speed ^ 2,
+    -max_collective_thrust_delta_n), max_collective_thrust_delta_n);
 
   annotation(__MWORKS(version = "26.3.0"));
 end DfbcHighOrderAttitudeThrustAdapter;

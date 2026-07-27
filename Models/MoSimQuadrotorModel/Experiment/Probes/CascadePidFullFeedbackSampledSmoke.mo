@@ -7,6 +7,12 @@ model CascadePidFullFeedbackSampledSmoke
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant annotation(Placement(transformation(extent={{33,-20},{63,20}})));
   Modelica.Blocks.Discrete.UnitDelay sampled_position[3](each samplePeriod = 0.01,
     each y_start = 0);
+  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
+    each k = 1,
+    each T = 0.05,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput,
+    each y_start = 0)
+    "Probe-owned filtered velocity from the sampled plant position";
   Modelica.Blocks.Discrete.UnitDelay sampled_attitude[3](each samplePeriod = 0.01,
     each y_start = 0);
   Real position[3];
@@ -18,6 +24,8 @@ equation
   controller.position_ref = {0.0, 0.0, 0.0};
   connect(plant.position, sampled_position.u);
   connect(sampled_position.y, controller.position_mea);
+  connect(sampled_position.y, velocity_estimator.u);
+  connect(velocity_estimator.y, controller.velocity_mea);
   connect(plant.attitude, sampled_attitude.u);
   connect(sampled_attitude.y, controller.attitude_mea);
   connect(controller.attitude_ref, allocator.attitude_ref) annotation(Line(points={{-33,26},{-24,26},{-24,0},{-15,0}}, color={0,0,127}));

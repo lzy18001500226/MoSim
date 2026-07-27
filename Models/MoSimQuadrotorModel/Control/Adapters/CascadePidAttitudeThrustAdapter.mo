@@ -14,17 +14,12 @@ model CascadePidAttitudeThrustAdapter
     "Controller safety limit; below the virtual plant physical maximum thrust";
   parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
   parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
-  parameter Real max_rotor_speed_delta = 30.0;
   parameter Real hover_collective_thrust_n = 4 * lift_coefficient * hover_speed ^ 2;
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
+  parameter Real max_collective_thrust_delta_n = 30.0 * collective_thrust_slope;
 
   PidAttitudeThrustCFunction core
     annotation(Placement(transformation(origin = {0, 0}, extent = {{-32, -82}, {32, 82}})));
-  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
-    each k = 1,
-    each T = 0.05,
-    each initType = Modelica.Blocks.Types.Init.InitialOutput,
-    each y_start = 0);
   Modelica.Blocks.Continuous.Derivative angular_rate_estimator[3](
     each k = 1,
     each T = 0.02,
@@ -56,13 +51,11 @@ model CascadePidAttitudeThrustAdapter
   Real yaw_ref annotation(Placement(transformation(extent={{-15,-410},{15,-370}})));
   Real pitch_argument annotation(Placement(transformation(extent={{-15,214},{15,254}})));
   Real desired_collective_thrust_n annotation(Placement(transformation(extent={{-15,318},{15,358}})));
-  Real desired_rotor_speed_delta annotation(Placement(transformation(extent={{-15,266},{15,306}})));
   Real status_code annotation(Placement(transformation(extent={{-15,-306},{15,-266}})));
   Real saturated annotation(Placement(transformation(extent={{-15,-254},{15,-214}})));
   annotation(__MWORKS(version = "26.3.0"));
 
 equation
-  connect(position_mea, velocity_estimator.u);
   connect(attitude_mea, angular_rate_estimator.u);
 
   roll_mea = attitude_mea[1];
@@ -82,9 +75,9 @@ equation
   connect(position_mea[1], core.position_x_in);
   connect(position_mea[2], core.position_y_in);
   connect(position_mea[3], core.position_z_in);
-  connect(velocity_estimator[1].y, core.velocity_x_in);
-  connect(velocity_estimator[2].y, core.velocity_y_in);
-  connect(velocity_estimator[3].y, core.velocity_z_in);
+  connect(velocity_mea[1], core.velocity_x_in);
+  connect(velocity_mea[2], core.velocity_y_in);
+  connect(velocity_mea[3], core.velocity_z_in);
   core.attitude_w_in = q_w;
   core.attitude_x_in = q_x;
   core.attitude_y_in = q_y;
@@ -132,11 +125,9 @@ equation
   yaw_ref = atan2(2 * (core.desired_attitude_w_out * core.desired_attitude_z_out
     + core.desired_attitude_x_out * core.desired_attitude_y_out),
     1 - 2 * (core.desired_attitude_y_out ^ 2 + core.desired_attitude_z_out ^ 2));
-  desired_rotor_speed_delta = min(max(
-    (desired_collective_thrust_n - hover_collective_thrust_n) / collective_thrust_slope,
-    -max_rotor_speed_delta), max_rotor_speed_delta);
   attitude_ref[1] = roll_ref;
   attitude_ref[2] = pitch_ref;
   attitude_ref[3] = yaw_ref;
-  collective_thrust_delta = desired_rotor_speed_delta;
+  collective_thrust_delta = min(max(desired_collective_thrust_n - hover_collective_thrust_n,
+    -max_collective_thrust_delta_n), max_collective_thrust_delta_n);
 end CascadePidAttitudeThrustAdapter;

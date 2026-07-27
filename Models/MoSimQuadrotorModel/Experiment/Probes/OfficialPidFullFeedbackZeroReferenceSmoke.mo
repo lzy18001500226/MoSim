@@ -6,6 +6,12 @@ model OfficialPidFullFeedbackZeroReferenceSmoke
     annotation(Placement(transformation(origin = {-48, 0}, extent = {{-32, -26}, {32, 26}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
     annotation(Placement(transformation(origin = {70, 0}, extent = {{-42, -58}, {42, 58}})));
+  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
+    each k = 1,
+    each T = 0.05,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput,
+    each y_start = 0)
+    "Probe-owned filtered velocity from plant position";
   Real position[3];
   Real attitude[3];
   Real rotor_command[4];
@@ -15,6 +21,8 @@ equation
   controller.position_ref = {0.0, 0.0, 0.0};
   connect(plant.position, controller.position_mea)
     annotation(Line(points = {{28, -18}, {8, -18}, {8, -34}, {-48, -34}, {-48, -26}}, color = {0, 0, 127}));
+  connect(plant.position, velocity_estimator.u);
+  connect(velocity_estimator.y, controller.velocity_mea);
   connect(plant.attitude, controller.attitude_mea)
     annotation(Line(points = {{28, -18}, {8, -18}, {8, -34}, {-48, -34}, {-48, -26}}, color = {0, 0, 127}));
   connect(controller.rotor_command, plant.rotor_command)

@@ -12,6 +12,12 @@ model AttitudeThrustRunner
     annotation(Placement(transformation(origin = {160, 0}, extent = {{-52, -75}, {52, 75}})));
   MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath reference(gain(k = 1))
     annotation(Placement(transformation(origin = {-175, 55}, extent = {{-20, -15}, {20, 15}})));
+  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
+    each k = 1,
+    each T = 0.05,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput,
+    each y_start = 0)
+    "Shared Runner-owned filtered position derivative";
   Real position_ref[3];
   Real position[3];
   Real attitude[3];
@@ -22,6 +28,8 @@ equation
     annotation(Line(points = {{-155, 55}, {-113, 55}}, color = {0, 0, 127}));
   connect(plant.position, controller.position_mea)
     annotation(Line(points = {{108, -20}, {75, -20}, {75, -100}, {-135, -100}, {-135, 45}, {-113, 45}}, color = {0, 0, 127}));
+  connect(plant.position, velocity_estimator.u);
+  connect(velocity_estimator.y, controller.velocity_mea);
   connect(plant.attitude, controller.attitude_mea)
     annotation(Line(points = {{108, -35}, {60, -35}, {60, -120}, {-150, -120}, {-150, 30}, {-113, 30}}, color = {0, 0, 127}));
   connect(controller.attitude_ref, offline_inner_allocator.attitude_ref)

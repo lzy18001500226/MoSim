@@ -18,6 +18,12 @@ model LqrBaselineFormalRunner
   Modelica.Blocks.Discrete.UnitDelay sampled_position[3](each samplePeriod = controller_sample_period_s,
     each y_start = 0)
     annotation(Placement(transformation(origin = {-15, -35}, extent = {{-18, -12}, {18, 12}})));
+  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
+    each k = 1,
+    each T = 0.05,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput,
+    each y_start = 0)
+    "Runner-owned filtered velocity from the sampled position boundary";
   Modelica.Blocks.Discrete.UnitDelay sampled_attitude[3](each samplePeriod = controller_sample_period_s,
     each y_start = 0)
     annotation(Placement(transformation(origin = {65, -55}, extent = {{-18, -12}, {18, 12}})));
@@ -36,6 +42,8 @@ equation
     annotation(Line(points = {{113, -20}, {95, -20}, {95, -35}, {3, -35}}, color = {0, 0, 127}));
   connect(sampled_position.y, controller.position_mea)
     annotation(Line(points = {{-33, -35}, {-55, -35}, {-55, 40}, {-138, 40}}, color = {0, 0, 127}));
+  connect(sampled_position.y, velocity_estimator.u);
+  connect(velocity_estimator.y, controller.velocity_mea);
   connect(plant.attitude, sampled_attitude.u)
     annotation(Line(points = {{113, -35}, {97, -35}, {97, -55}, {83, -55}}, color = {0, 0, 127}));
   connect(sampled_attitude.y, controller.attitude_mea)

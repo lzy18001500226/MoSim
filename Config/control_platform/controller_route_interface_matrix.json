@@ -28,8 +28,8 @@
   "source_sha256": {
     "catalog": "1b142cf6a272770643c0d1b3123ff703f5081ea6238b1044f570d999f954d925",
     "current_model_entry_map": "08899adf2a9ad28108aa6a456aa43aff601d4802867b1f0ea65c65e83cc1c372",
-    "formal_closed_loop_harness_map": "ff4138867f39bdd00b79545382cbee135c306b78f219a95ee7c05fdddb9c329e",
-    "offline_runner_interface_contract": "2a32e78e153da07f92cf9d5a4d35f176ac87a3844bec2ea6efa909761f46e798"
+    "formal_closed_loop_harness_map": "fcf998f4e342e857f6d0441e40ed6bf3bd0f78a8082232fffa533b7dfb1d4ce8",
+    "offline_runner_interface_contract": "c11591a61e17f08bbb0ecd6445e5c1d4dbc28193c74184b80b840c1d8c452b18"
   },
   "shared_runner_contract": {
     "shared_controller_inputs": [
@@ -40,6 +40,11 @@
       {
         "name": "position_mea",
         "dimension": 3
+      },
+      {
+        "name": "velocity_mea",
+        "dimension": 3,
+        "unit_semantics": "runner_owned_filtered_position_derivative_m_per_s"
       },
       {
         "name": "attitude_mea",
@@ -89,7 +94,7 @@
           {
             "name": "collective_thrust_delta",
             "dimension": 1,
-            "unit_semantics": "legacy_scaled_delta_not_newtons"
+            "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
           }
         ],
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1",
@@ -109,7 +114,7 @@
           {
             "name": "collective_thrust_delta",
             "dimension": 1,
-            "unit_semantics": "legacy_scaled_delta_not_newtons"
+            "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
           }
         ],
         "offline_inner_owner": "mworks_offline_body_rate_inner_and_allocator_v1",
@@ -288,7 +293,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -438,7 +443,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -591,7 +596,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -757,7 +762,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -889,7 +894,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -1029,7 +1034,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -1192,7 +1197,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -1356,7 +1361,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -1516,7 +1521,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -1677,7 +1682,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -1827,7 +1832,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -1973,7 +1978,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -2744,7 +2749,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -2875,7 +2880,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -3028,7 +3033,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -3159,7 +3164,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -3325,7 +3330,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -3645,7 +3650,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -3795,7 +3800,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -3945,7 +3950,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -4097,7 +4102,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -4263,7 +4268,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -4426,7 +4431,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -4597,7 +4602,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -4775,7 +4780,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -4944,7 +4949,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -5075,7 +5080,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -5208,7 +5213,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -5361,7 +5366,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -5628,7 +5633,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -5797,7 +5802,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -5933,7 +5938,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -6086,7 +6091,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -6219,7 +6224,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -6353,7 +6358,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -6509,7 +6514,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -6662,7 +6667,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -6798,7 +6803,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },
@@ -6951,7 +6956,7 @@
             {
               "name": "collective_thrust_delta",
               "dimension": 1,
-              "unit_semantics": "legacy_scaled_delta_not_newtons"
+              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
             }
           ]
         },

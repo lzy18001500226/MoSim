@@ -15,6 +15,7 @@ model AllocatorOfficialPidParityProbe
 equation
   official_pid.position_ref = {0.0, 0.0, 0.0};
   official_pid.position_mea = {0.0, 0.0, 0.0};
+  official_pid.velocity_mea = {0.0, 0.0, 0.0};
   official_pid.attitude_mea = {roll_measurement, pitch_measurement, yaw_measurement};
 
   offline_allocator.attitude_ref = {0.0, 0.0, 0.0};

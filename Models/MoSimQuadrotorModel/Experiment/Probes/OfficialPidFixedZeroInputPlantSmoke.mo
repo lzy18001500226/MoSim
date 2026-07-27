@@ -12,6 +12,7 @@ model OfficialPidFixedZeroInputPlantSmoke
 equation
   controller.position_ref = {0.0, 0.0, 0.0};
   controller.position_mea = {0.0, 0.0, 0.0};
+  controller.velocity_mea = {0.0, 0.0, 0.0};
   controller.attitude_mea = {0.0, 0.0, 0.0};
   connect(controller.rotor_command, plant.rotor_command);
 

@@ -4,8 +4,11 @@ partial model PartialAttitudeThrustController
 
   Modelica.Blocks.Interfaces.RealInput position_ref[3];
   Modelica.Blocks.Interfaces.RealInput position_mea[3];
+  Modelica.Blocks.Interfaces.RealInput velocity_mea[3]
+    "Runner-owned filtered translational velocity in m/s";
   Modelica.Blocks.Interfaces.RealInput attitude_mea[3];
   Modelica.Blocks.Interfaces.RealOutput attitude_ref[3];
-  Modelica.Blocks.Interfaces.RealOutput collective_thrust_delta;
+  Modelica.Blocks.Interfaces.RealOutput collective_thrust_delta
+    "Collective thrust increment about hover in N";
   annotation(__MWORKS(version="26.3.0"));
 end PartialAttitudeThrustController;

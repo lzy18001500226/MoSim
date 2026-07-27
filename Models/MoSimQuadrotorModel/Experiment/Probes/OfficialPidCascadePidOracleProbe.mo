@@ -10,6 +10,12 @@ model OfficialPidCascadePidOracleProbe
     annotation(Placement(transformation(origin = {10, -40}, extent = {{-32, -26}, {32, 26}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
     annotation(Placement(transformation(origin = {115, 0}, extent = {{-42, -58}, {42, 58}})));
+  Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
+    each k = 1,
+    each T = 0.05,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput,
+    each y_start = 0)
+    "Shared plant velocity estimate for both controller interfaces";
 
   Real position[3];
   Real attitude[3];
@@ -27,6 +33,9 @@ equation
   cascade_pid.position_ref = {0.0, 0.0, 0.0};
   connect(plant.position, official_pid.position_mea)
     annotation(Line(points = {{73, -18}, {52, -18}, {52, 15}, {-90, 15}, {-90, 9}}, color = {0, 0, 127}));
+  connect(plant.position, velocity_estimator.u);
+  connect(velocity_estimator.y, official_pid.velocity_mea);
+  connect(velocity_estimator.y, cascade_pid.velocity_mea);
   connect(plant.attitude, official_pid.attitude_mea)
     annotation(Line(points = {{73, -30}, {46, -30}, {46, 2}, {-90, 2}, {-90, 9}}, color = {0, 0, 127}));
   connect(plant.position, cascade_pid.position_mea)

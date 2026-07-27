@@ -10,6 +10,7 @@ model CascadePidAdapterSmoke
 equation
   controller.position_ref = {1.0, -0.5, 0.8};
   controller.position_mea = {0.0, 0.0, 0.0};
+  controller.velocity_mea = {0.0, 0.0, 0.0};
   controller.attitude_mea = {0.0, 0.0, 0.0};
   attitude_ref = controller.attitude_ref;
   collective_thrust_delta = controller.collective_thrust_delta;

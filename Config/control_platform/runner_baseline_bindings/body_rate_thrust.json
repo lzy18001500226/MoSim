@@ -10,29 +10,29 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/BodyRateThrustRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.BodyRateThrustRunner",
-    "model_sha256": "9d2c6506c3638f9045bd2e498ef22a7168246e8721120fec8994d52da0ace266"
+    "model_sha256": "12d92bd93f485e0e3729dba5656ceb98c069f3126eb6f4c76c8ff8796b6f5554"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Baselines/OfflineBodyRateThrustController.mo",
     "model_class": "MoSimQuadrotorModel.Control.Baselines.OfflineBodyRateThrustController",
-    "model_sha256": "3a1cdd3b3b09ad8646917d9f5b9326bfe6fd22dba66bf2a45653a6beeaaeb15b",
+    "model_sha256": "f2b24306c89f62051e15cebe3b9e91c6391edf4914bdc5aae160ac2cd3fadc70",
     "output_boundary": "BODY_RATE_THRUST"
   },
   "source_bindings": [
     {
       "role": "runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/BodyRateThrustRunner.mo",
-      "expected_sha256": "9d2c6506c3638f9045bd2e498ef22a7168246e8721120fec8994d52da0ace266"
+      "expected_sha256": "12d92bd93f485e0e3729dba5656ceb98c069f3126eb6f4c76c8ff8796b6f5554"
     },
     {
       "role": "fixture_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Baselines/OfflineBodyRateThrustController.mo",
-      "expected_sha256": "3a1cdd3b3b09ad8646917d9f5b9326bfe6fd22dba66bf2a45653a6beeaaeb15b"
+      "expected_sha256": "f2b24306c89f62051e15cebe3b9e91c6391edf4914bdc5aae160ac2cd3fadc70"
     },
     {
       "role": "offline_inner_allocator",
       "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineBodyRateAllocator.mo",
-      "expected_sha256": "caa54bc0626d22e4e0e14d67751911b1970e0fce3226c42231464eaed143b284"
+      "expected_sha256": "c2f1c36a7a1a2546bc2e65de4c730e683c04013eec0d4b3b71526491989beef2"
     },
     {
       "role": "shared_plant",
