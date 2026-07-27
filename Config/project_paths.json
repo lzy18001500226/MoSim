@@ -58,7 +58,7 @@
       "canonical_relpath": "src/integration/ros1_launch/quadrotor_msgs",
       "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs",
       "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "Scripts/sunray/setup_goal4_diff_planner_overlay.sh",
         "Scripts/sunray/setup_goal4_egov2_overlay.sh"

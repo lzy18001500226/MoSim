@@ -189,3 +189,25 @@ component_id: uav_utils
 激活前置: 补齐上游 commit/许可证、改写审计过的消费者引用并完成受控 ROS1 验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.4 quadrotor_msgs 复制记录（2026-07-27）
+
+```text
+component_id: quadrotor_msgs
+旧路径: References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs
+新路径: src/integration/ros1_launch/quadrotor_msgs
+活动路径: References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs
+迁移状态: copied_pending_activation
+来源: https://github.com/ZJU-FAST-Lab/Fast-Drone-250
+固定版本: 旧导入快照未能恢复上游 commit；不得宣称已钉定版本
+许可证: package.xml 声明 BSD；旧组件未携带独立许可证文件，发布前仍需审计
+项目补丁: 无源码、CMake、package.xml、消息定义或库改动；仅新增 .gitattributes、UPSTREAM.md、PATCHES.md
+原始快照: 49 个文件，SHA-256 清单
+          9eea29e626190d2eb007be41ac90020029994a9a7a89b24abef77c8924844112
+交付负载: 排除 Catkin 自动生成的 src/quadrotor_msgs Python 消息输出目录和 2 个 *.msg~ 编辑器备份后，
+          34 个文件与旧路径一致，d45bbfe4d83ebf1cbf5b95a8941c5b7a4548e00bf17b23b8a752dad712c3be41
+静态检查: JSON 解析、复制载荷 SHA-256 比对和差异格式检查通过
+未执行项: 未改写入口，未生成消息、构建、预检、启动 ROS/Gazebo/PX4/QGC/UE 或运行控制器
+激活前置: 补齐上游 commit/许可证、改写审计过的 overlay 与消费者引用、生成消息并完成受控 ROS1 验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```
