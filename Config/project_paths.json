@@ -90,7 +90,7 @@
       "canonical_relpath": "src/perception/livox_ros_driver_compat",
       "legacy_relpath": "References/Lab/localization_slam/livox_ros_driver_compat",
       "active_relpath": "References/Lab/localization_slam/livox_ros_driver_compat",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "Scripts/sunray/run_mid360_fastlio_10hz_gate.sh"
       ]

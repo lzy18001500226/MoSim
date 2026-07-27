@@ -211,3 +211,23 @@ component_id: quadrotor_msgs
 激活前置: 补齐上游 commit/许可证、改写审计过的 overlay 与消费者引用、生成消息并完成受控 ROS1 验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.5 livox_ros_driver_compat 复制记录（2026-07-27）
+
+```text
+component_id: livox_ros_driver_compat
+旧路径: References/Lab/localization_slam/livox_ros_driver_compat
+新路径: src/perception/livox_ros_driver_compat
+活动路径: References/Lab/localization_slam/livox_ros_driver_compat
+迁移状态: copied_pending_activation
+来源: 项目本地 FAST-LIO ROS1 消息兼容包；不是完整的外部 Livox 驱动仓库
+固定版本: 不适用；无外部上游 commit 可钉定
+许可证: package.xml 声明 BSD；旧组件未携带独立许可证文件，发布前仍需审计
+项目补丁: 无源码、CMake、package.xml 或消息定义改动；仅新增 .gitattributes、UPSTREAM.md、PATCHES.md
+原始快照与交付负载: 4 个文件，无 build、devel、install、缓存或编辑器本地文件，
+                         SHA-256 清单 c2946a7188009abdd0aa22d1e9496ce1a2dc05af748703fbf819fe668ee63cb4
+静态检查: JSON 解析、复制载荷 SHA-256 比对和差异格式检查通过
+未执行项: 未改写入口，未生成消息、构建、预检、启动 ROS/Gazebo/PX4/QGC/UE 或运行 FAST-LIO
+激活前置: 审计包名/消息契约、改写审计过的 FAST-LIO 消费者引用、生成消息并完成受控 ROS1 验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

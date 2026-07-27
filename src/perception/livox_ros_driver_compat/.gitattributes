@@ -1,0 +1,4 @@
+# Preserve this imported snapshot byte-for-byte. Its pre-existing whitespace
+# defects are tracked as source formatting, not MoSim edits.
+* -whitespace
+** -whitespace
