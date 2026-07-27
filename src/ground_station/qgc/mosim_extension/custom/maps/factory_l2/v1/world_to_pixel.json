@@ -1,0 +1,55 @@
+{
+  "axis_policy": "pixel_u_increases_with_world_x; pixel_v_decreases_with_world_y",
+  "bounds_m": {
+    "max_x_m": 587.89997,
+    "max_y_m": 246.35,
+    "min_x_m": -608.09999,
+    "min_y_m": -284.65
+  },
+  "image_size_px": {
+    "height": 800,
+    "width": 2048
+  },
+  "map_id": "factory_l2",
+  "map_version": "v1",
+  "meters_per_pixel": 0.7214673913043478,
+  "pixel_origin": "top_left",
+  "pixel_to_world_3x3": [
+    [
+      0.7214673913043478,
+      0.0,
+      -748.8826186956521
+    ],
+    [
+      0.0,
+      -0.7214673913043478,
+      269.43695652173915
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "pixels_per_meter": 1.3860640301318268,
+  "schema": "mosim.world_to_pixel.v1",
+  "world_frame": "mworks_world",
+  "world_to_pixel_3x3": [
+    [
+      1.3860640301318268,
+      0.0,
+      1037.9992605649718
+    ],
+    [
+      0.0,
+      -1.3860640301318268,
+      373.4568738229755
+    ],
+    [
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "world_units": "meters"
+}

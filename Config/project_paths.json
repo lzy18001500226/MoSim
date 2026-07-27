@@ -158,7 +158,7 @@
       "canonical_relpath": "src/ground_station/qgc/qgroundcontrol",
       "legacy_relpath": "apps/flight_console/vendor/qgroundcontrol",
       "active_relpath": "apps/flight_console/vendor/qgroundcontrol",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "apps/flight_console/mosim/custom/CMakeLists.txt"
       ]
@@ -168,7 +168,7 @@
       "canonical_relpath": "src/ground_station/qgc/mosim_extension",
       "legacy_relpath": "apps/flight_console/mosim",
       "active_relpath": "apps/flight_console/mosim",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "apps/flight_console/mosim/custom/CMakeLists.txt"
       ]

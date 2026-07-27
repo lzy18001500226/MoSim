@@ -1,0 +1,24 @@
+message(STATUS "QGC: Adding MoSim Flight Console custom plugin")
+
+set_property(DIRECTORY ${CMAKE_SOURCE_DIR}
+    APPEND PROPERTY COMPILE_DEFINITIONS
+    QGC_CUSTOM_BUILD
+    CUSTOMHEADER="CustomPlugin.h"
+    CUSTOMCLASS=CustomPlugin
+)
+
+list(APPEND CUSTOM_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/custom.qrc)
+set(QGC_RESOURCES ${QGC_RESOURCES} ${CUSTOM_RESOURCES} CACHE STRING "Custom resources" FORCE)
+
+set(CUSTOM_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomPlugin.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomPlugin.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MoSimOrchestratorBridge.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MoSimOrchestratorBridge.h
+    CACHE INTERNAL "" FORCE
+)
+
+set(CUSTOM_INCLUDE_DIRECTORIES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    CACHE INTERNAL "" FORCE
+)

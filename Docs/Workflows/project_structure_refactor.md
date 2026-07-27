@@ -391,3 +391,49 @@ component_id: fixed_formation
           改写审计过的Factory脚本、Profile和ROS overlay路径；验证工作区补丁假设并完成受控ROS1验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.13 QGroundControl 上游快照复制记录（2026-07-27）
+
+```text
+component_id: qgroundcontrol
+旧路径: apps/flight_console/vendor/qgroundcontrol
+新路径: src/ground_station/qgc/qgroundcontrol
+活动路径: apps/flight_console/vendor/qgroundcontrol
+迁移状态: copied_pending_activation
+来源: https://github.com/mavlink/qgroundcontrol；保留目录不是嵌套Git仓库，确切上游commit不可恢复
+固定版本: 不可恢复；本地基线为22224f94079bb85a5de6f6856d5fd157bb68eee6，不得宣称为QGC上游版本
+许可证: 同时保留LICENSE-APACHE与LICENSE-GPL，发布与构建许可证选择尚需审计
+项目补丁: 复制前活动工作树已含src/UI/MainWindow.qml本地改动；已作为当前源码快照原样保留，
+          迁移仅新增UPSTREAM.md、PATCHES.md
+交付负载: 排除android/.gradle/缓存与custom/生成覆盖层后，2,638个文件、325,541,737字节，
+          SHA-256清单 a8c7231105f1469ed703d45e33498c91562daa48f09755f07f6903bcc7a8e29c
+覆盖层边界: custom/由apps/flight_console/mosim物化，权威源码另存为qgc_mosim_extension；
+          custom-example/仍作为QGC上游源码保留
+静态检查: JSON解析、源/目标SHA-256比对、缓存与生成覆盖层排除检查通过
+未执行项: 未改写入口，未构建、预检、启动QGC、ROS、Gazebo、PX4、MAVROS、UE或RViz
+激活前置: 恢复或固定QGC上游版本与许可证选择；处理cmake/Git.cmake对父Git仓库的版本推导；
+          审计生成覆盖层物化流程、改写审计过的构建/启动入口并完成受控QGC构建验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```
+
+### 5.14 MoSim QGC 扩展快照复制记录（2026-07-27）
+
+```text
+component_id: qgc_mosim_extension
+旧路径: apps/flight_console/mosim
+新路径: src/ground_station/qgc/mosim_extension
+活动路径: apps/flight_console/mosim
+迁移状态: copied_pending_activation
+来源: 项目自有QGC custom-build源码，不是独立上游克隆仓库
+固定版本: 不适用；以本项目工作树快照为准
+许可证: 未发现独立许可证文件；与QGC双许可证源码的交付关系需在发布前审计
+项目补丁: 复制前活动工作树含5个QML/C++修改与3个Factory地图数据文件；
+          已作为当前源码快照原样保留，迁移仅新增UPSTREAM.md、PATCHES.md
+原始快照与交付负载: 15个文件、12,086,470字节，
+                         SHA-256清单 2b98e1588ef5636000cb6f310ce13c16d1079448a11d3a60f720f77bfa79d857
+静态检查: JSON解析、源/目标SHA-256比对和Factory地图资产存在检查通过
+未执行项: 未改写物化脚本，未构建、预检、启动QGC、ROS、Gazebo、PX4、MAVROS、UE或RViz
+激活前置: 审计Scripts/ui/materialize_qgc_custom_overlay.py的输入/输出边界；
+          将其改为受控消费canonical扩展路径，验证工厂地图资源路径并完成受控QGC构建验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

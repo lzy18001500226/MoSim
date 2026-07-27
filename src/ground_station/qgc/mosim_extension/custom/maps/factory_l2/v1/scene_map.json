@@ -1,0 +1,76 @@
+{
+  "asset_sha256": {
+    "floorplan.png": "4d32eac9245ded3870ed18eb2f4a7be2179373a351aa52c1e0af402da99db6c6",
+    "structure.geojson": "3a02e6815a20dcbe1d31843d068f844e626f987533fdd4e6dfd14905e3d2daaa",
+    "world_to_pixel.json": "44ad1b989e3704b9bccbc1406f57f7112b5729869eb326099022b70f50dd548b"
+  },
+  "assets": {
+    "floorplan": "floorplan.png",
+    "structure": "structure.geojson",
+    "world_to_pixel": "world_to_pixel.json"
+  },
+  "claim_boundary": [
+    "This package is a full-boundary operator-map candidate generated from accepted Factory collision truth.",
+    "Its 1196 m by 531 m base bounds come from the accepted low-floor audit; the 175.66 m by 64.00 m indoor area is a separate task overlay.",
+    "The structure layer is a quantized horizontal section of the accepted L2 Gazebo mesh; semantic overlays come from scene truth.",
+    "The display section is not a replacement for the full 3D Gazebo collision mesh or live occupancy map.",
+    "Unknown-environment planners must not consume this operator display map.",
+    "QGC mission publication requires a confirmed runtime geodetic anchor and a separate round-trip gate."
+  ],
+  "coordinate_contract": {
+    "gazebo_to_unreal": "UE_X_cm=world_X_m*100; UE_Y_cm=-world_Y_m*100; UE_Z_cm=world_Z_m*100",
+    "world_frame": "mworks_world",
+    "world_to_pixel": "world_to_pixel.json"
+  },
+  "feature_counts": {
+    "mesh_section_segments": 55386,
+    "semantic_gate_overlays": 13
+  },
+  "flight_slice_m": {
+    "display_section_z": 1.2,
+    "mission_band_max_z": 1.6,
+    "mission_band_min_z": 0.9,
+    "section_quantization": 0.1
+  },
+  "map_id": "factory_l2",
+  "map_scope": {
+    "asset_scope": "complete_factory_low_floor_boundary",
+    "full_factory_floor_bounds_m": {
+      "max_x_m": 587.89997,
+      "max_y_m": 246.35,
+      "min_x_m": -608.09999,
+      "min_y_m": -284.65
+    },
+    "indoor_task_overlay_bounds_m": {
+      "max_x_m": 77.25491,
+      "max_y_m": 12.63665,
+      "min_x_m": -98.40496,
+      "min_y_m": -51.36291
+    },
+    "publication_rule": "Use the full Factory base map; render the indoor FUEL area only as a task overlay."
+  },
+  "map_version": "v1",
+  "mesh_statistics": {
+    "mesh_chunk_count": 69,
+    "section_triangle_count": 182765,
+    "total_triangle_count": 15791142,
+    "unique_section_segment_count": 55386
+  },
+  "qgc_geodetic_anchor": {
+    "reason": "No project-local authoritative PX4/QGC global origin was found; mission publication remains gated.",
+    "status": "pending_runtime_confirmation"
+  },
+  "schema": "mosim.scene_map.v1",
+  "source": {
+    "exploration_envelope": "Config/gazebo/scene_profiles/factory_l2_exploration_envelope.json",
+    "exploration_envelope_sha256": "9fa5be9dd30b8cf9fda1768c27de73ae0de8e4d39411bbcae17f2a1903d44441",
+    "full_bounds_audit": "Results/unreal_scene_mapping/factory_l2_flight_envelope_audit_20260703_014306/FACTORY_L2_FLIGHT_ENVELOPE_AUDIT.json",
+    "full_bounds_audit_sha256": "203d496f270329d62345603c202596d38c970ef09583ab096b74097b2e5e065e",
+    "l2_mesh_directory": "Results/unreal_scene_mapping/factory_l2_static_import/assets/chunked_stl_clean",
+    "l2_mesh_manifest": "Results/unreal_scene_mapping/factory_l2_static_import/manifests/blender_chunked_stl_conversion_clean.json",
+    "l2_mesh_manifest_sha256": "d07060410da9fe1283627a8d5c0b2a882f314633486812e5c02c7001e59ec309",
+    "scene_truth": "UE5/MoSimSceneLibrary/Content/MworksData/scene_truth/factoryenvironmentcollect_collision_truth.json",
+    "scene_truth_sha256": "b6dd2e77fbdfe9783c4cfcdc901860901cd44b3851d19d564d8cfffd37cb4f71"
+  },
+  "status": "full_factory_operator_map_candidate"
+}
