@@ -301,6 +301,23 @@ Scripts/UE5/assets/**/*.pyc
 # Misgenerated Windows absolute-path directory inside the repository. Keep it
 # isolated at Git layer; do not hide it through IDE settings.
 /C:*/
+
+# Two retained FUEL reference binaries are local build artifacts, not source
+# delivery inputs. The copy-only migration keeps them out of the Git payload.
+/src/planning/fuel/uav_simulator/Utils/odom_visualization/bin/odom_visualization
+/src/planning/fuel/uav_simulator/Utils/odom_visualization/bin/odom_visualization_vicon45
+# Editor backups and Dynamic Reconfigure bytecode are retained in the local
+# FUEL copy for provenance only; the source .cfg remains versioned.
+/src/planning/fuel/**/*~
+/src/planning/fuel/**/*.cfgc
+# Catkin and Dynamic Reconfigure outputs retained from the FUEL reference
+# snapshot. Their source .msg/.cfg definitions remain in the payload.
+/src/planning/fuel/uav_simulator/so3_disturbance_generator/cfg/cpp/
+/src/planning/fuel/uav_simulator/Utils/multi_map_server/msg_gen/
+/src/planning/fuel/uav_simulator/Utils/multi_map_server/quadrotor_msgs/msg_gen/
+/src/planning/fuel/uav_simulator/Utils/multi_map_server/quadrotor_msgs/src/quadrotor_msgs/msg/
+/src/planning/fuel/uav_simulator/Utils/multi_map_server/src/multi_map_server/msg/
+/src/planning/fuel/uav_simulator/Utils/quadrotor_msgs/src/quadrotor_msgs/msg/
 Results/diagnostics/
 Results/agent_runs/
 Results/external_learning/gazebosim_crawl_*/tmp_*/

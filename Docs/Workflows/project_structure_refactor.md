@@ -143,3 +143,28 @@ component_id: diff_planner
 激活前置: 补齐上游 commit/submodule 身份、许可证审计、活动引用改写和受控 ROS1 验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.2 FUEL 复制记录（2026-07-27）
+
+```text
+component_id: fuel
+旧路径: References/Lab/exploration_coverage/FUEL
+新路径: src/planning/fuel
+活动路径: References/Lab/exploration_coverage/FUEL
+迁移状态: copied_pending_activation
+来源: https://github.com/HKUST-Aerial-Robotics/FUEL.git
+固定版本: 旧导入快照未能恢复上游 commit；不得宣称已钉定版本
+许可证: 根目录 GPL-3.0 已随副本保留；发布前仍需审计内嵌 ROS 包和第三方资源许可证
+项目补丁: 无算法、launch、CMake、参数、资源或资产改动；仅新增 .gitattributes、UPSTREAM.md、PATCHES.md
+原始快照: 1,541 个文件，SHA-256 清单
+          ef7d5ac53f0f9ba98209f0468c49b9130a7965060c768dae123da13e724dcc27
+交付负载: 排除 4 个本地 build 树及其中嵌套 devel 输出、3 个 Python bytecode、3 个本地 .so、
+          3 个带绝对工作区路径的 LKH 运行时状态文件、2 个可由源码重建的 ELF、76 个
+          Catkin/Dynamic Reconfigure 消息/配置生成物、6 个编辑器备份和 1 个 .cfgc
+          动态配置字节码后，785 个文件与旧路径一致，
+          b43afd26242b170e1b0f249b39d78fa751c0b2d83b320c544bc6e719ae402d25
+静态检查: JSON 解析、复制载荷 SHA-256 比对、Python 编译和差异格式检查通过
+未执行项: 未改写入口，未构建、预检、启动 ROS/Gazebo/PX4/QGC/UE 或运行 FUEL
+激活前置: 补齐上游 commit/许可证、改写审计过的 FUEL 入口并完成受控 ROS1 验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

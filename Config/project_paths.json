@@ -100,7 +100,7 @@
       "canonical_relpath": "src/planning/fuel",
       "legacy_relpath": "References/Lab/exploration_coverage/FUEL",
       "active_relpath": "References/Lab/exploration_coverage/FUEL",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "Scripts/sunray/check_fuel_ros1_preflight.sh",
         "Scripts/sunray/fuel_single_px4ctrl_goal4.launch"
