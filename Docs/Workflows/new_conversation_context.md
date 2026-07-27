@@ -3,7 +3,7 @@
 > Compact orientation for a fresh MoSim task. It is not a task ledger, a
 > runtime-history dump, or an authorization to start a simulator.
 
-Status: current startup context, 2026-07-26 CST.
+Status: current startup context, 2026-07-27 CST.
 
 ## 1. Read Order
 
@@ -32,12 +32,15 @@ competition milestone.
 
 ## 3. Current Structure Rules
 
-- Load only `Models/MoSimQuadrotorModel/package.mo` as the project-owned
-  Modelica root. Nested `package.mo` files are namespaces, not independent
-  project roots.
-- Keep the frozen directory-migration plan as design reference. Do not move
-  models, configs, scripts, results, UE projects, or references unless the user
-  explicitly reopens that migration.
+- The atomic Modelica-root migration is complete: load only
+  `Models/MoSimQuadrotorModel/package.mo` as the project-owned root. Nested
+  `package.mo` files are namespaces, not independent project roots.
+- The broad directory refactor in
+  `Docs/Workflows/project_structure_refactor.md` remains a user-frozen design
+  reference. Do not move models, configs, scripts, results, UE projects, or
+  references unless the user explicitly reopens that refactor. The root-level
+  `cmd/` launcher organization is a scoped entrypoint cleanup and does not
+  execute the frozen plan.
 - Put new evidence in `Results/`; put stable design in `Docs/Design/`; put
   repeatable operating procedures in `Docs/Workflows/`.
 - Do not create a new workflow, package root, smoke test, or progress document
