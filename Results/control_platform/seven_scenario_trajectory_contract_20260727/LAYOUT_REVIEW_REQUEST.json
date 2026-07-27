@@ -1,0 +1,54 @@
+{
+  "schema": "mosim.formal_runner_layout_review.v1",
+  "model_name": "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
+  "health": {
+    "ok": true,
+    "mcp_server": {
+      "version": "0.1",
+      "version_display": "0.1",
+      "version_base": "0.1",
+      "version_core": "0.1",
+      "build_counter": 0,
+      "git_commit_count": 196,
+      "build_kind": "release",
+      "build_time": "2026-05-08T11:14:45+08:00",
+      "git_revision": "24314a1"
+    },
+    "python": {
+      "python_version": "3.11.4",
+      "major": 3,
+      "minor": 11,
+      "compatible": true,
+      "required": "3.10+ (recommended 3.11 for mworks-sysplorer)"
+    },
+    "driver_ready": true,
+    "driver_error": "",
+    "advice": [],
+    "sysplorer_startup": {
+      "attempted": true,
+      "started": true,
+      "already_running": false,
+      "wait_ms": 0,
+      "error": "",
+      "dedicated_sysplorer_port": 49154,
+      "timestamp": "2026-07-27T06:26:53.559403+00:00"
+    },
+    "paths": {
+      "workspace_root": "C:\\Users\\HP\\Desktop\\MoSim",
+      "deploy_root": "D:\\Program Files\\MWORKS\\Sysplorer 2026a\\Tools\\sysplorer_mcp",
+      "resources_root": "C:\\Users\\HP\\Desktop\\MoSim\\resources"
+    },
+    "bin64_path": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Bin64",
+    "workdir": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Tools\\SYSPLO~1\\SYSPLO~1\\temp",
+    "site_packages": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\External\\python64\\Lib\\SITE-P~1",
+    "api_ready": true
+  },
+  "open": {
+    "ok": false,
+    "api": "OpenModel",
+    "data": false,
+    "error": "OpenModel returned False\nGetLastErrors: 模型“MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner”不存在。\nMessageText: [上一条命令没有日志信息]",
+    "manager_action": "open"
+  },
+  "ok": false
+}

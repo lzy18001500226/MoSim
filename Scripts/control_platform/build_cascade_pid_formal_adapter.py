@@ -173,6 +173,8 @@ def current_binding_with_source_hashes(binding: dict[str, object]) -> dict[str, 
     boundary["initial_measurement"] = "zero"
     boundary["signals"] = [
         "reference.position_command -> controller.position_ref",
+        "reference.velocity_command -> controller.velocity_ref",
+        "reference.acceleration_command -> controller.acceleration_ref",
         "plant.position -> controller.position_mea",
         "plant.attitude -> controller.attitude_mea",
     ]
@@ -180,9 +182,9 @@ def current_binding_with_source_hashes(binding: dict[str, object]) -> dict[str, 
         "plant.attitude -> offline_inner_allocator.attitude_mea",
     ]
     boundary["reason"] = (
-        "The discrete C-function cascade core receives explicit 100 Hz UnitDelay boundaries on its "
-        "reference and plant measurements. The shared inner attitude-rate allocator keeps direct plant "
-        "attitude feedback so its stabilizing loop is not delayed."
+        "The discrete C-function cascade core receives explicit 100 Hz UnitDelay boundaries on position, "
+        "velocity, and acceleration references plus plant measurements. The shared inner attitude-rate "
+        "allocator keeps direct plant attitude feedback so its stabilizing loop is not delayed."
     )
     for section in ("target", "formal_adapter"):
         item = refreshed.get(section)

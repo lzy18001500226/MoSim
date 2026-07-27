@@ -9,14 +9,19 @@ domain-specific workflows in the linked documents below.
 
 ## Current Task
 
-Fast entry cue, 2026-07-27 CST: the user-approved champion-candidate recovery
-is complete. `cascade_pid`, `lqr_baseline`, `super_twisting_smc`,
-`linear_mpc`, `dfbc_high_order_attitude`, and `trained_neural_residual` each
-have a current plant-coupled 50 s `ClimbPath` pass and recorded RMSE. The
-accepted ranking pointer is
-`Results/control_platform/champion_candidate_recovery_20260727/CHAMPION_CANDIDATE_RMSE_RANKING.json`.
-Wait for user review before running the other 34 `adapter_missing` rows,
-seven-scenario A/B, export, runtime validation, G7, or R1.
+Fast entry cue, 2026-07-27 CST: the six-candidate recovery record at
+`Results/control_platform/champion_candidate_recovery_20260727/`
+predates the shared reference-velocity/reference-acceleration repair. Its
+`ClimbPath` passes and RMSE are trace-back evidence only, not a valid ranking
+for the current source. The user-approved seven-scenario trajectory definitions
+and the repaired reference contract passed `CheckModel`; the current record is
+`Results/control_platform/seven_scenario_trajectory_contract_20260727/CHECK_MODEL_RESULTS.json`.
+`WindDisturbance`, `ParameterMismatch`, and `MotorFault` currently declare
+their Runner-binding contracts only; no wind, mismatch, motor-fault, or
+seven-scenario A/B simulation has run. Wait for user review before replaying
+the common 50 s candidate/Official PID baseline, running the other 34
+`adapter_missing` rows, seven-scenario A/B, export, runtime validation, G7,
+or R1.
 
 `Docs/Workflows/mainline_operations_board.md` is the sole task authority and
 contains the exact scope, evidence, and stopping/handoff conditions. Update this

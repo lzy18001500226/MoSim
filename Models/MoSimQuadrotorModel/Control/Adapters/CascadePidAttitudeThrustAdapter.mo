@@ -27,8 +27,6 @@ model CascadePidAttitudeThrustAdapter
     each y_start = 0);
   Modelica.Blocks.Sources.Constant algorithm_id_source(k = 1) annotation(Placement(transformation(extent={{-15,-50},{15,-10}})));
   Modelica.Blocks.Sources.Constant dt_source(k = sample_time_s) annotation(Placement(transformation(extent={{-15,-50},{15,-10}})));
-  Modelica.Blocks.Sources.Constant reference_velocity_source(k = 0) annotation(Placement(transformation(extent={{-15,-50},{15,-10}})));
-  Modelica.Blocks.Sources.Constant reference_acceleration_source(k = 0) annotation(Placement(transformation(extent={{-15,-50},{15,-10}})));
   Modelica.Blocks.Sources.Constant reference_yaw_source(k = 0) annotation(Placement(transformation(extent={{-15,-50},{15,-10}})));
   Modelica.Blocks.Sources.Constant mass_source(k = mass_kg) annotation(Placement(transformation(extent={{-15,-50},{15,-10}})));
   Modelica.Blocks.Sources.Constant gravity_source(k = gravity_mps2) annotation(Placement(transformation(extent={{-15,-50},{15,-10}})));
@@ -91,12 +89,12 @@ equation
   connect(position_ref[1], core.reference_position_x_in);
   connect(position_ref[2], core.reference_position_y_in);
   connect(position_ref[3], core.reference_position_z_in);
-  connect(reference_velocity_source.y, core.reference_velocity_x_in);
-  connect(reference_velocity_source.y, core.reference_velocity_y_in);
-  connect(reference_velocity_source.y, core.reference_velocity_z_in);
-  connect(reference_acceleration_source.y, core.reference_acceleration_x_in);
-  connect(reference_acceleration_source.y, core.reference_acceleration_y_in);
-  connect(reference_acceleration_source.y, core.reference_acceleration_z_in);
+  connect(velocity_ref[1], core.reference_velocity_x_in);
+  connect(velocity_ref[2], core.reference_velocity_y_in);
+  connect(velocity_ref[3], core.reference_velocity_z_in);
+  connect(acceleration_ref[1], core.reference_acceleration_x_in);
+  connect(acceleration_ref[2], core.reference_acceleration_y_in);
+  connect(acceleration_ref[3], core.reference_acceleration_z_in);
   connect(reference_yaw_source.y, core.reference_yaw_in);
   connect(mass_source.y, core.mass_kg_in);
   connect(gravity_source.y, core.gravity_mps2_in);

@@ -10,7 +10,7 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner",
-    "model_sha256": "3ddf22eea8a7857867c4913bb58d93131a46abea598ec20c79612f978685c251"
+    "model_sha256": "ba308a8f2c8e3032912b812cfb494d29153c31d4dd7015007cc01ce69e78aee6"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
@@ -22,7 +22,7 @@
     {
       "role": "runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo",
-      "expected_sha256": "3ddf22eea8a7857867c4913bb58d93131a46abea598ec20c79612f978685c251"
+      "expected_sha256": "ba308a8f2c8e3032912b812cfb494d29153c31d4dd7015007cc01ce69e78aee6"
     },
     {
       "role": "fixture_adapter",
@@ -62,7 +62,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
+      "expected_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
     }
   ],
   "model_layout_boundary": {

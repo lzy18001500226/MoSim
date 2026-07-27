@@ -10,12 +10,12 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/SuperTwistingSmcFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
-    "model_sha256": "d735438d4633dcf6988caeb16c6a8d9d4896fb79f2fe2a07f431850c1688cd39"
+    "model_sha256": "284a02d4d6bcbbe76f81164ad86ffac3cbc84cd2749c8b3477724e667c2e108b"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/SuperTwistingSmcAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.SuperTwistingSmcAttitudeThrustAdapter",
-    "model_sha256": "07bdc5afc4c357ae477adf2451b8f03a1cbe9e3a0d656da5d73e4598b1314c32",
+    "model_sha256": "44b154c582da4b889b80bc295245e4aa446708a784fad1794f41c6d54d9b56e9",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "direct_model_reference"
@@ -27,24 +27,26 @@
     "initial_measurement": "zero",
     "signals": [
       "reference.position_command -> controller.position_ref",
+      "reference.velocity_command -> controller.velocity_ref",
+      "reference.acceleration_command -> controller.acceleration_ref",
       "plant.position -> controller.position_mea",
       "plant.attitude -> controller.attitude_mea"
     ],
     "continuous_inner_loop_signals": [
       "plant.attitude -> offline_inner_allocator.attitude_mea"
     ],
-    "reason": "The promoted formal runner samples only the reference and plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
+    "reason": "The promoted formal runner samples position, velocity, and acceleration references plus the plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
   },
   "source_bindings": [
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/SuperTwistingSmcFormalRunner.mo",
-      "expected_sha256": "d735438d4633dcf6988caeb16c6a8d9d4896fb79f2fe2a07f431850c1688cd39"
+      "expected_sha256": "284a02d4d6bcbbe76f81164ad86ffac3cbc84cd2749c8b3477724e667c2e108b"
     },
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/SuperTwistingSmcAttitudeThrustAdapter.mo",
-      "expected_sha256": "07bdc5afc4c357ae477adf2451b8f03a1cbe9e3a0d656da5d73e4598b1314c32"
+      "expected_sha256": "44b154c582da4b889b80bc295245e4aa446708a784fad1794f41c6d54d9b56e9"
     },
     {
       "role": "current_root_cfunction_core",
@@ -89,7 +91,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
+      "expected_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
     },
     {
       "role": "adapter_source_import_manifest",

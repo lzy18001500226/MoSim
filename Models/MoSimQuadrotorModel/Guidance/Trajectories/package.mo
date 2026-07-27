@@ -82,6 +82,10 @@ package Trajectories "Reference trajectories"
       extent = {{-10.0, -10.0}, {10.0, 10.0}}),
       iconTransformation(origin = {110.0, 0.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+    Modelica.Blocks.Interfaces.RealOutput velocity_command[3]
+      "Reference translational velocity [x, y, z] in m/s";
+    Modelica.Blocks.Interfaces.RealOutput acceleration_command[3]
+      "Reference translational acceleration [x, y, z] in m/s2";
     Modelica.Blocks.Sources.Ramp ramp1(offset = 0, startTime = 0, height = 10, duration = 5)
       annotation (Placement(transformation(origin = {-52.0, -72.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
@@ -145,6 +149,11 @@ package Trajectories "Reference trajectories"
       annotation (Line(origin = {64.0, 22.0},
         points = {{-47.0, 22.0}, {-2.0, 22.0}, {-2.0, -22.0}, {46.0, -22.0}},
         color = {0, 0, 127}));
+    velocity_command[1] = if time >= 20 and time < 30 then 1 else 0;
+    velocity_command[2] = if time >= 30 and time < 40 then 1 else 0;
+    velocity_command[3] = (if time >= 0 and time < 5 then 2 else 0)
+      + (if time >= 10 and time < 13 then 5 / 3 else 0);
+    acceleration_command = {0, 0, 0};
   end ClimbPath;
 
   model EightPath "横8字型模型"

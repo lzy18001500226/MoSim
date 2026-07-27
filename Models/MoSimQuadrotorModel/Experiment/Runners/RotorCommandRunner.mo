@@ -12,7 +12,8 @@ model RotorCommandRunner
     rotor_effectiveness = rotor_effectiveness,
     gust_force = gust_force)
     annotation(Placement(transformation(origin = {150, 0}, extent = {{-52, -75}, {52, 75}})));
-  MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath reference(gain(k = 1))
+  replaceable model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
+  Trajectory reference
     annotation(Placement(transformation(origin = {-175, 55}, extent = {{-20, -15}, {20, 15}})));
   Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
     each k = 1,
@@ -29,6 +30,8 @@ model RotorCommandRunner
 equation
   connect(reference.position_command, controller.position_ref)
     annotation(Line(points = {{-155, 55}, {-110, 55}}, color = {0, 0, 127}));
+  connect(reference.velocity_command, controller.velocity_ref);
+  connect(reference.acceleration_command, controller.acceleration_ref);
   connect(plant.position, controller.position_mea)
     annotation(Line(points = {{98, -20}, {72, -20}, {72, -100}, {-125, -100}, {-125, 45}, {-110, 45}}, color = {0, 0, 127}));
   connect(plant.position, velocity_estimator.u);

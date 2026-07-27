@@ -1,15 +1,17 @@
 {
   "schema": "mosim.offline_runner_interface_contract.v1",
   "version": 1,
-  "status": "p0a_interface_repaired_p0b_current_root_regression_passed_pending_user_review",
-  "claim_boundary": "P0a repaired the shared velocity-estimation ownership and collective-thrust unit boundary. P0b reran the current-root Official PID and all four shared-Plant Runner boundaries for 50 s through MWORKS MCP. This accepts only the offline shared-Plant boundary regression; it does not accept any controller-family route, champion, seven-scenario comparison, code generation, online co-simulation, Gazebo, PX4, MAVROS, or physical command-unit mapping.",
+  "status": "p0a_interface_repaired_p0b_pre_reference_feedforward_regression_passed_current_source_replay_required",
+  "claim_boundary": "P0a repaired the shared velocity-estimation ownership and collective-thrust unit boundary. P0b ran Official PID and all four shared-Plant Runner boundaries for 50 s through MWORKS MCP before the later reference-velocity/reference-acceleration feedforward repair. Those records remain valid only as pre-feedforward shared-Plant closure evidence and must be replayed before current controller performance or A/B conclusions. They do not accept any controller-family route, champion, seven-scenario comparison, code generation, online co-simulation, Gazebo, PX4, MAVROS, or physical command-unit mapping.",
   "live_runner_baseline_evidence": {
-    "status": "passed_current_root_p0b",
+    "status": "passed_p0b_pre_reference_feedforward_contract",
     "scenario_id": "climb_path_50s",
     "source": "MWORKS_MCP",
     "shared_plant": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly",
     "completed_at": "2026-07-27T09:52:17+08:00",
     "result_root": "Results/control_platform/p0b_interface_regression_20260727/",
+    "current_source_replay_required": true,
+    "current_source_replay_reason": "The shared Runner reference velocity/acceleration contract changed after P0b; rerun the common 50 s ClimbPath before using current-source metrics.",
     "runner_runs": {
       "ATTITUDE_THRUST": "Results/control_platform/p0b_interface_regression_20260727/attitude_thrust/RUN_RECORD.json",
       "BODY_RATE_THRUST": "Results/control_platform/p0b_interface_regression_20260727/body_rate_thrust/RUN_RECORD.json",
@@ -17,7 +19,7 @@
       "ROTOR_COMMAND": "Results/control_platform/p0b_interface_regression_20260727/rotor_command/RUN_RECORD.json"
     },
     "official_pid_run": "Results/control_platform/p0b_interface_regression_20260727/official_pid_climb_path_50s/RUN_RECORD.json",
-    "window_evidence": "Each current P0b RUN_RECORD references checked model/result-window captures and a dedicated-session cleanup record.",
+    "window_evidence": "Each historical P0b RUN_RECORD references checked model/result-window captures and a dedicated-session cleanup record.",
     "acceptance": {
       "check_model": "passed_all_5",
       "duration_s": 50,
@@ -30,7 +32,7 @@
       "native_result_window_captures_accepted": true,
       "dedicated_sessions_closed": true
     },
-    "claim_boundary": "Current P0b evidence accepts only finite 50 s offline whole-aircraft boundary closure for Official PID and the four fixture boundaries. It cannot promote controller-family topology, champion selection, seven-scenario A/B, code generation, Gazebo, PX4, ROS, frame semantics, or physical command units."
+    "claim_boundary": "P0b evidence accepts only finite 50 s offline whole-aircraft boundary closure for Official PID and the four fixture boundaries under the pre-feedforward contract. It cannot promote current-source controller-family topology, champion selection, seven-scenario A/B, code generation, Gazebo, PX4, ROS, frame semantics, or physical command units."
   },
   "historical_pre_p0a_trace_back_evidence": {
     "status": "superseded_by_p0a_interface_and_collective_unit_change",
@@ -63,6 +65,8 @@
   },
   "shared_controller_inputs": [
     {"name": "position_ref", "dimension": 3},
+    {"name": "velocity_ref", "dimension": 3, "unit_semantics": "reference_translational_velocity_m_per_s"},
+    {"name": "acceleration_ref", "dimension": 3, "unit_semantics": "reference_translational_acceleration_m_per_s2"},
     {"name": "position_mea", "dimension": 3},
     {"name": "velocity_mea", "dimension": 3, "unit_semantics": "runner_owned_filtered_position_derivative_m_per_s"},
     {"name": "attitude_mea", "dimension": 3}
@@ -209,13 +213,14 @@
     "promotion_rule": "APP and evidence tooling must not infer accepted, fallback, or failure state from a completed solver call alone."
   },
   "known_gaps": [
+    "p0b_current_source_replay_required_after_reference_feedforward_contract_repair",
     "coordinate_frame_contract_not_bound_to_model_ports",
     "physical_command_units_not_verified",
     "lifecycle_context_not_bound_to_model_ports",
     "invalid_stale_nan_inf_rejection_not_implemented_at_runner_boundary",
     "fallback_diagnostics_not_exposed",
     "time_and_solver_statistics_not_bound_to_run_manifest",
-    "forty_six_controller_route_adapters_and_minimum_closures_not_yet_executed"
+    "forty_six_controller_route_evidence_is_historical_pre_p0a_and_not_current_source"
   ],
   "online_alignment": {
     "state": "candidate_only",

@@ -17,6 +17,8 @@ RUNNERS = {
 }
 SAMPLED_SIGNALS = [
     "reference.position_command -> controller.position_ref",
+    "reference.velocity_command -> controller.velocity_ref",
+    "reference.acceleration_command -> controller.acceleration_ref",
     "plant.position -> controller.position_mea",
     "plant.attitude -> controller.attitude_mea",
 ]
@@ -38,6 +40,10 @@ def test_formal_runners_delay_only_promoted_controller_inputs() -> None:
 
         assert "connect(reference.position_command, sampled_position_ref.u)" in source, controller_id
         assert "connect(sampled_position_ref.y, controller.position_ref)" in source, controller_id
+        assert "connect(reference.velocity_command, sampled_velocity_ref.u)" in source, controller_id
+        assert "connect(sampled_velocity_ref.y, controller.velocity_ref)" in source, controller_id
+        assert "connect(reference.acceleration_command, sampled_acceleration_ref.u)" in source, controller_id
+        assert "connect(sampled_acceleration_ref.y, controller.acceleration_ref)" in source, controller_id
         assert "connect(plant.position, sampled_position.u)" in source, controller_id
         assert "connect(sampled_position.y, controller.position_mea)" in source, controller_id
         assert "connect(plant.attitude, sampled_attitude.u)" in source, controller_id

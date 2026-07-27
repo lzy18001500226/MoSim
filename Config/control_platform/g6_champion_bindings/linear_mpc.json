@@ -10,12 +10,12 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/LinearMpcFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
-    "model_sha256": "9e92a4175d72545a958515db2cd08add28cd5d919e34eb7d7446af0e138f17ed"
+    "model_sha256": "b9d0488af2a945f69a453fda04d6d088bbd09bb14dec8b7a33549cacce9b75e3"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/LinearMpcAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.LinearMpcAttitudeThrustAdapter",
-    "model_sha256": "04470ad519280813b6b1f6f8901c218648208a89391085e9fc6bfe63e316557d",
+    "model_sha256": "ab5dba59eea9d479376a9653e045b12d9f7bf6e41b5a541325950f81e3cedd68",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "direct_model_reference"
@@ -27,24 +27,26 @@
     "initial_measurement": "zero",
     "signals": [
       "reference.position_command -> controller.position_ref",
+      "reference.velocity_command -> controller.velocity_ref",
+      "reference.acceleration_command -> controller.acceleration_ref",
       "plant.position -> controller.position_mea",
       "plant.attitude -> controller.attitude_mea"
     ],
     "continuous_inner_loop_signals": [
       "plant.attitude -> offline_inner_allocator.attitude_mea"
     ],
-    "reason": "The promoted formal runner samples only the reference and plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
+    "reason": "The promoted formal runner samples position, velocity, and acceleration references plus the plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
   },
   "source_bindings": [
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/LinearMpcFormalRunner.mo",
-      "expected_sha256": "9e92a4175d72545a958515db2cd08add28cd5d919e34eb7d7446af0e138f17ed"
+      "expected_sha256": "b9d0488af2a945f69a453fda04d6d088bbd09bb14dec8b7a33549cacce9b75e3"
     },
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/LinearMpcAttitudeThrustAdapter.mo",
-      "expected_sha256": "04470ad519280813b6b1f6f8901c218648208a89391085e9fc6bfe63e316557d"
+      "expected_sha256": "ab5dba59eea9d479376a9653e045b12d9f7bf6e41b5a541325950f81e3cedd68"
     },
     {
       "role": "current_root_cfunction_core",
@@ -89,7 +91,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
+      "expected_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
     },
     {
       "role": "adapter_source_import_manifest",

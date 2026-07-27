@@ -31,12 +31,12 @@ equation
   core.reference_position_x = position_ref[1];
   core.reference_position_y = position_ref[2];
   core.reference_position_z = position_ref[3];
-  core.reference_velocity_x = 0;
-  core.reference_velocity_y = 0;
-  core.reference_velocity_z = 0;
-  core.reference_acceleration_x = 0;
-  core.reference_acceleration_y = 0;
-  core.reference_acceleration_z = 0;
+  core.reference_velocity_x = velocity_ref[1];
+  core.reference_velocity_y = velocity_ref[2];
+  core.reference_velocity_z = velocity_ref[3];
+  core.reference_acceleration_x = acceleration_ref[1];
+  core.reference_acceleration_y = acceleration_ref[2];
+  core.reference_acceleration_z = acceleration_ref[3];
   core.dt = sample_time_s;
   core.enable = 1;
 

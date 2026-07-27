@@ -191,6 +191,8 @@ def binding(spec: dict[str, Any]) -> dict[str, Any]:
             "initial_measurement": "zero",
             "signals": [
                 "reference.position_command -> controller.position_ref",
+                "reference.velocity_command -> controller.velocity_ref",
+                "reference.acceleration_command -> controller.acceleration_ref",
                 "plant.position -> controller.position_mea",
                 "plant.attitude -> controller.attitude_mea",
             ],
@@ -198,9 +200,9 @@ def binding(spec: dict[str, Any]) -> dict[str, Any]:
                 "plant.attitude -> offline_inner_allocator.attitude_mea",
             ],
             "reason": (
-                "The promoted formal runner samples only the reference and plant measurements consumed by "
-                "its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly "
-                "connected to plant attitude so its stabilizing feedback is continuous."
+                "The promoted formal runner samples position, velocity, and acceleration references plus the "
+                "plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate "
+                "allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
             ),
         },
         "source_bindings": sources,

@@ -10,7 +10,8 @@ model WrenchRunner
     annotation(Placement(transformation(origin = {55, 55}, extent = {{-45, -28}, {45, 28}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
     annotation(Placement(transformation(origin = {160, 0}, extent = {{-52, -75}, {52, 75}})));
-  MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath reference(gain(k = 1))
+  replaceable model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
+  Trajectory reference
     annotation(Placement(transformation(origin = {-175, 55}, extent = {{-20, -15}, {20, 15}})));
   Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
     each k = 1,
@@ -26,6 +27,8 @@ model WrenchRunner
 equation
   connect(reference.position_command, controller.position_ref)
     annotation(Line(points = {{-155, 55}, {-113, 55}}, color = {0, 0, 127}));
+  connect(reference.velocity_command, controller.velocity_ref);
+  connect(reference.acceleration_command, controller.acceleration_ref);
   connect(plant.position, controller.position_mea)
     annotation(Line(points = {{108, -20}, {75, -20}, {75, -100}, {-135, -100}, {-135, 45}, {-113, 45}}, color = {0, 0, 127}));
   connect(plant.position, velocity_estimator.u);

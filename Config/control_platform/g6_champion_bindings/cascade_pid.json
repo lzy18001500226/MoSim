@@ -10,12 +10,12 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
-    "model_sha256": "a25c9e13da332dd84cf2539d49fa0315253cf44198dbb05e24d98604be7e98b5"
+    "model_sha256": "b3287220a6951ca8ee388199f73c190f5f09cbeba1863d79b83206aa9f673326"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter",
-    "model_sha256": "6b2f32b7f31112e50db11545eca349df6d1165fa741ac632408ba43e1127e0ec",
+    "model_sha256": "eee0d01b9a825fe1d59684c8242c7b3a7b18617289f4c47033b84f9d1b0978b1",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "direct_model_reference"
@@ -27,10 +27,12 @@
     "initial_measurement": "zero",
     "signals": [
       "reference.position_command -> controller.position_ref",
+      "reference.velocity_command -> controller.velocity_ref",
+      "reference.acceleration_command -> controller.acceleration_ref",
       "plant.position -> controller.position_mea",
       "plant.attitude -> controller.attitude_mea"
     ],
-    "reason": "The discrete C-function cascade core receives explicit 100 Hz UnitDelay boundaries on its reference and plant measurements. The shared inner attitude-rate allocator keeps direct plant attitude feedback so its stabilizing loop is not delayed.",
+    "reason": "The discrete C-function cascade core receives explicit 100 Hz UnitDelay boundaries on position, velocity, and acceleration references plus plant measurements. The shared inner attitude-rate allocator keeps direct plant attitude feedback so its stabilizing loop is not delayed.",
     "continuous_inner_loop_signals": [
       "plant.attitude -> offline_inner_allocator.attitude_mea"
     ]
@@ -39,12 +41,12 @@
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo",
-      "expected_sha256": "a25c9e13da332dd84cf2539d49fa0315253cf44198dbb05e24d98604be7e98b5"
+      "expected_sha256": "b3287220a6951ca8ee388199f73c190f5f09cbeba1863d79b83206aa9f673326"
     },
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
-      "expected_sha256": "6b2f32b7f31112e50db11545eca349df6d1165fa741ac632408ba43e1127e0ec"
+      "expected_sha256": "eee0d01b9a825fe1d59684c8242c7b3a7b18617289f4c47033b84f9d1b0978b1"
     },
     {
       "role": "current_root_cfunction_core",
@@ -89,7 +91,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
+      "expected_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
     },
     {
       "role": "adapter_source_import_manifest",

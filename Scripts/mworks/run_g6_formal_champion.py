@@ -185,6 +185,8 @@ def validate_feedback_boundary(binding: dict[str, Any], target_file: Path) -> No
         raise ValueError("sampled controller-input formal boundary must declare zero initial measurement")
     expected_signals = [
         "reference.position_command -> controller.position_ref",
+        "reference.velocity_command -> controller.velocity_ref",
+        "reference.acceleration_command -> controller.acceleration_ref",
         "plant.position -> controller.position_mea",
         "plant.attitude -> controller.attitude_mea",
     ]
@@ -197,12 +199,18 @@ def validate_feedback_boundary(binding: dict[str, Any], target_file: Path) -> No
     required_fragments = (
         "parameter Real controller_sample_period_s = 0.01",
         "Modelica.Blocks.Discrete.UnitDelay sampled_position_ref[3]",
+        "Modelica.Blocks.Discrete.UnitDelay sampled_velocity_ref[3]",
+        "Modelica.Blocks.Discrete.UnitDelay sampled_acceleration_ref[3]",
         "Modelica.Blocks.Discrete.UnitDelay sampled_position[3]",
         "Modelica.Blocks.Discrete.UnitDelay sampled_attitude[3]",
         "each samplePeriod = controller_sample_period_s",
         "each y_start = 0",
         "connect(reference.position_command, sampled_position_ref.u)",
         "connect(sampled_position_ref.y, controller.position_ref)",
+        "connect(reference.velocity_command, sampled_velocity_ref.u)",
+        "connect(sampled_velocity_ref.y, controller.velocity_ref)",
+        "connect(reference.acceleration_command, sampled_acceleration_ref.u)",
+        "connect(sampled_acceleration_ref.y, controller.acceleration_ref)",
         "connect(plant.position, sampled_position.u)",
         "connect(sampled_position.y, controller.position_mea)",
         "connect(plant.attitude, sampled_attitude.u)",
@@ -214,6 +222,8 @@ def validate_feedback_boundary(binding: dict[str, Any], target_file: Path) -> No
         raise ValueError(f"sampled controller-input source boundary is incomplete: {missing}")
     forbidden_fragments = (
         "connect(reference.position_command, controller.position_ref)",
+        "connect(reference.velocity_command, controller.velocity_ref)",
+        "connect(reference.acceleration_command, controller.acceleration_ref)",
         "connect(plant.position, controller.position_mea)",
         "connect(plant.attitude, controller.attitude_mea)",
         "connect(sampled_attitude.y, offline_inner_allocator.attitude_mea)",

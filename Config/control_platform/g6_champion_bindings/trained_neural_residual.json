@@ -10,12 +10,12 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/TrainedNeuralResidualFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner",
-    "model_sha256": "0426e7349dd392170f0d0fdb0fde69e4661976a05c3767190ca6e3fbdb205ec9"
+    "model_sha256": "afff1f02e0c58e7561b40f2901621f030c327b227221f41bae2fce8212946252"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.TrainedNeuralResidualAttitudeThrustAdapter",
-    "model_sha256": "1addc25ace3996e13e7883ac0bf6ca6962d2286c2dc6b474ccc897337424d4c5",
+    "model_sha256": "ecdb4ce39425eb6b67260d355ab58e6b5d7743d58681984bfbf11b861523ab1a",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "direct_model_reference"
@@ -27,24 +27,26 @@
     "initial_measurement": "zero",
     "signals": [
       "reference.position_command -> controller.position_ref",
+      "reference.velocity_command -> controller.velocity_ref",
+      "reference.acceleration_command -> controller.acceleration_ref",
       "plant.position -> controller.position_mea",
       "plant.attitude -> controller.attitude_mea"
     ],
     "continuous_inner_loop_signals": [
       "plant.attitude -> offline_inner_allocator.attitude_mea"
     ],
-    "reason": "The promoted formal runner samples only the reference and plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
+    "reason": "The promoted formal runner samples position, velocity, and acceleration references plus the plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
   },
   "source_bindings": [
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/TrainedNeuralResidualFormalRunner.mo",
-      "expected_sha256": "0426e7349dd392170f0d0fdb0fde69e4661976a05c3767190ca6e3fbdb205ec9"
+      "expected_sha256": "afff1f02e0c58e7561b40f2901621f030c327b227221f41bae2fce8212946252"
     },
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo",
-      "expected_sha256": "1addc25ace3996e13e7883ac0bf6ca6962d2286c2dc6b474ccc897337424d4c5"
+      "expected_sha256": "ecdb4ce39425eb6b67260d355ab58e6b5d7743d58681984bfbf11b861523ab1a"
     },
     {
       "role": "current_root_cfunction_core",
@@ -89,7 +91,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
+      "expected_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
     },
     {
       "role": "adapter_source_import_manifest",

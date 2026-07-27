@@ -10,11 +10,18 @@ model CascadePidFormalRunner
     annotation(Placement(transformation(origin = {55, 50}, extent = {{-45, -28}, {45, 28}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
     annotation(Placement(transformation(origin = {165, 0}, extent = {{-52, -75}, {52, 75}})));
-  MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath reference(gain(k = 1))
+  replaceable model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
+  Trajectory reference
     annotation(Placement(transformation(origin = {-205, 50}, extent = {{-20, -15}, {20, 15}})));
   Modelica.Blocks.Discrete.UnitDelay sampled_position_ref[3](each samplePeriod = controller_sample_period_s,
     each y_start = 0)
     annotation(Placement(transformation(origin = {-150, 0}, extent = {{-18, -12}, {18, 12}})));
+  Modelica.Blocks.Discrete.UnitDelay sampled_velocity_ref[3](each samplePeriod = controller_sample_period_s,
+    each y_start = 0)
+    annotation(Placement(transformation(origin = {-150, -35}, extent = {{-18, -12}, {18, 12}})));
+  Modelica.Blocks.Discrete.UnitDelay sampled_acceleration_ref[3](each samplePeriod = controller_sample_period_s,
+    each y_start = 0)
+    annotation(Placement(transformation(origin = {-150, -70}, extent = {{-18, -12}, {18, 12}})));
   Modelica.Blocks.Discrete.UnitDelay sampled_position[3](each samplePeriod = controller_sample_period_s,
     each y_start = 0)
     annotation(Placement(transformation(origin = {-15, -35}, extent = {{-18, -12}, {18, 12}})));
@@ -38,6 +45,14 @@ equation
     annotation(Line(points = {{-185, 50}, {-170, 50}, {-170, 0}, {-168, 0}}, color = {0, 0, 127}));
   connect(sampled_position_ref.y, controller.position_ref)
     annotation(Line(points = {{-132, 0}, {-120, 0}, {-120, 50}, {-138, 50}}, color = {0, 0, 127}));
+  connect(reference.velocity_command, sampled_velocity_ref.u)
+    annotation(Line(points = {{-185, 45}, {-175, 45}, {-175, -35}, {-168, -35}}, color = {0, 0, 127}));
+  connect(sampled_velocity_ref.y, controller.velocity_ref)
+    annotation(Line(points = {{-132, -35}, {-125, -35}, {-125, 45}, {-138, 45}}, color = {0, 0, 127}));
+  connect(reference.acceleration_command, sampled_acceleration_ref.u)
+    annotation(Line(points = {{-185, 40}, {-180, 40}, {-180, -70}, {-168, -70}}, color = {0, 0, 127}));
+  connect(sampled_acceleration_ref.y, controller.acceleration_ref)
+    annotation(Line(points = {{-132, -70}, {-120, -70}, {-120, 35}, {-138, 35}}, color = {0, 0, 127}));
   connect(plant.position, sampled_position.u)
     annotation(Line(points = {{113, -20}, {95, -20}, {95, -35}, {3, -35}}, color = {0, 0, 127}));
   connect(sampled_position.y, controller.position_mea)

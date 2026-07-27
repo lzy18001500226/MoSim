@@ -10,12 +10,12 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
-    "model_sha256": "b3058e252806a9bfb8ea70361a7791b8b11846d7133eef477a1a29c2af40ff79"
+    "model_sha256": "6ceb257f3238279a6229fa8f4cc30d887d897c148a04030ecd3c581135762a44"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.LqrBaselineAttitudeThrustAdapter",
-    "model_sha256": "250cfd9526935f71304d4275711e045ff3afeb2e6cf1270489b7cb9a036d26e7",
+    "model_sha256": "3c5d887252e5a141876c6e47ef1c1a127a072ff2ded7032b0204f4af21c616bb",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "equation_bridge",
@@ -30,24 +30,26 @@
     "initial_measurement": "zero",
     "signals": [
       "reference.position_command -> controller.position_ref",
+      "reference.velocity_command -> controller.velocity_ref",
+      "reference.acceleration_command -> controller.acceleration_ref",
       "plant.position -> controller.position_mea",
       "plant.attitude -> controller.attitude_mea"
     ],
     "continuous_inner_loop_signals": [
       "plant.attitude -> offline_inner_allocator.attitude_mea"
     ],
-    "reason": "The promoted formal runner samples only the reference and plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
+    "reason": "The promoted formal runner samples position, velocity, and acceleration references plus the plant measurements consumed by its controller adapter at 100 Hz. The shared inner attitude-rate allocator remains directly connected to plant attitude so its stabilizing feedback is continuous."
   },
   "source_bindings": [
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo",
-      "expected_sha256": "b3058e252806a9bfb8ea70361a7791b8b11846d7133eef477a1a29c2af40ff79"
+      "expected_sha256": "6ceb257f3238279a6229fa8f4cc30d887d897c148a04030ecd3c581135762a44"
     },
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
-      "expected_sha256": "250cfd9526935f71304d4275711e045ff3afeb2e6cf1270489b7cb9a036d26e7"
+      "expected_sha256": "3c5d887252e5a141876c6e47ef1c1a127a072ff2ded7032b0204f4af21c616bb"
     },
     {
       "role": "graphical_controller_core",
@@ -92,7 +94,7 @@
     {
       "role": "climb_path_reference",
       "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
-      "expected_sha256": "66328f7487af452849d1c3dc64b2e00264e0e825335274e1288d03414f30b17c"
+      "expected_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
     },
     {
       "role": "equation_bridge",

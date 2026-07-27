@@ -5,14 +5,13 @@
 > a result archive.
 
 Status: P0a repaired the shared velocity-estimation and collective-thrust unit
-boundary; P0b then passed the current-root Official PID and four shared Runner
-boundary 50 s regressions with native results, captures, metrics, and dedicated
-session closure. Phase 1 then completed its user-approved frozen 46-route
-matrix on 2026-07-27 CST. The pre-P0a 46-route matrix remains historical
-trace-back only, not current Phase 1 evidence. The bounded six-candidate
-recovery then completed with six current passing 50 s `ClimbPath` records; its
-accepted ranking pointer is
-`Results/control_platform/champion_candidate_recovery_20260727/CHAMPION_CANDIDATE_RMSE_RANKING.json`.
+boundary; P0b then passed Official PID and four shared Runner 50 s regressions
+before the later reference-velocity/reference-acceleration contract repair.
+Phase 1 completed its user-approved frozen 46-route matrix on 2026-07-27 CST.
+The pre-P0a matrix and the six-candidate recovery both remain historical
+trace-back only after the forward-reference repair. The new contract and seven
+trajectory definitions passed `CheckModel`; no current-source replay, scenario
+simulation, or A/B comparison ran in that definition gate.
 
 ## 0. Task Authority and Evidence Snapshot
 
@@ -24,20 +23,38 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Champion Candidate Recovery Complete - Awaiting User Review
+### Seven-Scenario Definitions And Forward-Reference Contract Checked - Awaiting User Review
 
 - Workflow: `Docs/Workflows/run_simulation.md`.
 - Frozen matrix driver: `Scripts/mworks/run_phase1_minimum_closure.py`.
 - Contract test: `Scripts/tests/test_phase1_minimum_closure.py`.
 - Recovery evidence root:
   `Results/control_platform/champion_candidate_recovery_20260727/`.
-- Accepted ranking:
+- Pre-repair recovery trace:
   `Results/control_platform/champion_candidate_recovery_20260727/CHAMPION_CANDIDATE_RMSE_RANKING.json`
-  and `.csv`. All six named candidates passed their plant-coupled 50 s
-  `ClimbPath` run with finite terminal error below 5 m and recorded position
-  RMSE.
-- The ranking is a common-scenario recovery record, not seven-scenario A/B,
-  code-generation, Gazebo, ROS, or flight-runtime evidence.
+  and `.csv`. All six named candidates passed a plant-coupled 50 s `ClimbPath`
+  run with finite terminal error below 5 m and recorded position RMSE before
+  the shared forward-reference repair. Do not rank current-source candidates
+  from those values; replay the common 50 s run first.
+- Seven trajectory definitions are present under
+  `Models/MoSimQuadrotorModel/Guidance/Trajectories/`: `HoverHold`,
+  `StepResponse`, `Figure8`, `SpiralAscent`, `WindDisturbance`,
+  `ParameterMismatch`, and `MotorFault`. The source repair also carries
+  position, velocity, and acceleration references through the four shared
+  controller contracts and the six champion Formal Runners.
+- `Results/control_platform/seven_scenario_trajectory_contract_20260727/`
+  records current native `CheckModel` passes for `ClimbPath`, all seven new
+  trajectory models, and all six champion Formal Runners. It contains a
+  representative Formal Runner layout capture only; it is not simulation
+  evidence.
+- `WindDisturbance.gust_force`, `ParameterMismatch.mass_scale` /
+  `inertia_scale`, and `MotorFault.rotor_effectiveness` are scenario contracts
+  awaiting explicit Runner-to-plant binding. Do not call any of them injected
+  fault/disturbance experiments before that Phase 3 implementation and run.
+- The recovery ranking and P0b runner results are pre-repair records, not
+  current-source performance evidence. The `CheckModel` record proves model
+  integrity only, not RMSE improvement, seven-scenario A/B, code-generation,
+  Gazebo, ROS, or flight-runtime behavior.
 - Stop: wait for a new user instruction. Do not run the other 34
   `adapter_missing` rows, seven-scenario A/B, export, runtime validation, G7,
   or R1.
@@ -99,16 +116,18 @@ current completion.
 
 ## 3. Next Engineering Selection
 
-After the user reviews the six-candidate ranking, continue the approved controller-evidence plan
-in this order:
+After the user reviews this contract repair, continue the approved
+controller-evidence plan in this order:
 
-1. choose one measured winner from each of the six nominal families and give
-   only those candidates champion-specific minimum whole-aircraft closures;
-2. compare each accepted champion with Official PID in hover, step, figure-8,
+1. replay Official PID and the six candidate Formal Runners on the same 50 s
+   `ClimbPath` with this exact source, then derive the current RMSE ranking;
+2. choose one measured winner from each nominal family and give only those
+   candidates champion-specific minimum whole-aircraft closures;
+3. compare each accepted champion with Official PID in hover, step, figure-8,
    spiral, wind, parameter-mismatch and motor-efficiency-fault scenarios;
-3. run the required ESO ablation trio, then export accepted candidates and
+4. run the required ESO ablation trio, then export accepted candidates and
    validate the declared ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl runtime path;
-4. collect report/software-documentation material from the resulting evidence,
+5. collect report/software-documentation material from the resulting evidence,
    then archive no-longer-used source only after a dependency audit.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant
@@ -116,16 +135,15 @@ topic workflow and declare the evidence path under `Results/`.
 
 ## 4. Stopping And Handoff Conditions
 
-For the completed champion-candidate recovery gate:
+For the completed trajectory-definition and forward-reference repair gate:
 
-- All six named candidates now have current passing 50 s `ClimbPath` records
-  with documented RMSE. Commit and push the bounded repair, then wait for user
-  review.
-- Do not use P0b fixture results as controller-family selection data; they
-  validate shared Runner boundaries only.
-- Do not run the other 34 `adapter_missing` rows, seven-scenario A/B, ESO
-  ablation, export, ROS1 runtime validation, G7, or R1 before a new user
-  instruction.
+- All eight trajectory models and six Formal Runners passed native `CheckModel`.
+  Commit and push the bounded repair, then wait for user review.
+- Do not use P0b or the pre-repair six-candidate RMSE as current-source
+  controller-family selection data. Replay is required first.
+- Do not run the candidate/Official PID replay, the other 34 `adapter_missing`
+  rows, seven-scenario A/B, ESO ablation, export, ROS1 runtime validation, G7,
+  or R1 before a new user instruction.
 
 ## 5. Board Update Rule
 
