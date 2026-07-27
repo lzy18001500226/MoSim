@@ -511,3 +511,24 @@ component_id: ego_planner_swarm
           改写审计过的路径并完成受控ROS1验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.18 FALCON 自主探索源码快照复制记录（2026-07-27）
+
+```text
+component_id: falcon
+旧路径: References/Lab/exploration_coverage/FALCON-ros1-noetic
+新路径: src/planning/falcon
+活动路径: References/Lab/exploration_coverage/FALCON-ros1-noetic
+迁移状态: copied_pending_activation
+来源: https://github.com/HKUST-Aerial-Robotics/FALCON.git（保留README声明）
+固定版本: 旧导入快照未保留上游Git元数据；不得宣称已钉定上游Git commit
+许可证: 根目录跟踪有效载荷未包含LICENSE、COPYING或NOTICE；发布前必须审计上游及内嵌依赖许可证
+项目补丁: 无算法、launch、CMake、参数、源码或跟踪资产改动；仅新增.gitattributes、UPSTREAM.md、PATCHES.md
+原始/交付有效载荷: 750个Git跟踪文件，逐项SHA-256清单
+                    e7f8acd8b495694e73d6d6d311197e60b95782d4de0425560a145b84dd25ce45
+排除项: 旧目录内未跟踪的build、devel、.catkin_tools、logs及嵌套生成物未迁入；旧目录保持不变
+静态检查: 源/目标750个文件SHA-256逐项比对和JSON路径注册检查通过
+未执行项: 未改写入口，未构建、预检、启动ROS/Gazebo/PX4/MAVROS/QGC/UE或RViz
+激活前置: 补齐上游commit和许可证；审计FALCON ROS1包与依赖边界；改写审计过的入口并完成受控ROS1验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```
