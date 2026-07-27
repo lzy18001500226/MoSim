@@ -301,3 +301,26 @@ component_id: sunray_uav_control
           审计 generate_messages()/sunray_control_gencpp 契约，改写审计过的入口并完成受控 ROS1 验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.9 sunray_common 复制记录（2026-07-27）
+
+```text
+component_id: sunray_common
+旧路径: References/Sunray/General_Module/sunray_common
+新路径: src/common/utilities/ros1/sunray_common
+活动路径: References/Sunray/General_Module/sunray_common
+迁移状态: copied_pending_activation
+来源: 保留的YunDrone Sunray本地导入包；上游仓库和commit均未能从快照恢复
+固定版本: 不可恢复；不得宣称已钉定上游Git commit
+许可证: sunray_msgs/package.xml声明TODO，且组件不携带独立许可证文件；发布前必须完成审计
+项目补丁: 无公共头文件、消息、CMake、package.xml、launch、配置或脚本改动；
+          仅新增 .gitattributes、UPSTREAM.md、PATCHES.md
+原始快照与交付负载: 40个文件，无build、devel、install、缓存、媒体或编辑器备份排除项，
+                         SHA-256清单 25fdafec215f7fdd5d023dd8383b39f22d2eda43125afa91ada1d922123bb213
+静态检查: JSON解析、复制负载SHA-256比对和差异格式检查通过
+未执行项: 未改写入口，未构建、预检、启动ROS/Gazebo/PX4/MAVROS/QGC/UE、生成sunray_msgs消息或运行控制器
+激活前置: 审计Sunray上游/许可证；处理sunray_uav_control与sunray_planner_utils
+          对 ../sunray_common/common_lib 的相邻路径依赖；审计sunray_msgs消息生成契约；
+          改写审计过的入口并完成受控ROS1验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

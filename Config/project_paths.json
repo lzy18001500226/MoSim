@@ -42,6 +42,17 @@
         "Config/profiles/runtime_bindings.json#rviz_review.launch"
       ]
     },
+    "sunray_common": {
+      "role": "common_utility",
+      "canonical_relpath": "src/common/utilities/ros1/sunray_common",
+      "legacy_relpath": "References/Sunray/General_Module/sunray_common",
+      "active_relpath": "References/Sunray/General_Module/sunray_common",
+      "migration_state": "copied_pending_activation",
+      "entrypoints": [
+        "References/Sunray/General_Module/sunray_uav_control/CMakeLists.txt",
+        "References/Sunray/General_Module/sunray_planner_utils/CMakeLists.txt"
+      ]
+    },
     "px4ctrl": {
       "role": "control_runtime_adapter",
       "canonical_relpath": "src/control/runtime_adapters/px4ctrl",
