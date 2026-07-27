@@ -1,0 +1,6 @@
+[submodule "src/realflight_modules/faster-lio"]
+	path = src/realflight_modules/faster-lio
+	url = https://github.com/DifferentialRobotics/faster-lio.git
+[submodule "src/realflight_modules/px4ctrl"]
+	path = src/realflight_modules/px4ctrl
+	url = https://github.com/DifferentialRobotics/px4ctrl.git

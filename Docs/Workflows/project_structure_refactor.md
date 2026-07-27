@@ -1,9 +1,10 @@
 # 工程源码迁移工作流
 
-> 状态：目标架构已确认，迁移尚未获授权且尚未执行。本文件只定义执行顺序、证据和
-> 停止条件；目录归属的唯一权威是
-> [`Docs/Design/架构.md` 第 8.2 节](../Design/架构.md)。不得从本文件推断任何目录已经
-> 移动、可构建或可运行。
+> 状态：目标架构已确认。2026-07-27，用户授权以“只复制、不移动、不删除、不切换活动
+> 入口”的方式启动首批单组件迁移；当前仅 `diff_planner` 已复制到目标目录，仍由旧路径
+> 作为唯一活动路径。本文件定义执行顺序、证据和停止条件；目录归属的唯一权威是
+> [`Docs/Design/架构.md` 第 8.2 节](../Design/架构.md)。不得从本文件推断任何组件已经
+> 激活、可构建或可运行。
 
 ## 1. 目的和边界
 
@@ -120,3 +121,25 @@ component_id
 提交时只暂存已审核的本组件路径，执行 `git diff --cached --check`，提交并推送后再报告完成。
 本工作流只规定迁移方法；当前工程的主线控制器证据门禁仍由
 `Docs/Workflows/mainline_operations_board.md` 决定。
+
+### 5.1 Diff-Planner 首批复制记录（2026-07-27）
+
+```text
+component_id: diff_planner
+旧路径: References/Lab/planning_local/Diff-Planner
+新路径: src/planning/diff_planner
+活动路径: References/Lab/planning_local/Diff-Planner
+迁移状态: copied_pending_activation
+来源: https://github.com/DifferentialRobotics/Diff-Planner.git
+固定版本: 旧导入快照未能恢复上游 commit；不得宣称已钉定版本
+许可证: 根目录 GPL-3.0 已随副本保留；发布前仍需审计各 ROS 包许可证
+项目补丁: 无算法、launch、CMake、参数或资源改动；仅新增 .gitattributes、UPSTREAM.md、PATCHES.md
+原始快照: 613 个文件，SHA-256 清单
+          60f3ae2837c8b42f71c5e9892807ab5d40993fd50cb37053c86a496a7195daf1
+交付负载: 排除 4 个本地 .vscode 配置和 1 个 Ogre 工具日志后，608 个文件与旧路径一致，
+          bd9f049290b4ad38b7021869dad98a4be3a132fdd9c75d6f367f2222f65ffe62
+静态检查: JSON 解析、注册表检查、Python 编译和差异格式检查通过
+未执行项: 未改写入口，未构建、预检、启动 ROS/Gazebo/PX4/QGC/UE 或运行规划器
+激活前置: 补齐上游 commit/submodule 身份、许可证审计、活动引用改写和受控 ROS1 验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

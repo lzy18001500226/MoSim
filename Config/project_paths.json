@@ -1,0 +1,153 @@
+{
+  "schema_version": 1,
+  "catalog_id": "mosim_component_paths_v1",
+  "target_architecture": "Docs/Design/架构.md#8.2",
+  "root_contract": {
+    "environment_variable": "MOSIM_PROJECT_ROOT",
+    "manifest_relpath": "Config/project_paths.json",
+    "root_discovery": "repository root containing the manifest",
+    "legacy_fallback": "forbidden"
+  },
+  "components": {
+    "sunray_gazebo": {
+      "role": "simulation",
+      "canonical_relpath": "src/simulation/gazebo/sunray",
+      "legacy_relpath": "References/Sunray/simulation/sunray_simulator",
+      "active_relpath": "References/Sunray/simulation/sunray_simulator",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Config/profiles/runtime_bindings.json#sunray_gazebo.launch",
+        "Scripts/sunray/check_sunray_ros1_runtime_preflight.sh"
+      ]
+    },
+    "sunray_uav_control": {
+      "role": "flight_stack",
+      "canonical_relpath": "src/flight_stack/mavros/sunray_uav_control",
+      "legacy_relpath": "References/Sunray/General_Module/sunray_uav_control",
+      "active_relpath": "References/Sunray/General_Module/sunray_uav_control",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Config/profiles/runtime_bindings.json#mavros_command_adapter.launch",
+        "Scripts/sunray/sync_assembled_model_into_sunray_ros1.py"
+      ]
+    },
+    "sunray_planner_utils": {
+      "role": "integration",
+      "canonical_relpath": "src/integration/ros1_launch/sunray_planner_utils",
+      "legacy_relpath": "References/Sunray/General_Module/sunray_planner_utils",
+      "active_relpath": "References/Sunray/General_Module/sunray_planner_utils",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Config/profiles/runtime_bindings.json#planner_adapter.launch",
+        "Config/profiles/runtime_bindings.json#rviz_review.launch"
+      ]
+    },
+    "px4ctrl": {
+      "role": "control_runtime_adapter",
+      "canonical_relpath": "src/control/runtime_adapters/px4ctrl",
+      "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
+      "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Config/profiles/runtime_bindings.json#controller_host.launch",
+        "Scripts/sunray/run_px4ctrl_basic_gate.sh"
+      ]
+    },
+    "quadrotor_msgs": {
+      "role": "integration",
+      "canonical_relpath": "src/integration/ros1_launch/quadrotor_msgs",
+      "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs",
+      "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Scripts/sunray/setup_goal4_diff_planner_overlay.sh",
+        "Scripts/sunray/setup_goal4_egov2_overlay.sh"
+      ]
+    },
+    "uav_utils": {
+      "role": "common_utility",
+      "canonical_relpath": "src/common/utilities/ros1/uav_utils",
+      "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/uav_utils",
+      "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/uav_utils",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "src/control/runtime_adapters/px4ctrl"
+      ]
+    },
+    "fast_lio": {
+      "role": "perception",
+      "canonical_relpath": "src/perception/fast_lio",
+      "legacy_relpath": "References/Lab/localization_slam/FAST_LIO",
+      "active_relpath": "References/Lab/localization_slam/FAST_LIO",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Config/profiles/runtime_bindings.json#fastlio_review_or_ekf_bridge.launch",
+        "Scripts/sunray/run_mid360_fastlio_10hz_gate.sh"
+      ]
+    },
+    "livox_ros_driver_compat": {
+      "role": "perception",
+      "canonical_relpath": "src/perception/livox_ros_driver_compat",
+      "legacy_relpath": "References/Lab/localization_slam/livox_ros_driver_compat",
+      "active_relpath": "References/Lab/localization_slam/livox_ros_driver_compat",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Scripts/sunray/run_mid360_fastlio_10hz_gate.sh"
+      ]
+    },
+    "fuel": {
+      "role": "planning",
+      "canonical_relpath": "src/planning/fuel",
+      "legacy_relpath": "References/Lab/exploration_coverage/FUEL",
+      "active_relpath": "References/Lab/exploration_coverage/FUEL",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Scripts/sunray/check_fuel_ros1_preflight.sh",
+        "Scripts/sunray/fuel_single_px4ctrl_goal4.launch"
+      ]
+    },
+    "diff_planner": {
+      "role": "planning",
+      "canonical_relpath": "src/planning/diff_planner",
+      "legacy_relpath": "References/Lab/planning_local/Diff-Planner",
+      "active_relpath": "References/Lab/planning_local/Diff-Planner",
+      "migration_state": "copied_pending_activation",
+      "entrypoints": [
+        "Scripts/sunray/setup_goal4_diff_planner_overlay.sh",
+        "Scripts/sunray/diff_planner_single_px4ctrl_goal4.launch",
+        "Scripts/sunray/diff_swarm_px4ctrl_goal5.launch"
+      ]
+    },
+    "fixed_formation": {
+      "role": "planning",
+      "canonical_relpath": "src/planning/fixed_formation",
+      "legacy_relpath": "References/Lab/swarm_coordination/Swarm-Formation",
+      "active_relpath": "References/Lab/swarm_coordination/Swarm-Formation",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "Scripts/sunray/build_swarm_formation_ros1_upstream_smoke.sh",
+        "Scripts/sunray/swarm_formation_swarm_px4ctrl_d3.launch"
+      ]
+    },
+    "qgroundcontrol": {
+      "role": "ground_station",
+      "canonical_relpath": "src/ground_station/qgc/qgroundcontrol",
+      "legacy_relpath": "apps/flight_console/vendor/qgroundcontrol",
+      "active_relpath": "apps/flight_console/vendor/qgroundcontrol",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "apps/flight_console/mosim/custom/CMakeLists.txt"
+      ]
+    },
+    "qgc_mosim_extension": {
+      "role": "ground_station",
+      "canonical_relpath": "src/ground_station/qgc/mosim_extension",
+      "legacy_relpath": "apps/flight_console/mosim",
+      "active_relpath": "apps/flight_console/mosim",
+      "migration_state": "legacy_active",
+      "entrypoints": [
+        "apps/flight_console/mosim/custom/CMakeLists.txt"
+      ]
+    }
+  }
+}
