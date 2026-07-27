@@ -27,7 +27,7 @@ truth until checked against current files or evidence.
 |---|---|---|
 | hard project boundary and startup chain | `AGENTS.md` | compact only; no detailed procedure |
 | fresh startup context | `Docs/Workflows/new_conversation_context.md` | short, current, no history dump |
-| current operating state | `Docs/Workflows/mainline_operations_board.md` | next action and blocker only |
+| current operating state | `Docs/Workflows/mainline_operations_board.md` | current action, next gate, stopping/handoff condition, and blocker only |
 | repeatable procedure | `Docs/Workflows/` | executable steps, stop triggers, evidence |
 | task-family tool procedure | `Docs/Skills/` | when to load, tool sequence, forbidden actions |
 | architecture / algorithm / interface design | `Docs/Design/` | stable design, not runtime status |
@@ -109,6 +109,13 @@ Use the canonical model root, profile/configuration path, and result layout for
 new experiments. A temporary experiment must not introduce another top-level
 package, project root, or permanent process document.
 
+## 4.2 Board Shape
+
+The current board is a short task selector, not an open-ended work queue. Each
+current action must state its next executable gate and explicit stopping/handoff
+conditions: what proves completion, what becomes a blocker, and which later
+gates remain out of scope. Update the board when any of those facts changes.
+
 ## 5. Skill Shape
 
 A skill should answer:
@@ -135,11 +142,13 @@ Before non-trivial work, classify the request:
 | small clear task | do it directly with targeted verification |
 | unclear task | restate objective and ask or run a small read-only probe |
 | runtime/debug task | add logs/checkpoints, inspect source, then run narrow proof |
-| architecture-changing task | write or update design first, then ask before broad change |
+| architecture-changing task | report the decision and affected boundaries; wait for user confirmation before selecting or changing the architecture, then record the accepted design |
 | blocked task | report exact blocker and required decision |
 
 Stop and ask the user before:
 
+- choosing an architecture, interface, or scope boundary not already decided by
+  the current board or a design document;
 - changing the agreed runtime architecture;
 - substituting a different simulator, stack, model, dataset, or source tree;
 - deleting/moving large structures;

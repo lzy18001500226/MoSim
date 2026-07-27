@@ -7,6 +7,19 @@ This file is the compact project constitution. Keep durable hard boundaries
 here. Put executable procedures, MWORKS window rules, runtime checks, and
 domain-specific workflows in the linked documents below.
 
+## Current Task
+
+Fast entry cue, 2026-07-27 CST: the canonical model root and frozen current-root
+46-route MWORKS matrix are complete. The next executable gate is G6
+champion-test-harness promotion and minimum whole-aircraft closure; do not start
+seven-scenario A/B, code generation/runtime validation, G7, or R1 from this
+cue alone.
+
+`Docs/Workflows/mainline_operations_board.md` is the sole task authority and
+contains the exact scope, evidence, and stopping/handoff conditions. Update this
+cue whenever that board's current action or next executable gate changes; it is
+an entry summary, not a second task source.
+
 ## 0. Start Here
 
 For every new or resumed MoSim conversation:
@@ -38,22 +51,21 @@ truth; MoSim cache paths are documented in
    home paths unless the approved infrastructure task names that path and why.
 2. MoSim uses one active coordinating Codex thread. The coordinating thread can
    use official temporary subagents for independent, bounded work when
-   parallelism materially helps. Do not revive visible-thread dispatch,
-   R1/R2/R3 department routing, legacy ops patrol bounded dispatch, or
-   dispatch-ticket SLOs as active project workflow.
+   parallelism materially helps. Legacy multi-thread routing, visible-thread
+   dispatch, and related automation are archive-only material: use them only for
+   explicit trace-back or cleanup, and do not restore them without user approval.
 3. The coordinating thread owns product priority, scope, integration, manual/GUI
-   action decisions, restart decisions, and blocker escalation to the user.
+   action decisions, restart decisions, and blocker escalation to the user. If
+   the current task needs an architecture or scope decision not already covered
+   by the board or a design document, stop and report it to the user; do not
+   make that decision independently.
 4. Non-trivial work should record a local goal, inspect the smallest relevant
    context, run targeted checks, and keep evidence in normal project paths.
    This is local planning only, not a legacy multi-agent dispatch requirement.
    Temporary official subagents need an independent bounded scope and a parent
    integration point; parallel writes, Git mutations, GUI, MCP, or live runtime
    work need explicit ownership and coordination in the parent task.
-5. Former AgentOS / visible-thread material is legacy reference only
-   unless the current task explicitly asks for cleanup, audit, or historical
-   review. Cleanup notes live in
-   `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md`.
-6. Sparse Chinese email is the default human notification channel. When any
+5. Sparse Chinese email is the default human notification channel. When any
    named small task, goal, gate, or project conversation reaches a completion,
    blocker, or review-required terminal state, send one short Chinese email
    through `Scripts/agent/send_gateway_email_alert.py`. Do not email every
@@ -63,38 +75,34 @@ truth; MoSim cache paths are documented in
    WeChat gateway/message-path threads are historical only and must not be
    scanned, no-oped, recovered, or used unless the user explicitly restores a
    scoped WeChat diagnosis route.
-7. Current coordinating-thread P0 is the ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl
-   minimum big-system loop declared by
-   `Docs/Workflows/mainline_operations_board.md` and
-   `Docs/Design/架构.md`. RViz point-cloud/trajectory review is the current
-   visual evidence surface. UE/frontend work is an S11 display and experiment
-   platform enhancement, not the current control-loop authority. Do not use the
-   old ROS2/PX4/x500 route, downloaded replacement FAST-LIO source, fake point
-   clouds, or equivalent-substitute runtimes as current evidence. Support
-   lanes cannot mask the active engineering blocker.
-8. MWORKS login/license/authorization/GUI-error/unknown blocking states must
+6. The current P0 is always the action declared by
+   `Docs/Workflows/mainline_operations_board.md`. The ROS1/Sunray/Gazebo/PX4/
+   MAVROS/px4ctrl/RViz lane is the current runtime evidence authority when the
+   board and its workflow select runtime work. UE/frontend remains a display and
+   experiment-platform layer, not control-loop authority. Do not use the old
+   ROS2/PX4/x500 route, replacement FAST-LIO source, fake point clouds, or an
+   equivalent-substitute runtime as current evidence. Support lanes cannot mask
+   the active engineering blocker.
+7. MWORKS login/license/authorization/GUI-error/unknown blocking states must
    stop solver/model work and become clear blockers. Bounded login recovery is
    allowed only when the user explicitly authorizes it and credential
    redaction, screenshot, and stop-condition rules are satisfied.
-9. Desktop window observation and desktop window action are separate skills:
+8. Desktop window observation and desktop window action are separate skills:
    screenshot/capture ability does not imply click/action authority.
-10. For normal MoSim mainline work, request `gpt-5.5` and `thinking=high` when
+9. For normal MoSim mainline work, request `gpt-5.5` and `thinking=high` when
     the native tool accepts those settings.
-11. Live/runtime waits must follow the bounded wait policy in the current
+10. Live/runtime waits must follow the bounded wait policy in the current
     runtime workflow or execution checklist. Do not let a live probe become an
     unbounded blocking loop without explicit user authorization and durable
     partial evidence.
-12. Do not re-create deleted PMO heartbeat, detached legacy ops patrol cron, Windows
-    watchdog, replacement visible threads, or other multi-thread automation
-    without explicit user approval.
-13. Temporary broad `.gitignore` rules for reference imports are only a drain
+11. Temporary broad `.gitignore` rules for reference imports are only a drain
     queue. Durable ignores must be class/exact-risk decisions, not a hidden
     backlog of ordinary source, docs, scripts, configs, or small assets.
-14. Do not delete or move executable legacy runtime, hook, checker, protocol,
+12. Do not delete or move executable legacy runtime, hook, checker, protocol,
     skill, or automation code until a separate dependency audit proves it is
     unused or updates all references. The current cleanup target is active
     documentation and startup context first.
-15. A task is not complete while task-owned changes remain uncommitted or
+13. A task is not complete while task-owned changes remain uncommitted or
     unpushed. Before reporting terminal success, inspect only the task paths,
     run the relevant checks, stage exact paths, commit, push, and verify the
     upstream state. A noisy unrelated worktree or a large `References/` backlog
@@ -105,11 +113,11 @@ truth; MoSim cache paths are documented in
 
 ## 2. Current Operating Mode
 
-Current MoSim work is coordinated by one active thread. That thread follows
-`Docs/Workflows/mainline_operations_board.md` and the relevant domain workflow,
-and can use official temporary subagents for independent bounded slices. Legacy
-multi-thread routes, department ids, patrol automation, dispatch packets,
-R1/R2/R3 failover, and task ledgers are not current operating surfaces.
+Current MoSim work is coordinated by one active thread. It follows
+`Docs/Workflows/mainline_operations_board.md` and only the relevant domain
+workflow; temporary subagents may own independent bounded slices. Historical
+multi-thread material stays in `Docs/Cache/agent_legacy/` unless trace-back or
+cleanup is explicitly requested.
 
 ## 3. Operating Documents
 
@@ -117,7 +125,7 @@ R1/R2/R3 failover, and task ledgers are not current operating surfaces.
 |---|---|
 | Current PMO board and next action | `Docs/Workflows/mainline_operations_board.md` |
 | Current coordinating-thread operating model | `Docs/Workflows/single_thread_operating_model.md` |
-| Current ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl minimum big-system loop | `Docs/Design/架构.md`; `Docs/Workflows/mainline_operations_board.md`; `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; execution checklist at `Docs/Workflows/sunray_ros1_execution_checklist.md`; source index at `Docs/Index/sunray_migration_index.md` |
+| Declared ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl runtime evidence lane | `Docs/Design/架构.md`; `Docs/Workflows/mainline_operations_board.md`; `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; execution checklist at `Docs/Workflows/sunray_ros1_execution_checklist.md`; source index at `Docs/Index/sunray_migration_index.md` |
 | Legacy AgentOS / multi-thread cleanup review | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` |
 | Document placement, migration, and archive rules | `Docs/Workflows/documentation_governance.md` |
 | Session-memory promotion/rejection | `Docs/Workflows/session_memory_migration.md` |
@@ -134,19 +142,18 @@ MoSim is for the A8 quadrotor competition. The main contribution is robust
 quadrotor attitude and position control, not a general robotics navigation
 stack.
 
-Primary technical line:
+Current delivery convergence:
 
 ```text
-Official PID baseline
-  -> improved PID / PID-INDI
-  -> NMPC outer loop
-  -> INDI attitude inner loop
-  -> L1-inspired adaptive disturbance compensation
-  -> safety filter
-  -> fault injection and control allocation reconstruction
-  -> path planning and trajectory smoothing
-  -> leader-follower multi-UAV formation
-  -> automated simulation, metrics, figures, and report evidence
+completed: canonical model root, D1-D3 review contract, and the frozen
+           46-route current-root evidence matrix
+  -> six nominal-family champion test-harness promotion and minimum
+     whole-aircraft closure
+  -> same-parameter Official PID seven-scenario A/B for accepted champions
+  -> G7 safety, fault, fixed-formation, and Syslab evidence
+  -> accepted candidate export and declared ROS1/Sunray runtime validation
+  -> report and software-documentation evidence
+  -> R1 old-root archival only after a dependency audit
 ```
 
 Core principles:
@@ -197,8 +204,9 @@ Important ROS/Sunray/UE rules:
   performance, or final material/scene acceptance without the declared evidence
   gate.
 - Unreal Mapping Window Rule: active point-cloud/map review belongs to
-  RViz/RViz2 or an equivalent native robotics viewer, with current P0 using
-  ROS1 RViz. Browser HTML is not an accepted active point-cloud/map review surface.
+  RViz/RViz2 or an equivalent native robotics viewer, with the current runtime
+  evidence lane using ROS1 RViz. Browser HTML is not an accepted active
+  point-cloud/map review surface.
   Global UE collision/occupancy truth is a validation oracle only.
 - Do not publish setpoints, run extra live probes, open foreground RViz/manual
   review, or start UE editor/build/runtime work unless the current user
