@@ -374,6 +374,24 @@ generation, PX4, Gazebo, ROS, or flight runtime were independently accepted.
 
 ## 6. Seven-Scenario A/B
 
+### Scenario Injection Contract
+
+The sole machine-readable definition of the seven scenario inputs, timing,
+plant injections, metric semantics, and minimum numerical-closure gate is
+`Config/control_platform/seven_scenario_injection_contract.json`. It fixes the
+0.25 N world-frame lateral force, plant-only positive 20 percent mass/inertia
+mismatch, and the rotor-1 effectiveness transition from 1.0 to 0.5 at 15 s.
+It also fixes a zero-yaw Figure8 policy and requires an external 0.01 s hold
+harness around Official PID before a fair formal A/B comparison.
+
+The contract is deliberately parameterized: a versioned experiment profile
+binds one existing FormalRunner, one trajectory, and named plant parameters.
+Do not manufacture one duplicated Modelica runner class per controller and
+scenario. Before any seven-scenario simulation, implement each listed
+Runner-to-plant binding, run static CheckModel for the bound profiles, and stop
+for review. A trajectory declaration or CheckModel pass alone is not an
+injected wind, mismatch, or motor-fault result.
+
 Only measured winners whose promoted test harness passes minimum closure enter
 the same-parameter A/B matrix against Official PID. The `px4ctrl` equivalent
 core joins that matrix only after its explicit equivalence gate passes:

@@ -1,0 +1,204 @@
+{
+  "schema": "mosim.seven_scenario_injection_contract.v1",
+  "version": 1,
+  "status": "design_frozen_runner_plant_binding_pending",
+  "claim_boundary": "This contract fixes offline MWORKS scenario inputs, parameter semantics, metrics, and required binding behavior. It is not evidence that any disturbance, mismatch, motor fault, seven-scenario A/B, px4ctrl equivalence, code generation, or Gazebo runtime run has occurred.",
+  "authority": {
+    "workflow": "Docs/Workflows/g6_controller_experiment_execution.md",
+    "model_root": "Models/MoSimQuadrotorModel/package.mo",
+    "trajectory_namespace": "MoSimQuadrotorModel.Guidance.Trajectories",
+    "plant": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly"
+  },
+  "common_execution": {
+    "solver": "Dassl",
+    "tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "reference_signals": [
+      "position_ref[3]",
+      "velocity_ref[3]",
+      "acceleration_ref[3]"
+    ],
+    "measurement_signals": [
+      "position_mea[3]",
+      "velocity_mea[3]",
+      "attitude_mea[3]"
+    ],
+    "sampling_fairness": {
+      "state": "binding_pending",
+      "candidate_formal_runners": "Use a 0.01 s input sample-and-hold boundary wherever a discrete C-function/controller boundary is declared.",
+      "official_pid": "Keep the source controller core unchanged, but add a 0.01 s external reference/measurement/command hold harness before formal A/B. The experiment annotation Interval alone is only a result-output interval and does not establish equal controller update semantics.",
+      "required_manifest_fields": [
+        "solver_algorithm",
+        "solver_tolerance",
+        "result_interval_s",
+        "controller_boundary_period_s",
+        "reference_hold_period_s",
+        "measurement_hold_period_s",
+        "command_hold_period_s"
+      ]
+    },
+    "yaw_policy": {
+      "mode": "fixed_zero",
+      "applies_to": "all seven scenarios including Figure8",
+      "reason": "The current shared controller contract has no yaw-reference port and current adapters use fixed yaw. Figure-eight scoring therefore evaluates translational tracking only.",
+      "change_rule": "Tangential-heading tracking requires an explicit yaw-reference interface and adapter-wide revalidation; it is outside this contract."
+    }
+  },
+  "runner_binding_policy": {
+    "style": "parameterized_formal_runner_plus_experiment_profile",
+    "rule": "Do not create 84 duplicated Modelica runner classes. Each run must bind one existing formal runner, one trajectory class, and named plant-injection parameters through a versioned experiment profile and record the profile hash.",
+    "required_runner_parameters": [
+      "gust_force[3]",
+      "gust_start_s",
+      "gust_duration_s",
+      "mass_scale",
+      "inertia_scale[3]",
+      "fault_start_s",
+      "fault_rotor_index",
+      "fault_rotor_effectiveness"
+    ],
+    "plant_rules": {
+      "wind": "Pass force vector and time window from the experiment profile into Sunray150Assembly. Force is a world-frame external force in N, not a wind-speed surrogate.",
+      "parameter_mismatch": "Apply mass_scale and inertia_scale only to the physical plant body/dynamics. Controllers retain the nominal 1.0 kg profile so the test remains a true plant-model mismatch.",
+      "motor_fault": "Compute a time-varying effectiveness vector inside the plant/dynamics path. For the failed rotor, both thrust and reaction-moment effectiveness are 1.0 before fault_start_s and fault_rotor_effectiveness at and after fault_start_s. A static parameter vector does not satisfy this contract."
+    }
+  },
+  "scenarios": [
+    {
+      "scenario_id": "hover",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.HoverHold",
+      "duration_s": 35,
+      "reference": {
+        "target_altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "hold_duration_s": 30.0
+      },
+      "plant_injection": "nominal",
+      "required_metrics": ["position_rmse_m", "tail_rmse_m", "terminal_position_error_m", "max_position_error_m"]
+    },
+    {
+      "scenario_id": "step_response",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.StepResponse",
+      "duration_s": 45,
+      "reference": {
+        "hover_altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "step_time_s": 15.0,
+        "x_step_m": 1.0,
+        "y_step_m": -1.0
+      },
+      "plant_injection": "nominal",
+      "step_metric_contract": {
+        "axes": ["x", "y"],
+        "overshoot_percent": "Compute per axis in the signed direction of its nonzero step, normalized by abs(step_amplitude_m).",
+        "settling_time_s": "After t=15 s, first time at which both stepped axes enter and remain inside plus-or-minus 5 percent of their respective step amplitudes until t=45 s.",
+        "settling_band_m_per_axis": 0.05,
+        "steady_state_error_m": "Mean Euclidean position error over t=40-45 s."
+      },
+      "required_metrics": ["overshoot_percent_x", "overshoot_percent_y", "settling_time_s", "steady_state_error_m", "position_rmse_m"]
+    },
+    {
+      "scenario_id": "figure8",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50,
+      "reference": {
+        "altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "x_amplitude_m": 2.0,
+        "y_amplitude_m": 1.0,
+        "angular_rate_rad_s": 0.35
+      },
+      "plant_injection": "nominal",
+      "required_metrics": ["position_rmse_m", "xy_rmse_m", "max_position_error_m", "terminal_position_error_m"]
+    },
+    {
+      "scenario_id": "spiral",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
+      "duration_s": 50,
+      "reference": {
+        "radius_m": 1.5,
+        "angular_rate_rad_s": 0.3,
+        "climb_rate_m_s": 0.15
+      },
+      "plant_injection": "nominal",
+      "required_metrics": ["position_rmse_m", "xy_rmse_m", "z_rmse_m", "max_position_error_m"]
+    },
+    {
+      "scenario_id": "wind_disturbance",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.WindDisturbance",
+      "duration_s": 50,
+      "reference": "ClimbPath",
+      "plant_injection": {
+        "type": "world_frame_external_force",
+        "gust_force_N": [0.25, 0.0, 0.0],
+        "start_s": 0.0,
+        "duration_s": 50.0,
+        "semantic": "Persistent lateral 0.25 N force; not a wind-speed input."
+      },
+      "required_metrics": ["position_rmse_m", "disturbance_window_rmse_m", "max_position_error_m", "terminal_position_error_m"]
+    },
+    {
+      "scenario_id": "parameter_mismatch",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.ParameterMismatch",
+      "duration_s": 50,
+      "reference": "ClimbPath",
+      "plant_injection": {
+        "type": "physical_plant_parameter_scale",
+        "mass_scale": 1.2,
+        "inertia_scale": [1.2, 1.2, 1.2],
+        "controller_parameter_scale": 1.0,
+        "semantic": "Plant mass and principal inertia are increased by 20 percent while controller nominal parameters remain unchanged."
+      },
+      "required_metrics": ["position_rmse_m", "max_position_error_m", "terminal_position_error_m", "control_energy"]
+    },
+    {
+      "scenario_id": "motor_efficiency_fault",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.MotorFault",
+      "duration_s": 50,
+      "reference": "ClimbPath",
+      "plant_injection": {
+        "type": "time_varying_rotor_effectiveness",
+        "fault_rotor_index": 1,
+        "nominal_effectiveness": 1.0,
+        "fault_effectiveness": 0.5,
+        "fault_start_s": 15.0,
+        "applies_to": ["thrust_effectiveness", "reaction_moment_effectiveness"],
+        "semantic": "Only rotor 1 changes from 1.0 to 0.5 at t=15 s; it is not degraded from t=0."
+      },
+      "required_metrics": ["pre_fault_rmse_m", "post_fault_rmse_m", "post_fault_peak_error_m", "terminal_position_error_m", "control_energy"]
+    }
+  ],
+  "run_validity_gate": {
+    "required": [
+      "CheckModel passes for bound runner and trajectory",
+      "simulation reaches declared stop time",
+      "all required signals are finite",
+      "maximum position_error_norm is less than 5.0 m",
+      "raw CSV, metrics, native result-window capture, profile hash, and plant/harness hashes are recorded"
+    ],
+    "claim_boundary": "This is a minimum numerical-closure gate. Scenario metrics are reported quantitatively and must not be relabeled as a performance pass solely because this gate passes."
+  },
+  "metrics_implementation": {
+    "owner": "Scripts/results/calc_metrics.jl and a comparison script in the same directory",
+    "required_extensions": [
+      "axis-aware step overshoot",
+      "step settling time with persistent 5 percent band",
+      "disturbance-window RMSE",
+      "pre-fault and post-fault metrics",
+      "multi-controller comparison table and figures"
+    ],
+    "syslab_requirement": "The final comparison script must execute in MWORKS.Syslab/Julia and retain its command, input CSV hashes, output table, and figures with the run evidence."
+  },
+  "matrix_policy": {
+    "family_selection": "This contract does not select winners. g6_champion_selection.json currently declares seven semantic families; the six currently adapted FormalRunner candidates are provisional and cannot be presented as a completed all-family ranking.",
+    "core_ab_matrix": "Official PID plus only measured family winners that pass current-source minimum closure.",
+    "fixed_integrated_profiles": "Optional engineering comparison rows. They do not replace a family winner and are not double-counted in family ranking.",
+    "px4ctrl": "Excluded until a behavior- and interface-equivalent MWORKS core passes its explicit equivalence gate."
+  },
+  "implementation_order": [
+    "Bind the listed injection parameters through all four Runner boundaries and Sunray150Assembly.",
+    "Add the Official PID 0.01 s external hold harness and verify common timing manifest fields.",
+    "Extend Syslab metrics and validate them with deterministic CSV fixtures.",
+    "Run static CheckModel for every bound scenario profile, then stop for review before any seven-scenario simulation."
+  ]
+}

@@ -30,7 +30,7 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Seven-Scenario Definitions And Forward-Reference Contract Checked - Awaiting User Review
+### Seven-Scenario Injection Contract Written - Awaiting Binding Review
 
 - Workflow: `Docs/Workflows/run_simulation.md`.
 - Frozen matrix driver: `Scripts/mworks/run_phase1_minimum_closure.py`.
@@ -58,13 +58,20 @@ contract. Neither creates another task line or gate meaning.
   `inertia_scale`, and `MotorFault.rotor_effectiveness` are scenario contracts
   awaiting explicit Runner-to-plant binding. Do not call any of them injected
   fault/disturbance experiments before that Phase 3 implementation and run.
+- `Config/control_platform/seven_scenario_injection_contract.json` now fixes
+  the offline scenario semantics and required binding path: persistent 0.25 N
+  world-frame lateral force, plant-only +20 percent mass/inertia mismatch, and
+  rotor 1 transition to 50 percent effectiveness at 15 s. It additionally
+  requires a 0.01 s external hold harness around Official PID and defines the
+  step-response metric semantics. It is a design contract only; no Plant,
+  Runner, metric implementation, or scenario simulation has changed or run.
 - The recovery ranking and P0b runner results are pre-repair records, not
   current-source performance evidence. The `CheckModel` record proves model
   integrity only, not RMSE improvement, seven-scenario A/B, code-generation,
   Gazebo, ROS, or flight-runtime behavior.
-- Stop: wait for a new user instruction. Do not run the other 34
-  `adapter_missing` rows, seven-scenario A/B, export, runtime validation, G7,
-  or R1.
+- Stop: review the injection contract before implementing Plant/Runner
+  bindings. Do not run the other 34 `adapter_missing` rows, seven-scenario A/B,
+  export, runtime validation, G7, or R1.
 
 The approved atomic model-library migration is statically complete. The only
 formal load root is `Models/MoSimQuadrotorModel/package.mo`; retired roots and
