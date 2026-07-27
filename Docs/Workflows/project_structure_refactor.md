@@ -140,6 +140,30 @@ component_id
 本工作流只规定迁移方法；当前工程的主线控制器证据门禁仍由
 `Docs/Workflows/mainline_operations_board.md` 决定。
 
+### 5.0 已完成的结构审计记录
+
+#### 5.0.1 CoAgent 历史根目录归档（2026-07-27）
+
+根目录 `CoAgent/` 是已退役的多线程 AgentOS 材料，不是当前项目的运行、构建或交付入口。经
+活动依赖审计后，330 个受版本控制文件以无内容改动的 `R100` Git 重命名归档到
+`Docs/Cache/agent_legacy/coagent_root_20260727/`；清单、基线树对象和本机缓存处置记录见该目录的
+`ARCHIVE_MANIFEST.md`。该归档不恢复任何旧的可见线程分派、自动化或网关运行路径。
+
+原 `CoAgent/` 下的 26 个未跟踪 `.pyc` 文件未被删除，而是保留到本机
+`build/legacy_local_cache/coagent_root_20260727/`。Git 不跟踪残留空目录，因此新克隆不会包含旧根。
+
+#### 5.0.2 暂不移动的结构审计结论（2026-07-27）
+
+| 路径 | 审计结论 | 当前处置 |
+|---|---|---|
+| `Results/unreal_scene_mapping/factory_l2_static_import/` | 950 个文件、约 6.369 GiB；仍有 42 个活动消费者，是 Factory L2 运行输入而不是普通结果。 | 保留原路径；后续以完整、带 MANIFEST 的资产包复制到 `Assets/environments/factory_l2/<version>/`，并逐项切换消费者。 |
+| `build/` | 约 4.824 GiB，含当前 Flight Console/QGC 启动链使用的本机构建产物。 | 保留；不得以目录瘦身名义删除或迁入源码树。 |
+| `.tools/` | 约 4.119 GiB，含当前工具链与启动链依赖。 | 保留为本机工具目录；后续只可按具体工具和消费者审计。 |
+| `Results/sunray_ros1/workspaces/` | 约 2.853 GiB，仍承载当前 ROS1/Sunray 工作区与运行证据。 | 暂保留，不迁移、不删除。 |
+| `image/AGENTS/` | 12 张历史截图，当前未发现活动引用。 | 不删除；可在独立任务中连同索引和来源说明归档。 |
+
+以上结论只冻结本次处置边界，不代表 Factory L2、构建工具、工作区或历史截图已经完成最终清理。
+
 ### 5.1 Diff-Planner 首批复制记录（2026-07-27）
 
 ```text

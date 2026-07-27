@@ -130,7 +130,7 @@ Model Studio / ExperimentProfile
 | `Docs/Workflows/` | 正常工程操作、质量门和当前运行链路，不承担仓库说明或历史日志。 |
 | `Docs/Index/` | 模型、文档、工作流和外部参考入口。 |
 | `References/` | 上游案例、外部仓库和参考资料；不是项目正式实现根。 |
-| `CoAgent/` | 已退役的多线程 AgentOS 材料，仅供依赖审计与历史追溯。 |
+| `Docs/Cache/agent_legacy/coagent_root_20260727/` | 已退役的多线程 AgentOS 材料，仅供依赖审计与历史追溯。 |
 
 `.agents/`、`.codex/`、`.tmp/`、`.tools/`、`.venv/` 和类似隐藏目录是本机工作
 状态或工具缓存，不是项目阅读、运行或提交入口。
