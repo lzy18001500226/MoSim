@@ -1,0 +1,4 @@
+# Preserve this imported source payload byte-for-byte. Its pre-existing
+# whitespace defects are tracked as upstream formatting, not MoSim edits.
+* -whitespace
+** -whitespace

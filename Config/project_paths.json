@@ -71,7 +71,7 @@
       "canonical_relpath": "src/control/runtime_adapters/px4ctrl",
       "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
       "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "Config/profiles/runtime_bindings.json#controller_host.launch",
         "Scripts/sunray/run_px4ctrl_basic_gate.sh"

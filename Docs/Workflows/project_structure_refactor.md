@@ -346,3 +346,25 @@ component_id: sunray_tutorial
           审计sunray_msgs、OpenCV、Boost与本地消息生成契约；改写审计过的run_demo.launch消费者并完成受控ROS1验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.11 px4ctrl 复制记录（2026-07-27）
+
+```text
+component_id: px4ctrl
+旧路径: References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl
+新路径: src/control/runtime_adapters/px4ctrl
+活动路径: References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl
+迁移状态: copied_pending_activation
+来源: https://github.com/ZJU-FAST-Lab/Fast-Drone-250；保留快照未能恢复确切上游commit
+固定版本: 不可恢复；不得宣称已钉定上游Git commit
+许可证: LICENSE保留GPL-3.0正文，package.xml声明GPLv3
+项目补丁: 复制前活动工作树已含CMakeLists.txt与src/controller.cpp的P10后端改动；
+          已作为当前源码快照原样保留，迁移仅新增.gitattributes、UPSTREAM.md、PATCHES.md
+原始快照与交付负载: 17个文件，无build、devel、install、缓存、媒体或编辑器备份排除项，
+                         SHA-256清单 c293274d4f02168e22a682bba6243aa255a6ff6a5f5f4c1f2831327ceed86dcd
+静态检查: JSON解析、复制负载SHA-256比对和差异格式检查通过
+未执行项: 未改写入口，未构建、预检、启动ROS/Gazebo/PX4/MAVROS/QGC/UE、生成代码或运行控制器
+激活前置: 审计Fast-Drone-250上游/GPL义务；单独审核并提交P10工作树补丁；
+          改写审计过的脚本、Profile和ROS overlay路径；验证生成C/C++契约、后端选择器并完成受控ROS1验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```
