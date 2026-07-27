@@ -50,7 +50,7 @@ record Sunray150VirtualPx4Classic
   parameter Real rotor_drag_coefficient = 0.000175;
   parameter Real rolling_moment_coefficient = 1e-6;
   parameter Real rotor_velocity_slowdown_sim = 10;
-  parameter Real mworks_visual_thrust_coefficient(unit = "N/(rad/s)^2") =
+  parameter Real mworks_visual_thrust_coefficient(unit = "N.s2/rad2") =
     0.000584;
   parameter Real mworks_hover_visual_rotor_speed_rad_s(unit = "rad/s") =
     64.7923778389665;

@@ -15,9 +15,22 @@ if str(MWORKS_DIR) not in sys.path:
 import run_g6_formal_champion as closure  # noqa: E402
 
 
-def test_all_runner_baseline_bindings_are_hash_bound_and_not_champion_claims() -> None:
-    bindings = sorted((ROOT / "Config" / "control_platform" / "runner_baseline_bindings").glob("*.json"))
-    assert [path.stem for path in bindings] == ["attitude_thrust", "body_rate_thrust", "rotor_command", "wrench"]
+def assert_source_hashes(binding: dict) -> None:
+    assert all(source["expected_sha256"] for source in binding["source_bindings"])
+    for source in binding["source_bindings"]:
+        source_path = ROOT / source["path"]
+        assert source_path.is_file(), source_path
+        assert hashlib.sha256(source_path.read_bytes()).hexdigest() == source["expected_sha256"]
+
+
+def test_shared_runner_baseline_bindings_are_hash_bound_and_not_champion_claims() -> None:
+    binding_dir = ROOT / "Config" / "control_platform" / "runner_baseline_bindings"
+    bindings = [
+        (path, closure.read_binding(path))
+        for path in sorted(binding_dir.glob("*.json"))
+        if closure.read_binding(path)["controller_category"] == "runner_boundary_fixture"
+    ]
+    assert [path.stem for path, _ in bindings] == ["attitude_thrust", "body_rate_thrust", "rotor_command", "wrench"]
 
     expected_boundaries = {"ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"}
     expected_shared_chain = {
@@ -30,17 +43,12 @@ def test_all_runner_baseline_bindings_are_hash_bound_and_not_champion_claims() -
         "climb_path_reference",
     }
     actual_boundaries: set[str] = set()
-    for path in bindings:
-        binding = closure.read_binding(path)
+    for path, binding in bindings:
         assert binding["execution_metadata"]["kind"] == "runner_boundary_baseline"
         assert binding["execution_metadata"]["status_file_name"] == "RUNNER_BASELINE_STATUS.json"
         assert binding["formal_adapter"]["output_boundary"] in expected_boundaries
         actual_boundaries.add(binding["formal_adapter"]["output_boundary"])
-        assert all(source["expected_sha256"] for source in binding["source_bindings"])
-        for source in binding["source_bindings"]:
-            source_path = ROOT / source["path"]
-            assert source_path.is_file(), source_path
-            assert hashlib.sha256(source_path.read_bytes()).hexdigest() == source["expected_sha256"]
+        assert_source_hashes(binding)
         runner_source = (ROOT / binding["target"]["model_file"]).read_text(encoding="utf-8")
         assert "replaceable model Trajectory" in runner_source
         assert "connect(reference.velocity_command, controller.velocity_ref)" in runner_source
@@ -50,6 +58,34 @@ def test_all_runner_baseline_bindings_are_hash_bound_and_not_champion_claims() -
         assert "visual_chassis" not in roles
 
     assert actual_boundaries == expected_boundaries
+
+
+def test_px4ctrl_engineering_baseline_is_hash_bound_separately_from_shared_runner_fixtures() -> None:
+    binding = closure.read_binding(
+        ROOT / "Config" / "control_platform" / "runner_baseline_bindings" / "px4ctrl.json"
+    )
+
+    assert binding["controller_id"] == "px4ctrl"
+    assert binding["controller_category"] == "engineering_deployment_baseline"
+    assert binding["execution_metadata"]["kind"] == "runner_boundary_baseline"
+    assert binding["formal_adapter"]["output_boundary"] == "ATTITUDE_THRUST"
+    assert_source_hashes(binding)
+
+    runner_source = (ROOT / binding["target"]["model_file"]).read_text(encoding="utf-8")
+    assert "replaceable model Trajectory" in runner_source
+    assert "connect(reference.velocity_command, sampled_velocity_ref.u)" in runner_source
+    assert "connect(reference.acceleration_command, sampled_acceleration_ref.u)" in runner_source
+    roles = {source["role"] for source in binding["source_bindings"]}
+    assert {
+        "shared_sunray150_assembly",
+        "physical_wrench_adapter",
+        "wrapper_surface",
+        "rotor_actuator_core",
+        "plant_sensor_surface",
+        "virtual_px4_classic_profile",
+        "climb_path_reference",
+    }.issubset(roles)
+    assert "visual_chassis" not in roles
 
 
 def test_offline_runner_contract_declares_forward_references() -> None:

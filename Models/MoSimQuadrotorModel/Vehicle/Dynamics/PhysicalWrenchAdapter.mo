@@ -7,7 +7,8 @@ model PhysicalWrenchAdapter
     -profile.mworks_hover_visual_rotor_speed_rad_s,
     profile.mworks_hover_visual_rotor_speed_rad_s,
     -profile.mworks_hover_visual_rotor_speed_rad_s};
-  parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
+  parameter Real lift_coefficient(unit = "N.s2/rad2") =
+    profile.mworks_visual_thrust_coefficient;
   parameter Real reaction_moment_ratio = profile.moment_constant_ratio_m;
   parameter Real yaw_reaction_direction[4] = profile.mworks_yaw_direction;
   parameter Real thrust_effectiveness[4] = {1, 1, 1, 1};

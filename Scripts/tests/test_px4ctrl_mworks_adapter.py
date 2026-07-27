@@ -3,12 +3,20 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
 ADAPTER = ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Adapters" / "Px4CtrlAttitudeThrustAdapter.mo"
 PACKAGE_ORDER = ADAPTER.with_name("package.order")
+RUNNER = ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Runners" / "Px4CtrlFormalRunner.mo"
+RUNNER_PACKAGE_ORDER = RUNNER.with_name("package.order")
+BASELINE_BINDING = ROOT / "Config" / "control_platform" / "runner_baseline_bindings" / "px4ctrl.json"
+SUNRAY150_ASSEMBLY = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Sunray150Assembly.mo"
+PHYSICAL_WRENCH_ADAPTER = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Dynamics" / "PhysicalWrenchAdapter.mo"
+ROTOR_ACTUATOR_CORE = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Dynamics" / "RotorActuatorCore.mo"
+VIRTUAL_PX4_CLASSIC_PROFILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters" / "Sunray150VirtualPx4Classic.mo"
 
 
 def test_px4ctrl_adapter_uses_the_shared_attitude_thrust_contract() -> None:
@@ -72,11 +80,42 @@ def test_px4ctrl_adapter_is_registered_in_the_package_order() -> None:
     assert "Px4CtrlAttitudeThrustAdapter" in PACKAGE_ORDER.read_text(encoding="utf-8").splitlines()
 
 
+def test_px4ctrl_formal_runner_is_registered_in_the_package_order() -> None:
+    assert "Px4CtrlFormalRunner" in RUNNER_PACKAGE_ORDER.read_text(encoding="utf-8").splitlines()
+
+
+def test_px4ctrl_baseline_binding_declares_the_shared_sampled_boundary() -> None:
+    binding = json.loads(BASELINE_BINDING.read_text(encoding="utf-8"))
+
+    assert binding["schema"] == "mosim.runner_boundary_baseline_binding.v1"
+    assert binding["controller_id"] == "px4ctrl"
+    assert binding["target"]["model_class"] == "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner"
+    assert binding["formal_adapter"]["model_class"] == "MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter"
+    assert binding["formal_harness_feedback_boundary"]["signals"] == [
+        "reference.position_command -> controller.position_ref",
+        "reference.velocity_command -> controller.velocity_ref",
+        "reference.acceleration_command -> controller.acceleration_ref",
+        "plant.position -> controller.position_mea",
+        "plant.attitude -> controller.attitude_mea",
+    ]
+
+
+def test_px4ctrl_active_plant_preserves_lift_coefficient_units() -> None:
+    declaration = 'parameter Real lift_coefficient(unit = "N.s2/rad2")'
+
+    for source in (SUNRAY150_ASSEMBLY, PHYSICAL_WRENCH_ADAPTER, ROTOR_ACTUATOR_CORE):
+        assert declaration in source.read_text(encoding="utf-8")
+    assert 'mworks_visual_thrust_coefficient(unit = "N.s2/rad2")' in VIRTUAL_PX4_CLASSIC_PROFILE.read_text(encoding="utf-8")
+
+
 def main() -> int:
     test_px4ctrl_adapter_uses_the_shared_attitude_thrust_contract()
     test_px4ctrl_adapter_shares_odometry_and_imu_quaternions()
     test_px4ctrl_adapter_emits_newton_increment_about_hover()
     test_px4ctrl_adapter_is_registered_in_the_package_order()
+    test_px4ctrl_formal_runner_is_registered_in_the_package_order()
+    test_px4ctrl_baseline_binding_declares_the_shared_sampled_boundary()
+    test_px4ctrl_active_plant_preserves_lift_coefficient_units()
     print("[OK] px4ctrl MWORKS adapter")
     return 0
 

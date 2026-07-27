@@ -25,7 +25,7 @@ package Parameters
     parameter Real mass_kg(unit = "kg") = takeoff_mass_kg;
     parameter Real sdf_motor_constant(unit = "N/(rad/s)^2") =
       motor_constant_n_per_rad_s2;
-    parameter Real mworks_lift_coefficient(unit = "N/(rad/s)^2") =
+    parameter Real mworks_lift_coefficient(unit = "N.s2/rad2") =
       mworks_visual_thrust_coefficient;
     parameter Real yaw_moment_ratio_seed = moment_constant_ratio_m;
     parameter Real spin_command_sign[4] = mworks_spin_command_sign;
@@ -50,7 +50,7 @@ package Parameters
     "Static mirror of Sunray150VirtualPx4Classic.takeoff_mass_kg";
   constant Real sunray150_virtual_px4_classic_gravity_mps2(unit = "m/s2") = 9.80665
     "Static mirror of Sunray150VirtualPx4Classic.gravity_mps2";
-  constant Real sunray150_virtual_px4_classic_visual_thrust_coefficient(unit = "N/(rad/s)^2") = 0.000584
+  constant Real sunray150_virtual_px4_classic_visual_thrust_coefficient(unit = "N.s2/rad2") = 0.000584
     "Static mirror of Sunray150VirtualPx4Classic.mworks_visual_thrust_coefficient";
   constant Real sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s(unit = "rad/s") = 64.7923778389665
     "Static mirror of Sunray150VirtualPx4Classic.mworks_hover_visual_rotor_speed_rad_s";

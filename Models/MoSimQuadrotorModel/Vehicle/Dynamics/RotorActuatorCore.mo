@@ -5,7 +5,8 @@ model RotorActuatorCore
     "Source-labeled virtual plant profile; not identified real-aircraft truth";
   parameter Real mass_kg = profile.takeoff_mass_kg;
   parameter Real gravity_mps2 = profile.gravity_mps2;
-  parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
+  parameter Real lift_coefficient(unit = "N.s2/rad2") =
+    profile.mworks_visual_thrust_coefficient;
   parameter Real moment_constant = profile.moment_constant_ratio_m;
   parameter Real time_constant_up = profile.motor_time_constant_up_s;
   parameter Real time_constant_down = profile.motor_time_constant_down_s;

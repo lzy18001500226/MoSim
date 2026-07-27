@@ -1,0 +1,104 @@
+{
+  "schema": "mosim.runner_boundary_baseline_binding.v1",
+  "controller_id": "px4ctrl",
+  "controller_category": "engineering_deployment_baseline",
+  "scenario": {
+    "scenario_id": "climb_path_50s",
+    "reference_owner": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50
+  },
+  "target": {
+    "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Px4CtrlFormalRunner.mo",
+    "model_class": "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner",
+    "model_sha256": "aea731c0008e667b33e15efb85290a8ba6363257f82eb37a138372fa3b8ca59f"
+  },
+  "formal_adapter": {
+    "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlAttitudeThrustAdapter.mo",
+    "model_class": "MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter",
+    "model_sha256": "49f55776a71574010f260e7776b4d045f6b5c1feac1d15b0e4a4069e9da7ddeb",
+    "output_boundary": "ATTITUDE_THRUST",
+    "implementation": {
+      "kind": "equation_bridge",
+      "bridge_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock",
+      "reason": "The adapter binds the MWORKS px4ctrl equation bridge to the shared ATTITUDE_THRUST interface. It does not assert equivalence to the ROS1/C++ deployment implementation."
+    }
+  },
+  "formal_harness_feedback_boundary": {
+    "kind": "sampled_controller_inputs",
+    "sample_period_s": 0.01,
+    "initial_measurement": "zero",
+    "signals": [
+      "reference.position_command -> controller.position_ref",
+      "reference.velocity_command -> controller.velocity_ref",
+      "reference.acceleration_command -> controller.acceleration_ref",
+      "plant.position -> controller.position_mea",
+      "plant.attitude -> controller.attitude_mea"
+    ],
+    "continuous_inner_loop_signals": [
+      "plant.attitude -> offline_inner_allocator.attitude_mea"
+    ],
+    "reason": "The px4ctrl MWORKS equation bridge receives 100 Hz sampled position, velocity, acceleration, and measurement inputs. The shared inner attitude-rate allocator remains directly connected to plant attitude."
+  },
+  "source_bindings": [
+    {
+      "role": "formal_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Px4CtrlFormalRunner.mo",
+      "expected_sha256": "aea731c0008e667b33e15efb85290a8ba6363257f82eb37a138372fa3b8ca59f"
+    },
+    {
+      "role": "formal_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlAttitudeThrustAdapter.mo",
+      "expected_sha256": "49f55776a71574010f260e7776b4d045f6b5c1feac1d15b0e4a4069e9da7ddeb"
+    },
+    {
+      "role": "px4ctrl_equation_bridge",
+      "path": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock.mo",
+      "expected_sha256": "edb2d45690a75717c43f6af57e7a5031438489de7e0aad6fd37dde9f055311dc"
+    },
+    {
+      "role": "shared_attitude_rate_allocator",
+      "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
+      "expected_sha256": "9845d78c135f8a04431b1dafc80cf4e8e5eadf35f86904607e336b0264a75018"
+    },
+    {
+      "role": "shared_sunray150_assembly",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "expected_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+    },
+    {
+      "role": "physical_wrench_adapter",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo",
+      "expected_sha256": "8dcd99a7115be813e3c50035085461e6c312db3546f880330d269887e4ed6222"
+    },
+    {
+      "role": "wrapper_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
+      "expected_sha256": "b7b6293549224d22f7525d4b1c5a815c992f6a77fc3b8ab7dd9c2ca1b8dc3314"
+    },
+    {
+      "role": "rotor_actuator_core",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
+      "expected_sha256": "149587298855446369e0fc7a77e93b2c3b0ae8615476562185abd0fba030e538"
+    },
+    {
+      "role": "plant_sensor_surface",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
+      "expected_sha256": "c185e8a73eebb2de6925bef15e5285f030832d560805742f4127d367595d486b"
+    },
+    {
+      "role": "virtual_px4_classic_profile",
+      "path": "Models/MoSimQuadrotorModel/Parameters/Sunray150VirtualPx4Classic.mo",
+      "expected_sha256": "158f90336df9e22a86aa16b1c837442c2bea99134f1878aeabf6a4831d05c805"
+    },
+    {
+      "role": "climb_path_reference",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "expected_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+    }
+  ],
+  "model_layout_boundary": {
+    "state": "formal_runner_and_equation_bridge_not_deployment_equivalence_proof",
+    "reason": "The runner captures the sampled MWORKS whole-aircraft closure of the named px4ctrl equation bridge. It does not replace graphical-controller evidence or establish ROS1/C++ deployment equivalence."
+  },
+  "claim_boundary": "Real offline MWORKS 50 s ClimbPath closure for the px4ctrl equation bridge. It establishes bounded MWORKS behavior only, not PX4, Gazebo, ROS, or flight-runtime behavior."
+}
