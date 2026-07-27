@@ -1,5 +1,9 @@
+AdaptiveBacksteppingEquationBridge
+BacksteppingBaselineEquationBridge
 ClassicAccelerationEquationBridge
 DfbcHighOrderEquationBridge
+FeedbackLinearizationEquationBridge
+FopidEquationBridge
 H2StateFeedbackEquationBridge
 HinfHoverWrenchEquationBridge
 LinearMpcCFunction
@@ -8,6 +12,7 @@ LqgEquationBridge
 LqrBaselineEquationBridge
 MracEquationBridge
 NdiEquationBridge
+PassivityBasedControlEquationBridge
 PidAttitudeThrustCFunction
 PolePlacementLuenbergerEquationBridge
 SuperTwistingSmcCFunction

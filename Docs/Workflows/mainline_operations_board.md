@@ -31,7 +31,7 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Controller Evidence G1 Batch 2 - Active
+### Controller Evidence G1 Batch 3 - Active
 
 The user authorized the 48-controller MWORKS closed-loop evidence line on
 2026-07-28 CST. G0 is complete: `Px4CtrlFormalRunner` passed the common 50 s
@@ -49,12 +49,20 @@ source drift; the compact result record is
 This proves model integrity only, not closed-loop behavior or controller
 performance.
 
+G1 Batch 2 added `backstepping`, `adaptive backstepping`, `feedback
+linearization`, `passivity-based control`, and `FOPID` as thin bridge/Adapter
+pairs. Native `CheckModel` passed for all 10 classes without source drift; the
+compact result record is
+`Results/control_platform/g1_batch2_checkmodel_20260728/CHECK_MODEL_RESULTS.json`.
+This proves model integrity only, not closed-loop behavior or controller
+performance.
+
 Current action:
 
-1. G1 Batch 2: add only the approved non-linear/adaptive EquationBridge plus
-   thin Adapter routes, including backstepping, adaptive backstepping,
-   feedback linearization, passivity-based control, and FOPID. Resolve the
-   duplicate NDI against the Batch 1 route rather than creating a second one.
+1. G1 Batch 3: add only the approved sliding-mode EquationBridge plus thin
+   Adapter routes for integral SMC, terminal SMC, nonsingular terminal SMC,
+   adaptive SMC, and fuzzy SMC. Keep `SMC_BoundaryLayer` excluded as an
+   overview-only model with no closed-loop Adapter route.
 2. G1: add only EquationBridge plus thin Adapter implementations in the six
    approved batches. Each batch must pass native `CheckModel`, then commit and
    push before the next batch.

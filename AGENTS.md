@@ -17,9 +17,12 @@ the current evidence is
 terminal position error 0.002734 m). G1-0 reconciled the 48-entry catalog;
 G1 Batch 1 then added seven linear/robust controller routes and passed native
 `CheckModel` for its eight Bridges and seven Adapters without source drift.
-The current action is G1 Batch 2: add the approved non-linear/adaptive routes
-as thin EquationBridge/Adapter pairs, then run its independent `CheckModel`
-batch. G2 runs the 47 MWORKS routes on `ClimbPath`; G3 makes bounded repairs
+G1 Batch 2 then added five nonlinear/adaptive routes and passed native
+`CheckModel` for its five Bridges and five Adapters without source drift; its
+evidence is `Results/control_platform/g1_batch2_checkmodel_20260728/`. The
+current action is G1 Batch 3: add the approved sliding-mode routes as thin
+EquationBridge/Adapter pairs, then run its independent `CheckModel` batch. G2
+runs the 47 MWORKS routes on `ClimbPath`; G3 makes bounded repairs
 only for divergence, interface defects, or terminal error over 5 m. Do not
 begin seven-scenario simulation, code export, Gazebo/ROS runtime validation,
 G7, or R1 on this line.
