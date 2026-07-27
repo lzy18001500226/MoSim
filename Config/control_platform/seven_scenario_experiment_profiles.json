@@ -26,7 +26,8 @@
       "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
       "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
       "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
-      "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner"
+      "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner"
     ],
     "official_pid_boundary": {
       "reference_hold_period_s": 0.01,

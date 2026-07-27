@@ -21,10 +21,10 @@ def test_check_only_inventory_covers_the_contract_surface() -> None:
 
     assert len(module.TRAJECTORY_MODELS) == 8
     assert len(module.SHARED_RUNNER_MODELS) == 4
-    assert len(module.FORMAL_RUNNER_MODELS) == 7
-    assert len(module.TARGETS) == 19
+    assert len(module.FORMAL_RUNNER_MODELS) == 8
+    assert len(module.TARGETS) == 20
     assert module.TARGETS[0].endswith("ClimbPath")
-    assert module.TARGETS[-1].endswith("TrainedNeuralResidualFormalRunner")
+    assert module.TARGETS[-1].endswith("Px4CtrlFormalRunner")
     assert module.ALLOWED_MCP_TOOLS == {"session_manager", "model_manager", "check_model"}
 
 

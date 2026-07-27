@@ -56,6 +56,7 @@ FORMAL_RUNNERS = {
     "linear_mpc": "LinearMpcFormalRunner.mo",
     "dfbc_high_order_attitude": "DfbcHighOrderFormalRunner.mo",
     "trained_neural_residual": "TrainedNeuralResidualFormalRunner.mo",
+    "px4ctrl": "Px4CtrlFormalRunner.mo",
 }
 CHAMPION_ADAPTERS = {
     "cascade_pid": "CascadePidAttitudeThrustAdapter.mo",

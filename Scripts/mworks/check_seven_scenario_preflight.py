@@ -45,6 +45,7 @@ FORMAL_RUNNER_MODELS = (
     "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
     "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
     "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner",
 )
 TARGETS = TRAJECTORY_MODELS + SHARED_RUNNER_MODELS + FORMAL_RUNNER_MODELS
 ALLOWED_MCP_TOOLS = frozenset({"session_manager", "model_manager", "check_model"})
