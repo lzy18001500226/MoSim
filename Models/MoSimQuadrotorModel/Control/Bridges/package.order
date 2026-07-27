@@ -1,6 +1,14 @@
+ClassicAccelerationEquationBridge
 DfbcHighOrderEquationBridge
+H2StateFeedbackEquationBridge
+HinfHoverWrenchEquationBridge
 LinearMpcCFunction
+LqiEquationBridge
+LqgEquationBridge
 LqrBaselineEquationBridge
+MracEquationBridge
+NdiEquationBridge
 PidAttitudeThrustCFunction
+PolePlacementLuenbergerEquationBridge
 SuperTwistingSmcCFunction
 TrainedNeuralResidualCFunction

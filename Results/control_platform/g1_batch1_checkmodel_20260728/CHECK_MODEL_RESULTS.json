@@ -1,0 +1,479 @@
+{
+  "schema": "mosim.g1_batch_checkmodel.v1",
+  "batch": "G1 Batch 1 - linear state feedback",
+  "scope": "Native CheckModel only; no solver simulation, no controller performance claim, no model save or broad class reset.",
+  "recorded_at_utc": "2026-07-27T19:17:23.117211+00:00",
+  "model_root": "Models/MoSimQuadrotorModel/package.mo",
+  "source_hashes_before": {
+    "Models/MoSimQuadrotorModel/package.mo": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+    "Models/MoSimQuadrotorModel/Control/Bridges/ClassicAccelerationEquationBridge.mo": "304d7efa1311f8f63ee79866159414527b0be33ab0e482558b3eb7bae1725dba",
+    "Models/MoSimQuadrotorModel/Control/Bridges/LqiEquationBridge.mo": "c23750027712911b3a7428af0035da00ba22b1daf71cb7fa92b703e68fe24a26",
+    "Models/MoSimQuadrotorModel/Control/Bridges/LqgEquationBridge.mo": "da0c54f0abe48e60c1c3815a51b91911681a42e7b916671116a40b8db0a5b934",
+    "Models/MoSimQuadrotorModel/Control/Bridges/H2StateFeedbackEquationBridge.mo": "b8d2a291e846e7553f8be1589be0af58e2588a4d2c41da4c732ff53a2b6dc029",
+    "Models/MoSimQuadrotorModel/Control/Bridges/HinfHoverWrenchEquationBridge.mo": "1a639e284d2addf7e060a4739a8c766b1637d3c9bd313b8423145d6f25b9e6d2",
+    "Models/MoSimQuadrotorModel/Control/Bridges/PolePlacementLuenbergerEquationBridge.mo": "1d46b807449c41fa3ca28f3cff2799f021e5021aa5cdfd3d8a0d86541605bd33",
+    "Models/MoSimQuadrotorModel/Control/Bridges/MracEquationBridge.mo": "66c8f737bf5e2937cd1e828e343e5f32a70dfa019f083046bbb6889b7b297e73",
+    "Models/MoSimQuadrotorModel/Control/Bridges/NdiEquationBridge.mo": "184976a93546bfc0e12512ae8c6e349fbca17917d5495d7d0e6299225a26ad72",
+    "Models/MoSimQuadrotorModel/Control/Adapters/LqiAttitudeThrustAdapter.mo": "18a1b54a697f37ac5bb43d27145c6c39d66de207c50d436dc31e8eacfcd4f075",
+    "Models/MoSimQuadrotorModel/Control/Adapters/LqgAttitudeThrustAdapter.mo": "da5a98c39fbc68983125cff9e7e86bc9a39eca2343138fcbea9a257adbd6c8fa",
+    "Models/MoSimQuadrotorModel/Control/Adapters/H2StateFeedbackAttitudeThrustAdapter.mo": "9d3deb07001981158b270fc14e196b483a99d8ffc2a873d60a8d0a119f79fce8",
+    "Models/MoSimQuadrotorModel/Control/Adapters/HinfHoverWrenchAdapter.mo": "68ca8e371ca643b768046c83b4d170c49467c633173ee8d27ba59a446f62e048",
+    "Models/MoSimQuadrotorModel/Control/Adapters/PolePlacementLuenbergerAttitudeThrustAdapter.mo": "f7207fb0aee322c2c4d0ee943e7b5128c250a3fe7ad185529f23199e81c5ae09",
+    "Models/MoSimQuadrotorModel/Control/Adapters/MracAttitudeThrustAdapter.mo": "84c47eafa29a2b1216bfe4d345473f994e80f56db3d56513023e2e7b3220ba5f",
+    "Models/MoSimQuadrotorModel/Control/Adapters/NdiAttitudeThrustAdapter.mo": "c16425285dce4189988d8b6f121d003723b663851c44a5cee9fdef3bb827bde6"
+  },
+  "targets": [
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/ClassicAccelerationEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.ClassicAccelerationEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.077,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.073,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.ClassicAccelerationEquationBridge",
+            "dt_s": 0.072
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/LqiEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.LqiEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.074,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.071,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.LqiEquationBridge",
+            "dt_s": 0.064
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/LqgEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.LqgEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.074,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.07,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.LqgEquationBridge",
+            "dt_s": 0.068
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/H2StateFeedbackEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.H2StateFeedbackEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.065,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.062,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.H2StateFeedbackEquationBridge",
+            "dt_s": 0.061
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/HinfHoverWrenchEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.HinfHoverWrenchEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.079,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.076,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.HinfHoverWrenchEquationBridge",
+            "dt_s": 0.072
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/PolePlacementLuenbergerEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.PolePlacementLuenbergerEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.07,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.067,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.PolePlacementLuenbergerEquationBridge",
+            "dt_s": 0.065
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/MracEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.MracEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.065,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.061,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.MracEquationBridge",
+            "dt_s": 0.06
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/NdiEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.NdiEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.061,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.058,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.NdiEquationBridge",
+            "dt_s": 0.057
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/LqiAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.LqiAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.067,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.063,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.LqiAttitudeThrustAdapter",
+            "dt_s": 0.061
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/LqgAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.LqgAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.058,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.055,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.LqgAttitudeThrustAdapter",
+            "dt_s": 0.053
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/H2StateFeedbackAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.H2StateFeedbackAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.06,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.057,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.H2StateFeedbackAttitudeThrustAdapter",
+            "dt_s": 0.056
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/HinfHoverWrenchAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.HinfHoverWrenchAdapter",
+      "status": "passed",
+      "elapsed_s": 0.066,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.063,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.HinfHoverWrenchAdapter",
+            "dt_s": 0.062
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/PolePlacementLuenbergerAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.PolePlacementLuenbergerAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.063,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.06,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.PolePlacementLuenbergerAttitudeThrustAdapter",
+            "dt_s": 0.059
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/MracAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.MracAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.061,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.058,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.MracAttitudeThrustAdapter",
+            "dt_s": 0.057
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/NdiAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.NdiAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.063,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.06,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.NdiAttitudeThrustAdapter",
+            "dt_s": 0.059
+          }
+        ]
+      }
+    }
+  ],
+  "live_mworks_touched": true,
+  "will_not_click_activation_login": true,
+  "mcp_health": {
+    "ok": true,
+    "mcp_server": {
+      "version": "0.1",
+      "version_display": "0.1",
+      "version_base": "0.1",
+      "version_core": "0.1",
+      "build_counter": 0,
+      "git_commit_count": 196,
+      "build_kind": "release",
+      "build_time": "2026-05-08T11:14:45+08:00",
+      "git_revision": "24314a1"
+    },
+    "python": {
+      "python_version": "3.11.4",
+      "major": 3,
+      "minor": 11,
+      "compatible": true,
+      "required": "3.10+ (recommended 3.11 for mworks-sysplorer)"
+    },
+    "driver_ready": true,
+    "driver_error": "",
+    "advice": [],
+    "sysplorer_startup": {
+      "attempted": true,
+      "started": true,
+      "already_running": false,
+      "wait_ms": 0,
+      "error": "",
+      "dedicated_sysplorer_port": 49157,
+      "timestamp": "2026-07-27T19:17:55.828101+00:00"
+    },
+    "paths": {
+      "workspace_root": "C:\\Users\\HP\\Desktop\\MoSim",
+      "deploy_root": "D:\\Program Files\\MWORKS\\Sysplorer 2026a\\Tools\\sysplorer_mcp",
+      "resources_root": "C:\\Users\\HP\\Desktop\\MoSim\\resources"
+    },
+    "bin64_path": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Bin64",
+    "workdir": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Tools\\SYSPLO~1\\SYSPLO~1\\temp",
+    "site_packages": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\External\\python64\\Lib\\SITE-P~1",
+    "api_ready": true
+  },
+  "load_root": {
+    "ok": true,
+    "api": "OpenModelFile",
+    "data": true,
+    "cached": false,
+    "file_path": "C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\package.mo",
+    "auto_loaded_libs": {
+      "Modelica": {
+        "ok": true,
+        "error": "",
+        "cached": false
+      },
+      "Icons": {
+        "ok": false,
+        "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+        "cached": false
+      },
+      "TY": {
+        "ok": false,
+        "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+        "cached": false
+      }
+    },
+    "manager_action": "load_file"
+  },
+  "load_root_elapsed_s": 1.719,
+  "source_hashes_after": {
+    "Models/MoSimQuadrotorModel/package.mo": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+    "Models/MoSimQuadrotorModel/Control/Bridges/ClassicAccelerationEquationBridge.mo": "304d7efa1311f8f63ee79866159414527b0be33ab0e482558b3eb7bae1725dba",
+    "Models/MoSimQuadrotorModel/Control/Bridges/LqiEquationBridge.mo": "c23750027712911b3a7428af0035da00ba22b1daf71cb7fa92b703e68fe24a26",
+    "Models/MoSimQuadrotorModel/Control/Bridges/LqgEquationBridge.mo": "da0c54f0abe48e60c1c3815a51b91911681a42e7b916671116a40b8db0a5b934",
+    "Models/MoSimQuadrotorModel/Control/Bridges/H2StateFeedbackEquationBridge.mo": "b8d2a291e846e7553f8be1589be0af58e2588a4d2c41da4c732ff53a2b6dc029",
+    "Models/MoSimQuadrotorModel/Control/Bridges/HinfHoverWrenchEquationBridge.mo": "1a639e284d2addf7e060a4739a8c766b1637d3c9bd313b8423145d6f25b9e6d2",
+    "Models/MoSimQuadrotorModel/Control/Bridges/PolePlacementLuenbergerEquationBridge.mo": "1d46b807449c41fa3ca28f3cff2799f021e5021aa5cdfd3d8a0d86541605bd33",
+    "Models/MoSimQuadrotorModel/Control/Bridges/MracEquationBridge.mo": "66c8f737bf5e2937cd1e828e343e5f32a70dfa019f083046bbb6889b7b297e73",
+    "Models/MoSimQuadrotorModel/Control/Bridges/NdiEquationBridge.mo": "184976a93546bfc0e12512ae8c6e349fbca17917d5495d7d0e6299225a26ad72",
+    "Models/MoSimQuadrotorModel/Control/Adapters/LqiAttitudeThrustAdapter.mo": "18a1b54a697f37ac5bb43d27145c6c39d66de207c50d436dc31e8eacfcd4f075",
+    "Models/MoSimQuadrotorModel/Control/Adapters/LqgAttitudeThrustAdapter.mo": "da5a98c39fbc68983125cff9e7e86bc9a39eca2343138fcbea9a257adbd6c8fa",
+    "Models/MoSimQuadrotorModel/Control/Adapters/H2StateFeedbackAttitudeThrustAdapter.mo": "9d3deb07001981158b270fc14e196b483a99d8ffc2a873d60a8d0a119f79fce8",
+    "Models/MoSimQuadrotorModel/Control/Adapters/HinfHoverWrenchAdapter.mo": "68ca8e371ca643b768046c83b4d170c49467c633173ee8d27ba59a446f62e048",
+    "Models/MoSimQuadrotorModel/Control/Adapters/PolePlacementLuenbergerAttitudeThrustAdapter.mo": "f7207fb0aee322c2c4d0ee943e7b5128c250a3fe7ad185529f23199e81c5ae09",
+    "Models/MoSimQuadrotorModel/Control/Adapters/MracAttitudeThrustAdapter.mo": "84c47eafa29a2b1216bfe4d345473f994e80f56db3d56513023e2e7b3220ba5f",
+    "Models/MoSimQuadrotorModel/Control/Adapters/NdiAttitudeThrustAdapter.mo": "c16425285dce4189988d8b6f121d003723b663851c44a5cee9fdef3bb827bde6"
+  },
+  "source_changed_by_check": false,
+  "passed_count": 15,
+  "failed_count": 0,
+  "status": "passed"
+}

@@ -31,7 +31,48 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Seven-Scenario Pre-Simulation Gate Passed - Awaiting User Review
+### Controller Evidence G1 Batch 2 - Active
+
+The user authorized the 48-controller MWORKS closed-loop evidence line on
+2026-07-28 CST. G0 is complete: `Px4CtrlFormalRunner` passed the common 50 s
+`ClimbPath` baseline with 5001 samples, no NaN, `position_rmse_m=0.276705`,
+and `terminal_position_error_norm=0.002734`. Its native `CheckModel` capture
+shows 0 errors and 0 warnings. Current evidence is
+`Results/control_platform/px4ctrl_baseline_verification/`.
+
+G1-0 reconciled the catalog and route denominator. G1 Batch 1 added the
+`LQI`, `LQG`, `H2 state feedback`, `H-infinity hover wrench`,
+`pole-placement/Luenberger`, `MRAC`, and `NDI` routes as thin bridge/Adapter
+pairs. Native `CheckModel` passed for all 15 new/support classes, with no
+source drift; the compact result record is
+`Results/control_platform/g1_batch1_checkmodel_20260728/CHECK_MODEL_RESULTS.json`.
+This proves model integrity only, not closed-loop behavior or controller
+performance.
+
+Current action:
+
+1. G1 Batch 2: add only the approved non-linear/adaptive EquationBridge plus
+   thin Adapter routes, including backstepping, adaptive backstepping,
+   feedback linearization, passivity-based control, and FOPID. Resolve the
+   duplicate NDI against the Batch 1 route rather than creating a second one.
+2. G1: add only EquationBridge plus thin Adapter implementations in the six
+   approved batches. Each batch must pass native `CheckModel`, then commit and
+   push before the next batch.
+3. G2: create needed FormalRunners and run all 47 MWORKS profiles, excluding
+   px4ctrl, on the common 50 s `ClimbPath`; record pass/fail, RMSE, terminal
+   error, and a concrete failure reason.
+4. G3: repair only divergence, interface defects, or terminal error above 5 m;
+   rerun every repaired controller and then the full matrix. Do not do
+   performance-only gain tuning in G3.
+
+Each named stage requires targeted checks, an exact-path commit, push, and one
+sparse Chinese email. No seven-scenario simulation, export, Gazebo/ROS runtime
+validation, G7, or R1 is authorized by this action. The Phase 1 and prior
+candidate-recovery results remain trace-back only after the reference-contract
+repair.
+
+
+### Historical Seven-Scenario Pre-Simulation Gate
 
 - Workflow: `Docs/Workflows/run_simulation.md`.
 - Frozen matrix driver: `Scripts/mworks/run_phase1_minimum_closure.py`.
@@ -69,9 +110,9 @@ contract. Neither creates another task line or gate meaning.
   current-source performance evidence. The `CheckModel` record proves model
   integrity only, not RMSE improvement, seven-scenario A/B, code-generation,
   Gazebo, ROS, or flight-runtime behavior.
-- Stop: wait for user review before any current-source replay, the other 34
-  `adapter_missing` rows, seven-scenario A/B, export, runtime validation, G7,
-  or R1.
+- The prior wait condition was superseded only for G0-G3 above. This record
+  remains static preflight evidence and does not authorize seven-scenario A/B,
+  export, runtime validation, G7, or R1.
 
 The approved atomic model-library migration is statically complete. The only
 formal load root is `Models/MoSimQuadrotorModel/package.mo`; retired roots and
@@ -130,37 +171,31 @@ current completion.
 
 ## 3. Next Engineering Selection
 
-After the user reviews this contract repair, continue the approved
-controller-evidence plan in this order:
+Execute the active G0-G3 controller line above. The completed G1-0
+reconciliation is the authority for the G1 and G2 denominator; do not infer an
+additional runnable route from a historical `adapter_missing` row or the
+planned ESO profile.
 
-1. replay Official PID and the six candidate Formal Runners on the same 50 s
-   `ClimbPath` with this exact source, then derive the current RMSE ranking;
-2. choose one measured winner from each of the seven semantic families and give
-   only those candidates champion-specific minimum whole-aircraft closures;
-3. compare each accepted winner with Official PID in hover, step, figure-8,
-   spiral, wind, parameter-mismatch and motor-efficiency-fault scenarios; add
-   `px4ctrl` only after its MWORKS-equivalent core passes its behavior/interface
-   equivalence gate;
-4. run the required ESO ablation trio, then export accepted candidates and
-   validate the declared ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl runtime path;
-5. collect report/software-documentation material from the resulting evidence,
-   then archive no-longer-used source only after a dependency audit.
+After G3, research gain-tuning opportunities and explicit stop-loss bounds;
+stop there and obtain a new user instruction before seven-scenario work.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant
 topic workflow and declare the evidence path under `Results/`.
 
 ## 4. Stopping And Handoff Conditions
 
-For the completed seven-scenario pre-simulation gate:
+For the active G0-G3 controller line:
 
-- Static validation and native `CheckModel` passed for eight trajectories, four
-  shared Runners, Official PID, and six champion Formal Runners. Commit and
-  push the bounded repair, then wait for user review.
-- Do not use P0b or the pre-repair six-candidate RMSE as current-source
-  controller-family selection data. Replay is required first.
-- Do not run the candidate/Official PID replay, the other 34 `adapter_missing`
-  rows, seven-scenario A/B, ESO ablation, export, ROS1 runtime validation, G7,
-  or R1 before a new user instruction.
+- Stop at every batch boundary after its native `CheckModel`, exact-path
+  commit, push, and email report; do not allow one failed route to silently
+  change the next batch's interface contract.
+- G0 and G2 use only the common 50 s `ClimbPath` and the terminal-error gate
+  of less than 5 m. A completed solver call with a divergent signal is a fail.
+- The old P0b and pre-repair six-candidate RMSE values are trace-back evidence,
+  not current-source ranking data.
+- Do not begin seven-scenario A/B, ESO ablation, code export, ROS1 runtime
+  validation, G7, or R1 until G3 is complete and the user supplies a new
+  instruction.
 
 ## 5. Board Update Rule
 

@@ -9,20 +9,36 @@ domain-specific workflows in the linked documents below.
 
 ## Current Task
 
-Fast entry cue, 2026-07-27 CST: the six-candidate recovery record at
-`Results/control_platform/champion_candidate_recovery_20260727/`
-predates the shared reference-velocity/reference-acceleration repair. Its
-`ClimbPath` passes and RMSE are trace-back evidence only, not a valid ranking
-for the current source. The user-approved seven-scenario contract is now bound
-through the Plant and four shared Runner classes; the Official PID has a 0.01 s
+Fast entry cue, 2026-07-28 CST: G0 of the user-authorized 48-controller
+MWORKS closed-loop line passed. `Px4CtrlFormalRunner` completed `ClimbPath`
+for 50 s with a native `CheckModel` diagnostic of 0 errors and 0 warnings;
+the current evidence is
+`Results/control_platform/px4ctrl_baseline_verification/` (RMSE 0.276705 m,
+terminal position error 0.002734 m). G1-0 reconciled the 48-entry catalog;
+G1 Batch 1 then added seven linear/robust controller routes and passed native
+`CheckModel` for its eight Bridges and seven Adapters without source drift.
+The current action is G1 Batch 2: add the approved non-linear/adaptive routes
+as thin EquationBridge/Adapter pairs, then run its independent `CheckModel`
+batch. G2 runs the 47 MWORKS routes on `ClimbPath`; G3 makes bounded repairs
+only for divergence, interface defects, or terminal error over 5 m. Do not
+begin seven-scenario simulation, code export, Gazebo/ROS runtime validation,
+G7, or R1 on this line.
+
+
+The six-candidate recovery record at
+`Results/control_platform/champion_candidate_recovery_20260727/` predates the
+shared reference-velocity/reference-acceleration repair. Its `ClimbPath`
+passes and RMSE are trace-back evidence only, not a valid ranking for the
+current source. The user-approved seven-scenario contract is now bound through
+the Plant and four shared Runner classes; the Official PID has a 0.01 s
 external hold harness. Static validation and native `CheckModel` passed for
 eight trajectories, four shared Runners, Official PID, and six champion Formal
 Runners. Current evidence is
-`Results/control_platform/seven_scenario_preflight_20260727/`.
-No current-source replay, seven-scenario simulation, A/B comparison, code
-generation, or Gazebo/ROS runtime validation has run. Wait for user review
-before starting any of those steps, the other 34 `adapter_missing` rows, G7,
-or R1.
+`Results/control_platform/seven_scenario_preflight_20260727/`. No
+current-source replay, seven-scenario simulation, A/B comparison, code
+ generation, or Gazebo/ROS runtime validation has run. The historical
+ seven-scenario gate remains static-only evidence; it does not authorize any
+ seven-scenario run under the active G0-G3 controller line.
 
 `Docs/Workflows/mainline_operations_board.md` is the sole task authority and
 contains the exact scope, evidence, and stopping/handoff conditions. Update this
