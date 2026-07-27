@@ -27,17 +27,28 @@ def authorities() -> tuple[dict, dict, dict, dict]:
     return tuple(json.loads(path.read_text(encoding="utf-8")) for path in (CATALOG, MATRIX, REGISTRY, DOCUMENT_INVENTORY))
 
 
-def test_g1_inventory_covers_exactly_the_frozen_49_schemes() -> None:
+def test_g1_inventory_covers_exactly_the_active_48_profiles() -> None:
     builder = load_module(BUILDER, "build_control_scheme_execution_inventory")
     checker = load_module(CHECKER, "check_control_scheme_execution_inventory")
     catalog, matrix, registry, document_inventory = authorities()
     inventory = builder.build_inventory()
-    assert inventory["summary"]["top_level_scheme_count"] == 49
+    assert inventory["summary"]["active_top_level_entry_count"] == 48
     assert inventory["summary"]["mworks_run_eligible_count"] == 0
     assert checker.validate(inventory, catalog, matrix, registry, document_inventory) == []
 
 
-def test_unresolved_source_candidate_cannot_enable_mworks() -> None:
+def test_fixed_qp_profile_is_a_screening_candidate_in_its_optimization_family() -> None:
+    builder = load_module(BUILDER, "build_control_scheme_execution_inventory_fixed_qp")
+    inventory = builder.build_inventory()
+    fixed_qp = next(row for row in inventory["schemes"] if row["scheme_id"] == "fixed_qp_nmpc_l1_indi_cbf")
+
+    assert fixed_qp["category"] == "optimization_predictive"
+    assert fixed_qp["profile_role"] == "candidate"
+    assert fixed_qp["selection_eligibility"] == "family_screening"
+    assert fixed_qp["execution_kind"] == "full_profile_whole_aircraft"
+
+
+def test_inventory_cannot_authorize_mworks_execution() -> None:
     builder = load_module(BUILDER, "build_control_scheme_execution_inventory")
     checker = load_module(CHECKER, "check_control_scheme_execution_inventory")
     catalog, matrix, registry, document_inventory = authorities()
@@ -47,7 +58,6 @@ def test_unresolved_source_candidate_cannot_enable_mworks() -> None:
     cascade["mworks_run_eligible"] = True
     codes = {item["code"] for item in checker.validate(inventory, catalog, matrix, registry, document_inventory)}
     assert "CSE-RUN-02" in codes
-    assert "CSE-RUN-03" in codes
 
 
 def test_px4ctrl_cannot_be_promoted_to_a_graphical_mworks_scheme() -> None:

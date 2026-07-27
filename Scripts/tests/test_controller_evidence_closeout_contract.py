@@ -22,12 +22,12 @@ def test_current_g1_g7_contract_passes() -> None:
     assert checker.validate(checker.load_inputs()) == []
 
 
-def test_pending_champion_slate_cannot_claim_adapter_promotion() -> None:
+def test_measured_family_selection_cannot_claim_winner_before_phase1() -> None:
     checker = load_module()
     inputs = copy.deepcopy(checker.load_inputs())
-    candidate = inputs["formal_harness_map"]["provisional_champion_selection"]["candidates"][0]
-    assert candidate["promotion_state"] == "awaiting_current_g6_probe"
-    candidate["promotion_state"] = "adapter_binding_pending"
+    pool = inputs["formal_harness_map"]["measured_family_selection"]["family_pools"][0]
+    assert pool["winner_scheme_id"] is None
+    pool["winner_scheme_id"] = "cascade_pid"
     codes = {error["code"] for error in checker.validate(inputs)}
     assert "CCEC-HARNESS-11" in codes
 
@@ -43,8 +43,8 @@ def test_operation_catalog_cannot_be_promoted_to_model_entry_authority() -> None
 def test_unresolved_current_map_row_cannot_enable_mworks() -> None:
     checker = load_module()
     inputs = copy.deepcopy(checker.load_inputs())
-    mu = next(row for row in inputs["current_model_map"]["schemes"] if row["scheme_id"] == "mu_synthesis")
-    mu["mworks_run_eligible"] = True
+    eso = next(row for row in inputs["current_model_map"]["schemes"] if row["scheme_id"] == "pid_awff_linear_eso")
+    eso["mworks_run_eligible"] = True
     codes = {error["code"] for error in checker.validate(inputs)}
     assert "CCEC-MAP-09" in codes
 

@@ -20,7 +20,7 @@ Models/MoSimQuadrotorModel/package.mo
 |---|---|---|
 | `Models/MoSimQuadrotorModel/` | 唯一正式 Modelica 实现根 | 打开根目录的 `package.mo`，再按命名空间选择模型。 |
 | `Config/scenarios/` | 场景和实验配置 | 配置中的模型类必须指向正式根。 |
-| `Config/control_platform/` | 控制方案、入口映射和接口配置 | 冻结的 49 条方案注册、46 条当前 MWORKS 路线和冠军测试壳状态以机器可读映射为准。 |
+| `Config/control_platform/` | 控制方案、入口映射和接口配置 | 冻结的 48 个活动条目、47 个 MWORKS Control Profile、46 条当前 MWORKS 路线和冠军测试壳状态以机器可读映射为准。 |
 | `Scripts/mworks/` | MWORKS 检查、执行、结果提取脚本 | 先读对应工作流，再运行最小检查。 |
 | `Scripts/quality/` | 结构和证据质量门 | `consolidate_mosimquad_model_root.py --check` 检查单根布局。 |
 | `Results/` | 结果、日志、截图和审查包 | 结果只能证明其明确记录的证据层。 |
@@ -58,7 +58,7 @@ MoSimQuadrotorModel
 
 G4 Current Model Entry Mapping and Non-destructive Refactor Contract uses
 `Config/control_platform/current_model_entry_map.json` as the frozen entry
-registry. The operation catalog is not the 49-scheme current-model-entry registry;
+registry. The operation catalog is not the 48-profile current-model-entry registry;
 it only lists allowlisted Model Studio operations.
 
 G4 is non-destructive: it migrates qualified namespaces and updates references
@@ -67,12 +67,13 @@ without asserting a controller result. It does not open MWORKS, call
 tracked as an `internal_graphical_probe` until it has an explicit runner and
 plant-coupled evidence record.
 
-The current registry distinguishes 46 resolved MWORKS routes, two missing-source
-blockers, and the separate `px4ctrl` runtime baseline. The 47-Profile target is
-future scope, not a retroactive claim that every target already has a current
-MWORKS run. A six-family candidate cannot enter A/B testing until its
-champion-specific core/Adapter/plant binding has passed the required minimum
-whole-aircraft closure.
+The current registry distinguishes 46 resolved MWORKS routes, one planned ESO
+Profile without a model, and the separate pending-MWORKS-equivalent `px4ctrl`
+engineering/deployment baseline. The 46 resolved routes split into 41 graphical controller cores and five named whole-aircraft profiles. The 47-Profile
+catalog is not a retroactive claim that every Profile already has a current
+MWORKS run. A winner from any of the seven semantic families cannot enter A/B
+testing until its champion-specific core/Adapter/plant binding has passed the
+required minimum whole-aircraft closure.
 
 ## 5. Reproduction Sequence
 
@@ -116,7 +117,7 @@ Config/scenarios/
 
 Each runnable claim must bind one scenario configuration to one canonical class, one runner command, raw output, metrics, and figure/review evidence. A source file or a package load is not a simulation claim.
 
-The current 49-scheme mapping and formal-harness distinction are maintained by:
+The current 48-profile mapping and formal-harness distinction are maintained by:
 
 ```text
 Config/control_platform/control_scheme_catalog.json

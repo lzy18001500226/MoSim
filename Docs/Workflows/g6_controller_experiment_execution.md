@@ -8,10 +8,11 @@
 
 ## 1. Scope and Claim Boundary
 
-The frozen current inventory is 49 top-level schemes: 46 MWORKS routes, two
-implementation blockers, and the `px4ctrl` runtime baseline. G6 executes only
-the 46 current MWORKS routes. Historical `65/67` code-generation or SIL
-records are trace-back material only and are not G6 result rows.
+The frozen current inventory is 48 active entries: 47 MWORKS Control Profiles
+(46 current MWORKS routes plus the planned `pid_awff_linear_eso` Profile) and
+the `px4ctrl` engineering/deployment baseline. G6 executes only the 46 current
+MWORKS routes. Historical `65/67` code-generation or SIL records are trace-back
+material only and are not G6 result rows.
 
 Every route must produce a current result record, but the result class is
 fixed by `Config/control_platform/formal_closed_loop_harness_map.json`:
@@ -277,16 +278,19 @@ when all of the following agree:
 4. native result/metrics locator; and
 5. `CheckModel` plus result-variable read in the same route record.
 
-The existing `01_图形模型.png` assets remain G5 structure evidence. The
-`02_最小闭环结果原生窗口.png` asset is G6 result evidence and must never be
-filled by a structure screenshot or historic output.
+`01_图形模型.png` becomes G5 structure evidence only after a current native
+window capture is bound to its G5 packet. At present every slot is empty.
+`02_最小闭环结果原生窗口.png` is G6 result evidence and must never be filled by a
+structure screenshot or historic output.
 
 ## 5. Champion Promotion
 
-After all 46 rows reach a terminal state, select one provisional candidate from
-each nominal family: PID, classic/robust, sliding mode, optimization,
-geometric/flatness, and learning. The internal-probe result is a readiness
-screen, not a performance ranking. Selection must record:
+After all 46 rows reach a terminal state, select one measured winner from each
+semantic family: PID and intelligent PID, linear and robust state feedback,
+nonlinear and adaptive control, sliding mode, optimization and predictive
+control, geometric and differential flatness, and learning. The internal-probe
+result is a readiness screen; the family ranking uses the declared current-source
+50 s ClimbPath position RMSE and its tie breakers. Selection must record:
 
 - passed/blocked probe state and finite-output checks;
 - controller interface and adapter feasibility;
@@ -295,11 +299,12 @@ screen, not a performance ranking. Selection must record:
 
 The current selection authority is
 `Config/control_platform/g6_champion_selection.json`; the generator-backed
-formal harness map records its derived core hashes, passed G6 probe bindings,
-and whether a candidate is still awaiting an adapter. `official_pid` remains a
-separate A/B baseline binding unless it is proven semantically identical to the
-selected PID-family core; a small AWFF altitude-loop graphical probe cannot
-stand in for that full baseline controller.
+formal harness map records the seven unset winner pools, their derived core
+hashes, and the required Adapter/test-harness promotion state. `official_pid`
+remains a separate fixed MWORKS A/B reference baseline, never a family winner.
+`px4ctrl` remains a separate engineering/deployment baseline until its MWORKS
+equivalent core passes explicit C++ behavior and interface equivalence. A small
+AWFF altitude-loop graphical probe cannot stand in for either baseline.
 
 ### Official PID formal baseline
 
@@ -369,17 +374,18 @@ generation, PX4, Gazebo, ROS, or flight runtime were independently accepted.
 
 ## 6. Seven-Scenario A/B
 
-Only champions whose promoted test harness passes minimum closure enter the
-same-parameter A/B matrix against Official PID:
+Only measured winners whose promoted test harness passes minimum closure enter
+the same-parameter A/B matrix against Official PID. The `px4ctrl` equivalent
+core joins that matrix only after its explicit equivalence gate passes:
 
 ```text
 hover, step, figure8, spiral, wind, parameter_mismatch, motor_efficiency_fault
 ```
 
 Each row records controller, scenario, plant/harness hashes, raw result,
-metrics, result screenshot, acceptance decision, and claim boundary. The PID
-family may reuse Official PID's formal harness only when Official PID is the
-selected PID candidate; it is not double-counted.
+metrics, result screenshot, acceptance decision, and claim boundary. Official
+PID remains a non-winner comparison baseline and is never double-counted as a
+PID-family winner.
 
 ## 7. Completion Boundary
 

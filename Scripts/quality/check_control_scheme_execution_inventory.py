@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Validate the G1 49-scheme execution inventory without promoting execution."""
+"""Validate the G1 active 48-entry execution inventory without execution."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -35,16 +36,16 @@ DEFAULT_INVENTORY = (
     / "CONTROL_SCHEME_EXECUTION_INVENTORY.json"
 )
 
+ACTIVE_ENTRY_COUNT = 48
+CURRENT_MWORKS_ROUTE_COUNT = 46
+FAMILY_SCREENING_CANDIDATE_COUNT = 45
+
 
 def load_json(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise ValueError(f"JSON root must be an object: {path}")
     return data
-
-
-def sha256_file(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def validate(
@@ -59,17 +60,31 @@ def validate(
     def add(code: str, message: str) -> None:
         errors.append({"code": code, "message": message})
 
-    if inventory.get("schema") != "mosim.control_scheme_execution_inventory.v1" or inventory.get("version") != 1:
-        add("CSE-SCHEMA-01", "inventory must use mosim.control_scheme_execution_inventory.v1 version 1")
+    if (
+        inventory.get("schema") != "mosim.control_scheme_execution_inventory.v2"
+        or inventory.get("version") != 2
+    ):
+        add("CSE-SCHEMA-01", "inventory must use mosim.control_scheme_execution_inventory.v2 version 2")
     schemes = inventory.get("schemes")
     if not isinstance(schemes, list):
         add("CSE-ROWS-01", "schemes must be a list")
         return errors
     catalog_schemes = catalog.get("schemes") if isinstance(catalog.get("schemes"), list) else []
-    catalog_by_id = {str(item.get("scheme_id")): item for item in catalog_schemes if isinstance(item, dict)}
-    inventory_by_id = {str(item.get("scheme_id")): item for item in schemes if isinstance(item, dict)}
-    if len(schemes) != 49 or len(inventory_by_id) != 49 or set(inventory_by_id) != set(catalog_by_id):
-        add("CSE-COUNT-01", "inventory must contain exactly the 49 unique catalog scheme IDs")
+    catalog_by_id = {
+        str(item.get("scheme_id")): item for item in catalog_schemes if isinstance(item, dict)
+    }
+    inventory_by_id = {
+        str(item.get("scheme_id")): item for item in schemes if isinstance(item, dict)
+    }
+    if (
+        len(schemes) != ACTIVE_ENTRY_COUNT
+        or len(inventory_by_id) != ACTIVE_ENTRY_COUNT
+        or set(inventory_by_id) != set(catalog_by_id)
+    ):
+        add("CSE-COUNT-01", "inventory must contain exactly the 48 unique active catalog profile IDs")
+    for retired_id in ("mu_synthesis", "neural_smc"):
+        if retired_id in inventory_by_id:
+            add("CSE-RETIRED-01", f"{retired_id} must remain historical-only, not an active inventory row")
 
     source_hashes = inventory.get("source_sha256")
     expected_hashes = {
@@ -102,54 +117,90 @@ def validate(
         for row in registry.get("modules", [])
         if isinstance(row, dict) and row.get("module_id")
     }
+
+    current_route_count = 0
+    screening_candidate_count = 0
+    type_counts: Counter[str] = Counter()
     for scheme_id, row in inventory_by_id.items():
         catalog_row = catalog_by_id.get(scheme_id)
         if not isinstance(catalog_row, dict):
             continue
         prefix = f"{scheme_id}: "
-        if row.get("entry_type") != catalog_row.get("entry_type") or row.get("category") != catalog_row.get("category"):
-            add("CSE-CATALOG-01", prefix + "entry_type/category must match the frozen catalog")
+        entry_type = str(catalog_row.get("entry_type"))
+        execution_kind = str(catalog_row.get("execution_kind"))
+        type_counts[entry_type] += 1
+        if (
+            row.get("entry_type") != entry_type
+            or row.get("category") != catalog_row.get("category")
+            or row.get("profile_role") != catalog_row.get("role")
+            or row.get("selection_eligibility") != catalog_row.get("selection_eligibility")
+            or row.get("execution_kind") != execution_kind
+        ):
+            add("CSE-CATALOG-01", prefix + "profile identity fields must match the active catalog")
+
         model_entry = row.get("model_entry") if isinstance(row.get("model_entry"), dict) else {}
         eligible = row.get("mworks_run_eligible")
         if not isinstance(eligible, bool):
             add("CSE-RUN-01", prefix + "mworks_run_eligible must be boolean")
-        if eligible and model_entry.get("mapping_state") != "resolved_current_model":
-            add("CSE-RUN-02", prefix + "unresolved model mapping may not authorize an MWORKS run")
-        if eligible and not str(model_entry.get("current_model_file") or ""):
-            add("CSE-RUN-03", prefix + "eligible MWORKS run requires a current model file")
+        if eligible:
+            add("CSE-RUN-02", prefix + "G1 inventory may not authorize MWORKS execution")
 
-        entry_type = str(catalog_row.get("entry_type"))
-        if entry_type == "competition_primary_route":
-            controller = str(catalog_row.get("evidence_matrix_controller"))
-            matrix_row = matrix_by_id.get(controller)
-            document_row = document_by_id.get(controller)
-            if row.get("control_owner") != "nominal_controller":
-                add("CSE-PRIMARY-01", prefix + "primary route must own the nominal-controller slot")
-            if row.get("evidence_route") != controller or not isinstance(matrix_row, dict):
-                add("CSE-PRIMARY-02", prefix + "primary evidence route must bind its exact matrix row")
-            elif row.get("current_evidence", {}).get("matrix_status") != matrix_row.get("status"):
-                add("CSE-PRIMARY-03", prefix + "matrix status drifted from authority")
-            if not isinstance(document_row, dict):
-                add("CSE-PRIMARY-04", prefix + "primary route is missing document-evidence inventory row")
-            binding = row.get("registry_binding") if isinstance(row.get("registry_binding"), dict) else {}
-            registry_module = registry_by_id.get(scheme_id)
-            if registry_module and binding.get("mapping_state") != "exact_registry_binding":
-                add("CSE-PRIMARY-05", prefix + "registered primary route must retain exact registry binding")
-            if not registry_module and binding.get("mapping_state") != "no_exact_registry_binding":
-                add("CSE-PRIMARY-06", prefix + "unregistered legacy primary route must remain explicitly unbound")
-        elif entry_type == "engineering_baseline":
-            if scheme_id != "px4ctrl" or row.get("control_owner") != "nominal_controller_runtime_baseline":
-                add("CSE-PX4CTRL-01", prefix + "engineering baseline must remain px4ctrl runtime baseline")
-            if model_entry.get("mapping_state") != "not_applicable_runtime_baseline" or eligible:
-                add("CSE-PX4CTRL-02", prefix + "px4ctrl must not be misrepresented as an MWORKS graphical scheme")
-        elif entry_type == "fixed_integrated_scheme":
-            if row.get("control_owner") != "fixed_integrated_chain":
-                add("CSE-FIXED-01", prefix + "fixed scheme must retain fixed-integrated-chain ownership")
-            if row.get("fixed_order") != catalog_row.get("fixed_order"):
-                add("CSE-FIXED-02", prefix + "fixed order drifted from catalog")
-            if model_entry.get("source_config") != catalog_row.get("source_config"):
-                add("CSE-FIXED-03", prefix + "source config drifted from catalog")
+        if entry_type == "mworks_control_profile":
+            if execution_kind in {"graphical_control_core", "full_profile_whole_aircraft"}:
+                current_route_count += 1
+                if catalog_row.get("selection_eligibility") == "family_screening":
+                    screening_candidate_count += 1
+            if execution_kind == "graphical_control_core":
+                controller = str(catalog_row.get("evidence_matrix_controller"))
+                matrix_row = matrix_by_id.get(controller)
+                document_row = document_by_id.get(controller)
+                if row.get("control_owner") != "profile_graphical_control_core":
+                    add("CSE-GRAPHICAL-01", prefix + "graphical profile must own the graphical-control-core slot")
+                if row.get("evidence_route") != controller or not isinstance(matrix_row, dict):
+                    add("CSE-GRAPHICAL-02", prefix + "graphical profile must bind its exact historical matrix row")
+                elif row.get("current_evidence", {}).get("matrix_status") != matrix_row.get("status"):
+                    add("CSE-GRAPHICAL-03", prefix + "matrix status drifted from authority")
+                if not isinstance(document_row, dict):
+                    add("CSE-GRAPHICAL-04", prefix + "graphical profile is missing document-evidence inventory row")
+                binding = row.get("registry_binding") if isinstance(row.get("registry_binding"), dict) else {}
+                registry_module = registry_by_id.get(scheme_id)
+                if registry_module and binding.get("mapping_state") != "exact_registry_binding":
+                    add("CSE-GRAPHICAL-05", prefix + "registered graphical profile must retain exact registry binding")
+                if not registry_module and binding.get("mapping_state") != "no_exact_registry_binding":
+                    add("CSE-GRAPHICAL-06", prefix + "unregistered graphical profile must remain explicitly unbound")
+            elif execution_kind == "full_profile_whole_aircraft":
+                if row.get("control_owner") != "full_profile_whole_aircraft":
+                    add("CSE-FULL-01", prefix + "full profile must retain whole-aircraft profile ownership")
+                if model_entry.get("source_config") != catalog_row.get("source_config"):
+                    add("CSE-FULL-02", prefix + "full-profile source config drifted from catalog")
+                if not isinstance(row.get("profile_chain"), list) or len(row["profile_chain"]) < 2:
+                    add("CSE-FULL-03", prefix + "full profile must retain a non-trivial profile chain")
+            elif execution_kind == "planned_profile":
+                if scheme_id != "pid_awff_linear_eso" or row.get("control_owner") != "planned_profile":
+                    add("CSE-PLANNED-01", prefix + "only the approved ESO row may remain planned")
+                if model_entry.get("mapping_state") != "planned_profile_no_model":
+                    add("CSE-PLANNED-02", prefix + "planned ESO profile must not invent a current model")
+            else:
+                add("CSE-KIND-01", prefix + "unsupported MWORKS execution kind")
+        elif entry_type == "engineering_deployment_baseline":
+            if scheme_id != "px4ctrl" or row.get("control_owner") != "engineering_deployment_baseline":
+                add("CSE-PX4CTRL-01", prefix + "deployment baseline must remain px4ctrl")
+            if model_entry.get("mapping_state") != "pending_mworks_equivalent_core" or eligible:
+                add("CSE-PX4CTRL-02", prefix + "px4ctrl must remain pending its MWORKS-equivalent core")
+        else:
+            add("CSE-TYPE-01", prefix + "unsupported catalog entry_type")
 
+    if type_counts != Counter({"mworks_control_profile": 47, "engineering_deployment_baseline": 1}):
+        add("CSE-COUNT-02", "inventory must retain 47 MWORKS profiles plus px4ctrl")
+    if current_route_count != CURRENT_MWORKS_ROUTE_COUNT:
+        add("CSE-COUNT-03", "inventory must retain 46 current MWORKS routes")
+    if screening_candidate_count != FAMILY_SCREENING_CANDIDATE_COUNT:
+        add("CSE-COUNT-04", "inventory must retain 45 family-screening candidates")
+    summary = inventory.get("summary")
+    if not isinstance(summary, dict) or summary.get("active_top_level_entry_count") != ACTIVE_ENTRY_COUNT:
+        add("CSE-SUMMARY-01", "summary must retain the active 48-entry boundary")
+    if isinstance(summary, dict) and summary.get("mworks_run_eligible_count") != 0:
+        add("CSE-SUMMARY-02", "G1 inventory may not promote any MWORKS route to runnable")
     return errors
 
 
@@ -172,7 +223,7 @@ def main() -> int:
     report = {
         "ok": not errors,
         "inventory": str(paths[0]),
-        "top_level_scheme_count": len(inventory.get("schemes", [])) if "inventory" in locals() else 0,
+        "active_top_level_entry_count": len(inventory.get("schemes", [])) if "inventory" in locals() else 0,
         "mworks_run_eligible_count": (
             sum(bool(row.get("mworks_run_eligible")) for row in inventory.get("schemes", []) if isinstance(row, dict))
             if "inventory" in locals()

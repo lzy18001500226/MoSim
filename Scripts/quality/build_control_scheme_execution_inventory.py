@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the G1 fail-closed inventory for MoSim's 49 top-level schemes.
+"""Build the G1 fail-closed inventory for MoSim's active profile catalog.
 
 The output is an audit artifact.  It deliberately records source candidates,
 not a newly approved MWORKS model entry, until G4 maps every runnable scheme
@@ -136,7 +136,7 @@ def model_catalog_bindings(model_catalog: dict[str, Any], controller_id: str) ->
     return bindings
 
 
-def primary_entry(
+def graphical_core_entry(
     scheme: dict[str, Any],
     matrix_row: dict[str, Any],
     document_row: dict[str, Any],
@@ -171,7 +171,10 @@ def primary_entry(
         "display_name_zh": scheme.get("display_name_zh"),
         "category": scheme.get("category"),
         "entry_type": scheme["entry_type"],
-        "control_owner": "nominal_controller",
+        "profile_role": scheme.get("role"),
+        "selection_eligibility": scheme.get("selection_eligibility"),
+        "execution_kind": scheme.get("execution_kind"),
+        "control_owner": "profile_graphical_control_core",
         "evidence_route": controller,
         "registry_binding": binding,
         "model_entry": {
@@ -186,9 +189,9 @@ def primary_entry(
                 "scenario_ids": NOMINAL_SCREENING_SCENARIOS,
                 "eligibility": "blocked_until_g4_current_model_mapping",
             },
-            "g6_family_champion": {
+            "family_winner_screening": {
                 "scenario_ids": FULL_SCENARIOS,
-                "eligibility": "not_selected_until_g5_screening",
+                "eligibility": "not_selected_until_current_46_route_screening",
             },
         },
         "current_evidence": {
@@ -215,24 +218,27 @@ def px4ctrl_entry(scheme: dict[str, Any], module: dict[str, Any] | None, runners
         "display_name_zh": scheme.get("display_name_zh"),
         "category": scheme.get("category"),
         "entry_type": scheme["entry_type"],
-        "control_owner": "nominal_controller_runtime_baseline",
+        "profile_role": scheme.get("role"),
+        "selection_eligibility": scheme.get("selection_eligibility"),
+        "execution_kind": scheme.get("execution_kind"),
+        "control_owner": "engineering_deployment_baseline",
         "evidence_route": None,
         "registry_binding": binding,
         "model_entry": {
-            "mapping_state": "not_applicable_runtime_baseline",
+            "mapping_state": "pending_mworks_equivalent_core",
             "current_model_file": None,
             "current_model_name": None,
             "source_model_candidates": [],
             "existing_model_operation_candidates": [],
         },
         "scenario_contract": {
-            "g5_nominal_screening": {
+            "current_mworks_route_screening": {
                 "scenario_ids": [],
-                "eligibility": "not_applicable_px4ctrl_is_not_an_mworks_graphical_scheme",
+                "eligibility": "pending_mworks_equivalent_core",
             },
-            "g6_family_champion": {
+            "seven_scenario_comparison": {
                 "scenario_ids": FULL_SCENARIOS,
-                "eligibility": "runtime_baseline_only_after_this_goal",
+                "eligibility": "pending_cpp_behavior_and_interface_equivalence",
             },
         },
         "current_evidence": {
@@ -241,13 +247,13 @@ def px4ctrl_entry(scheme: dict[str, Any], module: dict[str, Any] | None, runners
             "claim_ceiling": module.get("claim_ceiling") if isinstance(module, dict) else None,
             "evidence_paths": [],
         },
-        "blockers": ["out_of_scope_runtime_baseline_until_post_G7_deployment"],
+        "blockers": ["mworks_equivalent_px4ctrl_core_not_implemented"],
         "mworks_run_eligible": False,
-        "next_gate": "Post-G7 ROS1/Sunray/Gazebo/PX4 baseline verification",
+        "next_gate": "Implement and validate the MWORKS-equivalent px4ctrl core before formal seven-scenario comparison",
     }
 
 
-def fixed_entry(scheme: dict[str, Any], composition: dict[str, Any]) -> dict[str, Any]:
+def full_profile_entry(scheme: dict[str, Any], composition: dict[str, Any]) -> dict[str, Any]:
     source_config = str(scheme.get("source_config", ""))
     config_path = ROOT / source_config
     declared_models = yaml_values(config_path, "model_name")
@@ -255,16 +261,19 @@ def fixed_entry(scheme: dict[str, Any], composition: dict[str, Any]) -> dict[str
     composition_module = composition.get("modules", {}).get(controller_id)
     blockers = ["current_model_entry_unmapped"]
     if not config_path.is_file():
-        blockers.insert(0, "fixed_chain_source_config_missing")
+        blockers.insert(0, "full_profile_source_config_missing")
     return {
         "scheme_id": scheme["scheme_id"],
         "display_name_zh": scheme.get("display_name_zh"),
         "category": scheme.get("category"),
         "entry_type": scheme["entry_type"],
-        "control_owner": "fixed_integrated_chain",
+        "profile_role": scheme.get("role"),
+        "selection_eligibility": scheme.get("selection_eligibility"),
+        "execution_kind": scheme.get("execution_kind"),
+        "control_owner": "full_profile_whole_aircraft",
         "evidence_route": None,
         "registry_binding": {
-            "mapping_state": "fixed_chain_source_config",
+            "mapping_state": "full_profile_source_config",
             "module_id": controller_id,
             "profile_id": None,
             "status": scheme.get("selection_state"),
@@ -282,15 +291,15 @@ def fixed_entry(scheme: dict[str, Any], composition: dict[str, Any]) -> dict[str
             "declared_model_names": declared_models,
             "offline_composition_binding": composition_module if isinstance(composition_module, dict) else None,
         },
-        "fixed_order": as_strings(scheme.get("fixed_order")),
+        "profile_chain": as_strings(scheme.get("profile_chain")),
         "scenario_contract": {
-            "g5_nominal_screening": {
+            "current_mworks_route_screening": {
                 "scenario_ids": NOMINAL_SCREENING_SCENARIOS,
                 "eligibility": "blocked_until_g4_current_model_mapping",
             },
-            "g6_family_champion": {
+            "family_winner_screening": {
                 "scenario_ids": FULL_SCENARIOS,
-                "eligibility": "not_automatically_in_six_nominal_family_champions",
+                "eligibility": "family_screening" if scheme.get("selection_eligibility") == "family_screening" else "research_only",
             },
         },
         "current_evidence": {
@@ -301,7 +310,59 @@ def fixed_entry(scheme: dict[str, Any], composition: dict[str, Any]) -> dict[str
         },
         "blockers": blockers,
         "mworks_run_eligible": False,
-        "next_gate": "G4 fixed-chain source-to-current-model mapping, then G5 CheckModel and minimum MIL",
+        "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL",
+    }
+
+
+def planned_profile_entry(scheme: dict[str, Any]) -> dict[str, Any]:
+    """Record the approved ESO profile without inventing a model or evidence."""
+
+    return {
+        "scheme_id": scheme["scheme_id"],
+        "profile_id": scheme.get("profile_id"),
+        "display_name_zh": scheme.get("display_name_zh"),
+        "category": scheme.get("category"),
+        "entry_type": scheme["entry_type"],
+        "profile_role": scheme.get("role"),
+        "selection_eligibility": scheme.get("selection_eligibility"),
+        "execution_kind": scheme.get("execution_kind"),
+        "control_owner": "planned_profile",
+        "evidence_route": None,
+        "registry_binding": {
+            "mapping_state": "not_applicable_until_implemented",
+            "module_id": None,
+            "profile_id": scheme.get("profile_id"),
+            "status": scheme.get("implementation_status"),
+            "output_variant": None,
+            "offline_runner": None,
+            "offline_inner_owner": None,
+        },
+        "model_entry": {
+            "mapping_state": "planned_profile_no_model",
+            "current_model_file": None,
+            "current_model_name": None,
+            "source_model_candidates": [],
+            "existing_model_operation_candidates": [],
+        },
+        "scenario_contract": {
+            "current_mworks_route_screening": {
+                "scenario_ids": [],
+                "eligibility": "not_runnable_until_model_and_adapter_exist",
+            },
+            "family_winner_screening": {
+                "scenario_ids": FULL_SCENARIOS,
+                "eligibility": "not_runnable_until_model_and_adapter_exist",
+            },
+        },
+        "current_evidence": {
+            "matrix_status": None,
+            "implementation_state": "planned",
+            "claim_ceiling": "architecture_design_only",
+            "evidence_paths": [],
+        },
+        "blockers": ["planned_profile_implementation_not_started"],
+        "mworks_run_eligible": False,
+        "next_gate": "Implement the declared profile, adapter, formal runner, and minimum-closure evidence before screening",
     }
 
 
@@ -341,17 +402,23 @@ def build_inventory(
             continue
         entry_type = str(scheme.get("entry_type"))
         scheme_id = str(scheme.get("scheme_id"))
-        if entry_type == "competition_primary_route":
-            controller = str(scheme.get("evidence_matrix_controller"))
-            matrix_row = matrix_by_controller.get(controller)
-            document_row = inventory_by_controller.get(controller)
-            if not isinstance(matrix_row, dict) or not isinstance(document_row, dict):
-                raise ValueError(f"primary scheme lacks authority rows: {scheme_id}")
-            entries.append(primary_entry(scheme, matrix_row, document_row, registry_by_module.get(scheme_id), model_catalog, runners))
-        elif entry_type == "engineering_baseline":
+        if entry_type == "mworks_control_profile":
+            execution_kind = str(scheme.get("execution_kind"))
+            if execution_kind == "graphical_control_core":
+                controller = str(scheme.get("evidence_matrix_controller"))
+                matrix_row = matrix_by_controller.get(controller)
+                document_row = inventory_by_controller.get(controller)
+                if not isinstance(matrix_row, dict) or not isinstance(document_row, dict):
+                    raise ValueError(f"graphical profile lacks authority rows: {scheme_id}")
+                entries.append(graphical_core_entry(scheme, matrix_row, document_row, registry_by_module.get(scheme_id), model_catalog, runners))
+            elif execution_kind == "full_profile_whole_aircraft":
+                entries.append(full_profile_entry(scheme, composition))
+            elif execution_kind == "planned_profile":
+                entries.append(planned_profile_entry(scheme))
+            else:
+                raise ValueError(f"unsupported MWORKS execution kind: {scheme_id}/{execution_kind}")
+        elif entry_type == "engineering_deployment_baseline":
             entries.append(px4ctrl_entry(scheme, registry_by_module.get(scheme_id), runners))
-        elif entry_type == "fixed_integrated_scheme":
-            entries.append(fixed_entry(scheme, composition))
         else:
             raise ValueError(f"unsupported scheme entry_type: {entry_type}")
 
@@ -371,8 +438,8 @@ def build_inventory(
         "offline_composition_catalog": composition_catalog_path,
     }
     return {
-        "schema": "mosim.control_scheme_execution_inventory.v1",
-        "version": 1,
+        "schema": "mosim.control_scheme_execution_inventory.v2",
+        "version": 2,
         "scope": "G1 audit only. This inventory does not authorize MWORKS, code generation, or runtime execution.",
         "source_files": {key: repo_path(path) for key, path in input_paths.items()},
         "source_sha256": {
@@ -384,15 +451,15 @@ def build_inventory(
             "offline_composition_catalog": sha256_json(composition),
         },
         "summary": {
-            "top_level_scheme_count": len(entries),
+            "active_top_level_entry_count": len(entries),
             "entry_type_counts": dict(sorted(type_counts.items())),
             "category_counts": dict(sorted(category_counts.items())),
-            "matrix_status_counts_for_primary_routes": dict(sorted(matrix_status_counts.items())),
+            "matrix_status_counts_for_graphical_cores": dict(sorted(matrix_status_counts.items())),
             "exact_registry_binding_count": sum(
                 entry["registry_binding"]["mapping_state"] == "exact_registry_binding" for entry in entries
             ),
             "primary_source_model_present_count": sum(
-                entry["entry_type"] == "competition_primary_route"
+                entry["control_owner"] == "profile_graphical_control_core"
                 and bool(entry["model_entry"]["source_model_candidates"])
                 for entry in entries
             ),

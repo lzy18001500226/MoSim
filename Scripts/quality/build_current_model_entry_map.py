@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the deterministic G4 current-model entry map for all 49 schemes."""
+"""Build the deterministic G4 current-model entry map for 48 active profiles."""
 
 from __future__ import annotations
 

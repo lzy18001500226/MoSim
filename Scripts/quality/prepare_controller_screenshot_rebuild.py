@@ -27,17 +27,16 @@ SLOT_GITKEEP_CONTENT = "# Keeps this controller screenshot slot in version contr
 
 FAMILIES = {
     "pid_family": "01_PID族",
-    "classic_robust": "02_线性与鲁棒",
-    "sliding_mode": "03_滑模控制",
-    "optimization": "04_MPC族",
-    "geometric_flatness": "05_几何与平坦",
-    "learning": "06_学习控制",
-    "fixed_integrated": "07_固定集成链",
+    "linear_robust_state_feedback": "02_线性与鲁棒状态反馈",
+    "nonlinear_adaptive": "03_非线性与自适应",
+    "sliding_mode": "04_滑模控制",
+    "optimization_predictive": "05_最优与预测控制",
+    "geometric_flatness": "06_几何与微分平坦",
+    "learning": "07_智能与学习",
 }
 EXCLUSIONS = {
-    "mu_synthesis": "当前工程缺少可运行的动态 mu-Synthesis 实现，不以静态图或邻近算法替代。",
-    "neural_smc": "当前工程缺少冻结训练资产、定长推理与回退验证，不以其他学习或滑模路线替代。",
-    "px4ctrl": "ROS1/PX4 运行时工程基线，不伪造 MWORKS 图形模型，也不进入本批控制器图审对比。",
+    "pid_awff_linear_eso": "已批准的 MWORKS Profile 设计项；尚无模型、Adapter、Runner 或图审对象。",
+    "px4ctrl": "工程/部署基线；MWORKS 等效核尚未实现，不伪造 MWORKS 图形模型。",
 }
 
 
@@ -125,29 +124,43 @@ def g5_structure_source(scheme_id: str) -> tuple[Path, dict[str, Any]]:
     }
 
 
+def available_g5_structure_source(scheme_id: str) -> dict[str, Any] | None:
+    """Return current-packet metadata only after genuine G5 evidence exists.
+
+    Empty slots are intentional before native review.  Once a packet is present,
+    its binding must pass the strict validation in :func:`g5_structure_source`;
+    this helper never treats an old export or an incomplete packet as evidence.
+    """
+
+    packet_path = G5_REVIEW_ROOT / scheme_id / "G5_REVIEW_PACKET.json"
+    if not packet_path.is_file():
+        return None
+    _, metadata = g5_structure_source(scheme_id)
+    return metadata
+
+
 def current_rows() -> list[dict[str, Any]]:
     value = read(MAP_PATH)
     rows = value.get("schemes")
     if value.get("schema") != "mosim.current_model_entry_map.v1":
         raise RebuildError("current model map schema is invalid")
-    if not isinstance(rows, list) or len(rows) != 49 or not all(isinstance(row, dict) for row in rows):
-        raise RebuildError("current model map must retain exactly 49 scheme rows")
+    if not isinstance(rows, list) or len(rows) != 48 or not all(isinstance(row, dict) for row in rows):
+        raise RebuildError("current model map must retain exactly 48 active profile rows")
     by_id = {str(row.get("scheme_id")): row for row in rows}
     expected = Counter(
         {
             "resolved_current_model": 46,
-            "blocked_missing_current_model": 2,
-            "not_applicable_runtime_baseline": 1,
+            "planned_profile_no_model": 1,
+            "pending_mworks_equivalent_core": 1,
         }
     )
     actual = Counter(str(row.get("mapping_state")) for row in rows)
-    if len(by_id) != 49 or actual != expected:
+    if len(by_id) != 48 or actual != expected:
         raise RebuildError(f"unexpected current-model distribution: {dict(actual)}")
-    if by_id.get("px4ctrl", {}).get("mapping_state") != "not_applicable_runtime_baseline":
-        raise RebuildError("px4ctrl must remain the runtime-only baseline")
-    for scheme_id in ("mu_synthesis", "neural_smc"):
-        if by_id.get(scheme_id, {}).get("mapping_state") != "blocked_missing_current_model":
-            raise RebuildError(f"{scheme_id} must remain blocked")
+    if by_id.get("px4ctrl", {}).get("mapping_state") != "pending_mworks_equivalent_core":
+        raise RebuildError("px4ctrl must remain pending its MWORKS-equivalent core")
+    if by_id.get("pid_awff_linear_eso", {}).get("mapping_state") != "planned_profile_no_model":
+        raise RebuildError("pid_awff_linear_eso must remain a planned profile without a model")
     return rows
 
 
@@ -211,8 +224,8 @@ def write_readmes() -> None:
     ACTIVE_ROOT.mkdir(parents=True, exist_ok=True)
     (ACTIVE_ROOT / "README.md").write_text(
         "# 当前控制器原生窗口截图\n\n"
-        "本目录保存 46 条当前 MWORKS 图审对象的 G5 packet 绑定原生整窗截图。每条路线的 01_图形模型.png 必须保持原生窗口宽高比，不得使用 MWORKS 导出画布、报告副本、历史结果图或裁切变形图。具体来源、冻结模型入口和哈希见 Docs/报告/审计/控制器原生截图归位/CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json。\n\n"
-        "02_最小闭环结果原生窗口.png 只允许在 G6 正式仿真后写入；当前结构截图不代表仿真、代码生成或运行时通过。旧导出图片和旧阻塞说明已归档到同级归档目录，不能复制回本目录。\n",
+        "本目录为 46 条当前 MWORKS 图审对象保留原生整窗截图槽位。每条路线的 01_图形模型.png 只能在当前 G5 packet 绑定原生截图后写入，且必须保持窗口原生宽高比；不得使用 MWORKS 导出画布、报告副本、历史结果图或裁切变形图。具体来源、冻结模型入口和哈希见 Docs/报告/审计/控制器原生截图归位/CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json。\n\n"
+        "02_最小闭环结果原生窗口.png 只允许在后续正式仿真后写入；截图槽位或结构图不代表图审、仿真、代码生成或运行时通过。旧导出图片和旧阻塞说明已归档到同级归档目录，不能复制回本目录。\n",
         encoding="utf-8",
         newline="\n",
     )
@@ -276,12 +289,12 @@ def screenshot_slot(row: dict[str, Any]) -> dict[str, Any]:
         raise RebuildError(f"{scheme_id}: unsupported category {category}")
     if role == "graphical_controller_core":
         name, kind = "01_图形模型.png", "internal_control_law"
-    elif role == "fixed_integrated_whole_aircraft_closed_loop":
-        name, kind = "01_图形模型.png", "fixed_integrated_whole_aircraft"
+    elif role == "full_profile_whole_aircraft_closed_loop":
+        name, kind = "01_图形模型.png", "named_whole_aircraft_profile"
     else:
         raise RebuildError(f"{scheme_id}: unsupported model role {role}")
     directory = ACTIVE_ROOT / family / scheme_id
-    _, source_metadata = g5_structure_source(scheme_id)
+    source_metadata = available_g5_structure_source(scheme_id)
     return {
         "scheme_id": scheme_id,
         "display_name_zh": row.get("display_name_zh"),
@@ -299,8 +312,8 @@ def screenshot_slot(row: dict[str, Any]) -> dict[str, Any]:
         "required_assets": {
             "structure_native_window": rp(directory / name),
             "minimum_closed_loop_result_native_window": rp(directory / "02_最小闭环结果原生窗口.png"),
-            "capture_manifest": source_metadata["capture_manifest"],
-            "g5_review_packet": source_metadata["g5_review_packet"],
+            "capture_manifest": source_metadata["capture_manifest"] if source_metadata else None,
+            "g5_review_packet": source_metadata["g5_review_packet"] if source_metadata else None,
         },
         "source_capture": source_metadata,
         "capture_rules": {
@@ -319,6 +332,7 @@ def screenshot_slot(row: dict[str, Any]) -> dict[str, Any]:
 
 
 def sync_slot_directories(slots: list[dict[str, Any]]) -> None:
+    expected_directories = {ROOT / str(slot["asset_directory"]) for slot in slots}
     for slot in slots:
         directory = ROOT / str(slot["asset_directory"])
         directory.mkdir(parents=True, exist_ok=True)
@@ -328,14 +342,47 @@ def sync_slot_directories(slots: list[dict[str, Any]]) -> None:
             newline="\n",
         )
 
+    # The former layout used a separate fixed-integrated-chain directory.  It
+    # is no longer an active family, so remove only its stale generated slots.
+    # Refuse to delete anything that is not this script's untouched marker.
+    stale_markers = sorted(
+        ACTIVE_ROOT.rglob(SLOT_GITKEEP_NAME),
+        key=lambda path: len(path.parts),
+        reverse=True,
+    )
+    for marker in stale_markers:
+        if marker.parent in expected_directories:
+            continue
+        if marker.read_text(encoding="utf-8") != SLOT_GITKEEP_CONTENT:
+            raise RebuildError(f"refusing to remove non-generated screenshot slot: {rp(marker)}")
+        siblings = [path for path in marker.parent.iterdir() if path != marker]
+        if siblings:
+            raise RebuildError(f"refusing to remove populated stale screenshot slot: {rp(marker.parent)}")
+        marker.unlink()
+        marker.parent.rmdir()
+
+    # Remove now-empty former family directories while retaining the active
+    # root and every declared current family directory.
+    for directory in sorted(
+        (path for path in ACTIVE_ROOT.rglob("*") if path.is_dir()),
+        key=lambda path: len(path.parts),
+        reverse=True,
+    ):
+        if directory == ACTIVE_ROOT or directory in expected_directories:
+            continue
+        try:
+            directory.rmdir()
+        except OSError:
+            pass
+
 
 def materialize_native_structure(slots: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Copy the packet-bound native window capture into the report asset tree."""
     records: list[dict[str, Any]] = []
     for slot in slots:
-        source = ROOT / str(slot["source_capture"]["source_screenshot"])
+        source, source_metadata = g5_structure_source(str(slot["scheme_id"]))
         target = ROOT / str(slot["required_assets"]["structure_native_window"])
-        source_sha256 = str(slot["source_capture"]["source_sha256"])
+        source_sha256 = str(source_metadata["source_sha256"])
         existed = target.exists()
         if existed:
             if digest(target).lower() != source_sha256.lower():
@@ -350,14 +397,14 @@ def materialize_native_structure(slots: list[dict[str, Any]]) -> list[dict[str, 
         if target_sha256.lower() != source_sha256.lower():
             raise RebuildError(f"{slot['scheme_id']}: materialized screenshot hash drifted")
         if (target_width, target_height) != (
-            slot["source_capture"]["source_width"],
-            slot["source_capture"]["source_height"],
+            source_metadata["source_width"],
+            source_metadata["source_height"],
         ):
             raise RebuildError(f"{slot['scheme_id']}: materialized screenshot dimensions drifted")
         records.append(
             {
                 "scheme_id": slot["scheme_id"],
-                "source": slot["source_capture"]["source_screenshot"],
+                "source": source_metadata["source_screenshot"],
                 "target": rp(target),
                 "sha256": target_sha256,
                 "width": target_width,
@@ -370,7 +417,7 @@ def materialize_native_structure(slots: list[dict[str, Any]]) -> list[dict[str, 
         dump(
             {
                 "schema": "mosim.native_structure_screenshot_materialization.v1",
-                "scope": "Current G5 packet-bound native structure screenshots only; no simulation result is claimed.",
+            "scope": "Current G5 packet-bound native structure screenshots only; no simulation result is claimed.",
                 "source": "G5_REVIEW_PACKET.evidence.mworks_phase_screenshots[0]",
                 "target_root": rp(ACTIVE_ROOT),
                 "count": len(records),
@@ -400,8 +447,18 @@ def build_manifest() -> dict[str, Any]:
     }
     for slot in slots:
         assets = slot["required_assets"]
+        source_capture = slot["source_capture"]
+        structure_path = ROOT / assets["structure_native_window"]
+        if not structure_path.is_file():
+            structure_status = "not_captured"
+        elif not isinstance(source_capture, dict):
+            structure_status = "unbound_active_asset"
+        elif digest(structure_path).lower() != str(source_capture["source_sha256"]).lower():
+            structure_status = "source_hash_mismatch"
+        else:
+            structure_status = "present_unreviewed"
         slot["capture_status"] = {
-            "structure_native_window": "present_unreviewed" if assets["structure_native_window"] in active else "not_captured",
+            "structure_native_window": structure_status,
             "minimum_closed_loop_result_native_window": "present_unreviewed" if assets["minimum_closed_loop_result_native_window"] in active else "not_captured",
         }
     excluded = sorted(
@@ -418,7 +475,7 @@ def build_manifest() -> dict[str, Any]:
     )
     errors = archive_errors()
     return {
-        "schema": "mosim.controller_screenshot_rebuild_manifest.v1",
+        "schema": "mosim.controller_screenshot_rebuild_manifest.v2",
         "scope": "Static screenshot rebuild ledger only; no MWORKS review, simulation, code generation, runtime result, or report acceptance is claimed.",
         "source_model_map": rp(MAP_PATH),
         "active_asset_root": rp(ACTIVE_ROOT),
@@ -444,21 +501,29 @@ def build_manifest() -> dict[str, Any]:
 
 def validate_manifest(manifest: dict[str, Any]) -> list[str]:
     summary, slots, excluded = manifest.get("summary"), manifest.get("slots"), manifest.get("excluded_routes")
-    if manifest.get("schema") != "mosim.controller_screenshot_rebuild_manifest.v1":
+    if manifest.get("schema") != "mosim.controller_screenshot_rebuild_manifest.v2":
         return ["screenshot rebuild manifest schema is invalid"]
     if not isinstance(summary, dict) or not isinstance(slots, list) or not isinstance(excluded, list):
         return ["screenshot rebuild manifest is missing summary, slots, or exclusions"]
     errors: list[str] = []
-    if summary.get("catalog_scheme_count") != 49:
-        errors.append("catalog must retain 49 historical/project routes")
+    if summary.get("catalog_scheme_count") != 48:
+        errors.append("catalog must retain 48 active entries")
     if summary.get("current_screenshot_scope_count") != 46 or len(slots) != 46:
         errors.append("current screenshot scope must contain exactly 46 routes")
     if summary.get("asset_directory_count") != 46:
         errors.append("screenshot layout must contain exactly 46 initialized directories")
     if summary.get("directory_version_marker_count") != 46:
         errors.append("screenshot layout must contain exactly 46 versioned directory markers")
+    expected_markers = {
+        ROOT / str(slot.get("directory_version_marker") or "")
+        for slot in slots
+        if isinstance(slot, dict)
+    }
+    actual_markers = set(ACTIVE_ROOT.rglob(SLOT_GITKEEP_NAME))
+    if actual_markers != expected_markers:
+        errors.append("screenshot layout contains stale or missing versioned directory markers")
     if {row.get("scheme_id") for row in excluded if isinstance(row, dict)} != set(EXCLUSIONS):
-        errors.append("exclusions must be mu_synthesis, neural_smc, and px4ctrl")
+        errors.append("exclusions must be pid_awff_linear_eso and px4ctrl")
     if len({row.get("scheme_id") for row in slots if isinstance(row, dict)}) != 46:
         errors.append("screenshot slots must have 46 unique scheme IDs")
     if summary.get("unexpected_active_png_count") != 0:
@@ -482,6 +547,17 @@ def validate_manifest(manifest: dict[str, Any]) -> list[str]:
             errors.append(f"{slot.get('scheme_id')}: screenshot slot is missing its versioned directory marker")
         elif marker.read_text(encoding="utf-8") != SLOT_GITKEEP_CONTENT:
             errors.append(f"{slot.get('scheme_id')}: screenshot slot versioned directory marker drifted")
+        capture_status = slot.get("capture_status") if isinstance(slot.get("capture_status"), dict) else {}
+        structure_status = capture_status.get("structure_native_window")
+        source_capture = slot.get("source_capture")
+        assets = slot.get("required_assets") if isinstance(slot.get("required_assets"), dict) else {}
+        if structure_status == "present_unreviewed":
+            if not isinstance(source_capture, dict):
+                errors.append(f"{slot.get('scheme_id')}: captured structure image lacks a current G5 packet binding")
+            elif assets.get("capture_manifest") != source_capture.get("capture_manifest") or assets.get("g5_review_packet") != source_capture.get("g5_review_packet"):
+                errors.append(f"{slot.get('scheme_id')}: captured structure image packet binding drifted")
+        elif structure_status != "not_captured":
+            errors.append(f"{slot.get('scheme_id')}: active structure image is not bound to a current G5 packet")
     return errors
 
 
@@ -493,7 +569,7 @@ def render_markdown(manifest: dict[str, Any]) -> str:
         "",
         "状态：native_structure_materialized。本清单记录当前 G5 packet 绑定的原生结构截图归位情况；它不代表任何路线已通过最小闭环仿真、代码生成、运行时或报告性能验收。"
         if summary["structure_capture_count"] == summary["current_screenshot_scope_count"]
-        else "状态：static_rebuild_ready。本清单只定义截图槽位和来源边界，不代表任何路线已通过图审或仿真。",
+        else "状态：screenshot_slots_prepared。本清单只定义截图槽位和来源边界，不代表任何路线已通过图审或仿真。",
         "",
         "| 项目 | 数量 |",
         "|---|---:|",
@@ -505,7 +581,7 @@ def render_markdown(manifest: dict[str, Any]) -> str:
         f"| 已采集内部结构原生图 | {summary['structure_capture_count']} |",
         f"| 已采集最小闭环结果原生图 | {summary['minimum_result_capture_count']} |",
         "",
-        "六个名义控制族和一个固定集成链分别入库。导出画布、旧报告副本和历史结果截图不能写回当前目录。",
+        "七个语义控制族分别入库；五条命名整机 Profile 按其 PID 或最优/预测归属入库，不另设控制器族。导出画布、旧报告副本和历史结果截图不能写回当前目录。",
         "",
         "| 目录 | 路线数 |",
         "|---|---:|",
@@ -516,7 +592,7 @@ def render_markdown(manifest: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "每个 01_图形模型.png 必须来自冻结模型入口的 Windows MCP 原生整窗/桌面采集，保持窗口原生宽高比，并与 G5 截图 manifest、图审 packet 绑定。02_最小闭环结果原生窗口.png 只能在 G6 正式仿真后写入，不能用结构图、历史结果或空白窗口代替。",
+            "每个 01_图形模型.png 必须来自冻结模型入口的 Windows MCP 原生整窗/桌面采集，保持窗口原生宽高比，并与当前 G5 截图 manifest、图审 packet 绑定。02_最小闭环结果原生窗口.png 只能在后续正式仿真后写入，不能用结构图、历史结果或空白窗口代替。",
             "",
         ]
     )
@@ -533,6 +609,7 @@ def main(argv: list[str] | None = None) -> int:
         archived = archive_legacy() if args.archive_legacy else None
         manifest = build_manifest()
         if not args.check:
+            write_readmes()
             sync_slot_directories(manifest["slots"])
             if args.materialize_native_structure:
                 materialize_native_structure(manifest["slots"])

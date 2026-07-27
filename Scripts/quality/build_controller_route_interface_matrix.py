@@ -28,7 +28,7 @@ HARNESS_MAP_PATH = CONFIG_ROOT / "formal_closed_loop_harness_map.json"
 RUNNER_CONTRACT_PATH = CONFIG_ROOT / "offline_runner_interface_contract_v1.json"
 OUTPUT_PATH = CONFIG_ROOT / "controller_route_interface_matrix.json"
 
-SCHEMA = "mosim.controller_route_interface_matrix.v1"
+SCHEMA = "mosim.controller_route_interface_matrix.v2"
 
 PORT_PATTERN = re.compile(
     r"^\s*SysplorerEmbeddedCoder\.Port\.(Inport|Outport)\s+([A-Za-z_]\w*)\b",
@@ -265,13 +265,13 @@ def build_route(
     state = str(harness_row["formal_harness_state"])
     role = str(current_row["current_model_role"])
 
-    if entry_type == "fixed_integrated_scheme":
+    if role == "full_profile_whole_aircraft_closed_loop":
         integration = {
             "current_boundary": "WHOLE_AIRCRAFT_EMBEDDED",
             "target_contract": None,
             "current_adapter_binding": harness_row.get("formal_adapter"),
             "adapter_candidates": [],
-            "core_migration_state": "preserve_the_named_whole_aircraft_chain_until_dependency_audit",
+            "core_migration_state": "preserve_the_named_whole_aircraft_profile_until_dependency_audit",
             "adapter_migration_state": "not_applicable_embedded_sysblock_and_physical_plant",
             "next_migration_gate": "normalize_the_embedded_plant_reference_to_sunray150assembly_only_after_the_shared_assembly_baseline_passes",
         }
@@ -394,7 +394,7 @@ def validate(value: dict[str, Any]) -> None:
     if role_counts != Counter(
         {
             "graphical_controller_core": 41,
-            "fixed_integrated_whole_aircraft_closed_loop": 5,
+            "full_profile_whole_aircraft_closed_loop": 5,
         }
     ):
         raise MatrixError(f"unexpected current model role counts: {dict(role_counts)}")
@@ -434,11 +434,11 @@ def build_matrix() -> dict[str, Any]:
     current = read_json(CURRENT_MAP_PATH)
     harness = read_json(HARNESS_MAP_PATH)
     runner_contract = read_json(RUNNER_CONTRACT_PATH)
-    if catalog.get("schema") != "mosim.control_scheme_catalog.v1":
+    if catalog.get("schema") != "mosim.control_profile_catalog.v2":
         raise MatrixError("control scheme catalog schema is invalid")
     if current.get("schema") != "mosim.current_model_entry_map.v1":
         raise MatrixError("current model entry map schema is invalid")
-    if harness.get("schema") != "mosim.formal_closed_loop_harness_map.v1":
+    if harness.get("schema") != "mosim.formal_closed_loop_harness_map.v2":
         raise MatrixError("formal harness map schema is invalid")
     if runner_contract.get("schema") != "mosim.offline_runner_interface_contract.v1":
         raise MatrixError("offline Runner contract schema is invalid")
@@ -471,14 +471,13 @@ def build_matrix() -> dict[str, Any]:
 
     value = {
         "schema": SCHEMA,
-        "version": 1,
+        "version": 2,
         "authority": "The deterministic current-source interface and dependency matrix for the 46 MWORKS candidates. It is the migration worklist, not simulation acceptance evidence.",
         "scope": {
-            "included": "46 current MWORKS candidates: 41 graphical controller cores and five fixed integrated whole-aircraft aliases.",
+            "included": "46 current MWORKS review routes: 41 graphical controller cores and five named whole-aircraft profiles within the PID and optimization/predictive semantic families.",
             "excluded": [
-                "mu_synthesis: missing implementation blocker",
-                "neural_smc: missing frozen neural training/inference artifact blocker",
-                "px4ctrl: ROS1/PX4 runtime baseline rather than an MWORKS graphical route",
+                "pid_awff_linear_eso: planned MWORKS profile without a model or review route",
+                "px4ctrl: engineering/deployment baseline with a MWORKS-equivalent core pending",
             ],
             "migration_order": [
                 "interface_matrix",
@@ -486,7 +485,7 @@ def build_matrix() -> dict[str, Any]:
                 "official_pid_and_four_runner_baseline",
                 "family_by_family_adapter_migration",
                 "46_minimum_closures",
-                "six_family_champions_and_seven_scenario_ab",
+                "seven_semantic_family_winners_and_seven_scenario_ab",
                 "code_generation_and_gazebo_deployment",
             ],
         },

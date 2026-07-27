@@ -1,13 +1,12 @@
 {
-  "schema": "mosim.controller_route_interface_matrix.v1",
-  "version": 1,
+  "schema": "mosim.controller_route_interface_matrix.v2",
+  "version": 2,
   "authority": "The deterministic current-source interface and dependency matrix for the 46 MWORKS candidates. It is the migration worklist, not simulation acceptance evidence.",
   "scope": {
-    "included": "46 current MWORKS candidates: 41 graphical controller cores and five fixed integrated whole-aircraft aliases.",
+    "included": "46 current MWORKS review routes: 41 graphical controller cores and five named whole-aircraft profiles within the PID and optimization/predictive semantic families.",
     "excluded": [
-      "mu_synthesis: missing implementation blocker",
-      "neural_smc: missing frozen neural training/inference artifact blocker",
-      "px4ctrl: ROS1/PX4 runtime baseline rather than an MWORKS graphical route"
+      "pid_awff_linear_eso: planned MWORKS profile without a model or review route",
+      "px4ctrl: engineering/deployment baseline with a MWORKS-equivalent core pending"
     ],
     "migration_order": [
       "interface_matrix",
@@ -15,7 +14,7 @@
       "official_pid_and_four_runner_baseline",
       "family_by_family_adapter_migration",
       "46_minimum_closures",
-      "six_family_champions_and_seven_scenario_ab",
+      "seven_semantic_family_winners_and_seven_scenario_ab",
       "code_generation_and_gazebo_deployment"
     ]
   },
@@ -26,16 +25,26 @@
     "offline_runner_interface_contract": "Config/control_platform/offline_runner_interface_contract_v1.json"
   },
   "source_sha256": {
-    "catalog": "1b142cf6a272770643c0d1b3123ff703f5081ea6238b1044f570d999f954d925",
-    "current_model_entry_map": "08899adf2a9ad28108aa6a456aa43aff601d4802867b1f0ea65c65e83cc1c372",
-    "formal_closed_loop_harness_map": "fcf998f4e342e857f6d0441e40ed6bf3bd0f78a8082232fffa533b7dfb1d4ce8",
-    "offline_runner_interface_contract": "c11591a61e17f08bbb0ecd6445e5c1d4dbc28193c74184b80b840c1d8c452b18"
+    "catalog": "07c5a36da6842a06e4b88d5f9b2d887a93c5bf99c36fb5465f17ff3024821f03",
+    "current_model_entry_map": "4b3e021b729e0834f67ef61e878fb69d146b27d0bedd40e03bc38ef0b03107c0",
+    "formal_closed_loop_harness_map": "ff2db4157ac04f5a4d3cdf66f4e65994964cb83396b26c2ae4c29ed113b62874",
+    "offline_runner_interface_contract": "f84d6e23493a3ee822d2255061a1dabbf3f19381a3821459295a9a302fa7e0ae"
   },
   "shared_runner_contract": {
     "shared_controller_inputs": [
       {
         "name": "position_ref",
         "dimension": 3
+      },
+      {
+        "name": "velocity_ref",
+        "dimension": 3,
+        "unit_semantics": "reference_translational_velocity_m_per_s"
+      },
+      {
+        "name": "acceleration_ref",
+        "dimension": 3,
+        "unit_semantics": "reference_translational_acceleration_m_per_s2"
       },
       {
         "name": "position_mea",
@@ -157,19 +166,20 @@
       }
     },
     "known_gaps": [
+      "p0b_current_source_replay_required_after_reference_feedforward_contract_repair",
       "coordinate_frame_contract_not_bound_to_model_ports",
       "physical_command_units_not_verified",
       "lifecycle_context_not_bound_to_model_ports",
       "invalid_stale_nan_inf_rejection_not_implemented_at_runner_boundary",
       "fallback_diagnostics_not_exposed",
       "time_and_solver_statistics_not_bound_to_run_manifest",
-      "forty_six_controller_route_adapters_and_minimum_closures_not_yet_executed"
+      "forty_six_controller_route_evidence_is_historical_pre_p0a_and_not_current_source"
     ]
   },
   "summary": {
     "current_route_count": 46,
     "current_model_role_counts": {
-      "fixed_integrated_whole_aircraft_closed_loop": 5,
+      "full_profile_whole_aircraft_closed_loop": 5,
       "graphical_controller_core": 41
     },
     "current_formal_closure_counts": {
@@ -194,8 +204,8 @@
     {
       "scheme_id": "adaptive_backstepping",
       "display_name_zh": "自适应反步控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
@@ -340,8 +350,8 @@
     {
       "scheme_id": "adaptive_mpc",
       "display_name_zh": "自适应 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
@@ -491,7 +501,7 @@
       "scheme_id": "adaptive_smc",
       "display_name_zh": "自适应滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
@@ -643,8 +653,8 @@
     {
       "scheme_id": "backstepping_baseline",
       "display_name_zh": "反步控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL.mo",
@@ -810,7 +820,7 @@
       "scheme_id": "cascade_pid",
       "display_name_zh": "串级 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
@@ -948,7 +958,7 @@
       "scheme_id": "dfbc_basic",
       "display_name_zh": "基础微分平坦控制",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
@@ -1082,7 +1092,7 @@
       "scheme_id": "dfbc_high_order_attitude",
       "display_name_zh": "高阶微分平坦姿态输出",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
@@ -1245,7 +1255,7 @@
       "scheme_id": "dfbc_high_order_bodyrate",
       "display_name_zh": "高阶微分平坦角速度输出",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
@@ -1409,7 +1419,7 @@
       "scheme_id": "dfbc_smooth_robust_attitude",
       "display_name_zh": "平滑鲁棒微分平坦姿态输出",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
@@ -1569,7 +1579,7 @@
       "scheme_id": "dfbc_smooth_robust_bodyrate",
       "display_name_zh": "平滑鲁棒微分平坦角速度输出",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
@@ -1729,8 +1739,8 @@
     {
       "scheme_id": "explicit_gain_scheduled_mpc",
       "display_name_zh": "显式增益调度 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
@@ -1879,8 +1889,8 @@
     {
       "scheme_id": "feedback_linearization",
       "display_name_zh": "反馈线性化",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
@@ -2025,17 +2035,17 @@
     {
       "scheme_id": "fixed_awff_l1_indi",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
       "current_model": {
-        "role": "fixed_integrated_whole_aircraft_closed_loop",
+        "role": "full_profile_whole_aircraft_closed_loop",
         "file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Indi.mo",
         "class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Indi",
         "sha256": "5a31cc2822c3be194d2db8242600f66b71a7704d79789be5d4a3f67e07e8e800",
         "topology_sha256": "025d33bb79c7c0a8511fdaf9ada9b75cba599810047f3e77576435e2dee852c6"
       },
       "source_alignment": {
-        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
+        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_full_profile",
         "approved_project_variant": null
       },
       "current_graphical_surface": {
@@ -2084,7 +2094,7 @@
           "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
         },
         "adapter_candidates": [],
-        "core_migration_state": "preserve_the_named_whole_aircraft_chain_until_dependency_audit",
+        "core_migration_state": "preserve_the_named_whole_aircraft_profile_until_dependency_audit",
         "adapter_migration_state": "not_applicable_embedded_sysblock_and_physical_plant",
         "next_migration_gate": "normalize_the_embedded_plant_reference_to_sunray150assembly_only_after_the_shared_assembly_baseline_passes"
       },
@@ -2146,17 +2156,17 @@
     {
       "scheme_id": "fixed_awff_l1_residual",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
       "current_model": {
-        "role": "fixed_integrated_whole_aircraft_closed_loop",
+        "role": "full_profile_whole_aircraft_closed_loop",
         "file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Residual.mo",
         "class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Residual",
         "sha256": "e9c4eb5a8dd08bb45db715d409564fac2ea9440f8e3f71d14c21203c06d14655",
         "topology_sha256": "6c1b83343374a2fcbea357cb1d4fd68f05055d57378e4869e654a5047730f820"
       },
       "source_alignment": {
-        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
+        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_full_profile",
         "approved_project_variant": null
       },
       "current_graphical_surface": {
@@ -2205,7 +2215,7 @@
           "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
         },
         "adapter_candidates": [],
-        "core_migration_state": "preserve_the_named_whole_aircraft_chain_until_dependency_audit",
+        "core_migration_state": "preserve_the_named_whole_aircraft_profile_until_dependency_audit",
         "adapter_migration_state": "not_applicable_embedded_sysblock_and_physical_plant",
         "next_migration_gate": "normalize_the_embedded_plant_reference_to_sunray150assembly_only_after_the_shared_assembly_baseline_passes"
       },
@@ -2267,17 +2277,17 @@
     {
       "scheme_id": "fixed_awff_pid",
       "display_name_zh": "抗积分饱和与参考前馈 PID",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
       "current_model": {
-        "role": "fixed_integrated_whole_aircraft_closed_loop",
+        "role": "full_profile_whole_aircraft_closed_loop",
         "file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo",
         "class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffPid",
         "sha256": "aabc69ad0eb27b9c27464fc197b28a30987b4f770a23aa78d4a4f7e318843cac",
         "topology_sha256": "8c414c971c3bc8aa184d486edace9d59879bd0ef10af496fc74f3e8f39280df4"
       },
       "source_alignment": {
-        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
+        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_full_profile",
         "approved_project_variant": null
       },
       "current_graphical_surface": {
@@ -2326,7 +2336,7 @@
           "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
         },
         "adapter_candidates": [],
-        "core_migration_state": "preserve_the_named_whole_aircraft_chain_until_dependency_audit",
+        "core_migration_state": "preserve_the_named_whole_aircraft_profile_until_dependency_audit",
         "adapter_migration_state": "not_applicable_embedded_sysblock_and_physical_plant",
         "next_migration_gate": "normalize_the_embedded_plant_reference_to_sunray150assembly_only_after_the_shared_assembly_baseline_passes"
       },
@@ -2388,17 +2398,17 @@
     {
       "scheme_id": "fixed_linear_mpc_l1_indi",
       "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
-        "role": "fixed_integrated_whole_aircraft_closed_loop",
+        "role": "full_profile_whole_aircraft_closed_loop",
         "file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedLinearMpcL1Indi.mo",
         "class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedLinearMpcL1Indi",
         "sha256": "7fb0d81a65124a99e1c357e3ef3b87428e570b71f404977eb8587fa662ca49d6",
         "topology_sha256": "cfcd95e517b283d7218aaa4ea136b37acda713ab2f59c36b4ae0403560e6c4f4"
       },
       "source_alignment": {
-        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
+        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_full_profile",
         "approved_project_variant": null
       },
       "current_graphical_surface": {
@@ -2447,7 +2457,7 @@
           "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
         },
         "adapter_candidates": [],
-        "core_migration_state": "preserve_the_named_whole_aircraft_chain_until_dependency_audit",
+        "core_migration_state": "preserve_the_named_whole_aircraft_profile_until_dependency_audit",
         "adapter_migration_state": "not_applicable_embedded_sysblock_and_physical_plant",
         "next_migration_gate": "normalize_the_embedded_plant_reference_to_sunray150assembly_only_after_the_shared_assembly_baseline_passes"
       },
@@ -2509,17 +2519,17 @@
     {
       "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
       "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
-        "role": "fixed_integrated_whole_aircraft_closed_loop",
+        "role": "full_profile_whole_aircraft_closed_loop",
         "file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
         "class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedQpNmpcL1IndiCbf",
         "sha256": "f5a0d32afa08e10dc69c49a85f120907fbfd5056e73110c9a7b29644fcbed3fc",
         "topology_sha256": "87d5632503646d46a5b45978a50cb3935d4668f17ce23dbc2f6895dc6ac52558"
       },
       "source_alignment": {
-        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_fixed_chain",
+        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_full_profile",
         "approved_project_variant": null
       },
       "current_graphical_surface": {
@@ -2568,7 +2578,7 @@
           "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
         },
         "adapter_candidates": [],
-        "core_migration_state": "preserve_the_named_whole_aircraft_chain_until_dependency_audit",
+        "core_migration_state": "preserve_the_named_whole_aircraft_profile_until_dependency_audit",
         "adapter_migration_state": "not_applicable_embedded_sysblock_and_physical_plant",
         "next_migration_gate": "normalize_the_embedded_plant_reference_to_sunray150assembly_only_after_the_shared_assembly_baseline_passes"
       },
@@ -2630,8 +2640,8 @@
     {
       "scheme_id": "fopid",
       "display_name_zh": "分数阶 PID",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL.mo",
@@ -2797,7 +2807,7 @@
       "scheme_id": "fuzzy_pid",
       "display_name_zh": "模糊 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
@@ -2928,7 +2938,7 @@
       "scheme_id": "fuzzy_smc",
       "display_name_zh": "模糊滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
@@ -3081,7 +3091,7 @@
       "scheme_id": "gain_scheduled_pid",
       "display_name_zh": "增益调度 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
@@ -3211,8 +3221,8 @@
     {
       "scheme_id": "h2_state_feedback",
       "display_name_zh": "H2 状态反馈",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL.mo",
@@ -3377,8 +3387,8 @@
     {
       "scheme_id": "hinf_hover_wrench",
       "display_name_zh": "H 无穷悬停控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL.mo",
@@ -3547,8 +3557,8 @@
     {
       "scheme_id": "ilqr",
       "display_name_zh": "iLQR",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
@@ -3698,7 +3708,7 @@
       "scheme_id": "integral_smc",
       "display_name_zh": "积分滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
@@ -3847,8 +3857,8 @@
     {
       "scheme_id": "linear_mpc",
       "display_name_zh": "线性 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
@@ -4003,8 +4013,8 @@
     {
       "scheme_id": "lqg",
       "display_name_zh": "LQG",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
@@ -4149,8 +4159,8 @@
     {
       "scheme_id": "lqi_baseline",
       "display_name_zh": "LQI",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL.mo",
@@ -4315,8 +4325,8 @@
     {
       "scheme_id": "lqr_baseline",
       "display_name_zh": "LQR",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
@@ -4478,8 +4488,8 @@
     {
       "scheme_id": "mppi",
       "display_name_zh": "MPPI",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
@@ -4649,8 +4659,8 @@
     {
       "scheme_id": "mrac",
       "display_name_zh": "模型参考自适应控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL.mo",
@@ -4827,8 +4837,8 @@
     {
       "scheme_id": "ndi",
       "display_name_zh": "非线性动态逆",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL.mo",
@@ -4997,7 +5007,7 @@
       "scheme_id": "neural_pid",
       "display_name_zh": "神经 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
@@ -5127,8 +5137,8 @@
     {
       "scheme_id": "nmpc_outer",
       "display_name_zh": "NMPC 外环",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
@@ -5261,7 +5271,7 @@
       "scheme_id": "nonsingular_terminal_smc",
       "display_name_zh": "非奇异终端滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
@@ -5414,7 +5424,7 @@
       "scheme_id": "official_pid",
       "display_name_zh": "官方 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/AWFF_PID_Sysblock_Demo.mo",
@@ -5534,8 +5544,8 @@
     {
       "scheme_id": "passivity_based_control",
       "display_name_zh": "无源控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
@@ -5680,8 +5690,8 @@
     {
       "scheme_id": "pole_placement_luenberger",
       "display_name_zh": "极点配置与 Luenberger 观测器",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL.mo",
@@ -5850,7 +5860,7 @@
       "scheme_id": "rl_gain_scheduler",
       "display_name_zh": "强化学习增益调度",
       "category": "learning",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Learning/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
@@ -5985,8 +5995,8 @@
     {
       "scheme_id": "robust_mpc",
       "display_name_zh": "鲁棒 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
@@ -6139,7 +6149,7 @@
       "scheme_id": "se3_basic",
       "display_name_zh": "SE(3) 几何控制",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
@@ -6272,7 +6282,7 @@
       "scheme_id": "smc_boundary_layer",
       "display_name_zh": "边界层滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
@@ -6406,7 +6416,7 @@
       "scheme_id": "super_twisting_smc",
       "display_name_zh": "Super-Twisting 滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
@@ -6562,7 +6572,7 @@
       "scheme_id": "terminal_smc",
       "display_name_zh": "终端滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
@@ -6715,7 +6725,7 @@
       "scheme_id": "trained_neural_residual",
       "display_name_zh": "训练神经残差控制",
       "category": "learning",
-      "entry_type": "competition_primary_route",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Learning/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
@@ -6850,8 +6860,8 @@
     {
       "scheme_id": "tube_mpc",
       "display_name_zh": "管束 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
       "current_model": {
         "role": "graphical_controller_core",
         "file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",

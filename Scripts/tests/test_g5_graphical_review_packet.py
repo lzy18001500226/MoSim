@@ -62,11 +62,39 @@ def test_pre_normalization_packet_is_not_accepted_as_current_review_evidence() -
     assert packet["claim_boundary"]["simulation"] == "not_run"
 
 
-def test_layout_passed_requires_readable_groups_and_wires() -> None:
+def test_layout_passed_accepts_dense_but_verified_internal_topology() -> None:
+    module = load_module()
+    queue = json.loads(QUEUE.read_text(encoding="utf-8"))
+    dense = copy.deepcopy(stale_cascade_packet(queue))
+    dense["verdict"] = "layout_passed"
+    dense["layout_observations"].update(
+        {
+            "signal_flow_readable": True,
+            "functional_groups_readable": True,
+            "wires_traceable": True,
+        }
+    )
+
+    errors = module.validate_review_packet(dense, queue)
+    assert not any("layout_passed requires" in error for error in errors)
+
+
+def test_layout_passed_rejects_a_wrapper_or_missing_internal_law() -> None:
+    module = load_module()
+    queue = json.loads(QUEUE.read_text(encoding="utf-8"))
+    invalid = copy.deepcopy(stale_cascade_packet(queue))
+    invalid["verdict"] = "layout_passed"
+    invalid["layout_observations"]["is_internal_control_law"] = False
+
+    errors = module.validate_review_packet(invalid, queue)
+    assert any("actual internal control-law topology" in error for error in errors)
+
+
+def test_layout_passed_rejects_unreadable_signal_flow() -> None:
     module = load_module()
     queue = json.loads(QUEUE.read_text(encoding="utf-8"))
     invalid = copy.deepcopy(stale_cascade_packet(queue))
     invalid["verdict"] = "layout_passed"
 
     errors = module.validate_review_packet(invalid, queue)
-    assert any("layout_passed requires" in error for error in errors)
+    assert any("readable functional groups and traceable signal wires" in error for error in errors)

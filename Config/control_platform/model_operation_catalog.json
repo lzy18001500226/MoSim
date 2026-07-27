@@ -3,7 +3,7 @@
   "version": 1,
   "authority_scope": "allowlisted_model_studio_operations_only",
   "non_authoritative_for": [
-    "complete_49_scheme_model_entry_mapping",
+    "complete_48_profile_model_entry_mapping",
     "current_project_model_entry_promotion",
     "g4_g5_mworks_eligibility"
   ],

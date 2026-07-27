@@ -37,26 +37,29 @@ QUEUE_PATH = (
 )
 DEFAULT_OUTPUT = ROOT / "Config" / "control_platform" / "formal_closed_loop_harness_map.json"
 CHAMPION_SELECTION_PATH = ROOT / "Config" / "control_platform" / "g6_champion_selection.json"
-DEFAULT_G6_STATUS_PATH = ROOT / "Results" / "control_platform" / "g6_controller_execution_20260724" / "G6_EXECUTION_STATUS.json"
-G6_STATUS_PATH = DEFAULT_G6_STATUS_PATH
 FORMAL_MODEL_PREFIX = "Models/MoSimQuadrotorModel/"
 FORMAL_INTERFACE_PREFIX = "MoSimQuadrotorModel.Control.Interfaces."
+FORMAL_HARNESS_MAP_SCHEMA = "mosim.formal_closed_loop_harness_map.v2"
+G5_QUEUE_SCHEMA = "mosim.g5_graphical_review_queue.v2"
 SYSBLOCK_DEFINITION_ROOT = (
     ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Implementations" / "Sysblocks"
 )
-CHAMPION_SELECTION_SCHEMA = "mosim.g6_provisional_champion_selection.v1"
+CHAMPION_SELECTION_SCHEMA = "mosim.g6_measured_family_selection.v2"
 
 CHAMPION_HARNESS_PROMOTION_CONTRACT = {
     "state": "required_before_g6",
-    "nominal_family_categories": [
+    "semantic_family_categories": [
         "pid_family",
-        "classic_robust",
+        "linear_robust_state_feedback",
+        "nonlinear_adaptive",
         "sliding_mode",
-        "optimization",
+        "optimization_predictive",
         "geometric_flatness",
         "learning",
     ],
-    "baseline_rule": "Official PID must use a version-matched formal-root harness; it may be reused only when it is also the selected PID-family champion.",
+    "selection_gate": "All 46 current MWORKS routes must first have current-source ClimbPath 50 s minimum-closure records before a measured family winner is selected.",
+    "selection_metric": "Use the valid current-source ClimbPath 50 s position RMSE, with terminal position error and numerical stability as tie breakers. Do not rank from superseded pre-repair results.",
+    "baseline_rule": "Official PID and the future MWORKS-equivalent px4ctrl_core are fixed A/B baselines, not predeclared family winners. Official PID is screened with the other 46 routes but remains excluded from the PID-family winner pool because it is the reference baseline.",
     "required_bindings": [
         "champion_core",
         "formal_adapter",
@@ -67,7 +70,7 @@ CHAMPION_HARNESS_PROMOTION_CONTRACT = {
     ],
     "mapping_update_rule": "Promote the selected champion in this D2 map and update its generator/checker before any G6 seven-scenario A/B run.",
     "prohibited_substitutions": [
-        "existing_fixed_integrated_chain_for_different_champion",
+        "whole_aircraft_profile_from_a_different_semantic_family",
         "historical_result",
         "neighbor_route_result",
     ],
@@ -111,289 +114,90 @@ def formal_file(path_text: str, label: str) -> Path:
     return path
 
 
-def project_file(path_text: str, label: str) -> Path:
-    """Resolve one project-owned file without allowing an external path."""
-    if not isinstance(path_text, str) or not path_text:
-        raise HarnessMapError(f"{label} path is missing")
-    path = ROOT / path_text
-    try:
-        path.resolve().relative_to(ROOT.resolve())
-    except ValueError as exc:
-        raise HarnessMapError(f"{label} leaves the project root: {path_text}") from exc
-    if not path.is_file():
-        raise HarnessMapError(f"{label} is missing: {path_text}")
-    return path
+def build_measured_family_selection(rows: list[dict[str, Any]]) -> dict[str, Any]:
+    """Freeze winner-selection rules without predeclaring a champion.
 
+    The former six-row slate expressed design preferences before the 46-route
+    screen existed. The active contract derives pools from the current models,
+    waits for shared current-source ClimbPath records, and leaves every winner
+    unset until its measured ranking is available.
+    """
 
-def configure_g6_status_path(value: Path | None) -> None:
-    """Select the active 46-route status table without rewriting historical runs."""
-
-    global G6_STATUS_PATH
-    candidate = DEFAULT_G6_STATUS_PATH if value is None else value
-    if not candidate.is_absolute():
-        candidate = ROOT / candidate
-    candidate = candidate.resolve()
-    results_root = (ROOT / "Results").resolve()
-    try:
-        candidate.relative_to(results_root)
-    except ValueError as exc:
-        raise HarnessMapError("G6 execution status must remain below Results/") from exc
-    if candidate.name != "G6_EXECUTION_STATUS.json":
-        raise HarnessMapError("G6 execution status file name must be G6_EXECUTION_STATUS.json")
-    if not candidate.is_file():
-        raise HarnessMapError(f"G6 execution status is missing: {candidate}")
-    G6_STATUS_PATH = candidate
-
-
-def model_class_from_file(model_path: Path, label: str) -> str:
-    """Return the declared Modelica class and reject aliases with a wrong name."""
-    text = model_path.read_text(encoding="utf-8")
-    within = model_within(model_path, label)
-    match = re.search(r"^\s*(?:model|block)\s+([A-Za-z_]\w*)\b", text, re.MULTILINE)
-    if not match:
-        raise HarnessMapError(f"{label} has no model/block declaration: {model_path}")
-    return f"{within}.{match.group(1)}"
-
-
-def configured_formal_model(
-    value: Any,
-    label: str,
-    required_extends: str | None = None,
-) -> dict[str, Any]:
-    """Validate one configured adapter or runner and bind its current hash."""
-    if not isinstance(value, dict):
-        raise HarnessMapError(f"{label} must be an object")
-    path_text = value.get("model_file")
-    class_text = value.get("model_class")
-    if not isinstance(path_text, str) or not isinstance(class_text, str):
-        raise HarnessMapError(f"{label} must name model_file and model_class")
-    path = formal_file(path_text, label)
-    actual_class = model_class_from_file(path, label)
-    if actual_class != class_text:
-        raise HarnessMapError(f"{label} class mismatch: {actual_class} != {class_text}")
-    text = path.read_text(encoding="utf-8")
-    if required_extends and not re.search(
-        rf"\bextends\s+{re.escape(required_extends)}\b", text
-    ):
-        raise HarnessMapError(f"{label} must extend {required_extends}")
-    descriptor = {
-        "model_file": path_text,
-        "model_class": class_text,
-        "model_sha256": sha256_file(path),
-    }
-    if isinstance(value.get("output_boundary"), str):
-        descriptor["output_boundary"] = value["output_boundary"]
-    return descriptor
-
-
-def g6_current_probe(scheme_id: str, category: str, current_core_hash: str) -> dict[str, Any]:
-    """Bind a family candidate to the active matrix, including pending state."""
-
-    status = read_json(G6_STATUS_PATH)
-    if status.get("schema") != "mosim.g6_controller_execution_status.v1":
-        raise HarnessMapError("G6 execution status schema is invalid")
-    matrix_text = status.get("matrix")
-    if not isinstance(matrix_text, str):
-        raise HarnessMapError("G6 execution status has no matrix path")
-    matrix_path = project_file(matrix_text, "G6 execution matrix")
-    matrix = read_json(matrix_path)
-    if status.get("matrix_sha256") != sha256_file(matrix_path):
-        raise HarnessMapError("G6 execution status matrix SHA-256 is stale")
-    matrix_rows = matrix.get("rows")
-    if not isinstance(matrix_rows, list):
-        raise HarnessMapError("G6 execution matrix has no route rows")
-    rows = status.get("rows")
-    if not isinstance(rows, list):
-        raise HarnessMapError("G6 execution status has no rows")
-    matches = [row for row in rows if isinstance(row, dict) and row.get("scheme_id") == scheme_id]
-    if len(matches) != 1:
-        raise HarnessMapError(f"{scheme_id}: G6 execution status has no unique route")
-    row = matches[0]
-    if row.get("category") != category:
-        raise HarnessMapError(f"{scheme_id}: G6 category does not match provisional selection")
-    matrix_matches = [
-        item for item in matrix_rows if isinstance(item, dict) and item.get("scheme_id") == scheme_id
-    ]
-    if len(matrix_matches) != 1:
-        raise HarnessMapError(f"{scheme_id}: G6 execution matrix has no unique route")
-    matrix_row = matrix_matches[0]
-    target = matrix_row.get("target") if isinstance(matrix_row.get("target"), dict) else {}
-    target_hash = target.get("model_sha256")
-    if matrix_row.get("category") != category or row.get("evidence_class") != "internal_fixed_input_probe":
-        raise HarnessMapError(f"{scheme_id}: G6 route does not match the selected graphical candidate")
-    base = {
-        "status": row.get("status"),
-        "evidence_class": "internal_fixed_input_probe",
-        "matrix": str(matrix_text).replace("\\", "/"),
-        "matrix_sha256": status.get("matrix_sha256"),
-        "target_model_sha256": target_hash,
-    }
-    if target_hash != current_core_hash:
-        base["status"] = "source_hash_mismatch"
-        base["reason"] = "The active matrix target hash does not match the current graphical core."
-        base["run_record"] = None
-        return base
-    if row.get("status") == "pending":
-        base["run_record"] = None
-        return base
-    if row.get("status") != "passed":
-        base["run_record"] = row.get("run_record")
-        base["reason"] = "The active current-matrix probe is terminal but not passed."
-        return base
-    record_text = row.get("run_record")
-    record_path = project_file(str(record_text), f"{scheme_id}: G6 run record")
-    record = read_json(record_path)
-    record_target = record.get("matrix", {}).get("target") if isinstance(record.get("matrix"), dict) else {}
-    if (
-        record.get("scheme_id") != scheme_id
-        or record.get("status") != "passed"
-        or record_target.get("model_sha256") != current_core_hash
-    ):
-        raise HarnessMapError(f"{scheme_id}: G6 run record is not a passed matching current route")
-    return {
-        **base,
-        "status": "passed",
-        "run_record": str(record_text).replace("\\", "/"),
-        "run_record_sha256": sha256_file(record_path),
-    }
-
-
-def candidate_promotion_state(probe: dict[str, Any]) -> str:
-    """Keep candidate naming separate from champion promotion and A/B admission."""
-
-    return "adapter_binding_pending" if probe.get("status") == "passed" else "awaiting_current_g6_probe"
-
-
-def build_provisional_champion_selection(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Build the post-G6 selection layer without changing the frozen 41+5 split."""
     selection = read_json(CHAMPION_SELECTION_PATH)
     if selection.get("schema") != CHAMPION_SELECTION_SCHEMA:
-        raise HarnessMapError("G6 provisional champion selection schema is invalid")
-    source_candidates = selection.get("candidates")
-    if not isinstance(source_candidates, list):
-        raise HarnessMapError("G6 provisional champion selection has no candidate list")
-    expected_categories = list(CHAMPION_HARNESS_PROMOTION_CONTRACT["nominal_family_categories"])
-    if len(source_candidates) != len(expected_categories):
-        raise HarnessMapError("G6 provisional champion selection must contain six family candidates")
-    by_id = {str(row.get("scheme_id")): row for row in rows}
-    selected_categories: list[str] = []
-    selected_ids: set[str] = set()
-    candidates: list[dict[str, Any]] = []
-    for candidate in source_candidates:
-        if not isinstance(candidate, dict):
-            raise HarnessMapError("G6 provisional champion selection contains a non-object candidate")
-        category = candidate.get("category")
-        scheme_id = candidate.get("scheme_id")
-        if not isinstance(category, str) or not isinstance(scheme_id, str):
-            raise HarnessMapError("G6 provisional champion candidate is missing category or scheme_id")
-        if category in selected_categories or scheme_id in selected_ids:
-            raise HarnessMapError(f"G6 provisional champion candidate is duplicated: {category}/{scheme_id}")
-        selected_categories.append(category)
-        selected_ids.add(scheme_id)
-        row = by_id.get(scheme_id)
-        if not isinstance(row, dict):
-            raise HarnessMapError(f"{scheme_id}: provisional champion is not in the formal map")
-        if row.get("category") != category:
-            raise HarnessMapError(f"{scheme_id}: provisional champion category does not match formal map")
-        if row.get("formal_harness_state") != "missing_closed_loop_harness":
-            raise HarnessMapError(f"{scheme_id}: provisional champion must start from a current graphical core")
-        if candidate.get("promotion_state") != "awaiting_current_g6_probe":
-            raise HarnessMapError(f"{scheme_id}: family candidate must await the active current-matrix probe")
-        adapter_contract = candidate.get("required_adapter_contract")
-        if adapter_contract != "ATTITUDE_THRUST":
-            raise HarnessMapError(f"{scheme_id}: provisional champion must declare ATTITUDE_THRUST adapter contract")
-        reason = candidate.get("selection_reason")
-        if not isinstance(reason, str) or not reason.strip():
-            raise HarnessMapError(f"{scheme_id}: provisional champion selection reason is missing")
-        implementation_reference = candidate.get("implementation_reference")
-        implementation_path = project_file(str(implementation_reference), f"{scheme_id}: implementation reference")
-        probe = g6_current_probe(scheme_id, category, str(row.get("current_model_sha256")))
-        candidates.append(
+        raise HarnessMapError("G6 measured family-selection schema is invalid")
+    if selection.get("state") != "awaiting_phase1_minimum_closure":
+        raise HarnessMapError("G6 measured family selection must await Phase 1 minimum closure")
+    expected_categories = list(CHAMPION_HARNESS_PROMOTION_CONTRACT["semantic_family_categories"])
+    if selection.get("family_categories") != expected_categories:
+        raise HarnessMapError("G6 family categories drift from the semantic family contract")
+    metric = selection.get("selection_metric")
+    if (
+        not isinstance(metric, dict)
+        or metric.get("scenario_id") != "climb_path_50s"
+        or metric.get("duration_s") != 50
+        or metric.get("primary_metric") != "position_rmse_m"
+        or not isinstance(metric.get("tie_breakers"), list)
+    ):
+        raise HarnessMapError("G6 measured family-selection metric contract is incomplete")
+    pool_policy = selection.get("pool_policy")
+    if not isinstance(pool_policy, dict) or pool_policy.get("selection_eligibility") != "family_screening":
+        raise HarnessMapError("G6 measured family selection must use family_screening eligibility")
+    ab_baselines = selection.get("ab_baselines")
+    if not isinstance(ab_baselines, dict):
+        raise HarnessMapError("G6 measured family selection requires explicit A/B baselines")
+    if not isinstance(ab_baselines.get("official_pid"), dict) or ab_baselines["official_pid"].get("scheme_id") != "official_pid":
+        raise HarnessMapError("Official PID must remain an explicit A/B baseline")
+    if not isinstance(ab_baselines.get("px4ctrl_core"), dict) or ab_baselines["px4ctrl_core"].get("scheme_id") != "px4ctrl":
+        raise HarnessMapError("px4ctrl_core must remain an explicit A/B baseline")
+
+    current_rows = [
+        row
+        for row in rows
+        if row.get("formal_harness_state")
+        in {"missing_closed_loop_harness", "resolved_canonical_whole_aircraft_harness"}
+    ]
+    if len(current_rows) != 46:
+        raise HarnessMapError("G6 measured family selection requires exactly 46 current MWORKS routes")
+    pools: list[dict[str, Any]] = []
+    candidate_ids: list[str] = []
+    for category in expected_categories:
+        pool_ids = sorted(
+            str(row["scheme_id"])
+            for row in current_rows
+            if row.get("category") == category
+            and row.get("selection_eligibility") == "family_screening"
+        )
+        if not pool_ids:
+            raise HarnessMapError(f"{category}: measured family-selection pool is empty")
+        candidate_ids.extend(pool_ids)
+        pools.append(
             {
                 "category": category,
-                "scheme_id": scheme_id,
-                "display_name_zh": row.get("display_name_zh"),
-                "selection_reason": reason,
-                "promotion_state": candidate_promotion_state(probe),
-                "champion_core": {
-                    "model_file": row.get("current_model_file"),
-                    "model_class": row.get("current_model_class"),
-                    "model_sha256": row.get("current_model_sha256"),
-                },
-                "g6_probe": probe,
-                "required_adapter_contract": adapter_contract,
-                "implementation_reference": {
-                    "path": str(implementation_reference).replace("\\", "/"),
-                    "sha256": sha256_file(implementation_path),
-                    "claim_boundary": "Implementation reference only. A future formal adapter must be checked for behavior and interface equivalence before minimum closure.",
-                },
+                "candidate_scheme_ids": pool_ids,
+                "candidate_count": len(pool_ids),
+                "winner_scheme_id": None,
+                "winner_selection_state": "awaiting_all_current_source_phase1_records",
             }
         )
-    if sorted(selected_categories) != sorted(expected_categories):
-        raise HarnessMapError("G6 provisional champion selection must cover each nominal family exactly once")
-
-    baseline = selection.get("official_pid_baseline")
-    if not isinstance(baseline, dict) or baseline.get("scheme_id") != "official_pid":
-        raise HarnessMapError("G6 provisional selection must include the official_pid A/B baseline")
-    baseline_row = by_id.get("official_pid")
-    if not isinstance(baseline_row, dict) or baseline_row.get("category") != "pid_family":
-        raise HarnessMapError("official_pid baseline category is invalid")
-    if baseline.get("binding_state") != "formal_binding_ready_for_validation":
-        raise HarnessMapError("official_pid baseline must be ready for validation, not promoted as a family champion")
-    boundary = baseline.get("semantic_boundary")
-    if not isinstance(boundary, str) or not boundary.strip():
-        raise HarnessMapError("official_pid baseline semantic boundary is missing")
-    core_reference = baseline.get("core_reference")
-    if not isinstance(core_reference, dict) or core_reference.get("model_class") != "MoSimQuadrotorModel.Vehicle.Blocks.Controller.Controller":
-        raise HarnessMapError("official_pid baseline must bind the full embedded Plant controller core")
-    adapter = configured_formal_model(
-        baseline.get("formal_adapter"),
-        "official_pid baseline adapter",
-        "MoSimQuadrotorModel.Control.Interfaces.PartialRotorCommandController",
-    )
-    if adapter.get("output_boundary") != "ROTOR_COMMAND":
-        raise HarnessMapError("official_pid baseline adapter must use the ROTOR_COMMAND boundary")
-    harness = configured_formal_model(
-        baseline.get("whole_aircraft_source_harness"),
-        "official_pid baseline runner",
-        "MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner",
-    )
-    minimum_scenario = baseline.get("minimum_scenario")
-    if (
-        not isinstance(minimum_scenario, dict)
-        or minimum_scenario.get("scenario_id") != "climb_path_50s"
-        or minimum_scenario.get("reference_owner") != "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath"
-        or minimum_scenario.get("duration_s") != 50
-    ):
-        raise HarnessMapError("official_pid baseline minimum scenario must be the 50 s ClimbPath run")
+    if len(set(candidate_ids)) != len(candidate_ids):
+        raise HarnessMapError("G6 measured family-selection pools overlap")
+    if "official_pid" in candidate_ids:
+        raise HarnessMapError("Official PID must remain the fixed A/B baseline, not a family-winner candidate")
     return {
         "schema": CHAMPION_SELECTION_SCHEMA,
-        "state": (
-            "candidate_slate_ready_for_family_selection"
-            if all(candidate["g6_probe"].get("status") == "passed" for candidate in candidates)
-            else "candidate_slate_pending_current_matrix"
-        ),
-        "selection_criteria": selection.get("selection_criteria"),
-        "official_pid_baseline": {
-            "scheme_id": "official_pid",
-            "binding_state": "formal_binding_ready_for_validation",
-            "semantic_boundary": boundary,
-            "core_reference": core_reference,
-            "formal_adapter": adapter,
-            "whole_aircraft_source_harness": harness,
-            "minimum_scenario": minimum_scenario,
-        },
-        "candidates": candidates,
+        "state": "awaiting_phase1_minimum_closure",
+        "selection_metric": metric,
+        "pool_policy": pool_policy,
+        "ab_baselines": ab_baselines,
+        "family_pools": pools,
         "summary": {
-            "selected_family_count": len(candidates),
-            "awaiting_current_g6_probe_count": sum(
-                1 for candidate in candidates if candidate["promotion_state"] == "awaiting_current_g6_probe"
-            ),
-            "adapter_binding_pending_count": sum(
-                1 for candidate in candidates if candidate["promotion_state"] == "adapter_binding_pending"
-            ),
-            "formal_candidate_minimum_closure_passed_count": 0,
-            "official_pid_baseline_ready_for_validation_count": 1,
+            "semantic_family_count": len(pools),
+            "family_screening_candidate_count": len(candidate_ids),
+            "selected_family_winner_count": 0,
+            "current_mworks_route_count": len(current_rows),
+            "official_pid_baseline_count": 1,
+            "px4ctrl_core_baseline_count": 1,
         },
     }
 
@@ -516,6 +320,9 @@ def common_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> dict[str, 
         "display_name_zh": map_row.get("display_name_zh"),
         "category": map_row.get("category"),
         "entry_type": map_row.get("entry_type"),
+        "profile_role": map_row.get("role"),
+        "selection_eligibility": map_row.get("selection_eligibility"),
+        "execution_kind": map_row.get("execution_kind"),
         "mapping_state": map_row.get("mapping_state"),
         "current_model_role": map_row.get("current_model_role"),
         "current_model_file": map_row.get("current_model_file"),
@@ -560,18 +367,18 @@ def graphical_core_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> di
     return row
 
 
-def fixed_integrated_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> dict[str, Any]:
+def full_profile_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> dict[str, Any]:
     row = common_row(map_row, queue_row)
     scheme_id = str(row["scheme_id"])
     public_entry = formal_file(str(row["current_model_file"]), f"{scheme_id}: formal public entry")
     provenance = map_row.get("source_provenance")
     if not isinstance(provenance, dict):
-        raise HarnessMapError(f"{scheme_id}: fixed integrated source provenance is missing")
+        raise HarnessMapError(f"{scheme_id}: full-profile source provenance is missing")
     source_file = provenance.get("source_file")
     source_class = provenance.get("source_model_class")
     source_hash = provenance.get("source_sha256")
     if not isinstance(source_file, str) or not isinstance(source_class, str) or not isinstance(source_hash, str):
-        raise HarnessMapError(f"{scheme_id}: fixed integrated source provenance is incomplete")
+        raise HarnessMapError(f"{scheme_id}: full-profile source provenance is incomplete")
     source_path = formal_file(source_file, f"{scheme_id}: whole-aircraft source")
     if sha256_file(source_path) != source_hash:
         raise HarnessMapError(f"{scheme_id}: whole-aircraft source hash drift")
@@ -603,30 +410,36 @@ def fixed_integrated_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> 
     return row
 
 
-def blocked_row(map_row: dict[str, Any]) -> dict[str, Any]:
+def planned_profile_row(map_row: dict[str, Any]) -> dict[str, Any]:
     return {
         "scheme_id": map_row["scheme_id"],
         "display_name_zh": map_row.get("display_name_zh"),
         "category": map_row.get("category"),
         "entry_type": map_row.get("entry_type"),
+        "profile_role": map_row.get("role"),
+        "selection_eligibility": map_row.get("selection_eligibility"),
+        "execution_kind": map_row.get("execution_kind"),
         "mapping_state": map_row.get("mapping_state"),
-        "formal_harness_state": "blocked_before_harness_mapping",
+        "formal_harness_state": "planned_profile_no_model",
         "minimum_whole_aircraft_closure_eligible": False,
         "blocker_code": map_row.get("blocker_code"),
         "blocker_reason": map_row.get("blocker_reason"),
     }
 
 
-def runtime_baseline_row(map_row: dict[str, Any]) -> dict[str, Any]:
+def pending_mworks_equivalent_core_row(map_row: dict[str, Any]) -> dict[str, Any]:
     return {
         "scheme_id": map_row["scheme_id"],
         "display_name_zh": map_row.get("display_name_zh"),
         "category": map_row.get("category"),
         "entry_type": map_row.get("entry_type"),
+        "profile_role": map_row.get("role"),
+        "selection_eligibility": map_row.get("selection_eligibility"),
+        "execution_kind": map_row.get("execution_kind"),
         "mapping_state": map_row.get("mapping_state"),
-        "formal_harness_state": "not_applicable_runtime_baseline",
+        "formal_harness_state": "pending_mworks_equivalent_core",
         "minimum_whole_aircraft_closure_eligible": False,
-        "claim_boundary": "px4ctrl remains a ROS1/PX4 runtime baseline and has no MWORKS graphical harness.",
+        "claim_boundary": "px4ctrl remains the engineering/deployment baseline. Its MWORKS-equivalent core, graphical review, and formal A/B entry are pending an explicit C++ behavior/interface-equivalence gate.",
     }
 
 
@@ -635,21 +448,21 @@ def build_harness_map() -> dict[str, Any]:
     queue = read_json(QUEUE_PATH)
     if current_map.get("schema") != "mosim.current_model_entry_map.v1":
         raise HarnessMapError("Current model entry map schema is invalid")
-    if queue.get("schema") != "mosim.g5_graphical_review_queue.v1":
+    if queue.get("schema") != G5_QUEUE_SCHEMA:
         raise HarnessMapError("G5 graphical review queue schema is invalid")
     map_rows = current_map.get("schemes")
     queue_rows = queue.get("schemes")
-    if not isinstance(map_rows, list) or len(map_rows) != 49:
-        raise HarnessMapError("Current model entry map must contain 49 schemes")
-    if not isinstance(queue_rows, list) or len(queue_rows) != 49:
-        raise HarnessMapError("G5 graphical review queue must contain 49 schemes")
+    if not isinstance(map_rows, list) or len(map_rows) != 48:
+        raise HarnessMapError("Current model entry map must contain 48 active profiles")
+    if not isinstance(queue_rows, list) or len(queue_rows) != 48:
+        raise HarnessMapError("G5 graphical review queue must contain 48 active profiles")
     queue_by_id = {
         str(row.get("scheme_id")): row
         for row in queue_rows
         if isinstance(row, dict) and row.get("scheme_id")
     }
-    if len(queue_by_id) != 49:
-        raise HarnessMapError("G5 graphical review queue has duplicate or missing scheme IDs")
+    if len(queue_by_id) != 48:
+        raise HarnessMapError("G5 graphical review queue has duplicate or missing active profile IDs")
 
     rows: list[dict[str, Any]] = []
     for map_row in map_rows:
@@ -663,23 +476,24 @@ def build_harness_map() -> dict[str, Any]:
             raise HarnessMapError(f"{scheme_id}: missing G5 queue row")
         if state == "resolved_current_model" and role == "graphical_controller_core":
             rows.append(graphical_core_row(map_row, queue_row))
-        elif state == "resolved_current_model" and role == "fixed_integrated_whole_aircraft_closed_loop":
-            rows.append(fixed_integrated_row(map_row, queue_row))
-        elif state == "blocked_missing_current_model":
-            rows.append(blocked_row(map_row))
-        elif state == "not_applicable_runtime_baseline":
-            rows.append(runtime_baseline_row(map_row))
+        elif state == "resolved_current_model" and role == "full_profile_whole_aircraft_closed_loop":
+            rows.append(full_profile_row(map_row, queue_row))
+        elif state == "planned_profile_no_model":
+            rows.append(planned_profile_row(map_row))
+        elif state == "pending_mworks_equivalent_core":
+            rows.append(pending_mworks_equivalent_core_row(map_row))
         else:
             raise HarnessMapError(f"{scheme_id}: unsupported mapping state/role: {state}/{role}")
 
     state_counts = Counter(str(row["formal_harness_state"]) for row in rows)
-    provisional_selection = build_provisional_champion_selection(rows)
-    provisional_summary = provisional_selection["summary"]
+    measured_selection = build_measured_family_selection(rows)
+    measured_summary = measured_selection["summary"]
     return {
-        "schema": "mosim.formal_closed_loop_harness_map.v1",
+        "schema": FORMAL_HARNESS_MAP_SCHEMA,
         "scope": (
-            "D2 static formal-harness mapping only. It does not prove a MWORKS "
-            "check, graphical review, simulation, result, metric, or runtime success."
+            "D2 static formal-harness mapping and measured-winner selection contract "
+            "only. It does not prove a MWORKS check, graphical review, simulation, "
+            "result, metric, code-generation, or runtime success."
         ),
         "source_current_model_map": "Config/control_platform/current_model_entry_map.json",
         "source_current_model_map_sha256": sha256_file(CURRENT_MAP_PATH),
@@ -690,11 +504,9 @@ def build_harness_map() -> dict[str, Any]:
         "source_g5_graphical_review_queue_sha256": sha256_file(QUEUE_PATH),
         "source_g6_champion_selection": str(CHAMPION_SELECTION_PATH.relative_to(ROOT)).replace("\\", "/"),
         "source_g6_champion_selection_sha256": sha256_file(CHAMPION_SELECTION_PATH),
-        "source_g6_execution_status": str(G6_STATUS_PATH.relative_to(ROOT)).replace("\\", "/"),
-        "source_g6_execution_status_sha256": sha256_file(G6_STATUS_PATH),
         "summary": {
-            "top_level_scheme_count": len(rows),
-            "current_mworks_candidate_count": (
+            "active_top_level_entry_count": len(rows),
+            "current_mworks_route_count": (
                 state_counts["missing_closed_loop_harness"]
                 + state_counts["resolved_canonical_whole_aircraft_harness"]
             ),
@@ -702,40 +514,39 @@ def build_harness_map() -> dict[str, Any]:
                 "resolved_canonical_whole_aircraft_harness"
             ],
             "missing_closed_loop_harness_count": state_counts["missing_closed_loop_harness"],
-            "blocked_before_harness_mapping_count": state_counts["blocked_before_harness_mapping"],
-            "not_applicable_runtime_baseline_count": state_counts["not_applicable_runtime_baseline"],
-            "provisional_champion_selection_count": provisional_summary["selected_family_count"],
-            "provisional_champion_adapter_pending_count": provisional_summary["adapter_binding_pending_count"],
-            "provisional_champion_minimum_closure_passed_count": provisional_summary[
-                "formal_candidate_minimum_closure_passed_count"
-            ],
-            "official_pid_baseline_ready_for_validation_count": provisional_summary[
-                "official_pid_baseline_ready_for_validation_count"
-            ],
+            "planned_profile_no_model_count": state_counts["planned_profile_no_model"],
+            "pending_mworks_equivalent_core_count": state_counts["pending_mworks_equivalent_core"],
+            "semantic_family_count": measured_summary["semantic_family_count"],
+            "family_screening_candidate_count": measured_summary["family_screening_candidate_count"],
+            "selected_family_winner_count": measured_summary["selected_family_winner_count"],
+            "official_pid_baseline_count": measured_summary["official_pid_baseline_count"],
+            "px4ctrl_core_baseline_count": measured_summary["px4ctrl_core_baseline_count"],
         },
         "champion_harness_promotion": CHAMPION_HARNESS_PROMOTION_CONTRACT,
-        "provisional_champion_selection": provisional_selection,
+        "measured_family_selection": measured_selection,
         "schemes": rows,
     }
 
 
 def validate_harness_map(value: dict[str, Any]) -> list[str]:
     errors: list[str] = []
-    if value.get("schema") != "mosim.formal_closed_loop_harness_map.v1":
+    if value.get("schema") != FORMAL_HARNESS_MAP_SCHEMA:
         errors.append("schema is invalid")
     rows = value.get("schemes")
-    if not isinstance(rows, list) or len(rows) != 49:
-        errors.append("map must contain exactly 49 schemes")
+    if not isinstance(rows, list) or len(rows) != 48:
+        errors.append("map must contain exactly 48 active profiles")
         return errors
     identifiers = [str(row.get("scheme_id")) for row in rows if isinstance(row, dict)]
-    if len(identifiers) != 49 or len(set(identifiers)) != 49:
+    if len(identifiers) != 48 or len(set(identifiers)) != 48:
         errors.append("scheme IDs must be complete and unique")
     by_id = {str(row.get("scheme_id")): row for row in rows if isinstance(row, dict)}
     for scheme_id in ("mu_synthesis", "neural_smc"):
-        if by_id.get(scheme_id, {}).get("formal_harness_state") != "blocked_before_harness_mapping":
-            errors.append(f"{scheme_id} must remain blocked_before_harness_mapping")
-    if by_id.get("px4ctrl", {}).get("formal_harness_state") != "not_applicable_runtime_baseline":
-        errors.append("px4ctrl must remain not_applicable_runtime_baseline")
+        if scheme_id in by_id:
+            errors.append(f"{scheme_id} must not remain in the active formal-harness map")
+    if by_id.get("pid_awff_linear_eso", {}).get("formal_harness_state") != "planned_profile_no_model":
+        errors.append("ESO profile must remain planned_profile_no_model until a MWORKS implementation exists")
+    if by_id.get("px4ctrl", {}).get("formal_harness_state") != "pending_mworks_equivalent_core":
+        errors.append("px4ctrl must remain pending_mworks_equivalent_core")
 
     candidates = [
         row
@@ -751,7 +562,7 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
         if row.get("formal_harness_state") == "resolved_canonical_whole_aircraft_harness"
     ]
     if len(candidates) != 46 or len(graphical) != 41 or len(integrated) != 5:
-        errors.append("candidate split must remain 46 = 41 graphical cores + 5 fixed integrated harnesses")
+        errors.append("current-route split must remain 46 = 41 graphical cores + 5 full-profile whole-aircraft harnesses")
     for row in candidates:
         target = row.get("topology_review_target")
         if not isinstance(target, dict) or not isinstance(target.get("model_file"), str):
@@ -768,9 +579,9 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
     for row in integrated:
         harness = row.get("canonical_closed_loop_harness")
         if row.get("minimum_whole_aircraft_closure_eligible") is not True:
-            errors.append(f"{row.get('scheme_id')}: fixed integrated chain must enable minimum whole-aircraft closure")
+            errors.append(f"{row.get('scheme_id')}: full profile must enable minimum whole-aircraft closure")
         if not isinstance(harness, dict):
-            errors.append(f"{row.get('scheme_id')}: fixed integrated chain must declare a canonical harness")
+            errors.append(f"{row.get('scheme_id')}: full profile must declare a canonical harness")
         else:
             for key in ("public_entry_file", "whole_aircraft_source_file"):
                 path_text = harness.get(key)
@@ -778,14 +589,14 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
                     errors.append(f"{row.get('scheme_id')}: harness {key} leaves formal model root")
         prerequisites = row.get("model_load_prerequisites")
         if not isinstance(prerequisites, list) or not prerequisites or any(not isinstance(item, dict) for item in prerequisites):
-            errors.append(f"{row.get('scheme_id')}: fixed integrated chain needs frozen load prerequisites")
+            errors.append(f"{row.get('scheme_id')}: full profile needs frozen load prerequisites")
         else:
             prerequisite = prerequisites[0]
             if not isinstance(harness, dict):
                 continue
             source_file = harness.get("whole_aircraft_source_file")
             if not isinstance(source_file, str):
-                errors.append(f"{row.get('scheme_id')}: fixed integrated chain has no source for its prerequisite")
+                errors.append(f"{row.get('scheme_id')}: full profile has no source for its prerequisite")
                 continue
             try:
                 expected_prerequisites = whole_aircraft_sysblock_load_prerequisites(
@@ -813,12 +624,17 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
                             f"{row.get('scheme_id')}: load prerequisite {index} {key} must bind its source controller type"
                         )
     expected_summary = {
-        "top_level_scheme_count": 49,
-        "current_mworks_candidate_count": 46,
+        "active_top_level_entry_count": 48,
+        "current_mworks_route_count": 46,
         "resolved_canonical_whole_aircraft_harness_count": 5,
         "missing_closed_loop_harness_count": 41,
-        "blocked_before_harness_mapping_count": 2,
-        "not_applicable_runtime_baseline_count": 1,
+        "planned_profile_no_model_count": 1,
+        "pending_mworks_equivalent_core_count": 1,
+        "semantic_family_count": 7,
+        "family_screening_candidate_count": 45,
+        "selected_family_winner_count": 0,
+        "official_pid_baseline_count": 1,
+        "px4ctrl_core_baseline_count": 1,
     }
     summary = value.get("summary")
     if not isinstance(summary, dict):
@@ -829,59 +645,75 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
                 errors.append(f"summary.{key} must equal {expected}")
     if value.get("champion_harness_promotion") != CHAMPION_HARNESS_PROMOTION_CONTRACT:
         errors.append("champion formal-harness promotion contract is missing or has drifted")
-    provisional = value.get("provisional_champion_selection")
-    if not isinstance(provisional, dict):
-        errors.append("provisional champion selection is missing")
+    measured = value.get("measured_family_selection")
+    if not isinstance(measured, dict):
+        errors.append("measured family selection is missing")
         return errors
-    if provisional.get("schema") != CHAMPION_SELECTION_SCHEMA:
-        errors.append("provisional champion selection schema is invalid")
-    if provisional.get("state") not in {
-        "candidate_slate_pending_current_matrix",
-        "candidate_slate_ready_for_family_selection",
-    }:
-        errors.append("provisional champion selection state is invalid")
-    provisional_candidates = provisional.get("candidates")
-    expected_categories = set(CHAMPION_HARNESS_PROMOTION_CONTRACT["nominal_family_categories"])
-    if not isinstance(provisional_candidates, list) or len(provisional_candidates) != len(expected_categories):
-        errors.append("provisional champion selection must contain exactly six candidates")
+    if measured.get("schema") != CHAMPION_SELECTION_SCHEMA:
+        errors.append("measured family selection schema is invalid")
+    if measured.get("state") != "awaiting_phase1_minimum_closure":
+        errors.append("measured family selection must await the current-source Phase 1 screen")
+    expected_categories = list(CHAMPION_HARNESS_PROMOTION_CONTRACT["semantic_family_categories"])
+    pools = measured.get("family_pools")
+    if not isinstance(pools, list) or len(pools) != len(expected_categories):
+        errors.append("measured family selection must contain seven semantic-family pools")
     else:
-        categories = {str(candidate.get("category")) for candidate in provisional_candidates if isinstance(candidate, dict)}
-        identifiers = {str(candidate.get("scheme_id")) for candidate in provisional_candidates if isinstance(candidate, dict)}
-        if categories != expected_categories or len(identifiers) != len(expected_categories):
-            errors.append("provisional champion selection must cover six distinct nominal families")
-        for candidate in provisional_candidates:
-            if not isinstance(candidate, dict):
-                errors.append("provisional champion selection contains a non-object candidate")
+        pool_categories = [str(pool.get("category")) for pool in pools if isinstance(pool, dict)]
+        if pool_categories != expected_categories:
+            errors.append("measured family-selection pools must preserve the seven-family order")
+        pooled_ids: list[str] = []
+        for pool in pools:
+            if not isinstance(pool, dict):
+                errors.append("measured family selection contains a non-object pool")
                 continue
-            scheme_id = str(candidate.get("scheme_id"))
-            mapped = by_id.get(scheme_id, {})
-            if mapped.get("formal_harness_state") != "missing_closed_loop_harness":
-                errors.append(f"{scheme_id}: provisional champion must retain its internal-only G6 route state")
-            core = candidate.get("champion_core")
-            probe = candidate.get("g6_probe")
-            if not isinstance(core, dict) or core.get("model_sha256") != mapped.get("current_model_sha256"):
-                errors.append(f"{scheme_id}: provisional champion core is not hash-bound to the current model")
-            probe_status = probe.get("status") if isinstance(probe, dict) else None
-            expected_promotion = "adapter_binding_pending" if probe_status == "passed" else "awaiting_current_g6_probe"
-            if not isinstance(probe, dict) or probe.get("evidence_class") != "internal_fixed_input_probe":
-                errors.append(f"{scheme_id}: provisional candidate has no active G6 probe binding")
-            if candidate.get("promotion_state") != expected_promotion:
-                errors.append(f"{scheme_id}: candidate promotion state does not match its current G6 probe")
-    baseline = provisional.get("official_pid_baseline")
-    if not isinstance(baseline, dict):
-        errors.append("official_pid A/B baseline binding is missing")
+            category = str(pool.get("category"))
+            actual_ids = pool.get("candidate_scheme_ids")
+            expected_ids = sorted(
+                scheme_id
+                for scheme_id, row in by_id.items()
+                if row.get("category") == category
+                and row.get("selection_eligibility") == "family_screening"
+                and row.get("formal_harness_state")
+                in {"missing_closed_loop_harness", "resolved_canonical_whole_aircraft_harness"}
+            )
+            if not isinstance(actual_ids, list) or actual_ids != expected_ids:
+                errors.append(f"{category}: measured family-selection pool does not match current eligible routes")
+                continue
+            if pool.get("candidate_count") != len(actual_ids):
+                errors.append(f"{category}: candidate count does not match its pool")
+            if pool.get("winner_scheme_id") is not None:
+                errors.append(f"{category}: winner cannot be predeclared before current-source Phase 1")
+            if pool.get("winner_selection_state") != "awaiting_all_current_source_phase1_records":
+                errors.append(f"{category}: winner selection state is invalid")
+            pooled_ids.extend(str(item) for item in actual_ids)
+        if len(pooled_ids) != 45 or len(set(pooled_ids)) != 45:
+            errors.append("measured family-selection pools must contain 45 unique eligible routes")
+        if "official_pid" in pooled_ids:
+            errors.append("Official PID must remain an A/B baseline outside the family-winner pool")
+    baselines = measured.get("ab_baselines")
+    if not isinstance(baselines, dict):
+        errors.append("measured family selection requires explicit A/B baselines")
     else:
-        if baseline.get("scheme_id") != "official_pid" or baseline.get("binding_state") != "formal_binding_ready_for_validation":
-            errors.append("official_pid baseline binding state is invalid")
-        if not isinstance(baseline.get("formal_adapter"), dict) or not isinstance(
-            baseline.get("whole_aircraft_source_harness"), dict
-        ):
-            errors.append("official_pid baseline requires an adapter and whole-aircraft runner")
-    summary = provisional.get("summary")
-    if not isinstance(summary, dict) or summary.get("selected_family_count") != 6 or summary.get(
-        "formal_candidate_minimum_closure_passed_count"
-    ) != 0 or summary.get("official_pid_baseline_ready_for_validation_count") != 1:
-        errors.append("provisional champion selection summary is invalid")
+        official = baselines.get("official_pid")
+        px4ctrl = baselines.get("px4ctrl_core")
+        if not isinstance(official, dict) or official.get("scheme_id") != "official_pid":
+            errors.append("Official PID A/B baseline is invalid")
+        if not isinstance(px4ctrl, dict) or px4ctrl.get("scheme_id") != "px4ctrl":
+            errors.append("px4ctrl_core A/B baseline is invalid")
+    measured_summary = measured.get("summary")
+    if not isinstance(measured_summary, dict):
+        errors.append("measured family-selection summary is missing")
+    else:
+        for key, expected in {
+            "semantic_family_count": 7,
+            "family_screening_candidate_count": 45,
+            "selected_family_winner_count": 0,
+            "current_mworks_route_count": 46,
+            "official_pid_baseline_count": 1,
+            "px4ctrl_core_baseline_count": 1,
+        }.items():
+            if measured_summary.get(key) != expected:
+                errors.append(f"measured family-selection summary.{key} must equal {expected}")
     return errors
 
 
@@ -889,18 +721,12 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument(
-        "--g6-status",
-        type=Path,
-        help="active project-local G6 execution status below Results/",
-    )
-    parser.add_argument(
         "--check",
         action="store_true",
         help="fail if the on-disk map differs from the deterministic build",
     )
     args = parser.parse_args(argv)
     try:
-        configure_g6_status_path(args.g6_status)
         expected = build_harness_map()
         errors = validate_harness_map(expected)
         output = args.output if args.output.is_absolute() else ROOT / args.output
@@ -917,7 +743,7 @@ def main(argv: list[str] | None = None) -> int:
         errors = [str(exc)]
         expected = {}
     report = {
-        "schema": "mosim.formal_closed_loop_harness_map_check.v1",
+        "schema": "mosim.formal_closed_loop_harness_map_check.v2",
         "ok": not errors,
         "error_count": len(errors),
         "errors": errors,

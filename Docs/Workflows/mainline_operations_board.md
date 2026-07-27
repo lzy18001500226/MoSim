@@ -13,6 +13,13 @@ trace-back only after the forward-reference repair. The new contract and seven
 trajectory definitions passed `CheckModel`; no current-source replay, scenario
 simulation, or A/B comparison ran in that definition gate.
 
+Catalog vocabulary: 48 active entries consist of 47 MWORKS Control Profiles
+(46 existing routes plus planned `pid_awff_linear_eso`) and the `px4ctrl`
+engineering/deployment baseline. The five named whole-aircraft Profiles belong
+to the PID or optimization/predictive family; `mu_synthesis` and `neural_smc`
+remain historical 67-route trace-back records only. This vocabulary changes no
+historical result or current runtime state.
+
 ## 0. Task Authority and Evidence Snapshot
 
 This board is the sole selector of the current task. `PROGRESS.md` is only a
@@ -30,9 +37,9 @@ contract. Neither creates another task line or gate meaning.
 - Contract test: `Scripts/tests/test_phase1_minimum_closure.py`.
 - Recovery evidence root:
   `Results/control_platform/champion_candidate_recovery_20260727/`.
-- Pre-repair recovery trace:
+- Pre-repair historical six-candidate recovery trace:
   `Results/control_platform/champion_candidate_recovery_20260727/CHAMPION_CANDIDATE_RMSE_RANKING.json`
-  and `.csv`. All six named candidates passed a plant-coupled 50 s `ClimbPath`
+  and `.csv`. The six candidates in that historical recovery passed a plant-coupled 50 s `ClimbPath`
   run with finite terminal error below 5 m and recorded position RMSE before
   the shared forward-reference repair. Do not rank current-source candidates
   from those values; replay the common 50 s run first.
@@ -88,11 +95,11 @@ source-import consistency check passes. This is a readiness screen only, not
 family-champion selection, seven-scenario comparison, code generation, or
 runtime validation.
 
-The completed user-approved recovery was limited to the six nominal-family
-candidate rows named above. Phase 1's original failures remain archived by the
-rerun procedure; each successful rerun proves only that candidate's repaired
-minimum whole-aircraft `ClimbPath` closure and supplies its RMSE for the next
-ranking decision.
+The completed user-approved recovery was limited to the historical six-candidate
+row set named above. Phase 1's original failures remain archived by the rerun
+procedure; each successful rerun proves only that candidate's repaired minimum
+whole-aircraft `ClimbPath` closure and supplies trace-back RMSE, not a current
+seven-family ranking.
 
 ## 2. Current Engineering Boundaries
 
@@ -121,10 +128,12 @@ controller-evidence plan in this order:
 
 1. replay Official PID and the six candidate Formal Runners on the same 50 s
    `ClimbPath` with this exact source, then derive the current RMSE ranking;
-2. choose one measured winner from each nominal family and give only those
-   candidates champion-specific minimum whole-aircraft closures;
-3. compare each accepted champion with Official PID in hover, step, figure-8,
-   spiral, wind, parameter-mismatch and motor-efficiency-fault scenarios;
+2. choose one measured winner from each of the seven semantic families and give
+   only those candidates champion-specific minimum whole-aircraft closures;
+3. compare each accepted winner with Official PID in hover, step, figure-8,
+   spiral, wind, parameter-mismatch and motor-efficiency-fault scenarios; add
+   `px4ctrl` only after its MWORKS-equivalent core passes its behavior/interface
+   equivalence gate;
 4. run the required ESO ablation trio, then export accepted candidates and
    validate the declared ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl runtime path;
 5. collect report/software-documentation material from the resulting evidence,

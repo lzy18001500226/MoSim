@@ -23,19 +23,18 @@ def test_controller_screenshot_rebuild_preserves_46_route_scope_and_archive_boun
     assert module.rp(module.OUTPUT_ROOT) == "Docs/报告/审计/控制器原生截图归位"
     assert module.validate_manifest(manifest) == []
     assert manifest["summary"] == {
-        "catalog_scheme_count": 49,
+        "catalog_scheme_count": 48,
         "current_screenshot_scope_count": 46,
         "asset_directory_count": 46,
         "directory_version_marker_count": 46,
-        "excluded_from_current_screenshot_scope_count": 3,
-        "structure_capture_count": 46,
+        "excluded_from_current_screenshot_scope_count": 2,
+        "structure_capture_count": 0,
         "minimum_result_capture_count": 0,
         "unexpected_active_png_count": 0,
         "legacy_archive_valid": True,
     }
     assert {item["scheme_id"] for item in manifest["excluded_routes"]} == {
-        "mu_synthesis",
-        "neural_smc",
+        "pid_awff_linear_eso",
         "px4ctrl",
     }
     assert len(manifest["slots"]) == 46
@@ -44,11 +43,11 @@ def test_controller_screenshot_rebuild_preserves_46_route_scope_and_archive_boun
         and item["capture_rules"]["preserve_window_native_aspect_ratio"] is True
         and item["directory_version_marker"].endswith("/.gitkeep")
         and item["required_assets"]["structure_native_window"].endswith("/01_图形模型.png")
-        and item["capture_status"]["structure_native_window"] == "present_unreviewed"
+        and item["capture_status"]["structure_native_window"] == "not_captured"
         and item["capture_status"]["minimum_closed_loop_result_native_window"] == "not_captured"
-        and item["source_capture"]["source_sha256"]
-        and item["source_capture"]["source_width"] > 0
-        and item["source_capture"]["source_height"] > 0
+        and item["source_capture"] is None
+        and item["required_assets"]["capture_manifest"] is None
+        and item["required_assets"]["g5_review_packet"] is None
         for item in manifest["slots"]
     )
     archive_rows = module.read(module.ARCHIVE_MANIFEST)["files"]

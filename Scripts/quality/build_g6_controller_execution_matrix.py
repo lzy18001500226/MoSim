@@ -55,12 +55,12 @@ OFFICIAL_PID_PROBE = {
 # time so the frozen matrix names every required artifact up front.
 REPORT_FAMILY_DIRECTORIES = {
     "pid_family": "01_PID族",
-    "classic_robust": "02_线性与鲁棒",
-    "sliding_mode": "03_滑模控制",
-    "optimization": "04_MPC族",
-    "geometric_flatness": "05_几何与平坦",
-    "learning": "06_学习控制",
-    "fixed_integrated": "07_固定集成链",
+    "linear_robust_state_feedback": "02_线性与鲁棒状态反馈",
+    "nonlinear_adaptive": "03_非线性与自适应",
+    "sliding_mode": "04_滑模控制",
+    "optimization_predictive": "05_最优与预测控制",
+    "geometric_flatness": "06_几何与微分平坦",
+    "learning": "07_智能与学习",
 }
 
 G6_ROUTE_STATES = {
@@ -462,7 +462,7 @@ def build() -> dict[str, Any]:
             "terminal_result_count": 0,
         },
         "rows": rows,
-        "next_gate": "The 46 G6 routes are terminal. Bind each provisional six-family candidate to its own formal whole-aircraft adapter and minimum closure before seven-scenario A/B against the separately bound Official PID baseline.",
+        "next_gate": "The 46 G6 routes are terminal. Select one measured winner from each of the seven semantic families, then bind each winner to its own formal whole-aircraft adapter and minimum closure before seven-scenario A/B against the separately bound Official PID baseline.",
     }
 
 

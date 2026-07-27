@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail closed if G4's 49-scheme current-model map or imports drift."""
+"""Fail closed if G4's active 48-entry current-model map or imports drift."""
 
 from __future__ import annotations
 
@@ -49,8 +49,8 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
     if current.get("schema") != "mosim.current_model_entry_map.v1":
         add("CMEM-SCHEMA-01", "current model map schema is invalid")
     rows = current.get("schemes")
-    if not isinstance(rows, list) or len(rows) != 49:
-        add("CMEM-ROWS-01", "current model map must have exactly 49 schemes")
+    if not isinstance(rows, list) or len(rows) != 48:
+        add("CMEM-ROWS-01", "current model map must have exactly 48 active entries")
     else:
         ids = [str(row.get("scheme_id")) for row in rows if isinstance(row, dict)]
         if len(ids) != len(set(ids)):
@@ -61,16 +61,22 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
                 continue
             state = row.get("mapping_state")
             scheme_id = str(row.get("scheme_id") or "<missing>")
-            if state not in {"resolved_current_model", "blocked_missing_current_model", "not_applicable_runtime_baseline"}:
+            if state not in {
+                "resolved_current_model",
+                "planned_profile_no_model",
+                "pending_mworks_equivalent_core",
+            }:
                 add("CMEM-STATE-01", f"{scheme_id}: invalid mapping state: {state}")
             if row.get("mworks_run_eligible") is not False:
                 add("CMEM-STATE-02", f"{scheme_id}: G4 mapping cannot enable MWORKS")
             if state == "resolved_current_model" and not str(row.get("current_model_file") or "").startswith("Models/"):
                 add("CMEM-STATE-03", f"{scheme_id}: resolved model must be project-owned below Models/")
-            if state == "not_applicable_runtime_baseline" and scheme_id != "px4ctrl":
-                add("CMEM-STATE-04", "only px4ctrl may use not_applicable_runtime_baseline")
-            if scheme_id == "px4ctrl" and state != "not_applicable_runtime_baseline":
-                add("CMEM-STATE-05", "px4ctrl must remain the non-graphical runtime baseline")
+            if state == "pending_mworks_equivalent_core" and scheme_id != "px4ctrl":
+                add("CMEM-STATE-04", "only px4ctrl may await a MWORKS-equivalent core")
+            if scheme_id == "px4ctrl" and state != "pending_mworks_equivalent_core":
+                add("CMEM-STATE-05", "px4ctrl must remain pending MWORKS-equivalent-core implementation")
+            if state == "planned_profile_no_model" and scheme_id != "pid_awff_linear_eso":
+                add("CMEM-STATE-06", "only pid_awff_linear_eso may be a planned profile without a model")
     if current != expected:
         add("CMEM-DRIFT-01", "current_model_entry_map.json diverges from the deterministic G4 source/hash/package mapping")
     for error in inputs.get("import_errors") or []:

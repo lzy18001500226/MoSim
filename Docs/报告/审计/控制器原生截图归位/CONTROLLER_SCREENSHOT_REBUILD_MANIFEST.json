@@ -1,5 +1,5 @@
 {
-  "schema": "mosim.controller_screenshot_rebuild_manifest.v1",
+  "schema": "mosim.controller_screenshot_rebuild_manifest.v2",
   "scope": "Static screenshot rebuild ledger only; no MWORKS review, simulation, code generation, runtime result, or report acceptance is claimed.",
   "source_model_map": "Config/control_platform/current_model_entry_map.json",
   "active_asset_root": "Docs/报告/图/控制器",
@@ -9,31 +9,26 @@
     "validation_errors": []
   },
   "summary": {
-    "catalog_scheme_count": 49,
+    "catalog_scheme_count": 48,
     "current_screenshot_scope_count": 46,
     "asset_directory_count": 46,
     "directory_version_marker_count": 46,
-    "excluded_from_current_screenshot_scope_count": 3,
-    "structure_capture_count": 46,
+    "excluded_from_current_screenshot_scope_count": 2,
+    "structure_capture_count": 0,
     "minimum_result_capture_count": 0,
     "unexpected_active_png_count": 0,
     "legacy_archive_valid": true
   },
   "excluded_routes": [
     {
-      "scheme_id": "mu_synthesis",
-      "mapping_state": "blocked_missing_current_model",
-      "reason_zh": "当前工程缺少可运行的动态 mu-Synthesis 实现，不以静态图或邻近算法替代。"
-    },
-    {
-      "scheme_id": "neural_smc",
-      "mapping_state": "blocked_missing_current_model",
-      "reason_zh": "当前工程缺少冻结训练资产、定长推理与回退验证，不以其他学习或滑模路线替代。"
+      "scheme_id": "pid_awff_linear_eso",
+      "mapping_state": "planned_profile_no_model",
+      "reason_zh": "已批准的 MWORKS Profile 设计项；尚无模型、Adapter、Runner 或图审对象。"
     },
     {
       "scheme_id": "px4ctrl",
-      "mapping_state": "not_applicable_runtime_baseline",
-      "reason_zh": "ROS1/PX4 运行时工程基线，不伪造 MWORKS 图形模型，也不进入本批控制器图审对比。"
+      "mapping_state": "pending_mworks_equivalent_core",
+      "reason_zh": "工程/部署基线；MWORKS 等效核尚未实现，不伪造 MWORKS 图形模型。"
     }
   ],
   "slots": [
@@ -44,9 +39,9 @@
       "family_directory": "01_PID族",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
-        "model_sha256": "92c1cab5c3af83bc9f9df248cbbb59a744f972c8d85947e45865f7e62920321e",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
+        "model_sha256": "3f282db51fd7411c01b018bc19ab07e95380f3a0e30cdcc023148ce317dd04e6",
         "model_role": "graphical_controller_core"
       },
       "asset_directory": "Docs/报告/图/控制器/01_PID族/cascade_pid",
@@ -54,18 +49,10 @@
       "required_assets": {
         "structure_native_window": "Docs/报告/图/控制器/01_PID族/cascade_pid/01_图形模型.png",
         "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/cascade_pid/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/cascade_pid/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/cascade_pid/G5_REVIEW_PACKET.json"
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/cascade_pid/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/cascade_pid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_PID_CASCADE_PID_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
-        "source_sha256": "360ea4b06a8f419ddb877486ba36f3e79efdfb2b26a334437c09994dc269526a",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/cascade_pid/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "360ea4b06a8f419ddb877486ba36f3e79efdfb2b26a334437c09994dc269526a"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -79,7 +66,159 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "fixed_awff_l1_indi",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
+      "category": "pid_family",
+      "family_directory": "01_PID族",
+      "review_kind": "named_whole_aircraft_profile",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Indi.mo",
+        "model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Indi",
+        "model_sha256": "5a31cc2822c3be194d2db8242600f66b71a7704d79789be5d4a3f67e07e8e800",
+        "model_role": "full_profile_whole_aircraft_closed_loop"
+      },
+      "asset_directory": "Docs/报告/图/控制器/01_PID族/fixed_awff_l1_indi",
+      "directory_version_marker": "Docs/报告/图/控制器/01_PID族/fixed_awff_l1_indi/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/01_PID族/fixed_awff_l1_indi/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/fixed_awff_l1_indi/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "fixed_awff_l1_residual",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
+      "category": "pid_family",
+      "family_directory": "01_PID族",
+      "review_kind": "named_whole_aircraft_profile",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Residual.mo",
+        "model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Residual",
+        "model_sha256": "e9c4eb5a8dd08bb45db715d409564fac2ea9440f8e3f71d14c21203c06d14655",
+        "model_role": "full_profile_whole_aircraft_closed_loop"
+      },
+      "asset_directory": "Docs/报告/图/控制器/01_PID族/fixed_awff_l1_residual",
+      "directory_version_marker": "Docs/报告/图/控制器/01_PID族/fixed_awff_l1_residual/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/01_PID族/fixed_awff_l1_residual/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/fixed_awff_l1_residual/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "fixed_awff_pid",
+      "display_name_zh": "抗积分饱和与参考前馈 PID",
+      "category": "pid_family",
+      "family_directory": "01_PID族",
+      "review_kind": "named_whole_aircraft_profile",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo",
+        "model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffPid",
+        "model_sha256": "aabc69ad0eb27b9c27464fc197b28a30987b4f770a23aa78d4a4f7e318843cac",
+        "model_role": "full_profile_whole_aircraft_closed_loop"
+      },
+      "asset_directory": "Docs/报告/图/控制器/01_PID族/fixed_awff_pid",
+      "directory_version_marker": "Docs/报告/图/控制器/01_PID族/fixed_awff_pid/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/01_PID族/fixed_awff_pid/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/fixed_awff_pid/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "fopid",
+      "display_name_zh": "分数阶 PID",
+      "category": "pid_family",
+      "family_directory": "01_PID族",
+      "review_kind": "internal_control_law",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "0e40874de02cb98cac39af2f76e8e950ed668d473a705cd940293cc59711c705",
+        "model_role": "graphical_controller_core"
+      },
+      "asset_directory": "Docs/报告/图/控制器/01_PID族/fopid",
+      "directory_version_marker": "Docs/报告/图/控制器/01_PID族/fopid/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/01_PID族/fopid/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/fopid/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -90,9 +229,9 @@
       "family_directory": "01_PID族",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
-        "model_sha256": "848fef6525aa75c3a53fa8c9f53a5f82eaa3e1a9c109ad28d387e082734a4c03",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
+        "model_sha256": "04445fd51d4e53d89163e895b8dffa5b337a548714cc86b8b95e9bf77473a367",
         "model_role": "graphical_controller_core"
       },
       "asset_directory": "Docs/报告/图/控制器/01_PID族/fuzzy_pid",
@@ -100,18 +239,10 @@
       "required_assets": {
         "structure_native_window": "Docs/报告/图/控制器/01_PID族/fuzzy_pid/01_图形模型.png",
         "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/fuzzy_pid/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_pid/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_pid/G5_REVIEW_PACKET.json"
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_pid/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_pid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_PID_FUZZY_PID_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
-        "source_sha256": "58f3bfb03da279897bf7bf1aa141317bc1edee0605b4c348604e1b2bf8dadb56",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_pid/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "58f3bfb03da279897bf7bf1aa141317bc1edee0605b4c348604e1b2bf8dadb56"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -125,7 +256,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -136,9 +267,9 @@
       "family_directory": "01_PID族",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
-        "model_sha256": "b034a84cd64020ee474ecbd0281414b39a4b68822a385c4f48e49b6bd0d5b900",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
+        "model_sha256": "064e82602d0d642b06c42d95dc031d3a9ac4ea049385537c11e057e62f4ef795",
         "model_role": "graphical_controller_core"
       },
       "asset_directory": "Docs/报告/图/控制器/01_PID族/gain_scheduled_pid",
@@ -146,18 +277,10 @@
       "required_assets": {
         "structure_native_window": "Docs/报告/图/控制器/01_PID族/gain_scheduled_pid/01_图形模型.png",
         "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/gain_scheduled_pid/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/gain_scheduled_pid/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/gain_scheduled_pid/G5_REVIEW_PACKET.json"
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/gain_scheduled_pid/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/gain_scheduled_pid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
-        "source_sha256": "f85e565cfb93b34e9f0050011a64bede2a3fcf9e098eaefe740eacf9b24453a5",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/gain_scheduled_pid/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "f85e565cfb93b34e9f0050011a64bede2a3fcf9e098eaefe740eacf9b24453a5"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -171,7 +294,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -182,9 +305,9 @@
       "family_directory": "01_PID族",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
-        "model_sha256": "61b3d361b71725b9dde85896a79f5ccc5b6d36ff9508dda77b4d1bbf099be057",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
+        "model_sha256": "ad4d64ee72961ce944dedfc60407cb198b345c837177da16ccd29cc79354a9c8",
         "model_role": "graphical_controller_core"
       },
       "asset_directory": "Docs/报告/图/控制器/01_PID族/neural_pid",
@@ -192,18 +315,10 @@
       "required_assets": {
         "structure_native_window": "Docs/报告/图/控制器/01_PID族/neural_pid/01_图形模型.png",
         "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/neural_pid/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/neural_pid/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/neural_pid/G5_REVIEW_PACKET.json"
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/neural_pid/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/neural_pid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_PID_NEURAL_PID_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
-        "source_sha256": "27e0829c0b9fc4c050b71b9dac15532b13beb5948b6b98660d9501ccc4f2f985",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/neural_pid/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "27e0829c0b9fc4c050b71b9dac15532b13beb5948b6b98660d9501ccc4f2f985"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -217,7 +332,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -228,9 +343,9 @@
       "family_directory": "01_PID族",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/PidFamily/AWFF_PID_Sysblock_Demo.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily.AWFF_PID_Sysblock_Demo",
-        "model_sha256": "166973c061c47eb38850015f8a6fa4e014a52e348791bfb32f0bde829fd3347d",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/AWFF_PID_Sysblock_Demo.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.AWFF_PID_Sysblock_Demo",
+        "model_sha256": "c4173126d27aa834595f0e781118270d97a45dc6e03e526bc930c7fcc8f3ece6",
         "model_role": "graphical_controller_core"
       },
       "asset_directory": "Docs/报告/图/控制器/01_PID族/official_pid",
@@ -238,18 +353,10 @@
       "required_assets": {
         "structure_native_window": "Docs/报告/图/控制器/01_PID族/official_pid/01_图形模型.png",
         "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/official_pid/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/official_pid/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/official_pid/G5_REVIEW_PACKET.json"
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/official_pid/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/official_pid/screenshots/native_current_20260724/82880_0x16BC0A30_AWFF_PID_Sysblock_Demo_MoSimQuadrotorModel.Controllers.GraphicalMIL.PidFamily_ - Sysplorer _教育版_.png",
-        "source_sha256": "1d60472a946cf52f5720aff02fcc4b544d701d7f5c370976da9448371d32b83e",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/official_pid/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "1d60472a946cf52f5720aff02fcc4b544d701d7f5c370976da9448371d32b83e"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -263,223 +370,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "adaptive_backstepping",
-      "display_name_zh": "自适应反步控制",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
-      "review_kind": "internal_control_law",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
-        "model_sha256": "02e73a783faafa57ccfecd5bc9b2056a3f48fb1fb06540e576f9be4ce0a93ae6",
-        "model_role": "graphical_controller_core"
-      },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/adaptive_backstepping",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/adaptive_backstepping/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/adaptive_backstepping/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/adaptive_backstepping/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_backstepping/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_backstepping/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_backstepping/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_backstepping/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "bea7cef55a1b440edbd4fad28b1c0ce5fdf4e8a7a27636d319d0053e51da81c6",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_backstepping/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "bea7cef55a1b440edbd4fad28b1c0ce5fdf4e8a7a27636d319d0053e51da81c6"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "backstepping_baseline",
-      "display_name_zh": "反步控制",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
-      "review_kind": "internal_control_law",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "2919d1082454a30799446a7560d19b3e8bf5c9a0e01cc213e21caf49898580c4",
-        "model_role": "graphical_controller_core"
-      },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/backstepping_baseline",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/backstepping_baseline/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/backstepping_baseline/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/backstepping_baseline/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/backstepping_baseline/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/backstepping_baseline/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/backstepping_baseline/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/backstepping_baseline/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "71b448845272d850510135238fe0e453347060d1a97a3a5f5ad7735fc3a8357d",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/backstepping_baseline/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "71b448845272d850510135238fe0e453347060d1a97a3a5f5ad7735fc3a8357d"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "feedback_linearization",
-      "display_name_zh": "反馈线性化",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
-      "review_kind": "internal_control_law",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
-        "model_sha256": "9f1f9ca59376684768ca5e3809149ed9e6e0f7063803bff6c0dc4605a2103cf2",
-        "model_role": "graphical_controller_core"
-      },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/feedback_linearization",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/feedback_linearization/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/feedback_linearization/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/feedback_linearization/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/feedback_linearization/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/feedback_linearization/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/feedback_linearization/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/feedback_linearization/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "51e8e2f6d94d8e3d840add58fbe15d5ca1c9a624b054939c4bb6f77b2c608c4b",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/feedback_linearization/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "51e8e2f6d94d8e3d840add58fbe15d5ca1c9a624b054939c4bb6f77b2c608c4b"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "fopid",
-      "display_name_zh": "分数阶 PID",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
-      "review_kind": "internal_control_law",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "f1c40edf57cbc2c3277b3ab3575015a5e56d90a4eabdca7f8a2e16f4ea7e80f7",
-        "model_role": "graphical_controller_core"
-      },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/fopid",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/fopid/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/fopid/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/fopid/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fopid/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fopid/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fopid/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fopid/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "68bd0253eec8d385c5e206a37cf876e0f767e59c7b037ae67d9a6b2a7f4b73f2",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fopid/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "68bd0253eec8d385c5e206a37cf876e0f767e59c7b037ae67d9a6b2a7f4b73f2"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "h2_state_feedback",
       "display_name_zh": "H2 状态反馈",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
+      "category": "linear_robust_state_feedback",
+      "family_directory": "02_线性与鲁棒状态反馈",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "8bc06d5c86ba23bcc0981bc98d1f5b56499b20d3ca4619c6de9c455ab1382ebe",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "4c29a87128d8e8cb4ad762ee85088b28f6bbc7405bab650f22cee6ed0040927c",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/h2_state_feedback",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/h2_state_feedback/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/h2_state_feedback",
+      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/h2_state_feedback/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/h2_state_feedback/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/h2_state_feedback/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/h2_state_feedback/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/h2_state_feedback/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/h2_state_feedback/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/h2_state_feedback/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/h2_state_feedback/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/h2_state_feedback/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "5a1ec7be44efa6001b8ae6f755d5c4da8355c88ab0c669cb3fee2d83b4a6ddfd",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/h2_state_feedback/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "5a1ec7be44efa6001b8ae6f755d5c4da8355c88ab0c669cb3fee2d83b4a6ddfd"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -493,39 +408,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "hinf_hover_wrench",
       "display_name_zh": "H 无穷悬停控制",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
+      "category": "linear_robust_state_feedback",
+      "family_directory": "02_线性与鲁棒状态反馈",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "63bcd17b42c1ed7d97cb38a97c8da48bc7958c7e1987e825d132a538612e31c2",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "a37b0b507d871aa1f18b16e27a89f6ee5403f45f534193eb23e6ac6c650698d3",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/hinf_hover_wrench",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/hinf_hover_wrench/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/hinf_hover_wrench",
+      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/hinf_hover_wrench/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/hinf_hover_wrench/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/hinf_hover_wrench/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/hinf_hover_wrench/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/hinf_hover_wrench/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/hinf_hover_wrench/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/hinf_hover_wrench/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/hinf_hover_wrench/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/hinf_hover_wrench/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "abb060c93b7363900ede937716a97d839712255ab2911286728a5f34d28a670d",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/hinf_hover_wrench/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "abb060c93b7363900ede937716a97d839712255ab2911286728a5f34d28a670d"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -539,39 +446,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "lqg",
       "display_name_zh": "LQG",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
+      "category": "linear_robust_state_feedback",
+      "family_directory": "02_线性与鲁棒状态反馈",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_LQG_GRAPHICAL_MIL",
-        "model_sha256": "5a6a1d24361e92bc8dfd515902a0152358cf631351b6a7005c968059751c6638",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_LQG_GRAPHICAL_MIL",
+        "model_sha256": "3247d271e5b3c87f2df71327231bbb20e36ee95d09c5cab4fd306351f302d45b",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/lqg",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/lqg/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqg",
+      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqg/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/lqg/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/lqg/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqg/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqg/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqg/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqg/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqg/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqg/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_P2_LQG_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "b3fa17aa527c03e9753e686c1d510d4093ea32673397e455d4e908308994a04f",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqg/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "b3fa17aa527c03e9753e686c1d510d4093ea32673397e455d4e908308994a04f"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -585,39 +484,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "lqi_baseline",
       "display_name_zh": "LQI",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
+      "category": "linear_robust_state_feedback",
+      "family_directory": "02_线性与鲁棒状态反馈",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "971eadfd3c80355da613eec02703480e4c3756c844ff9ff87ad9c25c36631384",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "09d7ed43c3c2ecdb7f6280b3920a9664af7dc3a0b4d73dbdd406be178e27e43e",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/lqi_baseline",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/lqi_baseline/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqi_baseline",
+      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqi_baseline/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/lqi_baseline/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/lqi_baseline/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqi_baseline/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqi_baseline/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqi_baseline/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqi_baseline/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqi_baseline/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqi_baseline/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "6f00d7209485fa00436abc055ee74320b6bc712205da32b43658103bd8972f4a",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqi_baseline/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "6f00d7209485fa00436abc055ee74320b6bc712205da32b43658103bd8972f4a"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -631,39 +522,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "lqr_baseline",
       "display_name_zh": "LQR",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
+      "category": "linear_robust_state_feedback",
+      "family_directory": "02_线性与鲁棒状态反馈",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "83722258462039365f058c9b2ff8d0e4a9db2b9d66f3c39704f6951a445a9278",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "b991cd5a9d77ec8cb9afbc83e83e390d0ef502fbb24b7ae12d622f3e6a6799d4",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/lqr_baseline",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/lqr_baseline/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqr_baseline",
+      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqr_baseline/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/lqr_baseline/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/lqr_baseline/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqr_baseline/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqr_baseline/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqr_baseline/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/lqr_baseline/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqr_baseline/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqr_baseline/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "27e9b2f375bd359316023f803614aa6e03c3779f12d83f47d149d0fdd889cae2",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/lqr_baseline/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "27e9b2f375bd359316023f803614aa6e03c3779f12d83f47d149d0fdd889cae2"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -677,177 +560,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "mrac",
-      "display_name_zh": "模型参考自适应控制",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
-      "review_kind": "internal_control_law",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "435bc492da530bfe17dc31ad8aaa5944f1ca4253c98690a27441dc6349c4048b",
-        "model_role": "graphical_controller_core"
-      },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/mrac",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/mrac/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/mrac/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/mrac/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mrac/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mrac/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mrac/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mrac/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "16956b205c256994d3e5b07f46d683176cd2681620c0f553a017770228c9d2bd",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mrac/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "16956b205c256994d3e5b07f46d683176cd2681620c0f553a017770228c9d2bd"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "ndi",
-      "display_name_zh": "非线性动态逆",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
-      "review_kind": "internal_control_law",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "f11a4421676139d23860b0147fd013c6056b3dee0d3e282a4915c8e015ee5cfc",
-        "model_role": "graphical_controller_core"
-      },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/ndi",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/ndi/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/ndi/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/ndi/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ndi/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ndi/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ndi/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ndi/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "d83d07618c1bc45ac955b67eb1f113dd00c13364e80e5a14b50062118477dc28",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ndi/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "d83d07618c1bc45ac955b67eb1f113dd00c13364e80e5a14b50062118477dc28"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "passivity_based_control",
-      "display_name_zh": "无源控制",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
-      "review_kind": "internal_control_law",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
-        "model_sha256": "b4c99941585d2c7e317cc1ee1a6d5e43289afcc7439ff321aa5885f403021b82",
-        "model_role": "graphical_controller_core"
-      },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/passivity_based_control",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/passivity_based_control/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/passivity_based_control/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/passivity_based_control/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/passivity_based_control/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/passivity_based_control/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/passivity_based_control/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/passivity_based_control/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "0c4ad2edfcf51d793c8ee5514eb202db6b0ea5ddf71fdaccc651502b559c04eb",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/passivity_based_control/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "0c4ad2edfcf51d793c8ee5514eb202db6b0ea5ddf71fdaccc651502b559c04eb"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "pole_placement_luenberger",
       "display_name_zh": "极点配置与 Luenberger 观测器",
-      "category": "classic_robust",
-      "family_directory": "02_线性与鲁棒",
+      "category": "linear_robust_state_feedback",
+      "family_directory": "02_线性与鲁棒状态反馈",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/ClassicRobust/MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust.MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "8fc1d6842adeb48da708d0a9de7f2f4ef5ee11bec44c76a331f51d754d284837",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "9ff511dc6ef30399f9614e41403f1f2d957e975ba6790fe5be8e54e84aa35d75",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒/pole_placement_luenberger",
-      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒/pole_placement_luenberger/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/pole_placement_luenberger",
+      "directory_version_marker": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/pole_placement_luenberger/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/pole_placement_luenberger/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒/pole_placement_luenberger/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/pole_placement_luenberger/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/pole_placement_luenberger/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/pole_placement_luenberger/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/02_线性与鲁棒状态反馈/pole_placement_luenberger/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/pole_placement_luenberger/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/pole_placement_luenberger/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.ClassicRobust_ - Sysplorer _教育版_.png",
-        "source_sha256": "8a6974b5f5745e0769c627913c7383dc95c6f5fb7c7dcb3fe1473f188a4b04d5",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/pole_placement_luenberger/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "8a6974b5f5745e0769c627913c7383dc95c6f5fb7c7dcb3fe1473f188a4b04d5"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -861,7 +598,235 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "adaptive_backstepping",
+      "display_name_zh": "自适应反步控制",
+      "category": "nonlinear_adaptive",
+      "family_directory": "03_非线性与自适应",
+      "review_kind": "internal_control_law",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
+        "model_sha256": "ce67f5b2f8b92fe02262825be63b2d297b2972cdc1c7706f90e3790037ea7372",
+        "model_role": "graphical_controller_core"
+      },
+      "asset_directory": "Docs/报告/图/控制器/03_非线性与自适应/adaptive_backstepping",
+      "directory_version_marker": "Docs/报告/图/控制器/03_非线性与自适应/adaptive_backstepping/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/03_非线性与自适应/adaptive_backstepping/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_非线性与自适应/adaptive_backstepping/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "backstepping_baseline",
+      "display_name_zh": "反步控制",
+      "category": "nonlinear_adaptive",
+      "family_directory": "03_非线性与自适应",
+      "review_kind": "internal_control_law",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "dc48965156e70db3e13d7b71e4a109b206d1f415271f81e5c15c71cf241d5da9",
+        "model_role": "graphical_controller_core"
+      },
+      "asset_directory": "Docs/报告/图/控制器/03_非线性与自适应/backstepping_baseline",
+      "directory_version_marker": "Docs/报告/图/控制器/03_非线性与自适应/backstepping_baseline/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/03_非线性与自适应/backstepping_baseline/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_非线性与自适应/backstepping_baseline/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "feedback_linearization",
+      "display_name_zh": "反馈线性化",
+      "category": "nonlinear_adaptive",
+      "family_directory": "03_非线性与自适应",
+      "review_kind": "internal_control_law",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
+        "model_sha256": "c037370469a36b0bfb99278ca06b9c985e7525e238ddd5cfc774cf5962beb838",
+        "model_role": "graphical_controller_core"
+      },
+      "asset_directory": "Docs/报告/图/控制器/03_非线性与自适应/feedback_linearization",
+      "directory_version_marker": "Docs/报告/图/控制器/03_非线性与自适应/feedback_linearization/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/03_非线性与自适应/feedback_linearization/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_非线性与自适应/feedback_linearization/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "mrac",
+      "display_name_zh": "模型参考自适应控制",
+      "category": "nonlinear_adaptive",
+      "family_directory": "03_非线性与自适应",
+      "review_kind": "internal_control_law",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "0f3a073a8a62a6fbdcbde3f36a5833ce860aa8ed565633ffb930dc57ff93beb4",
+        "model_role": "graphical_controller_core"
+      },
+      "asset_directory": "Docs/报告/图/控制器/03_非线性与自适应/mrac",
+      "directory_version_marker": "Docs/报告/图/控制器/03_非线性与自适应/mrac/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/03_非线性与自适应/mrac/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_非线性与自适应/mrac/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "ndi",
+      "display_name_zh": "非线性动态逆",
+      "category": "nonlinear_adaptive",
+      "family_directory": "03_非线性与自适应",
+      "review_kind": "internal_control_law",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "3645fa9a6eaf2f482e3404af076c9556d827570cf7aca2d081e276af589d7077",
+        "model_role": "graphical_controller_core"
+      },
+      "asset_directory": "Docs/报告/图/控制器/03_非线性与自适应/ndi",
+      "directory_version_marker": "Docs/报告/图/控制器/03_非线性与自适应/ndi/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/03_非线性与自适应/ndi/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_非线性与自适应/ndi/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "passivity_based_control",
+      "display_name_zh": "无源控制",
+      "category": "nonlinear_adaptive",
+      "family_directory": "03_非线性与自适应",
+      "review_kind": "internal_control_law",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
+        "model_sha256": "dcf04c348276fd4106c33aa9dae5e576f5907c56c80869ef0d49b2bbe3d94a30",
+        "model_role": "graphical_controller_core"
+      },
+      "asset_directory": "Docs/报告/图/控制器/03_非线性与自适应/passivity_based_control",
+      "directory_version_marker": "Docs/报告/图/控制器/03_非线性与自适应/passivity_based_control/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/03_非线性与自适应/passivity_based_control/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_非线性与自适应/passivity_based_control/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -869,31 +834,23 @@
       "scheme_id": "adaptive_smc",
       "display_name_zh": "自适应滑模控制",
       "category": "sliding_mode",
-      "family_directory": "03_滑模控制",
+      "family_directory": "04_滑模控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
-        "model_sha256": "b279a81488329b87c4ccae9377ac8d059df1b26757f094cb2b086340dd942a76",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
+        "model_sha256": "0678b181a8d13c455ceb5522d3aaf275c79e7603c5fcdffdf85082b5ddd15a03",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/03_滑模控制/adaptive_smc",
-      "directory_version_marker": "Docs/报告/图/控制器/03_滑模控制/adaptive_smc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/04_滑模控制/adaptive_smc",
+      "directory_version_marker": "Docs/报告/图/控制器/04_滑模控制/adaptive_smc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/03_滑模控制/adaptive_smc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_滑模控制/adaptive_smc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_smc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_smc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/04_滑模控制/adaptive_smc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_滑模控制/adaptive_smc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_smc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_smc/screenshots/41224_0x4A201E4_MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
-        "source_sha256": "919fb3d240d587273243a33c71be97d5e0e7cd21cb34ab984ff2f90fba39e9c7",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_smc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "919fb3d240d587273243a33c71be97d5e0e7cd21cb34ab984ff2f90fba39e9c7"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -907,7 +864,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -915,31 +872,23 @@
       "scheme_id": "fuzzy_smc",
       "display_name_zh": "模糊滑模控制",
       "category": "sliding_mode",
-      "family_directory": "03_滑模控制",
+      "family_directory": "04_滑模控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
-        "model_sha256": "a7e9be08891089646ebae6b1bd8c42d08b635b62e784fa1e49208a0e56ce672f",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
+        "model_sha256": "f44a784cc150e1563eff9b032dd2ba817e7e1f7eb9c76259925338f1fb09a24e",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/03_滑模控制/fuzzy_smc",
-      "directory_version_marker": "Docs/报告/图/控制器/03_滑模控制/fuzzy_smc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/04_滑模控制/fuzzy_smc",
+      "directory_version_marker": "Docs/报告/图/控制器/04_滑模控制/fuzzy_smc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/03_滑模控制/fuzzy_smc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_滑模控制/fuzzy_smc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_smc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_smc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/04_滑模控制/fuzzy_smc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_滑模控制/fuzzy_smc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_smc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_smc/screenshots/41224_0x4A201E4_MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
-        "source_sha256": "9d881fd838d2b037b95a809d52aa15db09821450641423927e3191bf6357a385",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fuzzy_smc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "9d881fd838d2b037b95a809d52aa15db09821450641423927e3191bf6357a385"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -953,7 +902,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -961,31 +910,23 @@
       "scheme_id": "integral_smc",
       "display_name_zh": "积分滑模控制",
       "category": "sliding_mode",
-      "family_directory": "03_滑模控制",
+      "family_directory": "04_滑模控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
-        "model_sha256": "4aaf16788272e595d2596e821a812528755db75bdf433fc8d4e928aea769d851",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
+        "model_sha256": "494028dd7f2d3b03964ed3364c1b4da4bb80a699c4b890e746734e537d572c19",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/03_滑模控制/integral_smc",
-      "directory_version_marker": "Docs/报告/图/控制器/03_滑模控制/integral_smc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/04_滑模控制/integral_smc",
+      "directory_version_marker": "Docs/报告/图/控制器/04_滑模控制/integral_smc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/03_滑模控制/integral_smc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_滑模控制/integral_smc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/integral_smc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/integral_smc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/04_滑模控制/integral_smc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_滑模控制/integral_smc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/integral_smc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/integral_smc/screenshots/41224_0x4A201E4_MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
-        "source_sha256": "637eabc310b04d1675d9d05ee6d425bb1d25a39e1fdfbaaaf8380019a9c368e9",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/integral_smc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "637eabc310b04d1675d9d05ee6d425bb1d25a39e1fdfbaaaf8380019a9c368e9"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -999,7 +940,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1007,31 +948,23 @@
       "scheme_id": "nonsingular_terminal_smc",
       "display_name_zh": "非奇异终端滑模控制",
       "category": "sliding_mode",
-      "family_directory": "03_滑模控制",
+      "family_directory": "04_滑模控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
-        "model_sha256": "4e7d5c0beb4769d7ba109478cc995b10672a84901bf79009ad1f867b8cfa0ecb",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
+        "model_sha256": "033063b80a62b017dc11ee02902fcdddc7a32af6f73648d5df22e08cc2317c42",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/03_滑模控制/nonsingular_terminal_smc",
-      "directory_version_marker": "Docs/报告/图/控制器/03_滑模控制/nonsingular_terminal_smc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/04_滑模控制/nonsingular_terminal_smc",
+      "directory_version_marker": "Docs/报告/图/控制器/04_滑模控制/nonsingular_terminal_smc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/03_滑模控制/nonsingular_terminal_smc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_滑模控制/nonsingular_terminal_smc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nonsingular_terminal_smc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nonsingular_terminal_smc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/04_滑模控制/nonsingular_terminal_smc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_滑模控制/nonsingular_terminal_smc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nonsingular_terminal_smc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nonsingular_terminal_smc/screenshots/41224_0x4A201E4_MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
-        "source_sha256": "2e35a39e022f5926fc3348d346411a6f6f061a3a8de195a5eeaaf1f414fc449f",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nonsingular_terminal_smc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "2e35a39e022f5926fc3348d346411a6f6f061a3a8de195a5eeaaf1f414fc449f"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1045,7 +978,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1053,31 +986,23 @@
       "scheme_id": "smc_boundary_layer",
       "display_name_zh": "边界层滑模控制",
       "category": "sliding_mode",
-      "family_directory": "03_滑模控制",
+      "family_directory": "04_滑模控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
-        "model_sha256": "e3c8272f38468feca0b19060971c60a2e4845073bfc3f7246664d6e91d9bfb01",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+        "model_sha256": "c42cc5f743ece1e5636092ac3e573a587a80224353a644e9e981ef71d53695a5",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/03_滑模控制/smc_boundary_layer",
-      "directory_version_marker": "Docs/报告/图/控制器/03_滑模控制/smc_boundary_layer/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer",
+      "directory_version_marker": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/03_滑模控制/smc_boundary_layer/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_滑模控制/smc_boundary_layer/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/smc_boundary_layer/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/smc_boundary_layer/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/smc_boundary_layer/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/smc_boundary_layer/screenshots/41224_0x4A201E4_MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
-        "source_sha256": "f3fe7bf8f65af55d68504fc5816d9538a31350918d3a413872943825e261ee33",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/smc_boundary_layer/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "f3fe7bf8f65af55d68504fc5816d9538a31350918d3a413872943825e261ee33"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1091,7 +1016,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1099,31 +1024,23 @@
       "scheme_id": "super_twisting_smc",
       "display_name_zh": "Super-Twisting 滑模控制",
       "category": "sliding_mode",
-      "family_directory": "03_滑模控制",
+      "family_directory": "04_滑模控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
-        "model_sha256": "397bcdf4101d1ae3358233de25fa6140a4280d710e63343e8ae2e57373ed8342",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
+        "model_sha256": "fb9527f47fce76e2ef5f77a9ea907d1315a6c56bbb6959672fd4d95cea539f3d",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/03_滑模控制/super_twisting_smc",
-      "directory_version_marker": "Docs/报告/图/控制器/03_滑模控制/super_twisting_smc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/04_滑模控制/super_twisting_smc",
+      "directory_version_marker": "Docs/报告/图/控制器/04_滑模控制/super_twisting_smc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/03_滑模控制/super_twisting_smc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_滑模控制/super_twisting_smc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/super_twisting_smc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/super_twisting_smc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/04_滑模控制/super_twisting_smc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_滑模控制/super_twisting_smc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/super_twisting_smc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/super_twisting_smc/screenshots/41224_0x4A201E4_MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
-        "source_sha256": "05ce04e6f8c36728f4f82a33183b1337239ec515242e6b799d3bbb1398512371",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/super_twisting_smc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "05ce04e6f8c36728f4f82a33183b1337239ec515242e6b799d3bbb1398512371"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1137,7 +1054,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1145,31 +1062,23 @@
       "scheme_id": "terminal_smc",
       "display_name_zh": "终端滑模控制",
       "category": "sliding_mode",
-      "family_directory": "03_滑模控制",
+      "family_directory": "04_滑模控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/SlidingMode/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode.MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
-        "model_sha256": "7daa12e572d8f7f76f5b30117aff3c89dfc998b8b3b494e5f1b3aa8082bb4d9d",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
+        "model_sha256": "038bc37ae1b79de102fd0f5709270bace168da74758bffb4919f9c05f7c59369",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/03_滑模控制/terminal_smc",
-      "directory_version_marker": "Docs/报告/图/控制器/03_滑模控制/terminal_smc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/04_滑模控制/terminal_smc",
+      "directory_version_marker": "Docs/报告/图/控制器/04_滑模控制/terminal_smc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/03_滑模控制/terminal_smc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/03_滑模控制/terminal_smc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/terminal_smc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/terminal_smc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/04_滑模控制/terminal_smc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_滑模控制/terminal_smc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/terminal_smc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/terminal_smc/screenshots/41224_0x4A201E4_MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.SlidingMode_ - Sysplorer _教育版_.png",
-        "source_sha256": "5a7a690ae988e486febaac2435fbde5931a2903aa258e02511538ffaad0e392c",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/terminal_smc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "5a7a690ae988e486febaac2435fbde5931a2903aa258e02511538ffaad0e392c"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1183,39 +1092,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "adaptive_mpc",
       "display_name_zh": "自适应 MPC",
-      "category": "optimization",
-      "family_directory": "04_MPC族",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
-        "model_sha256": "75c51b337deb2838140347b331180a67780cb51e781cdc13a2a6cf4b2e194690",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
+        "model_sha256": "ad8aea2e840f7423613caa3752accb6901b47289699377181315fddea6893636",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/04_MPC族/adaptive_mpc",
-      "directory_version_marker": "Docs/报告/图/控制器/04_MPC族/adaptive_mpc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/adaptive_mpc",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/adaptive_mpc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/04_MPC族/adaptive_mpc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_MPC族/adaptive_mpc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_mpc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_mpc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/adaptive_mpc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/adaptive_mpc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_mpc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_mpc/screenshots/41224_0x4A201E4_MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "7ddbfcec052995705a2a65030fc474e27be73a3cf913aab1751e4560fa12d5dd",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/adaptive_mpc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "7ddbfcec052995705a2a65030fc474e27be73a3cf913aab1751e4560fa12d5dd"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1229,39 +1130,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "explicit_gain_scheduled_mpc",
       "display_name_zh": "显式增益调度 MPC",
-      "category": "optimization",
-      "family_directory": "04_MPC族",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
-        "model_sha256": "01fb2f787cadf4071ea4a32e8b5eed648f92843f201f0d259758c98c67ff3617",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
+        "model_sha256": "b73f99e0d5ce292a9aab9aa7fd9fd7dc54f22cde5743663136f13e42b46acd48",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/04_MPC族/explicit_gain_scheduled_mpc",
-      "directory_version_marker": "Docs/报告/图/控制器/04_MPC族/explicit_gain_scheduled_mpc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/explicit_gain_scheduled_mpc",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/explicit_gain_scheduled_mpc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/04_MPC族/explicit_gain_scheduled_mpc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_MPC族/explicit_gain_scheduled_mpc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/explicit_gain_scheduled_mpc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/explicit_gain_scheduled_mpc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/explicit_gain_scheduled_mpc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/explicit_gain_scheduled_mpc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/explicit_gain_scheduled_mpc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/explicit_gain_scheduled_mpc/screenshots/41224_0x4A201E4_MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "0094be8570da82f9d278803adcaaa5ca3f79b0c6272912f1f359b2324864d4d6",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/explicit_gain_scheduled_mpc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "0094be8570da82f9d278803adcaaa5ca3f79b0c6272912f1f359b2324864d4d6"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1275,39 +1168,107 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
+      "review_kind": "named_whole_aircraft_profile",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedLinearMpcL1Indi.mo",
+        "model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedLinearMpcL1Indi",
+        "model_sha256": "7fb0d81a65124a99e1c357e3ef3b87428e570b71f404977eb8587fa662ca49d6",
+        "model_role": "full_profile_whole_aircraft_closed_loop"
+      },
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/fixed_linear_mpc_l1_indi",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/fixed_linear_mpc_l1_indi/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/fixed_linear_mpc_l1_indi/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/fixed_linear_mpc_l1_indi/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
+      "review_kind": "named_whole_aircraft_profile",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
+        "model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedQpNmpcL1IndiCbf",
+        "model_sha256": "f5a0d32afa08e10dc69c49a85f120907fbfd5056e73110c9a7b29644fcbed3fc",
+        "model_role": "full_profile_whole_aircraft_closed_loop"
+      },
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/fixed_qp_nmpc_l1_indi_cbf",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/fixed_qp_nmpc_l1_indi_cbf/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/fixed_qp_nmpc_l1_indi_cbf/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/fixed_qp_nmpc_l1_indi_cbf/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
+      },
+      "source_capture": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "ilqr",
       "display_name_zh": "iLQR",
-      "category": "optimization",
-      "family_directory": "04_MPC族",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ILQR_GRAPHICAL_MIL",
-        "model_sha256": "09b395dfb65df5daf40ffd594292353866b7b5fc349584bfacc4e9dc796e4a8a",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ILQR_GRAPHICAL_MIL",
+        "model_sha256": "6a7d15ea2c12c4b165ca1a21ee69c98c32b0683e3c3bdc857ac07afd9aef2898",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/04_MPC族/ilqr",
-      "directory_version_marker": "Docs/报告/图/控制器/04_MPC族/ilqr/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/ilqr",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/ilqr/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/04_MPC族/ilqr/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_MPC族/ilqr/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ilqr/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ilqr/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/ilqr/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/ilqr/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ilqr/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ilqr/screenshots/41224_0x4A201E4_MoSim_P4_ILQR_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "80983b1060b88b34b6f5b036c6131255a57655aeec83e39caef9220b640d55b3",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/ilqr/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "80983b1060b88b34b6f5b036c6131255a57655aeec83e39caef9220b640d55b3"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1321,39 +1282,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "linear_mpc",
       "display_name_zh": "线性 MPC",
-      "category": "optimization",
-      "family_directory": "04_MPC族",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
-        "model_sha256": "7a528ba7d071355b4ab2edf0978f2da42b73e8a4f7e916e0e8d23a70cee8033f",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
+        "model_sha256": "1f4dc37c6a1f9328ed3618126adc9bfc1069caded25c6d9a9bf16e5a00d7dd7e",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/04_MPC族/linear_mpc",
-      "directory_version_marker": "Docs/报告/图/控制器/04_MPC族/linear_mpc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/linear_mpc",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/linear_mpc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/04_MPC族/linear_mpc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_MPC族/linear_mpc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/linear_mpc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/linear_mpc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/linear_mpc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/linear_mpc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/linear_mpc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/linear_mpc/screenshots/41224_0x4A201E4_MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "22fcfa7d54fd43107bbcdec7b74e0bca0140799c481fce696660e473026e6425",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/linear_mpc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "22fcfa7d54fd43107bbcdec7b74e0bca0140799c481fce696660e473026e6425"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1367,39 +1320,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "mppi",
       "display_name_zh": "MPPI",
-      "category": "optimization",
-      "family_directory": "04_MPC族",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_MPPI_GRAPHICAL_MIL",
-        "model_sha256": "ffd8f45c729dffeba3bee1d93774263afaf861c187f94de6d3e557b376cad126",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_MPPI_GRAPHICAL_MIL",
+        "model_sha256": "37e05419ee3d439ed7071206876efbf72439d1491e8b83335d422432483b7efc",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/04_MPC族/mppi",
-      "directory_version_marker": "Docs/报告/图/控制器/04_MPC族/mppi/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/mppi",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/mppi/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/04_MPC族/mppi/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_MPC族/mppi/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mppi/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mppi/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/mppi/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/mppi/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mppi/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mppi/screenshots/41224_0x4A201E4_MoSim_P4_MPPI_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "fb97100688c0875b106fddef469282140e11444e693379e9f964edc1df011c72",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/mppi/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "fb97100688c0875b106fddef469282140e11444e693379e9f964edc1df011c72"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1413,39 +1358,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "nmpc_outer",
       "display_name_zh": "NMPC 外环",
-      "category": "optimization",
-      "family_directory": "04_MPC族",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
-        "model_sha256": "bd1d6dd6d085cfa0bb66e0b847482e7ec8af9e7eafd4e7ee51e69ffb69814f0f",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+        "model_sha256": "06adcc55285ab7b942093617c9dd2bf4e974c34c3bc37c6cea40a937a7e98eb7",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/04_MPC族/nmpc_outer",
-      "directory_version_marker": "Docs/报告/图/控制器/04_MPC族/nmpc_outer/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/04_MPC族/nmpc_outer/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_MPC族/nmpc_outer/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nmpc_outer/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nmpc_outer/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nmpc_outer/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nmpc_outer/screenshots/41224_0x4A201E4_MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "29f302a2cc82ba55a77981d942279a3f573056d4e2998f0ca68550697d959d87",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/nmpc_outer/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "29f302a2cc82ba55a77981d942279a3f573056d4e2998f0ca68550697d959d87"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1459,39 +1396,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "robust_mpc",
       "display_name_zh": "鲁棒 MPC",
-      "category": "optimization",
-      "family_directory": "04_MPC族",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
-        "model_sha256": "11e800cb9df2d2599d08a3328f785d1264be9fc85399b610b0dcfd8aff49659b",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
+        "model_sha256": "45e6e4e7c00b36276ee3b5f3a90b24bd437a16429853a012508ed82629a1841e",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/04_MPC族/robust_mpc",
-      "directory_version_marker": "Docs/报告/图/控制器/04_MPC族/robust_mpc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/robust_mpc",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/robust_mpc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/04_MPC族/robust_mpc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_MPC族/robust_mpc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/robust_mpc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/robust_mpc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/robust_mpc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/robust_mpc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/robust_mpc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/robust_mpc/screenshots/41224_0x4A201E4_MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "09d17da2f2ce456cf7d139e85361e52cb1b0dee8ee5eb4effc4d6df33f1f9acf",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/robust_mpc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "09d17da2f2ce456cf7d139e85361e52cb1b0dee8ee5eb4effc4d6df33f1f9acf"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1505,39 +1434,31 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
     {
       "scheme_id": "tube_mpc",
       "display_name_zh": "管束 MPC",
-      "category": "optimization",
-      "family_directory": "04_MPC族",
+      "category": "optimization_predictive",
+      "family_directory": "05_最优与预测控制",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Optimization/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization.MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
-        "model_sha256": "87bbb376150f4b0693b119965776b9d1eb9efbc0e31b51f1a693f70ce990484a",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
+        "model_sha256": "d89404d404cc8f1a92a9c94618f00147cb7247f02afea99bdcbed0c581f49d2c",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/04_MPC族/tube_mpc",
-      "directory_version_marker": "Docs/报告/图/控制器/04_MPC族/tube_mpc/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/tube_mpc",
+      "directory_version_marker": "Docs/报告/图/控制器/05_最优与预测控制/tube_mpc/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/04_MPC族/tube_mpc/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_MPC族/tube_mpc/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/tube_mpc/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/tube_mpc/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/tube_mpc/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/tube_mpc/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/tube_mpc/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/tube_mpc/screenshots/41224_0x4A201E4_MoSim_P4_TUBE_MPC_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "a2e67cb30acdd46fe25b88fe7fe9897214eb9b5bddc595abcc9b4981648120de",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/tube_mpc/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "a2e67cb30acdd46fe25b88fe7fe9897214eb9b5bddc595abcc9b4981648120de"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1551,7 +1472,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1559,31 +1480,23 @@
       "scheme_id": "dfbc_basic",
       "display_name_zh": "基础微分平坦控制",
       "category": "geometric_flatness",
-      "family_directory": "05_几何与平坦",
+      "family_directory": "06_几何与微分平坦",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
-        "model_sha256": "5b50b864c3d70214c632b19b079e6d7dfe440f5228b61f8ee794b3d0b1348be2",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
+        "model_sha256": "5c3e45fad198b13098dc333bc73bd6533b6b0e4df29ed7fd961411f664f25a37",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/05_几何与平坦/dfbc_basic",
-      "directory_version_marker": "Docs/报告/图/控制器/05_几何与平坦/dfbc_basic/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_basic",
+      "directory_version_marker": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_basic/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_basic/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_basic/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_basic/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_basic/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_basic/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_basic/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_basic/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_basic/screenshots/native_current_20260724/82880_0x16BC0A30_MoSim_G9_DFBC_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
-        "source_sha256": "e43efa8a948832c3c581176e3470cb13446138537a53ec79f9740fae2e85c37f",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_basic/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "e43efa8a948832c3c581176e3470cb13446138537a53ec79f9740fae2e85c37f"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1597,7 +1510,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1605,31 +1518,23 @@
       "scheme_id": "dfbc_high_order_attitude",
       "display_name_zh": "高阶微分平坦姿态输出",
       "category": "geometric_flatness",
-      "family_directory": "05_几何与平坦",
+      "family_directory": "06_几何与微分平坦",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "89414a64a457afed2418e3d94646a5f8bd3bc82a26768c40923198f081fde460",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "7ed96eb2d51a911abc77e54e45cf280ba0abbd56840e0af05d8ea4d7592c07fe",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_attitude",
-      "directory_version_marker": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_attitude/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_high_order_attitude",
+      "directory_version_marker": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_high_order_attitude/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_attitude/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_attitude/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_attitude/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_attitude/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_high_order_attitude/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_high_order_attitude/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_attitude/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_attitude/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
-        "source_sha256": "0206f29fb323227338385db455bedab2e1fda380ef64c4605256f54cd1f6af56",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_attitude/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "0206f29fb323227338385db455bedab2e1fda380ef64c4605256f54cd1f6af56"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1643,7 +1548,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1651,31 +1556,23 @@
       "scheme_id": "dfbc_high_order_bodyrate",
       "display_name_zh": "高阶微分平坦角速度输出",
       "category": "geometric_flatness",
-      "family_directory": "05_几何与平坦",
+      "family_directory": "06_几何与微分平坦",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "1d5c354afa719d1cef00cd5dfc583bc191b7bc588cfad8286d000e6b5e6595af",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "7466fa62e2ac3ff846998c071077ca326e62d79be4628f826e1193688ace6cd4",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_bodyrate",
-      "directory_version_marker": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_bodyrate/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_high_order_bodyrate",
+      "directory_version_marker": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_high_order_bodyrate/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_bodyrate/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_high_order_bodyrate/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_bodyrate/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_bodyrate/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_high_order_bodyrate/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_high_order_bodyrate/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_bodyrate/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_bodyrate/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
-        "source_sha256": "144d9f173fb57b5658ff4d5e2b47591ec0382b737b367932542da33f345c04b8",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_high_order_bodyrate/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "144d9f173fb57b5658ff4d5e2b47591ec0382b737b367932542da33f345c04b8"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1689,7 +1586,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1697,31 +1594,23 @@
       "scheme_id": "dfbc_smooth_robust_attitude",
       "display_name_zh": "平滑鲁棒微分平坦姿态输出",
       "category": "geometric_flatness",
-      "family_directory": "05_几何与平坦",
+      "family_directory": "06_几何与微分平坦",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "1ca2a7ebd1a561769214e04e86e5bce8720d16bf6216104c7c72fe009fa6734e",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "055bc1abd18056076c86d9a3bf462b4e5d739f9775a6e3313b47cafc91765378",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_attitude",
-      "directory_version_marker": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_attitude/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_smooth_robust_attitude",
+      "directory_version_marker": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_smooth_robust_attitude/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_attitude/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_attitude/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_attitude/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_attitude/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_smooth_robust_attitude/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_smooth_robust_attitude/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_attitude/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_attitude/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
-        "source_sha256": "3f8a92603ac2f2a26cbd9a3dabc7160e56349ff2c94a3dda913fb024bfee9838",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_attitude/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "3f8a92603ac2f2a26cbd9a3dabc7160e56349ff2c94a3dda913fb024bfee9838"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1735,7 +1624,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1743,31 +1632,23 @@
       "scheme_id": "dfbc_smooth_robust_bodyrate",
       "display_name_zh": "平滑鲁棒微分平坦角速度输出",
       "category": "geometric_flatness",
-      "family_directory": "05_几何与平坦",
+      "family_directory": "06_几何与微分平坦",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL",
-        "model_sha256": "537a587f111e51e42165771089c2cfdcfb0fdc5480091eea860c9b49173b3984",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL",
+        "model_sha256": "3af86b0077144fa692367db21680cf9636d6619ed603a4c45f83092d8e154145",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_bodyrate",
-      "directory_version_marker": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_bodyrate/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_smooth_robust_bodyrate",
+      "directory_version_marker": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_smooth_robust_bodyrate/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_bodyrate/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_几何与平坦/dfbc_smooth_robust_bodyrate/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_bodyrate/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_bodyrate/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_smooth_robust_bodyrate/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/dfbc_smooth_robust_bodyrate/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_bodyrate/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_bodyrate/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
-        "source_sha256": "ff19173afb63d0cfdfe7dc639c033f64414860bd65628ffc7c5c41c03aaec592",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/dfbc_smooth_robust_bodyrate/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "ff19173afb63d0cfdfe7dc639c033f64414860bd65628ffc7c5c41c03aaec592"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1781,7 +1662,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1789,31 +1670,23 @@
       "scheme_id": "se3_basic",
       "display_name_zh": "SE(3) 几何控制",
       "category": "geometric_flatness",
-      "family_directory": "05_几何与平坦",
+      "family_directory": "06_几何与微分平坦",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/GeometricFlatness/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness.MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
-        "model_sha256": "f9fd176a92f532bfe19abf6aa84a278cecaedc7f6c108d81ae16d3c39623041d",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
+        "model_sha256": "8cbc0f5b1fc425d7e87bc5c87ea2db9a31f40fdcd2dc1f5d931e2bd3fa897473",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/05_几何与平坦/se3_basic",
-      "directory_version_marker": "Docs/报告/图/控制器/05_几何与平坦/se3_basic/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/06_几何与微分平坦/se3_basic",
+      "directory_version_marker": "Docs/报告/图/控制器/06_几何与微分平坦/se3_basic/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/05_几何与平坦/se3_basic/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_几何与平坦/se3_basic/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/se3_basic/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/se3_basic/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/se3_basic/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/06_几何与微分平坦/se3_basic/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/se3_basic/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/se3_basic/screenshots/41224_0x4A201E4_MoSim_G9_SE3_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Controllers.GraphicalMIL.GeometricFlatness_ - Sysplorer _教育版_.png",
-        "source_sha256": "079b8ce969bd609ec09b4a85e4fb9980c61ee98b89297dbddf95260d05541be2",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/se3_basic/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "079b8ce969bd609ec09b4a85e4fb9980c61ee98b89297dbddf95260d05541be2"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1827,7 +1700,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1835,31 +1708,23 @@
       "scheme_id": "rl_gain_scheduler",
       "display_name_zh": "强化学习增益调度",
       "category": "learning",
-      "family_directory": "06_学习控制",
+      "family_directory": "07_智能与学习",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Learning/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning.MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL",
-        "model_sha256": "48a23c30c3515c1c66e7fdfc22d76c82429a61a715a24f538dcb96892cfacc03",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Learning/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Learning.MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL",
+        "model_sha256": "d63ec026341845cecb2f8dce35b15d02736703353acd31e714d89f2cbd5b0413",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/06_学习控制/rl_gain_scheduler",
-      "directory_version_marker": "Docs/报告/图/控制器/06_学习控制/rl_gain_scheduler/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/07_智能与学习/rl_gain_scheduler",
+      "directory_version_marker": "Docs/报告/图/控制器/07_智能与学习/rl_gain_scheduler/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/06_学习控制/rl_gain_scheduler/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/06_学习控制/rl_gain_scheduler/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/rl_gain_scheduler/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/rl_gain_scheduler/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/07_智能与学习/rl_gain_scheduler/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/07_智能与学习/rl_gain_scheduler/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/rl_gain_scheduler/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/rl_gain_scheduler/screenshots/41224_0x4A201E4_MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning_ - Sysplorer _教育版_.png",
-        "source_sha256": "3943ad822af40e152343b8de414b3b072a7676bf9a8eb2936f3b331251798900",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/rl_gain_scheduler/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "3943ad822af40e152343b8de414b3b072a7676bf9a8eb2936f3b331251798900"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1873,7 +1738,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1881,31 +1746,23 @@
       "scheme_id": "trained_neural_residual",
       "display_name_zh": "训练神经残差控制",
       "category": "learning",
-      "family_directory": "06_学习控制",
+      "family_directory": "07_智能与学习",
       "review_kind": "internal_control_law",
       "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/GraphicalMIL/Learning/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning.MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL",
-        "model_sha256": "b0951204b6cecffedc45231559d16afa301caf609acb99d33da46b3ad44f8b3d",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Learning/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Learning.MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL",
+        "model_sha256": "e1266350d91b8780599e89456c280374e371c21dcff612ef3ec36f90c2413ba4",
         "model_role": "graphical_controller_core"
       },
-      "asset_directory": "Docs/报告/图/控制器/06_学习控制/trained_neural_residual",
-      "directory_version_marker": "Docs/报告/图/控制器/06_学习控制/trained_neural_residual/.gitkeep",
+      "asset_directory": "Docs/报告/图/控制器/07_智能与学习/trained_neural_residual",
+      "directory_version_marker": "Docs/报告/图/控制器/07_智能与学习/trained_neural_residual/.gitkeep",
       "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/06_学习控制/trained_neural_residual/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/06_学习控制/trained_neural_residual/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/trained_neural_residual/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/trained_neural_residual/G5_REVIEW_PACKET.json"
+        "structure_native_window": "Docs/报告/图/控制器/07_智能与学习/trained_neural_residual/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/07_智能与学习/trained_neural_residual/02_最小闭环结果原生窗口.png",
+        "capture_manifest": null,
+        "g5_review_packet": null
       },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/trained_neural_residual/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/trained_neural_residual/screenshots/41224_0x4A201E4_MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Learning_ - Sysplorer _教育版_.png",
-        "source_sha256": "4bf4fbd0ba806c8a12f9195bea15c507bbc3d57b8bf4b2f50d8ba34503d8fbba",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/trained_neural_residual/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "4bf4fbd0ba806c8a12f9195bea15c507bbc3d57b8bf4b2f50d8ba34503d8fbba"
-      },
+      "source_capture": null,
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
@@ -1919,237 +1776,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "fixed_awff_l1_indi",
-      "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
-      "category": "fixed_integrated",
-      "family_directory": "07_固定集成链",
-      "review_kind": "fixed_integrated_whole_aircraft",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffL1Indi.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffL1Indi",
-        "model_sha256": "0d6a8b4b714ceb4e1b7ce160c7b18824726399172ecf9ca948362513a3819873",
-        "model_role": "fixed_integrated_whole_aircraft_closed_loop"
-      },
-      "asset_directory": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_indi",
-      "directory_version_marker": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_indi/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_indi/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_indi/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_indi/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_indi/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_indi/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_indi/screenshots/native_current_20260724/41224_0x4A201E4_AWFF_INDIControllerGraphical_Sysblock_MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_InnovationGraphicalControllers_ - Sysplorer _教育版_.png",
-        "source_sha256": "f725928139da672ac59b42e077f585bf3b8fa3d1e40edcf3d781a1cc1645095d",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_indi/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "f725928139da672ac59b42e077f585bf3b8fa3d1e40edcf3d781a1cc1645095d"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "fixed_awff_l1_residual",
-      "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
-      "category": "fixed_integrated",
-      "family_directory": "07_固定集成链",
-      "review_kind": "fixed_integrated_whole_aircraft",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffL1Residual.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffL1Residual",
-        "model_sha256": "5378e829228e9976b1d91699dcc9ae03198dae4460fa11c5252d0788e97b84d6",
-        "model_role": "fixed_integrated_whole_aircraft_closed_loop"
-      },
-      "asset_directory": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_residual",
-      "directory_version_marker": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_residual/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_residual/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_l1_residual/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_residual/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_residual/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_residual/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_residual/screenshots/native_current_20260724/41224_0x4A201E4_AWFF_L1ResidualControllerGraphical_Sysblock_MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_InnovationGraphicalControllers_ - Sysplorer _教育版_.png",
-        "source_sha256": "8c46e96172939b78aefb886259176191215364a15b2b8d2b6c848af31000c19d",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_l1_residual/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "8c46e96172939b78aefb886259176191215364a15b2b8d2b6c848af31000c19d"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "fixed_awff_pid",
-      "display_name_zh": "抗积分饱和与参考前馈 PID",
-      "category": "fixed_integrated",
-      "family_directory": "07_固定集成链",
-      "review_kind": "fixed_integrated_whole_aircraft",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedAwffPid.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedAwffPid",
-        "model_sha256": "5739fae0244a679964b8f9773f320d2d65bd5fd2ed936e293846c8018b602ccb",
-        "model_role": "fixed_integrated_whole_aircraft_closed_loop"
-      },
-      "asset_directory": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_pid",
-      "directory_version_marker": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_pid/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_pid/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_awff_pid/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_pid/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_pid/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_pid/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_pid/screenshots/native_current_20260724/41224_0x4A201E4_AWFF_FullControllerFlatGraphical_Sysblock_MoSimQuadrotorModel.Controllers.Sysblocks_ - Sysplorer _教育版_.png",
-        "source_sha256": "bcf5304ba027e5071565aaad5db576fafe818e3c89ac4907b8c4ba65968ec4af",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_awff_pid/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "bcf5304ba027e5071565aaad5db576fafe818e3c89ac4907b8c4ba65968ec4af"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "fixed_linear_mpc_l1_indi",
-      "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
-      "category": "fixed_integrated",
-      "family_directory": "07_固定集成链",
-      "review_kind": "fixed_integrated_whole_aircraft",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedLinearMpcL1Indi.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedLinearMpcL1Indi",
-        "model_sha256": "a378f3e209a021c1dd55f1a7fd5f0c6bf9dd88877ce4478ee87f1085008ec192",
-        "model_role": "fixed_integrated_whole_aircraft_closed_loop"
-      },
-      "asset_directory": "Docs/报告/图/控制器/07_固定集成链/fixed_linear_mpc_l1_indi",
-      "directory_version_marker": "Docs/报告/图/控制器/07_固定集成链/fixed_linear_mpc_l1_indi/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_linear_mpc_l1_indi/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_linear_mpc_l1_indi/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_linear_mpc_l1_indi/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_linear_mpc_l1_indi/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_linear_mpc_l1_indi/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_linear_mpc_l1_indi/screenshots/native_current_20260724/41224_0x4A201E4_AWFF_LinearMPCControllerGraphical_Sysblock_MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_InnovationGraphicalControllers_ - Sysplorer _教育版_.png",
-        "source_sha256": "8d70a7c96dc473b0ef2c61ab5df27803f13dfd8e9f4577844e629b16f2d7f30f",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_linear_mpc_l1_indi/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "8d70a7c96dc473b0ef2c61ab5df27803f13dfd8e9f4577844e629b16f2d7f30f"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
-        "minimum_closed_loop_result_native_window": "not_captured"
-      }
-    },
-    {
-      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
-      "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
-      "category": "fixed_integrated",
-      "family_directory": "07_固定集成链",
-      "review_kind": "fixed_integrated_whole_aircraft",
-      "review_target": {
-        "model_file": "Models/MoSimQuadrotorModel/Controllers/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
-        "model_class": "MoSimQuadrotorModel.Controllers.IntegratedChains.FixedQpNmpcL1IndiCbf",
-        "model_sha256": "d317fa4edfef9aed3fc2d9954e53a727aaa3e3e965b2c93765c3b337280e7ce4",
-        "model_role": "fixed_integrated_whole_aircraft_closed_loop"
-      },
-      "asset_directory": "Docs/报告/图/控制器/07_固定集成链/fixed_qp_nmpc_l1_indi_cbf",
-      "directory_version_marker": "Docs/报告/图/控制器/07_固定集成链/fixed_qp_nmpc_l1_indi_cbf/.gitkeep",
-      "required_assets": {
-        "structure_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_qp_nmpc_l1_indi_cbf/01_图形模型.png",
-        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/07_固定集成链/fixed_qp_nmpc_l1_indi_cbf/02_最小闭环结果原生窗口.png",
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_qp_nmpc_l1_indi_cbf/logs/screenshot_manifest.json",
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_qp_nmpc_l1_indi_cbf/G5_REVIEW_PACKET.json"
-      },
-      "source_capture": {
-        "g5_review_packet": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_qp_nmpc_l1_indi_cbf/G5_REVIEW_PACKET.json",
-        "source_screenshot": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_qp_nmpc_l1_indi_cbf/screenshots/native_current_20260724/41224_0x4A201E4_MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL_MoSimQuadrotorModel.Controllers.GraphicalMIL.Optimization_ - Sysplorer _教育版_.png",
-        "source_sha256": "93eb6c8dff1b90a25841fc5f3fdae2df03fe0a25b11efbf55538fab7e1dc8020",
-        "source_width": 2578,
-        "source_height": 1398,
-        "capture_manifest": "Results/control_platform/g5_graphical_structure_review_20260722/reviews/fixed_qp_nmpc_l1_indi_cbf/logs/screenshot_manifest.json",
-        "capture_manifest_sha256": "93eb6c8dff1b90a25841fc5f3fdae2df03fe0a25b11efbf55538fab7e1dc8020"
-      },
-      "capture_rules": {
-        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
-        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
-        "preserve_window_native_aspect_ratio": true,
-        "forbidden_sources": [
-          "exported_canvas",
-          "report_copy",
-          "historical_result_capture",
-          "cropped_or_aspect_ratio_distorted_capture",
-          "wrapper_only_port_shell"
-        ]
-      },
-      "capture_status": {
-        "structure_native_window": "present_unreviewed",
+        "structure_native_window": "not_captured",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     }

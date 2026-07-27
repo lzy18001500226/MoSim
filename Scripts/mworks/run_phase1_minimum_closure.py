@@ -240,7 +240,7 @@ def binding_route(scheme_id: str, category: str, boundary: str) -> dict[str, Any
     }
 
 
-def fixed_route(
+def whole_aircraft_profile_route(
     route: dict[str, Any],
     harness: dict[str, Any],
     prerequisites: dict[str, list[dict[str, str]]],
@@ -253,7 +253,7 @@ def fixed_route(
         "scheme_id": scheme_id,
         "category": str(route["category"]),
         "target_boundary": "WHOLE_AIRCRAFT_EMBEDDED",
-        "execution_kind": "fixed_integrated_whole_aircraft",
+        "execution_kind": "named_whole_aircraft_profile",
         "target": {
             "model_file": relative(target),
             "model_class": str(harness["public_entry_class"]),
@@ -270,7 +270,7 @@ def fixed_route(
         "rematerialize_package_root": False,
         "model_load_prerequisites": prerequisites.get(scheme_id, []),
         "claim_boundary": (
-            "Offline MWORKS whole-aircraft ClimbPath closure of the named fixed integrated chain only. "
+            "Offline MWORKS whole-aircraft ClimbPath closure of the named whole-aircraft profile only. "
             "It is not controller-family selection, seven-scenario comparison, code generation, Gazebo, "
             "PX4, ROS, or flight-runtime evidence."
         ),
@@ -334,12 +334,15 @@ def build_matrix() -> dict[str, Any]:
         boundary = str(target_contract.get("boundary") or "WHOLE_AIRCRAFT_EMBEDDED")
         if scheme_id in FORMAL_BINDING_FILES or scheme_id == "official_pid":
             row = binding_route(scheme_id, category, boundary)
-        elif category == "fixed_integrated":
+        elif (
+            isinstance(route.get("current_model"), dict)
+            and route["current_model"].get("role") == "full_profile_whole_aircraft_closed_loop"
+        ):
             scheme = harness_by_id.get(scheme_id)
             harness = scheme.get("canonical_closed_loop_harness") if isinstance(scheme, dict) else None
             if not isinstance(harness, dict):
-                raise ValueError(f"fixed chain lacks canonical harness mapping: {scheme_id}")
-            row = fixed_route(route, harness, prerequisites)
+                raise ValueError(f"named whole-aircraft profile lacks canonical harness mapping: {scheme_id}")
+            row = whole_aircraft_profile_route(route, harness, prerequisites)
         else:
             row = missing_adapter_route(route)
         matrix_rows.append(row)

@@ -59,11 +59,11 @@ def packet_paths() -> list[Path]:
 
 def build_status() -> dict[str, Any]:
     queue = read_json(QUEUE_PATH)
-    if queue.get("schema") != "mosim.g5_graphical_review_queue.v1":
+    if queue.get("schema") != "mosim.g5_graphical_review_queue.v2":
         raise StatusError("G5 review queue schema is invalid")
     rows = queue.get("schemes")
-    if not isinstance(rows, list) or len(rows) != 49:
-        raise StatusError("G5 review queue must contain exactly 49 schemes")
+    if not isinstance(rows, list) or len(rows) != 48:
+        raise StatusError("G5 review queue must contain exactly 48 active entries")
     planned_by_id = {
         str(row.get("scheme_id")): row
         for row in rows
@@ -145,7 +145,7 @@ def build_status() -> dict[str, Any]:
             "reason": "Packets retain pre-normalization model hashes and are trace-back records only, not current G5 review evidence.",
         },
         "summary": {
-            "top_level_scheme_count": 49,
+            "active_top_level_entry_count": 48,
             "live_review_candidate_count": len(pending_ids),
             "reviewed_count": len(reviews),
             "pending_count": len(pending_ids - reviewed_ids),
@@ -176,8 +176,8 @@ def validate_status(status: dict[str, Any]) -> list[str]:
     if not isinstance(summary, dict):
         errors.append("status summary is missing")
         return errors
-    if summary.get("top_level_scheme_count") != 49:
-        errors.append("status must retain the 49-scheme boundary")
+    if summary.get("active_top_level_entry_count") != 48:
+        errors.append("status must retain the 48-entry active profile boundary")
     if summary.get("live_review_candidate_count") != 46:
         errors.append("status must retain 46 live review candidates")
     reviewed = status.get("reviewed")

@@ -6,7 +6,6 @@ import sys
 
 import pytest
 
-
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -64,10 +63,12 @@ def test_current_matrix_paths_reject_writes_outside_results() -> None:
         executor.configure_matrix_path(ROOT / "Docs" / "G6_EXECUTION_MATRIX.json")
 
 
-def test_formal_harness_map_binds_an_explicit_current_status_path() -> None:
+def test_formal_harness_map_does_not_treat_old_g6_status_as_selection_authority() -> None:
     module = load_module(
         "Scripts/quality/build_formal_closed_loop_harness_map.py", "formal_harness_map_current_status"
     )
 
-    with pytest.raises(module.HarnessMapError, match="below Results"):
-        module.configure_g6_status_path(ROOT / "Docs" / "G6_EXECUTION_STATUS.json")
+    assert not hasattr(module, "configure_g6_status_path")
+    assert "--g6-status" not in (
+        ROOT / "Scripts" / "quality" / "build_formal_closed_loop_harness_map.py"
+    ).read_text(encoding="utf-8")

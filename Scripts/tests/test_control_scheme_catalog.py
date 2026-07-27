@@ -40,18 +40,21 @@ def error_codes(catalog: dict, matrix: dict, registry: dict) -> set[str]:
     return {error["code"] for error in checker.validate(catalog, matrix, registry)}
 
 
-def test_current_catalog_is_frozen_at_49_and_matches_authorities() -> None:
+def test_current_catalog_is_frozen_at_48_and_matches_authorities() -> None:
     catalog, matrix, registry = load_authorities()
     checker = load_checker()
-    assert catalog["frozen_scheme_count"] == 49
+    assert catalog["frozen_scheme_count"] == 48
+    assert catalog["count_summary"]["mworks_control_profiles"] == 47
+    assert catalog["count_summary"]["current_mworks_routes"] == 46
     assert checker.validate(catalog, matrix, registry) == []
 
 
-def test_primary_matrix_mapping_cannot_drift() -> None:
+def test_graphical_core_matrix_mapping_cannot_drift() -> None:
     catalog, matrix, registry = load_authorities()
     catalog = copy.deepcopy(catalog)
-    catalog["schemes"][0]["evidence_matrix_controller"] = "pid_indi"
-    assert "CSC-PRIMARY-02" in error_codes(catalog, matrix, registry)
+    graphical = next(item for item in catalog["schemes"] if item["scheme_id"] == "fuzzy_pid")
+    graphical["evidence_matrix_controller"] = "cascade_pid"
+    assert "CSC-GRAPHICAL-03" in error_codes(catalog, matrix, registry)
 
 
 def test_frozen_count_cannot_drift() -> None:
@@ -61,14 +64,14 @@ def test_frozen_count_cannot_drift() -> None:
     assert "CSC-COUNT-01" in error_codes(catalog, matrix, registry)
 
 
-def test_fixed_chain_must_match_its_source_controller_id() -> None:
+def test_full_profile_must_match_its_source_controller_id() -> None:
     catalog, matrix, registry = load_authorities()
     catalog = copy.deepcopy(catalog)
     fixed = next(item for item in catalog["schemes"] if item["scheme_id"] == "fixed_awff_l1_indi")
     fixed["source_controller_id"] = "wrong_controller"
     codes = error_codes(catalog, matrix, registry)
-    assert "CSC-FIXED-02" in codes
-    assert "CSC-FIXED-04" in codes
+    assert "CSC-FULL-02" in codes
+    assert "CSC-FULL-04" in codes
 
 
 def test_standard_ui_cannot_reopen_generic_augmentation_multiselect() -> None:

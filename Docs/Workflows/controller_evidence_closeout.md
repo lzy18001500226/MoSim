@@ -32,12 +32,15 @@
 
 历史矩阵有 67 条分层证据路线；`65/67` 仅表示相应路线通过了各自记录的
 MWORKS codegen 和 generated-C SIL 门。报告副本中的模型图和结果图属于静态资产，
-不等于 65 个完整飞机模型，更不等于 65 条当前可运行图形路线。`mu_synthesis`、
-`neural_smc` 保持明确实现阻塞。
+不等于 65 个完整飞机模型，更不等于 65 条当前可运行图形路线。`mu_synthesis` 与
+`neural_smc` 只保留为该历史矩阵中的未实现记录，不是当前活动条目。
 
-当前工程的完整控制方案数固定为 49：43 条名义路线、1 条 `px4ctrl` 工程基线和
-5 条固定集成链。G1 清单只登记源候选和阻塞，不会把 `Results/` 中的历史模型副本
-提升为当前模型库入口；G4 完成映射前，所有条目的 `mworks_run_eligible=false`。
+当前工程固定为 **48 个活动条目**：**47 个 MWORKS Control Profile** 和 1 条
+`px4ctrl` 工程/部署基线。47 个 Profile 由 46 条已有 MWORKS 路线和 1 条已批准但
+尚未实现的 `pid_awff_linear_eso` 构成，分属 **七个语义控制族**。五条已有命名整机
+Profile 已归入 PID 或最优与预测控制族，不再作为独立控制器族。G1 清单不会把
+`Results/` 中的历史模型副本提升为当前模型库入口；当前所有条目的
+`mworks_run_eligible=false`。
 
 ## 赛题覆盖与项目扩展场景矩阵
 
@@ -56,20 +59,32 @@ MWORKS codegen 和 generated-C SIL 门。报告副本中的模型图和结果图
 | 三机编队 | 扩展验证 | 三机参考与实际轨迹、机间距、跟踪指标 |
 
 七场景 `hover`、`step`、`figure8`、`spiral`、`wind`、`parameter_mismatch`、
-`motor_efficiency_fault` 是当前 A/B 扩展矩阵。先用于“原始 PID + 选定优化路线”
-的公平对比；只有某控制器被列为正文核心候选、且最小闭环通过后，才扩展到该七场景。
+`motor_efficiency_fault` 是当前 A/B 扩展矩阵。它用于 Official PID、已验证的
+`px4ctrl` 等效核和各语义族实测胜出者的公平对比；只有控制器完成最小闭环并取得
+正式测试壳后，才可扩展到该七场景。
 
 ## 当前 G1-G7 顺序
 
-1. G1：以 49 方案目录、67 路线矩阵、Registry、来源模型和证据盘点建立 fail-closed 清单。
-2. G2：统一 49/65/67、六个名义控制族、七场景、固定集成链、编队和 `px4ctrl` 的设计边界。
+1. G1：以 48 项活动目录、67 路线历史矩阵、Registry、来源模型和证据盘点建立 fail-closed 清单。
+2. G2：统一 48/65/67、七个语义控制族、七场景、命名整机 Profile、编队和 `px4ctrl` 的设计边界。
 3. G3：核对工作流、索引、检查器、模型入口和证据路径，冻结重构与实验契约。
-4. G4：按冻结契约非破坏重构模型库，并把每个顶层方案映射到当前入口或 blocker。已完成：
-   `Config/control_platform/current_model_entry_map.json` 固定 46 条项目内入口、2 条
-   真正缺实现 blocker 和 `px4ctrl` runtime baseline；41 个历史图形控制器核仅作为
-   带来源哈希的正式包副本，不作为完整飞机通过证据。
-5. G5：49 条方案都保留入口或状态记录。D2 已冻结为 `46 = 41 + 5`。本阶段先完成全部 46 条当前 MWORKS 路线的图形处理闭环：打开实际内部控制律，修复包装器、不可读布局和模型检查问题，取得当前模型哈希的 `CheckModel` 与 Windows 原生整窗图，并把每条写成 `graphical_ready`。41 条名义 `GraphicalMIL` 核在这个阶段仍只证明内部图形实现，不得被改写为整机闭环；5 条固定集成链也只完成图形/模型检查，不得在 46 条全部 `graphical_ready` 前启动仿真。mu_synthesis、neural_smc 保持实现 blocker，px4ctrl 保持 ROS1/PX4 运行时基线，不伪造 MWORKS 图。
-6. G6：仅在 46 条当前路线全部完成 G5 图形处理闭环后，才开始任何 `simulate_model`、最小闭环或七场景任务。先为 PID、经典鲁棒、滑模、优化、几何平坦、学习六个名义控制族各选择一条冠军。冠军不能直接借用五条固定集成链或历史结果进入七场景：必须先按 D2 的冠军测试壳晋级契约，在 `Models/MoSimQuadrotorModel/` 下建立并验证与其核心、Adapter、正式整机植物和最小场景绑定的测试壳，更新映射和检查器后，才可与 Official PID 基线完成同参数、同指标的七场景 A/B。PID 族冠军若就是 Official PID，可复用同一已验证基线壳而不重复计数。固定集成链只在自身最小闭环合格后保留为整机对照，不与六族冠军重复计数。
+4. G4：按冻结契约非破坏重构模型库，并把每个活动条目映射到当前入口或状态。已完成：
+   `Config/control_platform/current_model_entry_map.json` 固定 46 条项目内入口、1 条
+   计划 ESO Profile 和 1 条待实现等效核的 `px4ctrl` 工程/部署基线；41 个图形控制器核
+   仅作为带来源哈希的正式包副本，不作为完整飞机通过证据。
+5. G5：48 个活动条目都保留入口或状态记录。D2 已冻结为 `46 = 41 + 5`：41 条图形控制器核
+   与 5 条已归族的命名整机 Profile。G5 只处理 46 条当前 MWORKS 路线的图形处理闭环：打开
+   实际内部控制律，修复包装器、不可读布局和模型检查问题，取得当前模型哈希的 `CheckModel`
+   与 Windows 原生整窗图，并把每条写成 `graphical_ready`。图形控制器核在本阶段仍只证明内部
+   图形实现，不得被改写为整机闭环；命名整机 Profile 也只完成图形/模型检查。计划 ESO Profile
+   与待实现 MWORKS 等效核的 `px4ctrl` 只记录未实现状态，不伪造 MWORKS 图。
+6. G6：仅在 46 条当前路线全部完成 G5 图形处理闭环后，才开始任何 `simulate_model`、最小闭环或
+   七场景任务。先在七个语义控制族中按当前来源的 ClimbPath RMSE 选择一条实测胜出者。胜出者
+   不能借用其他 Profile 或历史结果进入七场景：必须先按 D2 的冠军测试壳晋级契约，在
+   `Models/MoSimQuadrotorModel/` 下建立并验证与其核心、Adapter、正式整机植物和最小场景绑定的
+   测试壳，更新映射和检查器后，才可与 Official PID 基线完成同参数、同指标的七场景 A/B。
+   `px4ctrl` 仅在其 MWORKS 等效核完成行为和接口等效验证后加入同一比较；Official PID 始终是
+   非胜出者的固定 A/B 参考基线。
 7. G7：补齐安全、故障、固定三机编队、Syslab 指标和后续部署候选交接；不把它们夸大为联合仿真或现场部署成功。
 
 G1-G7 只负责当前模型证据与实验收敛。其后才可进入 R1：确认正式根在真实实验中
@@ -80,15 +95,20 @@ G1-G7 只负责当前模型证据与实验收敛。其后才可进入 R1：确�
 G5 前必须依次完成下列三轮审查，并把发现写回本工作流、模型结构索引或对应的
 machine-readable manifest；不能以一次静态扫描替代三轮。
 
-1. D1 文档与入口审查：确认当前口径只有 49 个方案、46 条 MWORKS 候选、2 个实现
-   blocker 和 1 条 `px4ctrl` runtime baseline；正式实现和公开入口只指向
+1. D1 文档与入口审查：确认当前口径只有 48 个活动条目、47 个 MWORKS Control Profile、
+   46 条当前 MWORKS 路线、1 条计划 ESO Profile 和 1 条待实现等效核的 `px4ctrl`
+   工程/部署基线；正式实现和公开入口只指向
    `Models/MoSimQuadrotorModel/`。67 路历史矩阵、旧报告和旧结果必须明确标为历史，
    不能作为当前运行或报告完成证据。
 2. D2 证据链审查：每条当前 MWORKS 路线先有内部拓扑审查目标，再由
-   `formal_closed_loop_harness_map.json` 明确分类。41 条 `GraphicalMIL` 核只能记录
-   `internal_graphical_probe` 和 `missing_closed_loop_harness`；只有 5 条固定集成链具备
+   `formal_closed_loop_harness_map.json` 明确分类。41 条图形控制器核只能记录
+   `internal_graphical_probe` 和 `missing_closed_loop_harness`；5 条命名整机 Profile 已具备
    同一正式根下命名的 `canonical_closed_loop_harness`、接口/Adapter、模型哈希和最小场景。
-   不得临时拼接模型来凑最小闭环，也不得把内部固定输入响应改写成整机闭环。六族冠军在 G5 筛选后必须走“冠军测试壳晋级”：为选中的核心建立同一正式根下的 public alias、明确 Adapter、整机 source harness、最小场景和哈希；在 `formal_closed_loop_harness_map.json` 中把该路线更新为可复核的正式壳，并同时更新映射构建器/检查器。五条既有固定集成链不自动满足这一步，也不能替代其他名义族冠军。
+   不得临时拼接模型来凑最小闭环，也不得把内部固定输入响应改写成整机闭环。七族实测胜出者
+   在 G5 筛选后必须走“冠军测试壳晋级”：为选中的核心建立同一正式根下的 public alias、明确
+   Adapter、整机 source harness、最小场景和哈希；在 `formal_closed_loop_harness_map.json` 中把
+   该路线更新为可复核的正式壳，并同时更新映射构建器/检查器。已有命名整机 Profile 不能替代
+   另一语义族胜出者的测试壳。
 3. D3 退休预审：明确旧根引用审计范围、允许的历史例外、归档 manifest、恢复位置和
    归档后烟雾门。D3 只冻结 R1 的执行条件，不能提前移动任何旧根文件。
 
@@ -121,9 +141,9 @@ python Scripts/quality/audit_report_controller_assets.py
 
 ### E1 / G5 图形结构复核
 
-G4 映射完成后，49 个顶层方案都必须有审查记录。`px4ctrl` 是 ROS1/PX4 工程
-基线，不存在 MWORKS 图形模型时应记录为 `not_applicable_runtime_baseline`，而不是
-伪造或寻找替代图。mu_synthesis、neural_smc 保持 blocked_before_live_review；其余 46 条当前 MWORKS 路线按控制器族分批，每批 4 至 6 条。对每条：
+G4 映射完成后，48 个活动条目都必须有审查记录。`pid_awff_linear_eso` 是计划 Profile，
+`px4ctrl` 是待实现 MWORKS 等效核的工程/部署基线；两者都不进入当前图审或截图范围，
+也不得伪造或寻找替代图。其余 46 条当前 MWORKS 路线按控制器族分批，每批 4 至 6 条。对每条：
 
 1. 先读取 `Config/control_platform/formal_closed_loop_harness_map.json` 中该路线的
    `formal_harness_state`，再用当前 activation/window 证据或一次有界 sentinel/probe 确认 MWORKS 可用；
@@ -143,7 +163,7 @@ G4 映射完成后，49 个顶层方案都必须有审查记录。`px4ctrl` 是 
 
 G5 只处理图形模型，不启动 `simulate_model`。对 41 条 `missing_closed_loop_harness` 图形核，
 本阶段只保存内部图形、`CheckModel` 或首个明确模型 blocker；这不是整机、植物耦合或轨迹
-跟踪闭环。对 5 条 `resolved_canonical_whole_aircraft_harness` 固定集成链同样先完成图审和
+跟踪闭环。对 5 条 `resolved_canonical_whole_aircraft_harness` 命名整机 Profile 同样先完成图审和
 `CheckModel`，不得因其已有测试壳而抢先进入 E2。
 
 不为排版对已通过模型做无谓重构。只有图形确为包装器、走线缺失、错误连接或不可读时
@@ -155,8 +175,8 @@ G5 只处理图形模型，不启动 `simulate_model`。对 41 条 `missing_clos
 
 只有 46 条当前路线全部完成 G5 图形处理闭环后，才从 D2 的测试壳映射读取
 `canonical_closed_loop_harness`。映射必须
-绑定同一正式根下的 controller core、Adapter/接口、整机测试壳和最小场景；固定集成链
-可以以自己的正式整机入口作为测试壳。当前冻结映射只有 5 条固定集成链满足此条件；
+绑定同一正式根下的 controller core、Adapter/接口、整机测试壳和最小场景；命名整机 Profile
+可以以自己的正式整机入口作为测试壳。当前冻结映射只有 5 条命名整机 Profile 满足此条件；
 将来新增其他整机壳前，必须先更新并复核 D2 映射。只有映射完整的路线才逐条运行
 `check_model -> 最小 MWORKS simulate -> 新鲜原生结果与完整时间序列 -> metrics`。结果绑定必须同时确认：本次独立根下的 `Result.msr` 已写入、文件时间不早于本次调用、`time` 序列非空并到达声明终点。仅有变量类型、零值 `GetVarValueAt` 或空数组都不是结果就绪证据。每条至少保存：
 核心和测试壳路径/哈希、场景配置、原生结果或可定位结果、时间序列、指标、结果图和
@@ -168,19 +188,23 @@ MCP/GUI 观察。失败、发散、接口不匹配和缺测试壳均保留为失
 时刻、关联模型哈希和阶段。MWORKS 导出画布、缩放图、报告副本或别的运行的截图不能
 补足该项。
 
-`mu_synthesis` 和 `neural_smc` 先走 E2 的“实现前置条件”分支：确认动态综合或训练集、
-冻结权重、定长推理、回退测试是否真实存在。缺任一项时记录 blocker，不以静态图或
-邻近算法替代。
+`mu_synthesis` 与 `neural_smc` 不属于当前 E2 范围；它们只作为历史 67 路线矩阵的来源
+记录保留，不以静态图或邻近算法替代为当前 Profile。
 
 ### E3 / G6-G7 场景证据补跑
 
 优先顺序：
 
 1. G5 图形门必须已闭合：46 条当前路线均为 `graphical_ready`，不再存在
-   `needs_relayout`、`wrapper_only` 或 `model_check_failed`。之后才可进行 41 条名义图形核的
-   `internal_graphical_probe` 或正式冠军测试壳晋级，以及 5 条固定集成链的真实整机最小闭环；不借用邻近路线结果。
-2. 从 PID、经典鲁棒、滑模、优化、几何平坦、学习六个名义控制族各选择一条合格冠军；每条先完成冠军测试壳晋级：正式根内的核心、Adapter、整机 source harness、最小场景、模型哈希和 `check_model -> 最小闭环` 记录必须同时存在，并写回 D2 映射。只有随后通过这一门的冠军才与 Official PID 基线完成同参数、同指标的七场景 A/B。Official PID 基线也必须有同版本的正式根测试壳；只有它同时是 PID 族冠军时才可复用该壳而不重复计数。
-3. 固定集成链只在其自身 G5 最小闭环通过后作为命名方案补测，不把内部 L1、INDI 或安全模块拆成任意组合。
+   `needs_relayout`、`wrapper_only` 或 `model_check_failed`。之后才可进行 41 条图形控制器核的
+   `internal_graphical_probe` 或正式冠军测试壳晋级，以及 5 条命名整机 Profile 的真实整机最小闭环；不借用邻近路线结果。
+2. 从 PID 与智能 PID、线性与鲁棒状态反馈、非线性与自适应、滑模、最优与预测、几何与微分
+   平坦、智能与学习七个语义控制族各选择一条合格胜出者；每条先完成冠军测试壳晋级：正式根内的
+   核心、Adapter、整机 source harness、最小场景、模型哈希和 `check_model -> 最小闭环` 记录必须
+   同时存在，并写回 D2 映射。只有随后通过这一门的胜出者才与 Official PID 基线完成同参数、同
+   指标的七场景 A/B；`px4ctrl` 则需先完成 MWORKS 等效核验证后再加入。
+3. 已归入 PID 或最优与预测族的命名整机 Profile 只按其自身的族内位置和最小闭环补测，不把内部
+   L1、INDI 或安全模块拆成任意组合。
 4. 安全、故障和固定三机编队进入 G7：分别记录触发/恢复链、故障时间窗和每机参考、实际轨迹、最小间距与跟踪指标。
 
 每个单独的候选在其最小闭环失败、接口缺失、模型不稳定或许可证出现阻塞时立即止损，
@@ -208,10 +232,10 @@ R1 的持续门是：
 
 G7 交接前必须满足：
 
-- 49 条方案均有当前入口或明确 blocker；46 条当前 MWORKS 路线均已完成 `graphical_ready`，即实际内部控制律可读、当前模型 `CheckModel` 通过、Windows 原生整窗图已归档；两条实现 blocker 与 px4ctrl 保持各自非运行状态。
+- 48 个活动条目均有当前入口或明确状态；46 条当前 MWORKS 路线均已完成 `graphical_ready`，即实际内部控制律可读、当前模型 `CheckModel` 通过、Windows 原生整窗图已归档；计划 ESO Profile 与待实现 MWORKS 等效核的 `px4ctrl` 保持各自未运行状态。
 - 41 条 `GraphicalMIL` 核均保留内部固定输入探针或 blocker，且未被写成整机闭环；5 条
-  固定集成链均保留整机最小闭环证据或 blocker，并与 D2 映射中的正式测试壳一致。
-- 六族冠军与 Official PID 的核心对比均有正式根内的核心/Adapter/整机测试壳绑定、真实模型、结果、指标和同场景记录；任何冠军都不得由五条既有固定集成链或历史结果代替。
+  命名整机 Profile 均保留整机最小闭环证据或 blocker，并与 D2 映射中的正式测试壳一致。
+- 七族实测胜出者与 Official PID 的核心对比均有正式根内的核心/Adapter/整机测试壳绑定、真实模型、结果、指标和同场景记录；`px4ctrl` 只有在其 MWORKS 等效核完成验证后才加入。任何胜出者都不得由其他 Profile 或历史结果代替。
 - 安全、故障和编队各保留至少一条可信代表实验或明确 blocker，不以静态图替代。
 - 任何缺失路线、未运行路线、超阈值或失败结果均在审计/矩阵中保留明确状态。
 

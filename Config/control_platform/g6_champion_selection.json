@@ -1,83 +1,60 @@
 {
-  "schema": "mosim.g6_provisional_champion_selection.v1",
-  "scope": "Six-family candidate slate before the active 46-route current-matrix probes finish. No candidate is a family champion or formal whole-aircraft result until its current probe passes, its adapter and named harness pass minimum closure, and the completed family is selected for seven-scenario A/B.",
-  "selection_criteria": [
-    "The current-root graphical core must first pass its active G6 internal fixed-input probe.",
-    "The candidate has a deterministic implementation reference suitable for an explicit adapter.",
-    "The candidate represents its nominal family without borrowing a fixed integrated chain from another family.",
-    "The candidate remains blocked from seven-scenario A/B until its own formal binding passes minimum closure."
+  "schema": "mosim.g6_measured_family_selection.v2",
+  "version": 2,
+  "scope": "Static seven-family winner-selection contract. It records no selected champion and no simulation result. A winner may be written only after every current MWORKS route has a current-source ClimbPath 50 s minimum-closure record.",
+  "state": "awaiting_phase1_minimum_closure",
+  "family_categories": [
+    "pid_family",
+    "linear_robust_state_feedback",
+    "nonlinear_adaptive",
+    "sliding_mode",
+    "optimization_predictive",
+    "geometric_flatness",
+    "learning"
   ],
-  "official_pid_baseline": {
-    "scheme_id": "official_pid",
-    "binding_state": "formal_binding_ready_for_validation",
-    "semantic_boundary": "The G6 graphical official_pid entry is AWFF_PID_Sysblock_Demo, an altitude-loop internal probe. It is not claimed to be the same full controller as this separate Official PID A/B baseline binding.",
-    "core_reference": {
-      "model_class": "MoSimQuadrotorModel.Vehicle.Blocks.Controller.Controller",
-      "source_kind": "reference_package_controller_core"
+  "selection_metric": {
+    "scenario_id": "climb_path_50s",
+    "trajectory_owner": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50,
+    "primary_metric": "position_rmse_m",
+    "primary_aggregation": "full_50s_sampled_position_error_rms",
+    "tie_breakers": [
+      {
+        "metric": "terminal_position_error_norm_m",
+        "aggregation": "final_5s_mean",
+        "direction": "ascending"
+      },
+      {
+        "metric": "numerical_stability",
+        "acceptance": "finite_result_and_terminal_position_error_norm_m_lt_5"
+      }
+    ]
+  },
+  "pool_policy": {
+    "selection_eligibility": "family_screening",
+    "eligible_current_mworks_route_count": 45,
+    "exclusions": [
+      "official_pid is the fixed MWORKS A/B reference baseline and is not a PID-family winner candidate.",
+      "pid_awff_linear_eso is planned only and has no MWORKS model or minimum-closure record.",
+      "px4ctrl is the engineering/deployment baseline until a MWORKS-equivalent core passes explicit C++ behavior/interface equivalence."
+    ]
+  },
+  "ab_baselines": {
+    "official_pid": {
+      "scheme_id": "official_pid",
+      "profile_role": "reference_baseline",
+      "comparison_role": "same_parameter_mworks_reference",
+      "state": "formal_adapter_and_runner_exist_but_require_current_source_replay",
+      "claim_boundary": "The baseline is not a predeclared PID-family champion. Its current-source ClimbPath replay and later seven-scenario A/B records must use the same shared runner settings as each accepted family winner."
     },
-    "formal_adapter": {
-      "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
-      "model_class": "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter",
-      "output_boundary": "ROTOR_COMMAND"
-    },
-    "whole_aircraft_source_harness": {
-      "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidFormalRunner.mo",
-      "model_class": "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner"
-    },
-    "minimum_scenario": {
-      "scenario_id": "climb_path_50s",
-      "reference_owner": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
-      "duration_s": 50
+    "px4ctrl_core": {
+      "scheme_id": "px4ctrl",
+      "profile_id": "px4ctrl_core",
+      "profile_role": "engineering_deployment_baseline",
+      "comparison_role": "engineering_deployment_baseline",
+      "state": "pending_mworks_equivalent_core",
+      "claim_boundary": "px4ctrl remains the later ROS1/Sunray/Gazebo/PX4/MAVROS deployment baseline. It enters formal MWORKS A/B only after a behavior- and interface-equivalent MWORKS core is implemented and validated."
     }
   },
-  "candidates": [
-    {
-      "category": "pid_family",
-      "scheme_id": "cascade_pid",
-      "selection_reason": "Cascade PID is the family-level graphical core; Official PID remains a separate A/B baseline because the current official_pid graphical entry is only an AWFF altitude-loop demo.",
-      "promotion_state": "awaiting_current_g6_probe",
-      "required_adapter_contract": "ATTITUDE_THRUST",
-      "implementation_reference": "Scripts/control_platform/pid_attitude_thrust_core.c"
-    },
-    {
-      "category": "classic_robust",
-      "scheme_id": "lqr_baseline",
-      "selection_reason": "LQR gives a deterministic state-feedback representative for the classic/robust family; its current-root graphical probe must be rerun after namespace migration.",
-      "promotion_state": "awaiting_current_g6_probe",
-      "required_adapter_contract": "ATTITUDE_THRUST",
-      "implementation_reference": "Scripts/control_platform/linear_robust_attitude_thrust_core.c"
-    },
-    {
-      "category": "sliding_mode",
-      "scheme_id": "super_twisting_smc",
-      "selection_reason": "Super-Twisting SMC is the selected reduced-chattering sliding-mode representative; its current-root graphical probe must be rerun after namespace migration.",
-      "promotion_state": "awaiting_current_g6_probe",
-      "required_adapter_contract": "ATTITUDE_THRUST",
-      "implementation_reference": "Scripts/control_platform/sliding_mode_attitude_thrust_core.c"
-    },
-    {
-      "category": "optimization",
-      "scheme_id": "linear_mpc",
-      "selection_reason": "Linear MPC is the deterministic optimization-family representative; advanced variants remain available for later follow-up but are not substituted into this first formal binding.",
-      "promotion_state": "awaiting_current_g6_probe",
-      "required_adapter_contract": "ATTITUDE_THRUST",
-      "implementation_reference": "Scripts/control_platform/mpc_attitude_thrust_core.c"
-    },
-    {
-      "category": "geometric_flatness",
-      "scheme_id": "dfbc_high_order_attitude",
-      "selection_reason": "The high-order attitude-output DFBC route matches the ATTITUDE_THRUST runner boundary; its current-root graphical probe must be rerun after namespace migration.",
-      "promotion_state": "awaiting_current_g6_probe",
-      "required_adapter_contract": "ATTITUDE_THRUST",
-      "implementation_reference": "Scripts/sunray/px4ctrl_golden_slice/px4ctrl_g9_family_core_c.c"
-    },
-    {
-      "category": "learning",
-      "scheme_id": "trained_neural_residual",
-      "selection_reason": "The trained neural residual route has a frozen bounded-learning implementation reference; its current-root graphical probe must be rerun after namespace migration and its fallback must remain observable in the formal adapter.",
-      "promotion_state": "awaiting_current_g6_probe",
-      "required_adapter_contract": "ATTITUDE_THRUST",
-      "implementation_reference": "Scripts/control_platform/learning_attitude_thrust_core.c"
-    }
-  ]
+  "selection_update_rule": "Keep every winner_scheme_id null until all current-source Phase 1 records are terminal. For each semantic family, select the lowest valid position_rmse_m candidate, then apply the declared tie breakers. Do not use historical, pre-repair, neighboring-route, or different-profile results."
 }

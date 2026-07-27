@@ -1,22 +1,69 @@
 {
-  "schema": "mosim.control_scheme_catalog.v1",
-  "version": 1,
-  "authority": "The single source of truth for the finite top-level control schemes shown in reports and the future Model Studio scheme selector. It does not replace per-route evidence status or runtime gates.",
-  "frozen_at": "2026-07-21",
-  "frozen_decision": "49 complete top-level control schemes: 43 competition primary routes, one px4ctrl engineering baseline, and five named fixed integrated chains. Generic augmentations, safety, fault management, formation, planning, injections, allocators, and adapters are not multiplicative scheme dimensions.",
-  "frozen_scheme_count": 49,
+  "schema": "mosim.control_profile_catalog.v2",
+  "version": 2,
+  "authority": "The single source of truth for active report, APP, and experiment terminology. Historical 67-route evidence remains trace-back material and does not define the active profile catalog.",
+  "frozen_at": "2026-07-27",
+  "frozen_decision": "48 active top-level entries: 47 MWORKS Control Profiles in seven semantic families plus one px4ctrl engineering/deployment baseline. The 47 profiles consist of 46 existing MWORKS routes and one planned ESO profile. Mu synthesis and neural SMC are archived historical blockers, not active profiles.",
+  "frozen_scheme_count": 48,
   "count_summary": {
-    "competition_primary_routes": 43,
-    "engineering_baseline": 1,
-    "fixed_integrated_schemes": 5,
-    "total": 49
+    "mworks_control_profiles": 47,
+    "current_mworks_routes": 46,
+    "planned_mworks_profiles": 1,
+    "engineering_deployment_baseline": 1,
+    "total": 48
   },
+  "families": [
+    {
+      "category": "pid_family",
+      "display_name_zh": "PID 与智能 PID",
+      "target_profile_count": 10,
+      "current_route_count": 9
+    },
+    {
+      "category": "linear_robust_state_feedback",
+      "display_name_zh": "线性与鲁棒状态反馈",
+      "target_profile_count": 6,
+      "current_route_count": 6
+    },
+    {
+      "category": "nonlinear_adaptive",
+      "display_name_zh": "非线性与自适应控制",
+      "target_profile_count": 6,
+      "current_route_count": 6
+    },
+    {
+      "category": "sliding_mode",
+      "display_name_zh": "滑模控制",
+      "target_profile_count": 7,
+      "current_route_count": 7
+    },
+    {
+      "category": "optimization_predictive",
+      "display_name_zh": "最优与预测控制",
+      "target_profile_count": 10,
+      "current_route_count": 10
+    },
+    {
+      "category": "geometric_flatness",
+      "display_name_zh": "几何与微分平坦控制",
+      "target_profile_count": 6,
+      "current_route_count": 6
+    },
+    {
+      "category": "learning",
+      "display_name_zh": "智能与学习残差控制",
+      "target_profile_count": 2,
+      "current_route_count": 2
+    }
+  ],
   "selection_contract": {
-    "one_top_level_scheme_per_run": true,
+    "one_top_level_profile_per_run": true,
     "generic_augmentation_selector": "not_exposed_in_standard_ui",
-    "fixed_integrated_scheme_policy": "A scheme may contain multiple named internal blocks only when their order, interfaces, limits, fallback, source configuration, and evidence boundary are fixed together.",
+    "profile_chain_policy": "A full profile may contain named internal augmentations only when their order, interfaces, limits, fallback, source configuration, and evidence boundary are fixed together.",
     "mpc_role": "MPC/NMPC is a nominal optimization outer-loop family, not a generic augmentation.",
-    "not_counted_as_top_level_schemes": [
+    "family_selection_policy": "Complete the current 46-route minimum-closure screen before measured family-winner selection. Official PID remains the fixed A/B reference baseline; research_only profiles do not enter the ordinary family-winner screen.",
+    "seven_scenario_policy": "After measured selection and px4ctrl_core equivalence, compare Official PID, px4ctrl_core, and one measured winner from each of the seven semantic families under the same seven scenarios.",
+    "not_counted_as_top_level_profiles": [
       "generic_augmentation_or_ablation_module",
       "safety_filter_or_reference_governor",
       "fault_manager",
@@ -51,440 +98,709 @@
   "schemes": [
     {
       "scheme_id": "cascade_pid",
+      "profile_id": "cascade_pid",
       "display_name_zh": "串级 PID",
       "display_name_en": "Cascade PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "cascade_pid"
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "cascade_pid",
+      "implementation_package": "PidFamily"
     },
     {
       "scheme_id": "gain_scheduled_pid",
+      "profile_id": "gain_scheduled_pid",
       "display_name_zh": "增益调度 PID",
       "display_name_en": "Gain-Scheduled PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "gain_scheduled_pid"
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "gain_scheduled_pid",
+      "implementation_package": "PidFamily"
     },
     {
       "scheme_id": "fuzzy_pid",
+      "profile_id": "fuzzy_pid",
       "display_name_zh": "模糊 PID",
       "display_name_en": "Fuzzy PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "fuzzy_pid"
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "fuzzy_pid",
+      "implementation_package": "PidFamily"
     },
     {
       "scheme_id": "neural_pid",
+      "profile_id": "neural_pid",
       "display_name_zh": "神经 PID",
       "display_name_en": "Neural PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "neural_pid"
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "neural_pid",
+      "implementation_package": "PidFamily"
     },
     {
       "scheme_id": "official_pid",
+      "profile_id": "official_pid",
       "display_name_zh": "官方 PID",
       "display_name_en": "Official PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "official_pid"
-    },
-    {
-      "scheme_id": "lqg",
-      "display_name_zh": "LQG",
-      "display_name_en": "LQG",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "lqg"
-    },
-    {
-      "scheme_id": "feedback_linearization",
-      "display_name_zh": "反馈线性化",
-      "display_name_en": "Feedback Linearization",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "feedback_linearization"
-    },
-    {
-      "scheme_id": "passivity_based_control",
-      "display_name_zh": "无源控制",
-      "display_name_en": "Passivity-Based Control",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "passivity_based_control"
-    },
-    {
-      "scheme_id": "adaptive_backstepping",
-      "display_name_zh": "自适应反步控制",
-      "display_name_en": "Adaptive Backstepping",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "adaptive_backstepping"
-    },
-    {
-      "scheme_id": "lqr_baseline",
-      "display_name_zh": "LQR",
-      "display_name_en": "LQR",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "lqr_baseline"
-    },
-    {
-      "scheme_id": "lqi_baseline",
-      "display_name_zh": "LQI",
-      "display_name_en": "LQI",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "lqi_baseline"
-    },
-    {
-      "scheme_id": "hinf_hover_wrench",
-      "display_name_zh": "H 无穷悬停控制",
-      "display_name_en": "H-Infinity Hover Control",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "hinf_hover_wrench"
-    },
-    {
-      "scheme_id": "mu_synthesis",
-      "display_name_zh": "mu 综合",
-      "display_name_en": "Mu Synthesis",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "mu_synthesis"
-    },
-    {
-      "scheme_id": "backstepping_baseline",
-      "display_name_zh": "反步控制",
-      "display_name_en": "Backstepping",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "backstepping_baseline"
-    },
-    {
-      "scheme_id": "pole_placement_luenberger",
-      "display_name_zh": "极点配置与 Luenberger 观测器",
-      "display_name_en": "Pole Placement with Luenberger Observer",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "pole_placement_luenberger"
-    },
-    {
-      "scheme_id": "mrac",
-      "display_name_zh": "模型参考自适应控制",
-      "display_name_en": "MRAC",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "mrac"
-    },
-    {
-      "scheme_id": "ndi",
-      "display_name_zh": "非线性动态逆",
-      "display_name_en": "NDI",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "ndi"
+      "entry_type": "mworks_control_profile",
+      "role": "reference_baseline",
+      "implementation_status": "implemented",
+      "selection_eligibility": "reference_baseline_only",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "official_pid",
+      "implementation_package": "PidFamily"
     },
     {
       "scheme_id": "fopid",
+      "profile_id": "fopid",
       "display_name_zh": "分数阶 PID",
       "display_name_en": "Fractional-Order PID",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "fopid"
-    },
-    {
-      "scheme_id": "h2_state_feedback",
-      "display_name_zh": "H2 状态反馈",
-      "display_name_en": "H2 State Feedback",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "h2_state_feedback"
-    },
-    {
-      "scheme_id": "integral_smc",
-      "display_name_zh": "积分滑模控制",
-      "display_name_en": "Integral Sliding Mode Control",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "integral_smc"
-    },
-    {
-      "scheme_id": "terminal_smc",
-      "display_name_zh": "终端滑模控制",
-      "display_name_en": "Terminal Sliding Mode Control",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "terminal_smc"
-    },
-    {
-      "scheme_id": "nonsingular_terminal_smc",
-      "display_name_zh": "非奇异终端滑模控制",
-      "display_name_en": "Nonsingular Terminal Sliding Mode Control",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "nonsingular_terminal_smc"
-    },
-    {
-      "scheme_id": "super_twisting_smc",
-      "display_name_zh": "Super-Twisting 滑模控制",
-      "display_name_en": "Super-Twisting Sliding Mode Control",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "super_twisting_smc"
-    },
-    {
-      "scheme_id": "adaptive_smc",
-      "display_name_zh": "自适应滑模控制",
-      "display_name_en": "Adaptive Sliding Mode Control",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "adaptive_smc"
-    },
-    {
-      "scheme_id": "fuzzy_smc",
-      "display_name_zh": "模糊滑模控制",
-      "display_name_en": "Fuzzy Sliding Mode Control",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "fuzzy_smc"
-    },
-    {
-      "scheme_id": "neural_smc",
-      "display_name_zh": "神经滑模控制",
-      "display_name_en": "Neural Sliding Mode Control",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "neural_smc"
-    },
-    {
-      "scheme_id": "smc_boundary_layer",
-      "display_name_zh": "边界层滑模控制",
-      "display_name_en": "Boundary-Layer Sliding Mode Control",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "smc_boundary_layer"
-    },
-    {
-      "scheme_id": "linear_mpc",
-      "display_name_zh": "线性 MPC",
-      "display_name_en": "Linear MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "linear_mpc"
-    },
-    {
-      "scheme_id": "robust_mpc",
-      "display_name_zh": "鲁棒 MPC",
-      "display_name_en": "Robust MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "robust_mpc"
-    },
-    {
-      "scheme_id": "adaptive_mpc",
-      "display_name_zh": "自适应 MPC",
-      "display_name_en": "Adaptive MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "adaptive_mpc"
-    },
-    {
-      "scheme_id": "tube_mpc",
-      "display_name_zh": "管束 MPC",
-      "display_name_en": "Tube MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "tube_mpc"
-    },
-    {
-      "scheme_id": "explicit_gain_scheduled_mpc",
-      "display_name_zh": "显式增益调度 MPC",
-      "display_name_en": "Explicit Gain-Scheduled MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "explicit_gain_scheduled_mpc"
-    },
-    {
-      "scheme_id": "ilqr",
-      "display_name_zh": "iLQR",
-      "display_name_en": "iLQR",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "ilqr"
-    },
-    {
-      "scheme_id": "mppi",
-      "display_name_zh": "MPPI",
-      "display_name_en": "MPPI",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "mppi"
-    },
-    {
-      "scheme_id": "nmpc_outer",
-      "display_name_zh": "NMPC 外环",
-      "display_name_en": "NMPC Outer Loop",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "nmpc_outer"
-    },
-    {
-      "scheme_id": "se3_basic",
-      "display_name_zh": "SE(3) 几何控制",
-      "display_name_en": "SE(3) Geometric Control",
-      "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "se3_basic"
-    },
-    {
-      "scheme_id": "dfbc_basic",
-      "display_name_zh": "基础微分平坦控制",
-      "display_name_en": "Basic Differential-Flatness Control",
-      "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "dfbc_basic"
-    },
-    {
-      "scheme_id": "dfbc_high_order_attitude",
-      "display_name_zh": "高阶微分平坦姿态输出",
-      "display_name_en": "High-Order DFBC Attitude Output",
-      "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "dfbc_high_order_attitude"
-    },
-    {
-      "scheme_id": "dfbc_high_order_bodyrate",
-      "display_name_zh": "高阶微分平坦角速度输出",
-      "display_name_en": "High-Order DFBC Body-Rate Output",
-      "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "dfbc_high_order_bodyrate"
-    },
-    {
-      "scheme_id": "dfbc_smooth_robust_attitude",
-      "display_name_zh": "平滑鲁棒微分平坦姿态输出",
-      "display_name_en": "Smooth-Robust DFBC Attitude Output",
-      "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "dfbc_smooth_robust_attitude"
-    },
-    {
-      "scheme_id": "dfbc_smooth_robust_bodyrate",
-      "display_name_zh": "平滑鲁棒微分平坦角速度输出",
-      "display_name_en": "Smooth-Robust DFBC Body-Rate Output",
-      "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "dfbc_smooth_robust_bodyrate"
-    },
-    {
-      "scheme_id": "trained_neural_residual",
-      "display_name_zh": "训练神经残差控制",
-      "display_name_en": "Trained Neural Residual Control",
-      "category": "learning",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "trained_neural_residual"
-    },
-    {
-      "scheme_id": "rl_gain_scheduler",
-      "display_name_zh": "强化学习增益调度",
-      "display_name_en": "RL Gain Scheduler",
-      "category": "learning",
-      "entry_type": "competition_primary_route",
-      "evidence_matrix_controller": "rl_gain_scheduler"
-    },
-    {
-      "scheme_id": "px4ctrl",
-      "display_name_zh": "px4ctrl 工程基线",
-      "display_name_en": "px4ctrl Engineering Baseline",
-      "category": "engineering_baseline",
-      "entry_type": "engineering_baseline",
-      "registry_module_id": "px4ctrl"
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "fopid",
+      "implementation_package": "ClassicRobust"
     },
     {
       "scheme_id": "fixed_awff_pid",
+      "profile_id": "PidAwff",
       "display_name_zh": "抗积分饱和与参考前馈 PID",
       "display_name_en": "Anti-Windup and Reference-Feedforward PID",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
       "source_config": "Config/controllers/awff_pid/default.yaml",
       "source_controller_id": "awff_pid",
-      "selection_state": "offline_evidence_available",
-      "fixed_order": [
+      "profile_chain": [
         "pid_outer_and_attitude_chain",
         "conditional_integration_anti_windup",
         "vertical_reference_feedforward",
         "motor_mixing"
       ],
-      "deduplication_note": "This is a project-owned full controller component, not the generic awff_v1 augmentation profile."
+      "profile_topology_note": "This is a project-owned full controller component, not the generic awff_v1 augmentation profile."
     },
     {
       "scheme_id": "fixed_awff_l1_residual",
+      "profile_id": "PidAwffL1Residual",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
       "display_name_en": "Anti-Windup Feedforward PID with L1-Inspired Residual Compensation",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
       "source_config": "Config/controllers/l1_residual_sysblock/default.yaml",
       "source_controller_id": "l1_residual_sysblock",
-      "selection_state": "offline_evidence_available",
-      "fixed_order": [
+      "profile_chain": [
         "awff_pid_base_chain",
         "bounded_l1_inspired_residual_compensation",
         "motor_mixing"
       ],
-      "deduplication_note": "The L1 residual is fixed inside this Sysblock chain; it is not an arbitrary attachment to all 43 primary routes."
+      "profile_topology_note": "The L1 residual is fixed inside this Sysblock chain; it is not an arbitrary attachment to all 43 primary routes."
     },
     {
       "scheme_id": "fixed_awff_l1_indi",
+      "profile_id": "PidAwffL1Indi",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
       "display_name_en": "Anti-Windup Feedforward PID with L1 Residual and INDI-Like Attitude Correction",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
       "source_config": "Config/controllers/awff_indi_sysblock/default.yaml",
       "source_controller_id": "awff_indi_sysblock",
-      "selection_state": "offline_evidence_available",
-      "fixed_order": [
+      "profile_chain": [
         "awff_pid_base_chain",
         "bounded_l1_inspired_residual_compensation",
         "indi_like_attitude_correction",
         "motor_mixing"
       ],
-      "deduplication_note": "This is a fixed controller topology with one source model, not the matrix pid_indi augmentation row."
+      "profile_topology_note": "This is a fixed controller topology with one source model, not the matrix pid_indi augmentation row."
+    },
+    {
+      "scheme_id": "lqr_baseline",
+      "profile_id": "lqr_baseline",
+      "display_name_zh": "LQR",
+      "display_name_en": "LQR",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "lqr_baseline",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "lqi_baseline",
+      "profile_id": "lqi_baseline",
+      "display_name_zh": "LQI",
+      "display_name_en": "LQI",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "lqi_baseline",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "lqg",
+      "profile_id": "lqg",
+      "display_name_zh": "LQG",
+      "display_name_en": "LQG",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "lqg",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "h2_state_feedback",
+      "profile_id": "h2_state_feedback",
+      "display_name_zh": "H2 状态反馈",
+      "display_name_en": "H2 State Feedback",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "h2_state_feedback",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "hinf_hover_wrench",
+      "profile_id": "hinf_hover_wrench",
+      "display_name_zh": "H 无穷悬停控制",
+      "display_name_en": "H-Infinity Hover Control",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "hinf_hover_wrench",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "pole_placement_luenberger",
+      "profile_id": "pole_placement_luenberger",
+      "display_name_zh": "极点配置与 Luenberger 观测器",
+      "display_name_en": "Pole Placement with Luenberger Observer",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "pole_placement_luenberger",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "backstepping_baseline",
+      "profile_id": "backstepping_baseline",
+      "display_name_zh": "反步控制",
+      "display_name_en": "Backstepping",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "backstepping_baseline",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "adaptive_backstepping",
+      "profile_id": "adaptive_backstepping",
+      "display_name_zh": "自适应反步控制",
+      "display_name_en": "Adaptive Backstepping",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "adaptive_backstepping",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "feedback_linearization",
+      "profile_id": "feedback_linearization",
+      "display_name_zh": "反馈线性化",
+      "display_name_en": "Feedback Linearization",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "feedback_linearization",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "mrac",
+      "profile_id": "mrac",
+      "display_name_zh": "模型参考自适应控制",
+      "display_name_en": "MRAC",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "mrac",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "ndi",
+      "profile_id": "ndi",
+      "display_name_zh": "非线性动态逆",
+      "display_name_en": "NDI",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "ndi",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "passivity_based_control",
+      "profile_id": "passivity_based_control",
+      "display_name_zh": "无源控制",
+      "display_name_en": "Passivity-Based Control",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "passivity_based_control",
+      "implementation_package": "ClassicRobust"
+    },
+    {
+      "scheme_id": "integral_smc",
+      "profile_id": "integral_smc",
+      "display_name_zh": "积分滑模控制",
+      "display_name_en": "Integral Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "integral_smc",
+      "implementation_package": "SlidingMode"
+    },
+    {
+      "scheme_id": "terminal_smc",
+      "profile_id": "terminal_smc",
+      "display_name_zh": "终端滑模控制",
+      "display_name_en": "Terminal Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "terminal_smc",
+      "implementation_package": "SlidingMode"
+    },
+    {
+      "scheme_id": "nonsingular_terminal_smc",
+      "profile_id": "nonsingular_terminal_smc",
+      "display_name_zh": "非奇异终端滑模控制",
+      "display_name_en": "Nonsingular Terminal Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "nonsingular_terminal_smc",
+      "implementation_package": "SlidingMode"
+    },
+    {
+      "scheme_id": "super_twisting_smc",
+      "profile_id": "super_twisting_smc",
+      "display_name_zh": "Super-Twisting 滑模控制",
+      "display_name_en": "Super-Twisting Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "super_twisting_smc",
+      "implementation_package": "SlidingMode"
+    },
+    {
+      "scheme_id": "adaptive_smc",
+      "profile_id": "adaptive_smc",
+      "display_name_zh": "自适应滑模控制",
+      "display_name_en": "Adaptive Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "adaptive_smc",
+      "implementation_package": "SlidingMode"
+    },
+    {
+      "scheme_id": "fuzzy_smc",
+      "profile_id": "fuzzy_smc",
+      "display_name_zh": "模糊滑模控制",
+      "display_name_en": "Fuzzy Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "fuzzy_smc",
+      "implementation_package": "SlidingMode"
+    },
+    {
+      "scheme_id": "smc_boundary_layer",
+      "profile_id": "smc_boundary_layer",
+      "display_name_zh": "边界层滑模控制",
+      "display_name_en": "Boundary-Layer Sliding Mode Control",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "smc_boundary_layer",
+      "implementation_package": "SlidingMode"
+    },
+    {
+      "scheme_id": "linear_mpc",
+      "profile_id": "linear_mpc",
+      "display_name_zh": "线性 MPC",
+      "display_name_en": "Linear MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "linear_mpc",
+      "implementation_package": "Optimization"
+    },
+    {
+      "scheme_id": "robust_mpc",
+      "profile_id": "robust_mpc",
+      "display_name_zh": "鲁棒 MPC",
+      "display_name_en": "Robust MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "robust_mpc",
+      "implementation_package": "Optimization"
+    },
+    {
+      "scheme_id": "adaptive_mpc",
+      "profile_id": "adaptive_mpc",
+      "display_name_zh": "自适应 MPC",
+      "display_name_en": "Adaptive MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "adaptive_mpc",
+      "implementation_package": "Optimization"
+    },
+    {
+      "scheme_id": "tube_mpc",
+      "profile_id": "tube_mpc",
+      "display_name_zh": "管束 MPC",
+      "display_name_en": "Tube MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "tube_mpc",
+      "implementation_package": "Optimization"
+    },
+    {
+      "scheme_id": "explicit_gain_scheduled_mpc",
+      "profile_id": "explicit_gain_scheduled_mpc",
+      "display_name_zh": "显式增益调度 MPC",
+      "display_name_en": "Explicit Gain-Scheduled MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "explicit_gain_scheduled_mpc",
+      "implementation_package": "Optimization"
+    },
+    {
+      "scheme_id": "ilqr",
+      "profile_id": "ilqr",
+      "display_name_zh": "iLQR",
+      "display_name_en": "iLQR",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "ilqr",
+      "implementation_package": "Optimization"
+    },
+    {
+      "scheme_id": "mppi",
+      "profile_id": "mppi",
+      "display_name_zh": "MPPI",
+      "display_name_en": "MPPI",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "mppi",
+      "implementation_package": "Optimization"
+    },
+    {
+      "scheme_id": "nmpc_outer",
+      "profile_id": "nmpc_outer",
+      "display_name_zh": "NMPC 外环",
+      "display_name_en": "NMPC Outer Loop",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "nmpc_outer",
+      "implementation_package": "Optimization"
     },
     {
       "scheme_id": "fixed_linear_mpc_l1_indi",
+      "profile_id": "LinearMpcL1Indi",
       "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
       "display_name_en": "Linear MPC Outer Loop with L1 Residual and INDI-Like Attitude Correction",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
       "source_config": "Config/controllers/linear_mpc_sysblock/default.yaml",
       "source_controller_id": "linear_mpc_sysblock",
-      "selection_state": "offline_evidence_available",
-      "fixed_order": [
+      "profile_chain": [
         "finite_horizon_linear_mpc_outer_loop",
         "bounded_l1_inspired_residual_feedforward",
         "indi_like_attitude_inner_loop",
         "motor_mixing"
       ],
-      "deduplication_note": "Distinct from the P4 matrix linear_mpc generated-C route: this Sysblock chain has an explicit L1 residual and INDI-like inner layer."
+      "profile_topology_note": "Distinct from the P4 matrix linear_mpc generated-C route: this Sysblock chain has an explicit L1 residual and INDI-like inner layer."
     },
     {
       "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "profile_id": "QpNmpcL1IndiCbf",
       "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
       "display_name_en": "QP/NMPC Outer Loop with L1, INDI, and CBF-Style Safety Projection",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
       "source_config": "Config/controllers/nmpc_indi_l1/default.yaml",
       "source_controller_id": "nmpc_indi_l1",
-      "selection_state": "visible_disabled",
-      "fixed_order": [
+      "profile_chain": [
         "fixed_iteration_qp_mpc_with_nmpc_projection",
         "bounded_l1_compensation",
         "indi_attitude_inner_loop",
         "cbf_style_reference_and_command_projection",
         "mode_manager_and_motor_mixing"
       ],
-      "deduplication_note": "Distinct from nmpc_outer because its safety projection and mode manager are integral parts of this fixed topology. It remains disabled until its numerical gate passes."
+      "profile_topology_note": "Distinct from nmpc_outer because its safety projection and mode manager are integral parts of this fixed topology. It is a current optimization-family candidate, but has no numerical acceptance claim until its own minimum-closure record passes."
+    },
+    {
+      "scheme_id": "se3_basic",
+      "profile_id": "se3_basic",
+      "display_name_zh": "SE(3) 几何控制",
+      "display_name_en": "SE(3) Geometric Control",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "se3_basic",
+      "implementation_package": "GeometricFlatness"
+    },
+    {
+      "scheme_id": "dfbc_basic",
+      "profile_id": "dfbc_basic",
+      "display_name_zh": "基础微分平坦控制",
+      "display_name_en": "Basic Differential-Flatness Control",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "dfbc_basic",
+      "implementation_package": "GeometricFlatness"
+    },
+    {
+      "scheme_id": "dfbc_high_order_attitude",
+      "profile_id": "dfbc_high_order_attitude",
+      "display_name_zh": "高阶微分平坦姿态输出",
+      "display_name_en": "High-Order DFBC Attitude Output",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "dfbc_high_order_attitude",
+      "implementation_package": "GeometricFlatness"
+    },
+    {
+      "scheme_id": "dfbc_high_order_bodyrate",
+      "profile_id": "dfbc_high_order_bodyrate",
+      "display_name_zh": "高阶微分平坦角速度输出",
+      "display_name_en": "High-Order DFBC Body-Rate Output",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "dfbc_high_order_bodyrate",
+      "implementation_package": "GeometricFlatness"
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_attitude",
+      "profile_id": "dfbc_smooth_robust_attitude",
+      "display_name_zh": "平滑鲁棒微分平坦姿态输出",
+      "display_name_en": "Smooth-Robust DFBC Attitude Output",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "dfbc_smooth_robust_attitude",
+      "implementation_package": "GeometricFlatness"
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_bodyrate",
+      "profile_id": "dfbc_smooth_robust_bodyrate",
+      "display_name_zh": "平滑鲁棒微分平坦角速度输出",
+      "display_name_en": "Smooth-Robust DFBC Body-Rate Output",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "dfbc_smooth_robust_bodyrate",
+      "implementation_package": "GeometricFlatness"
+    },
+    {
+      "scheme_id": "trained_neural_residual",
+      "profile_id": "trained_neural_residual",
+      "display_name_zh": "训练神经残差控制",
+      "display_name_en": "Trained Neural Residual Control",
+      "category": "learning",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "trained_neural_residual",
+      "implementation_package": "Learning"
+    },
+    {
+      "scheme_id": "rl_gain_scheduler",
+      "profile_id": "rl_gain_scheduler",
+      "display_name_zh": "强化学习增益调度",
+      "display_name_en": "RL Gain Scheduler",
+      "category": "learning",
+      "entry_type": "mworks_control_profile",
+      "role": "candidate",
+      "implementation_status": "implemented",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "evidence_matrix_controller": "rl_gain_scheduler",
+      "implementation_package": "Learning"
+    },
+    {
+      "scheme_id": "pid_awff_linear_eso",
+      "profile_id": "PidAwffLinearEso",
+      "display_name_zh": "AWFF PID 加线性 ESO 扰动观测补偿",
+      "display_name_en": "AWFF PID with Linear ESO Disturbance Observation",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "role": "planned",
+      "implementation_status": "planned",
+      "selection_eligibility": "not_runnable",
+      "execution_kind": "planned_profile",
+      "implementation_note": "The profile topology is approved, but no MWORKS model, adapter, formal runner, or result evidence exists yet."
+    },
+    {
+      "scheme_id": "px4ctrl",
+      "profile_id": "px4ctrl_core",
+      "display_name_zh": "px4ctrl 工程基线",
+      "display_name_en": "px4ctrl Engineering Baseline",
+      "category": "engineering_deployment_baseline",
+      "entry_type": "engineering_deployment_baseline",
+      "role": "engineering_deployment_baseline",
+      "implementation_status": "runtime_existing_mworks_core_pending",
+      "selection_eligibility": "comparison_baseline_pending_mworks_equivalence",
+      "execution_kind": "mworks_equivalent_core_pending",
+      "registry_module_id": "px4ctrl",
+      "implementation_note": "The ROS1/PX4 deployment baseline exists. A MWORKS-equivalent core and a C++ behavior/interface equivalence check are required before it enters the formal seven-scenario comparison."
     }
   ]
 }

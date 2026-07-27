@@ -45,7 +45,7 @@ def test_only_px4ctrl_can_be_runtime_baseline() -> None:
     checker = load_module()
     inputs = copy.deepcopy(checker.load_inputs())
     cascade = next(row for row in inputs["current"]["schemes"] if row["scheme_id"] == "cascade_pid")
-    cascade["mapping_state"] = "not_applicable_runtime_baseline"
+    cascade["mapping_state"] = "pending_mworks_equivalent_core"
     codes = {error["code"] for error in checker.validate(inputs)}
     assert "CMEM-STATE-04" in codes
 
