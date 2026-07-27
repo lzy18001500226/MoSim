@@ -1,252 +1,122 @@
-# Project Structure Refactor
+# 工程源码迁移工作流
 
-> Status: frozen by user, 2026-07-25. This document is a long-term design
-> reference only. Do not execute any phase in it until the current experiments
-> finish and the user explicitly reopens the refactor. The root-level `cmd/`
-> launcher organization is a scoped entrypoint cleanup, not execution of this
-> plan.
+> 状态：目标架构已确认，迁移尚未获授权且尚未执行。本文件只定义执行顺序、证据和
+> 停止条件；目录归属的唯一权威是
+> [`Docs/Design/架构.md` 第 8.2 节](../Design/架构.md)。不得从本文件推断任何目录已经
+> 移动、可构建或可运行。
 
-This project is moving from a competition experiment repository toward a
-RflySim-like simulation product. Directory structure must therefore separate
-product runtime, MWORKS evidence, Unreal rendering, automation, references, and
-generated results.
+## 1. 目的和边界
 
-Do not perform a one-shot tree rewrite. First stabilize path aliases and
-documentation, then migrate one ownership group at a time.
+目标是使交付给用户的源码包不依赖 `References/` 中的克隆仓库、示例或调研材料：用户只需
+获取项目源码、按 README 配置环境、运行预检并在可见终端执行命令，即可启动对应的 Gazebo、
+PX4、ROS、规划或 QGC 工作流。
 
-## Current Problem
+目录的目标归属、功能边界和组件映射不在这里重复定义，统一以 `架构.md` 第 8.2 节为准。
+本工作流不负责重写控制算法、改变仿真行为、把 QGC 接管为 ROS 运行时，或把 MWORKS/UE
+原生工程强行迁入 `src/`。
 
-The current top level mixes different ownership classes:
+当前 `References/` 仍可能被既有脚本、Profile、测试或构建配置引用。因此在所有依赖审计和
+组件迁移完成前，它只是现状来源，不能被批量删除、忽略或视为已经从交付链路移除。
 
-```text
-Config/controllers/      controller parameter configs
-Models/           project MWORKS/Sysplorer model extensions
-Models/MoSimQuadrotorModel/Vehicle/   official MWORKS case model
-Config/planners/         planning configs and small planner modules
-Config/scenarios/        experiment scenario configs
-Scripts/          batch runners, metrics, plotting, UE tools, docs tools
-UE5/           project UE renderer and bridge
-References/       vendor docs, cloned repos, specs, scene candidates
-Docs/Skills/           project/reference skills
-References/Agent/            agent tooling experiments
-Docs/Workflows/        operating procedures
-Results/          formal results, smoke results, GUI review caches, temp data
-```
+## 2. 启动条件
 
-This was acceptable for rapid prototyping. It is not acceptable for a product
-layout because automation, product code, external repos, generated evidence,
-and local review caches become indistinguishable.
+只有用户显式重新授权具体迁移范围后，才能开始执行。每次迁移任务必须先冻结以下输入：
 
-## Target Product Layout
+1. **组件所有权清单**：组件名、当前路径、目标功能目录、负责人、运行/构建/测试入口和
+   依赖它的 Profile、launch、脚本、CMake 或 Python 配置。
+2. **来源与完整性清单**：上游 URL、固定 commit/tag、许可证、项目补丁、必要资源以及源/
+   目标目录的哈希或文件清单。迁入组件必须带有 `UPSTREAM.md` 与 `PATCHES.md`。
+3. **路径注册方案**：一个稳定的项目根和组件路径配置，供脚本、Profile、launch 和构建配置
+   读取；禁止继续以相对层级猜测仓库根目录。
+4. **组件级验收方案**：静态路径检查、最小预检或构建检查、允许的烟测以及结果存放位置。
+   未获运行授权时，只做静态检查和 dry-run。
+5. **干净的变更边界**：只纳入本组件相关文件；现有无关工作区改动不可被重置、清理、暂存或
+   一并提交。
 
-Target tree:
+`Models/` 与 `UE5/` 是原生项目根。除非路径注册、构建检查和专门烟测均已写入并获授权，
+它们不属于早期迁移组件。
 
-```text
-apps/
-  sim_ui/                 future user-facing GUI shell
+## 3. 迁移阶段
 
-sim/
-  mworks/
-    official/             official QuadrotorModel package or pointer
-    extensions/           project Sysplorer/Sysblock/Modelica models
-  UE5/
-    renderer/             project UE renderer project
-    bridge/               UE UDP/playback plugin
-    scenes/               small project-owned scene adapters only
-  runtime/
-    bridge_protocols/     packet schemas, UDP/TCP contracts
-    replay/               replay adapters
+### 阶段 0：盘点，不移动
 
-configs/
-  Config/controllers/
-  Config/planners/
-  Config/scenarios/
-  vehicles/
-  scenes/
+1. 对选定组件建立源文件、必要资产、生成目录、许可证和活动依赖清单。
+2. 在 `Config/`、`Scripts/`、`src/`、`apps/`、测试、launch、CMake、Profile 和文档入口中
+   检索该组件及 `References/` 的活动引用。
+3. 区分源码/必要资产与 `build`、`devel`、`install`、缓存、历史日志和临时结果；后五类不迁入
+   新源码目录。
+4. 给出迁移顺序和回退方式。尚不能说明最小验证方式的组件不得进入下一阶段。
 
-src/
-  control/
-  planning/
-  evaluation/
-  orchestration/
-  visualization/
+### 阶段 1：稳定路径配置，不移动
 
-tools/
-  mworks/
-  UE5/
-  data/
-  Docs/
-  git/
+1. 先建立或扩展唯一的项目根/组件路径配置，并让一个最小消费者读取它。
+2. 对 QGC、CMake、ROS launch、Profile 与脚本的项目根推导逐项审计；不得保留依赖
+   `CMAKE_SOURCE_DIR` 相对回退层级的隐式路径假设。
+3. 为当前路径和目标路径建立显式解析测试或 dry-run，确认错误信息能指出缺失组件而非默默
+   回退到 `References/`。
+4. 这一步完成前，不复制任何运行源码。
 
-Scripts/tests/
-Docs/
-Docs/Design/
-Docs/Workflows/
-automation/
-  skills/
-  agents/
-  prompts/
+### 阶段 2：复制一个功能组件
 
-external/
-  specs/                  lightweight public specs/manuals
-  source_repos/            external cloned repos, usually ignored by default
-  vendor_assets/           Fab/RflySim/AirSim/UE assets, ignored by default
+1. 只选择一个可独立验证的功能组件，复制到 `架构.md` 第 8.2 节定义的目标目录。
+2. 同步放入来源、许可证、固定版本与本项目补丁说明；必要小型资源与组件同行，生成物不同行。
+3. 保留旧副本作为只读回退来源，不修改其行为，也不把两个路径同时作为正常运行入口。
+4. 不跨组件“顺手整理”目录，不移动 `Models/`、`UE5/`，也不处理未列入清单的引用。
 
-Results/
-  formal/                  report-backed evidence
-  review/                  manual GUI review assets
-  diagnostics/
-  tmp/
-```
+### 阶段 3：改写活动入口
 
-## Mapping From Current Layout
+1. 仅改写该组件清单中列出的运行、构建、测试和 Profile 引用，使其解析新路径。
+2. 新的路径解析失败必须明确失败；不得隐藏性回退到旧 `References/` 副本。
+3. `Scripts/` 保持用户入口、预检、构建、诊断和分析职责。可复用业务实现应归入对应的
+   `src/` 功能目录。
+4. QGC 的上游源码、MoSim 扩展和补丁应按 `src/ground_station/qgc/` 的约束分别可追溯；
+   不在此阶段扩大 QGC 功能或修改飞控职责。
 
-| Current | Target | Migration Risk |
-|---|---|---|
-| `Config/controllers/` | `configs/controllers/` | Low. Mostly YAML. |
-| `Config/planners/` | `configs/planners/` plus `src/planning/` | Medium. Scripts reference current paths. |
-| `Config/scenarios/` | `configs/scenarios/` | Medium. Batch scripts reference current paths. |
-| `Models/` | `sim/mworks/extensions/` | High. MWORKS model paths and load scripts may break. |
-| `Models/MoSimQuadrotorModel/Vehicle/` | A future product layout may relocate the in-root Plant ownership group, but must preserve one formal `MoSimQuadrotorModel` load root and must not restore an external or compatibility package. | High. Many scripts and Sysplorer load paths depend on it. |
-| `UE5/MoSimSceneLibrary/` | `sim/UE5/renderer/` | High. UE project paths and scripts depend on it. |
-| `UE5/Bridge/` | `sim/UE5/bridge/` | High. UE plugin paths and build scripts depend on it. |
-| `Scripts/` | split into `tools/*` and `src/orchestration/*` | Medium/high. Tests and docs reference scripts. |
-| `Docs/Skills/`, `References/Agent/` | `automation/skills/`, `automation/agents/` | Medium. AGENTS/workflows/config references must update. |
-| `References/` | `external/specs`, `external/source_repos`, `external/vendor_assets` | High. Large files and Git ignore rules. |
-| `Results/` | keep now; later split `formal/review/diagnostics/tmp` | Medium. Report paths depend on existing evidence. |
+### 阶段 4：组件级验证
 
-## Refactor Phases
+按阶段 0 冻结的验收方案执行，最少包括：
 
-### Phase 0: Freeze Current Cleanup
+1. 目标路径、来源文件和补丁说明存在且与清单一致。
+2. 该组件的构建配置、测试、launch、Profile 和入口脚本不再活动引用旧
+   `References/` 路径。
+3. 通过对应静态检查以及最小预检、build 或 dry-run；运行时烟测只有在单独授权时才执行。
+4. 新路径错误时能够给出可诊断错误，不能静默从旧路径加载。
+5. 记录检查命令、版本、哈希、输出摘要和未解决依赖，放在该迁移任务声明的正常证据路径。
 
-Finish and commit the current Unreal cleanup before moving directories.
+### 阶段 5：旧副本归档与交付核验
 
-Acceptance:
+仅在阶段 4 通过、依赖审计完整且用户授权后，才可将旧 `References/` 副本归档或从交付包
+剔除。任何删除或移动前必须再次核对源/目标哈希、活动引用和回退说明。
+
+整个迁移完成的交付验收为：当前构建、launch、QGC 构建、测试和运行 Profile 均不再引用
+`References/`；每个迁入组件可追溯上游来源、固定版本、许可证和补丁；用户无需在
+`References/` 中定位源码即可按 README 配置并完成预检和运行。
+
+## 4. 明确禁止项
+
+- 不得一次性剪切、批量移动或批量删除目录。
+- 不得用正在运行的 Gazebo、PX4、UE、QGC 或 MWORKS 实例替代路径、构建和日志证据。
+- 不得为了“兼容”保留新旧两个活动加载面，或允许新路径静默回退到旧路径。
+- 不得将 `build`、`devel`、`install`、缓存、历史日志或临时结果迁入源码树。
+- 不得因本迁移执行未经授权的控制器、规划器、仿真或桌面 GUI 复跑。
+- 不得使用 `git add -A`、`git clean`、`git reset --hard` 或对无关改动做任何清理。
+
+## 5. 单组件交付记录
+
+每个完成的组件迁移应至少留下以下可审核信息：
 
 ```text
-git diff --check
-python3 Scripts/UE5/check_unreal_bridge.py
-python3 -m py_compile Scripts/UE5/check_unreal_bridge.py Scripts/UE5/check_unreal_s0_s1_readiness.py
+component_id
+旧路径与新路径
+上游来源、版本、许可证、补丁说明
+活动引用审计结果
+源/目标哈希或文件清单
+路径配置变更
+执行的静态检查、预检/build/dry-run及其结果
+未执行的运行时检查和原因
+归档或交付包剔除决定
 ```
 
-### Phase 1: Introduce Path Registry
-
-Add a single path registry before moving files:
-
-```text
-configs/project_paths.yaml
-src/orchestration/project_paths.py
-```
-
-It must expose logical names such as:
-
-```text
-mworks_official_model
-mworks_extensions
-controller_configs
-planner_configs
-scenario_configs
-unreal_renderer
-unreal_bridge
-external_vendor_assets
-formal_results
-review_results
-```
-
-Scripts should read logical paths instead of hardcoding top-level directories.
-
-### Phase 2: Move Low-Risk Configs
-
-Move only low-risk YAML/config directories first:
-
-```text
-Config/controllers/ -> configs/controllers/
-Config/planners/    -> configs/planners/
-Config/scenarios/   -> configs/scenarios/
-```
-
-Keep temporary compatibility wrappers or update all references in one commit.
-
-Acceptance:
-
-```text
-python3 -m pytest tests
-python3 Scripts/quality/check_reference_outputs.py
-python3 Scripts/mworks/run_mworks_batch.py --dry-run configs/scenarios/official/*.yaml
-```
-
-### Phase 3: Split Scripts
-
-Classify scripts:
-
-```text
-tools/mworks/      MWORKS scenario runners, result extraction
-tools/UE5/      UE build/open/probe/stream tools
-tools/data/        metrics, plotting, replay, event log
-tools/Docs/        conversion/indexing docs tools
-src/orchestration/ reusable Python modules used by Scripts/tests
-```
-
-Do not move scripts that are still referenced by many docs until wrappers or
-path aliases exist.
-
-### Phase 4: Move Product Runtimes
-
-Only after Phase 1-3:
-
-```text
-Models/                -> sim/mworks/extensions/
-Models/MoSimQuadrotorModel/Vehicle/         -> future in-root Plant ownership group only; never an external or compatibility alias
-UE5/MoSimSceneLibrary/ -> sim/UE5/renderer/
-UE5/Bridge/ -> sim/UE5/bridge/
-```
-
-This phase must be guarded by MWORKS/UE build and smoke checks. It is not a
-documentation-only move.
-
-### Phase 5: Repartition References And Results
-
-External data should be explicit:
-
-```text
-external/specs/          small manuals/specs that are useful to cite
-external/source_repos/   cloned research/simulator repos, ignored unless audited
-external/vendor_assets/  Fab/Epic/RflySim/AirSim assets, ignored by default
-```
-
-Results should separate evidence from review caches:
-
-```text
-Results/formal/
-Results/review/
-Results/diagnostics/
-Results/tmp/
-```
-
-Never move report-backed evidence without updating `Docs/simulation_report.md`,
-`Docs/user_manual.md`, and result manifests.
-
-## Naming Rules
-
-1. Product code and runtime adapters live under `src/`, `sim/`, or `apps/`.
-2. Configs live under `configs/`.
-3. External inputs live under `external/`.
-4. Generated outputs live under `Results/`.
-5. Agent-only operating material lives under `automation/` or `Docs/Workflows/`.
-6. Keep `AGENTS.md` short. Long procedures belong here or in other workflows.
-7. Do not create empty future directories.
-8. Do not move MWORKS or Unreal project directories without a passing smoke
-   check in the same change.
-
-## Immediate Recommendation
-
-Do not start with `Models/`, `Models/MoSimQuadrotorModel/Vehicle/`, or `UE5/`. Start with:
-
-```text
-Phase 0: commit current cleanup
-Phase 1: add path registry
-Phase 2: migrate Config/controllers/planners/scenarios to configs/
-```
-
-This reduces top-level clutter without breaking the heavy MWORKS/UE path
-contracts first.
+提交时只暂存已审核的本组件路径，执行 `git diff --cached --check`，提交并推送后再报告完成。
+本工作流只规定迁移方法；当前工程的主线控制器证据门禁仍由
+`Docs/Workflows/mainline_operations_board.md` 决定。
