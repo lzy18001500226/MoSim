@@ -487,3 +487,27 @@ component_id: sunray_gazebo_plugins
           改写审计过的路径并完成受控ROS1验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.17 EGO/EGO-Swarm 兼容核心源码快照复制记录（2026-07-27）
+
+```text
+component_id: ego_planner_swarm
+旧路径: References/Sunray/External_Module/ego-planner-swarm
+新路径: src/planning/ego_planner_swarm
+活动路径: References/Sunray/External_Module/ego-planner-swarm
+迁移状态: copied_pending_activation
+来源: 保留的EGO/EGO-Swarm本地导入树；未恢复嵌套Git元数据或上游URL
+固定版本: 不可恢复；不得宣称已钉定上游Git commit
+许可证: cmake_utils声明LGPLv3、pose_utils声明BSD；traj_utils、plan_env、path_searching、bspline_opt和ego_planner声明TODO，发布前必须完成审计
+项目补丁: 无已复制源码、消息、launch、package.xml或CMake改动；仅新增迁移元数据
+复制范围: 仅保留当前EGO兼容overlay链接的cmake_utils、pose_utils、traj_utils、plan_env、path_searching、bspline_opt和ego_planner七个包；
+          不将完整553文件上游样例树伪装成当前运行依赖
+交付源码配置: 排除pose_utils.cpp~编辑器备份后，73个文件、631,925字节，
+              SHA-256清单 efebe790d2db433a8ccbb79686a2ebf97daeba3713880f411d25cab0bd3e09eb
+依赖边界: uav_utils和quadrotor_msgs故意不重复复制；当前overlay分别使用旧EGO源和px4ctrl workspace版本，必须先完成兼容选择
+静态检查: 源/目标73个文件SHA-256逐项比对、编辑器备份排除、JSON解析与路径注册检查通过
+未执行项: 未改写入口，未构建、预检、启动ROS/Gazebo/PX4/MAVROS/QGC/UE或RViz
+激活前置: 审计上游/许可证、uav_utils与quadrotor_msgs版本选择、EGO single/swarm overlay及脚本/Profile消费者；
+          改写审计过的路径并完成受控ROS1验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

@@ -1,0 +1,8 @@
+# Generated Catkin and editor artifacts are not source payload.
+build/
+devel/
+install/
+logs/
+.catkin_tools/
+*.pyc
+__pycache__/
