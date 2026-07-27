@@ -53,6 +53,19 @@
         "References/Sunray/General_Module/sunray_planner_utils/CMakeLists.txt"
       ]
     },
+    "sunray_tutorial": {
+      "role": "mission_adapter",
+      "canonical_relpath": "src/planning/mission_adapters/sunray_tutorial",
+      "legacy_relpath": "References/Sunray/General_Module/sunray_tutorial",
+      "active_relpath": "References/Sunray/General_Module/sunray_tutorial",
+      "migration_state": "copied_pending_activation",
+      "entrypoints": [
+        "Scripts/sunray/run_sunray_ros1_default_stack_gate.sh",
+        "Scripts/sunray/run_sunray_ros1_native_mission_gate.sh",
+        "Scripts/sunray/start_sunray_ros1_gui_review.sh",
+        "Scripts/sunray/run_sunray_default_control_metrics.sh"
+      ]
+    },
     "px4ctrl": {
       "role": "control_runtime_adapter",
       "canonical_relpath": "src/control/runtime_adapters/px4ctrl",
