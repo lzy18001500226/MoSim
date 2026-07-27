@@ -20,6 +20,15 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
+### Phase 1 Execution Entry
+
+- Workflow: `Docs/Workflows/run_simulation.md`.
+- Frozen matrix driver: `Scripts/mworks/run_phase1_minimum_closure.py`.
+- Contract test: `Scripts/tests/test_phase1_minimum_closure.py`.
+- Evidence root: `Results/control_platform/phase1_minimum_closure/`.
+- Stop: all 46 rows have a terminal pass/fail `RUN_RECORD.json`; do not move to
+  Phase 2 or later gates without a new user instruction.
+
 The approved atomic model-library migration is statically complete. The only
 formal load root is `Models/MoSimQuadrotorModel/package.mo`; retired roots and
 active old-path references are rejected by

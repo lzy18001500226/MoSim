@@ -1,5 +1,8 @@
 # Classic Controller Family Closeout (Historical Snapshot)
 
+> Archived from `Docs/Workflows/` on 2026-07-27. It remains a trace-back
+> reference for the quality contract, not an active execution workflow.
+
 Status: frozen historical evidence snapshot, 2026-07-18 CST.
 >
 > This file records the 2026-07-17/18 closeout only. It does not authorize a current model entry,

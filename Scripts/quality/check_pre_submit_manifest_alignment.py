@@ -17,6 +17,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DOC = ROOT / "Docs" / "Workflows" / "pre_submit_check.md"
+DEFAULT_DETAIL_DOC = ROOT / "Docs" / "Cache" / "pre_submit_detail.md"
 DEFAULT_MANIFEST = (
     ROOT
     / "Results"
@@ -25,7 +26,7 @@ DEFAULT_MANIFEST = (
     / "candidate_submission_evidence_manifest.json"
 )
 
-REQUIRED_DOC_TERMS = [
+REQUIRED_DETAIL_TERMS = [
     "candidate_submission_evidence_manifest.json",
     "review_candidate_not_final_acceptance",
     "metrics-only rows",
@@ -391,6 +392,16 @@ EXPECTED_HEADINGS = [
     "## 12. Final Pass Criteria",
 ]
 
+REQUIRED_ACTIVE_DOC_TERMS = [
+    "Docs/Cache/pre_submit_detail.md",
+    "Per-Task Git Closeout Gate",
+    "git diff --cached --check",
+    "candidate_submission_evidence_manifest.json",
+    "review_candidate_not_final_acceptance",
+    "not final PMO acceptance",
+    "Final Pass Criteria",
+]
+
 
 def repo_path(value: str | Path) -> Path:
     path = Path(value)
@@ -411,7 +422,11 @@ def read_json(path: Path) -> dict[str, Any]:
     return data
 
 
-def validate(doc_path: Path, manifest_path: Path) -> dict[str, Any]:
+def validate(
+    doc_path: Path,
+    manifest_path: Path,
+    detail_path: Path = DEFAULT_DETAIL_DOC,
+) -> dict[str, Any]:
     issues: list[str] = []
     warnings: list[str] = []
 
@@ -421,15 +436,25 @@ def validate(doc_path: Path, manifest_path: Path) -> dict[str, Any]:
     else:
         doc_text = doc_path.read_text(encoding="utf-8")
 
+    if not detail_path.exists():
+        issues.append(f"archived pre-submit detail does not exist: {rel(detail_path)}")
+        detail_text = ""
+    else:
+        detail_text = detail_path.read_text(encoding="utf-8")
+
     if not manifest_path.exists():
         issues.append(f"candidate manifest does not exist: {rel(manifest_path)}")
         manifest = {}
     else:
         manifest = read_json(manifest_path)
 
-    for term in REQUIRED_DOC_TERMS:
+    for term in REQUIRED_ACTIVE_DOC_TERMS:
         if term not in doc_text:
-            issues.append(f"pre-submit workflow missing required boundary term: {term}")
+            issues.append(f"active pre-submit workflow missing required term: {term}")
+
+    for term in REQUIRED_DETAIL_TERMS:
+        if term not in detail_text:
+            issues.append(f"archived pre-submit detail missing required boundary term: {term}")
 
     headings = [
         line.strip()
@@ -458,6 +483,7 @@ def validate(doc_path: Path, manifest_path: Path) -> dict[str, Any]:
     return {
         "ok": not issues,
         "pre_submit_doc": rel(doc_path),
+        "pre_submit_detail": rel(detail_path),
         "candidate_manifest": rel(manifest_path),
         "issues": issues,
         "warnings": warnings,
@@ -472,17 +498,24 @@ def main() -> int:
         default=str(DEFAULT_MANIFEST.relative_to(ROOT)),
         help="Candidate submission evidence manifest JSON path",
     )
+    parser.add_argument(
+        "--detail",
+        default=str(DEFAULT_DETAIL_DOC.relative_to(ROOT)),
+        help="Archived detailed pre-submit reference path",
+    )
     parser.add_argument("--output-json", help="Optional validation report path")
     args = parser.parse_args()
 
     doc_path = repo_path(args.pre_submit_doc)
     manifest_path = repo_path(args.manifest)
+    detail_path = repo_path(args.detail)
     try:
-        report = validate(doc_path, manifest_path)
+        report = validate(doc_path, manifest_path, detail_path)
     except Exception as exc:
         report = {
             "ok": False,
             "pre_submit_doc": rel(doc_path),
+            "pre_submit_detail": rel(detail_path),
             "candidate_manifest": rel(manifest_path),
             "issues": [str(exc)],
             "warnings": [],

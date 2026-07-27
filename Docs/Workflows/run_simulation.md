@@ -4,6 +4,22 @@
 
 ---
 
+## Current Phase 1 Minimum Closure
+
+Use this workflow when `Docs/Workflows/mainline_operations_board.md` selects
+the Phase 1 46-route minimum-closure matrix. The matrix owner is
+`Scripts/mworks/run_phase1_minimum_closure.py`; its contract test is
+`Scripts/tests/test_phase1_minimum_closure.py`.
+
+Run only the frozen 50 s `ClimbPath` routes through the named driver. It writes
+the matrix, per-route `RUN_RECORD.json`, metrics, and status below
+`Results/control_platform/phase1_minimum_closure/`. A missing truthful adapter
+is a terminal failure record, never a substituted controller-only simulation.
+Do not use this section for champion selection, seven-scenario A/B, export, or
+runtime validation.
+
+---
+
 ## 1. Goal
 
 Run a specified scene and controller, then save raw simulation results for analysis.

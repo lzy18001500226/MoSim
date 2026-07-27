@@ -1,4 +1,7 @@
-# Factory L2 Full System Validation Plan
+# Factory L2 Full System Validation Plan (Historical Snapshot)
+
+> Archived from `Docs/Workflows/` on 2026-07-27. This is the dated Factory
+> F1-F8 plan, not the current Phase 1 task selector or runtime authority.
 
 > Execution plan for moving the accepted Factory L2 scene from static Gazebo
 > import into the current ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl system, then

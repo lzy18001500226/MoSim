@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "Scripts" / "quality" / "check_pre_submit_manifest_alignment.py"
 DOC = ROOT / "Docs" / "Workflows" / "pre_submit_check.md"
+DETAIL_DOC = ROOT / "Docs" / "Cache" / "pre_submit_detail.md"
 MANIFEST = (
     ROOT
     / "Results"
@@ -47,13 +48,24 @@ def test_current_pre_submit_workflow_passes() -> None:
     assert report["ok"] is True
 
 
-def test_rejects_missing_boundary_term(tmp_path: Path) -> None:
+def test_rejects_missing_active_boundary_term(tmp_path: Path) -> None:
     checker = load_checker()
     text = DOC.read_text(encoding="utf-8")
     tmp_path.mkdir(parents=True, exist_ok=True)
     broken_doc = tmp_path / "pre_submit_check.md"
-    broken_doc.write_text(text.replace("closed_loop", "closed loop"), encoding="utf-8")
+    broken_doc.write_text(text.replace("Per-Task Git Closeout Gate", "Git Closeout"), encoding="utf-8")
     report = checker.validate(broken_doc, MANIFEST)
+    assert report["ok"] is False
+    assert any("Per-Task Git Closeout Gate" in issue for issue in report["issues"])
+
+
+def test_rejects_missing_archived_boundary_term(tmp_path: Path) -> None:
+    checker = load_checker()
+    text = DETAIL_DOC.read_text(encoding="utf-8")
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    broken_detail = tmp_path / "pre_submit_detail.md"
+    broken_detail.write_text(text.replace("closed_loop", "closed loop"), encoding="utf-8")
+    report = checker.validate(DOC, MANIFEST, broken_detail)
     assert report["ok"] is False
     assert any("closed_loop" in issue for issue in report["issues"])
 
@@ -86,7 +98,8 @@ def main() -> int:
     temp.mkdir(parents=True, exist_ok=True)
     try:
         test_current_pre_submit_workflow_passes()
-        test_rejects_missing_boundary_term(temp / "missing_boundary")
+        test_rejects_missing_active_boundary_term(temp / "missing_active_boundary")
+        test_rejects_missing_archived_boundary_term(temp / "missing_detail_boundary")
         test_rejects_manifest_final_acceptance_status(temp / "bad_status")
         test_rejects_heading_sequence_drift(temp / "heading")
     finally:

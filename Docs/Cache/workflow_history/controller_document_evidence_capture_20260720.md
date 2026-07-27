@@ -1,5 +1,8 @@
 # 控制器文档证据采集规范（历史快照）
 
+> Archived from `Docs/Workflows/` on 2026-07-27. It remains a trace-back
+> reference for the quality contract, not an active execution workflow.
+
 状态：2026-07-20 历史证据采集快照，不是当前执行规范。
 >
 > 当前控制器图审、仿真和截图只按 `Docs/Workflows/controller_evidence_closeout.md` 与

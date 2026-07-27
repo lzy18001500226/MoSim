@@ -34,8 +34,9 @@ INVENTORY_PATH = (
 )
 CURRENT_MAP_PATH = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
 HARNESS_MAP_PATH = ROOT / "Config" / "control_platform" / "formal_closed_loop_harness_map.json"
-HISTORICAL_CAPTURE_PATH = WORKFLOW_ROOT / "controller_document_evidence_capture_20260720.md"
-HISTORICAL_CLASSIC_CLOSEOUT_PATH = WORKFLOW_ROOT / "classic_controller_family_closeout.md"
+HISTORICAL_WORKFLOW_ROOT = ROOT / "Docs" / "Cache" / "workflow_history"
+HISTORICAL_CAPTURE_PATH = HISTORICAL_WORKFLOW_ROOT / "controller_document_evidence_capture_20260720.md"
+HISTORICAL_CLASSIC_CLOSEOUT_PATH = HISTORICAL_WORKFLOW_ROOT / "classic_controller_family_closeout.md"
 CONTROLLER_DESIGN_README_PATH = CONTROLLER_DESIGN_ROOT / "README.md"
 
 EXPECTED_ENTRY_TYPE_COUNTS = {
@@ -89,6 +90,8 @@ def load_inputs() -> dict[str, Any]:
         "current_model_map": read_json(CURRENT_MAP_PATH),
         "formal_harness_map": read_json(HARNESS_MAP_PATH),
         "active_docs": active_document_texts(),
+        "historical_capture": read_text(HISTORICAL_CAPTURE_PATH),
+        "historical_classic_closeout": read_text(HISTORICAL_CLASSIC_CLOSEOUT_PATH),
     }
 
 
@@ -158,14 +161,14 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
         historical_text = str(active_docs.get(portable(historical_interface), ""))
         if "历史 H1-H7" not in historical_text or "当前 G1-G7" not in historical_text:
             add("CCEC-DOC-09", "old interface-closeout numbering must remain explicitly historical H1-H7")
-        historical_capture = str(active_docs.get(portable(HISTORICAL_CAPTURE_PATH), ""))
+        historical_capture = str(inputs.get("historical_capture") or "")
         if (
             "历史快照" not in historical_capture
             or "controller_evidence_closeout.md" not in historical_capture
             or "formal_closed_loop_harness_map.json" not in historical_capture
         ):
             add("CCEC-DOC-10", "old screenshot-capture workflow must remain an explicit historical redirect")
-        historical_classic = str(active_docs.get(portable(HISTORICAL_CLASSIC_CLOSEOUT_PATH), ""))
+        historical_classic = str(inputs.get("historical_classic_closeout") or "")
         if (
             "Historical Snapshot" not in historical_classic
             or "controller_evidence_closeout.md" not in historical_classic

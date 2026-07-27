@@ -1,4 +1,8 @@
-# 赛题与项目缺口清单
+# 赛题与项目缺口清单（历史快照）
+
+> Archived from `Docs/Workflows/` on 2026-07-27. This dated inventory is
+> trace-back material only; current work is selected by
+> `Docs/Workflows/mainline_operations_board.md`.
 
 > 更新时间：2026-07-18
 >
