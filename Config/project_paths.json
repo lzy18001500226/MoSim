@@ -152,6 +152,17 @@
         "Scripts/sunray/build_falcon_f1_minimal_build_probe.sh"
       ]
     },
+    "racer": {
+      "role": "planning",
+      "canonical_relpath": "src/planning/racer",
+      "legacy_relpath": "References/Lab/exploration_coverage/RACER",
+      "active_relpath": "References/Lab/exploration_coverage/RACER",
+      "migration_state": "copied_pending_activation",
+      "entrypoints": [
+        "References/Lab/exploration_coverage/RACER/swarm_exploration/exploration_manager/launch/rviz.launch",
+        "References/Lab/exploration_coverage/RACER/swarm_exploration/exploration_manager/launch/swarm_exploration.launch"
+      ]
+    },
     "diff_planner": {
       "role": "planning",
       "canonical_relpath": "src/planning/diff_planner",

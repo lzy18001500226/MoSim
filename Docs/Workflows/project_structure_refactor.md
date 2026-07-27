@@ -1,9 +1,7 @@
 # 工程源码迁移工作流
 
 > 状态：目标架构已确认。2026-07-27，用户授权以“只复制、不移动、不删除、不切换活动
-> 入口”的方式启动首批单组件迁移；当前已复制 `diff_planner`、`fuel`、`uav_utils`、
-> `quadrotor_msgs`、`livox_ros_driver_compat`、`fast_lio` 与
-> `sunray_planner_utils`、`sunray_uav_control` 到目标目录，均仍由旧路径作为唯一活动路径。
+> 入口”的方式启动单组件迁移；已复制的组件清单见第 5 节，均仍由旧路径作为唯一活动路径。
 > 本文件定义执行顺序、证据和停止条件；目录归属的唯一权威是
 > [`Docs/Design/架构.md` 第 8.2 节](../Design/架构.md)。不得从本文件推断任何组件已经
 > 激活、可构建或可运行。
@@ -530,5 +528,27 @@ component_id: falcon
 静态检查: 源/目标750个文件SHA-256逐项比对和JSON路径注册检查通过
 未执行项: 未改写入口，未构建、预检、启动ROS/Gazebo/PX4/MAVROS/QGC/UE或RViz
 激活前置: 补齐上游commit和许可证；审计FALCON ROS1包与依赖边界；改写审计过的入口并完成受控ROS1验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```
+
+### 5.19 RACER 多机协同探索源码快照复制记录（2026-07-27）
+
+```text
+component_id: racer
+旧路径: References/Lab/exploration_coverage/RACER
+新路径: src/planning/racer
+活动路径: References/Lab/exploration_coverage/RACER
+迁移状态: copied_pending_activation
+来源: https://github.com/SYSU-STAR/RACER.git（保留README声明）
+固定版本: 旧导入快照未保留上游Git元数据；不得宣称已钉定上游Git commit
+许可证: 根目录跟踪有效载荷未包含LICENSE、COPYING或NOTICE；26个ROS包声明BSD、GPLv3、LGPLv3或TODO，发布前必须完成上游及包级许可证审计
+项目补丁: 无算法、launch、CMake、参数、源码或跟踪资产改动；仅新增.gitattributes、UPSTREAM.md、PATCHES.md
+原始/交付有效载荷: 1,081个Git跟踪文件、49,292,647字节，逐项SHA-256清单
+                    4b700014f7e12c52097d8e69e45f0680bf576cbba780a9555f3993f36d6e0c2b
+排除项: 旧目录内未跟踪的build、devel、日志、Python bytecode及其他本地产物未迁入；旧目录保持不变
+依赖边界: README声明需要NLopt 2.7.1、LKH-3.0.6、Armadillo和ROS1 Catkin；尚未与当前Sunray/PX4运行时集成
+静态检查: 源/目标1,081个文件SHA-256逐项比对和JSON路径注册检查通过
+未执行项: 未改写入口，未构建、预检、启动ROS/Gazebo/PX4/MAVROS/QGC/UE或RViz
+激活前置: 补齐上游commit和许可证；审计RACER ROS1包、重复消息包和依赖边界；改写审计过的入口并完成受控ROS1验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
