@@ -26,6 +26,196 @@ from src.orchestration.runtime_sidecar_contract import (
 )
 
 
+OPERATOR_MAP_STATE_SCHEMA = "mosim.operator_map_state.v1"
+OPERATOR_MAP_TRANSPORT_MODES = {"live_ros1", "rosbag_replay"}
+COORDINATE_CONTRACT_STATUSES = {
+    "verified",
+    "pending_runtime_validation",
+    "rejected",
+}
+OPERATOR_MAP_IDENTITY_FIELDS = (
+    "map_id",
+    "map_version",
+    "asset_sha256",
+    "world_frame",
+    "coordinate_contract_id",
+)
+OPERATOR_MAP_SNAPSHOT_REQUIRED_FIELDS = (
+    "resource_url",
+    *OPERATOR_MAP_IDENTITY_FIELDS,
+    "coordinate_contract_status",
+)
+
+
+def _canonical_hash(value: Any) -> str:
+    import hashlib
+
+    payload = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _json_copy(value: dict[str, Any]) -> dict[str, Any]:
+    return json.loads(json.dumps(value, ensure_ascii=False))
+
+
+def _validate_operator_map_snapshot(snapshot: dict[str, Any]) -> None:
+    if any(not isinstance(snapshot.get(key), str) or not snapshot[key] for key in OPERATOR_MAP_SNAPSHOT_REQUIRED_FIELDS):
+        raise ValueError("operator_map_contract_fields_missing")
+    if snapshot["coordinate_contract_status"] not in COORDINATE_CONTRACT_STATUSES:
+        raise ValueError("operator_map_coordinate_status_invalid")
+    bounds = snapshot.get("world_bounds_m")
+    if not isinstance(bounds, dict):
+        raise ValueError("operator_map_bounds_invalid")
+    try:
+        valid_bounds = (
+            float(bounds["min_x_m"]) < float(bounds["max_x_m"])
+            and float(bounds["min_y_m"]) < float(bounds["max_y_m"])
+        )
+    except (KeyError, TypeError, ValueError):
+        valid_bounds = False
+    if not valid_bounds:
+        raise ValueError("operator_map_bounds_invalid")
+
+
+def load_operator_map_snapshot(catalog_path: Path, map_id: str) -> dict[str, Any]:
+    """Resolve a registry entry for profile-validation and test fixtures only."""
+    try:
+        catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError("operator_map_catalog_unreadable") from exc
+    if catalog.get("schema") != "mosim.operator_map_catalog.v1":
+        raise ValueError("operator_map_catalog_schema_invalid")
+    maps = catalog.get("maps")
+    if not isinstance(maps, list):
+        raise ValueError("operator_map_catalog_entries_invalid")
+    entry = next(
+        (
+            item for item in maps
+            if isinstance(item, dict) and item.get("map_id") == map_id and item.get("enabled") is True
+        ),
+        None,
+    )
+    if entry is None:
+        raise ValueError("operator_map_not_enabled")
+    _validate_operator_map_snapshot(entry)
+    return _json_copy(entry)
+
+
+def load_manifest_operator_map_snapshot(manifest: dict[str, Any]) -> tuple[dict[str, Any], str]:
+    """Load the immutable map selected during prepare_run, never a mutable catalog default."""
+    snapshot = manifest.get("operator_map_snapshot")
+    snapshot_hash = manifest.get("operator_map_snapshot_hash")
+    if not isinstance(snapshot, dict) or not snapshot:
+        raise ValueError("operator_map_manifest_snapshot_missing")
+    if not isinstance(snapshot_hash, str) or not snapshot_hash:
+        raise ValueError("operator_map_manifest_snapshot_hash_missing")
+    _validate_operator_map_snapshot(snapshot)
+    if _canonical_hash(snapshot) != snapshot_hash:
+        raise ValueError("operator_map_manifest_snapshot_hash_mismatch")
+    return _json_copy(snapshot), snapshot_hash
+
+
+def resolve_runtime_operator_map(
+    manifest: dict[str, Any],
+    *,
+    requested_map_id: str = "",
+    requested_coordinate_contract_id: str = "",
+    coordinate_contract_status: str = "",
+) -> tuple[dict[str, Any], str]:
+    """Apply only runtime validation status to the frozen map identity."""
+    snapshot, snapshot_hash = load_manifest_operator_map_snapshot(manifest)
+    if requested_map_id and requested_map_id != snapshot["map_id"]:
+        raise ValueError("operator_map_cli_map_override_mismatch")
+    if requested_coordinate_contract_id and requested_coordinate_contract_id != snapshot["coordinate_contract_id"]:
+        raise ValueError("operator_map_cli_coordinate_contract_override_mismatch")
+    if coordinate_contract_status and coordinate_contract_status not in COORDINATE_CONTRACT_STATUSES:
+        raise ValueError("operator_map_coordinate_status_invalid")
+    state_map = _json_copy(snapshot)
+    if coordinate_contract_status:
+        state_map["coordinate_contract_status"] = coordinate_contract_status
+    return state_map, snapshot_hash
+
+
+def ros_source_timestamp(message: Any) -> float | None:
+    """Return a ROS header timestamp without treating local receipt time as source time."""
+    header = getattr(message, "header", None)
+    stamp = getattr(header, "stamp", None)
+    if stamp is None:
+        return None
+    try:
+        value = float(stamp.to_sec()) if hasattr(stamp, "to_sec") else float(stamp.secs) + float(stamp.nsecs) / 1e9
+    except (AttributeError, TypeError, ValueError):
+        return None
+    return value if math.isfinite(value) and value > 0.0 else None
+
+
+def build_operator_map_state(
+    *,
+    manifest: dict[str, Any],
+    map_snapshot: dict[str, Any],
+    transport_mode: str,
+    sequence: int,
+    received_at_unix_s: float,
+    source_timestamp_s: float | None,
+    playback_state: str,
+    playback_time_s: float | None,
+    bag_id: str,
+    vehicles: list[dict[str, Any]],
+    task_paths: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Project runtime telemetry into the strict 2D operator-map envelope."""
+    if transport_mode not in OPERATOR_MAP_TRANSPORT_MODES:
+        raise ValueError("operator_map_transport_mode_invalid")
+    if sequence <= 0 or not math.isfinite(received_at_unix_s):
+        raise ValueError("operator_map_transport_sequence_or_receive_time_invalid")
+    if map_snapshot.get("coordinate_contract_status") not in COORDINATE_CONTRACT_STATUSES:
+        raise ValueError("operator_map_coordinate_status_invalid")
+    frozen_map, snapshot_hash = load_manifest_operator_map_snapshot(manifest)
+    if any(map_snapshot.get(field) != frozen_map.get(field) for field in OPERATOR_MAP_IDENTITY_FIELDS):
+        raise ValueError("operator_map_snapshot_identity_mismatch")
+    profile_id = manifest.get("experiment_profile_id")
+    profile_hash = manifest.get("experiment_profile_hash")
+    run_id = manifest.get("run_id")
+    if not all(isinstance(value, str) and value for value in (run_id, profile_id, profile_hash)):
+        raise ValueError("operator_map_manifest_identity_invalid")
+    if transport_mode == "live_ros1":
+        playback_state = "live"
+        playback_time_s = None
+        bag_id = ""
+    elif playback_state not in {"playing", "paused", "completed", "failed"}:
+        raise ValueError("operator_map_replay_state_invalid")
+    elif not bag_id:
+        raise ValueError("operator_map_replay_bag_id_missing")
+
+    scenario = manifest.get("scenario_snapshot")
+    scenario = scenario if isinstance(scenario, dict) else {}
+    state: dict[str, Any] = {
+        "schema": OPERATOR_MAP_STATE_SCHEMA,
+        "run_id": run_id,
+        "profile_id": profile_id,
+        "profile_hash": profile_hash,
+        "transport": {
+            "mode": transport_mode,
+            "sequence": sequence,
+            "received_at_unix_s": received_at_unix_s,
+            "source_timestamp_s": source_timestamp_s,
+            "playback_state": playback_state,
+            "playback_time_s": playback_time_s,
+            "bag_id": bag_id,
+        },
+        "map": {**dict(map_snapshot), "operator_map_snapshot_hash": snapshot_hash},
+        "vehicles": vehicles,
+        "task_paths": task_paths,
+    }
+    boundary = scenario.get("exploration_boundary")
+    if isinstance(boundary, dict):
+        state["task_boundary"] = boundary
+    formation = scenario.get("formation")
+    if isinstance(formation, dict) and isinstance(formation.get("target_center_xy_m"), list):
+        state["formation_target"] = {"target_center_xy_m": formation["target_center_xy_m"]}
+    return state
+
+
 def _vector(value: Any) -> dict[str, float]:
     return {axis: float(getattr(value, axis)) for axis in ("x", "y", "z")}
 
@@ -114,12 +304,19 @@ class RosRuntimeSidecar:
         self.manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
         self.profile_id = str(self.manifest.get("experiment_profile_id", ""))
         self.contract = load_contract(args.contract)
+        self.operator_map, self.operator_map_snapshot_hash = resolve_runtime_operator_map(
+            self.manifest,
+            requested_map_id=args.map_id,
+            requested_coordinate_contract_id=args.coordinate_contract_id,
+            coordinate_contract_status=args.coordinate_contract_status,
+        )
         manifest_count = self.manifest.get("vehicle_count", args.vehicle_count)
         if manifest_count != args.vehicle_count:
             raise ValueError("sidecar_vehicle_count_manifest_mismatch")
         self.vehicle_ids = [f"uav{index}" for index in range(1, args.vehicle_count + 1)]
         self.started_at = time.time()
         self.ever_ready = False
+        self.map_sequence = 0
         self.model_names: list[str] = []
         self.active_injections: dict[str, dict[str, Any]] = {}
         self.processed_commands: set[str] = set()
@@ -407,6 +604,16 @@ class RosRuntimeSidecar:
             }
         return telemetry
 
+    def _latest_map_source_timestamp(self) -> float | None:
+        source_times = []
+        for vehicle in self.vehicles.values():
+            odom = vehicle["odom"]
+            if odom is not None:
+                timestamp = ros_source_timestamp(odom[0])
+                if timestamp is not None:
+                    source_times.append(timestamp)
+        return max(source_times) if source_times else None
+
     def _write_status_and_telemetry(self) -> None:
         now = time.time()
         ready, missing = self._ready(now)
@@ -423,10 +630,25 @@ class RosRuntimeSidecar:
         }
         atomic_write_json(self.run_dir / "RUNTIME_STATUS.json", status_payload)
         vehicles = [self._vehicle_telemetry(vehicle_id) for vehicle_id in self.vehicle_ids]
+        self.map_sequence += 1
+        map_state = build_operator_map_state(
+            manifest=self.manifest,
+            map_snapshot=self.operator_map,
+            transport_mode=self.args.transport_mode,
+            sequence=self.map_sequence,
+            received_at_unix_s=now,
+            source_timestamp_s=self._latest_map_source_timestamp(),
+            playback_state=self.args.replay_state,
+            playback_time_s=self.args.replay_time_s,
+            bag_id=self.args.replay_bag_id,
+            vehicles=vehicles,
+            task_paths=self.task_paths,
+        )
         telemetry: dict[str, Any] = {
             "schema": "mosim.runtime_telemetry.v2", "run_id": self.manifest["run_id"], "timestamp": now,
             "vehicle_count": len(vehicles), "readiness": status_payload, "vehicles": vehicles,
             "task_paths": self.task_paths,
+            "map_state": map_state,
             "mission_status": load_mission_status(
                 self.run_dir / "mission_status.json",
                 expected_run_id=self.manifest["run_id"],
@@ -471,6 +693,25 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--expected-path-topic", default="")
     parser.add_argument("--future-marker-topic", default="")
     parser.add_argument(
+        "--map-id",
+        default="",
+        help="Optional assertion only; it must match the map frozen in RUN_MANIFEST.json.",
+    )
+    parser.add_argument("--coordinate-contract-id", default="")
+    parser.add_argument(
+        "--coordinate-contract-status",
+        choices=tuple(sorted(COORDINATE_CONTRACT_STATUSES)),
+        default="",
+    )
+    parser.add_argument("--transport-mode", choices=tuple(sorted(OPERATOR_MAP_TRANSPORT_MODES)), default="live_ros1")
+    parser.add_argument("--replay-bag-id", default="")
+    parser.add_argument(
+        "--replay-state",
+        choices=("playing", "paused", "completed", "failed"),
+        default="playing",
+    )
+    parser.add_argument("--replay-time-s", type=float)
+    parser.add_argument(
         "--skip-controller-command-readiness",
         action="store_true",
         help="Do not require a controller setpoint for operator ground-standby profiles.",
@@ -489,6 +730,10 @@ def main() -> int:
     args = parse_args()
     if args.rate_hz <= 0.0 or args.ready_timeout_s <= 0.0 or args.mission_status_max_age_s <= 0.0:
         raise SystemExit("rate and timeout must be positive")
+    if args.transport_mode == "live_ros1" and (args.replay_bag_id or args.replay_time_s is not None):
+        raise SystemExit("live_ros1 map transport cannot declare rosbag replay fields")
+    if args.transport_mode == "rosbag_replay" and not args.replay_bag_id:
+        raise SystemExit("rosbag_replay map transport requires --replay-bag-id")
     args.run_dir.mkdir(parents=True, exist_ok=True)
     import rospy
     rospy.init_node("mosim_orchestrator_runtime_sidecar", anonymous=False)

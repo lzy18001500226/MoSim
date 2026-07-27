@@ -4,6 +4,7 @@
     "version": 1,
     "profile_status": "active",
     "description": "Single-UAV Official PID MWORKS Live takeoff-hover-land profile released for RT1 validation after the 200 Hz v3 RT0 capability gate",
+    "operator_map_id": "factory_l2",
     "goal": "Goal 1",
     "scenario_profile": "sunray150_empty_lab_v1",
     "plant_profile": "sunray150_gazebo_v1",

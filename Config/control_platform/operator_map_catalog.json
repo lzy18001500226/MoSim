@@ -3,10 +3,14 @@
   "maps": [
     {
       "map_id": "factory_l2",
+      "map_version": "v1",
       "display_name": "Factory L2",
       "enabled": true,
       "resource_url": "qrc:/Custom/maps/factory_l2/v1/floorplan.png",
+      "asset_sha256": "4d32eac9245ded3870ed18eb2f4a7be2179373a351aa52c1e0af402da99db6c6",
       "world_frame": "mworks_world",
+      "coordinate_contract_id": "factory_l2_mworks_world_v1",
+      "coordinate_contract_status": "pending_runtime_validation",
       "world_bounds_m": {
         "min_x_m": -608.09999,
         "max_x_m": 587.89997,

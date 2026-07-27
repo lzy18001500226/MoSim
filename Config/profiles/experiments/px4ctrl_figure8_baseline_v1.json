@@ -3,6 +3,7 @@
     "id": "px4ctrl_figure8_baseline_v1",
     "version": 1,
     "description": "Goal 2 px4ctrl figure-eight tracking baseline with PX4/MAVROS fused state",
+    "operator_map_id": "factory_l2",
     "goal": "Goal 2",
     "scenario_profile": "sunray150_obstacle_figure8_v1",
     "plant_profile": "sunray150_gazebo_v1",

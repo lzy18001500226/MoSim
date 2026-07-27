@@ -35,7 +35,7 @@ class MoSimOrchestratorBridge final : public QObject
     Q_PROPERTY(QWindow *unrealWindow READ unrealWindow NOTIFY unrealWindowChanged)
     Q_PROPERTY(QString unrealEmbedState READ unrealEmbedState NOTIFY unrealWindowChanged)
     Q_PROPERTY(QString unrealEmbedReason READ unrealEmbedReason NOTIFY unrealWindowChanged)
-    Q_PROPERTY(QVariantMap operatorMap READ operatorMap CONSTANT)
+    Q_PROPERTY(QVariantMap operatorMap READ operatorMap NOTIFY responseChanged)
     Q_PROPERTY(QVariantMap runManifest READ runManifest NOTIFY responseChanged)
     Q_PROPERTY(QVariantMap runtimeTelemetry READ runtimeTelemetry NOTIFY responseChanged)
     Q_PROPERTY(QVariantMap agentProposal READ agentProposal NOTIFY responseChanged)
@@ -159,6 +159,7 @@ private:
     bool _recordingActive = false;
     QString _recordingPath;
     QWindow *_unrealWindow = nullptr;
+    WId _lastUnrealNativeId = 0;
     QString _unrealEmbedState = QStringLiteral("not_attached");
     QString _unrealEmbedReason;
     QVariantMap _operatorMap;
@@ -171,7 +172,6 @@ private:
     double _unrealOrbitRemainderX = 0.0;
     double _unrealOrbitRemainderY = 0.0;
     bool _startupRunRecoveryPending = false;
-    bool _autoAttachUnrealAfterStart = false;
     QString _continuationAfterDisplayDetach;
     QString _pendingPrepareProfilePath;
     QString _pendingPrepareControllerId;

@@ -16,8 +16,21 @@ from typing import Any, Callable, Protocol
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_REGISTRY = PROJECT_ROOT / "Config" / "control_platform" / "control_module_registry.json"
 DEFAULT_PROFILE_CATALOG = PROJECT_ROOT / "Config" / "profiles" / "catalog.json"
+DEFAULT_OPERATOR_MAP_CATALOG = PROJECT_ROOT / "Config" / "control_platform" / "operator_map_catalog.json"
 DEFAULT_RUN_ROOT = PROJECT_ROOT / "Results" / "ui_platform" / "orchestrator_runs"
 MWORKS_LIVE_PREFLIGHT = PROJECT_ROOT / "Scripts" / "mworks_live" / "preflight_connection.py"
+
+OPERATOR_MAP_CATALOG_SCHEMA = "mosim.operator_map_catalog.v1"
+OPERATOR_MAP_COORDINATE_STATUSES = frozenset({"verified", "pending_runtime_validation", "rejected"})
+OPERATOR_MAP_REQUIRED_FIELDS = (
+    "map_id",
+    "map_version",
+    "resource_url",
+    "asset_sha256",
+    "world_frame",
+    "coordinate_contract_id",
+    "coordinate_contract_status",
+)
 
 ORCHESTRATOR_COMMANDS = frozenset(
     {
@@ -98,6 +111,7 @@ class MoSimOrchestrator:
     run_root: Path = DEFAULT_RUN_ROOT
     registry_path: Path = DEFAULT_REGISTRY
     profile_catalog_path: Path = DEFAULT_PROFILE_CATALOG
+    operator_map_catalog_path: Path = DEFAULT_OPERATOR_MAP_CATALOG
     backend: RuntimeBackend | None = None
     active_run_id: str = ""
     manifests: dict[str, dict[str, Any]] = field(default_factory=dict)
@@ -125,6 +139,50 @@ class MoSimOrchestrator:
     def _module(self, controller_id: str) -> dict[str, Any] | None:
         registry = _read_json(self.registry_path)
         return next((item for item in registry.get("modules", []) if item.get("module_id") == controller_id), None)
+
+    def _resolve_operator_map_snapshot(self, operator_map_id: Any) -> tuple[dict[str, Any], str, str]:
+        """Resolve one enabled map into a run-owned, immutable JSON snapshot."""
+        if not isinstance(operator_map_id, str) or not operator_map_id:
+            return {}, "", "operator_map_id_missing"
+        try:
+            catalog = _read_json(self.operator_map_catalog_path)
+        except (OSError, ValueError, json.JSONDecodeError):
+            return {}, "", "operator_map_catalog_unreadable"
+        if catalog.get("schema") != OPERATOR_MAP_CATALOG_SCHEMA:
+            return {}, "", "operator_map_catalog_schema_invalid"
+        maps = catalog.get("maps")
+        if not isinstance(maps, list):
+            return {}, "", "operator_map_catalog_entries_invalid"
+        entry = next(
+            (
+                item
+                for item in maps
+                if isinstance(item, dict) and item.get("map_id") == operator_map_id and item.get("enabled") is True
+            ),
+            None,
+        )
+        if entry is None:
+            return {}, "", "operator_map_not_enabled"
+        if any(not isinstance(entry.get(field), str) or not entry[field] for field in OPERATOR_MAP_REQUIRED_FIELDS):
+            return {}, "", "operator_map_contract_fields_missing"
+        if entry["coordinate_contract_status"] not in OPERATOR_MAP_COORDINATE_STATUSES:
+            return {}, "", "operator_map_coordinate_status_invalid"
+        bounds = entry.get("world_bounds_m")
+        if not isinstance(bounds, dict):
+            return {}, "", "operator_map_bounds_invalid"
+        try:
+            valid_bounds = (
+                float(bounds["min_x_m"]) < float(bounds["max_x_m"])
+                and float(bounds["min_y_m"]) < float(bounds["max_y_m"])
+            )
+        except (KeyError, TypeError, ValueError):
+            valid_bounds = False
+        if not valid_bounds:
+            return {}, "", "operator_map_bounds_invalid"
+
+        # JSON round-tripping prevents later catalog mutations from sharing nested objects with this run.
+        snapshot = json.loads(json.dumps(entry, ensure_ascii=False))
+        return snapshot, _canonical_hash(snapshot), ""
 
     def list_controllers(self, *, request_id: str) -> dict[str, Any]:
         registry = _read_json(self.registry_path)
@@ -440,6 +498,21 @@ class MoSimOrchestrator:
                 selected_vehicle_count=vehicle_count,
             )
 
+        operator_map_id = experiment.get("operator_map_id")
+        operator_map_snapshot: dict[str, Any] = {}
+        operator_map_snapshot_hash = ""
+        if operator_map_id is not None:
+            operator_map_snapshot, operator_map_snapshot_hash, map_error = self._resolve_operator_map_snapshot(
+                operator_map_id
+            )
+            if map_error:
+                return self._response(
+                    request_id,
+                    False,
+                    map_error,
+                    operator_map_id=operator_map_id,
+                )
+
         profile_hash = _canonical_hash(profile)
         return self._response(
             request_id,
@@ -464,6 +537,9 @@ class MoSimOrchestrator:
             scenario_path=scenario_path_relative,
             scenario_hash=_canonical_hash(scenario_snapshot),
             scenario_snapshot=scenario_snapshot,
+            operator_map_id=operator_map_id or "",
+            operator_map_snapshot=operator_map_snapshot,
+            operator_map_snapshot_hash=operator_map_snapshot_hash,
             vehicle_count=vehicle_count,
         )
 
@@ -644,6 +720,9 @@ class MoSimOrchestrator:
             "scenario_path": validation.get("scenario_path", ""),
             "scenario_hash": validation.get("scenario_hash", ""),
             "scenario_snapshot": validation.get("scenario_snapshot", {}),
+            "operator_map_id": validation.get("operator_map_id", ""),
+            "operator_map_snapshot": validation.get("operator_map_snapshot", {}),
+            "operator_map_snapshot_hash": validation.get("operator_map_snapshot_hash", ""),
             "created_at": time.time(),
             "updated_at": time.time(),
             "display_sessions": [],

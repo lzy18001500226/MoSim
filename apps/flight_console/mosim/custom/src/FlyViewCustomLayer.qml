@@ -21,15 +21,11 @@ Item {
     property bool manualRight: false
     property string observedFlightRunId: ""
     property bool observedArmedDuringRun: false
-    property var actualTracksByVehicle: ({})
-    property int actualTrackRevision: 0
-    property string actualTrackRunId: ""
 
     property var parentToolInsets
     property var totalToolInsets: toolInsets
     property var mapControl
     property bool controllerCatalogSynced: false
-    property bool factoryMapExpanded: false
     property bool _showSingleVehicleUI: true
     readonly property var activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
 
@@ -243,11 +239,6 @@ Item {
         }
     }
 
-    Connections {
-        target: mosimOrchestrator
-        function onResponseChanged() { root.captureRuntimeTelemetry() }
-    }
-
     function runtimeTelemetryFresh() {
         var telemetry = mosimOrchestrator.runtimeTelemetry || ({})
         var timestamp = Number(telemetry.timestamp || 0)
@@ -344,286 +335,11 @@ Item {
         return connection + " · " + arm + " · " + String(vehicle.mode || "未知模式")
     }
 
-    function vehicleMapPositionValid(vehicle) {
-        if (!vehicle || !vehicle.state || !vehicle.state.connected || !vehicle.state.position)
-            return false
-        var bounds = mosimOrchestrator.operatorMap.world_bounds_m || ({})
-        var x = Number(vehicle.state.position.x)
-        var y = Number(vehicle.state.position.y)
-        return isFinite(x) && isFinite(y)
-                && x >= Number(bounds.min_x_m || 0) && x <= Number(bounds.max_x_m || 0)
-                && y >= Number(bounds.min_y_m || 0) && y <= Number(bounds.max_y_m || 0)
-    }
-
-    function vehicleYawDegrees(vehicle) {
-        if (!vehicle || !vehicle.state || !vehicle.state.orientation)
-            return 0
-        var q = vehicle.state.orientation
-        var yaw = Math.atan2(2.0 * (Number(q.w) * Number(q.z) + Number(q.x) * Number(q.y)),
-                             1.0 - 2.0 * (Number(q.y) * Number(q.y) + Number(q.z) * Number(q.z)))
-        return yaw * 180.0 / Math.PI
-    }
-
-    function mapPixelX(worldX, imageX, imageWidth) {
-        var bounds = mosimOrchestrator.operatorMap.world_bounds_m
-        return imageX + (worldX - Number(bounds.min_x_m))
-                / (Number(bounds.max_x_m) - Number(bounds.min_x_m)) * imageWidth
-    }
-
-    function mapPixelY(worldY, imageY, imageHeight) {
-        var bounds = mosimOrchestrator.operatorMap.world_bounds_m
-        return imageY + (Number(bounds.max_y_m) - worldY)
-                / (Number(bounds.max_y_m) - Number(bounds.min_y_m)) * imageHeight
-    }
-
-    function explorationBoundary() {
-        var manifest = mosimOrchestrator.runManifest || ({})
-        if (manifest.run_id !== mosimOrchestrator.runId
-                || manifest.experiment_profile_id !== profiles[profileBox.currentIndex].id)
-            return null
-        var scenario = manifest.scenario_snapshot || ({})
-        var boundary = scenario.exploration_boundary || null
-        if (!boundary)
-            return null
-        var minX = Number(boundary.min_x_m)
-        var maxX = Number(boundary.max_x_m)
-        var minY = Number(boundary.min_y_m)
-        var maxY = Number(boundary.max_y_m)
-        if (!isFinite(minX) || !isFinite(maxX) || !isFinite(minY) || !isFinite(maxY)
-                || minX >= maxX || minY >= maxY)
-            return null
-        return { min_x_m: minX, max_x_m: maxX, min_y_m: minY, max_y_m: maxY }
-    }
-
-    function paintExplorationBoundary(canvas, imageX, imageY, imageWidth, imageHeight) {
-        var context = canvas.getContext("2d")
-        context.reset()
-        var boundary = explorationBoundary()
-        if (!boundary)
-            return
-        var left = mapPixelX(boundary.min_x_m, imageX, imageWidth)
-        var right = mapPixelX(boundary.max_x_m, imageX, imageWidth)
-        var top = mapPixelY(boundary.max_y_m, imageY, imageHeight)
-        var bottom = mapPixelY(boundary.min_y_m, imageY, imageHeight)
-        context.strokeStyle = "#20c7b7"
-        context.lineWidth = 3
-        context.strokeRect(left, top, right - left, bottom - top)
-    }
-
-    function formationTarget() {
-        var manifest = mosimOrchestrator.runManifest || ({})
-        if (manifest.run_id !== mosimOrchestrator.runId
-                || manifest.experiment_profile_id !== profiles[profileBox.currentIndex].id)
-            return null
-        var scenario = manifest.scenario_snapshot || ({})
-        var formation = scenario.formation || null
-        var target = formation ? formation.target_center_xy_m : null
-        if (!target || target.length !== 2)
-            return null
-        var x = Number(target[0])
-        var y = Number(target[1])
-        if (!isFinite(x) || !isFinite(y))
-            return null
-        return { x: x, y: y }
-    }
-
-    function paintFormationTarget(canvas, imageX, imageY, imageWidth, imageHeight) {
-        var context = canvas.getContext("2d")
-        context.reset()
-        var target = formationTarget()
-        if (!target)
-            return
-        var x = mapPixelX(target.x, imageX, imageWidth)
-        var y = mapPixelY(target.y, imageY, imageHeight)
-        var radius = Math.max(6, Math.min(12, imageWidth / 45))
-        context.beginPath()
-        context.arc(x, y, radius, 0, Math.PI * 2)
-        context.strokeStyle = "#f05d9b"
-        context.lineWidth = 3
-        context.stroke()
-        context.beginPath()
-        context.moveTo(x - radius - 4, y)
-        context.lineTo(x + radius + 4, y)
-        context.moveTo(x, y - radius - 4)
-        context.lineTo(x, y + radius + 4)
-        context.stroke()
-    }
-
-    function frozenScenarioSummary() {
-        var manifest = mosimOrchestrator.runManifest || ({})
-        if (manifest.run_id !== mosimOrchestrator.runId || !manifest.scenario_snapshot)
-            return "任务参数尚未冻结"
-        var scenario = manifest.scenario_snapshot
-        var mission = scenario.mission || ({})
-        var boundary = scenario.exploration_boundary || null
-        if (boundary) {
-            return "已冻结：边界 X[" + Number(boundary.min_x_m).toFixed(2) + ", "
-                    + Number(boundary.max_x_m).toFixed(2) + "] m，Y["
-                    + Number(boundary.min_y_m).toFixed(2) + ", "
-                    + Number(boundary.max_y_m).toFixed(2) + "] m；时长 "
-                    + Number(mission.duration_s || 0).toFixed(0) + " s；种子 "
-                    + String(mission.random_seed === undefined ? "-" : mission.random_seed)
-                    + "；最大速度 " + Number(mission.max_velocity_mps || 0).toFixed(1) + " m/s"
-        }
-        var formation = scenario.formation || null
-        if (formation) {
-            var target = formation.target_center_xy_m || []
-            return "已冻结：三机编队；目标中心 (" + Number(target[0]).toFixed(2) + ", "
-                    + Number(target[1]).toFixed(2) + ") m；最小机间距 "
-                    + Number(formation.expected_min_pair_distance_m || 0).toFixed(2) + " m"
-        }
-        return "已冻结场景；场景哈希 " + String(manifest.scenario_hash || "-").slice(0, 12)
-    }
-
-    function captureRuntimeTelemetry() {
-        var telemetry = mosimOrchestrator.runtimeTelemetry || ({})
-        if (!runtimeTelemetryFresh())
-            return
-        if (actualTrackRunId !== telemetry.run_id) {
-            actualTracksByVehicle = ({})
-            actualTrackRevision += 1
-            actualTrackRunId = telemetry.run_id
-        }
-        var nextTracks = actualTracksByVehicle
-        var vehicles = runtimeVehicles()
-        var changed = false
-        for (var index = 0; index < vehicles.length; ++index) {
-            var vehicle = vehicles[index]
-            if (!vehicleMapPositionValid(vehicle))
-                continue
-            var id = String(vehicle.vehicle_id || ("uav" + (index + 1)))
-            var points = nextTracks[id] || []
-            var point = { x: Number(vehicle.state.position.x), y: Number(vehicle.state.position.y) }
-            var previous = points.length > 0 ? points[points.length - 1] : null
-            if (!previous || Math.hypot(point.x - previous.x, point.y - previous.y) >= 0.05) {
-                points = points.slice(Math.max(0, points.length - 1198))
-                points.push(point)
-                nextTracks[id] = points
-                changed = true
-            }
-        }
-        if (changed) {
-            actualTracksByVehicle = nextTracks
-            actualTrackRevision += 1
-        }
-    }
-
-    function paintActualTracks(canvas, imageX, imageY, imageWidth, imageHeight) {
-        var revision = actualTrackRevision
-        var context = canvas.getContext("2d")
-        context.reset()
-        context.lineWidth = 2
-        context.lineJoin = "round"
-        context.lineCap = "round"
-        var colors = ["#00d084", "#ffb020", "#4aa3ff", "#f05d9b", "#9b7cff", "#21c7d9", "#ffffff", "#ff7043", "#8bc34a"]
-        var ids = Object.keys(actualTracksByVehicle).sort()
-        for (var idIndex = 0; idIndex < ids.length; ++idIndex) {
-            var points = actualTracksByVehicle[ids[idIndex]]
-            if (!points || points.length < 2)
-                continue
-            context.beginPath()
-            context.strokeStyle = colors[idIndex % colors.length]
-            context.moveTo(mapPixelX(points[0].x, imageX, imageWidth), mapPixelY(points[0].y, imageY, imageHeight))
-            for (var pointIndex = 1; pointIndex < points.length; ++pointIndex)
-                context.lineTo(mapPixelX(points[pointIndex].x, imageX, imageWidth), mapPixelY(points[pointIndex].y, imageY, imageHeight))
-            context.stroke()
-        }
-    }
-
-    function taskPath(kind) {
-        if (!runtimeTelemetryFresh())
-            return ({})
-        var paths = mosimOrchestrator.runtimeTelemetry.task_paths || ({})
-        var path = paths[kind] || ({})
-        if (path.status !== "available" || !path.points || path.points.length < 2)
-            return ({})
-        if (kind === "future" && Date.now() / 1000.0 - Number(path.updated_at || 0) > 5.0)
-            return ({})
-        return path
-    }
-
-    function taskPathLabel(kind) {
-        var path = taskPath(kind)
-        var semantics = String(path.semantics || "")
-        if (semantics === "formation_center_reference")
-            return "编队中心预期"
-        if (semantics === "exploration_target_sequence")
-            return "探索目标序列"
-        if (semantics === "planner_sampled_future_trajectory")
-            return "规划器未来轨迹"
-        return kind === "future" ? "未来轨迹" : "任务预期轨迹"
-    }
-
-    function taskPathStatusText() {
-        var expected = taskPath("expected")
-        var future = taskPath("future")
-        var labels = []
-        if (expected.status === "available")
-            labels.push(taskPathLabel("expected") + "已接收")
-        if (future.status === "available")
-            labels.push(taskPathLabel("future") + "已接收")
-        if (actualTrackRevision > 0)
-            labels.push("实际轨迹实时记录中")
-        return labels.length > 0 ? labels.join("；") : "等待任务轨迹与飞机位置"
-    }
-
-    function paintTaskPaths(canvas, imageX, imageY, imageWidth, imageHeight) {
-        var context = canvas.getContext("2d")
-        context.reset()
-        var kinds = ["expected", "future"]
-        var colors = ["#ffb020", "#4aa3ff"]
-        for (var kindIndex = 0; kindIndex < kinds.length; ++kindIndex) {
-            var path = taskPath(kinds[kindIndex])
-            var points = path.points || []
-            if (points.length < 2)
-                continue
-            context.beginPath()
-            context.strokeStyle = colors[kindIndex]
-            context.lineWidth = kinds[kindIndex] === "future" ? 3 : 2
-            context.lineJoin = "round"
-            context.lineCap = "round"
-            context.moveTo(mapPixelX(Number(points[0].x), imageX, imageWidth),
-                           mapPixelY(Number(points[0].y), imageY, imageHeight))
-            for (var pointIndex = 1; pointIndex < points.length; ++pointIndex)
-                context.lineTo(mapPixelX(Number(points[pointIndex].x), imageX, imageWidth),
-                               mapPixelY(Number(points[pointIndex].y), imageY, imageHeight))
-            context.stroke()
-        }
-    }
-
-    function vehicleColor(index) {
-        var colors = ["#00d084", "#ffb020", "#4aa3ff", "#f05d9b", "#9b7cff", "#21c7d9", "#ffffff", "#ff7043", "#8bc34a"]
-        return colors[index % colors.length]
-    }
-
-    function syncUnrealOverlayHole() {
-        if (!mosimOrchestrator.unrealWindow)
-            return
-
-        mosimOrchestrator.setUnrealOverlayHole(
-            factoryMapPreview.x,
-            factoryMapPreview.y,
-            factoryMapPreview.width,
-            factoryMapPreview.height,
-            unrealViewport.width,
-            unrealViewport.height,
-            factoryMapPreview.visible)
-    }
-
-    onFactoryMapExpandedChanged: Qt.callLater(syncUnrealOverlayHole)
-
-    Connections {
-        target: mainWindow
-        function onMosimNativeOverlayVisibleChanged() {
-            mosimOrchestrator.setUnrealPresentationSuppressed(mainWindow.mosimNativeOverlayVisible)
-        }
-    }
-
     QGCPalette { id: qgcPal; colorGroupEnabled: true }
 
     // The custom Flight Console owns the visual surface. Preserve the native
     // QGC map object and restore it when this layer is unloaded, but do not let
-    // its online tiles bleed through the UE/factory display.
+    // its online tiles bleed through the Factory map.
     Component.onCompleted: {
         forceActiveFocus()
         if (mapControl)
@@ -631,7 +347,6 @@ Item {
     }
     Component.onDestruction: {
         mosimOrchestrator.setManualControlEnabled(false)
-        mosimOrchestrator.setUnrealOverlayHole(0, 0, 0, 0, 0, 0, false)
         if (mapControl)
             mapControl.visible = true
     }
@@ -841,6 +556,33 @@ Item {
         return qgcPal.text
     }
 
+    readonly property var flightStageLabels: ["配置", "环境", "连接", "起飞", "执行", "降落"]
+
+    function currentFlightStageIndex() {
+        var profile = profiles[profileBox.currentIndex]
+        var connected = qgcConnectedVehicleCount() >= profile.count
+        var armed = qgcArmedVehicleCount() > 0
+        var mission = missionStatus()
+        var missionPhase = String(mission.phase || "")
+        if (mosimOrchestrator.lifecycleState === "completed"
+                || mission.terminal === true
+                || missionPhase === "land"
+                || missionPhase === "safe_stop_hover"
+                || (observedArmedDuringRun && connected && !armed))
+            return 5
+        if (armed || ["hover_before", "figure8", "ego_triggered", "ego_execute",
+                      "exploration_execute"].indexOf(missionPhase) >= 0)
+            return 4
+        if (connected)
+            return 3
+        if (mosimOrchestrator.lifecycleState === "starting"
+                || mosimOrchestrator.lifecycleState === "running")
+            return 2
+        if (mosimOrchestrator.lifecycleState === "ready" || mosimOrchestrator.runId !== "")
+            return 1
+        return 0
+    }
+
     QGCToolInsets {
         id: toolInsets
         leftEdgeTopInset: parentToolInsets.leftEdgeTopInset
@@ -857,505 +599,27 @@ Item {
         bottomEdgeRightInset: parentToolInsets.bottomEdgeRightInset
     }
 
-    Rectangle {
-        id: unrealViewport
+    FactoryFlyMap {
+        id: factoryFlyMap
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: consolePanel.left
         anchors.bottom: parent.bottom
-        color: "#111315"
-        // This is the display surface for the embedded UE window. It must sit
-        // above QGC's native map; otherwise an unattached UE window exposes the
-        // online satellite map behind the Factory thumbnail.
         z: 0
+        mapConfig: mosimOrchestrator.operatorMap || ({})
+        runManifest: mosimOrchestrator.runManifest || ({})
+        mapState: (mosimOrchestrator.runtimeTelemetry || ({})).map_state || ({})
+        runId: mosimOrchestrator.runId
+    }
 
-        WindowContainer {
-            id: unrealWindowContainer
-            anchors.fill: parent
-            window: mosimOrchestrator.unrealWindow
-            // Keep the native host mounted even while a QGC drawer is open.
-            // Toggling WindowContainer.visible can release the foreign HWND
-            // during startup and leave UE as a standalone top-level window.
-            visible: window !== null
-            onWindowChanged: {
-                if (window !== null) {
-                    mosimOrchestrator.setUnrealPresentationSuppressed(mainWindow.mosimNativeOverlayVisible)
-                    Qt.callLater(mosimOrchestrator.confirmUnrealContainerReady)
-                }
-            }
-        }
-
-        MouseArea {
-            id: unrealOrbitArea
-            anchors.fill: parent
-            z: 2
-            enabled: mosimOrchestrator.unrealWindow !== null
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
-            preventStealing: true
-            focus: true
-            property real previousX: 0
-            property real previousY: 0
-
-            Component.onCompleted: forceActiveFocus()
-
-            onPressed: function(mouse) {
-                forceActiveFocus()
-                previousX = mouse.x
-                previousY = mouse.y
-            }
-            onPositionChanged: function(mouse) {
-                if (!pressed) {
-                    return
-                }
-                mosimOrchestrator.orbitUnreal(mouse.x - previousX, mouse.y - previousY)
-                previousX = mouse.x
-                previousY = mouse.y
-            }
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            z: 3
-            enabled: factoryMapExpanded
-            acceptedButtons: Qt.LeftButton
-            onClicked: factoryMapExpanded = false
-        }
-
-        Rectangle {
-            id: factoryMapPreview
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.margins: 12
-            width: factoryMapExpanded ? Math.min(parent.width - 48, 960) : Math.min(parent.width * 0.32, 360)
-            height: factoryMapExpanded ? Math.min(parent.height - 48, 560) : width * 800 / 2048
-            color: "#10151a"
-            border.color: "#d7e0e5"
-            border.width: 1
-            z: 4
-
-            onXChanged: Qt.callLater(root.syncUnrealOverlayHole)
-            onYChanged: Qt.callLater(root.syncUnrealOverlayHole)
-            onWidthChanged: Qt.callLater(root.syncUnrealOverlayHole)
-            onHeightChanged: Qt.callLater(root.syncUnrealOverlayHole)
-            onVisibleChanged: Qt.callLater(root.syncUnrealOverlayHole)
-
-            Behavior on width { NumberAnimation { duration: 140 } }
-            Behavior on height { NumberAnimation { duration: 140 } }
-
-            Image {
-                id: factoryMapThumbnail
-                anchors.fill: parent
-                anchors.margins: 2
-                visible: !factoryMapExpanded
-                source: "qrc:/Custom/maps/factory_l2/v1/floorplan.png"
-                fillMode: Image.PreserveAspectFit
-                asynchronous: true
-                cache: true
-            }
-
-            Canvas {
-                id: factoryExplorationBoundaryPreview
-                anchors.fill: parent
-                anchors.margins: 2
-                visible: !factoryMapExpanded && root.explorationBoundary() !== null
-                z: 1
-                property string scenarioHash: String(mosimOrchestrator.runManifest.scenario_hash || "")
-                onScenarioHashChanged: requestPaint()
-                onPaint: root.paintExplorationBoundary(this, 0, 0, width, height)
-            }
-
-            Canvas {
-                id: factoryTaskPathPreview
-                anchors.fill: parent
-                anchors.margins: 2
-                visible: !factoryMapExpanded && root.runtimeTelemetryFresh()
-                z: 2
-                property real telemetryTimestamp: Number(mosimOrchestrator.runtimeTelemetry.timestamp || 0)
-                onTelemetryTimestampChanged: requestPaint()
-                onPaint: root.paintTaskPaths(this, 0, 0, width, height)
-            }
-
-            Canvas {
-                id: factoryFormationTargetPreview
-                anchors.fill: parent
-                anchors.margins: 2
-                visible: !factoryMapExpanded && root.formationTarget() !== null
-                z: 3
-                property string scenarioHash: String(mosimOrchestrator.runManifest.scenario_hash || "")
-                onScenarioHashChanged: requestPaint()
-                onPaint: root.paintFormationTarget(this, 0, 0, width, height)
-            }
-
-            Canvas {
-                id: factoryActualTrackPreview
-                anchors.fill: parent
-                anchors.margins: 2
-                visible: !factoryMapExpanded && root.runtimeTelemetryFresh()
-                z: 4
-                property int trackRevision: root.actualTrackRevision
-                onTrackRevisionChanged: requestPaint()
-                onPaint: root.paintActualTracks(this, 0, 0, width, height)
-            }
-
-            Repeater {
-                model: !factoryMapExpanded ? root.runtimeVehicles() : []
-                delegate: Item {
-                    required property var modelData
-                    required property int index
-                    property var vehicle: modelData
-                    visible: root.vehicleMapPositionValid(vehicle)
-                    width: 18
-                    height: 18
-                    z: 5
-                    rotation: 90 - root.vehicleYawDegrees(vehicle)
-                    x: root.mapPixelX(Number(vehicle.state.position.x), 2, factoryMapPreview.width - 4) - width / 2
-                    y: root.mapPixelY(Number(vehicle.state.position.y), 2, factoryMapPreview.height - 4) - height / 2
-
-                    Canvas {
-                        anchors.fill: parent
-                        onPaint: {
-                            var context = getContext("2d")
-                            context.reset()
-                            context.beginPath()
-                            context.moveTo(width, height / 2)
-                            context.lineTo(2, 2)
-                            context.lineTo(5, height / 2)
-                            context.lineTo(2, height - 2)
-                            context.closePath()
-                            context.fillStyle = root.vehicleColor(index)
-                            context.fill()
-                            context.strokeStyle = "white"
-                            context.lineWidth = 1.5
-                            context.stroke()
-                        }
-                    }
-                }
-            }
-
-            Loader {
-                id: factoryMapLoader
-                anchors.fill: parent
-                anchors.topMargin: 38
-                anchors.margins: 2
-                visible: factoryMapExpanded
-                active: factoryMapExpanded
-
-                sourceComponent: Rectangle {
-                    id: factoryMapCanvas
-                    clip: true
-                    color: "#10151a"
-                    property real zoomFactor: 1.0
-
-                    function zoomAt(viewX, viewY, wheelDelta) {
-                        var oldZoom = zoomFactor
-                        var nextZoom = Math.max(1.0, Math.min(8.0,
-                            oldZoom * (wheelDelta > 0 ? 1.2 : 1 / 1.2)))
-                        if (Math.abs(nextZoom - oldZoom) < 0.0001)
-                            return
-
-                        var imageX = factoryMapFlickable.contentX + viewX - factoryMapImage.x
-                        var imageY = factoryMapFlickable.contentY + viewY - factoryMapImage.y
-                        var imageRatioX = Math.max(0.0, Math.min(1.0, imageX / factoryMapImage.width))
-                        var imageRatioY = Math.max(0.0, Math.min(1.0, imageY / factoryMapImage.height))
-                        zoomFactor = nextZoom
-                        Qt.callLater(function() {
-                            var targetX = factoryMapImage.x + imageRatioX * factoryMapImage.width - viewX
-                            var targetY = factoryMapImage.y + imageRatioY * factoryMapImage.height - viewY
-                            factoryMapFlickable.contentX = Math.max(0,
-                                Math.min(targetX, factoryMapFlickable.contentWidth - factoryMapFlickable.width))
-                            factoryMapFlickable.contentY = Math.max(0,
-                                Math.min(targetY, factoryMapFlickable.contentHeight - factoryMapFlickable.height))
-                        })
-                    }
-
-                    Flickable {
-                        id: factoryMapFlickable
-                        anchors.fill: parent
-                        clip: true
-                        boundsBehavior: Flickable.StopAtBounds
-                        contentWidth: Math.max(width, factoryMapSurface.width)
-                        contentHeight: Math.max(height, factoryMapSurface.height)
-
-                        Item {
-                            id: factoryMapSurface
-                            width: Math.max(factoryMapFlickable.width,
-                                            factoryMapImage.width)
-                            height: Math.max(factoryMapFlickable.height,
-                                             factoryMapImage.height)
-
-                            Image {
-                                id: factoryMapImage
-                                readonly property real fittedWidth: Math.min(
-                                    factoryMapFlickable.width,
-                                    factoryMapFlickable.height * 2048 / 800)
-                                width: fittedWidth * factoryMapCanvas.zoomFactor
-                                height: width * 800 / 2048
-                                anchors.centerIn: parent
-                                source: "qrc:/Custom/maps/factory_l2/v1/floorplan.png"
-                                fillMode: Image.Stretch
-                                smooth: true
-                                mipmap: true
-                                cache: true
-                            }
-
-                            Canvas {
-                                id: factoryExplorationBoundaryExpanded
-                                x: factoryMapImage.x
-                                y: factoryMapImage.y
-                                width: factoryMapImage.width
-                                height: factoryMapImage.height
-                                visible: root.explorationBoundary() !== null
-                                z: 1
-                                property string scenarioHash: String(mosimOrchestrator.runManifest.scenario_hash || "")
-                                onScenarioHashChanged: requestPaint()
-                                onWidthChanged: requestPaint()
-                                onHeightChanged: requestPaint()
-                                onPaint: root.paintExplorationBoundary(this, 0, 0, width, height)
-                            }
-
-                            Canvas {
-                                id: factoryTaskPathExpanded
-                                x: factoryMapImage.x
-                                y: factoryMapImage.y
-                                width: factoryMapImage.width
-                                height: factoryMapImage.height
-                                visible: root.runtimeTelemetryFresh()
-                                z: 2
-                                property real telemetryTimestamp: Number(mosimOrchestrator.runtimeTelemetry.timestamp || 0)
-                                onTelemetryTimestampChanged: requestPaint()
-                                onWidthChanged: requestPaint()
-                                onHeightChanged: requestPaint()
-                                onPaint: root.paintTaskPaths(this, 0, 0, width, height)
-                            }
-
-                            Canvas {
-                                id: factoryFormationTargetExpanded
-                                x: factoryMapImage.x
-                                y: factoryMapImage.y
-                                width: factoryMapImage.width
-                                height: factoryMapImage.height
-                                visible: root.formationTarget() !== null
-                                z: 3
-                                property string scenarioHash: String(mosimOrchestrator.runManifest.scenario_hash || "")
-                                onScenarioHashChanged: requestPaint()
-                                onWidthChanged: requestPaint()
-                                onHeightChanged: requestPaint()
-                                onPaint: root.paintFormationTarget(this, 0, 0, width, height)
-                            }
-
-                            Canvas {
-                                id: factoryActualTrackExpanded
-                                x: factoryMapImage.x
-                                y: factoryMapImage.y
-                                width: factoryMapImage.width
-                                height: factoryMapImage.height
-                                visible: root.runtimeTelemetryFresh()
-                                z: 4
-                                property int trackRevision: root.actualTrackRevision
-                                onTrackRevisionChanged: requestPaint()
-                                onWidthChanged: requestPaint()
-                                onHeightChanged: requestPaint()
-                                onPaint: root.paintActualTracks(this, 0, 0, width, height)
-                            }
-
-                            Repeater {
-                                model: root.runtimeVehicles()
-                                delegate: Item {
-                                    required property var modelData
-                                    required property int index
-                                    property var vehicle: modelData
-                                    visible: root.vehicleMapPositionValid(vehicle)
-                                    width: 20
-                                    height: 20
-                                    z: 4
-                                    rotation: 90 - root.vehicleYawDegrees(vehicle)
-                                    x: root.mapPixelX(Number(vehicle.state.position.x), factoryMapImage.x, factoryMapImage.width) - width / 2
-                                    y: root.mapPixelY(Number(vehicle.state.position.y), factoryMapImage.y, factoryMapImage.height) - height / 2
-
-                                    Canvas {
-                                        anchors.fill: parent
-                                        onPaint: {
-                                            var context = getContext("2d")
-                                            context.reset()
-                                            context.beginPath()
-                                            context.moveTo(width, height / 2)
-                                            context.lineTo(2, 2)
-                                            context.lineTo(5, height / 2)
-                                            context.lineTo(2, height - 2)
-                                            context.closePath()
-                                            context.fillStyle = root.vehicleColor(index)
-                                            context.fill()
-                                            context.strokeStyle = "white"
-                                            context.lineWidth = 1.5
-                                            context.stroke()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            acceptedButtons: Qt.NoButton
-                            hoverEnabled: true
-                            onWheel: function(wheel) {
-                                factoryMapCanvas.zoomAt(wheel.x, wheel.y, wheel.angleDelta.y)
-                                wheel.accepted = true
-                            }
-                        }
-                    }
-                }
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                enabled: !factoryMapExpanded
-                cursorShape: Qt.PointingHandCursor
-                onClicked: factoryMapExpanded = true
-            }
-
-            Row {
-                anchors.top: parent.top
-                anchors.right: parent.right
-                anchors.margins: 5
-                spacing: 4
-                visible: factoryMapExpanded
-                z: 2
-
-                QGCButton {
-                    text: "X"
-                    width: 38
-                    height: 28
-                    onClicked: factoryMapExpanded = false
-                }
-            }
-
-            Row {
-                anchors.left: parent.left
-                anchors.bottom: parent.bottom
-                anchors.margins: 6
-                spacing: 10
-                visible: root.runtimeTelemetryFresh()
-                z: 5
-
-                Repeater {
-                    model: [
-                        { label: "实际", color: "#00d084", visible: Object.keys(root.actualTracksByVehicle).length > 0 },
-                        { label: root.taskPathLabel("expected"), color: "#ffb020", visible: root.taskPath("expected").status === "available" },
-                        { label: root.taskPathLabel("future"), color: "#4aa3ff", visible: root.taskPath("future").status === "available" },
-                        { label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }
-                    ]
-                    delegate: Row {
-                        required property var modelData
-                        visible: modelData.visible
-                        spacing: 4
-                        Rectangle { width: 14; height: 3; anchors.verticalCenter: parent.verticalCenter; color: modelData.color }
-                        Text { text: modelData.label; color: "white"; font.pixelSize: 12 }
-                    }
-                }
-            }
-        }
-
-        FlyViewBottomRightRowLayout {
-            id: unrealTelemetryHud
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
-            anchors.margins: ScreenTools.defaultFontPixelWidth * 0.75
-            spacing: ScreenTools.defaultFontPixelWidth
-            visible: activeVehicle !== null && !factoryMapExpanded
-            z: 5
-        }
-
-        Shortcut {
-            sequence: "N"
-            enabled: mosimOrchestrator.unrealWindow !== null
-            onActivated: mosimOrchestrator.zoomUnrealIn()
-        }
-
-        Shortcut {
-            sequence: "M"
-            enabled: mosimOrchestrator.unrealWindow !== null
-            onActivated: mosimOrchestrator.zoomUnrealOut()
-        }
-
-        Shortcut {
-            sequence: "Left"
-            context: Qt.ApplicationShortcut
-            autoRepeat: true
-            enabled: mosimOrchestrator.unrealWindow !== null && !factoryMapExpanded
-            onActivated: mosimOrchestrator.orbitUnreal(-4, 0)
-        }
-
-        Shortcut {
-            sequence: "Right"
-            context: Qt.ApplicationShortcut
-            autoRepeat: true
-            enabled: mosimOrchestrator.unrealWindow !== null && !factoryMapExpanded
-            onActivated: mosimOrchestrator.orbitUnreal(4, 0)
-        }
-
-        Shortcut {
-            sequence: "Up"
-            context: Qt.ApplicationShortcut
-            autoRepeat: true
-            enabled: mosimOrchestrator.unrealWindow !== null && !factoryMapExpanded
-            onActivated: mosimOrchestrator.orbitUnreal(0, -4)
-        }
-
-        Shortcut {
-            sequence: "Down"
-            context: Qt.ApplicationShortcut
-            autoRepeat: true
-            enabled: mosimOrchestrator.unrealWindow !== null && !factoryMapExpanded
-            onActivated: mosimOrchestrator.orbitUnreal(0, 4)
-        }
-
-        ColumnLayout {
-            anchors.centerIn: parent
-            width: Math.min(parent.width - 48, 520)
-            visible: mosimOrchestrator.unrealWindow === null
-            spacing: 10
-
-            QGCLabel {
-                Layout.alignment: Qt.AlignHCenter
-                text: "UE三维视图"
-                font.bold: true
-                font.pixelSize: ScreenTools.largeFontPixelSize
-            }
-            QGCLabel {
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                wrapMode: Text.Wrap
-                text: mosimOrchestrator.unrealEmbedState === "waiting_for_window"
-                      ? "正在等待受管UE窗口..."
-                      : mosimOrchestrator.unrealEmbedState === "window_discovered_hidden"
-                        ? "正在把UE嵌入QGC主视图..."
-                      : mosimOrchestrator.unrealEmbedState === "blocked"
-                        ? "UE原生嵌入未完成，窗口已保持隐藏。"
-                        : "启动显示会话后，这里将显示工厂UE场景。"
-                color: qgcPal.text
-            }
-            QGCLabel {
-                Layout.fillWidth: true
-                horizontalAlignment: Text.AlignHCenter
-                visible: mosimOrchestrator.unrealEmbedReason.length > 0
-                text: mosimOrchestrator.unrealEmbedReason
-                color: qgcPal.colorOrange
-                wrapMode: Text.WrapAnywhere
-            }
-            QGCButton {
-                Layout.alignment: Qt.AlignHCenter
-                text: "重试UE嵌入"
-                visible: mosimOrchestrator.displaySessionId.length > 0
-                         && mosimOrchestrator.unrealWindow === null
-                enabled: !mosimOrchestrator.busy
-                onClicked: mosimOrchestrator.refreshUnrealEmbedding()
-            }
-        }
-
-        onWidthChanged: Qt.callLater(root.syncUnrealOverlayHole)
-        onHeightChanged: Qt.callLater(root.syncUnrealOverlayHole)
+    FlyViewBottomRightRowLayout {
+        id: flightTelemetryHud
+        anchors.right: consolePanel.left
+        anchors.bottom: parent.bottom
+        anchors.margins: ScreenTools.defaultFontPixelWidth * 0.75
+        spacing: ScreenTools.defaultFontPixelWidth
+        visible: activeVehicle !== null
+        z: 10
     }
 
     Rectangle {
@@ -1363,7 +627,7 @@ Item {
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        width: Math.min(460, parent.width * 0.42)
+        width: Math.min(360, Math.max(320, parent.width * 0.30))
         color: qgcPal.window
         z: 100
         border.color: qgcPal.text
@@ -1375,14 +639,20 @@ Item {
             spacing: ScreenTools.defaultFontPixelHeight * 0.45
 
             RowLayout {
+                objectName: "启动进度"
                 Layout.fillWidth: true
-                QGCLabel { text: "MoSim飞行控制台"; font.bold: true; Layout.fillWidth: true }
+                QGCLabel { text: "飞行控制"; font.bold: true; Layout.fillWidth: true }
+                QGCLabel {
+                    text: flightStageLabels[currentFlightStageIndex()]
+                    color: qgcPal.colorOrange
+                    font.bold: true
+                }
                 BusyIndicator { running: mosimOrchestrator.busy; visible: running; implicitWidth: 24; implicitHeight: 24 }
             }
 
             Rectangle {
                 Layout.fillWidth: true
-                implicitHeight: 28
+                implicitHeight: 26
                 color: mosimOrchestrator.accepted ? qgcPal.colorGreen : (mosimOrchestrator.reasonCode === "idle" ? qgcPal.windowShade : qgcPal.colorOrange)
                 QGCLabel {
                     anchors.fill: parent
@@ -1394,27 +664,41 @@ Item {
                 }
             }
 
-            ColumnLayout {
+            RowLayout {
                 Layout.fillWidth: true
-                spacing: 3
-                RowLayout {
-                    Layout.fillWidth: true
-                    QGCLabel { text: "启动进度"; font.bold: true; Layout.fillWidth: true }
-                    QGCLabel {
-                        text: mosimOrchestrator.operationAttempt > 0
-                              ? mosimOrchestrator.operationAttempt + "/" + mosimOrchestrator.operationMaxAttempts
-                              : "-"
+                Layout.preferredHeight: 42
+                spacing: 2
+                Repeater {
+                    model: flightStageLabels
+                    delegate: ColumnLayout {
+                        required property string modelData
+                        required property int index
+                        Layout.fillWidth: true
+                        spacing: 2
+                        Rectangle {
+                            Layout.alignment: Qt.AlignHCenter
+                            implicitWidth: index === root.currentFlightStageIndex() ? 12 : 8
+                            implicitHeight: implicitWidth
+                            radius: implicitWidth / 2
+                            color: index < root.currentFlightStageIndex()
+                                   ? qgcPal.colorGreen
+                                   : (index === root.currentFlightStageIndex()
+                                      ? qgcPal.colorOrange : qgcPal.windowShade)
+                            border.width: 1
+                            border.color: index <= root.currentFlightStageIndex()
+                                          ? color : qgcPal.text
+                        }
+                        QGCLabel {
+                            Layout.alignment: Qt.AlignHCenter
+                            text: modelData
+                            font.pixelSize: ScreenTools.smallFontPixelSize
+                            color: index < root.currentFlightStageIndex()
+                                   ? qgcPal.colorGreen
+                                   : (index === root.currentFlightStageIndex()
+                                      ? qgcPal.colorOrange : qgcPal.text)
+                            opacity: index > root.currentFlightStageIndex() ? 0.5 : 1.0
+                        }
                     }
-                }
-                QGCLabel {
-                    text: operationStageText(mosimOrchestrator.operationStage)
-                    Layout.fillWidth: true
-                    elide: Text.ElideRight
-                }
-                ProgressBar {
-                    Layout.fillWidth: true
-                    indeterminate: mosimOrchestrator.operationState === "running" && mosimOrchestrator.operationProgress < 0
-                    value: mosimOrchestrator.operationProgress < 0 ? 0 : mosimOrchestrator.operationProgress / 100
                 }
             }
 
@@ -1422,10 +706,10 @@ Item {
                 id: tabs
                 Layout.fillWidth: true
                 TabButton { text: "任务" }
-                TabButton { text: "遥测" }
+                TabButton { text: "状态" }
                 TabButton { text: "故障" }
                 TabButton { text: "显示" }
-                TabButton { text: "证据" }
+                TabButton { text: "结果" }
                 TabButton { text: "助手" }
             }
 
@@ -1438,92 +722,76 @@ Item {
                     contentWidth: availableWidth
                     ColumnLayout {
                         width: parent.width
-                        spacing: 10
-                        QGCLabel { text: "任务配置"; font.bold: true }
-                        QGCCheckBox {
-                            id: manualModeCheck
-                            text: "启用W/A/S/D定点操纵"
-                            enabled: manualControlReady
-                            onCheckedChanged: {
-                                root.manualKeyboardEnabled = checked
-                                root.manualForward = false
-                                root.manualBackward = false
-                                root.manualLeft = false
-                                root.manualRight = false
-                                root.sendManualStick(!checked)
-                            }
-                        }
-                        QGCLabel {
-                            text: taskGuideText()
-                            color: manualModeCheck.checked ? qgcPal.colorGreen : qgcPal.text
-                            wrapMode: Text.Wrap
-                            Layout.fillWidth: true
-                        }
-                        QGCLabel {
-                            text: "控制权与解锁责任：" + flightAuthorityText()
-                            color: manualTaskSelected ? qgcPal.colorGreen : qgcPal.colorOrange
-                            font.bold: true
-                            wrapMode: Text.Wrap
-                            Layout.fillWidth: true
-                        }
-                        QGCLabel {
-                            text: "下一步：" + nextOperatorStepText()
-                            color: qgcPal.colorOrange
-                            font.bold: true
-                            wrapMode: Text.Wrap
-                            Layout.fillWidth: true
-                        }
-                        QGCLabel { text: "操作进度"; font.bold: true }
-                        Repeater {
-                            model: operatorChecklist()
-                            delegate: RowLayout {
-                                Layout.fillWidth: true
-                                QGCLabel {
-                                    text: modelData.state
-                                    color: operatorChecklistColor(modelData.state)
-                                    font.bold: modelData.state !== "等待"
-                                    Layout.preferredWidth: 56
-                                }
-                                QGCLabel {
-                                    text: modelData.label
-                                    color: operatorChecklistColor(modelData.state)
-                                    wrapMode: Text.Wrap
-                                    Layout.fillWidth: true
-                                }
-                            }
-                        }
-                        QGCLabel {
-                            text: "飞行阶段：" + flightPhaseText()
-                            color: qgcPal.text
-                            font.bold: true
-                            wrapMode: Text.Wrap
-                            Layout.fillWidth: true
-                        }
+                        spacing: 8
                         QGCLabel {
                             visible: profiles[profileBox.currentIndex].takeoff !== "qgc"
                             text: "任务Adapter阶段：" + missionStatusText()
                             color: missionStatusColor()
                             font.bold: true
-                            wrapMode: Text.Wrap
                             Layout.fillWidth: true
+                            elide: Text.ElideRight
                         }
-                        ComboBox {
-                            id: profileBox
+
+                        GridLayout {
                             Layout.fillWidth: true
-                            enabled: flightConfigurationEditable
-                            model: profiles
-                            textRole: "label"
-                            delegate: ItemDelegate {
-                                width: profileBox.width
-                                text: modelData.label
-                                enabled: modelData.enabled
-                                ToolTip.visible: hovered && !modelData.enabled
-                                ToolTip.text: modelData.disabledReason
+                            columns: 2
+                            columnSpacing: 8
+                            rowSpacing: 7
+
+                            QGCLabel { text: "任务"; font.bold: true }
+                            ComboBox {
+                                id: profileBox
+                                Layout.fillWidth: true
+                                enabled: flightConfigurationEditable
+                                model: profiles
+                                textRole: "label"
+                                delegate: ItemDelegate {
+                                    width: profileBox.width
+                                    text: modelData.label
+                                    enabled: modelData.enabled
+                                    ToolTip.visible: hovered && !modelData.enabled
+                                    ToolTip.text: modelData.disabledReason
+                                }
+                                onActivated: syncProfileSelection()
                             }
-                            onActivated: {
-                                syncProfileSelection()
+
+                            QGCLabel { text: "控制器"; font.bold: true }
+                            ComboBox {
+                                id: controllerBox
+                                Layout.fillWidth: true
+                                enabled: flightConfigurationEditable
+                                model: mosimOrchestrator.controllers
+                                textRole: "label"
+                                valueRole: "module_id"
+                                delegate: ItemDelegate {
+                                    width: controllerBox.width
+                                    text: modelData.label
+                                    enabled: modelData.enabled && root.controllerCompatibleWithTask(modelData.module_id)
+                                    ToolTip.visible: hovered && !enabled
+                                    ToolTip.text: !modelData.enabled
+                                                  ? modelData.disabled_reason
+                                                  : "当前任务没有该控制器的运行后端"
+                                }
+                            }
+
+                            QGCLabel { text: "机数"; font.bold: true }
+                            ComboBox {
+                                id: vehicleBox
+                                Layout.fillWidth: true
+                                enabled: flightConfigurationEditable
+                                model: vehicleCounts
+                                textRole: "label"
+                                delegate: ItemDelegate {
+                                    width: vehicleBox.width
+                                    text: modelData.label
+                                    enabled: modelData.enabled && root.vehicleCountCompatibleWithTask(modelData.value)
+                                    ToolTip.visible: hovered && !enabled
+                                    ToolTip.text: !modelData.enabled ? "该机数尚未通过规模验收"
+                                                                      : "当前任务固定为" + profiles[profileBox.currentIndex].count + "架飞机"
+                                }
                             }
                         }
+
                         QGCLabel {
                             Layout.fillWidth: true
                             visible: !profiles[profileBox.currentIndex].enabled
@@ -1533,73 +801,17 @@ Item {
                         }
                         QGCLabel {
                             Layout.fillWidth: true
-                            visible: mosimOrchestrator.runId !== "" && selectionMatchesPreparedRun()
-                            text: frozenScenarioSummary()
-                            color: qgcPal.colorGreen
-                            wrapMode: Text.Wrap
-                        }
-                        QGCLabel {
-                            Layout.fillWidth: true
-                            visible: mosimOrchestrator.runId !== "" && selectionMatchesPreparedRun()
-                            text: "场景哈希：" + String(mosimOrchestrator.runManifest.scenario_hash || "-")
-                            color: qgcPal.text
-                            wrapMode: Text.WrapAnywhere
-                        }
-                        QGCLabel { text: "控制器Profile" }
-                        ComboBox {
-                            id: controllerBox
-                            Layout.fillWidth: true
-                            enabled: flightConfigurationEditable
-                            model: mosimOrchestrator.controllers
-                            textRole: "label"
-                            valueRole: "module_id"
-                            delegate: ItemDelegate {
-                                width: controllerBox.width
-                                text: modelData.label
-                                enabled: modelData.enabled && root.controllerCompatibleWithTask(modelData.module_id)
-                                ToolTip.visible: hovered && !enabled
-                                ToolTip.text: !modelData.enabled
-                                              ? modelData.disabled_reason
-                                              : "当前任务没有该控制器的运行后端"
-                            }
-                        }
-                        QGCLabel {
-                            Layout.fillWidth: true
                             visible: controllerBox.currentIndex >= 0
                                      && !mosimOrchestrator.controllers[controllerBox.currentIndex].enabled
                             text: visible ? mosimOrchestrator.controllers[controllerBox.currentIndex].disabled_reason : ""
                             color: qgcPal.colorOrange
                             wrapMode: Text.Wrap
                         }
-                        QGCLabel { text: "无人机数量" }
-                        ComboBox {
-                            id: vehicleBox
-                            Layout.fillWidth: true
-                            enabled: flightConfigurationEditable
-                            model: vehicleCounts
-                            textRole: "label"
-                            delegate: ItemDelegate {
-                                width: vehicleBox.width
-                                text: modelData.label
-                                enabled: modelData.enabled && root.vehicleCountCompatibleWithTask(modelData.value)
-                                ToolTip.visible: hovered && !enabled
-                                ToolTip.text: !modelData.enabled ? "该机数尚未通过规模验收"
-                                                                  : "当前任务固定为" + profiles[profileBox.currentIndex].count + "架飞机"
-                            }
-                        }
                         QGCLabel {
                             Layout.fillWidth: true
                             visible: !taskSelectionCompatible()
                             text: "当前控制器或机数与任务运行后端不匹配，请重新选择任务。"
                             color: qgcPal.colorRed
-                            wrapMode: Text.Wrap
-                        }
-                        QGCLabel {
-                            Layout.fillWidth: true
-                            text: manualTaskSelected
-                                  ? "手动定点：运行时就绪后，使用QGC原生解锁、起飞和Position模式。"
-                                  : "自动任务：Mission Adapter将独占完成连接检查、解锁、起飞、任务执行和降落；无需手动解锁。"
-                            color: qgcPal.colorOrange
                             wrapMode: Text.Wrap
                         }
                         RowLayout {
@@ -1621,7 +833,7 @@ Item {
                                                                         manualTaskSelected)
                             }
                             QGCButton {
-                                text: manualTaskSelected ? "启动仿真并连接飞机" : "启动并执行自动任务"
+                                text: manualTaskSelected ? "启动仿真" : "执行任务"
                                 Layout.fillWidth: true
                                 enabled: !mosimOrchestrator.busy
                                          && mosimOrchestrator.lifecycleState === "ready"
@@ -1633,10 +845,24 @@ Item {
                                 }
                             }
                         }
+                        QGCCheckBox {
+                            id: manualModeCheck
+                            text: "W/A/S/D定点操纵"
+                            visible: manualTaskSelected
+                            enabled: manualControlReady
+                            onCheckedChanged: {
+                                root.manualKeyboardEnabled = checked
+                                root.manualForward = false
+                                root.manualBackward = false
+                                root.manualLeft = false
+                                root.manualRight = false
+                                root.sendManualStick(!checked)
+                            }
+                        }
                         QGCButton {
-                            text: manualKeyboardEnabled ? "点击后使用W/A/S/D"
-                                                        : (manualTaskSelected ? "起飞并切换Position后启用W/A/S/D"
-                                                                              : "当前任务不使用键盘操纵")
+                            text: manualKeyboardEnabled ? "已启用，点击后使用W/A/S/D"
+                                                        : "起飞并切换Position后启用"
+                            visible: manualTaskSelected
                             Layout.fillWidth: true
                             enabled: manualKeyboardEnabled && manualControlReady
                             onClicked: root.forceActiveFocus()
@@ -1668,9 +894,13 @@ Item {
                                 onClicked: mosimOrchestrator.resetRun()
                             }
                         }
-                        QGCLabel { text: "运行编号"; font.bold: true }
-                        QGCLabel { text: mosimOrchestrator.runId || "-"; wrapMode: Text.WrapAnywhere; Layout.fillWidth: true }
-                        QGCLabel { text: "运行状态：" + mosimOrchestrator.lifecycleState }
+                        QGCLabel {
+                            text: "运行 " + (mosimOrchestrator.runId || "-")
+                            elide: Text.ElideMiddle
+                            Layout.fillWidth: true
+                            color: qgcPal.text
+                            opacity: 0.6
+                        }
                     }
                 }
 
@@ -1690,14 +920,8 @@ Item {
                             Layout.fillWidth: true
                         }
                         QGCLabel {
-                            text: "地图轨迹：" + taskPathStatusText()
+                            text: "地图轨迹：" + factoryFlyMap.taskPathStatusText()
                             color: runtimeTelemetryFresh() ? qgcPal.colorGreen : qgcPal.colorOrange
-                            wrapMode: Text.Wrap
-                            Layout.fillWidth: true
-                        }
-                        QGCLabel {
-                            text: "以下为逐机遥测确认，不代替任务Adapter终态ACK。自动任务只有全部飞机完成并收到终态ACK才算成功。"
-                            color: qgcPal.colorOrange
                             wrapMode: Text.Wrap
                             Layout.fillWidth: true
                         }
@@ -1830,21 +1054,15 @@ Item {
                         width: parent.width
                         QGCCheckBox { id: pointCloudDisplay; text: "RViz点云地图"; checked: true }
                         QGCCheckBox { id: gridMapDisplay; text: "RViz栅格地图"; checked: true }
-                        QGCCheckBox { id: unrealDisplay; text: "UE三维视图"; checked: true }
+                        QGCCheckBox { id: unrealDisplay; text: "独立UE视图"; checked: true }
                         QGCCheckBox {
                             id: mworksDisplay
                             text: "MWORKS实时曲线（由Model Studio启动）"
                             enabled: false
                             checked: false
                         }
-                        QGCLabel {
-                            text: "自动拉起MWORKS实时模型尚未完成验收；当前请在Model Studio启动实时曲线，Flight Console不伪装为已打开。"
-                            color: qgcPal.colorOrange
-                            wrapMode: Text.Wrap
-                            Layout.fillWidth: true
-                        }
                         QGCButton {
-                            text: "准备显示窗口"
+                            text: "准备独立显示窗口"
                             Layout.fillWidth: true
                             enabled: !mosimOrchestrator.busy
                             onClicked: {
@@ -1876,25 +1094,6 @@ Item {
                             Layout.fillWidth: true
                             enabled: !mosimOrchestrator.busy && mosimOrchestrator.runId !== ""
                             onClicked: mosimOrchestrator.closeAllRviz()
-                        }
-                        RowLayout {
-                            Layout.fillWidth: true
-                            QGCButton {
-                                text: "切换UE视角"
-                                Layout.fillWidth: true
-                                enabled: mosimOrchestrator.unrealWindow !== null
-                                onClicked: mosimOrchestrator.cycleUnrealView()
-                            }
-                            QGCButton {
-                                text: "-"
-                                enabled: mosimOrchestrator.unrealWindow !== null
-                                onClicked: mosimOrchestrator.zoomUnrealOut()
-                            }
-                            QGCButton {
-                                text: "+"
-                                enabled: mosimOrchestrator.unrealWindow !== null
-                                onClicked: mosimOrchestrator.zoomUnrealIn()
-                            }
                         }
                         RowLayout {
                             Layout.fillWidth: true
@@ -1943,18 +1142,57 @@ Item {
                     contentWidth: availableWidth
                     ColumnLayout {
                         width: parent.width
-                        spacing: 10
-                        QGCLabel { text: "MoSim智能助手"; font.bold: true }
+                        spacing: 8
                         QGCLabel {
+                            text: "实验助手"
+                            font.bold: true
                             Layout.fillWidth: true
-                            wrapMode: Text.Wrap
-                            text: "受控任务助手把自然语言转换为已登记的任务Profile。采用建议只会验证并冻结配置；启动、解锁和飞行仍需在任务页人工确认。"
+                        }
+                        Rectangle {
+                            Layout.fillWidth: true
+                            implicitHeight: assistantGreeting.implicitHeight + 18
+                            radius: 6
+                            color: qgcPal.windowShade
+                            QGCLabel {
+                                id: assistantGreeting
+                                anchors.fill: parent
+                                anchors.margins: 9
+                                text: "你好，我可以根据自然语言匹配已登记的任务、控制器和无人机配置。"
+                                wrapMode: Text.Wrap
+                            }
+                        }
+                        Rectangle {
+                            Layout.fillWidth: true
+                            implicitHeight: exampleUserPrompt.implicitHeight + 18
+                            radius: 6
+                            color: "#31566b"
+                            QGCLabel {
+                                id: exampleUserPrompt
+                                anchors.fill: parent
+                                anchors.margins: 9
+                                text: "运行FUEL单机自主探索，使用px4ctrl，按64 m边界执行。"
+                                wrapMode: Text.Wrap
+                                color: "white"
+                            }
+                        }
+                        Rectangle {
+                            Layout.fillWidth: true
+                            implicitHeight: exampleAgentReply.implicitHeight + 18
+                            radius: 6
+                            color: qgcPal.windowShade
+                            QGCLabel {
+                                id: exampleAgentReply
+                                anchors.fill: parent
+                                anchors.margins: 9
+                                text: "已匹配 FUEL 单机自主探索任务。控制器 px4ctrl，无人机 1 架；配置验证后由你确认启动。"
+                                wrapMode: Text.Wrap
+                            }
                         }
                         TextArea {
                             id: agentPrompt
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 110
-                            placeholderText: "例如：运行FUEL单机自主探索，或运行三机固定编队避障"
+                            Layout.preferredHeight: 82
+                            placeholderText: "输入任务，例如：运行三机固定编队避障"
                             enabled: flightConfigurationEditable && !mosimOrchestrator.busy
                         }
                         QGCButton {
@@ -1963,15 +1201,22 @@ Item {
                             enabled: agentPrompt.enabled && agentPrompt.text.trim().length > 0
                             onClicked: mosimOrchestrator.proposeOperatorTask(agentPrompt.text)
                         }
-                        QGCLabel {
+                        Rectangle {
                             Layout.fillWidth: true
-                            wrapMode: Text.Wrap
                             visible: agentProposalReady()
-                            color: qgcPal.colorGreen
-                            text: "建议任务：" + String(mosimOrchestrator.agentProposal.label || "-")
-                                  + "\n控制器：" + String(mosimOrchestrator.agentProposal.controller_id || "-")
-                                  + "；飞机数量：" + String(mosimOrchestrator.agentProposal.vehicle_count || "-")
-                                  + "\n安全边界：助手不能启动或控制飞机。"
+                            implicitHeight: agentProposalLabel.implicitHeight + 18
+                            radius: 6
+                            color: qgcPal.windowShade
+                            QGCLabel {
+                                id: agentProposalLabel
+                                anchors.fill: parent
+                                anchors.margins: 9
+                                wrapMode: Text.Wrap
+                                color: qgcPal.colorGreen
+                                text: "已匹配：" + String(mosimOrchestrator.agentProposal.label || "-")
+                                      + "\n控制器 " + String(mosimOrchestrator.agentProposal.controller_id || "-")
+                                      + "，飞机 " + String(mosimOrchestrator.agentProposal.vehicle_count || "-") + " 架"
+                            }
                         }
                         QGCButton {
                             text: "采用建议并验证配置"
@@ -1981,12 +1226,6 @@ Item {
                                      && profiles[profileIndex(String(mosimOrchestrator.agentProposal.profile_id || ""))].enabled
                             onClicked: confirmAgentProposal()
                         }
-                        QGCLabel {
-                            Layout.fillWidth: true
-                            wrapMode: Text.Wrap
-                            color: qgcPal.colorOrange
-                            text: "当前为本机受控意图路由器；Codex诊断能力尚未接入，不作为飞行控制权所有者。"
-                        }
                     }
                 }
             }
@@ -1995,9 +1234,6 @@ Item {
 
     Connections {
         target: mosimOrchestrator
-        function onUnrealWindowChanged() {
-            Qt.callLater(root.syncUnrealOverlayHole)
-        }
         function onResponseChanged() {
             if (!controllerCatalogSynced && mosimOrchestrator.controllers.length > 0) {
                 syncProfileSelection()

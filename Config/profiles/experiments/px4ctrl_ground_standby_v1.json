@@ -3,6 +3,7 @@
     "id": "px4ctrl_ground_standby_v1",
     "version": 1,
     "description": "Factory L2 single-UAV ground standby for QGC connection before operator-controlled flight",
+    "operator_map_id": "factory_l2",
     "goal": "Operator standby",
     "scenario_profile": "sunray150_obstacle_figure8_v1",
     "plant_profile": "sunray150_gazebo_v1",

@@ -29,142 +29,76 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     resources = (CUSTOM / "custom.qrc").read_text(encoding="utf-8")
     plugin = (CUSTOM / "src" / "CustomPlugin.cc").read_text(encoding="utf-8")
     qml = (CUSTOM / "src" / "FlyViewCustomLayer.qml").read_text(encoding="utf-8")
+    fly_map = (CUSTOM / "src" / "FactoryFlyMap.qml").read_text(encoding="utf-8")
     plan_qml = (CUSTOM / "src" / "PlanView.qml").read_text(encoding="utf-8")
     plan_overlay_qml = (CUSTOM / "src" / "FactoryPlanMapOverlay.qml").read_text(encoding="utf-8")
     bridge_header = (CUSTOM / "src" / "MoSimOrchestratorBridge.h").read_text(encoding="utf-8")
     bridge_source = (CUSTOM / "src" / "MoSimOrchestratorBridge.cc").read_text(encoding="utf-8")
+
     assert "QGC_CUSTOM_BUILD" in cmake
     assert "CUSTOMCLASS=CustomPlugin" in cmake
     assert "QGroundControl/FlightDisplay/FlyViewCustomLayer.qml" in resources
     assert "QGroundControl/Controls/PlanView.qml" in resources
     assert "QGroundControl/Controls/FactoryPlanMapOverlay.qml" in resources
+    assert "QGroundControl/Controls/FactoryFlyMap.qml" in resources
     assert 'setContextProperty(QStringLiteral("mosimOrchestrator")' in plugin
-    assert "4（规模验收未完成）" in qml and "9（规模验收未完成）" in qml
-    assert "RViz点云地图" in qml and "UE三维视图" in qml
+    assert 'QMetaObject::invokeMethod(rootObject, "showPlanView")' not in plugin
+
+    assert "FactoryFlyMap {" in qml
+    assert "mapConfig: mosimOrchestrator.operatorMap || ({})" in qml
+    assert "runManifest: mosimOrchestrator.runManifest || ({})" in qml
+    assert "mapState: (mosimOrchestrator.runtimeTelemetry || ({})).map_state || ({})" in qml
+    assert "runId: mosimOrchestrator.runId" in qml
+    assert "WindowContainer" not in qml
+    assert "mosimOrchestrator.unrealWindow" not in qml
+    assert "factoryMapPreview" not in qml
+    assert "factoryMapExpanded" not in qml
+    assert "切换UE视角" not in qml
+    assert "独立UE视图" in qml
+    assert "RViz点云地图" in qml and "RViz栅格地图" in qml
     assert "应用风扰" in qml and "应用电机故障" in qml
+    assert "一键关闭全部RViz" in qml
     assert "cascade_pid_figure8_generated_c_v1.json" in qml
     assert "model: mosimOrchestrator.controllers" in qml
     assert "disabled_reason" in qml
-    assert "启动仿真并连接飞机" in qml
-    assert "启动并执行自动任务" in qml
-    assert "无需手动解锁" in qml
-    assert 'readonly property bool flightConfigurationEditable' in qml
-    assert 'mosimOrchestrator.lifecycleState !== "starting"' in qml
-    assert 'mosimOrchestrator.lifecycleState !== "running"' in qml
-    assert "px4ctrl_ground_standby_v1.json" in qml
-    assert "Take off (W/A/S/D)" not in qml
-    assert "启动进度" in qml
-    assert "一键关闭全部RViz" in qml
-    assert "录制UE画面" in qml and "停止UE录制" in qml
-    assert "readonly property var controllers" not in qml
-    assert "mosimOrchestrator.attachDisplays()" in qml
-    assert "mosimOrchestrator.detachDisplays()" in qml
-    assert "WindowContainer" in qml
-    assert "window: mosimOrchestrator.unrealWindow" in qml
-    assert "anchors.fill: parent" in qml
-    assert "setUnrealOverlayHole" in qml
-    assert "factoryMapPreview.x" in qml and "factoryMapPreview.y" in qml
-    assert "factoryMapPreview.width + 24" not in qml
-    assert "!factoryMapExpanded" in qml
-    assert "onMosimNativeOverlayVisibleChanged" in qml
-    assert "setUnrealPresentationSuppressed" in qml
+    assert "4（规模验收未完成）" in qml and "9（规模验收未完成）" in qml
     assert "FlyViewBottomRightRowLayout" in qml
-    assert "visible: activeVehicle !== null && !factoryMapExpanded" in qml
-    main_window = (ROOT / "apps" / "flight_console" / "vendor" / "qgroundcontrol" / "src" / "UI" / "MainWindow.qml").read_text(encoding="utf-8")
-    assert "mosimNativeOverlayVisible" in main_window
-    assert "toolDrawer.visible" in main_window and "indicatorDrawer.visible" in main_window
-    assert "重试UE嵌入" in qml
-    assert "Q_PROPERTY(QWindow *unrealWindow" in bridge_header
-    assert "DISPLAY_PROCESSES.json" in bridge_source
-    assert "model_studio_active_run.json" in bridge_source
-    assert "recoverRunIdentity();" in bridge_source
-    assert "_startupRunRecoveryPending = !_runId.isEmpty()" in bridge_source
-    assert 'completedAction == QStringLiteral("get_run_state")' in bridge_source
-    assert 'invoke({QStringLiteral("get_run_state"), QStringLiteral("--run-id"), _runId})' in bridge_source
-    assert '_continuationAfterDisplayDetach = QStringLiteral("prepare_run")' in bridge_source
-    assert '_continuationAfterDisplayDetach = QStringLiteral("stop_run")' in bridge_source
-    assert 'clearUnrealWindow(QStringLiteral("not_attached"), QStringLiteral("run_changed"))' in bridge_source
-    assert 'completedAction == QStringLiteral("start_run") && _accepted && _autoAttachUnrealAfterStart' in bridge_source
-    assert 'prepareDisplays({QStringLiteral("unreal")})' in bridge_source
-    assert 'completedAction == QStringLiteral("prepare_display_session") && _accepted' in bridge_source
-    assert 'QTimer::singleShot(0, this, &MoSimOrchestratorBridge::attachDisplays)' in bridge_source
-    assert "QWindow::fromWinId" in bridge_source
-    assert "findLargestVisibleWindow" in bridge_source
-    assert "EnumChildWindows(GetDesktopWindow()" in bridge_source
-    assert "ShowWindow(search.bestWindow, SW_HIDE)" in bridge_source
-    assert "confirmUnrealContainerReady" in bridge_header
-    assert "GetParent(window)" in bridge_source
-    assert "ShowWindow(window, SW_SHOWNA)" in bridge_source
-    assert "window_discovered_hidden" in bridge_source
-    assert "_unrealDiscoveryAttempt >= 360" in bridge_source
-    assert "managed_external" not in bridge_source
-    assert "cycleUnrealView" in qml and "zoomUnrealIn" in qml and "zoomUnrealOut" in qml
-    assert "PostMessage(window, WM_KEYDOWN" in bridge_source
-    assert "SetWindowRgn(window, visibleRegion, TRUE)" in bridge_source
-    assert "CombineRgn(visibleRegion, visibleRegion, overlayHole, RGN_DIFF)" in bridge_source
-    assert "resetUnrealWindowRegion();" in bridge_source
-    assert "operator_map_catalog.json" in bridge_source
-    ue_launcher = (ROOT / "Scripts" / "ui" / "attach_orchestrated_displays.ps1").read_text(encoding="utf-8")
-    ue_camera = (ROOT / "UE5" / "MoSimSceneLibrary" / "Source" / "MoSimSceneLibrary" / "MworksReviewCameraPawn.cpp").read_text(encoding="utf-8")
-    ue_input = (ROOT / "UE5" / "MoSimSceneLibrary" / "Config" / "DefaultInput.ini").read_text(encoding="utf-8")
-    assert "-MoSimEmbeddedViewport" in ue_launcher
-    assert "hidden_until_qgc_embed" in ue_launcher
-    assert "Save-ProcessRecords" in ue_launcher
-    assert "bShowMouseCursor = bEmbeddedViewport" in ue_camera
-    assert "EMouseLockMode::DoNotLock" in ue_camera
-    assert "MworksReviewZoom" in ue_input
-    assert 'Key=N' in ue_input and 'Key=M' in ue_input
-    assert "GetInputMouseDelta(MouseDeltaX, MouseDeltaY)" in ue_camera
-    assert "FollowMouseOrbitSensitivityDeg" in ue_camera
-    assert "MworksReviewOrbitLeft" in ue_input and "Key=F16" in ue_input
-    assert "IsEmbeddedReviewInputActive()" in ue_camera
-    assert "GetAsyncKeyState" in ue_camera
-    assert "AsyncReviewAxis(VK_RIGHT, VK_LEFT)" in ue_camera
-    assert "AsyncReviewAxis(VK_UP, VK_DOWN)" in ue_camera
-    assert "AsyncReviewAxis('D'" not in ue_camera
-    assert "AsyncReviewAxis('W'" not in ue_camera
-    assert "PtInRegion" in ue_camera
-    assert "orbitUnreal" in qml and "PixelsPerNudge" in bridge_source
-    assert "PixelsPerNudge = 1.0" in bridge_source
-    assert 'sequence: "N"' in qml and 'sequence: "M"' in qml
-    assert 'sequence: "W"' not in qml
-    assert 'sequence: "A"' not in qml
-    assert 'sequence: "S"' not in qml
-    assert 'sequence: "D"' not in qml
-    assert 'sequence: "Left"' in qml and 'sequence: "Right"' in qml
-    assert 'sequence: "Up"' in qml and 'sequence: "Down"' in qml
-    assert qml.count("context: Qt.ApplicationShortcut") >= 4
-    assert qml.count("autoRepeat: true") >= 4
-    assert "z: 0" in qml and "z: 100" in qml
-    assert "factoryActualTrackPreview" in qml
-    assert "factoryActualTrackExpanded" in qml
-    assert "factoryTaskPathPreview" in qml
-    assert "factoryTaskPathExpanded" in qml
-    assert 'var kinds = ["expected", "future"]' in qml
-    assert 'kind === "future"' in qml
-    assert 'Number(path.updated_at || 0) > 5.0' in qml
-    assert "runtimeVehicles()" in qml
-    assert "vehicleYawDegrees" in qml
-    assert "actualTracksByVehicle" in qml
+
+    assert "required property var mapConfig" in fly_map
+    assert "required property var runManifest" in fly_map
+    assert "required property var mapState" in fly_map
+    assert "required property string runId" in fly_map
+    assert "function zoomAt(viewX, viewY, wheelDelta)" in fly_map
+    assert "imageRatioX" in fly_map and "imageRatioY" in fly_map
+    assert "Flickable" in fly_map and "onWheel: function(wheel)" in fly_map
+    assert "function fitMap()" in fly_map
+    assert "niceScaleMeters" in fly_map
+    assert "mapState.run_id" in fly_map
+    assert "mosim.operator_map_state.v1" in fly_map
+    assert "received_at_unix_s" in fly_map
+    assert "mapIdentityMatches" in fly_map
+    assert "coordinate_contract_status" in fly_map
+    assert "rosbag_replay" in fly_map
+    assert "validWorldPoint" in fly_map
+    assert "task_paths" in fly_map
+    assert "actualTracksByVehicle" in fly_map
+    assert "formationTarget" in fly_map and "explorationBoundary" in fly_map
+
+    assert "Q_PROPERTY(QVariantMap operatorMap" in bridge_header
     assert "Q_PROPERTY(QVariantMap runtimeTelemetry" in bridge_header
-    assert 'completedAction == QStringLiteral("get_telemetry")' in bridge_source
+    assert "operator_map_catalog.json" in bridge_source
     assert "telemetryRunId == _runId" in bridge_source
-    assert 'text: "切换UE视角"' in qml
-    assert 'text: "MWORKS实时曲线（由Model Studio启动）"' in qml
-    assert "自动拉起MWORKS实时模型尚未完成验收" in qml
-    assert 'text: "请求Model Studio打开模型"' in qml
-    assert 'reason = "mworks_result_requires_model_studio_live_session"' in ue_launcher
-    assert "injectionVehicle.currentIndex = 0" in qml
+    assert "_autoAttachUnrealAfterStart" not in bridge_header
+    assert "_autoAttachUnrealAfterStart" not in bridge_source
+    assert "QTimer::singleShot(0, this, &MoSimOrchestratorBridge::refreshUnrealEmbedding)" not in bridge_source
+
     assert "Factory image is the only operator map surface" in plan_qml
-    assert 'color: "#d9dde0"' in plan_qml
-    assert "MapScale" not in plan_qml
-    assert "factoryPlanMap.mapCenter" in plan_qml
-    assert "id: factoryPlanMap" in plan_qml
     assert "FactoryPlanMapOverlay" in plan_qml
     assert "resource_url" in plan_overlay_qml
     assert "PlanMasterController" in plan_qml
     assert "MissionItemMapVisual" in plan_qml
     assert "VehicleMapItem" in plan_qml
+
     overrides = (CUSTOM / "cmake" / "CustomOverrides.cmake").read_text(encoding="utf-8")
     assert 'QGC_APP_NAME "MoSimFlightConsole"' in overrides
     assert "CPM_px4-gpsdrivers_SOURCE" in overrides
@@ -275,40 +209,37 @@ def test_factory_floorplan_is_packaged_for_the_flight_console() -> None:
     resource = (ROOT / "apps" / "flight_console" / "mosim" / "custom" / "custom.qrc").read_text(
         encoding="utf-8"
     )
-    qml = (
-        ROOT / "apps" / "flight_console" / "mosim" / "custom" / "src" / "FlyViewCustomLayer.qml"
-    ).read_text(encoding="utf-8")
+    fly_qml = (CUSTOM / "src" / "FlyViewCustomLayer.qml").read_text(encoding="utf-8")
+    fly_map = (CUSTOM / "src" / "FactoryFlyMap.qml").read_text(encoding="utf-8")
+
     assert 'prefix="/Custom/maps/factory_l2/v1"' in resource
     assert 'maps/factory_l2/v1/floorplan.png' in resource
-    assert 'qrc:/Custom/maps/factory_l2/v1/floorplan.png' in qml
-    assert "factoryMapExpanded" in qml
-    assert "Flickable" in qml
-    assert "factoryMapImage" in qml
-    assert "factoryMapFlickable" in qml
-    assert "factoryFlightMap" not in qml
-    assert "factoryOverlay" not in qml
-    assert "MapScale" not in qml
-    assert "factoryMapScale" not in qml
+    assert "FactoryFlyMap {" in fly_qml
+    assert 'source: String(root.mapConfig.resource_url || "")' in fly_map
+    assert "mapConfig.enabled === true" in fly_map
+    assert "world_bounds_m" in fly_map
+    assert "function zoomAt(viewX, viewY, wheelDelta)" in fly_map
+    assert "function fitMap()" in fly_map
+    assert "onWheel: function(wheel)" in fly_map
+    assert "metersPerPixel" in fly_map and "niceScaleMeters" in fly_map
+    assert "taskBoundaryCanvas" in fly_map
+    assert "taskPathCanvas" in fly_map
+    assert "actualTrackCanvas" in fly_map
+    assert "WindowContainer" not in fly_qml
+    assert "setUnrealOverlayHole" not in fly_qml
 
     catalog = json.loads(
         (ROOT / "Config" / "control_platform" / "operator_map_catalog.json").read_text(encoding="utf-8")
     )
-    assert "mosimOrchestrator.operatorMap" in qml
-    assert "factoryMapCanvas.zoomFactor" in qml
-    assert "function zoomAt(viewX, viewY, wheelDelta)" in qml
-    assert "imageRatioX" in qml and "imageRatioY" in qml
-    assert "onWheel: function(wheel)" in qml
-    assert "contentX" in qml and "contentY" in qml
-    assert "enabled: factoryMapExpanded" in qml
-    assert "onClicked: factoryMapExpanded = false" in qml
-    assert "visible: window !== null" in qml
-    assert "setUnrealPresentationSuppressed(mainWindow.mosimNativeOverlayVisible)" in qml
-    assert "mosimOrchestrator.refreshTelemetry()" in qml
-    assert "Math.abs(Date.now() / 1000.0 - timestamp) <= 2.5" in qml
-    assert "vehicle.state.connected" in qml
     factory = catalog["maps"][0]
     assert factory["map_id"] == "factory_l2"
+    assert factory["map_version"] == "v1"
+    assert factory["asset_sha256"]
+    assert factory["coordinate_contract_id"] == "factory_l2_mworks_world_v1"
+    assert factory["coordinate_contract_status"] == "pending_runtime_validation"
+    assert factory["resource_url"] == "qrc:/Custom/maps/factory_l2/v1/floorplan.png"
     assert factory["world_bounds_m"]["max_x_m"] - factory["world_bounds_m"]["min_x_m"] > 1100
+    assert factory["indoor_task_overlay_bounds_m"]["max_x_m"] - factory["indoor_task_overlay_bounds_m"]["min_x_m"] > 170
     assert factory["mission_publication"]["status"] == "blocked_until_runtime_round_trip_gate"
 
 
@@ -329,11 +260,14 @@ def test_plan_view_uses_georeferenced_factory_overlay() -> None:
     assert "function coordinateForWorld(worldX, worldY)" in overlay
     assert "mapCenter.atDistanceAndAzimuth" in overlay
     assert "explorationBoundaryValid" in overlay
+    assert "configuredBoundary" in overlay
+    assert "scenarioBoundaryValid ? scenarioBoundary : configuredBoundary" in overlay
     assert 'border.color: "#20c7b7"' in overlay
 
 
 def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -> None:
     qml = (CUSTOM / "src" / "FlyViewCustomLayer.qml").read_text(encoding="utf-8")
+    fly_map = (CUSTOM / "src" / "FactoryFlyMap.qml").read_text(encoding="utf-8")
     bridge_header = (CUSTOM / "src" / "MoSimOrchestratorBridge.h").read_text(encoding="utf-8")
     for label in (
         "单机定点操纵",
@@ -350,9 +284,8 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "running: manualKeyboardEnabled && manualControlReady" in qml
     assert "manualModeCheck.checked = false" in qml
     assert "manualTaskSelected)" in qml
-    assert "全过程必须在QGC确认阶段、告警和结束状态" in qml
     assert "function flightAuthorityText()" in qml
-    assert 'text: "控制权与解锁责任：" + flightAuthorityText()' in qml
+    assert 'text: "控制权与解锁责任：" + flightAuthorityText()' not in qml
     assert "QGC原生控制：你负责解锁、起飞、Position模式操纵和降落" in qml
     assert "编队Mission Adapter独占控制：自动逐机解锁、起飞、编队任务和降落" in qml
     assert "任务Mission Adapter独占控制：自动解锁、起飞、任务执行和降落" in qml
@@ -361,42 +294,40 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "function runtimeVehicleStateText(vehicle)" in qml
     assert "function runtimeVehiclePositionText(vehicle)" in qml
     assert 'text: "逐机运行状态"' in qml
-    assert "以下为逐机遥测确认，不代替任务Adapter终态ACK" in qml
+    assert "以下为逐机遥测确认，不代替任务Adapter终态ACK" not in qml
     assert "model: root.runtimeVehicles()" in qml
     assert 'String(modelData.vehicle_id || "未知飞机")' in qml
     assert "function missionStatusText()" in qml
-    assert "function explorationBoundary()" in qml
-    assert "function paintExplorationBoundary" in qml
-    assert "factoryExplorationBoundaryPreview" in qml
-    assert "factoryExplorationBoundaryExpanded" in qml
-    assert "function formationTarget()" in qml
-    assert "function paintFormationTarget" in qml
-    assert "factoryFormationTargetPreview" in qml
-    assert "factoryFormationTargetExpanded" in qml
-    assert "function taskPathLabel(kind)" in qml
-    assert "function taskPathStatusText()" in qml
-    assert 'return "编队中心预期"' in qml
-    assert 'return "探索目标序列"' in qml
-    assert 'return "规划器未来轨迹"' in qml
-    assert 'text: "地图轨迹：" + taskPathStatusText()' in qml
-    assert "formation.target_center_xy_m" in qml
-    assert 'context.strokeStyle = "#f05d9b"' in qml
-    assert '{ label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }' in qml
-    assert "function frozenScenarioSummary()" in qml
-    assert "场景哈希：" in qml
+    assert "FactoryFlyMap {" in qml
+    assert 'text: "地图轨迹：" + factoryFlyMap.taskPathStatusText()' in qml
+    assert "function explorationBoundary()" in fly_map
+    assert "function paintTaskBoundary" in fly_map
+    assert "taskBoundaryCanvas" in fly_map
+    assert "function formationTarget()" in fly_map
+    assert "function paintFormationTarget" in fly_map
+    assert "formationTargetCanvas" in fly_map
+    assert "function taskPathLabel(kind)" in fly_map
+    assert "function taskPathStatusText()" in fly_map
+    assert 'return "编队中心预期"' in fly_map
+    assert 'return "探索目标序列"' in fly_map
+    assert 'return "规划器未来轨迹"' in fly_map
+    assert "formation.target_center_xy_m" in fly_map
+    assert 'context.strokeStyle = "#f05d9b"' in fly_map
+    assert '{ label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }' in fly_map
+    assert 'text: "场景哈希："' not in qml
     assert 'QGCLabel { text: "任务Adapter确认"; font.bold: true }' in qml
     assert 'text: "Adapter：" + String(missionStatus().adapter_id || "-")' in qml
     assert 'root.missionAdapterVehicleText(modelData)' in qml
     assert "状态不完整：收到 " in qml
-    assert 'text: "飞行阶段：" + flightPhaseText()' in qml
+    assert 'text: "飞行阶段：" + flightPhaseText()' not in qml
     assert 'text: "任务Adapter阶段：" + missionStatusText()' in qml
     assert '"run_starting": "正在启动飞行运行时"' in qml
     assert "operationStageText(mosimOrchestrator.operationStage)" in qml
     assert "interval: 40" in qml
     assert "QGC原生解锁/起飞" in qml
-    assert "下一步：" in qml
+    assert 'text: "下一步：" + nextOperatorStepText()' not in qml
     assert "function operatorChecklist()" in qml
-    assert 'text: "操作进度"' in qml
+    assert 'text: "操作进度"' not in qml
     assert "QGC原生飞行操作栏执行解锁和起飞" in qml
     assert "activeVehicle.initialConnectComplete" in qml
     assert "activeVehicle.flying" in qml
@@ -414,15 +345,14 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "experimentProfileId" in bridge_header
     assert "selectedControllerId" in bridge_header
     assert "selectedVehicleCount" in bridge_header
-    assert "受控任务助手把自然语言转换为已登记的任务Profile" in qml
-    assert "启动、解锁和飞行仍需在任务页人工确认" in qml
+    assert "受控任务助手把自然语言转换为已登记的任务Profile" not in qml
     assert "function agentProposalReady()" in qml
     assert "function confirmAgentProposal()" in qml
     assert 'text: "生成受控任务建议"' in qml
     assert 'text: "采用建议并验证配置"' in qml
     assert "mosimOrchestrator.proposeOperatorTask(agentPrompt.text)" in qml
     assert "proposal.may_start_flight === false" in qml
-    assert "Codex诊断能力尚未接入" in qml
+    assert "Codex诊断能力尚未接入" not in qml
     assert "factory_l2_fuel_fixed64_exploration_v1.json" in qml
     assert 'label: "FUEL单机自主探索"' in qml
     assert 'text: "请求安全停止"' in qml

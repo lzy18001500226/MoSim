@@ -93,6 +93,7 @@ THREE_UAV_PROFILE = "Config/profiles/experiments/factory_l2_three_uav_swarm_form
 MWORKS_LIVE_PROFILE = "Config/profiles/experiments/mworks_live_official_pid_hover_50hz_v2.json"
 MWORKS_LIVE_200HZ_PROFILE = "Config/profiles/experiments/mworks_live_official_pid_hover_200hz_v1.json"
 FUEL_FIXED64_PROFILE = "Config/profiles/experiments/factory_l2_fuel_fixed64_exploration_v1.json"
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def passing_connection_preflight(**endpoint):
@@ -168,8 +169,8 @@ def test_three_uav_profile_freezes_formation_target_in_run_manifest(tmp_path: Pa
     )
     assert response["accepted"] is True
     scenario = response["manifest"]["scenario_snapshot"]
-    assert scenario["formation"]["target_center_xy_m"] == [-16.679266719908025, -8.0868185505691]
-    assert scenario["formation"]["expected_min_pair_distance_m"] == 1.5
+    assert scenario["formation"]["target_center_xy_m"] == [-85.6, 3.44]
+    assert scenario["formation"]["expected_min_pair_distance_m"] == 1.4
 
 
 def test_prepare_rejects_a_second_run_until_active_runtime_stops(tmp_path: Path) -> None:
@@ -813,3 +814,58 @@ def test_get_run_state_returns_recoverable_display_session(tmp_path: Path) -> No
     assert state["accepted"] is True
     assert state["session"]["session_id"] == session_id
     assert state["session"]["state"] == "attached"
+
+
+def test_prepare_run_freezes_the_profile_selected_operator_map_snapshot(tmp_path: Path) -> None:
+    catalog_path = tmp_path / "operator_map_catalog.json"
+    catalog = json.loads(
+        (ROOT / "Config" / "control_platform" / "operator_map_catalog.json").read_text(encoding="utf-8")
+    )
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+    orchestrator = MoSimOrchestrator(
+        run_root=tmp_path / "runs",
+        operator_map_catalog_path=catalog_path,
+    )
+
+    prepared = orchestrator.prepare_run(
+        request_id="prepare-map",
+        profile_path=PROFILE,
+        controller_id="px4ctrl",
+        vehicle_count=1,
+    )
+
+    assert prepared["accepted"] is True
+    manifest = prepared["manifest"]
+    assert manifest["operator_map_id"] == "factory_l2"
+    assert manifest["operator_map_snapshot"]["map_id"] == "factory_l2"
+    assert manifest["operator_map_snapshot_hash"]
+    persisted = json.loads(
+        (tmp_path / "runs" / prepared["run_id"] / "RUN_MANIFEST.json").read_text(encoding="utf-8")
+    )
+    catalog["maps"][0]["display_name"] = "mutated-after-prepare"
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+    assert persisted["operator_map_snapshot"]["display_name"] == "Factory L2"
+    assert persisted["operator_map_snapshot_hash"] == manifest["operator_map_snapshot_hash"]
+
+
+def test_profile_map_selection_rejects_disabled_registry_entry(tmp_path: Path) -> None:
+    catalog_path = tmp_path / "operator_map_catalog.json"
+    catalog = json.loads(
+        (ROOT / "Config" / "control_platform" / "operator_map_catalog.json").read_text(encoding="utf-8")
+    )
+    catalog["maps"][0]["enabled"] = False
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+    orchestrator = MoSimOrchestrator(
+        run_root=tmp_path / "runs",
+        operator_map_catalog_path=catalog_path,
+    )
+
+    validated = orchestrator.validate_experiment_profile(
+        request_id="validate-disabled-map",
+        profile_path=PROFILE,
+        controller_id="px4ctrl",
+        vehicle_count=1,
+    )
+
+    assert validated["accepted"] is False
+    assert validated["reason_code"] == "operator_map_not_enabled"

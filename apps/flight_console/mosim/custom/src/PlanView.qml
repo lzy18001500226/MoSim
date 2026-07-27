@@ -59,6 +59,7 @@ Item {
     property var    _vehicleID
     property bool   _triggerSubmit
     property bool   _resetRegisterFlightPlan
+    property string _appliedOperatorMapIdentity: ""
 
     readonly property var       _layers:                    [_layerMission, _layerGeoFence, _layerRallyPoints]
     readonly property var       _layersUTMSP:               [_layerMission, _layerRallyPoints, _layerUTMSP] //Adds additional UTMSP layer
@@ -68,6 +69,32 @@ Item {
     readonly property int       _layerRallyPoints:          3
     readonly property int       _layerUTMSP:                4 // Additional Tab button when UTMSP is enabled
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
+
+    function operatorMapIdentity() {
+        var map = mosimOrchestrator.operatorMap || ({})
+        if (map.enabled !== true)
+            return ""
+        return [String(map.map_id || ""), String(map.map_version || ""),
+                String(map.asset_sha256 || ""), String(map.operator_map_snapshot_hash || "default")].join("|")
+    }
+
+    function applyOperatorMapViewport() {
+        var identity = operatorMapIdentity()
+        if (!identity || identity === _appliedOperatorMapIdentity)
+            return
+        _appliedOperatorMapIdentity = identity
+        editorMap.center = factoryPlanMap.mapCenter
+        editorMap.zoomLevel = Number((mosimOrchestrator.operatorMap || ({})).default_zoom_level || 16)
+    }
+
+    function factoryMissionPublicationAllowed() {
+        var publication = (mosimOrchestrator.operatorMap || ({})).mission_publication || ({})
+        return String(publication.status || "") === "verified"
+    }
+
+    function factoryMissionPublicationBlockReason() {
+        return qsTr("工厂二维图仅用于任务草案编辑；世界坐标到经纬度的往返校验尚未通过，当前禁止上传至飞控。")
+    }
 
 
     function mapCenter() {
@@ -92,8 +119,12 @@ Item {
 
     onVisibleChanged: {
         if(visible) {
-            editorMap.zoomLevel = QGroundControl.flightMapZoom
-            editorMap.center    = QGroundControl.flightMapPosition
+            if (operatorMapIdentity())
+                applyOperatorMapViewport()
+            else {
+                editorMap.zoomLevel = QGroundControl.flightMapZoom
+                editorMap.center = QGroundControl.flightMapPosition
+            }
             if (!_planMasterController.containsItems) {
                 toolStrip.simulateClick(toolStrip.fileButtonIndex)
             }
@@ -197,6 +228,10 @@ Item {
 
         function upload() {
             if (!checkReadyForSaveUpload(false /* save */)) {
+                return
+            }
+            if (!_root.factoryMissionPublicationAllowed()) {
+                mainWindow.showMessageDialog(qsTr("任务上传已阻止"), _root.factoryMissionPublicationBlockReason())
                 return
             }
             switch (_missionController.sendToVehiclePreCheck()) {
@@ -365,9 +400,8 @@ Item {
             }
 
             Component.onCompleted: {
-                if (mosimOrchestrator.operatorMap.enabled === true) {
-                    editorMap.center = factoryPlanMap.mapCenter
-                    editorMap.zoomLevel = Number(mosimOrchestrator.operatorMap.default_zoom_level || 16)
+                if (_root.operatorMapIdentity()) {
+                    _root.applyOperatorMapViewport()
                 } else {
                     editorMap.center = QGroundControl.flightMapPosition
                 }
@@ -380,6 +414,13 @@ Item {
                 map: editorMap
                 mapConfig: mosimOrchestrator.operatorMap || ({})
                 runManifest: mosimOrchestrator.runManifest || ({})
+            }
+
+            Connections {
+                target: mosimOrchestrator
+                function onResponseChanged() {
+                    _root.applyOperatorMapViewport()
+                }
             }
 
             onZoomLevelChanged: {

@@ -11,7 +11,16 @@ Item {
     readonly property var anchorConfig: mapConfig.simulation_geodetic_anchor || ({})
     readonly property var bounds: mapConfig.world_bounds_m || ({})
     readonly property var scenarioConfig: runManifest.scenario_snapshot || ({})
-    readonly property var explorationBoundary: scenarioConfig.exploration_boundary || ({})
+    readonly property var configuredBoundary: mapConfig.indoor_task_overlay_bounds_m || ({})
+    readonly property var scenarioBoundary: scenarioConfig.exploration_boundary || ({})
+    readonly property bool scenarioBoundaryValid:
+        isFinite(Number(scenarioBoundary.min_x_m))
+        && isFinite(Number(scenarioBoundary.max_x_m))
+        && isFinite(Number(scenarioBoundary.min_y_m))
+        && isFinite(Number(scenarioBoundary.max_y_m))
+        && Number(scenarioBoundary.min_x_m) < Number(scenarioBoundary.max_x_m)
+        && Number(scenarioBoundary.min_y_m) < Number(scenarioBoundary.max_y_m)
+    readonly property var explorationBoundary: scenarioBoundaryValid ? scenarioBoundary : configuredBoundary
     readonly property bool explorationBoundaryValid:
         isFinite(Number(explorationBoundary.min_x_m))
         && isFinite(Number(explorationBoundary.max_x_m))

@@ -3,6 +3,7 @@
     "id": "factory_l2_three_uav_swarm_formation_v1",
     "version": 1,
     "description": "Accepted Factory L2 three-UAV Swarm-Formation obstacle-crossing profile",
+    "operator_map_id": "factory_l2",
     "goal": "D7",
     "scenario_profile": "factory_l2_three_uav_obstacle_crossing_v1",
     "scenario_path": "Config/scenarios/formation/factory_l2_three_uav_obstacle_crossing.json",

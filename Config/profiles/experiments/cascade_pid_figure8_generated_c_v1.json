@@ -3,6 +3,7 @@
     "id": "cascade_pid_figure8_generated_c_v1",
     "version": 1,
     "description": "D6 single-UAV figure-eight using the accepted MWORKS-generated cascade PID ATTITUDE_THRUST backend",
+    "operator_map_id": "factory_l2",
     "goal": "UI Platform D6",
     "scenario_profile": "factory_l2_single_figure8_v1",
     "scenario_path": "Config/scenarios/ui/factory_l2_single_figure8.json",

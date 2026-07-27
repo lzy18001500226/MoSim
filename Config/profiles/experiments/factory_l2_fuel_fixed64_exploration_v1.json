@@ -3,6 +3,7 @@
     "id": "factory_l2_fuel_fixed64_exploration_v1",
     "version": 1,
     "description": "Accepted Factory L2 fixed-64 single-UAV FUEL autonomous exploration profile",
+    "operator_map_id": "factory_l2",
     "goal": "FUEL fixed-64",
     "scenario_profile": "factory_l2_fuel_fixed64_exploration_v1",
     "scenario_path": "Config/scenarios/ui/factory_l2_fuel_fixed64_exploration.json",
