@@ -25,7 +25,7 @@
       "canonical_relpath": "src/flight_stack/mavros/sunray_uav_control",
       "legacy_relpath": "References/Sunray/General_Module/sunray_uav_control",
       "active_relpath": "References/Sunray/General_Module/sunray_uav_control",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "Config/profiles/runtime_bindings.json#mavros_command_adapter.launch",
         "Scripts/sunray/sync_assembled_model_into_sunray_ros1.py"

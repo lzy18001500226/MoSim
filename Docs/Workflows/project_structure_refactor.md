@@ -3,8 +3,8 @@
 > 状态：目标架构已确认。2026-07-27，用户授权以“只复制、不移动、不删除、不切换活动
 > 入口”的方式启动首批单组件迁移；当前已复制 `diff_planner`、`fuel`、`uav_utils`、
 > `quadrotor_msgs`、`livox_ros_driver_compat`、`fast_lio` 与
-> `sunray_planner_utils` 到目标目录，均仍由旧路径作为唯一活动路径。本文件定义执行顺序、
-> 证据和停止条件；目录归属的唯一权威是
+> `sunray_planner_utils`、`sunray_uav_control` 到目标目录，均仍由旧路径作为唯一活动路径。
+> 本文件定义执行顺序、证据和停止条件；目录归属的唯一权威是
 > [`Docs/Design/架构.md` 第 8.2 节](../Design/架构.md)。不得从本文件推断任何组件已经
 > 激活、可构建或可运行。
 
@@ -274,5 +274,30 @@ component_id: sunray_planner_utils
 未执行项: 未改写入口，未构建、预检、启动 ROS/Gazebo/PX4/QGC/UE、规划器或 RViz
 激活前置: 审计上游/许可证；处理 CMake 中对 ../sunray_common/common_lib 的相邻路径依赖；
           改写审计过的入口并完成受控 ROS1 验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```
+
+### 5.8 sunray_uav_control 复制记录（2026-07-27）
+
+```text
+component_id: sunray_uav_control
+旧路径: References/Sunray/General_Module/sunray_uav_control
+新路径: src/flight_stack/mavros/sunray_uav_control
+活动路径: References/Sunray/General_Module/sunray_uav_control
+迁移状态: copied_pending_activation
+来源: 保留的 YunDrone Sunray 本地导入包；上游仓库和 commit 均未能从快照恢复
+固定版本: 不可恢复；不得宣称已钉定上游 Git commit
+许可证: package.xml 声明 TODO，且组件不携带独立许可证文件；内嵌 MAVLink 快照也需发布前审计
+项目补丁: 无源码、CMake、package.xml、launch、MAVLink、配置、脚本、mesh 或 RViz 文件改动；
+          仅新增 .gitattributes、UPSTREAM.md、PATCHES.md
+原始快照: 587 个文件，SHA-256 清单
+          847699b0a94457610dda738d22cb411a3920c79a1e53ae04cda3cd6dd6c5d3f2
+交付负载: 排除 20 个 launch/sunray_control_node.launch.bak_mosim_* 历史备份后，
+          567 个文件与旧路径一致，2d723ac1e96c310b0d9ece1c830d7c9613ea014c9ff3363f15478ad1d9c192d8；
+          保留 CMake 直接引用的内嵌 MAVLink 头文件快照和 uav.mesh 运行时资产
+静态检查: JSON 解析、复制载荷 SHA-256 比对和差异格式检查通过
+未执行项: 未改写入口，未构建、预检、启动 ROS/Gazebo/PX4/MAVROS/QGC/UE、控制器或 RViz
+激活前置: 审计 Sunray/MAVLink 上游和许可证；处理 ../sunray_common/common_lib 相邻路径依赖；
+          审计 generate_messages()/sunray_control_gencpp 契约，改写审计过的入口并完成受控 ROS1 验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
