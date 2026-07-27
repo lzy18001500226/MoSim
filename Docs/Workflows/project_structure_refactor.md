@@ -168,3 +168,24 @@ component_id: fuel
 激活前置: 补齐上游 commit/许可证、改写审计过的 FUEL 入口并完成受控 ROS1 验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.3 uav_utils 复制记录（2026-07-27）
+
+```text
+component_id: uav_utils
+旧路径: References/Lab/planning_local/Fast-Drone-250/src/utils/uav_utils
+新路径: src/common/utilities/ros1/uav_utils
+活动路径: References/Lab/planning_local/Fast-Drone-250/src/utils/uav_utils
+迁移状态: copied_pending_activation
+来源: https://github.com/ZJU-FAST-Lab/Fast-Drone-250
+固定版本: 旧导入快照未能恢复上游 commit；不得宣称已钉定版本
+许可证: package.xml 声明 LGPLv3；旧组件未携带独立许可证文件，发布前仍需审计
+项目补丁: 无源码、CMake、package.xml 或脚本改动；仅新增 .gitattributes、UPSTREAM.md、PATCHES.md
+原始快照与交付负载: 11 个文件，无 build、devel、install、缓存或编辑器本地文件，
+                         SHA-256 清单 f00befb146bdb47cfb194d3dfa6a566c2d962f5d003d0704e8e9709a567e4aa8
+静态检查: JSON 解析、复制载荷 SHA-256 比对和差异格式检查通过；4 个 Python 脚本中
+          3 个可由当前 Python 3 编译，tf_assist.py 保留 Python 2 except 语法，未作修改
+未执行项: 未改写入口，未构建、预检、启动 ROS/Gazebo/PX4/QGC/UE 或运行控制器
+激活前置: 补齐上游 commit/许可证、改写审计过的消费者引用并完成受控 ROS1 验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

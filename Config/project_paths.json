@@ -69,7 +69,7 @@
       "canonical_relpath": "src/common/utilities/ros1/uav_utils",
       "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/uav_utils",
       "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/uav_utils",
-      "migration_state": "legacy_active",
+      "migration_state": "copied_pending_activation",
       "entrypoints": [
         "src/control/runtime_adapters/px4ctrl"
       ]
