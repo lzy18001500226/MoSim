@@ -15,7 +15,7 @@
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.LqrBaselineAttitudeThrustAdapter",
-    "model_sha256": "fe651cdc9df61730ae285944ef24a7009003a71cd0d5509ae7ffe82c60541c28",
+    "model_sha256": "250cfd9526935f71304d4275711e045ff3afeb2e6cf1270489b7cb9a036d26e7",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "equation_bridge",
@@ -47,7 +47,7 @@
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
-      "expected_sha256": "fe651cdc9df61730ae285944ef24a7009003a71cd0d5509ae7ffe82c60541c28"
+      "expected_sha256": "250cfd9526935f71304d4275711e045ff3afeb2e6cf1270489b7cb9a036d26e7"
     },
     {
       "role": "graphical_controller_core",
@@ -57,7 +57,7 @@
     {
       "role": "shared_attitude_rate_allocator",
       "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
-      "expected_sha256": "154c9b19ee5ae3050467e56e6c0e6a08dd364b9e928eb81b5749688c6c2f66ca"
+      "expected_sha256": "9845d78c135f8a04431b1dafc80cf4e8e5eadf35f86904607e336b0264a75018"
     },
     {
       "role": "shared_sunray150_assembly",

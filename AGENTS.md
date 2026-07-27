@@ -9,14 +9,14 @@ domain-specific workflows in the linked documents below.
 
 ## Current Task
 
-Fast entry cue, 2026-07-27 CST: Phase 1 has completed its frozen 46-route
-minimum-closure matrix on the 50 s `ClimbPath`. The local result root is
-`Results/control_platform/phase1_minimum_closure/`: all 46 terminal records
-exist, with three passes and 43 truthful failures (34 `adapter_missing`, six
-`model_check_failed`, three terminal-error-limit failures). The promoted
-CFunction source-import consistency check passes. Stop at this user-review
-gate; do not start Phase 2, seven-scenario A/B, export, runtime validation,
-G7, or R1 without a new user instruction.
+Fast entry cue, 2026-07-27 CST: the user-approved champion-candidate recovery
+is complete. `cascade_pid`, `lqr_baseline`, `super_twisting_smc`,
+`linear_mpc`, `dfbc_high_order_attitude`, and `trained_neural_residual` each
+have a current plant-coupled 50 s `ClimbPath` pass and recorded RMSE. The
+accepted ranking pointer is
+`Results/control_platform/champion_candidate_recovery_20260727/CHAMPION_CANDIDATE_RMSE_RANKING.json`.
+Wait for user review before running the other 34 `adapter_missing` rows,
+seven-scenario A/B, export, runtime validation, G7, or R1.
 
 `Docs/Workflows/mainline_operations_board.md` is the sole task authority and
 contains the exact scope, evidence, and stopping/handoff conditions. Update this

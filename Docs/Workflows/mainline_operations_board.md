@@ -9,7 +9,10 @@ boundary; P0b then passed the current-root Official PID and four shared Runner
 boundary 50 s regressions with native results, captures, metrics, and dedicated
 session closure. Phase 1 then completed its user-approved frozen 46-route
 matrix on 2026-07-27 CST. The pre-P0a 46-route matrix remains historical
-trace-back only, not current Phase 1 evidence.
+trace-back only, not current Phase 1 evidence. The bounded six-candidate
+recovery then completed with six current passing 50 s `ClimbPath` records; its
+accepted ranking pointer is
+`Results/control_platform/champion_candidate_recovery_20260727/CHAMPION_CANDIDATE_RMSE_RANKING.json`.
 
 ## 0. Task Authority and Evidence Snapshot
 
@@ -21,14 +24,23 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Phase 1 Execution Entry
+### Champion Candidate Recovery Complete - Awaiting User Review
 
 - Workflow: `Docs/Workflows/run_simulation.md`.
 - Frozen matrix driver: `Scripts/mworks/run_phase1_minimum_closure.py`.
 - Contract test: `Scripts/tests/test_phase1_minimum_closure.py`.
-- Evidence root: `Results/control_platform/phase1_minimum_closure/`.
-- Stop: all 46 rows have a terminal pass/fail `RUN_RECORD.json`; do not move to
-  Phase 2 or later gates without a new user instruction.
+- Recovery evidence root:
+  `Results/control_platform/champion_candidate_recovery_20260727/`.
+- Accepted ranking:
+  `Results/control_platform/champion_candidate_recovery_20260727/CHAMPION_CANDIDATE_RMSE_RANKING.json`
+  and `.csv`. All six named candidates passed their plant-coupled 50 s
+  `ClimbPath` run with finite terminal error below 5 m and recorded position
+  RMSE.
+- The ranking is a common-scenario recovery record, not seven-scenario A/B,
+  code-generation, Gazebo, ROS, or flight-runtime evidence.
+- Stop: wait for a new user instruction. Do not run the other 34
+  `adapter_missing` rows, seven-scenario A/B, export, runtime validation, G7,
+  or R1.
 
 The approved atomic model-library migration is statically complete. The only
 formal load root is `Models/MoSimQuadrotorModel/package.mo`; retired roots and
@@ -59,6 +71,12 @@ source-import consistency check passes. This is a readiness screen only, not
 family-champion selection, seven-scenario comparison, code generation, or
 runtime validation.
 
+The completed user-approved recovery was limited to the six nominal-family
+candidate rows named above. Phase 1's original failures remain archived by the
+rerun procedure; each successful rerun proves only that candidate's repaired
+minimum whole-aircraft `ClimbPath` closure and supplies its RMSE for the next
+ranking decision.
+
 ## 2. Current Engineering Boundaries
 
 ```text
@@ -81,7 +99,7 @@ current completion.
 
 ## 3. Next Engineering Selection
 
-After the user reviews Phase 1, continue the approved controller-evidence plan
+After the user reviews the six-candidate ranking, continue the approved controller-evidence plan
 in this order:
 
 1. choose one measured winner from each of the six nominal families and give
@@ -98,15 +116,16 @@ topic workflow and declare the evidence path under `Results/`.
 
 ## 4. Stopping And Handoff Conditions
 
-For the current Phase 1 review gate:
+For the completed champion-candidate recovery gate:
 
-- Stop now. All 46 frozen rows have a terminal `RUN_RECORD.json` below
-  `Results/control_platform/phase1_minimum_closure/`; task-owned source and
-  workflow changes are being committed and pushed for user review.
+- All six named candidates now have current passing 50 s `ClimbPath` records
+  with documented RMSE. Commit and push the bounded repair, then wait for user
+  review.
 - Do not use P0b fixture results as controller-family selection data; they
   validate shared Runner boundaries only.
-- Do not start Phase 2, seven-scenario A/B, ESO ablation, export, ROS1 runtime
-  validation, G7, or R1 before a new user instruction.
+- Do not run the other 34 `adapter_missing` rows, seven-scenario A/B, ESO
+  ablation, export, ROS1 runtime validation, G7, or R1 before a new user
+  instruction.
 
 ## 5. Board Update Rule
 

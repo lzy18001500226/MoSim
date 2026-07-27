@@ -15,7 +15,7 @@
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.TrainedNeuralResidualAttitudeThrustAdapter",
-    "model_sha256": "8f9f0cab98f9addb302b1d43d75575c3ac17b3ed015375b8ba12b08f29228cec",
+    "model_sha256": "1addc25ace3996e13e7883ac0bf6ca6962d2286c2dc6b474ccc897337424d4c5",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "direct_model_reference"
@@ -44,7 +44,7 @@
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo",
-      "expected_sha256": "8f9f0cab98f9addb302b1d43d75575c3ac17b3ed015375b8ba12b08f29228cec"
+      "expected_sha256": "1addc25ace3996e13e7883ac0bf6ca6962d2286c2dc6b474ccc897337424d4c5"
     },
     {
       "role": "current_root_cfunction_core",
@@ -54,7 +54,7 @@
     {
       "role": "shared_attitude_rate_allocator",
       "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
-      "expected_sha256": "154c9b19ee5ae3050467e56e6c0e6a08dd364b9e928eb81b5749688c6c2f66ca"
+      "expected_sha256": "9845d78c135f8a04431b1dafc80cf4e8e5eadf35f86904607e336b0264a75018"
     },
     {
       "role": "shared_sunray150_assembly",
@@ -94,7 +94,7 @@
     {
       "role": "adapter_source_import_manifest",
       "path": "Results/control_platform/g6_formal_champion_promotion_20260725/trained_neural_residual/adapter_source_import.json",
-      "expected_sha256": "353a0343cdef84eba3b20f7472827327cadb4741490a39f9db80ba2f64f3d082"
+      "expected_sha256": "e64d96eb82a4400d27cd4f2a494bd54c6000c21d1d818fc4d1e696bb8b0b9f47"
     }
   ],
   "model_layout_boundary": {

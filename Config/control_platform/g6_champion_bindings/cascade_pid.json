@@ -15,7 +15,7 @@
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter",
-    "model_sha256": "b6af7fd2d7d5606ed2321ffad60b08b2629781a41979c71ae706f47a5018abac",
+    "model_sha256": "6b2f32b7f31112e50db11545eca349df6d1165fa741ac632408ba43e1127e0ec",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
       "kind": "direct_model_reference"
@@ -44,7 +44,7 @@
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
-      "expected_sha256": "b6af7fd2d7d5606ed2321ffad60b08b2629781a41979c71ae706f47a5018abac"
+      "expected_sha256": "6b2f32b7f31112e50db11545eca349df6d1165fa741ac632408ba43e1127e0ec"
     },
     {
       "role": "current_root_cfunction_core",
@@ -54,7 +54,7 @@
     {
       "role": "shared_attitude_rate_allocator",
       "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
-      "expected_sha256": "154c9b19ee5ae3050467e56e6c0e6a08dd364b9e928eb81b5749688c6c2f66ca"
+      "expected_sha256": "9845d78c135f8a04431b1dafc80cf4e8e5eadf35f86904607e336b0264a75018"
     },
     {
       "role": "shared_sunray150_assembly",

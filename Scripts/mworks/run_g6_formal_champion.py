@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import shutil
 import sys
 import time
@@ -68,6 +69,21 @@ SCHEMA = "mosim.g6_formal_champion_minimum_closure_run.v1"
 STATUS_SCHEMA = "mosim.g6_formal_champion_minimum_closure_status.v1"
 SCREENSHOT_SCHEMA = "mosim.g6_formal_champion_minimum_closure_screenshot_manifest.v1"
 DEFAULT_G6_MATRIX_PATH = ROOT / "Results" / "control_platform" / "g6_controller_execution_20260724" / "G6_EXECUTION_MATRIX.json"
+TERMINAL_ERROR_LIMIT_M = 5.0
+# Controllers sample at 100 Hz.  Recording at the same interval preserves the
+# closed-loop response for ranking without serializing every adaptive solver step.
+FORMAL_RESULT_INTERVAL_S = 0.01
+# All six candidates use this fixed-step profile.  It changes neither a
+# controller nor the Sunray150 plant; it only prevents adaptive internal steps
+# from turning a 50 s result into an unbounded native-result serialization.
+FORMAL_SOLVER_PROFILE = {
+    "algo": "Rkfix4",
+    "integralStep": 0.002,
+    "storeDouble": True,
+    "storeEvent": False,
+    "isPieceWiseStep": True,
+    "pieceWiseStep": ((0.0, 0.002),),
+}
 TERMINAL_STATUSES = {
     "passed",
     "model_check_failed",
@@ -78,6 +94,7 @@ TERMINAL_STATUSES = {
     "screenshot_failed",
     "license_or_login",
     "internal_or_mcp",
+    "terminal_position_error_exceeds_limit",
 }
 
 # AttitudeThrustRunner exposes the shared plant at these public result names.
@@ -148,8 +165,8 @@ def execution_metadata(binding: dict[str, Any]) -> dict[str, str]:
         "screenshot_schema": SCREENSHOT_SCHEMA,
         "archive_schema": "mosim.g6_formal_champion_superseded_run.v1",
         "status_file_name": "FORMAL_CHAMPION_STATUS.json",
-        "matrix_membership": "champion-promotion outside frozen 46-route G6 matrix",
-        "matrix_reason": "Champion promotion is a separately bound whole-aircraft gate and does not rewrite the frozen 46-route internal evidence matrix.",
+        "matrix_membership": "champion-promotion outside frozen provenance matrix",
+        "matrix_reason": "Champion promotion is a separately bound whole-aircraft gate and does not rewrite the frozen provenance matrix.",
         "metrics_source": "g6_formal_champion_minimum_closure",
     }
 
@@ -381,6 +398,33 @@ def write_screenshot_manifest(run_dir: Path, record: dict[str, Any]) -> Path:
     return output
 
 
+def add_derived_position_error(series: dict[str, list[float]]) -> float:
+    aliases = ("x", "y", "z", "x_ref", "y_ref", "z_ref")
+    if any(alias not in series for alias in aliases):
+        raise RuntimeError("cannot derive terminal position error because tracking series are incomplete")
+    count = min(len(series[alias]) for alias in aliases)
+    if count <= 0:
+        raise RuntimeError("cannot derive terminal position error from empty tracking series")
+    errors: list[float] = []
+    for index in range(count):
+        values = [float(series[alias][index]) for alias in aliases]
+        if not all(math.isfinite(value) for value in values):
+            errors.append(float("nan"))
+            continue
+        errors.append(
+            math.sqrt(
+                (values[3] - values[0]) ** 2
+                + (values[4] - values[1]) ** 2
+                + (values[5] - values[2]) ** 2
+            )
+        )
+    series["position_error_norm"] = errors
+    terminal = errors[-1]
+    if not math.isfinite(terminal):
+        raise RuntimeError("terminal position_error_norm is non-finite")
+    return terminal
+
+
 def terminal_status(record: dict[str, Any], *, cleanup: dict[str, Any] | None) -> dict[str, Any]:
     return {
         "schema": record["execution_metadata"]["status_schema"],
@@ -434,8 +478,8 @@ def checked_route_matrix(path: Path | None) -> Path:
         matrix.relative_to(results_root)
     except ValueError as exc:
         raise ValueError("route-matrix must stay below Results/") from exc
-    if matrix.name != "G6_EXECUTION_MATRIX.json":
-        raise ValueError("route-matrix file name must be G6_EXECUTION_MATRIX.json")
+    if matrix.name not in {"G6_EXECUTION_MATRIX.json", "PHASE1_MATRIX.json"}:
+        raise ValueError("route-matrix file name must be G6_EXECUTION_MATRIX.json or PHASE1_MATRIX.json")
     if not matrix.is_file():
         raise FileNotFoundError(f"route matrix is missing: {matrix}")
     return matrix
@@ -480,6 +524,12 @@ def main() -> int:
         "status": "running",
         "source": "MWORKS_MCP",
         "formal_binding": binding,
+        "result_output_interval_s": FORMAL_RESULT_INTERVAL_S,
+        "formal_solver_profile": {
+            "api": "ModelingPy.SimulateModel",
+            "purpose": "common fixed-step and bounded-output profile for six-candidate ClimbPath ranking",
+            "options": FORMAL_SOLVER_PROFILE,
+        },
         "frozen_46_route_matrix": {
             "path": relative(route_matrix),
             "sha256": sha256(route_matrix),
@@ -588,6 +638,8 @@ def main() -> int:
             native_result_dir=native_dir,
             verify_result_var=FORMAL_VARIABLES["z"],
             verify_time_point="end",
+            interval=FORMAL_RESULT_INTERVAL_S,
+            simulate_model_options=FORMAL_SOLVER_PROFILE,
         )
         write_json(run_dir / "logs" / "simulate_model_direct.json", simulation)
         if not simulation.get("ok"):
@@ -630,6 +682,10 @@ def main() -> int:
         metrics = require_object(read_json(metrics_json), label="formal champion metrics")
         if metrics.get("valid") is not True:
             raise RuntimeError(f"Formal champion metrics are invalid: {metrics}")
+        terminal_error = add_derived_position_error(series)
+        position_rmse_m = float(metrics.get("position_rmse_m", float("nan")))
+        if not math.isfinite(position_rmse_m):
+            raise RuntimeError("formal champion position_rmse_m is non-finite")
 
         plot = show_native_plot(client, native_result=native_result, variables=RESULT_VIEWER_VARIABLES)
         write_json(run_dir / "logs" / "open_native_result_plot.json", plot)
@@ -652,8 +708,15 @@ def main() -> int:
             "duration_s": metrics.get("duration_s"),
             "nan_count": metrics.get("nan_count"),
             "valid": metrics.get("valid"),
+            "position_rmse_m": position_rmse_m,
         }
-        record["status"] = "passed"
+        record["terminal_position_error_norm_m"] = terminal_error
+        record["position_rmse_m"] = position_rmse_m
+        if terminal_error < TERMINAL_ERROR_LIMIT_M:
+            record["status"] = "passed"
+        else:
+            record["status"] = "terminal_position_error_exceeds_limit"
+            record["failure_class"] = "terminal_position_error_exceeds_limit"
     except Exception as exc:
         message = str(exc)
         classification = "source_hash_mismatch" if "source binding hash changed" in message or "SHA-256" in message else classify_error(message)

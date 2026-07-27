@@ -8,6 +8,11 @@ model OfflineAttitudeRateAllocator
   parameter Real kp_attitude = 14.142;
   parameter Real kd_attitude = 1.414;
   parameter Real kp_yaw = 5;
+  parameter Real embedded_yaw_authority_reference_ratio = 0.016
+    "Yaw-mixer reference ratio used by the embedded Official PID";
+  parameter Real yaw_authority_scale =
+    embedded_yaw_authority_reference_ratio / profile.moment_constant_ratio_m
+    "Map the embedded yaw pattern onto the physical plant reaction-torque ratio";
   parameter Real inner_limit = 7;
   parameter Real collective_thrust_slope = 8 * profile.mworks_visual_thrust_coefficient * hover_speed
     "First-order collective thrust slope about hover in N/(rad/s)";
@@ -37,7 +42,10 @@ equation
     + kd_attitude * body_rate_estimator[1].y, -inner_limit), inner_limit);
   pitch_term = command_scale * 0.707 * min(max(kp_attitude * (attitude_ref[2] - attitude_mea[2])
     - kd_attitude * body_rate_estimator[2].y, -inner_limit), inner_limit);
-  yaw_term = command_scale * 0.707 * min(max(kp_yaw * (attitude_ref[3] - attitude_mea[3]), -inner_limit), inner_limit);
+  // The embedded Official PID was calibrated at a 0.016 m yaw-moment ratio.
+  // Apply the same amplitude mapping before commanding this physical plant.
+  yaw_term = command_scale * yaw_authority_scale * 0.707
+    * min(max(kp_yaw * (attitude_ref[3] - attitude_mea[3]), -inner_limit), inner_limit);
   rotor_command[1] = hover_speed + rotor_speed_delta - yaw_term - pitch_term + roll_term;
   rotor_command[2] = -hover_speed - rotor_speed_delta - yaw_term + pitch_term + roll_term;
   rotor_command[3] = hover_speed + rotor_speed_delta - yaw_term + pitch_term - roll_term;

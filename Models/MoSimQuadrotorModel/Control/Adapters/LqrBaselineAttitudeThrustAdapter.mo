@@ -6,15 +6,20 @@ model LqrBaselineAttitudeThrustAdapter
 
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
   parameter Real sample_time_s = 0.01;
+  parameter Real mass_kg = profile.takeoff_mass_kg;
+  parameter Real gravity_mps2 = profile.gravity_mps2;
   parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
   parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
+  parameter Real hover_normalized_command = profile.mworks_controller_hover_percentage;
+  parameter Real normalized_to_physical_collective_thrust_n =
+    mass_kg * gravity_mps2 / hover_normalized_command;
   parameter Real max_collective_thrust_delta_n = 30.0 * collective_thrust_slope;
 
-  LqrBaselineEquationBridge core;
+  MoSimQuadrotorModel.Control.Bridges.LqrBaselineEquationBridge core;
 
   Real collective_thrust_delta_n
-    "The graphical LQR Z channel is a thrust increment about hover";
+    "Physical collective-thrust increment about the shared plant hover point";
 
 equation
   core.position_x = position_mea[1];
@@ -35,10 +40,16 @@ equation
   core.dt = sample_time_s;
   core.enable = 1;
 
-  attitude_ref[1] = core.desired_roll_rad_out;
+  // The LQR bridge emits ENU/FLU roll while the shared MWORKS plant uses the
+  // reciprocal physical roll sign at the allocator boundary.
+  attitude_ref[1] = -core.desired_roll_rad_out;
   attitude_ref[2] = core.desired_pitch_rad_out;
   attitude_ref[3] = 0;
-  collective_thrust_delta_n = core.collective_thrust_n_out;
+  // The readable graphical core is calibrated around a 0.37 normalized hover
+  // command. Convert that signal to physical total thrust before the shared
+  // allocator receives its required increment about hover.
+  collective_thrust_delta_n = normalized_to_physical_collective_thrust_n
+    * core.normalized_thrust_out - mass_kg * gravity_mps2;
   collective_thrust_delta = min(max(collective_thrust_delta_n,
     -max_collective_thrust_delta_n), max_collective_thrust_delta_n);
 

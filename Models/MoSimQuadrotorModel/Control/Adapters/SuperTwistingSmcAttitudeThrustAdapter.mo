@@ -17,8 +17,9 @@ model SuperTwistingSmcAttitudeThrustAdapter
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
   parameter Real max_collective_thrust_delta_n = 30.0 * collective_thrust_slope;
 
-  SuperTwistingSmcCFunction core;
+  MoSimQuadrotorModel.Control.Bridges.SuperTwistingSmcCFunction core;
 
+  Real roll_ref;
   Real pitch_argument;
   Real desired_collective_thrust_n;
   Real status_code;
@@ -55,9 +56,11 @@ equation
   desired_collective_thrust_n = core.collective_thrust_n_out;
   saturated = core.saturated_out;
   status_code = core.status_code_out;
-  attitude_ref[1] = atan2(2 * (core.desired_attitude_w_out * core.desired_attitude_x_out
+  roll_ref = atan2(2 * (core.desired_attitude_w_out * core.desired_attitude_x_out
     + core.desired_attitude_y_out * core.desired_attitude_z_out),
     1 - 2 * (core.desired_attitude_x_out ^ 2 + core.desired_attitude_y_out ^ 2));
+  // The C core emits ENU/FLU roll; the shared MWORKS allocator uses the opposite roll sense.
+  attitude_ref[1] = -roll_ref;
   pitch_argument = 2 * (core.desired_attitude_w_out * core.desired_attitude_y_out
     - core.desired_attitude_z_out * core.desired_attitude_x_out);
   attitude_ref[2] = if pitch_argument >= 1 then Modelica.Constants.pi / 2

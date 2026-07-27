@@ -18,7 +18,7 @@ model CascadePidAttitudeThrustAdapter
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
   parameter Real max_collective_thrust_delta_n = 30.0 * collective_thrust_slope;
 
-  PidAttitudeThrustCFunction core
+  MoSimQuadrotorModel.Control.Bridges.PidAttitudeThrustCFunction core
     annotation(Placement(transformation(origin = {0, 0}, extent = {{-32, -82}, {32, 82}})));
   Modelica.Blocks.Continuous.Derivative angular_rate_estimator[3](
     each k = 1,
@@ -58,7 +58,10 @@ model CascadePidAttitudeThrustAdapter
 equation
   connect(attitude_mea, angular_rate_estimator.u);
 
-  roll_mea = attitude_mea[1];
+  // The shared MWORKS plant reports roll opposite to the ENU/FLU C core.
+  // OfflineAttitudeRateAllocator already applies the reciprocal actuator-side
+  // convention, so only the C-core measurement bridge is inverted here.
+  roll_mea = -attitude_mea[1];
   pitch_mea = attitude_mea[2];
   yaw_mea = attitude_mea[3];
   q_w = cos(roll_mea / 2) * cos(pitch_mea / 2) * cos(yaw_mea / 2)
@@ -82,7 +85,7 @@ equation
   core.attitude_x_in = q_x;
   core.attitude_y_in = q_y;
   core.attitude_z_in = q_z;
-  connect(angular_rate_estimator[1].y, core.angular_velocity_x_in);
+  core.angular_velocity_x_in = -angular_rate_estimator[1].y;
   connect(angular_rate_estimator[2].y, core.angular_velocity_y_in);
   connect(angular_rate_estimator[3].y, core.angular_velocity_z_in);
   connect(position_ref[1], core.reference_position_x_in);
@@ -125,7 +128,9 @@ equation
   yaw_ref = atan2(2 * (core.desired_attitude_w_out * core.desired_attitude_z_out
     + core.desired_attitude_x_out * core.desired_attitude_y_out),
     1 - 2 * (core.desired_attitude_y_out ^ 2 + core.desired_attitude_z_out ^ 2));
-  attitude_ref[1] = roll_ref;
+  // The shared allocator's positive roll reference produces negative MWORKS
+  // physical roll. Convert the ENU/FLU desired roll before that actuator bridge.
+  attitude_ref[1] = -roll_ref;
   attitude_ref[2] = pitch_ref;
   attitude_ref[3] = yaw_ref;
   collective_thrust_delta = min(max(desired_collective_thrust_n - hover_collective_thrust_n,

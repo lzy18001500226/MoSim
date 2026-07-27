@@ -13,7 +13,7 @@ model DfbcHighOrderAttitudeThrustAdapter
     "Copied from the selected graphical DFBC output adapter";
   parameter Real max_collective_thrust_delta_n = 30.0 * collective_thrust_slope;
 
-  DfbcHighOrderEquationBridge core(sample_time_s = sample_time_s);
+  MoSimQuadrotorModel.Control.Bridges.DfbcHighOrderEquationBridge core(sample_time_s = sample_time_s);
   Modelica.Blocks.Continuous.Derivative body_rate_estimator[3](
     each k = 1,
     each T = 0.02,
@@ -22,6 +22,7 @@ model DfbcHighOrderAttitudeThrustAdapter
 
   Real desired_collective_thrust_n
     "DFBC normalized thrust includes its own gravity compensation";
+  Real roll_ref;
 
 equation
   connect(attitude_mea, body_rate_estimator.u);
@@ -47,7 +48,9 @@ equation
   core.dt = sample_time_s;
   core.enable = 1;
 
-  attitude_ref[1] = core.desired_roll_rad_out;
+  roll_ref = core.desired_roll_rad_out;
+  // The DFBC bridge emits ENU/FLU roll; the shared MWORKS allocator uses the opposite roll sense.
+  attitude_ref[1] = -roll_ref;
   attitude_ref[2] = core.desired_pitch_rad_out;
   attitude_ref[3] = 0;
   desired_collective_thrust_n = core.normalized_thrust_out / normalized_thrust_scale;
