@@ -7,8 +7,9 @@
 Status: P0a repaired the shared velocity-estimation and collective-thrust unit
 boundary; P0b then passed the current-root Official PID and four shared Runner
 boundary 50 s regressions with native results, captures, metrics, and dedicated
-session closure. Stop at this user-review gate. The pre-P0a 46-route matrix is
-historical trace-back only, not current Phase 1 evidence, 2026-07-27 CST.
+session closure. Phase 1 then completed its user-approved frozen 46-route
+matrix on 2026-07-27 CST. The pre-P0a 46-route matrix remains historical
+trace-back only, not current Phase 1 evidence.
 
 ## 0. Task Authority and Evidence Snapshot
 
@@ -41,13 +42,22 @@ closures, not family champion selection, seven-scenario comparison, code
 generation, or flight-runtime behavior. It was superseded for new experiment
 acceptance because P0a changed the shared Runner interface/units.
 
-The current P0b result root is
+The P0b result root is
 `Results/control_platform/p0b_interface_regression_20260727/`: Official PID and
 ATTITUDE_THRUST, BODY_RATE_THRUST, WRENCH, and ROTOR_COMMAND all completed the
 same 50 s ClimbPath regression with finite results, native result-window
 captures, and verified dedicated-session closure. Official PID terminal position
-error is 0.00651 m. The current action is user review of P0a/P0b only; do not
-start Phase 1, champion promotion, seven-scenario A/B, export, or runtime work.
+error is 0.00651 m.
+
+Phase 1 is complete at
+`Results/control_platform/phase1_minimum_closure/`. All 46 frozen rows have a
+terminal `RUN_RECORD.json` for the sole 50 s `ClimbPath` trajectory: three
+passed the finite terminal `position_error_norm < 5 m` gate, while 34 rows are
+truthfully classified `adapter_missing`, six `model_check_failed`, and three
+`terminal_position_error_exceeds_limit`. The concurrent promoted CFunction
+source-import consistency check passes. This is a readiness screen only, not
+family-champion selection, seven-scenario comparison, code generation, or
+runtime validation.
 
 ## 2. Current Engineering Boundaries
 
@@ -71,19 +81,16 @@ current completion.
 
 ## 3. Next Engineering Selection
 
-After the user accepts P0a/P0b, continue the approved controller-evidence plan
+After the user reviews Phase 1, continue the approved controller-evidence plan
 in this order:
 
-1. run Phase 1 anew: 41 GraphicalMIL routes plus five fixed integration chains
-   against the P0a interface, recording pass/fail and ClimbPath RMSE; do not
-   reuse pre-P0a route records as current evidence;
-2. choose one measured winner from each of the six nominal families and give
+1. choose one measured winner from each of the six nominal families and give
    only those candidates champion-specific minimum whole-aircraft closures;
-3. compare each accepted champion with Official PID in hover, step, figure-8,
+2. compare each accepted champion with Official PID in hover, step, figure-8,
    spiral, wind, parameter-mismatch and motor-efficiency-fault scenarios;
-4. run the required ESO ablation trio, then export accepted candidates and
+3. run the required ESO ablation trio, then export accepted candidates and
    validate the declared ROS1/Sunray/Gazebo/PX4/MAVROS/px4ctrl runtime path;
-5. collect report/software-documentation material from the resulting evidence,
+4. collect report/software-documentation material from the resulting evidence,
    then archive no-longer-used source only after a dependency audit.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant
@@ -91,14 +98,15 @@ topic workflow and declare the evidence path under `Results/`.
 
 ## 4. Stopping And Handoff Conditions
 
-For the current P0a/P0b review gate:
+For the current Phase 1 review gate:
 
-- Stop now. The user reviews the repaired source interface, refreshed bindings,
-  P0b result root, native captures, and metrics before Phase 1 starts.
-- Do not use the P0b fixture results to select a controller-family champion;
-  they validate only shared Runner boundaries.
-- Do not start Phase 1, seven-scenario A/B, ESO ablation, export, ROS1 runtime
-  validation, G7, or R1 until the user approves the next gate.
+- Stop now. All 46 frozen rows have a terminal `RUN_RECORD.json` below
+  `Results/control_platform/phase1_minimum_closure/`; task-owned source and
+  workflow changes are being committed and pushed for user review.
+- Do not use P0b fixture results as controller-family selection data; they
+  validate shared Runner boundaries only.
+- Do not start Phase 2, seven-scenario A/B, ESO ablation, export, ROS1 runtime
+  validation, G7, or R1 before a new user instruction.
 
 ## 5. Board Update Rule
 

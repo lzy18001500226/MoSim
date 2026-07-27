@@ -9,12 +9,14 @@ domain-specific workflows in the linked documents below.
 
 ## Current Task
 
-Fast entry cue, 2026-07-27 CST: P0a repaired the shared Runner interface and
-P0b passed the fresh Official PID plus four shared-boundary 50 s regressions at
-`Results/control_platform/p0b_interface_regression_20260727/`. Stop for user
-review. The pre-P0a 46-route matrix is historical trace-back only; do not start
-Phase 1, champion promotion, seven-scenario A/B, code generation/runtime
-validation, G7, or R1 from this cue alone.
+Fast entry cue, 2026-07-27 CST: Phase 1 has completed its frozen 46-route
+minimum-closure matrix on the 50 s `ClimbPath`. The local result root is
+`Results/control_platform/phase1_minimum_closure/`: all 46 terminal records
+exist, with three passes and 43 truthful failures (34 `adapter_missing`, six
+`model_check_failed`, three terminal-error-limit failures). The promoted
+CFunction source-import consistency check passes. Stop at this user-review
+gate; do not start Phase 2, seven-scenario A/B, export, runtime validation,
+G7, or R1 without a new user instruction.
 
 `Docs/Workflows/mainline_operations_board.md` is the sole task authority and
 contains the exact scope, evidence, and stopping/handoff conditions. Update this
