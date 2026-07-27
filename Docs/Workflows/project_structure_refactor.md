@@ -231,3 +231,25 @@ component_id: livox_ros_driver_compat
 激活前置: 审计包名/消息契约、改写审计过的 FAST-LIO 消费者引用、生成消息并完成受控 ROS1 验证
 旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
 ```
+
+### 5.6 FAST-LIO 复制记录（2026-07-27）
+
+```text
+component_id: fast_lio
+旧路径: References/Lab/localization_slam/FAST_LIO
+新路径: src/perception/fast_lio
+活动路径: References/Lab/localization_slam/FAST_LIO
+迁移状态: copied_pending_activation
+来源: https://github.com/hku-mars/FAST_LIO.git
+固定版本: 旧导入快照未能恢复上游 FAST-LIO 与 ikd-Tree commit；不得宣称已钉定版本
+许可证: 根 LICENSE 为 GPL-2.0 文本，而 package.xml 声明 BSD；发布前必须完成冲突审计
+项目补丁: 无源码、CMake、package.xml、launch、配置或传感器文件改动；仅新增 .gitattributes、UPSTREAM.md、PATCHES.md
+原始快照: 85 个文件，SHA-256 清单
+          a4931b9ce91f98384a9c785ac7aa5b5103acb056e4cf1c3ec5c3ccb33918aa1d
+交付负载: 排除 doc 演示媒体、Log 历史运行输出和 PCD 输出后，49 个文件与旧路径一致，
+          6f830a3fbd685e84894e646e29a16222996a7f24743432dc0fee0f04ac5e8bfe；新路径保留 Log/、PCD/ 空占位目录
+静态检查: JSON 解析、复制载荷 SHA-256 比对和差异格式检查通过
+未执行项: 未改写入口，未初始化子模块、构建、预检、启动 ROS/Gazebo/PX4/QGC/UE、FAST-LIO 或 RViz
+激活前置: 补齐 FAST-LIO/ikd-Tree 版本和许可证、改写审计过的入口、完成 ROS1 MID360/Sunray 受控验证
+旧副本处置: 保留且不修改；无归档、删除或交付包剔除决定
+```

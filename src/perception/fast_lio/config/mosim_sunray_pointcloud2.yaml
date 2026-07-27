@@ -1,0 +1,38 @@
+common:
+    lid_topic:  "/uav1/livox/lidar"
+    imu_topic:  "/uav1/livox/imu"
+    time_sync_en: false
+    time_offset_lidar_to_imu: 0.0
+
+preprocess:
+    lidar_type: 4
+    scan_line: 4
+    scan_rate: 20
+    timestamp_unit: 1
+    blind: 0.4
+
+mapping:
+    acc_cov: 0.1
+    gyr_cov: 0.1
+    b_acc_cov: 0.0001
+    b_gyr_cov: 0.0001
+    fov_degree:    360
+    det_range:     40.0
+    extrinsic_est_en:  false
+    # Gazebo livox_mid360 publishes LiDAR ray points in the ray sensor frame.
+    # FAST-LIO expects the LiDAR pose in the IMU body frame; the ray sensor is
+    # 0.1 m above the nested Livox IMU/base link in the local sensor model.
+    extrinsic_T: [ 0.0, 0.0, 0.1 ]
+    extrinsic_R: [ 1, 0, 0,
+                   0, 1, 0,
+                   0, 0, 1]
+
+publish:
+    path_en:  true
+    scan_publish_en:  true
+    dense_publish_en: true
+    scan_bodyframe_pub_en: true
+
+pcd_save:
+    pcd_save_en: false
+    interval: -1
