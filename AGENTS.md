@@ -30,14 +30,15 @@ all 13 classes without source drift, with evidence at
 added `SE3 Basic`, `DFBC Basic`, `DFBC SmoothRobust` attitude/body-rate, and
 `DFBC HighOrder` body-rate routes as five named Bridges and five thin Adapters;
 native `CheckModel` passed all 10 classes without source drift, with evidence
-at `Results/control_platform/g1_batch5_checkmodel_20260728/`. The current
-action is G1 Batch 6: complete only the approved PID-subfamily Bridge/Adapter
-routes, then run its independent `CheckModel` batch. G2 runs the 44
-current-source runnable MWORKS routes on `ClimbPath` and records the two
-overview-only plus one planned MWORKS catalog exclusions; G3 makes bounded repairs
-only for divergence, interface defects, or terminal error over 5 m. Do not
-begin seven-scenario simulation, code export, Gazebo/ROS runtime validation,
-G7, or R1 on this line.
+at `Results/control_platform/g1_batch5_checkmodel_20260728/`. G1 Batch 6 then
+added the `GainScheduled PID`, `Fuzzy PID`, `Neural PID`, and `RL GainScheduler`
+routes as four Bridges and four thin Adapters; native `CheckModel` passed all
+eight classes without source drift, with evidence at
+`Results/control_platform/g1_batch6_checkmodel_20260728/`. G1 is structurally
+complete and awaiting user audit. Do not create FormalRunners, run `ClimbPath`,
+or enter G2 until the user explicitly releases this gate. Do not begin
+seven-scenario simulation, code export, Gazebo/ROS runtime validation, G7, or
+R1 on this line.
 
 
 The six-candidate recovery record at

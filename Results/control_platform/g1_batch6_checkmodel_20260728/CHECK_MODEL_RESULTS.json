@@ -1,0 +1,320 @@
+{
+  "schema": "mosim.g1_batch_checkmodel.v1",
+  "batch": "G1_Batch6_PIDSubfamilies",
+  "scope": "Native CheckModel only; no solver simulation, model save, controller performance claim, code generation, or runtime validation.",
+  "model_root": "Models/MoSimQuadrotorModel/package.mo",
+  "targets": [
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/GainScheduledPidEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.GainScheduledPidEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.141,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.136,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.GainScheduledPidEquationBridge",
+            "dt_s": 0.128
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/FuzzyPidEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.FuzzyPidEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.107,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.101,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.FuzzyPidEquationBridge",
+            "dt_s": 0.099
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/NeuralPidEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.NeuralPidEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.114,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.11,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.NeuralPidEquationBridge",
+            "dt_s": 0.103
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/RlGainSchedulerEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.RlGainSchedulerEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.108,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.104,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.RlGainSchedulerEquationBridge",
+            "dt_s": 0.099
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/GainScheduledPidAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.GainScheduledPidAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.153,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.15,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.GainScheduledPidAttitudeThrustAdapter",
+            "dt_s": 0.136
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/FuzzyPidAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.FuzzyPidAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.094,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.091,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.FuzzyPidAttitudeThrustAdapter",
+            "dt_s": 0.09
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/NeuralPidAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.NeuralPidAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.108,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.105,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.NeuralPidAttitudeThrustAdapter",
+            "dt_s": 0.104
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/RlGainSchedulerAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.RlGainSchedulerAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.091,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.087,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.RlGainSchedulerAttitudeThrustAdapter",
+            "dt_s": 0.086
+          }
+        ]
+      }
+    }
+  ],
+  "live_mworks_touched": true,
+  "will_not_click_activation_login": true,
+  "simulation_started": false,
+  "allowed_mcp_tools": [
+    "check_model",
+    "model_manager",
+    "session_manager"
+  ],
+  "raw_mcp_log": "Results/control_platform/g1_batch6_checkmodel_20260728/SYSPLORER_MCP_CHECK_ONLY.jsonl",
+  "source_hashes_before": {
+    "Models/MoSimQuadrotorModel/package.mo": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+    "Models/MoSimQuadrotorModel/Control/Bridges/package.order": "1aa5e93d1fe471f06b984599b5a317335cc64f5990aa4dccfc308e87f8e7d635",
+    "Models/MoSimQuadrotorModel/Control/Adapters/package.order": "4ee83bb582dfafc1f15f3d68356253e7dc627ab9e961e35ea53e780b7b84e0e4",
+    "Models/MoSimQuadrotorModel/Control/Bridges/GainScheduledPidEquationBridge.mo": "d0db8662b0a53bc685cad0f4964b71b7fd134547359d07c9e1b2b9fe7e994c9d",
+    "Models/MoSimQuadrotorModel/Control/Bridges/FuzzyPidEquationBridge.mo": "03c2f614344077fb4d6b279b03d77235ed9b6a9e73bd9fbfd7e4f183c0b4682f",
+    "Models/MoSimQuadrotorModel/Control/Bridges/NeuralPidEquationBridge.mo": "88e516708ce38f40fa5957eff56dd9c24b5d06e26cdbb7c51b790e33e738b1b5",
+    "Models/MoSimQuadrotorModel/Control/Bridges/RlGainSchedulerEquationBridge.mo": "f31768c65cd9bd7501f01ec13905aa9901db8ad848f547ef91e36b0cd692321e",
+    "Models/MoSimQuadrotorModel/Control/Adapters/GainScheduledPidAttitudeThrustAdapter.mo": "3040959763f16de4f6fe6487a82a9c988c145309a098273fb06f2e450fd21b85",
+    "Models/MoSimQuadrotorModel/Control/Adapters/FuzzyPidAttitudeThrustAdapter.mo": "09055382c6817fb72fd051f8c2dcfa4b3728b146bc00752fa6b2b37c0b0fa0a5",
+    "Models/MoSimQuadrotorModel/Control/Adapters/NeuralPidAttitudeThrustAdapter.mo": "18b566405eb706314a3980753a7f2a6af22c774754d8a8348ca252a8689eabbd",
+    "Models/MoSimQuadrotorModel/Control/Adapters/RlGainSchedulerAttitudeThrustAdapter.mo": "a71103344ce6c0eabddf1767ac2a5d4d3b5637635f09833ac9fa5914388daad0"
+  },
+  "status": "passed",
+  "wrapper": "mcp-wrappers\\sysplorer_mcp.cmd",
+  "mcp_initialize": {
+    "ok": true,
+    "mcp_server": {
+      "version": "0.1",
+      "version_display": "0.1",
+      "version_base": "0.1",
+      "version_core": "0.1",
+      "build_counter": 0,
+      "git_commit_count": 196,
+      "build_kind": "release",
+      "build_time": "2026-05-08T11:14:45+08:00",
+      "git_revision": "24314a1"
+    },
+    "python": {
+      "python_version": "3.11.4",
+      "major": 3,
+      "minor": 11,
+      "compatible": true,
+      "required": "3.10+ (recommended 3.11 for mworks-sysplorer)"
+    },
+    "driver_ready": true,
+    "driver_error": "",
+    "advice": [],
+    "sysplorer_startup": {
+      "attempted": true,
+      "started": true,
+      "already_running": false,
+      "wait_ms": 0,
+      "error": "",
+      "dedicated_sysplorer_port": 49163,
+      "timestamp": "2026-07-28T01:57:48.253135+00:00"
+    },
+    "paths": {
+      "workspace_root": "C:\\Users\\HP\\Desktop\\MoSim",
+      "deploy_root": "D:\\Program Files\\MWORKS\\Sysplorer 2026a\\Tools\\sysplorer_mcp",
+      "resources_root": "C:\\Users\\HP\\Desktop\\MoSim\\resources"
+    },
+    "bin64_path": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Bin64",
+    "workdir": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Tools\\SYSPLO~1\\SYSPLO~1\\temp",
+    "site_packages": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\External\\python64\\Lib\\SITE-P~1",
+    "api_ready": true
+  },
+  "load_root": {
+    "ok": true,
+    "api": "OpenModelFile",
+    "data": true,
+    "cached": false,
+    "file_path": "C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\package.mo",
+    "unload_loaded_classes_for_mo": {
+      "ok": true,
+      "api": "unload_loaded_classes_for_mo",
+      "data": [
+        {
+          "class": "MoSimQuadrotorModel",
+          "class_exist": false,
+          "erased": false
+        }
+      ]
+    },
+    "auto_loaded_libs": {
+      "Modelica": {
+        "ok": true,
+        "error": "",
+        "cached": false
+      },
+      "Icons": {
+        "ok": false,
+        "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [\u4e0a\u4e00\u6761\u547d\u4ee4\u6ca1\u6709\u65e5\u5fd7\u4fe1\u606f]",
+        "cached": false
+      },
+      "TY": {
+        "ok": false,
+        "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [\u4e0a\u4e00\u6761\u547d\u4ee4\u6ca1\u6709\u65e5\u5fd7\u4fe1\u606f]",
+        "cached": false
+      }
+    },
+    "manager_action": "load_file"
+  },
+  "passed_count": 8,
+  "failed_count": 0,
+  "source_hashes_after": {
+    "Models/MoSimQuadrotorModel/package.mo": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+    "Models/MoSimQuadrotorModel/Control/Bridges/package.order": "1aa5e93d1fe471f06b984599b5a317335cc64f5990aa4dccfc308e87f8e7d635",
+    "Models/MoSimQuadrotorModel/Control/Adapters/package.order": "4ee83bb582dfafc1f15f3d68356253e7dc627ab9e961e35ea53e780b7b84e0e4",
+    "Models/MoSimQuadrotorModel/Control/Bridges/GainScheduledPidEquationBridge.mo": "d0db8662b0a53bc685cad0f4964b71b7fd134547359d07c9e1b2b9fe7e994c9d",
+    "Models/MoSimQuadrotorModel/Control/Bridges/FuzzyPidEquationBridge.mo": "03c2f614344077fb4d6b279b03d77235ed9b6a9e73bd9fbfd7e4f183c0b4682f",
+    "Models/MoSimQuadrotorModel/Control/Bridges/NeuralPidEquationBridge.mo": "88e516708ce38f40fa5957eff56dd9c24b5d06e26cdbb7c51b790e33e738b1b5",
+    "Models/MoSimQuadrotorModel/Control/Bridges/RlGainSchedulerEquationBridge.mo": "f31768c65cd9bd7501f01ec13905aa9901db8ad848f547ef91e36b0cd692321e",
+    "Models/MoSimQuadrotorModel/Control/Adapters/GainScheduledPidAttitudeThrustAdapter.mo": "3040959763f16de4f6fe6487a82a9c988c145309a098273fb06f2e450fd21b85",
+    "Models/MoSimQuadrotorModel/Control/Adapters/FuzzyPidAttitudeThrustAdapter.mo": "09055382c6817fb72fd051f8c2dcfa4b3728b146bc00752fa6b2b37c0b0fa0a5",
+    "Models/MoSimQuadrotorModel/Control/Adapters/NeuralPidAttitudeThrustAdapter.mo": "18b566405eb706314a3980753a7f2a6af22c774754d8a8348ca252a8689eabbd",
+    "Models/MoSimQuadrotorModel/Control/Adapters/RlGainSchedulerAttitudeThrustAdapter.mo": "a71103344ce6c0eabddf1767ac2a5d4d3b5637635f09833ac9fa5914388daad0"
+  },
+  "source_changed_by_check": false,
+  "completed_at_utc": "2026-07-28T01:57:51Z",
+  "elapsed_s": 43.757
+}

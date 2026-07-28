@@ -31,7 +31,7 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Controller Evidence G1 Batch 6 - Active
+### Controller Evidence G1 - Review Required
 
 The user authorized the 48-controller MWORKS closed-loop evidence line on
 2026-07-28 CST. G0 is complete: `Px4CtrlFormalRunner` passed the common 50 s
@@ -83,23 +83,25 @@ result record is
 This proves model integrity only, not closed-loop behavior or controller
 performance.
 
+G1 Batch 6 added `GainScheduled PID`, `Fuzzy PID`, `Neural PID`, and `RL GainScheduler`
+as four Bridges and four thin ATTITUDE_THRUST Adapters. The first three compose
+their existing PID subblock through the complete cascade boundary rather than
+claiming a standalone plant. Native `CheckModel` passed all eight classes without
+source drift; the compact result record is
+`Results/control_platform/g1_batch6_checkmodel_20260728/CHECK_MODEL_RESULTS.json`.
+This completes G1 structural validation only; it is not a closed-loop run or a
+controller-performance claim.
+
 Current action:
 
-1. G1 Batch 6: add only the approved PID-subfamily EquationBridge plus thin
-   Adapter routes for `GainScheduled PID`, `Fuzzy PID`, `Neural PID`, and
-   `RL GainScheduler`. The first three are PID subblocks and must be composed
-   with the existing cascade boundary rather than treated as standalone plants.
-2. G1: add only EquationBridge plus thin Adapter implementations in the six
-   approved batches. Each batch must pass native `CheckModel`, then commit and
-   push before the next batch.
-3. G2: create needed FormalRunners and run the 44 current-source runnable
-   MWORKS routes on the common 50 s `ClimbPath`; record pass/fail, RMSE,
-   terminal error, and a concrete failure reason. The 47-profile catalog
-   denominator remains visible through explicit records for the two
-   overview-only and one planned/non-runnable exclusions.
-4. G3: repair only divergence, interface defects, or terminal error above 5 m;
-   rerun every repaired controller and then the full matrix. Do not do
-   performance-only gain tuning in G3.
+1. G1 structural implementation is complete and frozen for user audit. Review
+   the six approved Bridge/Adapter batches and their native `CheckModel`
+   evidence before authorizing another controller-evidence gate.
+2. Do not create FormalRunners, launch `ClimbPath` or any other MWORKS
+   simulation, or enter G2 until the user explicitly releases this review gate.
+3. The 47-profile catalog denominator remains visible through the two
+   overview-only plus one planned/non-runnable exclusions; they do not receive
+   fabricated runtime records while G1 is under review.
 
 Each named stage requires targeted checks, an exact-path commit, push, and one
 sparse Chinese email. No seven-scenario simulation, export, Gazebo/ROS runtime
