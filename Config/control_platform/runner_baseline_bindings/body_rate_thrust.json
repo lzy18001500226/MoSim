@@ -57,7 +57,7 @@
     {
       "role": "plant_sensor_surface",
       "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
-      "expected_sha256": "c185e8a73eebb2de6925bef15e5285f030832d560805742f4127d367595d486b"
+      "expected_sha256": "9c48815be7fd728f1f23d018a7059633f137035670767bea8e096f6a2856810b"
     },
     {
       "role": "virtual_px4_classic_profile",

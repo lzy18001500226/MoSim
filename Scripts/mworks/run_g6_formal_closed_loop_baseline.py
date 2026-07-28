@@ -72,24 +72,24 @@ MEASURED_SELECTION_SCHEMA = "mosim.g6_measured_family_selection.v2"
 FORMAL_ADAPTER_FILE = "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo"
 FORMAL_ADAPTER_CLASS = "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter"
 FORMAL_ADAPTER_OUTPUT_BOUNDARY = "ROTOR_COMMAND"
-FORMAL_RUNNER_FILE = "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidFormalRunner.mo"
-FORMAL_RUNNER_CLASS = "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner"
+FORMAL_RUNNER_FILE = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo"
+FORMAL_RUNNER_CLASS = "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner"
 REACTION_TORQUE_016_DIAGNOSTIC_ID = "official_pid_reaction_torque_016_diagnostic"
 REACTION_TORQUE_016_DIAGNOSTIC_SCENARIO = "shared_assembly_reaction_torque_016_cm_50s"
 REACTION_TORQUE_016_DIAGNOSTIC_RATIO = 0.016
 REACTION_TORQUE_016_DIAGNOSTIC_FILE = (
-    "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidReactionTorque016Diagnostic.mo"
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Diagnostic/OfficialPidReactionTorque016Diagnostic.mo"
 )
 REACTION_TORQUE_016_DIAGNOSTIC_CLASS = (
-    "MoSimQuadrotorModel.Experiment.Runners.OfficialPidReactionTorque016Diagnostic"
+    "MoSimQuadrotorModel.Experiment.Runners.Diagnostic.OfficialPidReactionTorque016Diagnostic"
 )
 YAW_AUTHORITY_MAPPED_DIAGNOSTIC_ID = "official_pid_yaw_authority_mapped_diagnostic"
 YAW_AUTHORITY_MAPPED_DIAGNOSTIC_SCENARIO = "shared_assembly_yaw_authority_map_50s"
 YAW_AUTHORITY_MAPPED_DIAGNOSTIC_FILE = (
-    "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidYawAuthorityMappedDiagnostic.mo"
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Diagnostic/OfficialPidYawAuthorityMappedDiagnostic.mo"
 )
 YAW_AUTHORITY_MAPPED_DIAGNOSTIC_CLASS = (
-    "MoSimQuadrotorModel.Experiment.Runners.OfficialPidYawAuthorityMappedDiagnostic"
+    "MoSimQuadrotorModel.Experiment.Runners.Diagnostic.OfficialPidYawAuthorityMappedDiagnostic"
 )
 YAW_AUTHORITY_MAPPED_ADAPTER_FILE = (
     "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDYawAuthorityMappedRotorAdapter.mo"
@@ -148,9 +148,9 @@ RESULT_VIEWER_VARIABLES = {
 # sources indirectly.
 SHARED_CLOSURE_SOURCES: tuple[tuple[str, str], ...] = (
     ("shared_sunray150_assembly", "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo"),
-    ("physical_wrench_adapter", "Models/MoSimQuadrotorModel/Vehicle/PhysicalWrenchAdapter.mo"),
-    ("wrapper_surface", "Models/MoSimQuadrotorModel/Vehicle/WrapperSurface.mo"),
-    ("rotor_actuator_core", "Models/MoSimQuadrotorModel/Vehicle/RotorActuatorCore.mo"),
+    ("physical_wrench_adapter", "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo"),
+    ("wrapper_surface", "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo"),
+    ("rotor_actuator_core", "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo"),
     ("plant_sensor_surface", "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo"),
     ("virtual_px4_classic_profile", "Models/MoSimQuadrotorModel/Parameters/Sunray150VirtualPx4Classic.mo"),
     ("climb_path_reference", "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo"),
@@ -295,7 +295,7 @@ def resolve_reaction_torque_016_diagnostic_binding() -> dict[str, Any]:
         label="reaction-torque 0.016 diagnostic runner",
     )
     diagnostic_text = diagnostic_file.read_text(encoding="utf-8")
-    if "extends MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner" not in diagnostic_text:
+    if "extends MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner" not in diagnostic_text:
         raise ValueError("reaction-torque 0.016 diagnostic must extend OfficialPidFormalRunner")
     ratio_pattern = rf"reaction_moment_ratio\s*=\s*{REACTION_TORQUE_016_DIAGNOSTIC_RATIO:g}(?:0+)?\b"
     if re.search(ratio_pattern, diagnostic_text) is None:

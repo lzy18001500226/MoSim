@@ -48,6 +48,14 @@ SHARED_RUNNERS = (
     "RotorCommandRunner.mo",
     "WrenchRunner.mo",
 )
+FORMAL_RUNNERS_DIR = MODEL_ROOT / "Experiment" / "Runners" / "Formal"
+FORMAL_RUNNER_BASES_DIR = MODEL_ROOT / "Experiment" / "Runners" / "Base"
+FORMAL_RUNNER_BASES = (
+    "FormalAttitudeThrustRunnerBase",
+    "FormalBodyRateThrustRunnerBase",
+    "FormalRotorCommandRunnerBase",
+    "FormalWrenchRunnerBase",
+)
 FORMAL_RUNNERS = {
     "official_pid": "OfficialPidFormalRunner.mo",
     "cascade_pid": "CascadePidFormalRunner.mo",
@@ -81,6 +89,26 @@ def sha256(path: Path) -> str:
 
 def source(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def formal_runner_source(runner_name: str) -> str:
+    """Return a formal runner together with its shared Base when it inherits one."""
+    text = source(FORMAL_RUNNERS_DIR / runner_name)
+    for base_name in FORMAL_RUNNER_BASES:
+        reference = f"extends MoSimQuadrotorModel.Experiment.Runners.Base.{base_name}("
+        if reference in text:
+            return f"{text}\n{source(FORMAL_RUNNER_BASES_DIR / f'{base_name}.mo')}"
+    return text
+
+
+def formal_runner_classes() -> list[str]:
+    """Return the complete formal-runner allowlist in browser/package order."""
+    names = [
+        line.strip()
+        for line in (FORMAL_RUNNERS_DIR / "package.order").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    return [f"MoSimQuadrotorModel.Experiment.Runners.Formal.{name}" for name in names]
 
 
 def check_contains(checks: list[dict[str, Any]], name: str, text: str, *needles: str) -> None:
@@ -122,7 +150,8 @@ def preflight_paths() -> tuple[Path, ...]:
         ROOT / "Scripts" / "syslab" / "compare_controllers.jl",
     ]
     paths.extend(runners / name for name in SHARED_RUNNERS)
-    paths.extend(runners / name for name in FORMAL_RUNNERS.values())
+    paths.extend(FORMAL_RUNNERS_DIR / name for name in FORMAL_RUNNERS.values())
+    paths.append(FORMAL_RUNNERS_DIR / "package.order")
     paths.extend(adapters / name for name in CHAMPION_ADAPTERS.values())
     paths.append(adapters / "OfficialPIDRotorAdapter.mo")
     paths.extend(
@@ -180,7 +209,7 @@ def validate_preflight() -> dict[str, Any]:
         "Each FormalRunner declares its own controller boundary; result_interval_s is an output and metric sampling cadence only.",
     )
     allowed = profiles.get("formal_runner_binding", {}).get("allowed_runner_classes", [])
-    expected_runners = [f"MoSimQuadrotorModel.Experiment.Runners.{name.removesuffix('.mo')}" for name in FORMAL_RUNNERS.values()]
+    expected_runners = formal_runner_classes()
     check_equal(checks, "profile_allowed_formal_runners", allowed, expected_runners)
     for scenario_id in SCENARIO_IDS:
         profile = profile_by_id.get(scenario_id, {})
@@ -205,7 +234,7 @@ def validate_preflight() -> dict[str, Any]:
     for scheme_id, runner_name in FORMAL_RUNNERS.items():
         if scheme_id == "official_pid":
             continue
-        text = source(runners_dir / runner_name)
+        text = formal_runner_source(runner_name)
         check_contains(
             checks,
             f"formal_runner_injection_{scheme_id}",
@@ -220,12 +249,12 @@ def validate_preflight() -> dict[str, Any]:
             "sampled_position",
             "sampled_attitude",
         )
-    official_text = source(runners_dir / FORMAL_RUNNERS["official_pid"])
+    official_text = formal_runner_source(FORMAL_RUNNERS["official_pid"])
     check_contains(
         checks,
         "official_pid_native_continuous_baseline",
         official_text,
-        "extends MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner(",
+        "extends MoSimQuadrotorModel.Experiment.Runners.Base.FormalRotorCommandRunnerBase(",
         "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter",
         "Interval = 0.01",
     )

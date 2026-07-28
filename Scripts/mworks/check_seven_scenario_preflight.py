@@ -38,14 +38,14 @@ SHARED_RUNNER_MODELS = (
     "MoSimQuadrotorModel.Experiment.Runners.WrenchRunner",
 )
 FORMAL_RUNNER_MODELS = (
-    "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.CascadePidFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.TrainedNeuralResidualFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
 )
 TARGETS = TRAJECTORY_MODELS + SHARED_RUNNER_MODELS + FORMAL_RUNNER_MODELS
 ALLOWED_MCP_TOOLS = frozenset({"session_manager", "model_manager", "check_model"})
@@ -75,7 +75,11 @@ def source_hashes() -> dict[str, str]:
     )
     paths.extend(
         MODEL_ROOT / "Experiment" / "Runners" / f"{model.rsplit('.', 1)[-1]}.mo"
-        for model in SHARED_RUNNER_MODELS + FORMAL_RUNNER_MODELS
+        for model in SHARED_RUNNER_MODELS
+    )
+    paths.extend(
+        MODEL_ROOT / "Experiment" / "Runners" / "Formal" / f"{model.rsplit('.', 1)[-1]}.mo"
+        for model in FORMAL_RUNNER_MODELS
     )
     return {
         path.relative_to(ROOT).as_posix(): sha256(path)

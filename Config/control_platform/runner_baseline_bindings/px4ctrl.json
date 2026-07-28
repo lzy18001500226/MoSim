@@ -8,9 +8,9 @@
     "duration_s": 50
   },
   "target": {
-    "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Px4CtrlFormalRunner.mo",
-    "model_class": "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner",
-    "model_sha256": "93e5113f56d3990a8cdc08638cc2358a8a170aff94bb658475f8402467e8cd6e"
+    "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo",
+    "model_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
+    "model_sha256": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlAttitudeThrustAdapter.mo",
@@ -45,8 +45,8 @@
   "source_bindings": [
     {
       "role": "formal_runner",
-      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Px4CtrlFormalRunner.mo",
-      "expected_sha256": "93e5113f56d3990a8cdc08638cc2358a8a170aff94bb658475f8402467e8cd6e"
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo",
+      "expected_sha256": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b"
     },
     {
       "role": "formal_adapter",
@@ -91,7 +91,7 @@
     {
       "role": "plant_sensor_surface",
       "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
-      "expected_sha256": "c185e8a73eebb2de6925bef15e5285f030832d560805742f4127d367595d486b"
+      "expected_sha256": "9c48815be7fd728f1f23d018a7059633f137035670767bea8e096f6a2856810b"
     },
     {
       "role": "virtual_px4_classic_profile",

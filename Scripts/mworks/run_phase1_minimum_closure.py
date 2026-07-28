@@ -108,8 +108,8 @@ FORMAL_BINDING_FILES = {
 }
 OFFICIAL_PID_BINDING = {
     "target": {
-        "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidFormalRunner.mo",
-        "model_class": "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner",
+        "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+        "model_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
     },
     "formal_adapter": {
         "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",

@@ -12,7 +12,14 @@ ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_PATH = ROOT / "Config/control_platform/offline_runner_interface_contract_v1.json"
 EXPECTED_BOUNDARIES = {"ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"}
 REQUIRED_RESULT_NAMES = {"position_ref", "position", "attitude", "rotor_command", "position_error_norm"}
-REQUIRED_CONTROLLER_INPUTS = {"position_ref", "position_mea", "velocity_mea", "attitude_mea"}
+REQUIRED_CONTROLLER_INPUTS = {
+    "position_ref",
+    "velocity_ref",
+    "acceleration_ref",
+    "position_mea",
+    "velocity_mea",
+    "attitude_mea",
+}
 VELOCITY_SEMANTICS = "runner_owned_filtered_position_derivative_m_per_s"
 COLLECTIVE_THRUST_SEMANTICS = "offline_collective_increment_newtons_about_hover_not_online_verified"
 REQUIRED_LIFECYCLE = {"dt", "reset", "enable", "run_id", "profile_hash", "parameter_version", "random_seed"}
@@ -33,13 +40,16 @@ GENERIC_RUNNERS = {
     "ROTOR_COMMAND": "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo",
 }
 FORMAL_CHAMPION_RUNNERS = {
-    "cascade_pid": "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo",
-    "dfbc_high_order_attitude": "Models/MoSimQuadrotorModel/Experiment/Runners/DfbcHighOrderFormalRunner.mo",
-    "linear_mpc": "Models/MoSimQuadrotorModel/Experiment/Runners/LinearMpcFormalRunner.mo",
-    "lqr_baseline": "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo",
-    "super_twisting_smc": "Models/MoSimQuadrotorModel/Experiment/Runners/SuperTwistingSmcFormalRunner.mo",
-    "trained_neural_residual": "Models/MoSimQuadrotorModel/Experiment/Runners/TrainedNeuralResidualFormalRunner.mo",
+    "cascade_pid": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/CascadePidFormalRunner.mo",
+    "dfbc_high_order_attitude": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderFormalRunner.mo",
+    "linear_mpc": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcFormalRunner.mo",
+    "lqr_baseline": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqrBaselineFormalRunner.mo",
+    "super_twisting_smc": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/SuperTwistingSmcFormalRunner.mo",
+    "trained_neural_residual": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TrainedNeuralResidualFormalRunner.mo",
 }
+FORMAL_ATTITUDE_THRUST_RUNNER_BASE = (
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo"
+)
 ATTITUDE_THRUST_ADAPTERS = {
     "cascade_pid": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
     "dfbc_high_order_attitude": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcHighOrderAttitudeThrustAdapter.mo",
@@ -67,9 +77,16 @@ def validate(contract: dict[str, Any], root: Path = ROOT) -> list[str]:
     }
     if set(input_by_name) != REQUIRED_CONTROLLER_INPUTS:
         errors.append("shared_controller_inputs_mismatch")
-    elif input_by_name["velocity_mea"].get("dimension") != 3 or input_by_name["velocity_mea"].get(
-        "unit_semantics"
-    ) != VELOCITY_SEMANTICS:
+    elif (
+        input_by_name["velocity_ref"].get("dimension") != 3
+        or input_by_name["velocity_ref"].get("unit_semantics")
+        != "reference_translational_velocity_m_per_s"
+        or input_by_name["acceleration_ref"].get("dimension") != 3
+        or input_by_name["acceleration_ref"].get("unit_semantics")
+        != "reference_translational_acceleration_m_per_s2"
+        or input_by_name["velocity_mea"].get("dimension") != 3
+        or input_by_name["velocity_mea"].get("unit_semantics") != VELOCITY_SEMANTICS
+    ):
         errors.append("velocity_measurement_contract_mismatch")
     velocity_estimator = contract.get("shared_velocity_estimator", {})
     expected_velocity_estimator = {
@@ -126,12 +143,19 @@ def validate(contract: dict[str, Any], root: Path = ROOT) -> list[str]:
             if token not in runner_text:
                 errors.append(f"runner_velocity_estimator_mismatch:{boundary}:{token}")
 
+    formal_attitude_thrust_base = root / FORMAL_ATTITUDE_THRUST_RUNNER_BASE
     for controller_id, relative_path in FORMAL_CHAMPION_RUNNERS.items():
         path = root / relative_path
         if not path.is_file():
             errors.append(f"missing_formal_runner:{controller_id}")
             continue
         runner_text = path.read_text(encoding="utf-8")
+        base_reference = "extends MoSimQuadrotorModel.Experiment.Runners.Base.FormalAttitudeThrustRunnerBase("
+        if base_reference in runner_text:
+            if not formal_attitude_thrust_base.is_file():
+                errors.append("formal_attitude_thrust_runner_base_missing")
+                continue
+            runner_text = f"{runner_text}\n{formal_attitude_thrust_base.read_text(encoding='utf-8')}"
         for token in (
             "Modelica.Blocks.Continuous.Derivative velocity_estimator[3]",
             "each T = 0.05",

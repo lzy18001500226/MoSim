@@ -10,7 +10,7 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
-    "model_sha256": "b655950bbcdb7a9efe5e7d2203ee77d64924eb9f1a943f312b0687a46632a210"
+    "model_sha256": "3be6c3e13e080a1016657787af7b337ee7a5e022080628ec2039ceb33c8690da"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Baselines/OfflineAttitudeThrustController.mo",
@@ -22,7 +22,7 @@
     {
       "role": "runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
-      "expected_sha256": "b655950bbcdb7a9efe5e7d2203ee77d64924eb9f1a943f312b0687a46632a210"
+      "expected_sha256": "3be6c3e13e080a1016657787af7b337ee7a5e022080628ec2039ceb33c8690da"
     },
     {
       "role": "fixture_adapter",
@@ -57,7 +57,7 @@
     {
       "role": "plant_sensor_surface",
       "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
-      "expected_sha256": "c185e8a73eebb2de6925bef15e5285f030832d560805742f4127d367595d486b"
+      "expected_sha256": "9c48815be7fd728f1f23d018a7059633f137035670767bea8e096f6a2856810b"
     },
     {
       "role": "virtual_px4_classic_profile",

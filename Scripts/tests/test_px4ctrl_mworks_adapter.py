@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ADAPTER = ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Adapters" / "Px4CtrlAttitudeThrustAdapter.mo"
 PACKAGE_ORDER = ADAPTER.with_name("package.order")
-RUNNER = ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Runners" / "Px4CtrlFormalRunner.mo"
+RUNNER = ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Runners" / "Formal" / "Px4CtrlFormalRunner.mo"
 RUNNER_PACKAGE_ORDER = RUNNER.with_name("package.order")
 BASELINE_BINDING = ROOT / "Config" / "control_platform" / "runner_baseline_bindings" / "px4ctrl.json"
 SUNRAY150_ASSEMBLY = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Sunray150Assembly.mo"
@@ -89,7 +89,7 @@ def test_px4ctrl_baseline_binding_declares_the_shared_sampled_boundary() -> None
 
     assert binding["schema"] == "mosim.runner_boundary_baseline_binding.v1"
     assert binding["controller_id"] == "px4ctrl"
-    assert binding["target"]["model_class"] == "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner"
+    assert binding["target"]["model_class"] == "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner"
     assert binding["formal_adapter"]["model_class"] == "MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter"
     assert binding["formal_harness_feedback_boundary"]["signals"] == [
         "reference.position_command -> controller.position_ref",

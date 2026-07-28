@@ -52,7 +52,7 @@ SHARED_CLOSURE_SOURCES: tuple[tuple[str, str], ...] = (
 )
 
 REQUIRED_SOURCE_PATHS: tuple[tuple[str, str], ...] = (
-    ("formal_runner", "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo"),
+    ("formal_runner", "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/CascadePidFormalRunner.mo"),
     ("formal_adapter", "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo"),
     ("current_root_cfunction_core", "Models/MoSimQuadrotorModel/Control/Bridges/PidAttitudeThrustCFunction.mo"),
     ("shared_attitude_rate_allocator", "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo"),
