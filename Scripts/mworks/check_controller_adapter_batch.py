@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Run a non-saving native CheckModel batch for controller bridges/adapters.
+"""Run a non-saving native CheckModel batch for controller model classes.
 
 This is the reusable G1 structural-integrity gate. It loads the canonical
-MoSimQuadrotorModel root once, checks the explicitly named classes, records
-raw MCP traffic, and verifies that the check did not modify the source files.
-It deliberately does not simulate, save models, rank controllers, or produce
-closed-loop evidence.
+MoSimQuadrotorModel root once, checks explicitly named bridges, adapters, or
+formal runners, records raw MCP traffic, and verifies that the check did not
+modify the source files. It deliberately does not simulate, save models, rank
+controllers, or produce closed-loop evidence.
 """
 
 from __future__ import annotations
@@ -55,8 +55,16 @@ def parse_target(kind: str, raw: list[str]) -> dict[str, str]:
     if not source.is_file():
         raise ValueError(f"target_source_missing:{raw[0]}")
     model_class = raw[1].strip()
-    if not model_class.startswith("MoSimQuadrotorModel.Control."):
-        raise ValueError(f"target_class_outside_control_namespace:{model_class}")
+    namespace_by_kind = {
+        "bridge": "MoSimQuadrotorModel.Control.Bridges.",
+        "adapter": "MoSimQuadrotorModel.Control.Adapters.",
+        "runner": "MoSimQuadrotorModel.Experiment.Runners.",
+    }
+    expected_namespace = namespace_by_kind[kind]
+    if not model_class.startswith(expected_namespace):
+        raise ValueError(
+            f"target_class_outside_expected_namespace:{kind}:{model_class}"
+        )
     return {"kind": kind, "source": repo_path(source), "model_class": model_class}
 
 
@@ -80,6 +88,13 @@ def parse_args() -> argparse.Namespace:
         metavar=("SOURCE", "MODEL_CLASS"),
         default=[],
     )
+    parser.add_argument(
+        "--runner",
+        action="append",
+        nargs=2,
+        metavar=("SOURCE", "MODEL_CLASS"),
+        default=[],
+    )
     return parser.parse_args()
 
 
@@ -87,6 +102,7 @@ def main() -> int:
     args = parse_args()
     targets = [parse_target("bridge", item) for item in args.bridge]
     targets.extend(parse_target("adapter", item) for item in args.adapter)
+    targets.extend(parse_target("runner", item) for item in args.runner)
     if not targets:
         raise SystemExit("at_least_one_bridge_or_adapter_required")
     if len({item["model_class"] for item in targets}) != len(targets):
@@ -107,6 +123,7 @@ def main() -> int:
         MODEL_FILE,
         MODEL_ROOT / "Control" / "Bridges" / "package.order",
         MODEL_ROOT / "Control" / "Adapters" / "package.order",
+        MODEL_ROOT / "Experiment" / "Runners" / "package.order",
         *(ROOT / item["source"] for item in targets),
     ]
     hashes_before = {repo_path(path): sha256(path) for path in tracked_paths}

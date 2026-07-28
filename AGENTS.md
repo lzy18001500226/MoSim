@@ -35,8 +35,13 @@ added the `GainScheduled PID`, `Fuzzy PID`, `Neural PID`, and `RL GainScheduler`
 routes as four Bridges and four thin Adapters; native `CheckModel` passed all
 eight classes without source drift, with evidence at
 `Results/control_platform/g1_batch6_checkmodel_20260728/`. G1 is structurally
-complete and awaiting user audit. Do not create FormalRunners, run `ClimbPath`,
-or enter G2 until the user explicitly releases this gate. Do not begin
+complete. The user-authorized G1 FormalRunner-completion subgate has passed
+native `CheckModel` for 40 named 100 Hz whole-aircraft runners and four
+reusable interface templates: 29 `ATTITUDE_THRUST`, eight `ROTOR_COMMAND`,
+two `BODY_RATE_THRUST`, and one `WRENCH`. The final check-only evidence is
+`Results/control_platform/g1_formal_runner_checkmodel_20260728/attempt_02_after_rotor_annotation_fix/CHECK_MODEL_RESULTS.json`
+(44/44 passed; no simulation started and no source drift). Await user review;
+do not launch `ClimbPath` or any other simulation, enter G2, begin
 seven-scenario simulation, code export, Gazebo/ROS runtime validation, G7, or
 R1 on this line.
 

@@ -94,11 +94,16 @@ controller-performance claim.
 
 Current action:
 
-1. G1 structural implementation is complete and frozen for user audit. Review
-   the six approved Bridge/Adapter batches and their native `CheckModel`
-   evidence before authorizing another controller-evidence gate.
-2. Do not create FormalRunners, launch `ClimbPath` or any other MWORKS
-   simulation, or enter G2 until the user explicitly releases this review gate.
+1. G1 bridge/Adapter implementation and the user-authorized FormalRunner
+   completion subgate are complete. Native `CheckModel` passed all 40 named
+   100 Hz whole-aircraft runners and their four reusable templates: 29
+   `ATTITUDE_THRUST`, eight `ROTOR_COMMAND`, two `BODY_RATE_THRUST`, and one
+   `WRENCH`. Final check-only evidence is
+   `Results/control_platform/g1_formal_runner_checkmodel_20260728/attempt_02_after_rotor_annotation_fix/CHECK_MODEL_RESULTS.json`;
+   it records 44/44 passed, zero simulations, and no source drift.
+2. This returns G1 to user review. Do not launch `ClimbPath` or any other
+   MWORKS simulation, enter G2, or begin seven-scenario work until the
+   committed, pushed evidence is reviewed.
 3. The 47-profile catalog denominator remains visible through the two
    overview-only plus one planned/non-runnable exclusions; they do not receive
    fabricated runtime records while G1 is under review.
