@@ -61,7 +61,10 @@ foreach ($sessionDir in $sessionDirs) {
     $processFile = Join-Path $sessionDir.FullName "DISPLAY_PROCESSES.json"
     $sessionFile = Join-Path $sessionDir.FullName "DISPLAY_SESSION.json"
     if (Test-Path -LiteralPath $processFile) {
-        try { $records += @(Get-Content -Raw -LiteralPath $processFile | ConvertFrom-Json) } catch {}
+        try {
+            $parsedRecords = Get-Content -Raw -LiteralPath $processFile | ConvertFrom-Json
+            foreach ($record in $parsedRecords) { $records += $record }
+        } catch {}
     }
     if (Test-Path -LiteralPath $sessionFile) {
         try {

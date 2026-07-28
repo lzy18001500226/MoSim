@@ -71,7 +71,7 @@ Item {
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
 
     function operatorMapIdentity() {
-        var map = mosimOrchestrator.operatorMap || ({})
+        var map = mosimOperator.operatorMap || ({})
         if (map.enabled !== true)
             return ""
         return [String(map.map_id || ""), String(map.map_version || ""),
@@ -84,11 +84,11 @@ Item {
             return
         _appliedOperatorMapIdentity = identity
         editorMap.center = factoryPlanMap.mapCenter
-        editorMap.zoomLevel = Number((mosimOrchestrator.operatorMap || ({})).default_zoom_level || 16)
+        editorMap.zoomLevel = Number((mosimOperator.operatorMap || ({})).default_zoom_level || 16)
     }
 
     function factoryMissionPublicationAllowed() {
-        var publication = (mosimOrchestrator.operatorMap || ({})).mission_publication || ({})
+        var publication = (mosimOperator.operatorMap || ({})).mission_publication || ({})
         return String(publication.status || "") === "verified"
     }
 
@@ -412,13 +412,13 @@ Item {
             FactoryPlanMapOverlay {
                 id: factoryPlanMap
                 map: editorMap
-                mapConfig: mosimOrchestrator.operatorMap || ({})
-                runManifest: mosimOrchestrator.runManifest || ({})
+                mapConfig: mosimOperator.operatorMap || ({})
+                runManifest: mosimOperator.runManifest || ({})
             }
 
             Connections {
-                target: mosimOrchestrator
-                function onResponseChanged() {
+                target: mosimOperator
+                function onStateChanged() {
                     _root.applyOperatorMapViewport()
                 }
             }

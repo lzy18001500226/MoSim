@@ -1,8 +1,9 @@
 # MoSim Flight Console
 
 Flight Console is a QGroundControl custom build for MoSim experiment operation,
-telemetry, disturbance and fault injection, display-session management, and
-evidence access.
+Factory 2D situational awareness, published-Profile selection, discrete fault
+request staging, and evidence access. It renders copy-only foreground terminal
+commands; it does not launch or supervise simulation processes.
 
 Directory ownership:
 
@@ -14,9 +15,9 @@ vendor/qgroundcontrol.SHA256SUMS
 mosim/                         MoSim-owned UI and adapters
 ```
 
-The first release enables the accepted three-UAV profile. Vehicle counts four
-through nine and controllers without accepted runtime evidence remain visible
-but blocked by the Orchestrator capability registry.
+The current release exposes published one- and three-UAV Profiles. Unsupported
+vehicle scales and controllers without a compatible published Profile remain
+visible but disabled. The active RunManifest locks the selected Profile.
 
 The Windows baseline requires Qt 6.8.3, Ninja, Visual Studio 2022 C++ Build
 Tools, and a Windows SDK. The current machine audit is recorded under
@@ -37,11 +38,10 @@ python Scripts/ui/materialize_qgc_custom_overlay.py
 python Scripts/ui/generate_qgc_vendor_manifest.py --verify
 ```
 
-The custom layer provides the Run, Telemetry, Injection, Displays, and Evidence
-surfaces. It exposes accepted one- and three-UAV profiles while keeping UAV
-counts four through nine and controllers without runtime evidence visible but
-disabled. All experiment commands use the fixed project Orchestrator client;
-QML does not execute arbitrary commands or publish ROS/MAVROS setpoints.
+The custom layer provides Factory Fly/Plan maps, published Profile selection,
+rosbag-derived map replay, discrete fault request staging, and a visible
+terminal-command area. QML does not execute arbitrary commands or publish
+ROS/MAVROS setpoints. QGC does not depend on Orchestrator or embedded UE.
 
 The D5 source gate is recorded at:
 

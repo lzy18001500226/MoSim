@@ -29,6 +29,11 @@ ApplicationWindow {
     id:             mainWindow
     visible:        true
 
+    // Native child windows (such as the embedded Unreal viewport) cannot be
+    // ordered reliably with QML z values. Consumers can use this state to
+    // temporarily yield the native viewport to a QGC full-window overlay.
+    readonly property bool mosimNativeOverlayVisible: toolDrawer.visible || indicatorDrawer.visible || criticalVehicleMessagePopup.visible
+
     property bool   _utmspSendActTrigger
     property bool   _utmspStartTelemetry
 

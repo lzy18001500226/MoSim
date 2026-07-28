@@ -1,7 +1,7 @@
 {
-  "schema": "mosim.orchestrator.runtime_backend_catalog.v1",
-  "version": 3,
-  "claim_boundary": "Only project-owned, reviewed runtime wrappers may appear here. Entries authorize process launch but do not imply runtime acceptance.",
+  "schema": "mosim.runtime_backend_catalog.v2",
+  "version": 4,
+  "claim_boundary": "Only project-owned, reviewed runtime wrappers may appear here. QGC renders a copyable foreground terminal command from operator_invocation; it does not launch, supervise, or accept runtime execution.",
   "runtime_profiles": [
     {
       "runtime_profile_id": "sunray_ros1_px4ctrl_ground_standby_single_v1",
@@ -12,6 +12,31 @@
       "wsl_distribution": "Ubuntu-20.04",
       "operation_id": "px4ctrl_ground_standby_single",
       "project_script": "Scripts/sunray/run_px4ctrl_basic_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false",
+          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "MAVROS_READY_TIMEOUT_S": "180",
+          "NO_FLIGHT_DIAGNOSTIC_HOLD_S": "until_stopped",
+          "PX4CTRL_CORE_PROFILE": "original",
+          "PX4CTRL_EKF_ORIGIN_ALT_M": "488.0",
+          "PX4CTRL_EKF_ORIGIN_LAT": "47.397742",
+          "PX4CTRL_EKF_ORIGIN_LON": "8.545594",
+          "PX4CTRL_SET_EKF_GLOBAL_ORIGIN": "true",
+          "PX4CTRL_SKIP_MISSION": "true",
+          "PX4CTRL_START_CONTROLLER": "false",
+          "REVIEW_START_FASTLIO": "true",
+          "REVIEW_START_OCCUPANCY_NODE": "true",
+          "SUNRAY_GAZEBO_LAUNCH_FILE": "Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
+          "SUNRAY_UAV_INIT_X": "-10.575025",
+          "SUNRAY_UAV_INIT_Y": "-19.36313",
+          "SUNRAY_UAV_INIT_Z": "0.2",
+          "TOTAL_TIMEOUT_S": "540",
+          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+        },
+        "arguments": ["takeoff_hover_land"]
+      },
       "result_gate": "runtime/RUN_MANIFEST.json",
       "operator_contract": {
         "flight_authority": "qgc_native_manual",
@@ -31,6 +56,24 @@
       "wsl_distribution": "Ubuntu-20.04",
       "operation_id": "px4ctrl_figure8_single",
       "project_script": "Scripts/sunray/run_px4ctrl_basic_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false",
+          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "MAVROS_READY_TIMEOUT_S": "180",
+          "PX4CTRL_CORE_PROFILE": "original",
+          "REVIEW_START_FASTLIO": "true",
+          "REVIEW_START_OCCUPANCY_NODE": "true",
+          "SUNRAY_GAZEBO_LAUNCH_FILE": "Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
+          "SUNRAY_UAV_INIT_X": "-10.575025",
+          "SUNRAY_UAV_INIT_Y": "-19.36313",
+          "SUNRAY_UAV_INIT_Z": "0.2",
+          "TOTAL_TIMEOUT_S": "540",
+          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+        },
+        "arguments": ["figure8"]
+      },
       "result_gate": "runtime/RUN_MANIFEST.json",
       "operator_contract": {
         "flight_authority": "mission_adapter",
@@ -50,6 +93,24 @@
       "wsl_distribution": "Ubuntu-20.04",
       "operation_id": "cascade_pid_figure8_single",
       "project_script": "Scripts/sunray/run_px4ctrl_basic_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false",
+          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "MAVROS_READY_TIMEOUT_S": "180",
+          "PX4CTRL_CORE_PROFILE": "cascade_pid",
+          "REVIEW_START_FASTLIO": "true",
+          "REVIEW_START_OCCUPANCY_NODE": "true",
+          "SUNRAY_GAZEBO_LAUNCH_FILE": "Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
+          "SUNRAY_UAV_INIT_X": "-10.575025",
+          "SUNRAY_UAV_INIT_Y": "-19.36313",
+          "SUNRAY_UAV_INIT_Z": "0.2",
+          "TOTAL_TIMEOUT_S": "540",
+          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+        },
+        "arguments": ["figure8"]
+      },
       "result_gate": "runtime/RUN_MANIFEST.json",
       "operator_contract": {
         "flight_authority": "mission_adapter",
@@ -107,6 +168,40 @@
       "wsl_distribution": "Ubuntu-20.04",
       "operation_id": "factory_l2_fuel_fixed64_exploration",
       "project_script": "Scripts/sunray/start_factory_fuel_single_exploration_review.ps1",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {},
+        "arguments": [
+          "-FuelRandomSeed", "1",
+          "-ExplorationExecuteS", "300",
+          "-ReviewHoldS", "0",
+          "-StartX", "-10.575025",
+          "-StartY", "-19.36313",
+          "-StartYaw", "0",
+          "-FuelWindowXYM", "64",
+          "-FuelWindowYM", "64",
+          "-FuelBoxMinXOverride", "-42.575025",
+          "-FuelBoxMaxXOverride", "21.424975",
+          "-FuelBoxMinYOverride", "-51.36291",
+          "-FuelBoxMaxYOverride", "12.63665",
+          "-FuelBoxMinZM", "0.9",
+          "-FuelBoxMaxZM", "1.6",
+          "-FuelFrontierMinCandidateClearance", "0.21",
+          "-FuelCoverageExpansion",
+          "-FuelCoverageExpansionAxis", "-1",
+          "-FuelCoverageExpansionScoreCommittedGoal",
+          "-FuelCoverageExpansionGlobalSelector",
+          "-ControllerCoreProfile", "l1_awff",
+          "-FuelPlannerMaxVelMps", "2.0",
+          "-FuelPlannerMaxAccMps2", "1.5",
+          "-FuelCmdSmoothMaxSpeedMps", "2.0",
+          "-FuelCmdMaxVelocityMps", "2.0",
+          "-FuelCmdMaxAccelerationMps2", "1.5",
+          "-NoUnreal",
+          "-NoKeepAlive",
+          "-Foreground"
+        ]
+      },
       "result_gate": "runtime/RUN_MANIFEST.json",
       "operator_contract": {
         "flight_authority": "mission_adapter",
@@ -125,7 +220,15 @@
       "launcher": "wsl_project_script",
       "wsl_distribution": "Ubuntu-20.04",
       "operation_id": "factory_l2_three_uav_swarm_formation",
-      "project_script": "Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh",
+      "project_script": "Scripts/sunray/run_factory_l2_swarm_formation_obstacle_gate.ps1",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {},
+        "arguments": [
+          "-CommandMode", "leader_follower",
+          "-DynamicsProfile", "conservative_v1"
+        ]
+      },
       "result_gate": "runtime/RUN_MANIFEST.json",
       "operator_contract": {
         "flight_authority": "mission_adapter",

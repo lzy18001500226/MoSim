@@ -58,7 +58,10 @@ function Get-TrackedDisplayRecords {
     param([string]$ProcessFile, [string]$SessionFile)
     $records = @()
     if (Test-Path -LiteralPath $ProcessFile) {
-        try { $records += @(Get-Content -Raw -LiteralPath $ProcessFile | ConvertFrom-Json) } catch {}
+        try {
+            $parsedRecords = Get-Content -Raw -LiteralPath $ProcessFile | ConvertFrom-Json
+            foreach ($record in $parsedRecords) { $records += $record }
+        } catch {}
     }
     if (Test-Path -LiteralPath $SessionFile) {
         try {
