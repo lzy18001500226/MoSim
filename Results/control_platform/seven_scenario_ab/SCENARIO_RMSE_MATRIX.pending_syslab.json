@@ -1,0 +1,161 @@
+{
+  "schema": "mosim.seven_scenario_ab_matrix.v1",
+  "generated_at": "2026-07-28T20:41:09Z",
+  "row_count": 14,
+  "rows": [
+    {
+      "controller_id": "official_pid",
+      "scenario_id": "figure8",
+      "status": "invalid",
+      "result_data_status": "partial",
+      "position_rmse_m": 2225664.685012204,
+      "tail_rmse_m": 3716542.2558981385,
+      "maximum_position_error_m": 82859978.96701434,
+      "terminal_position_error_m": 82859978.96701434,
+      "injection_status": "not_applicable"
+    },
+    {
+      "controller_id": "official_pid",
+      "scenario_id": "hover",
+      "status": "invalid",
+      "result_data_status": "partial",
+      "position_rmse_m": 9064713.644267762,
+      "tail_rmse_m": 14556819.037155226,
+      "maximum_position_error_m": 324382111.5547758,
+      "terminal_position_error_m": 324382111.5547758,
+      "injection_status": "not_applicable"
+    },
+    {
+      "controller_id": "official_pid",
+      "scenario_id": "motor_efficiency_fault",
+      "status": "invalid",
+      "result_data_status": "missing",
+      "position_rmse_m": null,
+      "tail_rmse_m": null,
+      "maximum_position_error_m": null,
+      "terminal_position_error_m": null,
+      "injection_status": "not_evaluable"
+    },
+    {
+      "controller_id": "official_pid",
+      "scenario_id": "parameter_mismatch",
+      "status": "invalid",
+      "result_data_status": "partial",
+      "position_rmse_m": 647870.2311208665,
+      "tail_rmse_m": 998487.5241549243,
+      "maximum_position_error_m": 20493911.8244652,
+      "terminal_position_error_m": 20493911.8244652,
+      "injection_status": "passed"
+    },
+    {
+      "controller_id": "official_pid",
+      "scenario_id": "spiral",
+      "status": "invalid",
+      "result_data_status": "partial",
+      "position_rmse_m": 1272990.019130912,
+      "tail_rmse_m": 1744507.3057368514,
+      "maximum_position_error_m": 38468625.28380125,
+      "terminal_position_error_m": 38468625.28380125,
+      "injection_status": "not_applicable"
+    },
+    {
+      "controller_id": "official_pid",
+      "scenario_id": "step_response",
+      "status": "invalid",
+      "result_data_status": "partial",
+      "position_rmse_m": 9064713.644267762,
+      "tail_rmse_m": 14556819.037155226,
+      "maximum_position_error_m": 324382111.5547758,
+      "terminal_position_error_m": 324382111.5547758,
+      "injection_status": "not_applicable"
+    },
+    {
+      "controller_id": "official_pid",
+      "scenario_id": "wind_disturbance",
+      "status": "invalid",
+      "result_data_status": "partial",
+      "position_rmse_m": 1706552.658704409,
+      "tail_rmse_m": 2526620.2273843978,
+      "maximum_position_error_m": 56413465.4457476,
+      "terminal_position_error_m": 56413465.4457476,
+      "injection_status": "not_evaluable"
+    },
+    {
+      "controller_id": "px4ctrl",
+      "scenario_id": "figure8",
+      "status": "valid",
+      "result_data_status": "complete",
+      "position_rmse_m": 0.08143208187285941,
+      "tail_rmse_m": 0.03511344944936413,
+      "maximum_position_error_m": 0.4655134300594815,
+      "terminal_position_error_m": 0.04122799911717079,
+      "injection_status": "not_applicable"
+    },
+    {
+      "controller_id": "px4ctrl",
+      "scenario_id": "hover",
+      "status": "valid",
+      "result_data_status": "complete",
+      "position_rmse_m": 0.043137980360898186,
+      "tail_rmse_m": 0.0010762235889932644,
+      "maximum_position_error_m": 0.16741153786048807,
+      "terminal_position_error_m": 0.0010762233726340563,
+      "injection_status": "not_applicable"
+    },
+    {
+      "controller_id": "px4ctrl",
+      "scenario_id": "motor_efficiency_fault",
+      "status": "invalid",
+      "result_data_status": "partial",
+      "position_rmse_m": 1.145086851773387,
+      "tail_rmse_m": 1.999898059737321,
+      "maximum_position_error_m": 9.523682513125756,
+      "terminal_position_error_m": 9.523682513125756,
+      "injection_status": "passed"
+    },
+    {
+      "controller_id": "px4ctrl",
+      "scenario_id": "parameter_mismatch",
+      "status": "valid",
+      "result_data_status": "complete",
+      "position_rmse_m": 1.2367221695066242,
+      "tail_rmse_m": 1.2464124269757624,
+      "maximum_position_error_m": 1.928993324982091,
+      "terminal_position_error_m": 1.2463610927565127,
+      "injection_status": "passed"
+    },
+    {
+      "controller_id": "px4ctrl",
+      "scenario_id": "spiral",
+      "status": "valid",
+      "result_data_status": "complete",
+      "position_rmse_m": 0.032331712689737446,
+      "tail_rmse_m": 0.0128803578566656,
+      "maximum_position_error_m": 0.19514331864449566,
+      "terminal_position_error_m": 0.012800636456167315,
+      "injection_status": "not_applicable"
+    },
+    {
+      "controller_id": "px4ctrl",
+      "scenario_id": "step_response",
+      "status": "valid",
+      "result_data_status": "complete",
+      "position_rmse_m": 0.19890721485803217,
+      "tail_rmse_m": 0.005240980207197391,
+      "maximum_position_error_m": 1.4131458357662763,
+      "terminal_position_error_m": 0.006300293979199027,
+      "injection_status": "not_applicable"
+    },
+    {
+      "controller_id": "px4ctrl",
+      "scenario_id": "wind_disturbance",
+      "status": "valid",
+      "result_data_status": "complete",
+      "position_rmse_m": 0.323155060657994,
+      "tail_rmse_m": 0.16852220996058434,
+      "maximum_position_error_m": 0.8892987972411355,
+      "terminal_position_error_m": 0.16913256190062056,
+      "injection_status": "passed"
+    }
+  ]
+}

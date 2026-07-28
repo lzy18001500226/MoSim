@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.seven_scenario_ab_run_record.v1",
+  "recorded_at": "2026-07-28T20:21:38Z",
+  "status": "invalid",
+  "failure_reasons": [
+    "simulation ended at 11.89s before required 50s",
+    "maximum position error 2.04939e+07m is not below 5m"
+  ],
+  "controller_id": "official_pid",
+  "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+  "scenario_id": "parameter_mismatch",
+  "profile_id": "mworks_seven_scenario_parameter_mismatch_v1",
+  "source": "MWORKS_MCP",
+  "execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "stop_time_s": 50.0,
+    "runner_command_exit_code": 0
+  },
+  "result_data_status": "partial",
+  "hashes": {
+    "seven_scenario_profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "harness_sha256": "a3656cfe0aff535390356aaf537fcde7498a9c6db44ed35f7c0d2d59a81bf28b",
+    "runner_source_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+    "plant_source_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+    "raw_csv_sha256": "6a1c940954279db71f7d1407402251c8e8af64cfa0414ad064a804eaf6598ffe"
+  },
+  "artifacts": {
+    "raw_csv": "Results\\control_platform\\seven_scenario_ab\\official_pid\\parameter_mismatch\\raw\\result.csv",
+    "metrics_json": "Results\\control_platform\\seven_scenario_ab\\official_pid\\parameter_mismatch\\metrics\\METRICS.json",
+    "native_result_directory": "Results\\control_platform\\seven_scenario_ab\\official_pid\\parameter_mismatch\\native_result",
+    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\official_pid\\parameter_mismatch\\screenshots\\57796_0x640C20_SevenScenarioAB_OfficialPid_ParameterMismatch - 结果查看器.png",
+    "screenshot_manifest": "Results\\control_platform\\seven_scenario_ab\\official_pid\\parameter_mismatch\\logs\\screenshot_manifest.json",
+    "mcp_log": "Results\\control_platform\\seven_scenario_ab\\official_pid\\parameter_mismatch\\logs\\sysplorer_mcp.jsonl"
+  },
+  "numerical_closure": {
+    "passed": false,
+    "row_count": 1190,
+    "terminal_time_s": 11.89,
+    "maximum_position_error_m": 20493911.8244652,
+    "terminal_position_error_m": 20493911.8244652,
+    "reasons": [
+      "simulation ended at 11.89s before required 50s",
+      "maximum position error 2.04939e+07m is not below 5m"
+    ]
+  },
+  "injection_self_check": {
+    "scenario_id": "parameter_mismatch",
+    "status": "passed",
+    "checks": [
+      {
+        "name": "plant_mass_kg",
+        "expected": 1.2,
+        "min": 1.2,
+        "max": 1.2,
+        "passed": true
+      },
+      {
+        "name": "controller_nominal_mass_kg",
+        "expected": 1.0,
+        "min": 1.0,
+        "max": 1.0,
+        "passed": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "schema": "mosim.seven_scenario_ab_run_record.v1",
+  "recorded_at": "2026-07-28T20:30:33Z",
+  "status": "invalid",
+  "failure_reasons": [
+    "simulation ended at 16.88s before required 50s",
+    "maximum position error 9.52368m is not below 5m"
+  ],
+  "controller_id": "px4ctrl",
+  "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
+  "scenario_id": "motor_efficiency_fault",
+  "profile_id": "mworks_seven_scenario_motor_efficiency_fault_v1",
+  "source": "MWORKS_MCP",
+  "execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "stop_time_s": 50.0,
+    "runner_command_exit_code": 0
+  },
+  "result_data_status": "partial",
+  "hashes": {
+    "seven_scenario_profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "harness_sha256": "930ab6e6f564b91459b85a3a7556b9ac61bf9703e789a6c051277c93ecfe4724",
+    "runner_source_sha256": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b",
+    "plant_source_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+    "raw_csv_sha256": "0c3385df5a6861e38deb0bebd6842fdba2877d89c600d6fe9007b35751441d36"
+  },
+  "artifacts": {
+    "raw_csv": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\motor_efficiency_fault\\raw\\result.csv",
+    "metrics_json": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\motor_efficiency_fault\\metrics\\METRICS.json",
+    "native_result_directory": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\motor_efficiency_fault\\native_result",
+    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\px4ctrl\\motor_efficiency_fault\\screenshots\\57796_0x640C20_SevenScenarioAB_Px4Ctrl_MotorEfficiencyFault - 结果查看器.png",
+    "screenshot_manifest": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\motor_efficiency_fault\\logs\\screenshot_manifest.json",
+    "mcp_log": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\motor_efficiency_fault\\logs\\sysplorer_mcp.jsonl"
+  },
+  "numerical_closure": {
+    "passed": false,
+    "row_count": 1689,
+    "terminal_time_s": 16.88,
+    "maximum_position_error_m": 9.523682513125756,
+    "terminal_position_error_m": 9.523682513125756,
+    "reasons": [
+      "simulation ended at 16.88s before required 50s",
+      "maximum position error 9.52368m is not below 5m"
+    ]
+  },
+  "injection_self_check": {
+    "scenario_id": "motor_efficiency_fault",
+    "status": "passed",
+    "checks": [
+      {
+        "name": "rotor_1_pre_fault_effectiveness",
+        "time_window": "t < 15 s",
+        "expected": 1.0,
+        "sample_count": 1500,
+        "min": 1.0,
+        "max": 1.0,
+        "passed": true
+      },
+      {
+        "name": "rotor_1_post_fault_effectiveness",
+        "time_window": "t >= 15 s",
+        "expected": 0.5,
+        "sample_count": 189,
+        "min": 0.5,
+        "max": 0.5,
+        "passed": true
+      },
+      {
+        "name": "rotors_2_to_4_effectiveness",
+        "expected": 1.0,
+        "passed": true,
+        "ranges": {
+          "rotor_2": {
+            "min": 1.0,
+            "max": 1.0
+          },
+          "rotor_3": {
+            "min": 1.0,
+            "max": 1.0
+          },
+          "rotor_4": {
+            "min": 1.0,
+            "max": 1.0
+          }
+        }
+      }
+    ]
+  }
+}

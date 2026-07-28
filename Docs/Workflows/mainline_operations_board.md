@@ -11,8 +11,10 @@ Phase 1 completed its user-approved frozen 46-route matrix on 2026-07-27 CST.
 The pre-P0a matrix and the six-candidate recovery both remain historical
 trace-back only after the forward-reference repair. The new seven-scenario
 contract, Plant/Runner bindings, Official PID hold harness, and trajectory
-definitions passed static validation and native `CheckModel`; no current-source
-replay, scenario simulation, or A/B comparison ran in that pre-simulation gate.
+definitions passed static validation and native `CheckModel`. On 2026-07-29 CST,
+the user explicitly authorized the bounded Official PID + px4ctrl seven-scenario
+A/B execution defined below. That execution is complete: its 14 terminal
+records and pending-Syslab matrix are at `Results/control_platform/seven_scenario_ab/`.
 
 Catalog vocabulary: 48 active entries consist of 47 MWORKS Control Profiles
 (46 existing routes plus planned `pid_awff_linear_eso`) and the `px4ctrl`
@@ -109,25 +111,23 @@ controller-performance claim.
 
 Current action:
 
-1. G1 bridge/Adapter implementation and the user-authorized FormalRunner
-   completion subgate are complete. Native `CheckModel` passed all 40 named
-   100 Hz whole-aircraft runners and their four reusable templates: 29
-   `ATTITUDE_THRUST`, eight `ROTOR_COMMAND`, two `BODY_RATE_THRUST`, and one
-   `WRENCH`. Final check-only evidence is
-   `Results/control_platform/g1_formal_runner_checkmodel_20260728/attempt_02_after_rotor_annotation_fix/CHECK_MODEL_RESULTS.json`;
-   it records 44/44 passed, zero simulations, and no source drift.
-2. G1 remains under user review. Do not launch any MWORKS simulation, enter G2,
-   or begin seven-scenario work until the committed, pushed evidence is reviewed.
-3. The 47-profile catalog denominator remains visible through the two
-   overview-only plus one planned/non-runnable exclusions; they do not receive
-   fabricated runtime records while G1 is under review.
-
-Each named stage requires targeted checks, an exact-path commit, push, and one
-sparse Chinese email. No seven-scenario simulation, export, Gazebo/ROS runtime
-validation, G7, or R1 is authorized by this action. The Phase 1 and prior
-candidate-recovery results remain trace-back only after the reference-contract
-repair.
-
+1. G1 bridge/Adapter implementation and the FormalRunner completion subgate
+   remain structurally complete and under review. Native `CheckModel` passed all
+   40 named whole-aircraft runners and four reusable templates; this does not
+   authorize a broader controller run.
+2. The bounded 14-case A/B execution is complete. All six non-fault px4ctrl
+   cases are `valid`; px4ctrl motor fault is retained as an `invalid` partial
+   result, and all seven Official PID cases are retained as `invalid` evidence.
+   The 14-row matrix is
+   `Results/control_platform/seven_scenario_ab/SCENARIO_RMSE_MATRIX.pending_syslab.json`.
+3. Injection evidence is explicit: px4ctrl wind passed across 0-50 s; Official
+   PID wind retained 0-10.95 s of the expected 0.25 N force but is
+   `not_evaluable` for the complete window after divergence; both retained
+   parameter-mismatch traces show Plant 1.2 kg versus controller 1.0 kg; px4ctrl
+   motor-fault trace shows rotor 1 transition at 15 s and the other rotors at
+   1.0, while Official PID has no raw motor-fault trace and is `not_evaluable`.
+4. Commit, push, send one Chinese review email, and stop. Do not run other
+   controllers, enter G2, tune gains, export code, or start Gazebo/ROS work.
 
 ### Historical Seven-Scenario Pre-Simulation Gate
 
@@ -228,20 +228,24 @@ current completion.
 
 ## 3. Next Engineering Selection
 
-Execute the active G0-G3 controller line above. The completed G1-0
-reconciliation is the authority for the G1 and G2 denominator; do not infer an
-additional runnable route from a historical `adapter_missing` row or the
-planned ESO profile.
-
-After G3, research gain-tuning opportunities and explicit stop-loss bounds;
-stop there and obtain a new user instruction before seven-scenario work.
+The bounded 14-run Official PID + px4ctrl A/B gate is complete and awaits
+review. The completed G1-0 reconciliation remains the authority for the G1 and
+G2 denominator; do not infer an additional runnable route from a historical
+`adapter_missing` row or the planned ESO profile.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant
 topic workflow and declare the evidence path under `Results/`.
 
 ## 4. Stopping And Handoff Conditions
 
-For the active G0-G3 controller line:
+For the active bounded seven-scenario A/B gate:
+
+- Retain valid and invalid records for all 14 cases; no failed run may silently
+  abort or be replaced by an unrecorded rerun.
+- Do not proceed to G2, other controllers, gain tuning, export, Gazebo/ROS,
+  G7, or R1. After the exact-path commit, push, and review email, wait.
+
+For the later G0-G3 controller line:
 
 - Stop at every batch boundary after its native `CheckModel`, exact-path
   commit, push, and email report; do not allow one failed route to silently
@@ -250,9 +254,9 @@ For the active G0-G3 controller line:
   of less than 5 m. A completed solver call with a divergent signal is a fail.
 - The old P0b and pre-repair six-candidate RMSE values are trace-back evidence,
   not current-source ranking data.
-- Do not begin seven-scenario A/B, ESO ablation, code export, ROS1 runtime
-  validation, G7, or R1 until G3 is complete and the user supplies a new
-  instruction.
+- Do not begin broader seven-scenario A/B, ESO ablation, code export, ROS1
+  runtime validation, G7, or R1 until G3 is complete and the user supplies a
+  new instruction.
 
 ## 5. Board Update Rule
 

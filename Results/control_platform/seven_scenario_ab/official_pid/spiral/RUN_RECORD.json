@@ -1,0 +1,53 @@
+{
+  "schema": "mosim.seven_scenario_ab_run_record.v1",
+  "recorded_at": "2026-07-28T20:20:06Z",
+  "status": "invalid",
+  "failure_reasons": [
+    "simulation ended at 9.38s before required 50s",
+    "maximum position error 3.84686e+07m is not below 5m"
+  ],
+  "controller_id": "official_pid",
+  "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+  "scenario_id": "spiral",
+  "profile_id": "mworks_seven_scenario_spiral_v1",
+  "source": "MWORKS_MCP",
+  "execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "stop_time_s": 50.0,
+    "runner_command_exit_code": 0
+  },
+  "result_data_status": "partial",
+  "hashes": {
+    "seven_scenario_profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "harness_sha256": "b7ae662b15b74d989a50c695961ca9b7dad8f2162da1798c6e19c3d82ee2f6cd",
+    "runner_source_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+    "plant_source_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+    "raw_csv_sha256": "d016c807969d30b13d427bb3e6fb51c2ac94d72a4914c591a65be5ccf6bb732f"
+  },
+  "artifacts": {
+    "raw_csv": "Results\\control_platform\\seven_scenario_ab\\official_pid\\spiral\\raw\\result.csv",
+    "metrics_json": "Results\\control_platform\\seven_scenario_ab\\official_pid\\spiral\\metrics\\METRICS.json",
+    "native_result_directory": "Results\\control_platform\\seven_scenario_ab\\official_pid\\spiral\\native_result",
+    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\official_pid\\spiral\\screenshots\\57796_0x640C20_SevenScenarioAB_OfficialPid_Spiral - 结果查看器.png",
+    "screenshot_manifest": "Results\\control_platform\\seven_scenario_ab\\official_pid\\spiral\\logs\\screenshot_manifest.json",
+    "mcp_log": "Results\\control_platform\\seven_scenario_ab\\official_pid\\spiral\\logs\\sysplorer_mcp.jsonl"
+  },
+  "numerical_closure": {
+    "passed": false,
+    "row_count": 939,
+    "terminal_time_s": 9.38,
+    "maximum_position_error_m": 38468625.28380125,
+    "terminal_position_error_m": 38468625.28380125,
+    "reasons": [
+      "simulation ended at 9.38s before required 50s",
+      "maximum position error 3.84686e+07m is not below 5m"
+    ]
+  },
+  "injection_self_check": {
+    "scenario_id": "spiral",
+    "status": "not_applicable",
+    "checks": []
+  }
+}

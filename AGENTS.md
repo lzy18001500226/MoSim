@@ -47,10 +47,12 @@ native `CheckModel` for 40 named 100 Hz whole-aircraft runners and four
 reusable interface templates: 29 `ATTITUDE_THRUST`, eight `ROTOR_COMMAND`,
 two `BODY_RATE_THRUST`, and one `WRENCH`. The final check-only evidence is
 `Results/control_platform/g1_formal_runner_checkmodel_20260728/attempt_02_after_rotor_annotation_fix/CHECK_MODEL_RESULTS.json`
-(44/44 passed; no simulation started and no source drift). G1 is awaiting user
-review; do not launch `ClimbPath` or any other simulation, enter G2, begin
-seven-scenario simulation, code export, Gazebo/ROS runtime validation, G7, or
-R1 on this line.
+(44/44 passed; no simulation started and no source drift). G1 remains under
+review. On 2026-07-29 CST, the user explicitly authorized one bounded exception:
+run only `OfficialPidFormalRunner` and `Px4CtrlFormalRunner` against all seven
+versioned profiles (14 MWORKS runs), retaining valid and invalid evidence alike.
+This exception does not authorize G2, other-controller runs, gain tuning, code
+export, Gazebo/ROS runtime validation, G7, or R1.
 
 
 The six-candidate recovery record at
@@ -61,12 +63,14 @@ current source. The user-approved seven-scenario contract is now bound through
 the Plant and four shared Runner classes; the Official PID has a 0.01 s
 external hold harness. Static validation and native `CheckModel` passed for
 eight trajectories, four shared Runners, Official PID, and six champion Formal
-Runners. Current evidence is
-`Results/control_platform/seven_scenario_preflight_20260727/`. No
-current-source replay, seven-scenario simulation, A/B comparison, code
- generation, or Gazebo/ROS runtime validation has run. The historical
- seven-scenario gate remains static-only evidence; it does not authorize any
- seven-scenario run under the active G0-G3 controller line.
+Runners. The static preflight evidence is
+`Results/control_platform/seven_scenario_preflight_20260727/`. The active
+evidence root is `Results/control_platform/seven_scenario_ab/`. All 14 scoped
+records now exist: six px4ctrl cases are valid; the px4ctrl motor-fault case and
+all seven Official PID cases are retained as invalid evidence. The 14-row
+matrix is `SCENARIO_RMSE_MATRIX.pending_syslab.json`; the raw-trace injection
+checks retain both passed and not-evaluable states. Commit, push, send the
+review email, and stop. Do not launch further MWORKS cases on this line.
 
 `Docs/Workflows/mainline_operations_board.md` is the sole task authority and
 contains the exact scope, evidence, and stopping/handoff conditions. Update this

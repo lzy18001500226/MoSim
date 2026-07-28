@@ -1,0 +1,47 @@
+{
+  "schema": "mosim.seven_scenario_ab_run_record.v1",
+  "recorded_at": "2026-07-28T20:29:24Z",
+  "status": "valid",
+  "failure_reasons": [],
+  "controller_id": "px4ctrl",
+  "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
+  "scenario_id": "spiral",
+  "profile_id": "mworks_seven_scenario_spiral_v1",
+  "source": "MWORKS_MCP",
+  "execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "stop_time_s": 50.0,
+    "runner_command_exit_code": 0
+  },
+  "result_data_status": "complete",
+  "hashes": {
+    "seven_scenario_profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "harness_sha256": "4bf0591103351bd83b13744c27ff8a5e81aef8aedd635b2e8211388aefc26368",
+    "runner_source_sha256": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b",
+    "plant_source_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+    "raw_csv_sha256": "4143c4ca36bbfbe251b529241a739b66c8e1c9f034b4fd35296ced76a0c4786e"
+  },
+  "artifacts": {
+    "raw_csv": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\spiral\\raw\\result.csv",
+    "metrics_json": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\spiral\\metrics\\METRICS.json",
+    "native_result_directory": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\spiral\\native_result",
+    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\px4ctrl\\spiral\\screenshots\\57796_0x640C20_SevenScenarioAB_Px4Ctrl_Spiral - 结果查看器.png",
+    "screenshot_manifest": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\spiral\\logs\\screenshot_manifest.json",
+    "mcp_log": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\spiral\\logs\\sysplorer_mcp.jsonl"
+  },
+  "numerical_closure": {
+    "passed": true,
+    "row_count": 5001,
+    "terminal_time_s": 50.0,
+    "maximum_position_error_m": 0.19514331864449566,
+    "terminal_position_error_m": 0.012800636456167315,
+    "reasons": []
+  },
+  "injection_self_check": {
+    "scenario_id": "spiral",
+    "status": "not_applicable",
+    "checks": []
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "schema": "mosim.seven_scenario_ab_run_record.v1",
+  "recorded_at": "2026-07-28T20:29:49Z",
+  "status": "valid",
+  "failure_reasons": [],
+  "controller_id": "px4ctrl",
+  "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
+  "scenario_id": "wind_disturbance",
+  "profile_id": "mworks_seven_scenario_wind_disturbance_v1",
+  "source": "MWORKS_MCP",
+  "execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "stop_time_s": 50.0,
+    "runner_command_exit_code": 0
+  },
+  "result_data_status": "complete",
+  "hashes": {
+    "seven_scenario_profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "harness_sha256": "36c6a736e94004d6f16db8ae9ee1e67e030fe9c27b054c04b5baff5c4a3fd277",
+    "runner_source_sha256": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b",
+    "plant_source_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+    "raw_csv_sha256": "98a96046e1f1caa1608fdc5a0ef88e59194d8445c54de0d5c6157a532bd27f8a"
+  },
+  "artifacts": {
+    "raw_csv": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\wind_disturbance\\raw\\result.csv",
+    "metrics_json": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\wind_disturbance\\metrics\\METRICS.json",
+    "native_result_directory": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\wind_disturbance\\native_result",
+    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\px4ctrl\\wind_disturbance\\screenshots\\57796_0x640C20_SevenScenarioAB_Px4Ctrl_WindDisturbance - 结果查看器.png",
+    "screenshot_manifest": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\wind_disturbance\\logs\\screenshot_manifest.json",
+    "mcp_log": "Results\\control_platform\\seven_scenario_ab\\px4ctrl\\wind_disturbance\\logs\\sysplorer_mcp.jsonl"
+  },
+  "numerical_closure": {
+    "passed": true,
+    "row_count": 5001,
+    "terminal_time_s": 50.0,
+    "maximum_position_error_m": 0.8892987972411355,
+    "terminal_position_error_m": 0.16913256190062056,
+    "reasons": []
+  },
+  "injection_self_check": {
+    "scenario_id": "wind_disturbance",
+    "status": "passed",
+    "checks": [
+      {
+        "name": "persistent_world_frame_gust_force_x_N",
+        "expected": 0.25,
+        "min": 0.25,
+        "max": 0.25,
+        "sample_count": 5001,
+        "passed": true
+      }
+    ]
+  }
+}
