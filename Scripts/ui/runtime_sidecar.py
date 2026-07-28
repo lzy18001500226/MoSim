@@ -24,22 +24,15 @@ from src.orchestration.runtime_sidecar_contract import (
     resolve_gazebo_body_name,
     validate_command,
 )
-
-
-OPERATOR_MAP_STATE_SCHEMA = "mosim.operator_map_state.v1"
-OPERATOR_MAP_TRANSPORT_MODES = {"live_ros1", "rosbag_replay"}
-COORDINATE_CONTRACT_STATUSES = {
-    "verified",
-    "pending_runtime_validation",
-    "rejected",
-}
-OPERATOR_MAP_IDENTITY_FIELDS = (
-    "map_id",
-    "map_version",
-    "asset_sha256",
-    "world_frame",
-    "coordinate_contract_id",
+from src.orchestration.operator_map_state import (
+    COORDINATE_CONTRACT_STATUSES,
+    OPERATOR_MAP_IDENTITY_FIELDS,
+    OPERATOR_MAP_STATE_SCHEMA,
+    OPERATOR_MAP_TRANSPORT_MODES,
+    validate_operator_map_state,
 )
+
+
 OPERATOR_MAP_SNAPSHOT_REQUIRED_FIELDS = (
     "resource_url",
     *OPERATOR_MAP_IDENTITY_FIELDS,
@@ -186,6 +179,8 @@ def build_operator_map_state(
         raise ValueError("operator_map_replay_state_invalid")
     elif not bag_id:
         raise ValueError("operator_map_replay_bag_id_missing")
+    elif not isinstance(playback_time_s, (int, float)) or not math.isfinite(float(playback_time_s)) or playback_time_s < 0.0:
+        raise ValueError("operator_map_replay_time_invalid")
 
     scenario = manifest.get("scenario_snapshot")
     scenario = scenario if isinstance(scenario, dict) else {}
@@ -213,6 +208,7 @@ def build_operator_map_state(
     formation = scenario.get("formation")
     if isinstance(formation, dict) and isinstance(formation.get("target_center_xy_m"), list):
         state["formation_target"] = {"target_center_xy_m": formation["target_center_xy_m"]}
+    validate_operator_map_state(state, manifest=manifest)
     return state
 
 
@@ -567,6 +563,7 @@ class RosRuntimeSidecar:
             msg = vehicle["odom"][0]
             telemetry["state"].update({
                 "position": _vector(msg.pose.pose.position),
+                "position_frame": str(msg.header.frame_id),
                 "orientation": _quaternion(msg.pose.pose.orientation),
                 "linear_velocity": _vector(msg.twist.twist.linear),
                 "angular_velocity": _vector(msg.twist.twist.angular),

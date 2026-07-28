@@ -237,6 +237,15 @@ def test_factory_floorplan_is_packaged_for_the_flight_console() -> None:
     assert "taskBoundaryCanvas" in fly_map
     assert "taskPathCanvas" in fly_map
     assert "actualTrackCanvas" in fly_map
+    assert "property bool showVehicles: true" in fly_map
+    assert "property bool showActualTracks: true" in fly_map
+    assert "property bool showExpectedPath: true" in fly_map
+    assert "property bool showFuturePath: true" in fly_map
+    assert "property bool showTaskBoundary: true" in fly_map
+    assert "property bool showFormationTarget: true" in fly_map
+    assert "showVehicles: root.showMapVehicles" in fly_qml
+    assert "showActualTracks: root.showMapActualTracks" in fly_qml
+    assert 'text: "二维地图图层"' in fly_qml
     assert "WindowContainer" not in fly_qml
     assert "setUnrealOverlayHole" not in fly_qml
 
@@ -320,7 +329,16 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert 'return "规划器未来轨迹"' in fly_map
     assert "formation.target_center_xy_m" in fly_map
     assert 'context.strokeStyle = "#f05d9b"' in fly_map
-    assert '{ label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }' in fly_map
+    assert '{ label: "编队目标", color: "#f05d9b", visible: root.showFormationTarget && root.formationTarget() !== null }' in fly_map
+    assert "property bool showMapVehicles: true" in qml
+    assert "property bool showMapActualTracks: true" in qml
+    assert "property bool showMapExpectedPath: true" in qml
+    assert "property bool showMapFuturePath: true" in qml
+    assert "property bool showMapTaskBoundary: true" in qml
+    assert "property bool showMapFormationTarget: true" in qml
+    assert 'text: "飞机位置与航向"' in qml
+    assert 'text: "实际飞行轨迹"' in qml
+    assert 'text: "规划器未来轨迹"' in qml
     assert 'text: "场景哈希："' not in qml
     assert 'QGCLabel { text: "任务Adapter确认"; font.bold: true }' in qml
     assert 'text: "Adapter：" + String(missionStatus().adapter_id || "-")' in qml

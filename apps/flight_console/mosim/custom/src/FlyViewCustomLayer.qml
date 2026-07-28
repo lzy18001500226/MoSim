@@ -21,6 +21,12 @@ Item {
     property bool manualRight: false
     property string observedFlightRunId: ""
     property bool observedArmedDuringRun: false
+    property bool showMapVehicles: true
+    property bool showMapActualTracks: true
+    property bool showMapExpectedPath: true
+    property bool showMapFuturePath: true
+    property bool showMapTaskBoundary: true
+    property bool showMapFormationTarget: true
 
     property var parentToolInsets
     property var totalToolInsets: toolInsets
@@ -634,6 +640,12 @@ Item {
         runManifest: mosimOrchestrator.runManifest || ({})
         mapState: (mosimOrchestrator.runtimeTelemetry || ({})).map_state || ({})
         runId: mosimOrchestrator.runId
+        showVehicles: root.showMapVehicles
+        showActualTracks: root.showMapActualTracks
+        showExpectedPath: root.showMapExpectedPath
+        showFuturePath: root.showMapFuturePath
+        showTaskBoundary: root.showMapTaskBoundary
+        showFormationTarget: root.showMapFormationTarget
     }
 
     FlyViewBottomRightRowLayout {
@@ -1061,6 +1073,38 @@ Item {
                     contentWidth: availableWidth
                     ColumnLayout {
                         width: parent.width
+                        QGCLabel { text: "二维地图图层"; font.bold: true }
+                        QGCCheckBox {
+                            text: "飞机位置与航向"
+                            checked: root.showMapVehicles
+                            onToggled: root.showMapVehicles = checked
+                        }
+                        QGCCheckBox {
+                            text: "实际飞行轨迹"
+                            checked: root.showMapActualTracks
+                            onToggled: root.showMapActualTracks = checked
+                        }
+                        QGCCheckBox {
+                            text: "任务预期轨迹"
+                            checked: root.showMapExpectedPath
+                            onToggled: root.showMapExpectedPath = checked
+                        }
+                        QGCCheckBox {
+                            text: "规划器未来轨迹"
+                            checked: root.showMapFuturePath
+                            onToggled: root.showMapFuturePath = checked
+                        }
+                        QGCCheckBox {
+                            text: "任务边界"
+                            checked: root.showMapTaskBoundary
+                            onToggled: root.showMapTaskBoundary = checked
+                        }
+                        QGCCheckBox {
+                            text: "编队目标"
+                            checked: root.showMapFormationTarget
+                            onToggled: root.showMapFormationTarget = checked
+                        }
+                        Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: qgcPal.text; opacity: 0.25 }
                         QGCCheckBox { id: pointCloudDisplay; text: "RViz点云地图"; checked: true }
                         QGCCheckBox { id: gridMapDisplay; text: "RViz栅格地图"; checked: true }
                         QGCCheckBox { id: unrealDisplay; text: "独立UE视图"; checked: true }

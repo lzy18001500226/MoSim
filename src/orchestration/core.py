@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Protocol
 
+from .operator_map_state import validate_operator_map_state
 from .runtime_sidecar_contract import load_contract, validate_command
 
 
@@ -1957,7 +1958,25 @@ class MoSimOrchestrator:
         telemetry_path = self.run_root / run_id / "telemetry.json"
         if not telemetry_path.is_file():
             return self._response(request_id, False, "telemetry_not_available", run_id=run_id)
-        return self._response(request_id, True, "telemetry_ready", run_id=run_id, telemetry=_read_json(telemetry_path))
+        try:
+            telemetry = _read_json(telemetry_path)
+        except (OSError, ValueError, json.JSONDecodeError):
+            return self._response(request_id, False, "telemetry_unreadable", run_id=run_id)
+        if not isinstance(telemetry, dict) or telemetry.get("run_id") != run_id:
+            return self._response(request_id, False, "telemetry_run_id_mismatch", run_id=run_id)
+        map_state = telemetry.get("map_state")
+        if map_state is not None:
+            try:
+                validate_operator_map_state(map_state, manifest=manifest)
+            except ValueError as exc:
+                return self._response(
+                    request_id,
+                    False,
+                    "telemetry_map_state_invalid",
+                    run_id=run_id,
+                    map_state_reason_code=str(exc),
+                )
+        return self._response(request_id, True, "telemetry_ready", run_id=run_id, telemetry=telemetry)
 
     def get_result_packet(self, *, request_id: str, run_id: str) -> dict[str, Any]:
         manifest = self._get_manifest(run_id)

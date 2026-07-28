@@ -20,6 +20,12 @@ Item {
     property var actualTracksByVehicle: ({})
     property int actualTrackRevision: 0
     property string actualTrackRunId: ""
+    property bool showVehicles: true
+    property bool showActualTracks: true
+    property bool showExpectedPath: true
+    property bool showFuturePath: true
+    property bool showTaskBoundary: true
+    property bool showFormationTarget: true
 
     readonly property var bounds: mapConfig.world_bounds_m || ({})
     readonly property bool mapConfigValid: mapConfig.enabled === true
@@ -271,6 +277,9 @@ Item {
         var kinds = ["expected", "future"]
         var colors = ["#ffb020", "#4aa3ff"]
         for (var kindIndex = 0; kindIndex < kinds.length; ++kindIndex) {
+            if ((kinds[kindIndex] === "expected" && !showExpectedPath)
+                    || (kinds[kindIndex] === "future" && !showFuturePath))
+                continue
             var path = taskPath(kinds[kindIndex])
             var points = path.points || []
             if (points.length < 2)
@@ -405,7 +414,7 @@ Item {
                 y: factoryImage.y
                 width: factoryImage.width
                 height: factoryImage.height
-                visible: root.explorationBoundary() !== null
+                visible: root.showTaskBoundary && root.explorationBoundary() !== null
                 z: 1
                 property int mapSequence: Number(root.mapTransport.sequence || 0)
                 onMapSequenceChanged: requestPaint()
@@ -420,7 +429,7 @@ Item {
                 y: factoryImage.y
                 width: factoryImage.width
                 height: factoryImage.height
-                visible: root.mapStateReady
+                visible: root.mapStateReady && (root.showExpectedPath || root.showFuturePath)
                 z: 2
                 property int mapSequence: Number(root.mapTransport.sequence || 0)
                 onMapSequenceChanged: requestPaint()
@@ -435,7 +444,7 @@ Item {
                 y: factoryImage.y
                 width: factoryImage.width
                 height: factoryImage.height
-                visible: root.formationTarget() !== null
+                visible: root.showFormationTarget && root.formationTarget() !== null
                 z: 3
                 property int mapSequence: Number(root.mapTransport.sequence || 0)
                 onMapSequenceChanged: requestPaint()
@@ -450,7 +459,7 @@ Item {
                 y: factoryImage.y
                 width: factoryImage.width
                 height: factoryImage.height
-                visible: root.mapStateReady
+                visible: root.mapStateReady && root.showActualTracks
                 z: 4
                 property int trackRevision: root.actualTrackRevision
                 onTrackRevisionChanged: requestPaint()
@@ -460,7 +469,7 @@ Item {
             }
 
             Repeater {
-                model: root.vehicles
+                model: root.showVehicles ? root.vehicles : []
                 delegate: Item {
                     required property var modelData
                     required property int index
@@ -584,10 +593,10 @@ Item {
 
         Repeater {
             model: [
-                { label: "实际", color: "#00d084", visible: Object.keys(root.actualTracksByVehicle).length > 0 },
-                { label: root.taskPathLabel("expected"), color: "#ffb020", visible: root.taskPath("expected").status === "available" },
-                { label: root.taskPathLabel("future"), color: "#4aa3ff", visible: root.taskPath("future").status === "available" },
-                { label: "编队目标", color: "#f05d9b", visible: root.formationTarget() !== null }
+                { label: "实际", color: "#00d084", visible: root.showActualTracks && Object.keys(root.actualTracksByVehicle).length > 0 },
+                { label: root.taskPathLabel("expected"), color: "#ffb020", visible: root.showExpectedPath && root.taskPath("expected").status === "available" },
+                { label: root.taskPathLabel("future"), color: "#4aa3ff", visible: root.showFuturePath && root.taskPath("future").status === "available" },
+                { label: "编队目标", color: "#f05d9b", visible: root.showFormationTarget && root.formationTarget() !== null }
             ]
             delegate: Row {
                 required property var modelData

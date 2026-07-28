@@ -10,6 +10,7 @@ from Scripts.ui.runtime_sidecar import (
     load_operator_map_snapshot,
     resolve_runtime_operator_map,
 )
+from src.orchestration.operator_map_state import validate_operator_map_state
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -59,7 +60,13 @@ def test_live_map_state_keeps_receive_time_distinct_from_ros_source_time() -> No
         playback_time_s=None,
         bag_id="",
         vehicles=[{"vehicle_id": "uav1", "state": {"connected": True}}],
-        task_paths={"expected": {"status": "available", "points": [{"x": 0, "y": 0}]}},
+        task_paths={
+            "expected": {
+                "status": "available",
+                "frame_id": "mworks_world",
+                "points": [{"x": 0, "y": 0}],
+            }
+        },
     )
 
     assert state["schema"] == "mosim.operator_map_state.v1"
@@ -141,6 +148,49 @@ def test_tampered_manifest_snapshot_is_rejected_before_map_state_is_emitted() ->
 
     with pytest.raises(ValueError, match="operator_map_manifest_snapshot_hash_mismatch"):
         resolve_runtime_operator_map(manifest)
+
+
+def test_map_state_validator_rejects_identity_and_verified_frame_mismatches() -> None:
+    state = build_operator_map_state(
+        manifest=_manifest(),
+        map_snapshot=_snapshot(),
+        transport_mode="live_ros1",
+        sequence=9,
+        received_at_unix_s=1_784_000_100.0,
+        source_timestamp_s=43.0,
+        playback_state="live",
+        playback_time_s=None,
+        bag_id="",
+        vehicles=[
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 1.0, "y": -2.0, "z": 0.5},
+                    "position_frame": "mworks_world",
+                    "orientation": {"w": 1.0, "x": 0.0, "y": 0.0, "z": 0.0},
+                },
+            }
+        ],
+        task_paths={
+            "future": {
+                "status": "available",
+                "frame_id": "mworks_world",
+                "updated_at": 1_784_000_100.0,
+                "points": [{"x": 1.0, "y": -2.0}, {"x": 2.0, "y": -1.0}],
+            }
+        },
+    )
+
+    validate_operator_map_state(state, manifest=_manifest())
+    state["profile_hash"] = "other-profile"
+    with pytest.raises(ValueError, match="operator_map_profile_identity_mismatch"):
+        validate_operator_map_state(state, manifest=_manifest())
+
+    state["profile_hash"] = "profile-hash-test"
+    state["vehicles"][0]["state"]["position_frame"] = "map"
+    with pytest.raises(ValueError, match="operator_map_vehicle_frame_mismatch"):
+        validate_operator_map_state(state, manifest=_manifest())
 
 
 def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() -> None:

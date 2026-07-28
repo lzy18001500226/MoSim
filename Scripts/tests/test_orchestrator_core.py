@@ -977,3 +977,76 @@ def test_profile_map_selection_rejects_disabled_registry_entry(tmp_path: Path) -
 
     assert validated["accepted"] is False
     assert validated["reason_code"] == "operator_map_not_enabled"
+
+
+def test_get_telemetry_rejects_a_map_state_that_does_not_match_the_frozen_run(tmp_path: Path) -> None:
+    from Scripts.ui.runtime_sidecar import build_operator_map_state
+
+    orchestrator = MoSimOrchestrator(run_root=tmp_path, backend=FakeRuntimeBackend())
+    prepared = orchestrator.prepare_run(
+        request_id="prepare-map-telemetry", profile_path=PROFILE, controller_id="px4ctrl", vehicle_count=1
+    )
+    assert prepared["accepted"] is True
+    run_id = prepared["run_id"]
+    manifest = prepared["manifest"]
+    map_snapshot = dict(manifest["operator_map_snapshot"])
+    map_snapshot["coordinate_contract_status"] = "verified"
+    map_state = build_operator_map_state(
+        manifest=manifest,
+        map_snapshot=map_snapshot,
+        transport_mode="live_ros1",
+        sequence=1,
+        received_at_unix_s=time.time(),
+        source_timestamp_s=42.0,
+        playback_state="live",
+        playback_time_s=None,
+        bag_id="",
+        vehicles=[
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 0.0, "y": 0.0, "z": 0.0},
+                    "position_frame": "mworks_world",
+                    "orientation": {"w": 1.0, "x": 0.0, "y": 0.0, "z": 0.0},
+                },
+            }
+        ],
+        task_paths={},
+    )
+    telemetry_path = tmp_path / run_id / "telemetry.json"
+    telemetry_path.write_text(
+        json.dumps(
+            {
+                "schema": "mosim.runtime_telemetry.v2",
+                "run_id": run_id,
+                "timestamp": time.time(),
+                "vehicle_count": 1,
+                "vehicles": map_state["vehicles"],
+                "map_state": map_state,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert orchestrator.get_telemetry(request_id="telemetry-valid", run_id=run_id)["accepted"] is True
+
+    map_state["map"]["map_id"] = "another-map"
+    telemetry_path.write_text(
+        json.dumps(
+            {
+                "schema": "mosim.runtime_telemetry.v2",
+                "run_id": run_id,
+                "timestamp": time.time(),
+                "vehicle_count": 1,
+                "vehicles": map_state["vehicles"],
+                "map_state": map_state,
+            }
+        ),
+        encoding="utf-8",
+    )
+    rejected = orchestrator.get_telemetry(request_id="telemetry-tampered", run_id=run_id)
+
+    assert rejected["accepted"] is False
+    assert rejected["reason_code"] == "telemetry_map_state_invalid"
+    assert rejected["map_state_reason_code"] == "operator_map_identity_mismatch"
