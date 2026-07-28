@@ -1,0 +1,31 @@
+{
+  "schema": "mosim.model_library_refactor_checkmodel.v1",
+  "phase": "03_pid_legacy_examples",
+  "scope": "Native CheckModel only after PID example namespace migration; no simulation or model save.",
+  "generated_at_utc": "2026-07-28T17:18:46.3561859Z",
+  "model_root": "Models/MoSimQuadrotorModel/package.mo",
+  "live_mworks_touched": true,
+  "simulation_started": false,
+  "formal_baseline_regression": {
+    "model_class": "MoSimQuadrotorModel.Control.Baselines.OfflineAttitudeThrustController",
+    "status": "passed",
+    "elapsed_s": 0.048
+  },
+  "legacy_example_diagnostics": [
+    {
+      "model_class": "MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1ImprovedPID",
+      "status": "preexisting_missing_dependency",
+      "error": "PathPlanning.ClimbPath cannot be resolved for climbePath.",
+      "source_changed_in_this_phase": false,
+      "disposition": "The exact legacy Vehicle.Examples dependency predates this namespace move."
+    },
+    {
+      "model_class": "MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1AWFFBaseline",
+      "status": "preexisting_missing_base_class",
+      "error": "Example1ProjectControllerBase cannot be resolved by Example1AntiWindupFeedforwardPID.",
+      "source_changed_in_this_phase": false,
+      "disposition": "The pre-migration source already used the same unresolved unqualified extends clause; repairing it is outside this relocation-only phase."
+    }
+  ],
+  "claim_boundary": "The passed formal-baseline regression proves the retained production Baselines package remains loadable. The two historical-example diagnostics prove their new names resolve far enough to expose inherited source dependencies; neither is treated as a successful simulation or as a migration-caused failure."
+}

@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Control.Baselines;
+within MoSimQuadrotorModel.Control.LegacyExamples.PidVariants;
 model Example2EnhancedPID
   "Example2 with explicit derivative filtering and conservative command limits"
   extends MoSimQuadrotorModel.Vehicle.Examples.Example2(

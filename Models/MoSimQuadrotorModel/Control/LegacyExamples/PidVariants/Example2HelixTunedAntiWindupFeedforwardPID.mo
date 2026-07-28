@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Control.Baselines;
+within MoSimQuadrotorModel.Control.LegacyExamples.PidVariants;
 model Example2HelixTunedAntiWindupFeedforwardPID
   "Example2 AWFF PID with helix-specific lateral command authority"
   extends Example2ProjectControllerBase(

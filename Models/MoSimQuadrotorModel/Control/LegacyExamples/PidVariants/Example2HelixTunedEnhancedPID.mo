@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Control.Baselines;
+within MoSimQuadrotorModel.Control.LegacyExamples.PidVariants;
 model Example2HelixTunedEnhancedPID
   "Example2 enhanced PID with helix-specific lateral command authority"
   extends MoSimQuadrotorModel.Vehicle.Examples.Example2(

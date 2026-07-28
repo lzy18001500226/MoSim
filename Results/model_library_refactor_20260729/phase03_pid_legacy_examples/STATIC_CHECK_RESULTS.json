@@ -1,0 +1,27 @@
+{
+  "schema": "mosim.model_library_refactor_static.v1",
+  "phase": "03_pid_legacy_examples",
+  "scope": "Move historical Example1/2/3 PID variants out of Control.Baselines, update active names, and preserve formal Baselines owners.",
+  "generated_at_utc": "2026-07-28T17:18:46.3493869Z",
+  "canonical_root_check": {
+    "status": "passed",
+    "command": "python Scripts/quality/consolidate_mosimquad_model_root.py --check"
+  },
+  "pre_migration_inventory": {
+    "example_pid_source_count": 11,
+    "note": "The approved plan described 12 files, but the pre-migration Baselines/package.order contained 11 Example*PID source entries; no twelfth source was invented."
+  },
+  "migration": {
+    "target_package": "MoSimQuadrotorModel.Control.LegacyExamples.PidVariants",
+    "moved_source_count": 11,
+    "package_order_count": 11,
+    "wrapper_alias_count": 11,
+    "remaining_example_sources_in_baselines": [],
+    "wrong_within_files": [],
+    "missing_package_order_sources": []
+  },
+  "active_old_namespace_references": [],
+  "classic_robust_description": "Updated: route choice is defined by Config/control_platform/controller_route_interface_matrix.json; batch prefixes are provenance only.",
+  "status": "passed",
+  "claim_boundary": "Static structure only. No solver simulation, performance, code generation, or deployment claim."
+}

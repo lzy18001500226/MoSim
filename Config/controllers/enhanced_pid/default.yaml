@@ -19,10 +19,10 @@ features:
 
 implementation_status:
   current_mworks_models:
-    - MoSimQuadrotorModel.Control.Baselines.Example1EnhancedPID
-    - MoSimQuadrotorModel.Control.Baselines.Example2EnhancedPID
-    - MoSimQuadrotorModel.Control.Baselines.Example2HelixTunedEnhancedPID
-    - MoSimQuadrotorModel.Control.Baselines.Example3EnhancedPID
+    - MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1EnhancedPID
+    - MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example2EnhancedPID
+    - MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example2HelixTunedEnhancedPID
+    - MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example3EnhancedPID
   base_controller: Config/controllers/improved_pid/default.yaml
   verified_scope: >
     Full Example1/2/3 official scenarios and P1 robustness ablations with real
@@ -81,7 +81,7 @@ limits:
 
 acceptance:
   smoke:
-    model_name: MoSimQuadrotorModel.Control.Baselines.Example1EnhancedPID
+    model_name: MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1EnhancedPID
     stop_time_s: 1.0
     required: check_model and simulate_model pass
   full_example1:

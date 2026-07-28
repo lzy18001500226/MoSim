@@ -17,10 +17,10 @@ features:
 
 implementation_status:
   current_mworks_models:
-    - MoSimQuadrotorModel.Control.Baselines.Example1AntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Control.Baselines.Example2AntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Control.Baselines.Example2HelixTunedAntiWindupFeedforwardPID
-    - MoSimQuadrotorModel.Control.Baselines.Example3AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example2AntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example2HelixTunedAntiWindupFeedforwardPID
+    - MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example3AntiWindupFeedforwardPID
     - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1Mass20AntiWindupFeedforwardPID
     - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1WindGustAntiWindupFeedforwardPID
     - MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15AntiWindupFeedforwardPID

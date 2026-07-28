@@ -78,7 +78,7 @@
 ### 3.2 项目控制器基线：11 个
 
 源码包：
-`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Control\Baselines\package.mo`
+`C:\Users\HP\Desktop\MoSim\Models\MoSimQuadrotorModel\Control\LegacyExamples\PidVariants\package.mo`
 
 这些是单机空白多体场景；按名称即可判断任务和控制器。它们是完整模型别名，不要
 点开 `AntiWindupFeedforwardCore`，后者只是控制器核心。
@@ -89,8 +89,8 @@
 | 螺旋爬升 | `Example2AWFFBaseline`、`Example2HelixTunedAWFFBaseline`、`Example2ImprovedPIDBaseline`、`Example2EnhancedPIDBaseline`、`Example2HelixTunedEnhancedPIDBaseline` | AWFF、螺旋调参 AWFF、改进 PID、增强 PID | `Results\official\example2_helix\` |
 | 8 字轨迹 | `Example3AWFFBaseline`、`Example3ImprovedPIDBaseline`、`Example3EnhancedPIDBaseline` | AWFF / 改进 PID / 增强 PID | `Results\official\example3_figure8\` |
 
-完整类名前缀为 `MoSimQuadrotorModel.Control.Baselines.`。例如第一行的完整类名是
-`MoSimQuadrotorModel.Control.Baselines.Example1AWFFBaseline`。
+完整类名前缀为 `MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.`。例如第一行的完整类名是
+`MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1AWFFBaseline`。
 
 ### 3.3 正式单机任务模型：15 个
 

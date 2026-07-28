@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Control.Baselines;
+within MoSimQuadrotorModel.Control.LegacyExamples.PidVariants;
 model Example3ImprovedPID
   "Example3 with project improved PID parameter set selected by MCP tuning"
   extends MoSimQuadrotorModel.Vehicle.Examples.Example3(

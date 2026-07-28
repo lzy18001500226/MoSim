@@ -234,16 +234,16 @@ Config/scenarios/official/example3_pid_baseline.yaml  8字形运动，120 s
 MoSimQuadrotorModel.Vehicle.Examples.Example1
 MoSimQuadrotorModel.Vehicle.Examples.Example2
 MoSimQuadrotorModel.Vehicle.Examples.Example3
-MoSimQuadrotorModel.Control.Baselines.Example1ImprovedPID
-MoSimQuadrotorModel.Control.Baselines.Example2ImprovedPID
-MoSimQuadrotorModel.Control.Baselines.Example3ImprovedPID
+MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1ImprovedPID
+MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example2ImprovedPID
+MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example3ImprovedPID
 ```
 
-Vehicle 包含已迁入的官方基线机体、图标和 STL 资源；项目 PID 对比模型位于同一根下的 Control.Baselines。不再加载外部 QuadrotorModel 包，也不加载 QuadrotorExperiments、QuadrotorControllerBlocks 或 MworksLive 作为第二个根。
+Vehicle 包含已迁入的官方基线机体、图标和 STL 资源；项目 PID 对比示例位于同一根下的 `Control.LegacyExamples.PidVariants`，而 `Control.Baselines` 只保留正式 Runner 的离线默认控制律。不再加载外部 QuadrotorModel 包，也不加载 QuadrotorExperiments、QuadrotorControllerBlocks 或 MworksLive 作为第二个根。
 
 ```text
 MoSimQuadrotorModel.Vehicle
-MoSimQuadrotorModel.Control.Baselines
+MoSimQuadrotorModel.Control.LegacyExamples.PidVariants
 ```
 
 改进 PID 模型通过 `extends MoSimQuadrotorModel.Vehicle.Examples.*` 派生基线，只覆盖 `controller3_2.PID*` 参数；基线与改进模型仍在同一个正式包根内。
@@ -277,7 +277,7 @@ python3 Scripts/results/generate_replay_from_raw.py \
   Results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
   Results/official/example1_step/official_example1_improved_pid/replay/official_example1_improved_pid.json \
   --scene-id official_example1_improved_pid \
-  --model-name MoSimQuadrotorModel.Control.Baselines.Example1ImprovedPID \
+  --model-name MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1ImprovedPID \
   --description 'Example1 MCP 参数搜索型 Improved PID 真实轨迹'
 ```
 
@@ -379,7 +379,7 @@ python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
 
 ```bash
 python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
-  --model-name MoSimQuadrotorModel.Control.Baselines.Example1ImprovedPID \
+  --model-name MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example1ImprovedPID \
   --target-time 0,50 \
   --raw-output Results/official/example1_step/official_example1_improved_pid/raw/official_example1_improved_pid.csv \
   --metrics-json Results/official/example1_step/official_example1_improved_pid/metrics/official_example1_improved_pid.json \
@@ -390,7 +390,7 @@ python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 
 python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
-  --model-name MoSimQuadrotorModel.Control.Baselines.Example2ImprovedPID \
+  --model-name MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example2ImprovedPID \
   --target-time 0,50 \
   --raw-output Results/official/example2_helix/official_example2_improved_pid/raw/official_example2_improved_pid.csv \
   --metrics-json Results/official/example2_helix/official_example2_improved_pid/metrics/official_example2_improved_pid.json \
@@ -401,7 +401,7 @@ python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
   --evidence-level real_sysplorer_mcp_full_improved_pid
 
 python3 Scripts/mworks/run_sysplorer_mcp_smoke.py \
-  --model-name MoSimQuadrotorModel.Control.Baselines.Example3ImprovedPID \
+  --model-name MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.Example3ImprovedPID \
   --target-time 0,120 \
   --raw-output Results/official/example3_figure8/official_example3_improved_pid/raw/official_example3_improved_pid.csv \
   --metrics-json Results/official/example3_figure8/official_example3_improved_pid/metrics/official_example3_improved_pid.json \

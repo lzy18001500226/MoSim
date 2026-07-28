@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Control.Baselines;
+within MoSimQuadrotorModel.Control.LegacyExamples.PidVariants;
 model Example3AntiWindupFeedforwardPID
   "Example3 with project-owned anti-windup and reference-feedforward controller"
   extends Example3ProjectControllerBase;
