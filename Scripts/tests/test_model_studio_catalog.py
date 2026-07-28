@@ -16,15 +16,19 @@ def test_catalog_is_registry_and_profile_driven() -> None:
     assert "PROFILE\tpx4ctrl_figure8_baseline_v1\t" in render_tsv(catalog)
 
 
-def test_generated_app_exposes_three_modes_and_layered_control_chain() -> None:
+def test_generated_app_exposes_four_workspaces_and_layered_control_chain() -> None:
     project = build_project()
     callbacks = {callback["name"]: callback["code"] for callback in project["callbackFunctions"]}
     children = {child["variableName"]: child for child in project["figure"]["children"]}
 
-    assert {"OfflineModePressed", "LiveModePressed", "DeployModePressed"} <= callbacks.keys()
+    assert {
+        "OfflineModePressed", "LiveModePressed", "DeployModePressed",
+        "AssistantModePressed",
+    } <= callbacks.keys()
     assert children["OfflineModeButton"]["text"] == "离线建模验证"
     assert children["LiveModeButton"]["text"] == "实时联合仿真"
     assert children["DeployModeButton"]["text"] == "生成代码部署"
+    assert children["AssistantModeButton"]["text"] == "MoSim 助手"
     assert children["PositionDropDown"]["label"] == "位置 / 平动外环"
     assert children["AttitudeDropDown"]["label"] == "姿态 / 角速度内环"
     assert children["AttitudeDropDown"]["enable"] is False
@@ -38,7 +42,7 @@ def test_generated_app_is_ui_only_and_separates_offline_from_qgc_actions() -> No
     callbacks = {callback["name"]: callback["code"] for callback in project["callbackFunctions"]}
     children = {child["variableName"]: child for child in project["figure"]["children"]}
 
-    assert project["info"]["version"] == "0.5.0"
+    assert project["info"]["version"] == "0.6.0"
     assert {
         "ValidatePressed", "PublishPressed", "PreparePressed", "QgcPressed",
         "SafeStopPressed", "OpenModelPressed", "MilPressed", "CodegenPressed",

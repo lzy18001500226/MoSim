@@ -120,6 +120,7 @@ const OFFLINE_PROFILES = Dict(
     OfflineModeButton::Any = nothing
     LiveModeButton::Any = nothing
     DeployModeButton::Any = nothing
+    AssistantModeButton::Any = nothing
     ModeStatusLabel::Any = nothing
 
     ConfigSectionLabel::Any = nothing
@@ -178,17 +179,30 @@ const OFFLINE_PROFILES = Dict(
     ConsoleClearButton::Any = nothing
     StatusLabel::Any = nothing
 
+    AssistantContextLabel::Any = nothing
+    AssistantChatLabel::Any = nothing
+    AssistantInputField::Any = nothing
+    AssistantSendButton::Any = nothing
+    AssistantExplainButton::Any = nothing
+    AssistantMworksGuideButton::Any = nothing
+    AssistantQgcGuideButton::Any = nothing
+    AssistantResultGuideButton::Any = nothing
+    AssistantClearButton::Any = nothing
+    AssistantStatusLabel::Any = nothing
+
     # ObjectOriented's field parser requires literal defaults; bind source
     # metadata during initApp instead of using macro expressions as defaults.
     Appname::Any = nothing
     Appfile::Any = ""
     CurrentMode::String = "live"
+    LastOperationalMode::String = "model"
     LastOfflineBatchManifest::String = ""
     LastOfflineBatchId::String = ""
     LastOfflineProfile::String = ""
     CurrentOfflineBatchId::String = ""
     OfflineBatchRunning::Bool = false
     ConsoleLines::Any = nothing
+    AssistantLines::Any = nothing
     ConsoleExpanded::Bool = true
 
     function append_console(app, message; level="信息")
@@ -198,6 +212,85 @@ const OFFLINE_PROFILES = Dict(
         length(app.ConsoleLines) > 40 && deleteat!(app.ConsoleLines, 1:length(app.ConsoleLines)-40)
         visible_lines = app.ConsoleExpanded ? 6 : 1
         app.StatusLabel.Text = join(last(app.ConsoleLines, min(visible_lines, length(app.ConsoleLines))), "\n")
+    end
+
+    function assistant_operational_mode_label(app)
+        return app.LastOperationalMode == "model" ? "在线建模验证" :
+            (app.LastOperationalMode == "live" ? "实时联合仿真" : "生成代码部署")
+    end
+
+    function refresh_assistant_context(app)
+        app.AssistantContextLabel === nothing && return
+        app.AssistantContextLabel.Text =
+            "当前配置\n\n" *
+            "来源  " * app.assistant_operational_mode_label() * "\n" *
+            "Profile  " * app.ProfileDropDown.Value * "\n" *
+            "任务  " * app.MissionDropDown.Value * "\n\n" *
+            "控制链\n" *
+            "外环  " * app.PositionDropDown.Value * "\n" *
+            "增强  " * app.AugmentationDropDown.Value * "\n" *
+            "输出  " * app.OutputDropDown.Value
+    end
+
+    function append_assistant(app, author, message)
+        timestamp = Dates.format(Dates.now(), "HH:MM")
+        normalized = string(message)
+        push!(app.AssistantLines, author * "  " * timestamp * "\n" * normalized)
+        length(app.AssistantLines) > 8 && deleteat!(app.AssistantLines, 1:length(app.AssistantLines)-8)
+        app.AssistantChatLabel.Text = join(app.AssistantLines, "\n\n")
+    end
+
+    function assistant_reply(app, prompt)
+        normalized = lowercase(strip(prompt))
+        if occursin("控制", normalized) || occursin("controller", normalized)
+            return "当前外环为“" * app.PositionDropDown.Value * "”。控制器选择决定输出合同；增强层只允许叠加与该合同兼容的模块。"
+        elseif occursin("mworks", normalized) || occursin("模型", normalized) || occursin("仿真", normalized)
+            return "先在“在线建模验证”确认配置，再点击“打开仿真模型”。模型由 MWORKS 打开和运行，结果由原生结果查看器分析。"
+        elseif occursin("qgc", normalized) || occursin("地面站", normalized) || occursin("起飞", normalized)
+            return "QGC 选择已发布的 Profile，并负责连接、解锁、起飞、任务、降落和安全停止。这里不直接向飞行端发送命令。"
+        elseif occursin("故障", normalized) || occursin("风", normalized) || occursin("电机", normalized)
+            return "离线页面的风扰和电机效率属于场景配置；飞行侧故障由 QGC 按已冻结 Profile 发起离散应用或恢复请求。"
+        elseif occursin("结果", normalized) || occursin("result", normalized) || occursin("曲线", normalized)
+            return "Result.msr 和曲线仍由 MWORKS 结果查看器负责。完成仿真后，将结果放入 Profile 的默认结果目录，再从结果入口打开。"
+        end
+        return "我已读取当前配置。可以继续询问控制链、MWORKS 模型、QGC 操作、故障注入或结果查看。"
+    end
+
+    function AssistantSendPressed(app, event)
+        prompt = strip(app.AssistantInputField.Value)
+        if isempty(prompt)
+            app.append_assistant("MoSim 助手", "请先输入问题。")
+            return
+        end
+        app.append_assistant("你", prompt)
+        app.AssistantInputField.Value = ""
+        app.append_assistant("MoSim 助手", app.assistant_reply(prompt))
+    end
+
+    function AssistantExplainPressed(app, event)
+        app.append_assistant("MoSim 助手",
+            "当前控制链：任务参考 -> " * app.PositionDropDown.Value * " -> " *
+            app.AttitudeDropDown.Value * " -> " * app.OutputDropDown.Value * "。")
+    end
+
+    function AssistantMworksGuidePressed(app, event)
+        app.append_assistant("MoSim 助手",
+            "MWORKS 操作顺序：确认配置 -> 打开模型 -> 在 MWORKS 中运行 -> 将 Result.msr 放入默认结果目录 -> 在原生结果查看器分析。")
+    end
+
+    function AssistantQgcGuidePressed(app, event)
+        app.append_assistant("MoSim 助手",
+            "QGC 操作顺序：选择已发布 Profile -> 连接飞行端 -> 解锁 -> 起飞悬停 -> 执行任务 -> 降落或安全停止。")
+    end
+
+    function AssistantResultGuidePressed(app, event)
+        app.append_assistant("MoSim 助手",
+            "结果入口只定位当前 Profile 的默认目录和 Result.msr；曲线、动画和回放继续由 MWORKS 原生结果查看器完成。")
+    end
+
+    function AssistantClearPressed(app, event)
+        empty!(app.AssistantLines)
+        app.append_assistant("MoSim 助手", "已清空对话。我已保留当前实验配置上下文。")
     end
 
     function set_top_status(app, text; state="待命")
@@ -294,6 +387,21 @@ const OFFLINE_PROFILES = Dict(
             app.Motor2Slider, app.Motor3Slider, app.Motor4Slider,
             app.InjectionValuesLabel, app.ApplyInjectionButton,
             app.RestoreInjectionButton, app.ManifestLabel,
+            app.AssistantContextLabel, app.AssistantChatLabel,
+            app.AssistantInputField, app.AssistantSendButton,
+            app.AssistantExplainButton, app.AssistantMworksGuideButton,
+            app.AssistantQgcGuideButton, app.AssistantResultGuideButton,
+            app.AssistantClearButton, app.AssistantStatusLabel,
+        )
+    end
+
+    function assistant_controls(app)
+        return (
+            app.AssistantContextLabel, app.AssistantChatLabel,
+            app.AssistantInputField, app.AssistantSendButton,
+            app.AssistantExplainButton, app.AssistantMworksGuideButton,
+            app.AssistantQgcGuideButton, app.AssistantResultGuideButton,
+            app.AssistantClearButton, app.AssistantStatusLabel,
         )
     end
 
@@ -428,7 +536,10 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function refresh_summary(app)
-        if app.CurrentMode == "model"
+        if app.CurrentMode == "assistant"
+            app.refresh_assistant_context()
+            return
+        elseif app.CurrentMode == "model"
             item = app.selected_model_profile()
             certified = item !== nothing && item.available && app.preset_matches_selection(item)
             unavailable = occursin("[待接入]", app.PositionDropDown.Value) ||
@@ -596,23 +707,61 @@ const OFFLINE_PROFILES = Dict(
         app.QgcButton.Enable = true
     end
 
+    function configure_assistant_workspace(app)
+        app.set_top_status("MoSim 助手  |  当前配置上下文已读取  |  不直接控制仿真或飞行端"; state="正常")
+        app.configure_section(app.ConfigSectionLabel, "当前配置", [24, 144, 320, 34])
+        app.configure_section(app.ChainSectionLabel, "MoSim 助手", [364, 144, 692, 34])
+        app.configure_section(app.InjectionSectionLabel, "快捷问题", [1076, 144, 340, 34])
+        app.ConfigSectionLabel.Visible = true
+        app.ChainSectionLabel.Visible = true
+        app.InjectionSectionLabel.Visible = true
+        app.set_visible(app.workspace_controls(), false)
+        app.set_visible(app.action_buttons(), false)
+        app.StatusLabel.Visible = false
+        app.ConsoleToggleButton.Visible = false
+        app.ConsoleClearButton.Visible = false
+        app.set_visible(app.assistant_controls(), true)
+
+        app.AssistantContextLabel.Position = [24, 192, 320, 468]
+        app.AssistantChatLabel.Position = [364, 192, 692, 394]
+        app.AssistantInputField.Position = [364, 616, 510, 32]
+        app.AssistantSendButton.Position = [890, 614, 166, 36]
+        app.AssistantClearButton.Position = [364, 664, 166, 32]
+        app.AssistantExplainButton.Position = [1076, 192, 340, 40]
+        app.AssistantMworksGuideButton.Position = [1076, 246, 340, 40]
+        app.AssistantQgcGuideButton.Position = [1076, 300, 340, 40]
+        app.AssistantResultGuideButton.Position = [1076, 354, 340, 40]
+        app.AssistantStatusLabel.Position = [1076, 418, 340, 242]
+
+        app.refresh_assistant_context()
+        isempty(app.AssistantLines) && app.append_assistant("MoSim 助手", "你好，我已读取当前实验配置。")
+    end
+
     function set_mode(app, mode)
         app.CurrentMode = mode
         app.set_button_state(app.OfflineModeButton, mode == "model")
         app.set_button_state(app.LiveModeButton, mode == "live")
         app.set_button_state(app.DeployModeButton, mode == "deploy")
+        app.set_button_state(app.AssistantModeButton, mode == "assistant")
         if mode == "model"
+            app.LastOperationalMode = mode
             app.configure_model_workspace()
             app.set_connection_controls(false)
             app.append_console("切换至在线建模验证工作台")
         elseif mode == "live"
+            app.LastOperationalMode = mode
             app.configure_live_workspace()
             app.set_connection_controls(true)
             app.append_console("切换至实时联合仿真工作台；实时后端保持未连接")
-        else
+        elseif mode == "deploy"
+            app.LastOperationalMode = mode
             app.configure_deploy_workspace()
             app.set_connection_controls(false)
             app.append_console("切换至生成代码部署工作台")
+        else
+            app.configure_assistant_workspace()
+            app.set_connection_controls(false)
+            app.append_console("切换至 MoSim 助手；仅提供本地配置指引")
         end
         app.refresh_summary()
     end
@@ -627,6 +776,10 @@ const OFFLINE_PROFILES = Dict(
 
     function DeployModePressed(app, event)
         app.set_mode("deploy")
+    end
+
+    function AssistantModePressed(app, event)
+        app.set_mode("assistant")
     end
 
     function SelectionChanged(app, event)
@@ -992,9 +1145,11 @@ const OFFLINE_PROFILES = Dict(
         app.configure_action(app.LiveModeButton, "实时联合仿真", "LiveModePressed", [218, 82, 190, 40])
         app.DeployModeButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.DeployModeButton, "生成代码部署", "DeployModePressed", [412, 82, 190, 40])
+        app.AssistantModeButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.AssistantModeButton, "MoSim 助手", "AssistantModePressed", [606, 82, 190, 40])
 
         app.ModeStatusLabel = TyAppDesigner.uilabel(app.UIFigure)
-        app.ModeStatusLabel.Position = [620, 82, 796, 40]
+        app.ModeStatusLabel.Position = [814, 82, 602, 40]
         app.ModeStatusLabel.HorizontalAlignment = "right"
         app.ModeStatusLabel.WordWrap = true
         app.ModeStatusLabel.FontColor = [0.25, 0.32, 0.36]
@@ -1170,6 +1325,45 @@ const OFFLINE_PROFILES = Dict(
         app.ConsoleClearButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.ConsoleClearButton, "清空", "ClearConsolePressed", [146, 738, 76, 28])
 
+        app.AssistantContextLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.AssistantContextLabel.Position = [24, 192, 320, 468]
+        app.AssistantContextLabel.VerticalAlignment = "top"
+        app.AssistantContextLabel.WordWrap = true
+        app.AssistantContextLabel.BackgroundColor = [0.91, 0.94, 0.95]
+
+        app.AssistantChatLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.AssistantChatLabel.Position = [364, 192, 692, 394]
+        app.AssistantChatLabel.VerticalAlignment = "top"
+        app.AssistantChatLabel.WordWrap = true
+        app.AssistantChatLabel.BackgroundColor = [1.0, 1.0, 1.0]
+        app.AssistantChatLabel.FontColor = [0.08, 0.16, 0.22]
+
+        app.AssistantInputField = TyAppDesigner.uieditfield(app.UIFigure)
+        app.AssistantInputField.Position = [364, 616, 510, 32]
+        app.AssistantInputField.Label = "输入问题"
+        app.AssistantInputField.Value = ""
+
+        app.AssistantSendButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.AssistantSendButton, "发送", "AssistantSendPressed", [890, 614, 166, 36])
+        app.AssistantClearButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.AssistantClearButton, "清空对话", "AssistantClearPressed", [364, 664, 166, 32])
+
+        app.AssistantExplainButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.AssistantExplainButton, "解释当前控制链", "AssistantExplainPressed", [1076, 192, 340, 40])
+        app.AssistantMworksGuideButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.AssistantMworksGuideButton, "MWORKS 操作指引", "AssistantMworksGuidePressed", [1076, 246, 340, 40])
+        app.AssistantQgcGuideButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.AssistantQgcGuideButton, "QGC 操作指引", "AssistantQgcGuidePressed", [1076, 300, 340, 40])
+        app.AssistantResultGuideButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.AssistantResultGuideButton, "结果查看指引", "AssistantResultGuidePressed", [1076, 354, 340, 40])
+
+        app.AssistantStatusLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.AssistantStatusLabel.Position = [1076, 418, 340, 242]
+        app.AssistantStatusLabel.Text = "助手状态\n\n本地上下文模式\n已读取当前实验配置\n\n运行控制：未接管\n模型、QGC 与结果查看仍由各自页面和原生工具负责"
+        app.AssistantStatusLabel.VerticalAlignment = "top"
+        app.AssistantStatusLabel.WordWrap = true
+        app.AssistantStatusLabel.BackgroundColor = MUTED_COLOR
+
         app.set_mode("model")
         app.InjectionChanged(nothing)
         app.append_console("Model Studio 已就绪"; level="系统")
@@ -1180,6 +1374,7 @@ const OFFLINE_PROFILES = Dict(
         app.Appname = @__MODULE__
         app.Appfile = @__FILE__
         app.ConsoleLines = String[]
+        app.AssistantLines = String[]
         app.createComponents()
         TyAppDesigner.registerApp(app, app.UIFigure)
         return app

@@ -13,8 +13,11 @@ control.
 
 The current source UI baseline includes:
 
-- three execution modes: offline model validation, MWORKS Live, and generated-C
-  deployment;
+- four workspaces: offline model validation, MWORKS Live, generated-C
+  deployment, and the local-context `MoSim 助手`;
+- `MoSim 助手` reads the current Profile/control-chain selections and provides
+  local MWORKS, QGC, fault, and result-viewing guidance only; it does not start
+  MWORKS, export code, or send flight/runtime commands;
 - layered mission, position-loop, attitude-loop, augmentation, safety, and
   output-boundary controls;
 - a locked PX4 attitude/rate inner loop for `ATTITUDE_THRUST v1`;
