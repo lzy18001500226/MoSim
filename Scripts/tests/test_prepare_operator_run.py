@@ -56,10 +56,18 @@ def _fixture_root(tmp_path: Path) -> Path:
         },
     )
     _write_json(tmp_path / "Config/scenarios/factory_demo.json", {"formation": {"type": "leader_follower"}})
+    source_catalog = json.loads(
+        (ROOT / "Config/control_platform/operator_map_catalog.json").read_text(encoding="utf-8")
+    )
+    factory_map = source_catalog["maps"][0]
     _write_json(
         tmp_path / "Config/control_platform/operator_map_catalog.json",
-        {"maps": [{"map_id": "factory_l2", "enabled": True, "world_bounds_m": {"min_x_m": -1, "max_x_m": 1}}]},
+        {"schema": source_catalog["schema"], "maps": [factory_map]},
     )
+    matrix_relative = Path(factory_map["image_coordinate_contract"]["matrix_path"])
+    matrix_target = tmp_path / matrix_relative
+    matrix_target.parent.mkdir(parents=True, exist_ok=True)
+    matrix_target.write_bytes((ROOT / matrix_relative).read_bytes())
     _write_json(
         tmp_path / "Config/control_platform/runtime_backend_catalog.json",
         {
@@ -165,3 +173,22 @@ def test_prepare_validates_scenario_before_creating_a_run_directory(tmp_path: Pa
         )
 
     assert not (root / "Results/runs/qgc-no-directory-on-error").exists()
+
+
+def test_prepare_rejects_a_tampered_image_coordinate_contract(tmp_path: Path) -> None:
+    module = _module()
+    root = _fixture_root(tmp_path)
+    catalog_path = root / "Config/control_platform/operator_map_catalog.json"
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+    catalog["maps"][0]["image_coordinate_contract"]["matrix_sha256"] = "0" * 64
+    catalog_path.write_text(json.dumps(catalog), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="operator_map_image_coordinate_contract_hash_mismatch"):
+        module.prepare_run(
+            root=root,
+            profile_id="factory_demo_v1",
+            runtime_profile_id="factory_demo_runtime_v1",
+            run_id="qgc-tampered-image-contract",
+        )
+
+    assert not (root / "Results/runs/qgc-tampered-image-contract").exists()

@@ -30,7 +30,7 @@ Item {
     property bool showFormationTarget: true
 
     readonly property var bounds: mapConfig.world_bounds_m || ({})
-    readonly property bool mapConfigValid: mapConfig.enabled === true
+    readonly property bool mapConfigValid: mapConfig.enabled === true && imageCoordinateContractValid
             && isFinite(Number(bounds.min_x_m)) && isFinite(Number(bounds.max_x_m))
             && isFinite(Number(bounds.min_y_m)) && isFinite(Number(bounds.max_y_m))
             && Number(bounds.min_x_m) < Number(bounds.max_x_m)
@@ -41,6 +41,15 @@ Item {
             && factoryImage.sourceSize.width > 0 && factoryImage.sourceSize.height > 0
         ? factoryImage.sourceSize.width / factoryImage.sourceSize.height
         : 2048.0 / 800.0
+    readonly property var imageCoordinateContract: mapConfig.image_coordinate_contract || ({})
+    readonly property var imageSizePx: imageCoordinateContract.image_size_px || ({})
+    readonly property var worldToPixelMatrix: imageCoordinateContract.world_to_pixel_3x3 || []
+    readonly property real imageWidthPx: Number(imageSizePx.width || 0)
+    readonly property real imageHeightPx: Number(imageSizePx.height || 0)
+    readonly property bool imageCoordinateContractValid: validImageCoordinateContract()
+    readonly property bool loadedImageSizeMatchesContract: factoryImage.status !== Image.Ready
+            || (Math.round(factoryImage.sourceSize.width) === Math.round(imageWidthPx)
+                    && Math.round(factoryImage.sourceSize.height) === Math.round(imageHeightPx))
     readonly property var mapMetadata: mapState.map || ({})
     readonly property var mapDataStatus: mapState.map_data_status || ({})
     readonly property var mapTransport: mapState.transport || ({})
@@ -79,7 +88,7 @@ Item {
         return false
     }
     readonly property bool mapFrameAccepted: String(mapDataStatus.state || "accepted") === "accepted"
-    readonly property bool mapStateReady: mapConfigValid && mapIdentityMatches && mapTransportFresh
+    readonly property bool mapStateReady: mapConfigValid && loadedImageSizeMatchesContract && mapIdentityMatches && mapTransportFresh
             && String(mapMetadata.coordinate_contract_status || "") === "verified" && mapFrameAccepted
     readonly property var vehicles: mapStateReady && mapState.vehicles && mapState.vehicles.length !== undefined
         ? mapState.vehicles : []
@@ -87,6 +96,49 @@ Item {
 
     function clamp(value, lower, upper) {
         return Math.max(lower, Math.min(value, upper))
+    }
+
+    function validImageCoordinateContract() {
+        if (String(imageCoordinateContract.schema || "") !== "mosim.operator_map_image_coordinate_contract.v1"
+                || String(imageCoordinateContract.matrix_schema || "") !== "mosim.world_to_pixel.v1"
+                || String(imageCoordinateContract.render_mode || "") !== "axis_aligned_image_rect_v1"
+                || !/^[0-9a-f]{64}$/.test(String(imageCoordinateContract.matrix_sha256 || ""))
+                || !isFinite(imageWidthPx) || !isFinite(imageHeightPx)
+                || imageWidthPx <= 0 || imageHeightPx <= 0
+                || !worldToPixelMatrix || worldToPixelMatrix.length !== 3)
+            return false
+        for (var row = 0; row < 3; ++row) {
+            if (!worldToPixelMatrix[row] || worldToPixelMatrix[row].length !== 3)
+                return false
+            for (var column = 0; column < 3; ++column) {
+                if (!isFinite(Number(worldToPixelMatrix[row][column])))
+                    return false
+            }
+        }
+        return Math.abs(Number(worldToPixelMatrix[2][0])) < 0.000000001
+                && Math.abs(Number(worldToPixelMatrix[2][1])) < 0.000000001
+                && Math.abs(Number(worldToPixelMatrix[2][2]) - 1.0) < 0.000000001
+                && Math.abs(Number(worldToPixelMatrix[0][1])) < 0.000000001
+                && Math.abs(Number(worldToPixelMatrix[1][0])) < 0.000000001
+                && Math.abs(Number(worldToPixelMatrix[0][0]) * Number(worldToPixelMatrix[1][1])) > 0.000000001
+    }
+
+    function sourcePixelForWorld(worldX, worldY) {
+        if (!imageCoordinateContractValid)
+            return ({ u: NaN, v: NaN })
+        var denominator = Number(worldToPixelMatrix[2][0]) * Number(worldX)
+                + Number(worldToPixelMatrix[2][1]) * Number(worldY)
+                + Number(worldToPixelMatrix[2][2])
+        if (!isFinite(denominator) || Math.abs(denominator) < 0.000000001)
+            return ({ u: NaN, v: NaN })
+        return {
+            u: (Number(worldToPixelMatrix[0][0]) * Number(worldX)
+                    + Number(worldToPixelMatrix[0][1]) * Number(worldY)
+                    + Number(worldToPixelMatrix[0][2])) / denominator,
+            v: (Number(worldToPixelMatrix[1][0]) * Number(worldX)
+                    + Number(worldToPixelMatrix[1][1]) * Number(worldY)
+                    + Number(worldToPixelMatrix[1][2])) / denominator
+        }
     }
 
     function resetTracks() {
@@ -122,11 +174,11 @@ Item {
     }
 
     function imageXForWorld(worldX) {
-        return (Number(worldX) - Number(bounds.min_x_m)) / worldWidthM * factoryImage.width
+        return sourcePixelForWorld(worldX, 0).u / imageWidthPx * factoryImage.width
     }
 
     function imageYForWorld(worldY) {
-        return (Number(bounds.max_y_m) - Number(worldY)) / worldHeightM * factoryImage.height
+        return sourcePixelForWorld(0, worldY).v / imageHeightPx * factoryImage.height
     }
 
     function appendActualTracks() {
@@ -210,6 +262,8 @@ Item {
     function mapDataGateText() {
         if (!mapConfigValid)
             return "等待地图配置"
+        if (!loadedImageSizeMatchesContract)
+            return "工厂地图尺寸与坐标契约不匹配"
         if (!manifestMatchesRun)
             return "等待当前运行清单"
         if (String(mapState.run_id || "") !== runId)
@@ -571,7 +625,9 @@ Item {
         spacing: 4
         visible: root.mapConfigValid
 
-        readonly property real metersPerPixel: root.worldWidthM / factoryImage.width
+        readonly property real renderedPixelsPerMeter: root.imageCoordinateContractValid && factoryImage.width > 0
+                ? Math.abs(Number(root.worldToPixelMatrix[0][0])) * factoryImage.width / root.imageWidthPx : 0
+        readonly property real metersPerPixel: renderedPixelsPerMeter > 0 ? 1.0 / renderedPixelsPerMeter : 1.0
         readonly property real scaleMeters: root.niceScaleMeters(105 * metersPerPixel)
         readonly property real scaleWidth: scaleMeters / metersPerPixel
 

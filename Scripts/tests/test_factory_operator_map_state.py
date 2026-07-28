@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -12,7 +13,11 @@ from Scripts.ui.runtime_sidecar import (
     resolve_runtime_operator_map,
 )
 from src.orchestration.operator_map_replay import validate_coordinate_evidence
-from src.orchestration.operator_map_state import validate_operator_map_state
+from src.orchestration.operator_map_state import (
+    validate_image_coordinate_contract,
+    validate_operator_map_snapshot,
+    validate_operator_map_state,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -172,6 +177,31 @@ def test_tampered_manifest_snapshot_is_rejected_before_map_state_is_emitted() ->
 
     with pytest.raises(ValueError, match="operator_map_manifest_snapshot_hash_mismatch"):
         resolve_runtime_operator_map(manifest)
+
+
+def test_image_coordinate_contract_binds_the_catalog_matrix_and_run_manifest_hash() -> None:
+    snapshot = load_operator_map_snapshot(
+        ROOT / "Config" / "control_platform" / "operator_map_catalog.json",
+        "factory_l2",
+    )
+    contract = validate_image_coordinate_contract(snapshot)
+
+    assert contract["matrix_sha256"] == "44ad1b989e3704b9bccbc1406f57f7112b5729869eb326099022b70f50dd548b"
+    assert contract["image_size_px"] == {"width": 2048, "height": 800}
+    assert contract["world_to_pixel_3x3"][0][2] == pytest.approx(1037.9992605649718)
+    assert contract["pixel_to_world_3x3"][1][2] == pytest.approx(269.43695652173915)
+
+    frozen_hash = _canonical_hash(snapshot)
+    tampered_snapshot = json.loads(json.dumps(snapshot))
+    tampered_snapshot["image_coordinate_contract"]["world_to_pixel_3x3"][0][2] += 1.0
+    assert _canonical_hash(tampered_snapshot) != frozen_hash
+    with pytest.raises(ValueError, match="operator_map_image_coordinate_contract_inverse_mismatch"):
+        validate_operator_map_snapshot(tampered_snapshot)
+
+    missing_contract = _snapshot()
+    missing_contract.pop("image_coordinate_contract")
+    with pytest.raises(ValueError, match="operator_map_image_coordinate_contract_missing"):
+        validate_operator_map_snapshot(missing_contract)
 
 
 def test_map_state_validator_rejects_identity_and_verified_frame_mismatches() -> None:
@@ -343,6 +373,9 @@ def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() 
     )
     fly_map = (ROOT / "apps/flight_console/mosim/custom/src/FactoryFlyMap.qml").read_text(encoding="utf-8")
     plan_view = (ROOT / "apps/flight_console/mosim/custom/src/PlanView.qml").read_text(encoding="utf-8")
+    plan_overlay = (ROOT / "apps/flight_console/mosim/custom/src/FactoryPlanMapOverlay.qml").read_text(
+        encoding="utf-8"
+    )
 
     assert 'Q_PROPERTY(QVariantMap operatorMap READ operatorMap NOTIFY stateChanged)' in bridge_header
     assert 'Q_PROPERTY(QVariantList operatorMaps READ operatorMaps NOTIFY stateChanged)' in bridge_header
@@ -359,10 +392,16 @@ def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() 
     assert 'String(mapMetadata.operator_map_snapshot_hash || "")' in fly_map
     assert 'readonly property bool mapFrameAccepted' in fly_map
     assert '实时地图坐标系与证据不匹配' in fly_map
+    assert 'function sourcePixelForWorld(worldX, worldY)' in fly_map
+    assert 'worldToPixelMatrix' in fly_map
+    assert 'image_coordinate_contract' in fly_map
     assert 'function applyOperatorMapViewport()' in plan_view
     assert 'identity === _appliedOperatorMapIdentity' in plan_view
     assert 'function factoryMissionPublicationAllowed()' in plan_view
     assert '任务上传已阻止' in plan_view
+    assert 'function worldForImagePixel(pixelX, pixelY)' in plan_overlay
+    assert 'function imageWorldBoundsForPixels()' in plan_overlay
+    assert 'pixelToWorldMatrix' in plan_overlay
 
     invalid = _snapshot()
     invalid["coordinate_contract_status"] = "not_a_state"

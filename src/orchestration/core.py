@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Protocol
 
-from .operator_map_state import validate_operator_map_state
+from .operator_map_state import validate_operator_map_snapshot, validate_operator_map_state
 from .runtime_sidecar_contract import load_contract, validate_command
 
 
@@ -191,6 +191,10 @@ class MoSimOrchestrator:
             valid_bounds = False
         if not valid_bounds:
             return {}, "", "operator_map_bounds_invalid"
+        try:
+            validate_operator_map_snapshot(entry, project_root=PROJECT_ROOT)
+        except ValueError as exc:
+            return {}, "", str(exc)
 
         # JSON round-tripping prevents later catalog mutations from sharing nested objects with this run.
         snapshot = json.loads(json.dumps(entry, ensure_ascii=False))

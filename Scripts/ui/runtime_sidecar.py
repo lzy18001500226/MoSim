@@ -30,6 +30,7 @@ from src.orchestration.operator_map_state import (
     OPERATOR_MAP_IDENTITY_FIELDS,
     OPERATOR_MAP_STATE_SCHEMA,
     OPERATOR_MAP_TRANSPORT_MODES,
+    validate_operator_map_snapshot,
     validate_operator_map_state,
 )
 from src.orchestration.operator_map_replay import (
@@ -37,13 +38,6 @@ from src.orchestration.operator_map_replay import (
     transform_operator_map_orientation,
     transform_operator_map_points,
     transform_operator_map_vector,
-)
-
-
-OPERATOR_MAP_SNAPSHOT_REQUIRED_FIELDS = (
-    "resource_url",
-    *OPERATOR_MAP_IDENTITY_FIELDS,
-    "coordinate_contract_status",
 )
 
 
@@ -88,22 +82,7 @@ def _load_rt1_observability(run_dir: Path, run_id: str) -> dict[str, float]:
 
 
 def _validate_operator_map_snapshot(snapshot: dict[str, Any]) -> None:
-    if any(not isinstance(snapshot.get(key), str) or not snapshot[key] for key in OPERATOR_MAP_SNAPSHOT_REQUIRED_FIELDS):
-        raise ValueError("operator_map_contract_fields_missing")
-    if snapshot["coordinate_contract_status"] not in COORDINATE_CONTRACT_STATUSES:
-        raise ValueError("operator_map_coordinate_status_invalid")
-    bounds = snapshot.get("world_bounds_m")
-    if not isinstance(bounds, dict):
-        raise ValueError("operator_map_bounds_invalid")
-    try:
-        valid_bounds = (
-            float(bounds["min_x_m"]) < float(bounds["max_x_m"])
-            and float(bounds["min_y_m"]) < float(bounds["max_y_m"])
-        )
-    except (KeyError, TypeError, ValueError):
-        valid_bounds = False
-    if not valid_bounds:
-        raise ValueError("operator_map_bounds_invalid")
+    validate_operator_map_snapshot(snapshot, project_root=ROOT)
 
 
 def load_operator_map_snapshot(catalog_path: Path, map_id: str) -> dict[str, Any]:
@@ -138,9 +117,9 @@ def load_manifest_operator_map_snapshot(manifest: dict[str, Any]) -> tuple[dict[
         raise ValueError("operator_map_manifest_snapshot_missing")
     if not isinstance(snapshot_hash, str) or not snapshot_hash:
         raise ValueError("operator_map_manifest_snapshot_hash_missing")
-    _validate_operator_map_snapshot(snapshot)
     if _canonical_hash(snapshot) != snapshot_hash:
         raise ValueError("operator_map_manifest_snapshot_hash_mismatch")
+    _validate_operator_map_snapshot(snapshot)
     return _json_copy(snapshot), snapshot_hash
 
 

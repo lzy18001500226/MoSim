@@ -11,6 +11,51 @@
       "world_frame": "mworks_world",
       "coordinate_contract_id": "factory_l2_mworks_world_v1",
       "coordinate_contract_status": "pending_runtime_validation",
+      "image_coordinate_contract": {
+        "schema": "mosim.operator_map_image_coordinate_contract.v1",
+        "matrix_schema": "mosim.world_to_pixel.v1",
+        "render_mode": "axis_aligned_image_rect_v1",
+        "matrix_path": "apps/flight_console/mosim/custom/maps/factory_l2/v1/world_to_pixel.json",
+        "matrix_sha256": "44ad1b989e3704b9bccbc1406f57f7112b5729869eb326099022b70f50dd548b",
+        "image_size_px": {
+          "width": 2048,
+          "height": 800
+        },
+        "world_to_pixel_3x3": [
+          [
+            1.3860640301318268,
+            0.0,
+            1037.9992605649718
+          ],
+          [
+            0.0,
+            -1.3860640301318268,
+            373.4568738229755
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "pixel_to_world_3x3": [
+          [
+            0.7214673913043478,
+            0.0,
+            -748.8826186956521
+          ],
+          [
+            0.0,
+            -0.7214673913043478,
+            269.43695652173915
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      },
       "world_bounds_m": {
         "min_x_m": -608.09999,
         "max_x_m": 587.89997,

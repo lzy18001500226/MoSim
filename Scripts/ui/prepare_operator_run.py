@@ -23,6 +23,12 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from src.orchestration.operator_map_state import validate_operator_map_snapshot
+
+
 RUNS_RELATIVE_ROOT = Path("Results") / "runs"
 ACTIVE_POINTER_RELATIVE_PATH = Path("Results") / "ui_platform" / "qgc_active_run.json"
 RUN_ID_PATTERN = re.compile(r"^qgc-[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
@@ -119,7 +125,9 @@ def _load_operator_map(root: Path, map_id: str) -> dict[str, Any]:
     ]
     if len(matches) != 1:
         raise ValueError("operator_run_map_not_enabled")
-    return deepcopy(matches[0])
+    snapshot = deepcopy(matches[0])
+    validate_operator_map_snapshot(snapshot, project_root=root)
+    return snapshot
 
 
 def _load_scenario_snapshot(root: Path, experiment: dict[str, Any]) -> dict[str, Any]:
