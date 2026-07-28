@@ -381,7 +381,7 @@ Item {
                         }
                         QGCLabel {
                             Layout.fillWidth: true
-                            text: "当前控制器：" + String(root.selectedController.display_name_zh
+                            text: "控制：" + String(root.selectedController.display_name_zh
                                                            || root.selectedProfile.controller_profile || "-")
                             wrapMode: Text.Wrap
                         }
@@ -392,7 +392,7 @@ Item {
                             wrapMode: Text.Wrap
                             color: qgcPal.colorOrange
                         }
-                        QGCLabel { text: "任务 Profile"; font.bold: true }
+                        QGCLabel { text: "任务配置"; font.bold: true }
                         ComboBox {
                             id: profileBox
                             Layout.fillWidth: true
@@ -420,8 +420,8 @@ Item {
                         }
                         QGCLabel {
                             Layout.fillWidth: true
-                            text: "飞机：" + String(root.selectedProfile.vehicle_count || "-")
-                                    + "  任务：" + String(root.selectedProfile.planner_profile || "-")
+                            text: String(root.selectedProfile.vehicle_count || "-") + " 架 | "
+                                    + String(root.selectedProfile.planner_profile || "-")
                             wrapMode: Text.Wrap
                         }
                         QGCLabel {
@@ -434,14 +434,14 @@ Item {
                         QGCLabel {
                             Layout.fillWidth: true
                             visible: mosimOperator.profileSelectionLocked
-                            text: "当前 RunManifest 已冻结 Profile，不能切换或重复启动。"
+                            text: "运行已冻结，不能切换。"
                             wrapMode: Text.Wrap
                             color: qgcPal.colorOrange
                         }
                         QGCButton {
                             Layout.fillWidth: true
                             visible: mosimOperator.profileSelectionLocked
-                            text: "复制结束当前运行命令"
+                            text: "复制清除运行清单命令"
                             onClicked: mosimOperator.copyClearActiveRunCommand()
                         }
                         QGCButton {
@@ -515,7 +515,7 @@ Item {
                             onClicked: mosimOperator.copyRestoreNormalCommand(faultVehicle.currentText)
                         }
                         Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: qgcPal.windowShade }
-                        QGCLabel { text: "运行态（只读）"; font.bold: true }
+                        QGCLabel { text: "生效状态"; font.bold: true }
                         QGCLabel {
                             Layout.fillWidth: true
                             text: root.faultStateText(faultVehicle.currentText)
@@ -566,12 +566,12 @@ Item {
                         QGCLabel {
                             Layout.fillWidth: true
                             text: mosimOperator.profileSelectionLocked
-                                  ? "地图已由当前 RunManifest 冻结。"
-                                  : "地图切换会自动绑定兼容的已发布 Profile。"
+                                  ? "地图已冻结。"
+                                  : "切换地图会同步任务配置。"
                             wrapMode: Text.Wrap
                             color: mosimOperator.profileSelectionLocked ? qgcPal.colorOrange : qgcPal.text
                         }
-                        QGCLabel { text: "二维地图图层"; font.bold: true }
+                        QGCLabel { text: "图层"; font.bold: true }
                         QGCCheckBox { text: "飞机位置与航向"; checked: root.showMapVehicles; onToggled: root.showMapVehicles = checked }
                         QGCCheckBox { text: "实际飞行轨迹"; checked: root.showMapActualTracks; onToggled: root.showMapActualTracks = checked }
                         QGCCheckBox { text: "任务预期轨迹"; checked: root.showMapExpectedPath; onToggled: root.showMapExpectedPath = checked }
@@ -640,7 +640,7 @@ Item {
                 }
             }
 
-            QGCLabel { text: "终端命令"; font.bold: true }
+            QGCLabel { text: "命令"; font.bold: true }
             TextArea {
                 Layout.fillWidth: true
                 Layout.preferredHeight: 70

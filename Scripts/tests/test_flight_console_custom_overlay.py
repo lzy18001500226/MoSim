@@ -107,7 +107,7 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "copyRestoreNormalCommand" in fly_layer
     assert "faultStateText" in fly_layer
     assert "faultAckText" in fly_layer
-    assert "运行态（只读）" in fly_layer
+    assert "生效状态" in fly_layer
     assert "copyRosbagReplayCommand" in fly_layer
     assert "function mapTransportStatusText()" in fly_layer
     assert "ROS1 实时数据" in fly_layer
@@ -268,7 +268,7 @@ def test_operator_console_exposes_profiles_fault_staging_and_visible_commands() 
     assert "readonly property var controllerSchemes: mosimOperator.controllerSchemes || []" in qml
     assert "model: root.compatibleProfiles" in qml
     assert "controller_profile" in qml and "vehicle_count" in qml
-    assert "当前控制器：" in qml
+    assert "控制：" in qml
     assert "controllerFamilyBox" in qml and "controllerBox" in qml
     assert "controllerOptionsForFamily" in qml
     assert "profilesForController" in qml
