@@ -16,7 +16,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_ROOTS = {
-    "dynamics": ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Dynamics",
+    "vehicle": ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle",
+    "legacy_diagnostics": ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "LegacyDiagnostics",
     "parameters": ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters",
 }
 CURRENT_STATIC_ROOT = (
@@ -35,8 +36,10 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
         "source": "RotorActuatorCore.mo",
         "anchors": [
             "parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile",
-            "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
-            "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
+            "nominal_thrust[i] = lift_coefficient * omega[i] * omega[i]",
+            "fault_effectiveness[i] = if i == fault_rotor_index and time >= fault_start_s then",
+            "thrust[i] = fault_effectiveness[i] * thrust_effectiveness[i] * nominal_thrust[i]",
+            "yaw_reaction_moment[i] = fault_effectiveness[i] * yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust_effectiveness[i] * nominal_thrust[i]",
             "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
             "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
             "rotor_arm_moment[i, 3] = yaw_reaction_moment[i]",
@@ -45,8 +48,8 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
             "total_moment_body[2] = sum({rotor_arm_moment[i, 2] for i in 1:4})",
             "total_moment_body[3] = sum({rotor_arm_moment[i, 3] for i in 1:4})",
             "hover_thrust_error = total_thrust - mass_kg * gravity_mps2",
-            "minimum_thrust_effectiveness = min(thrust_effectiveness)",
-            "minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness)",
+            "minimum_thrust_effectiveness = min({fault_effectiveness[i] * thrust_effectiveness[i] for i in 1:4})",
+            "minimum_reaction_moment_effectiveness = min({fault_effectiveness[i] * reaction_moment_effectiveness[i] for i in 1:4})",
         ],
     },
     "virtual_px4_classic_profile": {
@@ -66,8 +69,8 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
         "source": "WrapperSurface.mo",
         "anchors": [
             "dynamics.motor_command = motor_command",
-            "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
-            "commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.reaction_moment_effectiveness[i] * dynamics.moment_constant * commanded_thrust[i]",
+            "commanded_thrust[i] = dynamics.fault_effectiveness[i] * dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+            "commanded_yaw_reaction_moment[i] = dynamics.fault_effectiveness[i] * dynamics.yaw_direction[i] * dynamics.reaction_moment_effectiveness[i] * dynamics.moment_constant * dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
             "total_thrust = dynamics.total_thrust",
             "total_moment_body = dynamics.total_moment_body",
             "commanded_total_thrust = sum(commanded_thrust)",
@@ -94,6 +97,7 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
         ],
     },
     "rotor_effectiveness_smoke": {
+        "source_root": "legacy_diagnostics",
         "source": "RotorEffectivenessSmoke.mo",
         "anchors": [
             "parameter Real degraded_rotor_thrust_effectiveness = 0.85",
@@ -108,45 +112,59 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
 
 
 IMPLEMENTATION_BY_MODEL = {
-    "MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke": "HoverSmoke.mo",
-    "MoSimQuadrotorModel.Vehicle.Dynamics.YawStepSmoke": "YawStepSmoke.mo",
-    "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperHoverSmoke": "WrapperHoverSmoke.mo",
-    "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperYawStepSmoke": "WrapperYawStepSmoke.mo",
-    "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchHoverSmoke": "PhysicalWrenchHoverSmoke.mo",
-    "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchYawStepSmoke": "PhysicalWrenchYawStepSmoke.mo",
-    "MoSimQuadrotorModel.Vehicle.Dynamics.RotorEffectivenessSmoke": "RotorEffectivenessSmoke.mo",
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke": "HoverSmoke.mo",
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.YawStepSmoke": "YawStepSmoke.mo",
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperHoverSmoke": "WrapperHoverSmoke.mo",
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperYawStepSmoke": "WrapperYawStepSmoke.mo",
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchHoverSmoke": "PhysicalWrenchHoverSmoke.mo",
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchYawStepSmoke": "PhysicalWrenchYawStepSmoke.mo",
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.RotorEffectivenessSmoke": "RotorEffectivenessSmoke.mo",
+}
+
+HISTORICAL_DIAGNOSTICS_ALIASES = {
+    f"MoSimQuadrotorModel.Vehicle.Dynamics.{name}":
+    f"MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.{name}"
+    for name in (
+        "HoverSmoke",
+        "YawStepSmoke",
+        "WrapperHoverSmoke",
+        "WrapperYawStepSmoke",
+        "PhysicalWrenchHoverSmoke",
+        "PhysicalWrenchYawStepSmoke",
+        "RotorEffectivenessSmoke",
+    )
 }
 
 DEPENDENCY_GROUPS_BY_MODEL = {
-    "MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke": ["rotor_core", "virtual_px4_classic_profile"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.YawStepSmoke": ["rotor_core", "virtual_px4_classic_profile"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperHoverSmoke": ["wrapper_surface", "rotor_core", "virtual_px4_classic_profile"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperYawStepSmoke": ["wrapper_surface", "rotor_core", "virtual_px4_classic_profile"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchHoverSmoke": ["physical_wrench_adapter", "wrapper_surface", "rotor_core", "virtual_px4_classic_profile"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchYawStepSmoke": ["physical_wrench_adapter", "wrapper_surface", "rotor_core", "virtual_px4_classic_profile"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.RotorEffectivenessSmoke": ["rotor_effectiveness_smoke", "rotor_core", "virtual_px4_classic_profile"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke": ["rotor_core", "virtual_px4_classic_profile"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.YawStepSmoke": ["rotor_core", "virtual_px4_classic_profile"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperHoverSmoke": ["wrapper_surface", "rotor_core", "virtual_px4_classic_profile"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperYawStepSmoke": ["wrapper_surface", "rotor_core", "virtual_px4_classic_profile"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchHoverSmoke": ["physical_wrench_adapter", "wrapper_surface", "rotor_core", "virtual_px4_classic_profile"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchYawStepSmoke": ["physical_wrench_adapter", "wrapper_surface", "rotor_core", "virtual_px4_classic_profile"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.RotorEffectivenessSmoke": ["rotor_effectiveness_smoke", "rotor_core", "virtual_px4_classic_profile"],
 }
 
 INSTANCE_ANCHORS_BY_MODEL = {
-    "MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke": ["RotorActuatorCore dynamics"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.YawStepSmoke": [
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke": ["RotorActuatorCore dynamics"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.YawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
         "RotorActuatorCore dynamics",
     ],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperHoverSmoke": ["WrapperSurface wrapper"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperYawStepSmoke": [
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperHoverSmoke": ["WrapperSurface wrapper"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperYawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
         "WrapperSurface wrapper",
     ],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchHoverSmoke": ["PhysicalWrenchAdapter adapter"],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchYawStepSmoke": [
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchHoverSmoke": ["PhysicalWrenchAdapter adapter"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchYawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
         "PhysicalWrenchAdapter adapter",
     ],
-    "MoSimQuadrotorModel.Vehicle.Dynamics.RotorEffectivenessSmoke": [
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.RotorEffectivenessSmoke": [
         "RotorActuatorCore dynamics",
         "thrust_effectiveness = {",
         "Real total_thrust_loss",
@@ -174,6 +192,12 @@ def normalized(text: str) -> str:
     return " ".join(text.replace("\r\n", "\n").split())
 
 
+def canonical_model_name(model_name: str) -> str:
+    """Resolve a retained Vehicle.Dynamics smoke FQN to its owned source."""
+
+    return HISTORICAL_DIAGNOSTICS_ALIASES.get(model_name, model_name)
+
+
 def add_finding(findings: list[dict[str, Any]], code: str, message: str, target: str | None = None) -> None:
     item: dict[str, Any] = {"code": code, "message": message}
     if target:
@@ -182,7 +206,7 @@ def add_finding(findings: list[dict[str, Any]], code: str, message: str, target:
 
 
 def check_anchor_group(name: str, group: dict[str, Any], findings: list[dict[str, Any]]) -> dict[str, Any]:
-    source_root = str(group.get("source_root", "dynamics"))
+    source_root = str(group.get("source_root", "vehicle"))
     source = SOURCE_ROOTS[source_root] / str(group["source"])
     if not source.exists():
         add_finding(findings, "missing_source", "invariant source file is missing", rel(source))
@@ -197,12 +221,13 @@ def check_anchor_group(name: str, group: dict[str, Any], findings: list[dict[str
 def check_model_sources(readiness: dict[str, Any], findings: list[dict[str, Any]]) -> list[dict[str, Any]]:
     summaries: list[dict[str, Any]] = []
     for scenario in readiness.get("scenarios", []):
-        model_name = str(scenario.get("model_name") or "")
+        requested_model_name = str(scenario.get("model_name") or "")
+        model_name = canonical_model_name(requested_model_name)
         source_name = IMPLEMENTATION_BY_MODEL.get(model_name)
         if not source_name:
             add_finding(findings, "missing_model_source_mapping", "no implementation source mapping for model", model_name)
             continue
-        source = SOURCE_ROOTS["dynamics"] / source_name
+        source = SOURCE_ROOTS["legacy_diagnostics"] / source_name
         if not source.exists():
             add_finding(findings, "missing_model_source", "mapped implementation source is missing", rel(source))
             continue
@@ -218,6 +243,7 @@ def check_model_sources(readiness: dict[str, Any], findings: list[dict[str, Any]
         summaries.append(
             {
                 "model_name": model_name,
+                "requested_model_name": requested_model_name,
                 "source": rel(source),
                 "dependency_anchor_groups": dependency_groups,
                 "expected_variable_count": len(expected_variables),

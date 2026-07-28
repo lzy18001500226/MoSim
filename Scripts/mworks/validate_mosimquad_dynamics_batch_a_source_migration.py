@@ -2,8 +2,9 @@
 """Validate the canonical ownership of the former Dynamics Batch A surface.
 
 This file-only checker proves that the active implementation is under
-``MoSimQuadrotorModel.Vehicle.Dynamics`` and that no second top-level Modelica root
-remains. It does not call MWORKS, Sysplorer, MCP, check_model, or simulate.
+MoSimQuadrotorModel.Vehicle; the old Vehicle.Dynamics namespace is hidden
+compatibility only. It does not call MWORKS, Sysplorer, MCP, check_model, or
+simulate.
 """
 
 from __future__ import annotations
@@ -36,13 +37,15 @@ TARGETS: tuple[dict[str, Any], ...] = (
         "legacy_file_model": "Sunray150RflyStyleRotorDynamics",
         "primary_anchors": (
             "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
-            "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
-            "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
+            "nominal_thrust[i] = lift_coefficient * omega[i] * omega[i]",
+            "fault_effectiveness[i] = if i == fault_rotor_index and time >= fault_start_s then",
+            "thrust[i] = fault_effectiveness[i] * thrust_effectiveness[i] * nominal_thrust[i]",
+            "yaw_reaction_moment[i] = fault_effectiveness[i] * yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust_effectiveness[i] * nominal_thrust[i]",
             "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
             "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
             "total_thrust = sum(thrust)",
-            "minimum_thrust_effectiveness = min(thrust_effectiveness)",
-            "minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness)",
+            "minimum_thrust_effectiveness = min({fault_effectiveness[i] * thrust_effectiveness[i] for i in 1:4})",
+            "minimum_reaction_moment_effectiveness = min({fault_effectiveness[i] * reaction_moment_effectiveness[i] for i in 1:4})",
         ),
     },
     {
@@ -53,7 +56,7 @@ TARGETS: tuple[dict[str, Any], ...] = (
         "primary_anchors": (
             "RotorActuatorCore dynamics(profile = profile);",
             "dynamics.motor_command = motor_command",
-            "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+            "commanded_thrust[i] = dynamics.fault_effectiveness[i] * dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
             "commanded_total_moment_body[3]",
             "motor_order_gate_error =",
             "yaw_direction_gate_error =",
@@ -105,7 +108,7 @@ def write_markdown_matrix(path: Path, matrix: dict[str, Any]) -> None:
             "",
             "- Batch A is static source migration only.",
             "- `RotorActuatorCore` and `WrapperSurface` are canonical project-owned implementations.",
-            "- The former compatibility package has been retired; only the canonical root is loadable.",
+            "- Vehicle.Dynamics remains hidden compatibility aliases; production implementations live directly under Vehicle.",
             "- No live MWORKS load, `check_model`, `SimulateModel`, result variables, graphical/layout review, controller performance, planner readiness, runtime ack, mission success, or closed loop is claimed.",
         ]
     )
@@ -142,16 +145,16 @@ def validate_batch_a() -> dict[str, Any]:
         "mworks_window_evidence_touched": False,
         "batch_scope": [item["formal_target"] for item in targets],
         "deferred_targets": [
-            "MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.YawStepSmoke",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.ActuatorCommandMapper",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.ActuatorMappedWrapperSurface",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.OptionalDampingGyroLayer",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperHoverSmoke",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperYawStepSmoke",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchHoverSmoke",
-            "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchYawStepSmoke",
+            "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke",
+            "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.YawStepSmoke",
+            "MoSimQuadrotorModel.Vehicle.ActuatorCommandMapper",
+            "MoSimQuadrotorModel.Vehicle.ActuatorMappedWrapperSurface",
+            "MoSimQuadrotorModel.Vehicle.OptionalDampingGyroLayer",
+            "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperHoverSmoke",
+            "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperYawStepSmoke",
+            "MoSimQuadrotorModel.Vehicle.PhysicalWrenchAdapter",
+            "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchHoverSmoke",
+            "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchYawStepSmoke",
         ],
         "targets": targets,
         "source_surface_policy": {
@@ -169,8 +172,8 @@ def changed_files_manifest(output_dir: Path) -> dict[str, Any]:
         "schema": "mosim.changed_files_manifest.v2",
         "request_id": REQUEST_ID,
         "modelica_source_files_in_batch_a_surface": [
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/RotorActuatorCore.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/WrapperSurface.mo",
             "Models/MoSimQuadrotorModel/Vehicle/Dynamics/package.mo",
             "Models/MoSimQuadrotorModel/Vehicle/Dynamics/package.order",
         ],
@@ -207,7 +210,7 @@ def static_summary(matrix: dict[str, Any], output_dir: Path) -> dict[str, Any]:
             rel(output_dir / "static_validation_summary.json"),
         ],
         "claim_boundary": [
-            "Batch A claims only static canonical source ownership for RotorActuatorCore and WrapperSurface.",
+            "Batch A claims only static canonical Vehicle source ownership for RotorActuatorCore and WrapperSurface.",
             "Batch A does not call or prove MWORKS load, check_model, SimulateModel, native result, graphical/layout acceptance, controller performance, planner readiness, runtime ack, mission success, or closed loop.",
         ],
     }

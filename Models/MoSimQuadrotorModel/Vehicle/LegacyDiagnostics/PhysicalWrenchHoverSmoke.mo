@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle.Dynamics;
+within MoSimQuadrotorModel.Vehicle.LegacyDiagnostics;
 model PhysicalWrenchHoverSmoke
   "Hover smoke for the project-owned physical wrench frame adapter"
   PhysicalWrenchAdapter adapter;

@@ -68,6 +68,12 @@ DEFAULT_RUN_DIR = ROOT / "Results" / "control_platform" / "g6_formal_closed_loop
 BASELINE_ID = "official_pid"
 BASELINE_SCENARIO = "climb_path_50s"
 BASELINE_DURATION_S = 50.0
+MEASURED_SELECTION_SCHEMA = "mosim.g6_measured_family_selection.v2"
+FORMAL_ADAPTER_FILE = "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo"
+FORMAL_ADAPTER_CLASS = "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter"
+FORMAL_ADAPTER_OUTPUT_BOUNDARY = "ROTOR_COMMAND"
+FORMAL_RUNNER_FILE = "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidFormalRunner.mo"
+FORMAL_RUNNER_CLASS = "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner"
 REACTION_TORQUE_016_DIAGNOSTIC_ID = "official_pid_reaction_torque_016_diagnostic"
 REACTION_TORQUE_016_DIAGNOSTIC_SCENARIO = "shared_assembly_reaction_torque_016_cm_50s"
 REACTION_TORQUE_016_DIAGNOSTIC_RATIO = 0.016
@@ -142,9 +148,9 @@ RESULT_VIEWER_VARIABLES = {
 # sources indirectly.
 SHARED_CLOSURE_SOURCES: tuple[tuple[str, str], ...] = (
     ("shared_sunray150_assembly", "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo"),
-    ("physical_wrench_adapter", "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo"),
-    ("wrapper_surface", "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo"),
-    ("rotor_actuator_core", "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo"),
+    ("physical_wrench_adapter", "Models/MoSimQuadrotorModel/Vehicle/PhysicalWrenchAdapter.mo"),
+    ("wrapper_surface", "Models/MoSimQuadrotorModel/Vehicle/WrapperSurface.mo"),
+    ("rotor_actuator_core", "Models/MoSimQuadrotorModel/Vehicle/RotorActuatorCore.mo"),
     ("plant_sensor_surface", "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo"),
     ("virtual_px4_classic_profile", "Models/MoSimQuadrotorModel/Parameters/Sunray150VirtualPx4Classic.mo"),
     ("climb_path_reference", "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo"),
@@ -178,45 +184,41 @@ def resolve_formal_binding() -> dict[str, Any]:
     """Resolve and hash-bind the declared Official PID formal baseline."""
     selection = require_object(read_json(SELECTION_PATH), label="champion selection")
     harness_map = require_object(read_json(HARNESS_MAP_PATH), label="formal harness map")
-    selection_baseline = require_object(selection.get("official_pid_baseline"), label="selection official_pid baseline")
-    map_selection = require_object(
-        harness_map.get("provisional_champion_selection"),
-        label="harness map provisional champion selection",
+    if selection.get("schema") != MEASURED_SELECTION_SCHEMA:
+        raise ValueError("champion selection must use the active measured-family schema")
+    selection_baseline = require_object(
+        require_object(selection.get("ab_baselines"), label="selection A/B baselines").get(BASELINE_ID),
+        label="selection official_pid baseline",
     )
-    map_baseline = require_object(map_selection.get("official_pid_baseline"), label="harness-map official_pid baseline")
+    map_selection = require_object(
+        harness_map.get("measured_family_selection"),
+        label="harness map measured family selection",
+    )
+    map_baseline = require_object(
+        require_object(map_selection.get("ab_baselines"), label="harness-map A/B baselines").get(BASELINE_ID),
+        label="harness-map official_pid baseline",
+    )
 
     for label, baseline in (("selection", selection_baseline), ("harness map", map_baseline)):
         if baseline.get("scheme_id") != BASELINE_ID:
             raise ValueError(f"{label} baseline must bind {BASELINE_ID}")
-        if baseline.get("binding_state") != "formal_binding_ready_for_validation":
-            raise ValueError(f"{label} baseline is not ready for formal validation")
-        scenario = require_object(baseline.get("minimum_scenario"), label=f"{label} minimum scenario")
-        if scenario.get("scenario_id") != BASELINE_SCENARIO:
-            raise ValueError(f"{label} baseline must use {BASELINE_SCENARIO}")
-        if float(scenario.get("duration_s", 0.0)) != BASELINE_DURATION_S:
-            raise ValueError(f"{label} baseline duration must remain {BASELINE_DURATION_S:g} seconds")
+        if baseline.get("profile_role") != "reference_baseline":
+            raise ValueError(f"{label} baseline must remain a reference baseline")
+        if baseline.get("comparison_role") != "same_parameter_mworks_reference":
+            raise ValueError(f"{label} baseline must retain the same-parameter MWORKS comparison role")
+        if baseline.get("state") != "formal_adapter_and_runner_exist_but_require_current_source_replay":
+            raise ValueError(f"{label} baseline is not awaiting the required current-source replay")
+    if selection_baseline != map_baseline:
+        raise ValueError("Official PID A/B baseline differs between selection and harness map")
 
-    selection_adapter = require_object(selection_baseline.get("formal_adapter"), label="selection formal adapter")
-    selection_runner = require_object(selection_baseline.get("whole_aircraft_source_harness"), label="selection formal runner")
-    map_adapter = require_object(map_baseline.get("formal_adapter"), label="harness-map formal adapter")
-    map_runner = require_object(map_baseline.get("whole_aircraft_source_harness"), label="harness-map formal runner")
-
-    for label, selection_item, map_item in (
-        ("formal adapter", selection_adapter, map_adapter),
-        ("formal runner", selection_runner, map_runner),
-    ):
-        for key in ("model_file", "model_class"):
-            if selection_item.get(key) != map_item.get(key):
-                raise ValueError(f"{label} {key} differs between selection and harness map")
-
-    adapter_file = project_path(require_text(map_adapter.get("model_file"), label="formal adapter model file"), label="formal adapter")
-    runner_file = project_path(require_text(map_runner.get("model_file"), label="formal runner model file"), label="formal runner")
+    adapter_file = project_path(FORMAL_ADAPTER_FILE, label="formal adapter")
+    runner_file = project_path(FORMAL_RUNNER_FILE, label="formal runner")
     rotor_runner_file = project_path(
         "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo",
         label="shared rotor-command runner",
     )
-    expected_adapter_hash = require_text(map_adapter.get("model_sha256"), label="formal adapter model SHA-256")
-    expected_runner_hash = require_text(map_runner.get("model_sha256"), label="formal runner model SHA-256")
+    expected_adapter_hash = sha256(adapter_file)
+    expected_runner_hash = sha256(runner_file)
 
     sources = [
         {
@@ -267,14 +269,14 @@ def resolve_formal_binding() -> dict[str, Any]:
         "duration_s": BASELINE_DURATION_S,
         "target": {
             "model_file": relative(runner_file),
-            "model_class": require_text(map_runner.get("model_class"), label="formal runner model class"),
+            "model_class": FORMAL_RUNNER_CLASS,
             "model_sha256": expected_runner_hash,
         },
         "formal_adapter": {
             "model_file": relative(adapter_file),
-            "model_class": require_text(map_adapter.get("model_class"), label="formal adapter model class"),
+            "model_class": FORMAL_ADAPTER_CLASS,
             "model_sha256": expected_adapter_hash,
-            "output_boundary": map_adapter.get("output_boundary"),
+            "output_boundary": FORMAL_ADAPTER_OUTPUT_BOUNDARY,
         },
         "source_bindings": sources,
         "claim_boundary": (

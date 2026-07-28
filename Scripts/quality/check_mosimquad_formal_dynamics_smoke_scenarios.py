@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate formal MoSimQuadrotorModel Dynamics smoke scenario bindings.
+"""Validate formal MoSimQuadrotorModel legacy-diagnostic smoke scenario bindings.
 
 This is a static checker. It does not call MWORKS, Sysplorer, MCP,
 check_model, SimulateModel, or any GUI/window surface.
@@ -16,22 +16,25 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 SCENARIO_DIR = ROOT / "Config" / "scenarios" / "diagnostics"
-LEGACY_DYNAMICS_NAMESPACE = "MoSimQuadrotorModel.Dynamics."
-CURRENT_DYNAMICS_NAMESPACE = "MoSimQuadrotorModel.Vehicle.Dynamics."
+HISTORICAL_DYNAMICS_NAMESPACES = (
+    "MoSimQuadrotorModel.Dynamics.",
+    "MoSimQuadrotorModel.Vehicle.Dynamics.",
+)
+CURRENT_DIAGNOSTICS_NAMESPACE = "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics."
 PROBE_PLAN = (
     ROOT
     / "Results"
-    / "mworks_model_hygiene"
-    / "20260722_mosimquad_model_root_consolidation/live_gate_runner"
+    / "control_platform"
+    / "model_library_cleanup_20260728"
+    / "live_gate_runner"
     / "result_variable_probe_plan.json"
 )
 DEFAULT_OUTPUT = (
     ROOT
     / "Results"
-    / "model_library_refactor"
-    / "20260726_plant_runner_baseline"
-    / "static_checks"
-    / "static_validation_summary.json"
+    / "control_platform"
+    / "model_library_cleanup_20260728"
+    / "diagnostic_scenario_bindings.json"
 )
 
 sys.path.insert(0, str(ROOT / "Scripts" / "mworks"))
@@ -76,8 +79,9 @@ def add_finding(findings: list[dict[str, Any]], code: str, message: str, target:
 
 
 def canonical_dynamics_target(target: str) -> str:
-    if target.startswith(LEGACY_DYNAMICS_NAMESPACE):
-        return CURRENT_DYNAMICS_NAMESPACE + target[len(LEGACY_DYNAMICS_NAMESPACE) :]
+    for namespace in HISTORICAL_DYNAMICS_NAMESPACES:
+        if target.startswith(namespace):
+            return CURRENT_DIAGNOSTICS_NAMESPACE + target[len(namespace) :]
     return target
 
 
@@ -224,7 +228,7 @@ def validate(scenario_dir: Path, probe_plan_path: Path) -> dict[str, Any]:
         "runner_support_status": "minimal_dynamics_strategy_consumed",
         "runner_support_boundary": [
             "Scenario YAML now declares model.live_load_strategy=minimal_dynamics_only.",
-            "run_mworks_scenario loads the single canonical MoSimQuadrotorModel root; Vehicle.Dynamics is part of the canonical eight-layer namespace.",
+            "run_mworks_scenario loads the single canonical MoSimQuadrotorModel root; legacy diagnostics are isolated below Vehicle.LegacyDiagnostics.",
             "The generated live command does not load an external QuadrotorModel package, a generated second package root, or a legacy compatibility package.",
             "Do not treat this as check_model or SimulateModel evidence until a live run succeeds.",
         ],

@@ -30,16 +30,23 @@ DEFAULT_OUTPUT = (
 )
 
 EXPECTED_ORDER = (
+    "Sunray150Assembly",
+    "Sunray150GazeboAlignedVisualChassis",
+    "ActuatorCommandMapper",
+    "ActuatorMappedWrapperSurface",
+    "OptionalDampingGyroLayer",
+    "PhysicalWrenchAdapter",
+    "RotorActuatorCore",
+    "WrapperSurface",
     "Blocks",
-    "Dynamics",
     "Electricals",
     "Examples",
     "GroundModel",
     "Mechanics",
     "Sensors",
-    "Sunray150Assembly",
-    "Sunray150GazeboAlignedVisualChassis",
     "Utilities",
+    "LegacyDiagnostics",
+    "Dynamics",
 )
 RUNNER_SOURCES = (
     "AttitudeThrustRunner.mo",
@@ -82,7 +89,7 @@ def check_vehicle_contract() -> dict[str, Any]:
     root_text = normalized_text(ROOT_PACKAGE) if ROOT_PACKAGE.is_file() else ""
     expected_root = (
         "within MoSimQuadrotorModel;\n"
-        "package Vehicle \"Sunray150 vehicle, sensors, and physical dynamics\"\n"
+        "package Vehicle \"Sunray150 assembly, physical plant, actuation, and sensing\"\n"
         "  extends Modelica.Icons.Package;\n"
         "  annotation(uses(Modelica(version = \"4.0.0.TY.1\")));\n"
         "end Vehicle;\n"
@@ -113,7 +120,7 @@ def check_vehicle_contract() -> dict[str, Any]:
         "Modelica.Blocks.Interfaces.RealOutput position[3];",
         "Modelica.Blocks.Interfaces.RealOutput attitude[3];",
         "Modelica.Blocks.Interfaces.RealOutput rotor_speed[4];",
-        "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter physical(",
+        "MoSimQuadrotorModel.Vehicle.PhysicalWrenchAdapter physical(",
         "MoSimQuadrotorModel.Vehicle.Sensors.Sensors sensors;",
         "connect(gust.frame_b, physical.body.frame_a);",
         "connect(physical.body.frame_a, sensors.frame_a);",

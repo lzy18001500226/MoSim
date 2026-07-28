@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle.Dynamics;
+within MoSimQuadrotorModel.Vehicle.LegacyDiagnostics;
 model HoverSmoke
   "Hover smoke for the experimental Sunray150 rotor dynamics upgrade"
   RotorActuatorCore dynamics;

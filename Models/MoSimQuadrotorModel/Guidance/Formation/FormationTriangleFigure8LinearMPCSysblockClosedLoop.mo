@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Guidance.Formation.Scenarios;
+within MoSimQuadrotorModel.Guidance.Formation;
 model FormationTriangleFigure8LinearMPCSysblockClosedLoop
   "Three-UAV leader-follower triangle formation tracking a planar figure-8 with LinearMPC-style Sysblock controllers"
   parameter Real mission_altitude_m = 1.0;

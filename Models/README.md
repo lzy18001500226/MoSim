@@ -1,38 +1,69 @@
 # MWORKS Model Library
 
-`MoSimQuadrotorModel/` is the only project-owned Modelica package root. Open
-and load:
+`MoSimQuadrotorModel/` is the only project-owned Modelica package root. Load
+`Models/MoSimQuadrotorModel/package.mo`; no other directory under `Models/` is
+a second project or a required dependency root.
 
-```text
-Models/MoSimQuadrotorModel/package.mo
-```
+## Normal Entry Points
 
-Nested `package.mo` files define Modelica namespaces. They are required for
-modularity and are not separate projects or duplicate package roots.
+| Need | Open this class | Purpose |
+|---|---|---|
+| Physical airframe | `MoSimQuadrotorModel.Vehicle.Sunray150Assembly` | Sunray150 whole-aircraft plant assembly |
+| Graphical system review | `MoSimQuadrotorModel.Experiment.CompleteSystemGraphical` | Direct graphical whole-system architecture entry |
+| Controller closed loop | `MoSimQuadrotorModel.Experiment.Runners.<Controller>FormalRunner` | One formal whole-aircraft runner per controller route |
+| Reference trajectory | `MoSimQuadrotorModel.Guidance.Trajectories.<Trajectory>` | Replaceable reference used by formal runners |
+| Three-aircraft formation prototype | `MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC` | MWORKS prototype only; separate from the ROS/Gazebo deployment route |
 
-## Package Map
+The active controller route catalog is the 48-entry matrix in
+`Config/control_platform/formal_closed_loop_harness_map.json`. It contains the
+px4ctrl route, official PID baseline, and the project controller routes. The
+catalog is the authority for route names and semantic grouping; folders are not
+used to invent extra controller families.
+
+## Package Responsibilities
 
 | Namespace | Responsibility |
 |---|---|
-| `Parameters` | vehicle parameters and source provenance |
-| `Vehicle` | Sunray150 assembly, physical plant, actuators, sensors, and dynamics |
-| `Control` | baselines, graphical MIL controllers, Sysblocks, adapters, bridges, and allocation |
-| `Experiment` | formal runners, scenario composition, result contracts, and test fixtures |
-| `Guidance` | trajectories, planning, formation, and task guidance |
-| `Deployment` | controlled MWORKS Live and code-generation integration entries |
-| `Visualization` | scene trace, review, and visualization support |
-| `Common` | reusable helpers and shared model types |
+| `Parameters` | Sunray150 parameter records and source provenance |
+| `Vehicle` | Airframe assembly, physics, actuation, sensing, and physical support blocks |
+| `Control` | Controllers, graphical Sysblocks, equation bridges, adapters, and allocation |
+| `Experiment` | Formal runners and direct system-review entry points |
+| `Guidance` | Trajectories, planning, and formation references |
+| `Deployment` | Explicit MWORKS Live and code-generation integration boundary |
+| `Visualization` | Visualization and trace-review support |
+| `Common` | Shared types and reusable helpers |
 
-## Rules
+Nested `package.mo` files define Modelica namespaces. They are not independent
+projects. A package is nested only when it owns a reusable subsystem or a
+large collection of peer models, such as the controller-route runner collection.
+
+## Hidden Compatibility Surface
+
+The following namespaces remain loadable for historical result trace-back but
+are hidden in the normal MWORKS browser. New models and active configuration
+must not depend on them:
+
+- `Vehicle.Dynamics`: compatibility aliases for pre-cleanup fully-qualified names.
+- `Vehicle.LegacyDiagnostics`: fixed-input plant smoke models.
+- `Vehicle.Examples`: legacy graphical examples.
+- `Experiment.Probes`, `Experiment.Scenarios`, and `Experiment.Templates`: retained
+  diagnostic, historical scenario, and implementation-template sources.
+- `Guidance.Formation.Scenarios` and `Visualization.Diagnostics`: historical
+  prototype and trace diagnostics.
+
+The formal seven-scenario work is composed through a formal runner plus a
+trajectory and injection parameters. It does not require selecting one of the
+hidden historical scenario graphs.
+
+## Maintenance Rules
 
 - Do not create a second top-level Modelica root for a controller, experiment,
   screenshot, or temporary workaround.
-- Put a new reusable model in the owning namespace and give it a clear runner
-  or scenario relationship.
+- Put reusable production code in its owning namespace, and add a runner only
+  when it is a real whole-aircraft execution boundary.
+- Preserve fully-qualified-name compatibility through a hidden alias before
+  moving a referenced class; remove it only after a dependency audit.
 - Preserve parameter provenance. SDF, Gazebo, Blender, and reference values do
   not become real-aircraft truth without corresponding evidence.
 - Before moving or deleting a model, audit Modelica imports, scripts,
   configuration, documentation, and result-manifest references.
-
-See `../Docs/Index/simulation_model_structure_index.md` for model-to-scenario,
-runner, and result routing.

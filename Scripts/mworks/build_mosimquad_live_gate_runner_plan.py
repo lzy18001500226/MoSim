@@ -23,15 +23,16 @@ INPUT_REQUEST_ID = "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-202
 ROOT_CONSOLIDATION_DIR = (
     ROOT
     / "Results"
-    / "mworks_model_hygiene"
-    / "20260722_mosimquad_model_root_consolidation"
+    / "control_platform"
+    / "model_library_cleanup_20260728"
 )
 DEFAULT_INPUT_DIR = ROOT_CONSOLIDATION_DIR / "formal_smoke_surface"
 DEFAULT_OUTPUT_DIR = ROOT_CONSOLIDATION_DIR / "live_gate_runner"
 
 CANONICAL_ROOT = ROOT / "Models" / "MoSimQuadrotorModel"
 CANONICAL_PACKAGE = CANONICAL_ROOT / "package.mo"
-FORMAL_DYNAMICS_DIR = CANONICAL_ROOT / "Dynamics"
+CANONICAL_VEHICLE_DIR = CANONICAL_ROOT / "Vehicle"
+CANONICAL_LEGACY_DIAGNOSTICS_DIR = CANONICAL_VEHICLE_DIR / "LegacyDiagnostics"
 FORMAL_PARAMETERS_DIR = CANONICAL_ROOT / "Parameters"
 RETIRED_MODEL_ROOTS = (
     ROOT / "Models" / "QuadrotorExperiments",
@@ -75,6 +76,14 @@ def last_segment(fq_name: str) -> str:
     return fq_name.rsplit(".", 1)[-1]
 
 
+def source_dir_for_target(target: str) -> Path:
+    if target.startswith("MoSimQuadrotorModel.Vehicle.LegacyDiagnostics."):
+        return CANONICAL_LEGACY_DIAGNOSTICS_DIR
+    if target.startswith("MoSimQuadrotorModel.Vehicle."):
+        return CANONICAL_VEHICLE_DIR
+    raise ValueError(f"unsupported formal target namespace: {target}")
+
+
 def add_finding(
     findings: list[dict[str, Any]],
     *,
@@ -89,23 +98,10 @@ def add_finding(
     findings.append(entry)
 
 
-def require_contains(
-    findings: list[dict[str, Any]],
-    text: str,
-    snippet: str,
-    *,
-    code: str,
-    target: str,
-) -> bool:
-    if snippet in text:
-        return True
-    add_finding(
-        findings,
-        code=code,
-        message=f"missing source snippet {snippet!r}",
-        target=target,
-    )
-    return False
+def normalized_modelica(text: str) -> str:
+    """Compare Modelica source anchors without coupling checks to line wrapping."""
+
+    return " ".join(text.replace("\r\n", "\n").split())
 
 
 def index_expected_variables(expected_variables: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -156,6 +152,7 @@ def build_resolution_check(
     matrix: dict[str, Any],
     future_surface: dict[str, Any],
     expected_variables: dict[str, Any],
+    input_dir: Path,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     findings: list[dict[str, Any]] = []
     validate_input_schemas(matrix, future_surface, expected_variables, findings)
@@ -167,14 +164,14 @@ def build_resolution_check(
 
     canonical_package_path = CANONICAL_PACKAGE
     canonical_order_path = CANONICAL_ROOT / "package.order"
-    formal_package_path = FORMAL_DYNAMICS_DIR / "package.mo"
-    formal_order_path = FORMAL_DYNAMICS_DIR / "package.order"
+    vehicle_package_path = CANONICAL_VEHICLE_DIR / "package.mo"
+    vehicle_order_path = CANONICAL_VEHICLE_DIR / "package.order"
+    legacy_diagnostics_package_path = CANONICAL_LEGACY_DIAGNOSTICS_DIR / "package.mo"
     parameter_package_path = FORMAL_PARAMETERS_DIR / "package.mo"
     parameter_order_path = FORMAL_PARAMETERS_DIR / "package.order"
 
     canonical_order = read_order(canonical_order_path) if canonical_order_path.exists() else []
-    formal_package = read_text(formal_package_path) if formal_package_path.exists() else ""
-    formal_order = read_order(formal_order_path) if formal_order_path.exists() else []
+    vehicle_order = read_order(vehicle_order_path) if vehicle_order_path.exists() else []
     parameter_package = read_text(parameter_package_path) if parameter_package_path.exists() else ""
     parameter_order = read_order(parameter_order_path) if parameter_order_path.exists() else []
 
@@ -185,19 +182,33 @@ def build_resolution_check(
             message="MoSimQuadrotorModel package is missing",
             target=rel(canonical_package_path),
         )
-    if "Dynamics" not in canonical_order:
+    if "Vehicle" not in canonical_order:
         add_finding(
             findings,
-            code="canonical_root_dynamics_missing",
-            message="MoSimQuadrotorModel/package.order no longer exposes Dynamics",
+            code="canonical_root_vehicle_missing",
+            message="MoSimQuadrotorModel/package.order no longer exposes Vehicle",
             target=rel(canonical_order_path),
         )
-    if "Plant" not in canonical_order:
+    if not vehicle_package_path.is_file():
         add_finding(
             findings,
-            code="canonical_root_plant_missing",
-            message="MoSimQuadrotorModel/package.order no longer exposes Plant",
-            target=rel(canonical_order_path),
+            code="canonical_vehicle_package_missing",
+            message="MoSimQuadrotorModel Vehicle package is missing",
+            target=rel(vehicle_package_path),
+        )
+    if "Sunray150Assembly" not in vehicle_order:
+        add_finding(
+            findings,
+            code="canonical_vehicle_assembly_missing",
+            message="Vehicle/package.order no longer exposes Sunray150Assembly",
+            target=rel(vehicle_order_path),
+        )
+    if not legacy_diagnostics_package_path.is_file():
+        add_finding(
+            findings,
+            code="legacy_diagnostics_package_missing",
+            message="Vehicle.LegacyDiagnostics package is missing",
+            target=rel(legacy_diagnostics_package_path),
         )
     for retired_root in RETIRED_MODEL_ROOTS:
         if retired_root.exists():
@@ -333,12 +344,19 @@ def build_resolution_check(
         formal_name = last_segment(item["formal_target"])
         implementation_name = last_segment(item["implementation_model"])
         implementation_path = ROOT / item["implementation_file"]
-        formal_source_path = FORMAL_DYNAMICS_DIR / f"{formal_name}.mo"
+        source_dir = source_dir_for_target(item["formal_target"])
+        formal_order_path = source_dir / "package.order"
+        formal_order = read_order(formal_order_path) if formal_order_path.exists() else []
+        formal_source_path = source_dir / f"{formal_name}.mo"
         formal_text = read_text(formal_source_path) if formal_source_path.exists() else ""
+        expected_namespace = item["formal_target"].rsplit(".", 1)[0]
 
         checks = {
             "formal_package_order_contains": formal_name in formal_order,
             "formal_package_defines_model": f"model {formal_name}" in formal_text,
+            "formal_source_has_expected_namespace": (
+                f"within {expected_namespace};" in formal_text
+            ),
             "formal_source_owns_implementation": (
                 implementation_path == formal_source_path
                 and item["implementation_model"] == item["formal_target"]
@@ -371,7 +389,10 @@ def build_resolution_check(
                 )
 
         for snippet in item.get("required_source_anchors", []):
-            present = isinstance(snippet, str) and snippet in formal_text
+            present = (
+                isinstance(snippet, str)
+                and normalized_modelica(snippet) in normalized_modelica(formal_text)
+            )
             checks["required_source_anchors"].append({"snippet": snippet, "present": present})
             if not present:
                 add_finding(
@@ -422,23 +443,23 @@ def build_resolution_check(
             )
 
     result = {
-        "schema": "mosim.mworks.live_gate_target_resolution_check.v2",
+        "schema": "mosim.mworks.live_gate_target_resolution_check.v3",
         "request_id": REQUEST_ID,
         "input_request_id": INPUT_REQUEST_ID,
         "status": "passed_static" if not findings else "failed_static",
         "live_mworks_touched": False,
         "mworks_window_evidence_touched": False,
         "input_artifacts": [
-            rel(DEFAULT_INPUT_DIR / "formal_smoke_target_matrix.json"),
-            rel(DEFAULT_INPUT_DIR / "future_live_validation_surface.json"),
-            rel(DEFAULT_INPUT_DIR / "expected_result_variables.json"),
+            rel(input_dir / "formal_smoke_target_matrix.json"),
+            rel(input_dir / "future_live_validation_surface.json"),
+            rel(input_dir / "expected_result_variables.json"),
         ],
         "source_anchors": {
             "canonical_root_package": rel(canonical_package_path),
             "canonical_root_order": rel(canonical_order_path),
-            "canonical_plant_package": rel(CANONICAL_ROOT / "Plant" / "package.mo"),
-            "formal_dynamics_package": rel(formal_package_path),
-            "formal_dynamics_order": rel(formal_order_path),
+            "canonical_vehicle_package": rel(vehicle_package_path),
+            "canonical_vehicle_order": rel(vehicle_order_path),
+            "legacy_diagnostics_package": rel(legacy_diagnostics_package_path),
             "formal_parameters_package": rel(parameter_package_path),
             "formal_parameters_order": rel(parameter_order_path),
             "retired_model_roots": [rel(path) for path in RETIRED_MODEL_ROOTS],
@@ -449,10 +470,10 @@ def build_resolution_check(
         "findings": findings,
         "resolutions": resolutions,
         "static_rejection_contract": [
-            "Reject if the canonical MoSimQuadrotorModel root or embedded Plant package is missing.",
+            "Reject if the canonical MoSimQuadrotorModel root or Vehicle package is missing.",
             "Reject if any target in future_live_validation_surface is absent from formal_smoke_target_matrix.",
             "Reject if expected_result_variables target lists or source paths drift from the formal target matrix.",
-            "Reject if a formal Dynamics source is no longer its own canonical implementation or reintroduces a legacy namespace.",
+            "Reject if a formal Vehicle source is no longer its own canonical implementation or reintroduces a retired namespace.",
             "Reject if a retired Modelica root reappears under Models.",
             "Reject if the future SimulateModel queue contains a non-smoke/check-only target.",
         ],
@@ -464,6 +485,7 @@ def build_runner_plan(
     future_surface: dict[str, Any],
     expected_variables: dict[str, Any],
     resolution_check: dict[str, Any],
+    input_dir: Path,
 ) -> dict[str, Any]:
     target_index = index_matrix(matrix)
     expected_index = index_expected_variables(expected_variables)
@@ -539,9 +561,9 @@ def build_runner_plan(
         "mworks_window_evidence_touched": False,
         "runner_mode": "future_live_contract_static_only",
         "input_artifacts": {
-            "formal_smoke_target_matrix": rel(DEFAULT_INPUT_DIR / "formal_smoke_target_matrix.json"),
-            "future_live_validation_surface": rel(DEFAULT_INPUT_DIR / "future_live_validation_surface.json"),
-            "expected_result_variables": rel(DEFAULT_INPUT_DIR / "expected_result_variables.json"),
+            "formal_smoke_target_matrix": rel(input_dir / "formal_smoke_target_matrix.json"),
+            "future_live_validation_surface": rel(input_dir / "future_live_validation_surface.json"),
+            "expected_result_variables": rel(input_dir / "expected_result_variables.json"),
         },
         "future_preflight_boundary": [
             "A future live task must collect its own bounded single-thread MWORKS preflight before any load, check, or simulation action.",
@@ -724,8 +746,19 @@ def generate(input_dir: Path, output_dir: Path) -> dict[str, Any]:
     future_surface = read_json(input_dir / "future_live_validation_surface.json")
     expected_variables = read_json(input_dir / "expected_result_variables.json")
 
-    resolution_check, _ = build_resolution_check(matrix, future_surface, expected_variables)
-    runner_plan = build_runner_plan(matrix, future_surface, expected_variables, resolution_check)
+    resolution_check, _ = build_resolution_check(
+        matrix,
+        future_surface,
+        expected_variables,
+        input_dir,
+    )
+    runner_plan = build_runner_plan(
+        matrix,
+        future_surface,
+        expected_variables,
+        resolution_check,
+        input_dir,
+    )
     result_probe_plan = build_result_probe_plan(matrix, future_surface, expected_variables)
     changed_files = build_changed_files(output_dir)
     summary = build_summary(resolution_check, output_dir)

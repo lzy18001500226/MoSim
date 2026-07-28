@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle.Dynamics;
+within MoSimQuadrotorModel.Vehicle.LegacyDiagnostics;
 model RotorEffectivenessSmoke
   "Single-rotor effectiveness-loss smoke for the Sunray150 rotor dynamics core"
   parameter Integer degraded_rotor_index = 1

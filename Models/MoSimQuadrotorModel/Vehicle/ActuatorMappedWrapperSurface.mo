@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle.Dynamics;
+within MoSimQuadrotorModel.Vehicle;
 model ActuatorMappedWrapperSurface
   "Wrapper surface from normalized actuator command to existing rotor dynamics core"
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;

@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle.Dynamics;
+within MoSimQuadrotorModel.Vehicle.LegacyDiagnostics;
 model WrapperHoverSmoke
   "Hover smoke for the project-owned Sunray150 dynamics wrapper surface"
   WrapperSurface wrapper;

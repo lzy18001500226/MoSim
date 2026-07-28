@@ -7,8 +7,8 @@ evidence_level: real_sysplorer_mcp_sysblock_formation_triangle_figure8_linear_mp
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Guidance.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Formation/Scenarios/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC
+  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Formation/FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   official_description: 三机 leader-follower 三角编队 planar figure-8 LinearMPC-style Sysblock 闭环
 

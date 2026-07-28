@@ -34,6 +34,7 @@ REQUIRED_TOP_LEVEL = (
 RETIRED_NESTED_TOP_LEVEL = (
     "Controllers",
     "ExperimentRunner",
+    "Formation",
     "Missions",
     "Robustness",
     "System",
@@ -68,6 +69,19 @@ PACKAGE_DECLARATION = re.compile(r"(?m)^\s*package\s+([A-Za-z_]\w*)\b")
 PACKAGE_MEMBER_DECLARATION = re.compile(
     r"(?m)^\s*(?:package|model|block|record|function|connector|type|class)\s+([A-Za-z_]\w*)\b"
 )
+HIDDEN_BROWSER_PACKAGE_PATHS = (
+    "Vehicle/Dynamics/package.mo",
+    "Vehicle/Examples/package.mo",
+    "Vehicle/LegacyDiagnostics/package.mo",
+    "Experiment/Probes/package.mo",
+    "Experiment/Scenarios/package.mo",
+    "Experiment/Templates/package.mo",
+    "Experiment/Templates/Architecture/package.mo",
+    "Guidance/Formation/Scenarios/package.mo",
+    "Visualization/Diagnostics/package.mo",
+)
+HIDDEN_MWORKS_ANNOTATION = re.compile(r"__MWORKS\(\s*hide\s*=\s*true\b")
+VISIBLE_MWORKS_ANNOTATION = re.compile(r"__MWORKS\(\s*hide\s*=\s*false\b")
 
 
 def rel(path: Path) -> str:
@@ -76,6 +90,16 @@ def rel(path: Path) -> str:
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def read_order(path: Path) -> list[str]:
+    """Return ordered package members, ignoring blank lines and comments."""
+
+    return [
+        line.strip()
+        for line in read_text(path).splitlines()
+        if line.strip() and not line.lstrip().startswith("//")
+    ]
 
 
 def expected_within(path: Path) -> str:
@@ -137,6 +161,7 @@ def check_package_integrity(errors: list[str]) -> None:
 
 def active_reference_paths() -> list[Path]:
     paths: set[Path] = set()
+    test_root = REPO_ROOT / "Scripts" / "tests"
     for root in (
         REPO_ROOT / "Config" / "scenarios",
         REPO_ROOT / "Config" / "control_platform",
@@ -151,6 +176,9 @@ def active_reference_paths() -> list[Path]:
                     path.suffix in {".json", ".yaml", ".yml", ".py", ".sh", ".ps1", ".cmake"}
                     or path.name == "CMakeLists.txt"
                 )
+                # Test fixtures intentionally name retired namespaces to prove
+                # rejection behavior; they are not active load/config paths.
+                and not path.is_relative_to(test_root)
             )
 
     paths.update(
@@ -262,6 +290,37 @@ def check_canonical_root(errors: list[str]) -> None:
                 )
 
 
+def check_browser_surface(errors: list[str]) -> None:
+    """Keep formal entry points visible while retaining old paths off the normal tree."""
+
+    for relative in HIDDEN_BROWSER_PACKAGE_PATHS:
+        package_path = CANONICAL_ROOT / relative
+        if not package_path.is_file():
+            errors.append(f"required hidden compatibility package is missing: {rel(package_path)}")
+            continue
+        if not HIDDEN_MWORKS_ANNOTATION.search(read_text(package_path)):
+            errors.append(
+                "historical or compatibility package must remain hidden in the MWORKS browser: "
+                f"{rel(package_path)}"
+            )
+
+    direct_entry = CANONICAL_ROOT / "Experiment" / "CompleteSystemGraphical.mo"
+    if not direct_entry.is_file():
+        errors.append(f"direct graphical-system entry is missing: {rel(direct_entry)}")
+        return
+    entry_text = read_text(direct_entry)
+    if "within MoSimQuadrotorModel.Experiment;" not in entry_text:
+        errors.append(f"direct graphical-system entry has wrong namespace: {rel(direct_entry)}")
+    if "extends MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGraphical;" not in entry_text:
+        errors.append(f"direct graphical-system entry does not extend the retained architecture source: {rel(direct_entry)}")
+    if not VISIBLE_MWORKS_ANNOTATION.search(entry_text):
+        errors.append(f"direct graphical-system entry must remain visible: {rel(direct_entry)}")
+
+    experiment_order = CANONICAL_ROOT / "Experiment" / "package.order"
+    if not experiment_order.is_file() or read_order(experiment_order)[:1] != ["CompleteSystemGraphical"]:
+        errors.append("Experiment/package.order must expose CompleteSystemGraphical first")
+
+
 def check_retirement(errors: list[str]) -> None:
     if MODELS.is_dir():
         for child in sorted(MODELS.iterdir()):
@@ -293,6 +352,7 @@ def validate() -> list[str]:
     errors: list[str] = []
     check_manifest(errors)
     check_canonical_root(errors)
+    check_browser_surface(errors)
     check_retirement(errors)
     return errors
 

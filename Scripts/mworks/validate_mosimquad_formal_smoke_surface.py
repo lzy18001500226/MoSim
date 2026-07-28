@@ -16,7 +16,9 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 
-FORMAL_DYNAMICS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Dynamics"
+VEHICLE_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle"
+LEGACY_DIAGNOSTICS_DIR = VEHICLE_DIR / "LegacyDiagnostics"
+COMPATIBILITY_DYNAMICS_DIR = VEHICLE_DIR / "Dynamics"
 FORMAL_PARAMETERS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters"
 RETIRED_ROOTS = (
     ROOT / "Models" / "QuadrotorExperiments",
@@ -49,6 +51,26 @@ FORMAL_PACKAGE_ORDER = [
     "PhysicalWrenchYawStepSmoke",
 ]
 
+PRODUCTION_FORMAL_NAMES = {
+    "RotorActuatorCore",
+    "WrapperSurface",
+    "ActuatorCommandMapper",
+    "ActuatorMappedWrapperSurface",
+    "OptionalDampingGyroLayer",
+    "PhysicalWrenchAdapter",
+}
+
+DIAGNOSTIC_FORMAL_NAMES = set(FORMAL_PACKAGE_ORDER) - PRODUCTION_FORMAL_NAMES
+DIAGNOSTIC_FORMAL_ORDER = [
+    "HoverSmoke",
+    "YawStepSmoke",
+    "PhysicalWrenchHoverSmoke",
+    "PhysicalWrenchYawStepSmoke",
+    "RotorEffectivenessSmoke",
+    "WrapperHoverSmoke",
+    "WrapperYawStepSmoke",
+]
+
 
 TARGETS: list[dict[str, Any]] = [
     {
@@ -76,14 +98,16 @@ TARGETS: list[dict[str, Any]] = [
         ],
         "required_snippets": [
             "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
-            "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
-            "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
+            "nominal_thrust[i] = lift_coefficient * omega[i] * omega[i]",
+            "fault_effectiveness[i] = if i == fault_rotor_index and time >= fault_start_s then",
+            "thrust[i] = fault_effectiveness[i] * thrust_effectiveness[i] * nominal_thrust[i]",
+            "yaw_reaction_moment[i] = fault_effectiveness[i] * yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust_effectiveness[i] * nominal_thrust[i]",
             "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
             "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
-            "minimum_thrust_effectiveness = min(thrust_effectiveness)",
-            "minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness)",
+            "minimum_thrust_effectiveness = min({fault_effectiveness[i] * thrust_effectiveness[i] for i in 1:4})",
+            "minimum_reaction_moment_effectiveness = min({fault_effectiveness[i] * reaction_moment_effectiveness[i] for i in 1:4})",
         ],
-        "pass_fail_boundary": "check_model must accept command lag, effectiveness-scaled Ct*omega^2 thrust, yaw reaction torque, rotor-center moment, exposed total force/moment variables, and single-rotor effectiveness hooks.",
+        "pass_fail_boundary": "check_model must accept command lag, static and scheduled effectiveness-scaled Ct*omega^2 thrust, yaw reaction torque, rotor-center moment, exposed total force/moment variables, and a time-varying single-rotor fault hook.",
     },
     {
         "formal_name": "RotorEffectivenessSmoke",
@@ -164,7 +188,7 @@ TARGETS: list[dict[str, Any]] = [
         ],
         "required_snippets": [
             "dynamics.motor_command = motor_command",
-            "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+            "commanded_thrust[i] = dynamics.fault_effectiveness[i] * dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
             "commanded_total_moment_body[3]",
             "motor_order_gate_error =",
             "yaw_direction_gate_error =",
@@ -474,8 +498,14 @@ def rel(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
 
 
+def normalized_modelica(text: str) -> str:
+    """Compare source anchors without making formatting part of the contract."""
+
+    return " ".join(text.replace("\r\n", "\n").split())
+
+
 def assert_contains(findings: list[str], text: str, snippet: str, label: str) -> None:
-    if snippet not in text:
+    if normalized_modelica(snippet) not in normalized_modelica(text):
         findings.append(f"{label}: missing snippet {snippet!r}")
 
 
@@ -483,18 +513,55 @@ def requires_dedicated_formal_source(formal_name: str) -> bool:
     return formal_name in FORMAL_PACKAGE_ORDER
 
 
+def source_dir_for(formal_name: str) -> Path:
+    if formal_name in PRODUCTION_FORMAL_NAMES:
+        return VEHICLE_DIR
+    if formal_name in DIAGNOSTIC_FORMAL_NAMES:
+        return LEGACY_DIAGNOSTICS_DIR
+    raise ValueError(f"unknown formal source owner: {formal_name}")
+
+
+def target_namespace_for(formal_name: str) -> str:
+    if formal_name in PRODUCTION_FORMAL_NAMES:
+        return "MoSimQuadrotorModel.Vehicle"
+    if formal_name in DIAGNOSTIC_FORMAL_NAMES:
+        return "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics"
+    raise ValueError(f"unknown formal target namespace: {formal_name}")
+
+
+def canonical_target_for(formal_name: str) -> str:
+    return f"{target_namespace_for(formal_name)}.{formal_name}"
+
+
 def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
     findings: list[str] = []
-    formal_package = read_text(FORMAL_DYNAMICS_DIR / "package.mo")
-    formal_order = read_order(FORMAL_DYNAMICS_DIR / "package.order")
+    vehicle_order = read_order(VEHICLE_DIR / "package.order")
+    diagnostics_order = read_order(LEGACY_DIAGNOSTICS_DIR / "package.order")
+    compatibility_order = read_order(COMPATIBILITY_DYNAMICS_DIR / "package.order")
     parameter_package = read_text(FORMAL_PARAMETERS_DIR / "package.mo")
     parameter_profile_record = read_text(
         FORMAL_PARAMETERS_DIR / "Sunray150VirtualPx4Classic.mo"
     )
     parameter_order = read_order(FORMAL_PARAMETERS_DIR / "package.order")
 
-    if formal_order != FORMAL_PACKAGE_ORDER:
-        findings.append(f"formal Dynamics package.order mismatch: {formal_order!r}")
+    missing_vehicle_sources = sorted(PRODUCTION_FORMAL_NAMES - set(vehicle_order))
+    if missing_vehicle_sources:
+        findings.append(
+            f"Vehicle package.order omits production source(s): {missing_vehicle_sources!r}"
+        )
+    if diagnostics_order != DIAGNOSTIC_FORMAL_ORDER:
+        findings.append(
+            f"LegacyDiagnostics package.order mismatch: {diagnostics_order!r}"
+        )
+    expected_compatibility_names = set(FORMAL_PACKAGE_ORDER)
+    if (
+        len(compatibility_order) != len(expected_compatibility_names)
+        or set(compatibility_order) != expected_compatibility_names
+    ):
+        findings.append(
+            "Vehicle.Dynamics compatibility package.order must contain each retained "
+            f"alias exactly once: {compatibility_order!r}"
+        )
     for retired_root in RETIRED_ROOTS:
         if retired_root.exists():
             findings.append(f"retired top-level model root remains present: {rel(retired_root)}")
@@ -505,28 +572,31 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
     for target in TARGETS:
         formal_name = target["formal_name"]
         implementation_model = target["implementation_model"]
-        implementation_path = FORMAL_DYNAMICS_DIR / target["implementation_file"]
+        source_dir = source_dir_for(formal_name)
+        source_namespace = target_namespace_for(formal_name)
+        canonical_target = canonical_target_for(formal_name)
+        implementation_path = source_dir / target["implementation_file"]
         implementation_text = read_text(implementation_path)
-        formal_source_path = FORMAL_DYNAMICS_DIR / f"{formal_name}.mo"
+        formal_source_path = source_dir / f"{formal_name}.mo"
         formal_source_present = formal_source_path.exists()
         if requires_dedicated_formal_source(formal_name) and not formal_source_present:
             findings.append(
-                f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}: missing dedicated formal source file "
+                f"{canonical_target}: missing dedicated formal source file "
                 f"{rel(formal_source_path)!r}"
             )
-        formal_text = read_text(formal_source_path) if formal_source_present else formal_package
+        formal_text = read_text(formal_source_path) if formal_source_present else ""
 
         assert_contains(
             findings,
             formal_text,
             f"model {formal_name}",
-            f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}",
+            canonical_target,
         )
         assert_contains(
             findings,
             formal_text,
-            "within MoSimQuadrotorModel.Vehicle.Dynamics;",
-            f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}",
+            f"within {source_namespace};",
+            canonical_target,
         )
         assert_contains(
             findings,
@@ -544,11 +614,18 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
 
         matrix.append(
             {
-                "formal_target": f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}",
+                "formal_target": canonical_target,
                 "retired_predecessor": target["compat_name"],
-                "implementation_model": f"MoSimQuadrotorModel.Vehicle.Dynamics.{implementation_model}",
+                "compatibility_alias": (
+                    f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}"
+                ),
+                "implementation_model": f"{source_namespace}.{implementation_model}",
                 "implementation_file": rel(implementation_path),
-                "formal_source_file": rel(formal_source_path) if formal_source_present else rel(FORMAL_DYNAMICS_DIR / "package.mo"),
+                "formal_source_file": (
+                    rel(formal_source_path)
+                    if formal_source_present
+                    else rel(source_dir / "package.mo")
+                ),
                 "formal_source_present": formal_source_present,
                 "dedicated_formal_source_required": requires_dedicated_formal_source(formal_name),
                 "role": target["role"],
@@ -605,17 +682,17 @@ def build_future_surface(matrix: list[dict[str, Any]]) -> dict[str, Any]:
         ],
         "optional_probe_queue": [
             {
-                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.ActuatorMappedWrapperSurface",
+                "target": "MoSimQuadrotorModel.Vehicle.ActuatorMappedWrapperSurface",
                 "probe": "normalized_actuator_command feeds signed_visual_rotor_speed_command into wrapper.motor_command",
                 "not_claimed_by_023": True,
             },
             {
-                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.OptionalDampingGyroLayer",
+                "target": "MoSimQuadrotorModel.Vehicle.OptionalDampingGyroLayer",
                 "probe": "default_disabled_force_delta and default_disabled_moment_delta remain zero under default flags",
                 "not_claimed_by_023": True,
             },
             {
-                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter",
+                "target": "MoSimQuadrotorModel.Vehicle.PhysicalWrenchAdapter",
                 "probe": "applied_force_body and applied_torque_body reach explicit minimal MultiBody body through WorldForceAndTorque",
                 "not_claimed_by_023": True,
             },
@@ -693,11 +770,12 @@ def write_source_materialization_rationale(path: Path) -> None:
     lines = [
         "# Source Anchor Materialization Rationale",
         "",
-        "023 inspects the canonical `MoSimQuadrotorModel.Vehicle.Dynamics` implementation package, `package.order`, and the `MoSimQuadrotorModel.Parameters` provenance record.",
+        "023 inspects canonical production sources under `MoSimQuadrotorModel.Vehicle`, retained historical smoke sources under `Vehicle.LegacyDiagnostics`, and the `MoSimQuadrotorModel.Parameters` provenance record.",
         "",
         "The current formal source-surface rule is:",
         "",
-        "- All formal Dynamics entries are canonical project-owned implementation `.mo` files.",
+        "- Production Vehicle entries and retained diagnostics each have canonical project-owned implementation `.mo` files.",
+        "- `Vehicle.Dynamics` is hidden compatibility aliases only; it is not implementation ownership.",
         "- Retired top-level model roots must be absent from `Models/`.",
         "",
         "Current materialized dedicated surfaces:",
@@ -718,9 +796,9 @@ def write_source_materialization_rationale(path: Path) -> None:
         "",
         "Static acceptance basis:",
         "",
-        "- The 13 formal Dynamics entries are present and ordered in `Models/MoSimQuadrotorModel/Vehicle/Dynamics/package.order`.",
-        "- All formal Dynamics entries exist as canonical source files with their own implementation anchors.",
-        "- `Dynamics/package.mo` is a package shell and does not duplicate model definitions.",
+        "- Six production entries are owned directly by `Vehicle`; seven historical smoke entries are owned by `Vehicle.LegacyDiagnostics`.",
+        "- All formal entries exist as canonical source files with their own implementation anchors.",
+        "- `Dynamics/package.mo` contains hidden aliases that preserve old fully-qualified names.",
         "- No second package is needed to load any Dynamics entry.",
         "- The formal smoke surface can be prepared as a target matrix, expected variable manifest, and future live validation queue without duplicating dynamics behavior.",
         "",
@@ -763,13 +841,13 @@ def main() -> int:
         "request_id": REQUEST_ID,
         "source_files_changed_by_023": [],
         "source_files_materialized_by_current_static_alignment": [
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/HoverSmoke.mo",
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/YawStepSmoke.mo",
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorEffectivenessSmoke.mo",
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperHoverSmoke.mo",
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperYawStepSmoke.mo",
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchHoverSmoke.mo",
-            "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchYawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/LegacyDiagnostics/HoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/LegacyDiagnostics/YawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/LegacyDiagnostics/RotorEffectivenessSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/LegacyDiagnostics/WrapperHoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/LegacyDiagnostics/WrapperYawStepSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/LegacyDiagnostics/PhysicalWrenchHoverSmoke.mo",
+            "Models/MoSimQuadrotorModel/Vehicle/LegacyDiagnostics/PhysicalWrenchYawStepSmoke.mo",
             "Models/MoSimQuadrotorModel/Vehicle/Dynamics/package.mo",
         ],
         "script_files_changed_by_023": [

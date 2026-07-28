@@ -23,8 +23,8 @@ import psutil
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "Config" / "control_platform" / "offline_composition_catalog.json"
 LOG = ROOT / "Results" / "ui_platform" / "model_studio_open_model" / "latest.json"
-THREE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Formation" / "Scenarios" / "FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo"
-THREE_MODEL_NAME = "MoSimQuadrotorModel.Guidance.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop"
+THREE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Formation" / "FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo"
+THREE_MODEL_NAME = "MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC"
 LIVE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
 LIVE_MODEL_NAME = "MoSimQuadrotorModel.Deployment.RT1OfficialPidShadow50Hz"
 MODEL_DECLARATION = re.compile(r"\bmodel\s+([A-Za-z_]\w*)")

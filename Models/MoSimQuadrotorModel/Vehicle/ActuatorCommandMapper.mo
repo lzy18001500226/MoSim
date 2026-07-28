@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle.Dynamics;
+within MoSimQuadrotorModel.Vehicle;
 model ActuatorCommandMapper
   "Map normalized actuator command to signed MWORKS visual rotor speed"
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;

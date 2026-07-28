@@ -1,13 +1,17 @@
 within MoSimQuadrotorModel.Guidance.Formation;
 package Scenarios
-  "多机编队场景（后续扩展入口）"
+  "Hidden compatibility aliases for the pre-cleanup Formation.Scenarios namespace"
   extends Modelica.Icons.Package;
 
+  model FormationTriangleFigure8LinearMPCSysblockClosedLoop
+    extends MoSimQuadrotorModel.Guidance.Formation.FormationTriangleFigure8LinearMPCSysblockClosedLoop;
+    annotation(__MWORKS(hide=true,version="26.3.0"));
+  end FormationTriangleFigure8LinearMPCSysblockClosedLoop;
+
   model TriangleFigure8LinearMPC
-    "三机三角编队 8 字：线性 MPC 闭环"
-    extends MoSimQuadrotorModel.Guidance.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop;
-    annotation(__MWORKS(hide=false,version="26.3.0"));
+    extends MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC;
+    annotation(__MWORKS(hide=true,version="26.3.0"));
   end TriangleFigure8LinearMPC;
-  annotation(__MWORKS(version="26.3.0"));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 
 end Scenarios;

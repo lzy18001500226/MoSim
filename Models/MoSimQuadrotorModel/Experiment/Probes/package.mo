@@ -1,7 +1,7 @@
 within MoSimQuadrotorModel.Experiment;
 package Probes
-  "Fixed-input internal controller probes for current G6 evidence"
+  "Historical fixed-input diagnostics retained for trace-back, not normal entry points"
 
   extends Modelica.Icons.Package;
-  annotation(__MWORKS(version="26.3.0"));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Probes;

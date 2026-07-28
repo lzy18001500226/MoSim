@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle.Dynamics;
+within MoSimQuadrotorModel.Vehicle.LegacyDiagnostics;
 model PhysicalWrenchYawStepSmoke
   "Yaw-step smoke for the project-owned physical wrench frame adapter"
   parameter Real yaw_delta_omega2 = 300

@@ -6,7 +6,7 @@ model PhysicalWrenchYawStepTelemetrySmoke
     "Differential omega squared command preserving total thrust";
   Real yaw_step;
   Real rotor_speed_magnitude[4](each unit = "rad/s");
-  MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter adapter;
+  MoSimQuadrotorModel.Vehicle.PhysicalWrenchAdapter adapter;
   MoSimQuadrotorModel.Vehicle.Sensors.AbsoluteAngles angle_sensor;
   Real attitude[3];
   Real applied_yaw_torque(unit = "N.m");

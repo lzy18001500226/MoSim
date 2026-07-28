@@ -30,7 +30,7 @@ REQUIRED_DIRS = [
     "Docs",
     "Docs/Index",
     "Docs/MworksDocs/converted",
-    "Models/MoSimQuadrotorModel/Plant",
+    "Models/MoSimQuadrotorModel/Vehicle",
     "Models/MoSimQuadrotorModel",
     "Docs/Workflows",
 ]
@@ -583,11 +583,11 @@ def check_wrappers() -> bool:
 
 
 def check_official_case(root: Path) -> bool:
-    print("\n== Embedded official quadrotor baseline ==")
+    print("\n== Retained official quadrotor baseline examples ==")
     ok = True
-    package_path = root / "Models" / "MoSimQuadrotorModel" / "Plant" / "package.mo"
+    package_path = root / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Examples" / "package.mo"
     if not package_path.exists():
-        print(f"[FAIL] Missing embedded Plant package: {package_path}")
+        print(f"[FAIL] Missing retained baseline examples package: {package_path}")
         return False
 
     package_text = package_path.read_text(encoding="utf-8-sig", errors="replace")

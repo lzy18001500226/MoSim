@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle.Dynamics;
+within MoSimQuadrotorModel.Vehicle;
 model RotorActuatorCore
   "Experimental Sunray150 rotor dynamics core: command lag, thrust, yaw reaction torque, and rotor-center moment"
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile

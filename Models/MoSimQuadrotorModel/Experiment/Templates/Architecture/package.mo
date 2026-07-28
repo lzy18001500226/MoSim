@@ -1,6 +1,6 @@
 within MoSimQuadrotorModel.Experiment.Templates;
 package Architecture
-  "完整系统图形化架构与失效模式烟测（非最终性能证据）"
+  "完整系统图形化架构；历史失效模式 Smoke 隐藏保留"
   extends Modelica.Icons.Package;
 
   model CompleteSystemGraphical
@@ -12,32 +12,32 @@ package Architecture
   model GPSDropout
     "完整系统：GPS 丢失烟测"
     extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGPSDropoutSysblock;
-    annotation(__MWORKS(hide=false,version="26.3.0"));
+    annotation(__MWORKS(hide=true,version="26.3.0"));
   end GPSDropout;
 
   model BatteryLow
     "完整系统：低电量烟测"
     extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemBatteryLowSysblock;
-    annotation(__MWORKS(hide=false,version="26.3.0"));
+    annotation(__MWORKS(hide=true,version="26.3.0"));
   end BatteryLow;
 
   model OffboardLoss
     "完整系统：Offboard 心跳丢失烟测"
     extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemOffboardLossSysblock;
-    annotation(__MWORKS(hide=false,version="26.3.0"));
+    annotation(__MWORKS(hide=true,version="26.3.0"));
   end OffboardLoss;
 
   model MissionFailure
     "完整系统：任务不可行烟测"
     extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemMissionFailureSysblock;
-    annotation(__MWORKS(hide=false,version="26.3.0"));
+    annotation(__MWORKS(hide=true,version="26.3.0"));
   end MissionFailure;
 
   model GeofenceBreach
     "完整系统：地理围栏越界烟测"
     extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGeofenceBreachSysblock;
-    annotation(__MWORKS(hide=false,version="26.3.0"));
+    annotation(__MWORKS(hide=true,version="26.3.0"));
   end GeofenceBreach;
-  annotation(__MWORKS(version="26.3.0"));
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 
 end Architecture;
