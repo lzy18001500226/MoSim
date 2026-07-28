@@ -27,6 +27,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.orchestration.operator_map_state import validate_operator_map_snapshot
+from src.orchestration.run_manifest_contract import (
+    RUN_MANIFEST_V2_SCHEMA,
+    artifact_slot,
+    open_action,
+    validate_run_manifest_v2,
+)
 
 
 RUNS_RELATIVE_ROOT = Path("Results") / "runs"
@@ -78,6 +84,10 @@ def _sha256_value(value: dict[str, Any]) -> str:
 def _generated_run_id() -> str:
     stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     return f"qgc-{stamp}-{uuid.uuid4().hex[:10]}"
+
+
+def _utc_timestamp(timestamp: float) -> str:
+    return datetime.fromtimestamp(timestamp, timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def _load_operator_profile(root: Path, profile_id: str) -> tuple[dict[str, Any], Path, dict[str, Any]]:
@@ -190,18 +200,64 @@ def prepare_run(
     profile_hash = _sha256_file(profile_path)
     map_hash = _sha256_value(map_snapshot)
     scenario_snapshot = _load_scenario_snapshot(root, experiment)
-    run_directory = _root_path(root, RUNS_RELATIVE_ROOT / selected_run_id)
-    if run_directory.exists():
-        raise ValueError("operator_run_directory_exists")
-    run_directory.mkdir(parents=True, exist_ok=False)
     controller_ids = backend.get("controller_ids")
     controller_id = controller_ids[0] if isinstance(controller_ids, list) and controller_ids else ""
     controller_backend = experiment.get("controller_backend", controller_id)
     if not isinstance(controller_backend, str) or not controller_backend:
         raise ValueError("operator_run_controller_backend_missing")
+    scenario_path = experiment.get("scenario_path", "")
+    if not isinstance(scenario_path, str):
+        scenario_path = ""
     manifest = {
-        "schema": "mosim.operator_run_manifest.v1",
+        "schema": RUN_MANIFEST_V2_SCHEMA,
         "run_id": selected_run_id,
+        "run_kind": "operator_runtime",
+        "created_at": _utc_timestamp(float(timestamp)),
+        "status": "prepared",
+        "profile": {
+            "id": profile_id,
+            "sha256": profile_hash,
+            "controller_id": controller_id,
+            "controller_profile": experiment.get("controller_profile", ""),
+            "runtime_profile_id": runtime_profile_id,
+        },
+        "map": {
+            "status": "frozen",
+            "id": map_id,
+            "snapshot": map_snapshot,
+            "snapshot_sha256": map_hash,
+        },
+        "scenario": {
+            "status": "frozen" if scenario_path else "not_applicable",
+            "id": scenario_path,
+            "path": scenario_path,
+            "snapshot": scenario_snapshot,
+            "snapshot_sha256": _sha256_value(scenario_snapshot) if scenario_path else "",
+        },
+        "source_state": {
+            "profile_path": profile_path.relative_to(root).as_posix(),
+            "runtime_backend_catalog": "Config/control_platform/runtime_backend_catalog.json",
+            "operator_map_catalog": "Config/control_platform/operator_map_catalog.json",
+            "prepared_by": "qgc_visible_terminal",
+        },
+        "artifacts": {
+            "mworks_model": artifact_slot(status="not_requested"),
+            "native_result_msr": artifact_slot(status="not_requested"),
+            "raw_csv": artifact_slot(status="not_requested"),
+            "metrics_json": artifact_slot(status="not_requested"),
+            "rosbag": artifact_slot(status="pending"),
+            "px4_ulog": artifact_slot(status="pending"),
+            "operator_map_replay": artifact_slot(status="pending", path="OPERATOR_MAP_REPLAY_MANIFEST.json"),
+            "telemetry": artifact_slot(status="pending", path="telemetry.json"),
+            "logs_directory": artifact_slot(status="pending", path="logs"),
+        },
+        "open_actions": {
+            "open_model": open_action(enabled=False, reason_code="mworks_model_not_bound"),
+            "open_native_result": open_action(enabled=False, reason_code="native_result_not_available"),
+            "replay_rviz": open_action(enabled=False, reason_code="rosbag_not_available"),
+            "replay_operator_map": open_action(enabled=False, reason_code="rosbag_not_available"),
+            "open_result_directory": open_action(enabled=True, reason_code="run_directory_available", path="."),
+        },
         "experiment_profile_id": profile_id,
         "experiment_profile_hash": profile_hash,
         "runtime_profile_id": runtime_profile_id,
@@ -225,6 +281,11 @@ def prepare_run(
             "ROS, Gazebo, PX4, MAVROS, controller, planner, sidecar, or vehicle accepted execution."
         ),
     }
+    validate_run_manifest_v2(manifest)
+    run_directory = _root_path(root, RUNS_RELATIVE_ROOT / selected_run_id)
+    if run_directory.exists():
+        raise ValueError("operator_run_directory_exists")
+    run_directory.mkdir(parents=True, exist_ok=False)
     _atomic_write_json(run_directory / "RUN_MANIFEST.json", manifest)
     run_directory_relative = (RUNS_RELATIVE_ROOT / selected_run_id).as_posix()
     pointer = {

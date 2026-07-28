@@ -7,6 +7,9 @@ from pathlib import Path
 
 import pytest
 
+from Scripts.ui.runtime_sidecar import resolve_runtime_operator_map
+from src.orchestration.run_manifest_contract import RUN_MANIFEST_V2_SCHEMA, validate_run_manifest_v2
+
 
 ROOT = Path(__file__).resolve().parents[2]
 MODULE_PATH = ROOT / "Scripts" / "ui" / "prepare_operator_run.py"
@@ -101,12 +104,22 @@ def test_prepare_freezes_profile_map_and_pointer(tmp_path: Path) -> None:
     manifest = json.loads((result["run_directory"] / "RUN_MANIFEST.json").read_text(encoding="utf-8"))
     pointer = json.loads((root / "Results/ui_platform/qgc_active_run.json").read_text(encoding="utf-8"))
     assert manifest["run_id"] == "qgc-test-run"
+    assert manifest["schema"] == RUN_MANIFEST_V2_SCHEMA
+    assert manifest["run_kind"] == "operator_runtime"
+    assert manifest["status"] == "prepared"
+    validate_run_manifest_v2(manifest)
     assert manifest["experiment_profile_id"] == "factory_demo_v1"
     assert manifest["experiment_profile_hash"] == hashlib.sha256(profile_path.read_bytes()).hexdigest()
     assert manifest["controller_backend"] == "fixture_controller_backend_v1"
     assert manifest["vehicle_count"] == 3
     assert manifest["operator_map_snapshot"]["map_id"] == "factory_l2"
     assert manifest["scenario_snapshot"]["formation"]["type"] == "leader_follower"
+    assert manifest["profile"]["id"] == manifest["experiment_profile_id"]
+    assert manifest["map"]["snapshot"] == manifest["operator_map_snapshot"]
+    assert manifest["artifacts"]["telemetry"]["path"] == "telemetry.json"
+    resolved_snapshot, resolved_hash = resolve_runtime_operator_map(manifest)
+    assert resolved_snapshot["map_id"] == "factory_l2"
+    assert resolved_hash == manifest["operator_map_snapshot_hash"]
     assert pointer["state"] == "launch_prepared"
     assert pointer["run_directory"] == "Results/runs/qgc-test-run"
 

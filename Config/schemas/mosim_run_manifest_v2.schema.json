@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mosim.run_manifest.v2",
+  "title": "MoSim unified run manifest v2",
+  "description": "Forward-facing run discovery contract. Historical v1 manifests remain read-only and are normalized by src/orchestration/run_manifest_contract.py.",
+  "type": "object",
+  "required": [
+    "schema",
+    "run_id",
+    "run_kind",
+    "created_at",
+    "status",
+    "profile",
+    "map",
+    "scenario",
+    "vehicle_count",
+    "source_state",
+    "artifacts",
+    "open_actions",
+    "claim_boundary"
+  ],
+  "properties": {
+    "schema": {"const": "mosim.run_manifest.v2"},
+    "run_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "run_kind": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["prepared", "running", "replaying", "completed", "failed", "cancelled", "archived"]},
+    "vehicle_count": {"type": "integer", "minimum": 1, "maximum": 9},
+    "claim_boundary": {"type": "string", "minLength": 1},
+    "profile": {"$ref": "#/$defs/profile"},
+    "map": {"$ref": "#/$defs/frozen_context"},
+    "scenario": {"$ref": "#/$defs/frozen_context"},
+    "source_state": {"type": "object"},
+    "artifacts": {
+      "type": "object",
+      "required": ["mworks_model", "native_result_msr", "raw_csv", "metrics_json", "rosbag", "px4_ulog", "operator_map_replay", "telemetry", "logs_directory"],
+      "additionalProperties": false,
+      "properties": {
+        "mworks_model": {"$ref": "#/$defs/artifact"},
+        "native_result_msr": {"$ref": "#/$defs/artifact"},
+        "raw_csv": {"$ref": "#/$defs/artifact"},
+        "metrics_json": {"$ref": "#/$defs/artifact"},
+        "rosbag": {"$ref": "#/$defs/artifact"},
+        "px4_ulog": {"$ref": "#/$defs/artifact"},
+        "operator_map_replay": {"$ref": "#/$defs/artifact"},
+        "telemetry": {"$ref": "#/$defs/artifact"},
+        "logs_directory": {"$ref": "#/$defs/artifact"}
+      }
+    },
+    "open_actions": {
+      "type": "object",
+      "required": ["open_model", "open_native_result", "replay_rviz", "replay_operator_map", "open_result_directory"],
+      "additionalProperties": false,
+      "properties": {
+        "open_model": {"$ref": "#/$defs/open_action"},
+        "open_native_result": {"$ref": "#/$defs/open_action"},
+        "replay_rviz": {"$ref": "#/$defs/open_action"},
+        "replay_operator_map": {"$ref": "#/$defs/open_action"},
+        "open_result_directory": {"$ref": "#/$defs/open_action"}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "profile": {
+      "type": "object",
+      "required": ["id", "sha256"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "controller_id": {"type": "string"},
+        "controller_profile": {"type": "string"},
+        "runtime_profile_id": {"type": "string"}
+      }
+    },
+    "frozen_context": {
+      "type": "object",
+      "required": ["status", "id", "snapshot", "snapshot_sha256"],
+      "properties": {
+        "status": {"enum": ["frozen", "pending", "not_applicable"]},
+        "id": {"type": "string"},
+        "path": {"type": "string"},
+        "snapshot": {"type": "object"},
+        "snapshot_sha256": {"type": "string", "pattern": "^$|^[a-f0-9]{64}$"}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["not_requested", "pending", "declared", "available", "missing", "not_applicable"]},
+        "path": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "open_action": {
+      "type": "object",
+      "required": ["enabled", "reason_code"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "reason_code": {"type": "string", "minLength": 1},
+        "path": {"type": "string"}
+      }
+    }
+  }
+}
