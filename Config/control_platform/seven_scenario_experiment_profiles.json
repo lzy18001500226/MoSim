@@ -11,7 +11,7 @@
     "solver_algorithm": "Dassl",
     "solver_tolerance": 0.0001,
     "result_interval_s": 0.01,
-    "controller_boundary_period_s": 0.01,
+    "controller_execution_semantics": "Each FormalRunner declares its own controller boundary; result_interval_s is an output and metric sampling cadence only.",
     "profile_hash_rule": "SHA-256 of this UTF-8 LF JSON document is copied into each future RUN_RECORD.json before simulation.",
     "pre_simulation_evidence": "Results/control_platform/seven_scenario_preflight_20260727/CHECK_MODEL_RESULTS.json",
     "scenario_simulation_started": false
@@ -30,9 +30,11 @@
       "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner"
     ],
     "official_pid_boundary": {
-      "reference_hold_period_s": 0.01,
-      "measurement_hold_period_s": 0.01,
-      "command_hold_period_s": 0.01,
+      "execution_mode": "native_continuous_closed_loop",
+      "reference_path": "direct",
+      "measurement_path": "direct",
+      "command_path": "direct",
+      "result_interval_s": 0.01,
       "source_core_forward_feed": "not_available_in_supplied_core"
     }
   },

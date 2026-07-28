@@ -150,9 +150,14 @@ def validate_preflight() -> dict[str, Any]:
     check_equal(checks, "common_result_interval_s", common.get("result_interval_s"), 0.01)
     check_equal(
         checks,
-        "common_controller_boundary_period_s",
-        common.get("sampling_fairness", {}).get("required_manifest_fields", [])[3:4],
-        ["controller_boundary_period_s"],
+        "common_execution_semantics_manifest_fields",
+        common.get("sampling_fairness", {}).get("required_manifest_fields", [])[3:],
+        [
+            "controller_execution_semantics",
+            "reference_path_semantics",
+            "measurement_path_semantics",
+            "command_path_semantics",
+        ],
     )
     scenarios = {item.get("scenario_id"): item for item in contract.get("scenarios", []) if isinstance(item, dict)}
     check_equal(checks, "contract_scenario_order", list(scenarios), list(SCENARIO_IDS))
@@ -168,6 +173,12 @@ def validate_preflight() -> dict[str, Any]:
     profile_by_id = {item.get("scenario_id"): item for item in profile_rows if isinstance(item, dict)}
     check_equal(checks, "profile_scenario_order", list(profile_by_id), list(SCENARIO_IDS))
     check_equal(checks, "profile_common_interval_s", profiles.get("common_execution", {}).get("result_interval_s"), 0.01)
+    check_equal(
+        checks,
+        "profile_controller_execution_semantics",
+        profiles.get("common_execution", {}).get("controller_execution_semantics"),
+        "Each FormalRunner declares its own controller boundary; result_interval_s is an output and metric sampling cadence only.",
+    )
     allowed = profiles.get("formal_runner_binding", {}).get("allowed_runner_classes", [])
     expected_runners = [f"MoSimQuadrotorModel.Experiment.Runners.{name.removesuffix('.mo')}" for name in FORMAL_RUNNERS.values()]
     check_equal(checks, "profile_allowed_formal_runners", allowed, expected_runners)
@@ -192,6 +203,8 @@ def validate_preflight() -> dict[str, Any]:
             "fault_rotor_effectiveness = fault_rotor_effectiveness",
         )
     for scheme_id, runner_name in FORMAL_RUNNERS.items():
+        if scheme_id == "official_pid":
+            continue
         text = source(runners_dir / runner_name)
         check_contains(
             checks,
@@ -210,14 +223,24 @@ def validate_preflight() -> dict[str, Any]:
     official_text = source(runners_dir / FORMAL_RUNNERS["official_pid"])
     check_contains(
         checks,
-        "official_pid_external_100hz_harness",
+        "official_pid_native_continuous_baseline",
         official_text,
-        "controller_sample_period_s(unit = \"s\") = 0.01",
-        "sampled_rotor_command",
-        "connect(sampled_rotor_command.y, plant.rotor_command)",
-        "connect(sampled_velocity_ref.y, controller.velocity_ref)",
-        "connect(sampled_acceleration_ref.y, controller.acceleration_ref)",
-        "connect(velocity_estimator.y, controller.velocity_mea)",
+        "extends MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner(",
+        "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter",
+        "Interval = 0.01",
+    )
+    official_boundary = profiles.get("formal_runner_binding", {}).get("official_pid_boundary", {})
+    check_equal(
+        checks,
+        "official_pid_native_continuous_boundary_contract",
+        [
+            official_boundary.get("execution_mode"),
+            official_boundary.get("reference_path"),
+            official_boundary.get("measurement_path"),
+            official_boundary.get("command_path"),
+            official_boundary.get("result_interval_s"),
+        ],
+        ["native_continuous_closed_loop", "direct", "direct", "direct", 0.01],
     )
 
     assembly_text = source(MODEL_ROOT / "Vehicle" / "Sunray150Assembly.mo")

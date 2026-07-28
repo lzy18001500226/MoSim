@@ -24,17 +24,17 @@
       "attitude_mea[3]"
     ],
     "sampling_fairness": {
-      "state": "external_hold_implemented_static_and_checkmodel_passed_pending_simulation",
-      "candidate_formal_runners": "Use a 0.01 s input sample-and-hold boundary wherever a discrete C-function/controller boundary is declared.",
-      "official_pid": "Keep the source controller core unchanged, but add a 0.01 s external reference/measurement/command hold harness before formal A/B. The experiment annotation Interval alone is only a result-output interval and does not establish equal controller update semantics.",
+      "state": "native_continuous_official_pid_declared_pending_current_source_replay",
+      "candidate_formal_runners": "Each candidate retains its declared controller-execution boundary. A 0.01 s result interval standardizes exported sample cadence and metric evaluation; it does not imply controller-update equivalence.",
+      "official_pid": "The Official PID baseline retains its native continuous reference, measurement, and command loop. Interval = 0.01 only standardizes result sampling and metric cadence; it does not impose a discrete controller update boundary.",
       "required_manifest_fields": [
         "solver_algorithm",
         "solver_tolerance",
         "result_interval_s",
-        "controller_boundary_period_s",
-        "reference_hold_period_s",
-        "measurement_hold_period_s",
-        "command_hold_period_s"
+        "controller_execution_semantics",
+        "reference_path_semantics",
+        "measurement_path_semantics",
+        "command_path_semantics"
       ]
     },
     "yaw_policy": {
@@ -197,7 +197,7 @@
   },
   "implementation_order": [
     "Completed: bind the listed injection parameters through all four Runner boundaries and Sunray150Assembly.",
-    "Completed: add the Official PID 0.01 s external hold harness and verify common timing manifest fields.",
+    "Completed: restore the Official PID native continuous loop and record explicit controller/reference/measurement/command execution semantics.",
     "Completed: extend Syslab metrics and validate them with deterministic CSV fixtures.",
     "Completed: static validation and native CheckModel of eight trajectories, four shared Runners, Official PID, and six champion Formal Runners; evidence is Results/control_platform/seven_scenario_preflight_20260727/.",
     "Stop: wait for user review before any seven-scenario simulation."
