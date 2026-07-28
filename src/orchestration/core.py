@@ -12,15 +12,21 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Protocol
 
+from .runtime_sidecar_contract import load_contract, validate_command
+
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_REGISTRY = PROJECT_ROOT / "Config" / "control_platform" / "control_module_registry.json"
 DEFAULT_PROFILE_CATALOG = PROJECT_ROOT / "Config" / "profiles" / "catalog.json"
+DEFAULT_OPERATOR_PROFILE_CATALOG = PROJECT_ROOT / "Config" / "profiles" / "operator_profiles.json"
 DEFAULT_OPERATOR_MAP_CATALOG = PROJECT_ROOT / "Config" / "control_platform" / "operator_map_catalog.json"
+DEFAULT_INJECTION_CONTRACT = PROJECT_ROOT / "Config" / "control_platform" / "factory_injection_contract.json"
 DEFAULT_RUN_ROOT = PROJECT_ROOT / "Results" / "ui_platform" / "orchestrator_runs"
 MWORKS_LIVE_PREFLIGHT = PROJECT_ROOT / "Scripts" / "mworks_live" / "preflight_connection.py"
 
 OPERATOR_MAP_CATALOG_SCHEMA = "mosim.operator_map_catalog.v1"
+OPERATOR_PROFILE_CATALOG_SCHEMA = "mosim.operator_profile_catalog.v1"
+OPERATOR_PROFILE_MODES = frozenset({"qgc_manual", "mission_adapter"})
 OPERATOR_MAP_COORDINATE_STATUSES = frozenset({"verified", "pending_runtime_validation", "rejected"})
 OPERATOR_MAP_REQUIRED_FIELDS = (
     "map_id",
@@ -41,6 +47,9 @@ ORCHESTRATOR_COMMANDS = frozenset(
         "request_safe_stop",
         "stop_run",
         "reset_run",
+        "stage_injection",
+        "apply_staged_injection",
+        "restore_normal",
         "apply_injection",
         "restore_injection",
         "prepare_display_session",
@@ -55,6 +64,7 @@ ORCHESTRATOR_COMMANDS = frozenset(
         "generate_code",
         "get_model_gate_state",
         "list_controllers",
+        "list_operator_profiles",
         "propose_operator_task",
         "get_operation_progress",
         "close_all_rviz",
@@ -111,6 +121,7 @@ class MoSimOrchestrator:
     run_root: Path = DEFAULT_RUN_ROOT
     registry_path: Path = DEFAULT_REGISTRY
     profile_catalog_path: Path = DEFAULT_PROFILE_CATALOG
+    operator_profile_catalog_path: Path = DEFAULT_OPERATOR_PROFILE_CATALOG
     operator_map_catalog_path: Path = DEFAULT_OPERATOR_MAP_CATALOG
     backend: RuntimeBackend | None = None
     active_run_id: str = ""
@@ -225,6 +236,160 @@ class MoSimOrchestrator:
             registry_hash=_canonical_hash(registry),
         )
 
+    def _operator_profile_controller(self, experiment: dict[str, Any]) -> tuple[str, dict[str, Any] | None, str]:
+        selected_profile = str(experiment.get("controller_profile", ""))
+        if not selected_profile:
+            return "", None, "operator_profile_controller_missing"
+        if experiment.get("controller_backend") == "mworks_live":
+            try:
+                catalog = _read_json(self.profile_catalog_path)
+            except (OSError, ValueError, json.JSONDecodeError):
+                return "", None, "operator_profile_catalog_unreadable"
+            live_profile = catalog.get("controller_profiles", {}).get(selected_profile)
+            controller_id = live_profile.get("controller_id") if isinstance(live_profile, dict) else ""
+            module = self._module(str(controller_id))
+            if not isinstance(controller_id, str) or not controller_id or module is None:
+                return "", None, "operator_profile_controller_not_registered"
+            return controller_id, module, ""
+
+        try:
+            registry = _read_json(self.registry_path)
+        except (OSError, ValueError, json.JSONDecodeError):
+            return "", None, "controller_registry_unreadable"
+        matches = [
+            module
+            for module in registry.get("modules", [])
+            if isinstance(module, dict)
+            and module.get("kind") == "nominal_controller"
+            and module.get("profile_id") == selected_profile
+        ]
+        if len(matches) != 1:
+            return "", None, "operator_profile_controller_not_registered"
+        module = matches[0]
+        controller_id = module.get("module_id")
+        if not isinstance(controller_id, str) or not controller_id:
+            return "", None, "operator_profile_controller_not_registered"
+        return controller_id, module, ""
+
+    def _operator_profile_vehicle_count(self, experiment: dict[str, Any]) -> tuple[int, str]:
+        declared = experiment.get("vehicle_count")
+        if isinstance(declared, int):
+            return declared, ""
+        scenario_id = experiment.get("scenario_profile")
+        try:
+            catalog = _read_json(self.profile_catalog_path)
+        except (OSError, ValueError, json.JSONDecodeError):
+            return 0, "operator_profile_catalog_unreadable"
+        scenario = catalog.get("scenario_profiles", {}).get(scenario_id)
+        vehicle_count = scenario.get("vehicle_count") if isinstance(scenario, dict) else None
+        if not isinstance(vehicle_count, int):
+            return 0, "operator_profile_vehicle_count_unresolved"
+        return vehicle_count, ""
+
+    def list_operator_profiles(self, *, request_id: str) -> dict[str, Any]:
+        """Expose only curated QGC profiles and derive all runtime identity fields."""
+        try:
+            catalog = _read_json(self.operator_profile_catalog_path)
+        except (OSError, ValueError, json.JSONDecodeError):
+            return self._response(request_id, False, "operator_profile_catalog_unreadable")
+        if catalog.get("schema") != OPERATOR_PROFILE_CATALOG_SCHEMA:
+            return self._response(request_id, False, "operator_profile_catalog_schema_invalid")
+        entries = catalog.get("profiles")
+        if not isinstance(entries, list):
+            return self._response(request_id, False, "operator_profile_catalog_entries_invalid")
+
+        profiles: list[dict[str, Any]] = []
+        for entry in entries:
+            if not isinstance(entry, dict):
+                return self._response(request_id, False, "operator_profile_catalog_entry_invalid")
+            profile_id = entry.get("profile_id")
+            profile_path_value = entry.get("profile_path")
+            label = entry.get("label")
+            enabled_by_catalog = entry.get("enabled")
+            operator_mode = entry.get("operator_mode")
+            if (
+                not isinstance(profile_id, str)
+                or not profile_id
+                or not isinstance(profile_path_value, str)
+                or not profile_path_value
+                or not isinstance(label, str)
+                or not label
+                or not isinstance(enabled_by_catalog, bool)
+                or operator_mode not in OPERATOR_PROFILE_MODES
+            ):
+                return self._response(request_id, False, "operator_profile_catalog_entry_invalid")
+            path = _resolve_project_path(profile_path_value)
+            if path is None or not path.is_file():
+                return self._response(
+                    request_id,
+                    False,
+                    "operator_profile_source_missing",
+                    profile_id=profile_id,
+                    profile_path=profile_path_value,
+                )
+            try:
+                profile = _read_json(path)
+            except (OSError, ValueError, json.JSONDecodeError):
+                return self._response(request_id, False, "operator_profile_source_invalid", profile_id=profile_id)
+            experiment = profile.get("experiment_profile")
+            if not isinstance(experiment, dict) or experiment.get("id") != profile_id:
+                return self._response(request_id, False, "operator_profile_identity_mismatch", profile_id=profile_id)
+            controller_id, module, controller_error = self._operator_profile_controller(experiment)
+            if controller_error:
+                return self._response(request_id, False, controller_error, profile_id=profile_id)
+            vehicle_count, vehicle_error = self._operator_profile_vehicle_count(experiment)
+            if vehicle_error or vehicle_count < 1 or vehicle_count > 9:
+                return self._response(
+                    request_id,
+                    False,
+                    vehicle_error or "operator_profile_vehicle_count_invalid",
+                    profile_id=profile_id,
+                )
+
+            enabled = enabled_by_catalog
+            disabled_reason = str(entry.get("disabled_reason") or "")
+            validation: dict[str, Any] = {}
+            if enabled:
+                validation = self.validate_experiment_profile(
+                    request_id=request_id,
+                    profile_path=str(path.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+                    controller_id=controller_id,
+                    vehicle_count=vehicle_count,
+                )
+                if not validation.get("accepted"):
+                    enabled = False
+                    disabled_reason = str(validation.get("reason_code", "operator_profile_runtime_gate_pending"))
+            if not enabled and not disabled_reason:
+                disabled_reason = "operator_profile_disabled"
+
+            profiles.append(
+                {
+                    "id": profile_id,
+                    "label": label,
+                    "profile_path": str(path.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+                    "profile_hash": validation.get("profile_hash") or _canonical_hash(profile),
+                    "enabled": enabled,
+                    "disabled_reason": disabled_reason,
+                    "operator_mode": operator_mode,
+                    "manual_control": operator_mode == "qgc_manual",
+                    "controller_id": controller_id,
+                    "controller_label": controller_id.replace("_", " "),
+                    "controller_profile_id": experiment.get("controller_profile", ""),
+                    "vehicle_count": vehicle_count,
+                    "operator_map_id": experiment.get("operator_map_id", ""),
+                    "controller_backend": experiment.get("controller_backend", "generated_c"),
+                    "capability_status": validation.get("capability_status", experiment.get("capability_status", "")),
+                    "claim_ceiling": module.get("claim_ceiling", "") if module is not None else "",
+                }
+            )
+        return self._response(
+            request_id,
+            True,
+            "operator_profile_catalog_ready",
+            operator_profiles=profiles,
+            operator_profile_catalog_hash=_canonical_hash(catalog),
+        )
+
     def propose_operator_task(self, *, request_id: str, prompt: str) -> dict[str, Any]:
         text = str(prompt).strip()
         if not text:
@@ -233,69 +398,46 @@ class MoSimOrchestrator:
             return self._response(request_id, False, "agent_prompt_too_long")
 
         normalized = text.casefold()
-        tasks = (
-            {
-                "profile_id": "cascade_pid_figure8_generated_c_v1",
-                "profile_path": "Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json",
-                "controller_id": "cascade_pid",
-                "vehicle_count": 1,
-                "label": "生成代码控制器8字飞行",
-                "keywords": ("生成代码", "generated c", "codegen"),
-                "manual_control": False,
-            },
-            {
-                "profile_id": "factory_l2_fuel_fixed64_exploration_v1",
-                "profile_path": "Config/profiles/experiments/factory_l2_fuel_fixed64_exploration_v1.json",
-                "controller_id": "px4ctrl",
-                "vehicle_count": 1,
-                "label": "FUEL单机自主探索",
-                "keywords": ("fuel", "自主探索", "探索"),
-                "manual_control": False,
-            },
-            {
-                "profile_id": "factory_l2_three_uav_swarm_formation_v1",
-                "profile_path": "Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json",
-                "controller_id": "px4ctrl",
-                "vehicle_count": 3,
-                "label": "三机固定编队避障",
-                "keywords": ("三机", "编队", "formation", "swarm"),
-                "manual_control": False,
-            },
-            {
-                "profile_id": "px4ctrl_figure8_baseline_v1",
-                "profile_path": "Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json",
-                "controller_id": "px4ctrl",
-                "vehicle_count": 1,
-                "label": "单机8字飞行",
-                "keywords": ("8字", "八字", "figure eight", "figure8"),
-                "manual_control": False,
-            },
-            {
-                "profile_id": "px4ctrl_ground_standby_v1",
-                "profile_path": "Config/profiles/experiments/px4ctrl_ground_standby_v1.json",
-                "controller_id": "px4ctrl",
-                "vehicle_count": 1,
-                "label": "单机定点操纵",
-                "keywords": ("定点", "手动", "wasd", "悬停"),
-                "manual_control": True,
-            },
-        )
-        task = next(
-            (candidate for candidate in tasks if any(keyword in normalized for keyword in candidate["keywords"])),
-            None,
-        )
-        if task is None:
+        profiles_response = self.list_operator_profiles(request_id=request_id)
+        if not profiles_response.get("accepted"):
+            return profiles_response
+        try:
+            catalog = _read_json(self.operator_profile_catalog_path)
+        except (OSError, ValueError, json.JSONDecodeError):
+            return self._response(request_id, False, "operator_profile_catalog_unreadable")
+        by_id = {profile["id"]: profile for profile in profiles_response["operator_profiles"]}
+        candidates = []
+        for entry in catalog.get("profiles", []):
+            if not isinstance(entry, dict):
+                continue
+            profile = by_id.get(entry.get("profile_id"))
+            keywords = entry.get("agent_keywords", [])
+            if (
+                not isinstance(profile, dict)
+                or profile.get("enabled") is not True
+                or not isinstance(keywords, list)
+                or not any(isinstance(keyword, str) and keyword.casefold() in normalized for keyword in keywords)
+            ):
+                continue
+            candidates.append(profile)
+        if not candidates:
             return self._response(
                 request_id,
                 False,
                 "agent_intent_not_recognized",
-                supported_intents=[candidate["label"] for candidate in tasks],
+                supported_intents=[
+                    profile["label"] for profile in profiles_response["operator_profiles"] if profile.get("enabled") is True
+                ],
             )
-
-        profile_path = PROJECT_ROOT / str(task["profile_path"])
-        if not profile_path.is_file():
-            return self._response(request_id, False, "agent_profile_missing", profile_path=str(task["profile_path"]))
-        proposal = {key: value for key, value in task.items() if key != "keywords"}
+        profile = candidates[0]
+        proposal = {
+            "profile_id": profile["id"],
+            "profile_path": profile["profile_path"],
+            "controller_id": profile["controller_id"],
+            "vehicle_count": profile["vehicle_count"],
+            "label": profile["label"],
+            "manual_control": profile["manual_control"],
+        }
         proposal.update(
             {
                 "requires_user_confirmation": True,
@@ -729,6 +871,7 @@ class MoSimOrchestrator:
             "operations": [],
             "recording": {"active": False, "state": "idle", "output_path": ""},
             "injections": [],
+            "pending_injection": None,
             "events": [],
             "evidence_paths": {},
         }
@@ -1121,9 +1264,180 @@ class MoSimOrchestrator:
         manifest["lifecycle_state"] = "ready"
         manifest["runtime_started"] = False
         manifest["injections"] = []
+        manifest["pending_injection"] = None
         self._event(manifest, "run_reset")
         self._save(manifest)
         return self._response(request_id, True, "run_reset", run_id=run_id)
+
+    def _normalize_injection(self, manifest: dict[str, Any], command: dict[str, Any]) -> tuple[dict[str, Any] | None, str]:
+        try:
+            normalized = validate_command(
+                command,
+                manifest=manifest,
+                contract=load_contract(DEFAULT_INJECTION_CONTRACT),
+            )
+        except (OSError, ValueError) as exc:
+            return None, str(exc)
+        return normalized, ""
+
+    def stage_injection(self, *, request_id: str, run_id: str, command: dict[str, Any]) -> dict[str, Any]:
+        """Persist a discrete requested fault without calling the runtime backend."""
+        manifest = self._get_manifest(run_id)
+        if manifest is None:
+            return self._response(request_id, False, "run_not_found", run_id=run_id)
+        if manifest.get("lifecycle_state") not in {"ready", "starting", "running"}:
+            return self._response(request_id, False, "run_not_stageable", run_id=run_id)
+        normalized, error = self._normalize_injection(manifest, command)
+        if normalized is None:
+            return self._response(request_id, False, error, run_id=run_id)
+        previous = manifest.get("pending_injection")
+        pending = {
+            "schema": "mosim.pending_injection.v1",
+            "state": "pending",
+            "command": normalized,
+            "staged_at": time.time(),
+        }
+        manifest["pending_injection"] = pending
+        self._event(
+            manifest,
+            "injection_staged",
+            pending_injection=pending,
+            replaced_pending=bool(previous),
+        )
+        self._save(manifest)
+        return self._response(
+            request_id,
+            True,
+            "injection_staged_replaced" if previous else "injection_staged",
+            run_id=run_id,
+            pending_injection=pending,
+        )
+
+    def apply_staged_injection(self, *, request_id: str, run_id: str) -> dict[str, Any]:
+        manifest = self._get_manifest(run_id)
+        if manifest is None:
+            return self._response(request_id, False, "run_not_found", run_id=run_id)
+        if manifest.get("lifecycle_state") == "starting" and self.backend is not None:
+            self._refresh_runtime_state(manifest)
+        pending = manifest.get("pending_injection")
+        if not isinstance(pending, dict) or not isinstance(pending.get("command"), dict):
+            return self._response(request_id, False, "injection_pending_missing", run_id=run_id)
+        if pending.get("state") != "pending":
+            return self._response(
+                request_id,
+                False,
+                "injection_pending_requires_restage",
+                run_id=run_id,
+                pending_injection=pending,
+            )
+        if manifest.get("lifecycle_state") != "running" or self.backend is None:
+            return self._response(
+                request_id,
+                False,
+                "run_not_active",
+                run_id=run_id,
+                pending_injection=pending,
+            )
+        command = pending["command"]
+        result = self.backend.apply_injection(manifest, command)
+        accepted = bool(result.get("accepted"))
+        record = {
+            "action": "apply_staged_injection",
+            "request": command,
+            "backend_result": result,
+            "timestamp": time.time(),
+        }
+        manifest.setdefault("injections", []).append(record)
+        if accepted:
+            manifest["pending_injection"] = None
+        else:
+            pending["state"] = "apply_failed"
+            pending["last_backend_result"] = result
+            pending["last_attempt_at"] = time.time()
+        self._event(manifest, "staged_injection_result", record=record, pending_injection=manifest["pending_injection"])
+        self._save(manifest)
+        return self._response(
+            request_id,
+            accepted,
+            result.get("reason_code", "injection_result"),
+            run_id=run_id,
+            requested_value=command.get("value"),
+            applied_value=result.get("applied_value"),
+            injection_record=record,
+            pending_injection=manifest.get("pending_injection"),
+        )
+
+    def restore_normal(self, *, request_id: str, run_id: str, vehicle_id: str) -> dict[str, Any]:
+        """Reset wind and all four rotors, reporting each backend acknowledgement."""
+        manifest = self._get_manifest(run_id)
+        if manifest is None:
+            return self._response(request_id, False, "run_not_found", run_id=run_id)
+        if manifest.get("lifecycle_state") == "starting" and self.backend is not None:
+            self._refresh_runtime_state(manifest)
+        if manifest.get("lifecycle_state") != "running" or self.backend is None:
+            return self._response(request_id, False, "run_not_active", run_id=run_id)
+
+        commands: list[dict[str, Any]] = []
+        targets = [("wind_speed_mps", 0.0, None)] + [
+            ("motor_effectiveness", 1.0, rotor_index) for rotor_index in range(1, 5)
+        ]
+        for target, value, rotor_index in targets:
+            command: dict[str, Any] = {
+                "command_id": f"inj-{uuid.uuid4().hex}",
+                "run_id": run_id,
+                "profile_hash": manifest.get("experiment_profile_hash", ""),
+                "target": target,
+                "requested_at": time.time(),
+                "apply_mode": "restore",
+                "value": value,
+                "ramp_s": 0.0,
+                "duration_s": 0.0,
+                "restore_policy": "manual",
+                "source": "flight_console_restore_normal",
+                "vehicle_id": vehicle_id,
+            }
+            if rotor_index is not None:
+                command["rotor_index"] = rotor_index
+            normalized, error = self._normalize_injection(manifest, command)
+            if normalized is None:
+                return self._response(request_id, False, error, run_id=run_id)
+            commands.append(normalized)
+
+        command_results: list[dict[str, Any]] = []
+        for command in commands:
+            result = self.backend.apply_injection(manifest, command)
+            record = {
+                "action": "restore_normal",
+                "request": command,
+                "backend_result": result,
+                "timestamp": time.time(),
+            }
+            manifest.setdefault("injections", []).append(record)
+            command_results.append(record)
+        accepted_count = sum(bool(record["backend_result"].get("accepted")) for record in command_results)
+        accepted = accepted_count == len(command_results)
+        cleared_pending = manifest.get("pending_injection") is not None
+        manifest["pending_injection"] = None
+        reason = "restore_normal_applied" if accepted else "restore_normal_partial_failure"
+        self._event(
+            manifest,
+            "restore_normal_result",
+            vehicle_id=vehicle_id,
+            command_results=command_results,
+            cleared_pending=cleared_pending,
+        )
+        self._save(manifest)
+        return self._response(
+            request_id,
+            accepted,
+            reason,
+            run_id=run_id,
+            vehicle_id=vehicle_id,
+            accepted_count=accepted_count,
+            failed_count=len(command_results) - accepted_count,
+            command_results=command_results,
+            pending_injection=None,
+        )
 
     def apply_injection(self, *, request_id: str, run_id: str, command: dict[str, Any]) -> dict[str, Any]:
         manifest = self._get_manifest(run_id)

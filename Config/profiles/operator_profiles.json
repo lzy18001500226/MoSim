@@ -1,0 +1,64 @@
+{
+  "schema": "mosim.operator_profile_catalog.v1",
+  "catalog_id": "mosim_qgc_operator_profiles_v1",
+  "profiles": [
+    {
+      "profile_id": "px4ctrl_ground_standby_v1",
+      "profile_path": "Config/profiles/experiments/px4ctrl_ground_standby_v1.json",
+      "label": "单机定点操纵",
+      "enabled": true,
+      "operator_mode": "qgc_manual",
+      "agent_keywords": ["定点", "手动", "wasd", "悬停"]
+    },
+    {
+      "profile_id": "px4ctrl_figure8_baseline_v1",
+      "profile_path": "Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json",
+      "label": "单机8字飞行",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["8字", "八字", "figure eight", "figure8"]
+    },
+    {
+      "profile_id": "cascade_pid_figure8_generated_c_v1",
+      "profile_path": "Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json",
+      "label": "生成代码控制器8字飞行",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["生成代码", "generated c", "codegen"]
+    },
+    {
+      "profile_id": "factory_l2_fuel_fixed64_exploration_v1",
+      "profile_path": "Config/profiles/experiments/factory_l2_fuel_fixed64_exploration_v1.json",
+      "label": "FUEL单机自主探索",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["fuel", "自主探索", "探索"]
+    },
+    {
+      "profile_id": "factory_l2_three_uav_swarm_formation_v1",
+      "profile_path": "Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json",
+      "label": "三机固定编队避障",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["三机", "编队", "formation", "swarm"]
+    },
+    {
+      "profile_id": "mworks_live_official_pid_hover_50hz_v2",
+      "profile_path": "Config/profiles/experiments/mworks_live_official_pid_hover_50hz_v2.json",
+      "label": "MWORKS实时联合仿真（50 Hz）",
+      "enabled": false,
+      "disabled_reason": "实时数据展示已具备，在线控制接管仍待运行验收",
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["联合仿真", "50hz", "mworks live"]
+    },
+    {
+      "profile_id": "mworks_live_official_pid_hover_200hz_v1",
+      "profile_path": "Config/profiles/experiments/mworks_live_official_pid_hover_200hz_v1.json",
+      "label": "MWORKS实时联合仿真（200 Hz）",
+      "enabled": false,
+      "disabled_reason": "比赛版冻结为候选能力，不作为录制主线",
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["联合仿真", "200hz", "mworks live"]
+    }
+  ]
+}

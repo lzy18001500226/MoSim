@@ -23,6 +23,7 @@ class MoSimOrchestratorBridge final : public QObject
     Q_PROPERTY(QString lifecycleState READ lifecycleState NOTIFY responseChanged)
     Q_PROPERTY(QString displaySessionId READ displaySessionId NOTIFY responseChanged)
     Q_PROPERTY(QVariantList controllers READ controllers NOTIFY responseChanged)
+    Q_PROPERTY(QVariantList operatorProfiles READ operatorProfiles NOTIFY responseChanged)
     Q_PROPERTY(QString registryHash READ registryHash NOTIFY responseChanged)
     Q_PROPERTY(QString operationId READ operationId NOTIFY responseChanged)
     Q_PROPERTY(QString operationState READ operationState NOTIFY responseChanged)
@@ -38,6 +39,7 @@ class MoSimOrchestratorBridge final : public QObject
     Q_PROPERTY(QVariantMap operatorMap READ operatorMap NOTIFY responseChanged)
     Q_PROPERTY(QVariantMap runManifest READ runManifest NOTIFY responseChanged)
     Q_PROPERTY(QVariantMap runtimeTelemetry READ runtimeTelemetry NOTIFY responseChanged)
+    Q_PROPERTY(QVariantMap pendingInjection READ pendingInjection NOTIFY responseChanged)
     Q_PROPERTY(QVariantMap agentProposal READ agentProposal NOTIFY responseChanged)
     Q_PROPERTY(QString lastResponse READ lastResponse NOTIFY responseChanged)
 
@@ -57,6 +59,7 @@ public:
     QString lifecycleState() const { return _lifecycleState; }
     QString displaySessionId() const { return _displaySessionId; }
     QVariantList controllers() const { return _controllers; }
+    QVariantList operatorProfiles() const { return _operatorProfiles; }
     QString registryHash() const { return _registryHash; }
     QString operationId() const { return _operationId; }
     QString operationState() const { return _operationState; }
@@ -72,6 +75,7 @@ public:
     QVariantMap operatorMap() const { return _operatorMap; }
     QVariantMap runManifest() const { return _runManifest; }
     QVariantMap runtimeTelemetry() const { return _runtimeTelemetry; }
+    QVariantMap pendingInjection() const { return _pendingInjection; }
     QVariantMap agentProposal() const { return _agentProposal; }
     QString lastResponse() const { return _lastResponse; }
 
@@ -90,10 +94,15 @@ public:
     Q_INVOKABLE void applyWind(const QString &vehicleId, double value);
     Q_INVOKABLE void applyMotorEffectiveness(const QString &vehicleId, int rotorIndex, double value);
     Q_INVOKABLE void restoreInjection(const QString &vehicleId, const QString &target, int rotorIndex = 0);
+    Q_INVOKABLE void stageWind(const QString &vehicleId, double value);
+    Q_INVOKABLE void stageMotorEffectiveness(const QString &vehicleId, int rotorIndex, double value);
+    Q_INVOKABLE void applyStagedInjection();
+    Q_INVOKABLE void restoreNormal(const QString &vehicleId);
     Q_INVOKABLE void prepareDisplays(const QStringList &displays);
     Q_INVOKABLE void attachDisplays();
     Q_INVOKABLE void detachDisplays();
     Q_INVOKABLE void refreshControllers();
+    Q_INVOKABLE void refreshOperatorProfiles();
     Q_INVOKABLE void proposeOperatorTask(const QString &prompt);
     Q_INVOKABLE void clearAgentProposal();
     Q_INVOKABLE void closeAllRviz();
@@ -149,6 +158,7 @@ private:
     QString _lifecycleState = QStringLiteral("unknown");
     QString _displaySessionId;
     QVariantList _controllers;
+    QVariantList _operatorProfiles;
     QString _registryHash;
     QString _operationId;
     QString _operationState = QStringLiteral("idle");
@@ -165,6 +175,7 @@ private:
     QVariantMap _operatorMap;
     QVariantMap _runManifest;
     QVariantMap _runtimeTelemetry;
+    QVariantMap _pendingInjection;
     QVariantMap _agentProposal;
     int _unrealDiscoveryAttempt = 0;
     int _unrealContainerReadyAttempt = 0;

@@ -65,6 +65,42 @@ def test_client_builds_bounded_operator_task_proposal() -> None:
     }
 
 
+def test_client_builds_staged_fault_apply_and_restore_requests() -> None:
+    staged = orchestrator_client.build_payload(
+        _args(
+            action="stage_injection",
+            run_id="run-test",
+            target="motor_effectiveness",
+            value=0.65,
+            rotor_index=2,
+            vehicle_id="uav1",
+        )
+    )
+    assert staged["action"] == "stage_injection"
+    assert staged["run_id"] == "run-test"
+    assert staged["command"]["target"] == "motor_effectiveness"
+    assert staged["command"]["value"] == 0.65
+    assert staged["command"]["rotor_index"] == 2
+    assert staged["command"]["vehicle_id"] == "uav1"
+
+    applied = orchestrator_client.build_payload(_args(action="apply_staged_injection", run_id="run-test"))
+    assert applied == {
+        "schema": "mosim.orchestrator.request.v1",
+        "action": "apply_staged_injection",
+        "run_id": "run-test",
+    }
+
+    restored = orchestrator_client.build_payload(
+        _args(action="restore_normal", run_id="run-test", vehicle_id="uav1")
+    )
+    assert restored == {
+        "schema": "mosim.orchestrator.request.v1",
+        "action": "restore_normal",
+        "run_id": "run-test",
+        "vehicle_id": "uav1",
+    }
+
+
 def test_connection_preflight_can_defer_ros_master_for_orchestrator_cold_start() -> None:
     payload = orchestrator_client.build_payload(
         _args(

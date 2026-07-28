@@ -13,6 +13,7 @@ class FakeRuntimeBackend:
     def __init__(self) -> None:
         self.attach_calls = 0
         self.detach_calls = 0
+        self.injection_calls = []
 
     def start(self, manifest):
         return {"accepted": True, "reason_code": "test_runtime_started", "pid": 123}
@@ -24,6 +25,7 @@ class FakeRuntimeBackend:
         return {"accepted": True, "reason_code": "test_runtime_reset"}
 
     def apply_injection(self, manifest, command):
+        self.injection_calls.append(dict(command))
         return {"accepted": True, "reason_code": "test_injection_applied", "applied_value": command["value"]}
 
     def close_all_rviz(self, manifest):
@@ -94,6 +96,23 @@ MWORKS_LIVE_PROFILE = "Config/profiles/experiments/mworks_live_official_pid_hove
 MWORKS_LIVE_200HZ_PROFILE = "Config/profiles/experiments/mworks_live_official_pid_hover_200hz_v1.json"
 FUEL_FIXED64_PROFILE = "Config/profiles/experiments/factory_l2_fuel_fixed64_exploration_v1.json"
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def staged_injection_command(*, run_id: str, profile_hash: str, target: str, value: float) -> dict:
+    return {
+        "command_id": "inj-test-stage-001",
+        "run_id": run_id,
+        "profile_hash": profile_hash,
+        "target": target,
+        "requested_at": time.time(),
+        "apply_mode": "set",
+        "value": value,
+        "ramp_s": 0.0,
+        "duration_s": 0.0,
+        "restore_policy": "manual",
+        "source": "test",
+        "vehicle_id": "uav1",
+    }
 
 
 def passing_connection_preflight(**endpoint):
@@ -579,6 +598,95 @@ def test_controller_catalog_is_dynamic_and_explains_disabled_entries(tmp_path: P
     assert by_id["trained_neural_residual"]["enabled"] is False
     assert by_id["trained_neural_residual"]["disabled_reason"]
     assert response["registry_hash"]
+
+
+def test_operator_profile_catalog_exposes_only_published_profiles(tmp_path: Path) -> None:
+    response = MoSimOrchestrator(run_root=tmp_path).list_operator_profiles(request_id="operator-profiles")
+    assert response["accepted"] is True
+    by_id = {item["id"]: item for item in response["operator_profiles"]}
+    assert by_id["px4ctrl_ground_standby_v1"]["enabled"] is True
+    assert by_id["px4ctrl_ground_standby_v1"]["controller_id"] == "px4ctrl"
+    assert by_id["px4ctrl_ground_standby_v1"]["vehicle_count"] == 1
+    assert by_id["factory_l2_three_uav_swarm_formation_v1"]["vehicle_count"] == 3
+    assert by_id["mworks_live_official_pid_hover_50hz_v2"]["enabled"] is False
+    assert by_id["mworks_live_official_pid_hover_50hz_v2"]["disabled_reason"]
+    assert response["operator_profile_catalog_hash"]
+
+
+def test_staged_injection_does_not_call_backend_until_operator_applies(tmp_path: Path) -> None:
+    backend = FakeRuntimeBackend()
+    orchestrator = MoSimOrchestrator(run_root=tmp_path, backend=backend)
+    prepared = orchestrator.prepare_run(
+        request_id="prepare-staged", profile_path=PROFILE, controller_id="px4ctrl", vehicle_count=1
+    )
+    run_id = prepared["run_id"]
+    assert orchestrator.start_run(request_id="start-staged", run_id=run_id)["accepted"] is True
+
+    staged = orchestrator.stage_injection(
+        request_id="stage-wind",
+        run_id=run_id,
+        command=staged_injection_command(
+            run_id=run_id,
+            profile_hash=prepared["profile_hash"],
+            target="wind_speed_mps",
+            value=3.5,
+        ),
+    )
+    assert staged["accepted"] is True
+    assert backend.injection_calls == []
+    assert staged["pending_injection"]["state"] == "pending"
+    assert staged["pending_injection"]["command"]["target"] == "wind_speed_mps"
+
+    applied = orchestrator.apply_staged_injection(request_id="apply-wind", run_id=run_id)
+    assert applied["accepted"] is True
+    assert len(backend.injection_calls) == 1
+    assert backend.injection_calls[0]["target"] == "wind_speed_mps"
+    assert backend.injection_calls[0]["value"] == 3.5
+    assert applied["pending_injection"] is None
+    assert applied["injection_record"]["backend_result"]["reason_code"] == "test_injection_applied"
+
+
+def test_restore_normal_resets_wind_and_all_rotors_and_keeps_partial_failure_visible(tmp_path: Path) -> None:
+    class PartiallyFailingBackend(FakeRuntimeBackend):
+        def apply_injection(self, manifest, command):
+            self.injection_calls.append(dict(command))
+            if command.get("target") == "motor_effectiveness" and command.get("rotor_index") == 3:
+                return {"accepted": False, "reason_code": "test_rotor_three_rejected", "applied_value": 0.5}
+            return {"accepted": True, "reason_code": "test_injection_applied", "applied_value": command["value"]}
+
+    backend = PartiallyFailingBackend()
+    orchestrator = MoSimOrchestrator(run_root=tmp_path, backend=backend)
+    prepared = orchestrator.prepare_run(
+        request_id="prepare-restore", profile_path=PROFILE, controller_id="px4ctrl", vehicle_count=1
+    )
+    run_id = prepared["run_id"]
+    assert orchestrator.start_run(request_id="start-restore", run_id=run_id)["accepted"] is True
+    assert orchestrator.stage_injection(
+        request_id="stage-before-restore",
+        run_id=run_id,
+        command=staged_injection_command(
+            run_id=run_id,
+            profile_hash=prepared["profile_hash"],
+            target="wind_speed_mps",
+            value=2.0,
+        ),
+    )["accepted"] is True
+
+    restored = orchestrator.restore_normal(request_id="restore", run_id=run_id, vehicle_id="uav1")
+    assert restored["accepted"] is False
+    assert restored["reason_code"] == "restore_normal_partial_failure"
+    assert restored["accepted_count"] == 4
+    assert restored["failed_count"] == 1
+    assert restored["pending_injection"] is None
+    assert [command["target"] for command in backend.injection_calls] == [
+        "wind_speed_mps",
+        "motor_effectiveness",
+        "motor_effectiveness",
+        "motor_effectiveness",
+        "motor_effectiveness",
+    ]
+    assert [command["value"] for command in backend.injection_calls] == [0.0, 1.0, 1.0, 1.0, 1.0]
+    assert [command.get("rotor_index") for command in backend.injection_calls] == [None, 1, 2, 3, 4]
 
 
 def test_agent_proposes_registered_task_without_flight_authority(tmp_path: Path) -> None:

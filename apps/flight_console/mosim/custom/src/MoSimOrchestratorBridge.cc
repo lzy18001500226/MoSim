@@ -122,7 +122,7 @@ MoSimOrchestratorBridge::MoSimOrchestratorBridge(QObject *parent)
     _qgcObservability.start();
     recoverRunIdentity();
     loadOperatorMap();
-    QTimer::singleShot(0, this, &MoSimOrchestratorBridge::refreshControllers);
+    QTimer::singleShot(0, this, &MoSimOrchestratorBridge::refreshOperatorProfiles);
 }
 
 MoSimOrchestratorBridge::~MoSimOrchestratorBridge()
@@ -453,6 +453,34 @@ void MoSimOrchestratorBridge::restoreInjection(const QString &vehicleId, const Q
     invokeRunAction(QStringLiteral("restore_injection"), extra);
 }
 
+void MoSimOrchestratorBridge::stageWind(const QString &vehicleId, double value)
+{
+    invokeRunAction(QStringLiteral("stage_injection"),
+                    {QStringLiteral("--target"), QStringLiteral("wind_speed_mps"),
+                     QStringLiteral("--vehicle-id"), vehicleId,
+                     QStringLiteral("--value"), QString::number(value)});
+}
+
+void MoSimOrchestratorBridge::stageMotorEffectiveness(const QString &vehicleId, int rotorIndex, double value)
+{
+    invokeRunAction(QStringLiteral("stage_injection"),
+                    {QStringLiteral("--target"), QStringLiteral("motor_effectiveness"),
+                     QStringLiteral("--vehicle-id"), vehicleId,
+                     QStringLiteral("--rotor-index"), QString::number(rotorIndex),
+                     QStringLiteral("--value"), QString::number(value)});
+}
+
+void MoSimOrchestratorBridge::applyStagedInjection()
+{
+    invokeRunAction(QStringLiteral("apply_staged_injection"));
+}
+
+void MoSimOrchestratorBridge::restoreNormal(const QString &vehicleId)
+{
+    invokeRunAction(QStringLiteral("restore_normal"),
+                    {QStringLiteral("--vehicle-id"), vehicleId});
+}
+
 void MoSimOrchestratorBridge::prepareDisplays(const QStringList &displays)
 {
     QStringList extra;
@@ -482,6 +510,7 @@ void MoSimOrchestratorBridge::detachDisplays()
 }
 
 void MoSimOrchestratorBridge::refreshControllers() { invoke({QStringLiteral("list_controllers")}); }
+void MoSimOrchestratorBridge::refreshOperatorProfiles() { invoke({QStringLiteral("list_operator_profiles")}); }
 void MoSimOrchestratorBridge::proposeOperatorTask(const QString &prompt)
 {
     _agentProposal.clear();
@@ -845,6 +874,7 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
         _recordingActive = false;
         _recordingPath.clear();
         _runtimeTelemetry.clear();
+        _pendingInjection.clear();
     }
     _profileHash = response.value(QStringLiteral("profile_hash")).toString(_profileHash);
     const QJsonObject manifest = response.value(QStringLiteral("manifest")).toObject();
@@ -868,6 +898,15 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
     if (!controllers.isEmpty() || _pendingAction == QStringLiteral("list_controllers")) {
         _controllers = controllers.toVariantList();
         _registryHash = response.value(QStringLiteral("registry_hash")).toString();
+    }
+    const QJsonArray operatorProfiles = response.value(QStringLiteral("operator_profiles")).toArray();
+    if (!operatorProfiles.isEmpty() || completedAction == QStringLiteral("list_operator_profiles")) {
+        _operatorProfiles = operatorProfiles.toVariantList();
+    }
+    if (response.contains(QStringLiteral("pending_injection"))) {
+        _pendingInjection = response.value(QStringLiteral("pending_injection")).toObject().toVariantMap();
+    } else if (!manifest.isEmpty()) {
+        _pendingInjection = manifest.value(QStringLiteral("pending_injection")).toObject().toVariantMap();
     }
     if (completedAction == QStringLiteral("propose_operator_task")) {
         _agentProposal = _accepted
@@ -921,7 +960,7 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
     _pendingAction.clear();
     emit responseChanged();
     emit busyChanged();
-    if (completedAction == QStringLiteral("list_controllers") && _startupRunRecoveryPending) {
+    if (completedAction == QStringLiteral("list_operator_profiles") && _startupRunRecoveryPending) {
         _startupRunRecoveryPending = false;
         QTimer::singleShot(0, this, [this]() {
             invoke({QStringLiteral("get_run_state"), QStringLiteral("--run-id"), _runId});

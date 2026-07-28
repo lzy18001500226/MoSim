@@ -25,11 +25,17 @@ Item {
     property var parentToolInsets
     property var totalToolInsets: toolInsets
     property var mapControl
-    property bool controllerCatalogSynced: false
+    property bool operatorProfileCatalogSynced: false
     property bool _showSingleVehicleUI: true
     readonly property var activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
+    readonly property var profiles: mosimOrchestrator.operatorProfiles || []
+    readonly property var emptyProfile: ({
+        id: "", label: "正在读取已发布配置", profile_path: "", controller_id: "",
+        controller_label: "-", vehicle_count: 0, enabled: false,
+        disabled_reason: "正在读取已发布配置", operator_mode: "mission_adapter", manual_control: false
+    })
 
-    readonly property bool manualTaskSelected: profiles[profileBox.currentIndex].manual === true
+    readonly property bool manualTaskSelected: currentProfile().manual_control === true
     readonly property bool flightConfigurationEditable: !mosimOrchestrator.busy
                                                         && mosimOrchestrator.lifecycleState !== "starting"
                                                         && mosimOrchestrator.lifecycleState !== "running"
@@ -40,6 +46,53 @@ Item {
                                                 && activeVehicle.initialConnectComplete
                                                 && activeVehicle.armed
                                                 && activeVehicle.flightMode === "Position"
+    readonly property bool faultStagingAllowed: !mosimOrchestrator.busy
+                                                && mosimOrchestrator.runId.length > 0
+                                                && ["ready", "starting", "running"].indexOf(mosimOrchestrator.lifecycleState) >= 0
+    readonly property bool faultApplyAllowed: !mosimOrchestrator.busy
+                                              && mosimOrchestrator.lifecycleState === "running"
+                                              && pendingInjectionIsReady()
+    readonly property bool faultRestoreAllowed: !mosimOrchestrator.busy
+                                                && mosimOrchestrator.lifecycleState === "running"
+
+    function injectionVehicleIds() {
+        var count = Math.max(0, Number(currentProfile().vehicle_count || 0))
+        var vehicles = []
+        for (var index = 1; index <= count; ++index)
+            vehicles.push("uav" + index)
+        return vehicles
+    }
+
+    function pendingInjectionCommand() {
+        var pending = mosimOrchestrator.pendingInjection || ({})
+        return pending.command || ({})
+    }
+
+    function pendingInjectionIsReady() {
+        var pending = mosimOrchestrator.pendingInjection || ({})
+        var command = pendingInjectionCommand()
+        return String(pending.state || "") === "pending" && String(command.target || "") !== ""
+    }
+
+    function pendingInjectionText() {
+        var pending = mosimOrchestrator.pendingInjection || ({})
+        var command = pendingInjectionCommand()
+        var target = String(command.target || "")
+        if (target === "")
+            return "暂无待应用故障"
+        var vehicle = String(command.vehicle_id || "-")
+        var detail = ""
+        if (target === "wind_speed_mps")
+            detail = "风扰 " + Number(command.value || 0).toFixed(1) + " m/s"
+        else if (target === "motor_effectiveness")
+            detail = "电机 " + String(command.rotor_index || "-")
+                    + " 效率 " + Number(command.value || 0).toFixed(2)
+        else
+            detail = target + " " + String(command.value || "-")
+        if (String(pending.state || "") === "apply_failed")
+            return "应用未确认，请重新暂存：" + vehicle + " · " + detail
+        return "待应用：" + vehicle + " · " + detail
+    }
 
     function sendManualStick(forceNeutral) {
         if (!activeVehicle || !activeVehicle.initialConnectComplete)
@@ -83,7 +136,7 @@ Item {
     }
 
     function canStopRuntime() {
-        var expected = profiles[profileBox.currentIndex].count
+        var expected = currentProfile().vehicle_count
         if (manualTaskSelected)
             return qgcConnectedVehicleCount() === expected && qgcArmedVehicleCount() === 0
         return mosimOrchestrator.operationState === "completed"
@@ -91,8 +144,8 @@ Item {
     }
 
     function flightPhaseText() {
-        var profile = profiles[profileBox.currentIndex]
-        var expected = profile.count
+        var profile = currentProfile()
+        var expected = profile.vehicle_count
         var connected = qgcConnectedVehicleCount()
         var armed = qgcArmedVehicleCount()
         if (mosimOrchestrator.operationState === "running"
@@ -109,7 +162,7 @@ Item {
             return "尚未启动飞行运行时。"
         if (connected < expected)
             return "等待飞机连接：" + connected + "/" + expected
-        if (profile.takeoff === "qgc") {
+        if (profile.manual_control === true) {
             if (armed === 0)
                 return observedArmedDuringRun ? "飞机已落地并锁定；现在可以停止当前仿真。"
                                               : "飞机已连接；下一步使用QGC原生解锁/起飞。"
@@ -156,11 +209,19 @@ Item {
             "runtime_profile_not_allowlisted": "该运行配置未获准启动",
             "display_attached": "显示窗口已连接",
             "display_detached": "显示窗口已分离",
-            "rviz_sessions_closed": "RViz窗口已关闭"
-            ,"agent_proposal_ready": "任务建议已生成，等待人工确认"
-            ,"agent_prompt_empty": "请输入任务需求"
-            ,"agent_prompt_too_long": "任务描述过长，请简化后重试"
-            ,"agent_intent_not_recognized": "未识别任务，请明确填写定点、8字、FUEL或三机编队"
+            "rviz_sessions_closed": "RViz窗口已关闭",
+            "injection_staged": "故障已暂存，等待人工应用",
+            "injection_staged_replaced": "已替换待应用故障",
+            "injection_pending_missing": "没有待应用故障",
+            "injection_pending_requires_restage": "上次应用未确认，请重新暂存",
+            "run_not_stageable": "当前任务状态不允许暂存故障",
+            "run_not_active": "飞行运行时未就绪，不能应用故障",
+            "restore_normal_applied": "已恢复正常：风扰归零，四电机效率恢复",
+            "restore_normal_partial_failure": "恢复正常部分失败，请查看运行日志",
+            "agent_proposal_ready": "任务建议已生成，等待人工确认",
+            "agent_prompt_empty": "请输入任务需求",
+            "agent_prompt_too_long": "任务描述过长，请简化后重试",
+            "agent_intent_not_recognized": "未识别任务，请明确填写定点、8字、FUEL或三机编队"
         }
         return labels[reason] || reason
     }
@@ -303,7 +364,7 @@ Item {
     }
 
     function missionStatusText() {
-        if (profiles[profileBox.currentIndex].takeoff === "qgc")
+        if (currentProfile().manual_control === true)
             return "不适用：当前由QGC原生控制，用户负责解锁、起飞和降落"
         var status = missionStatus()
         if (status.transport_state === "unavailable")
@@ -317,7 +378,7 @@ Item {
     }
 
     function missionStatusColor() {
-        if (profiles[profileBox.currentIndex].takeoff === "qgc")
+        if (currentProfile().manual_control === true)
             return qgcPal.text
         var status = missionStatus()
         if (status.transport_state === "unavailable" || status.transport_state === "stale")
@@ -351,45 +412,10 @@ Item {
             mapControl.visible = true
     }
 
-    readonly property var profiles: [
-        { id: "px4ctrl_ground_standby_v1", label: "单机定点操纵", path: "Config/profiles/experiments/px4ctrl_ground_standby_v1.json", controller: "px4ctrl", count: 1, enabled: true, manual: true, takeoff: "qgc", disabledReason: "" },
-        { id: "px4ctrl_figure8_baseline_v1", label: "单机8字飞行", path: "Config/profiles/experiments/px4ctrl_figure8_baseline_v1.json", controller: "px4ctrl", count: 1, enabled: true, manual: false, takeoff: "automatic", disabledReason: "" },
-        { id: "cascade_pid_figure8_generated_c_v1", label: "生成代码控制器8字飞行", path: "Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json", controller: "cascade_pid", count: 1, enabled: true, manual: false, takeoff: "automatic", disabledReason: "" },
-        { id: "factory_l2_fuel_fixed64_exploration_v1", label: "FUEL单机自主探索", path: "Config/profiles/experiments/factory_l2_fuel_fixed64_exploration_v1.json", controller: "px4ctrl", count: 1, enabled: true, manual: false, takeoff: "automatic", disabledReason: "" },
-        { id: "factory_l2_three_uav_swarm_formation_v1", label: "三机固定编队避障", path: "Config/profiles/experiments/factory_l2_three_uav_swarm_formation_v1.json", controller: "px4ctrl", count: 3, enabled: true, manual: false, takeoff: "automatic", disabledReason: "" },
-        { id: "mworks_live_official_pid_hover_50hz_v2", label: "MWORKS实时联合仿真（50 Hz）", path: "Config/profiles/experiments/mworks_live_official_pid_hover_50hz_v2.json", controller: "official_pid", count: 1, enabled: false, manual: false, takeoff: "automatic", disabledReason: "实时数据展示已具备，在线控制接管仍待运行验收" },
-        { id: "mworks_live_official_pid_hover_200hz_v1", label: "MWORKS实时联合仿真（200 Hz）", path: "Config/profiles/experiments/mworks_live_official_pid_hover_200hz_v1.json", controller: "official_pid", count: 1, enabled: false, manual: false, takeoff: "automatic", disabledReason: "比赛版冻结为候选能力，不作为录制主线" }
-    ]
-    readonly property var vehicleCounts: [
-        { label: "1", value: 1, enabled: true },
-        { label: "3", value: 3, enabled: true },
-        { label: "4（规模验收未完成）", value: 4, enabled: false },
-        { label: "5（规模验收未完成）", value: 5, enabled: false },
-        { label: "6（规模验收未完成）", value: 6, enabled: false },
-        { label: "7（规模验收未完成）", value: 7, enabled: false },
-        { label: "8（规模验收未完成）", value: 8, enabled: false },
-        { label: "9（规模验收未完成）", value: 9, enabled: false }
-    ]
-
-    function controllerIndex(moduleId) {
-        for (var index = 0; index < mosimOrchestrator.controllers.length; ++index) {
-            if (mosimOrchestrator.controllers[index].module_id === moduleId)
-                return index
-        }
-        return -1
-    }
-
-    function controllerCompatibleWithTask(moduleId) {
-        return String(moduleId || "") === String(profiles[profileBox.currentIndex].controller)
-    }
-
-    function vehicleCountCompatibleWithTask(vehicleCount) {
-        return Number(vehicleCount) === Number(profiles[profileBox.currentIndex].count)
-    }
-
-    function taskSelectionCompatible() {
-        return controllerCompatibleWithTask(controllerBox.currentValue)
-                && vehicleCountCompatibleWithTask(vehicleCounts[vehicleBox.currentIndex].value)
+    function currentProfile() {
+        if (profileBox.currentIndex >= 0 && profileBox.currentIndex < profiles.length)
+            return profiles[profileBox.currentIndex]
+        return emptyProfile
     }
 
     function profileIndex(profileId) {
@@ -402,9 +428,10 @@ Item {
 
     function agentProposalReady() {
         var proposal = mosimOrchestrator.agentProposal || ({})
+        var index = profileIndex(String(proposal.profile_id || ""))
         return proposal.requires_user_confirmation === true
                 && proposal.may_start_flight === false
-                && profileIndex(String(proposal.profile_id || "")) >= 0
+                && index >= 0 && profiles[index].enabled === true
     }
 
     function confirmAgentProposal() {
@@ -417,37 +444,33 @@ Item {
         profileBox.currentIndex = index
         syncProfileSelection()
         mosimOrchestrator.clearAgentProposal()
-        mosimOrchestrator.prepareRun(String(proposal.profile_path), String(proposal.controller_id),
-                                     Number(proposal.vehicle_count), 0,
-                                     proposal.manual_control === true)
+        var profile = currentProfile()
+        mosimOrchestrator.prepareRun(String(profile.profile_path), String(profile.controller_id),
+                                     Number(profile.vehicle_count), 0,
+                                     profile.manual_control === true)
     }
 
     function syncProfileSelection() {
-        var profile = profiles[profileBox.currentIndex]
-        var index = controllerIndex(profile.controller)
-        if (index >= 0)
-            controllerBox.currentIndex = index
-        vehicleBox.currentIndex = profile.count === 3 ? 1 : 0
         injectionVehicle.currentIndex = 0
         manualModeCheck.checked = false
     }
 
     function taskGuideText() {
-        var profile = profiles[profileBox.currentIndex]
+        var profile = currentProfile()
         if (!profile.enabled)
-            return "当前不可启动：" + profile.disabledReason
-        if (profile.takeoff === "qgc")
+            return "当前不可启动：" + profile.disabled_reason
+        if (profile.manual_control === true)
             return "操作顺序：启动并等待连接 → 使用QGC原生解锁/起飞 → 切换Position模式 → 点击键盘控制区后使用W/A/S/D → 使用QGC原生降落。"
         return "操作顺序：验证配置 → 启动任务。Orchestrator将自动完成连接、解锁、起飞、任务执行和降落；全过程必须在QGC确认阶段、告警和结束状态。"
     }
 
     function flightAuthorityText() {
-        var profile = profiles[profileBox.currentIndex]
+        var profile = currentProfile()
         if (!profile.enabled)
             return "未授权：当前Profile尚未通过运行门禁"
-        if (profile.takeoff === "qgc")
+        if (profile.manual_control === true)
             return "QGC原生控制：你负责解锁、起飞、Position模式操纵和降落"
-        if (profile.count > 1)
+        if (profile.vehicle_count > 1)
             return "编队Mission Adapter独占控制：自动逐机解锁、起飞、编队任务和降落"
         return "任务Mission Adapter独占控制：自动解锁、起飞、任务执行和降落"
     }
@@ -455,13 +478,14 @@ Item {
     function selectionMatchesPreparedRun() {
         if (mosimOrchestrator.runId === "")
             return false
-        return mosimOrchestrator.experimentProfileId === profiles[profileBox.currentIndex].id
-                && mosimOrchestrator.selectedControllerId === controllerBox.currentValue
-                && mosimOrchestrator.selectedVehicleCount === vehicleCounts[vehicleBox.currentIndex].value
+        var profile = currentProfile()
+        return mosimOrchestrator.experimentProfileId === profile.id
+                && mosimOrchestrator.selectedControllerId === profile.controller_id
+                && mosimOrchestrator.selectedVehicleCount === profile.vehicle_count
     }
 
     function nextOperatorStepText() {
-        var profile = profiles[profileBox.currentIndex]
+        var profile = currentProfile()
         if (!profile.enabled)
             return "当前任务尚未通过运行门禁，不能启动。"
         if (mosimOrchestrator.busy)
@@ -471,7 +495,7 @@ Item {
         if (mosimOrchestrator.lifecycleState === "running" && !selectionMatchesPreparedRun())
             return "另一个任务仍在运行：先确认飞机已降落且未解锁，再点击“停止当前仿真”，然后验证所选任务。"
         if (mosimOrchestrator.lifecycleState === "running" && selectionMatchesPreparedRun()) {
-            if (profile.takeoff !== "qgc")
+            if (profile.manual_control !== true)
                 return "自动任务已接管：在QGC确认连接、解锁、起飞、执行和降落阶段；异常时请求安全停止。"
             if (!activeVehicle)
                 return "仿真已运行，正在等待 QGC 发现飞机。"
@@ -497,49 +521,49 @@ Item {
             return "任务启动失败：查看上方原因，确认飞机已降落后复位或重新验证。"
         if (mosimOrchestrator.lifecycleState === "completed")
             return "本次任务已结束，可以查看结果包或选择下一个任务重新验证。"
-        return "先选择任务和控制器，然后点击“验证配置”。"
+        return "先选择已发布任务，然后点击“验证配置”。"
     }
 
     function operatorChecklist() {
-        var profile = profiles[profileBox.currentIndex]
+        var profile = currentProfile()
         var selected = selectionMatchesPreparedRun()
         var running = mosimOrchestrator.lifecycleState === "starting"
                 || mosimOrchestrator.lifecycleState === "running"
-        var connected = qgcConnectedVehicleCount() >= profile.count
-        var armed = qgcArmedVehicleCount() >= profile.count
-        var manualAirborne = profile.takeoff === "qgc" && activeVehicle
+        var connected = qgcConnectedVehicleCount() >= profile.vehicle_count
+        var armed = qgcArmedVehicleCount() >= profile.vehicle_count
+        var manualAirborne = profile.manual_control === true && activeVehicle
                 && activeVehicle.initialConnectComplete && activeVehicle.armed && activeVehicle.flying
         var manualExecuting = manualAirborne && activeVehicle.flightMode === "Position"
         var mission = missionStatus()
         var missionPhase = String(mission.phase || "")
-        var automaticExecuting = profile.takeoff !== "qgc"
+        var automaticExecuting = profile.manual_control !== true
                 && mission.transport_state !== "unavailable"
                 && mission.transport_state !== "stale"
                 && !mission.terminal
                 && ["hover_before", "figure8", "ego_triggered", "ego_execute",
                     "exploration_execute", "safe_stop_hover", "land"].indexOf(missionPhase) >= 0
-        var missionFailed = profile.takeoff !== "qgc" && mission.terminal === true
+        var missionFailed = profile.manual_control !== true && mission.terminal === true
                 && mission.accepted !== true
-        var landed = profile.takeoff === "qgc"
+        var landed = profile.manual_control === true
                 ? observedArmedDuringRun && connected && qgcArmedVehicleCount() === 0
                 : mission.terminal === true && mission.accepted === true && qgcArmedVehicleCount() === 0
-        var takeoffComplete = profile.takeoff === "qgc"
+        var takeoffComplete = profile.manual_control === true
                 ? manualAirborne || landed
                 : observedArmedDuringRun || automaticExecuting || mission.terminal === true
-        var executionState = profile.takeoff === "qgc"
+        var executionState = profile.manual_control === true
                 ? (landed ? "已完成" : (manualExecuting ? "当前" : "等待"))
                 : (missionFailed ? "失败"
                                  : (mission.terminal === true ? "已完成"
                                                               : (automaticExecuting ? "当前" : "等待")))
-        var landingActive = profile.takeoff === "qgc"
+        var landingActive = profile.manual_control === true
                 ? activeVehicle && activeVehicle.landing
                 : ["safe_stop_hover", "land"].indexOf(missionPhase) >= 0
         return [
             { label: "1. 配置冻结", state: selected ? "已完成" : "当前" },
             { label: "2. 运行时与飞机连接", state: connected ? "已完成" : (running ? "当前" : "等待") },
-            { label: profile.takeoff === "qgc" ? "3. QGC原生解锁与起飞" : "3. Adapter自动解锁与起飞",
+            { label: profile.manual_control === true ? "3. QGC原生解锁与起飞" : "3. Adapter自动解锁与起飞",
               state: takeoffComplete ? "已完成" : (connected ? "当前" : "等待") },
-            { label: profile.takeoff === "qgc" ? "4. Position / W/A/S/D" : "4. 自主任务执行",
+            { label: profile.manual_control === true ? "4. Position / W/A/S/D" : "4. 自主任务执行",
               state: executionState },
             { label: "5. 降落、锁定与结束",
               state: landed ? "已完成" : (missionFailed ? "失败" : (landingActive ? "当前" : "等待")) }
@@ -559,8 +583,8 @@ Item {
     readonly property var flightStageLabels: ["配置", "环境", "连接", "起飞", "执行", "降落"]
 
     function currentFlightStageIndex() {
-        var profile = profiles[profileBox.currentIndex]
-        var connected = qgcConnectedVehicleCount() >= profile.count
+        var profile = currentProfile()
+        var connected = qgcConnectedVehicleCount() >= profile.vehicle_count
         var armed = qgcArmedVehicleCount() > 0
         var mission = missionStatus()
         var missionPhase = String(mission.phase || "")
@@ -724,7 +748,7 @@ Item {
                         width: parent.width
                         spacing: 8
                         QGCLabel {
-                            visible: profiles[profileBox.currentIndex].takeoff !== "qgc"
+                            visible: currentProfile().manual_control !== true
                             text: "任务Adapter阶段：" + missionStatusText()
                             color: missionStatusColor()
                             font.bold: true
@@ -750,68 +774,33 @@ Item {
                                     text: modelData.label
                                     enabled: modelData.enabled
                                     ToolTip.visible: hovered && !modelData.enabled
-                                    ToolTip.text: modelData.disabledReason
+                                    ToolTip.text: modelData.disabled_reason
                                 }
                                 onActivated: syncProfileSelection()
                             }
 
-                            QGCLabel { text: "控制器"; font.bold: true }
-                            ComboBox {
-                                id: controllerBox
+                            QGCLabel { text: "控制器（已绑定）"; font.bold: true }
+                            QGCLabel {
                                 Layout.fillWidth: true
-                                enabled: flightConfigurationEditable
-                                model: mosimOrchestrator.controllers
-                                textRole: "label"
-                                valueRole: "module_id"
-                                delegate: ItemDelegate {
-                                    width: controllerBox.width
-                                    text: modelData.label
-                                    enabled: modelData.enabled && root.controllerCompatibleWithTask(modelData.module_id)
-                                    ToolTip.visible: hovered && !enabled
-                                    ToolTip.text: !modelData.enabled
-                                                  ? modelData.disabled_reason
-                                                  : "当前任务没有该控制器的运行后端"
-                                }
+                                text: String(currentProfile().controller_label || "-")
+                                      + " · " + String(currentProfile().controller_id || "-")
+                                wrapMode: Text.Wrap
                             }
 
-                            QGCLabel { text: "机数"; font.bold: true }
-                            ComboBox {
-                                id: vehicleBox
+                            QGCLabel { text: "无人机（已绑定）"; font.bold: true }
+                            QGCLabel {
                                 Layout.fillWidth: true
-                                enabled: flightConfigurationEditable
-                                model: vehicleCounts
-                                textRole: "label"
-                                delegate: ItemDelegate {
-                                    width: vehicleBox.width
-                                    text: modelData.label
-                                    enabled: modelData.enabled && root.vehicleCountCompatibleWithTask(modelData.value)
-                                    ToolTip.visible: hovered && !enabled
-                                    ToolTip.text: !modelData.enabled ? "该机数尚未通过规模验收"
-                                                                      : "当前任务固定为" + profiles[profileBox.currentIndex].count + "架飞机"
-                                }
+                                text: currentProfile().vehicle_count > 0
+                                      ? String(currentProfile().vehicle_count) + " 架"
+                                      : "-"
                             }
                         }
 
                         QGCLabel {
                             Layout.fillWidth: true
-                            visible: !profiles[profileBox.currentIndex].enabled
-                            text: profiles[profileBox.currentIndex].disabledReason
+                            visible: !currentProfile().enabled
+                            text: currentProfile().disabled_reason
                             color: qgcPal.colorOrange
-                            wrapMode: Text.Wrap
-                        }
-                        QGCLabel {
-                            Layout.fillWidth: true
-                            visible: controllerBox.currentIndex >= 0
-                                     && !mosimOrchestrator.controllers[controllerBox.currentIndex].enabled
-                            text: visible ? mosimOrchestrator.controllers[controllerBox.currentIndex].disabled_reason : ""
-                            color: qgcPal.colorOrange
-                            wrapMode: Text.Wrap
-                        }
-                        QGCLabel {
-                            Layout.fillWidth: true
-                            visible: !taskSelectionCompatible()
-                            text: "当前控制器或机数与任务运行后端不匹配，请重新选择任务。"
-                            color: qgcPal.colorRed
                             wrapMode: Text.Wrap
                         }
                         RowLayout {
@@ -822,14 +811,11 @@ Item {
                                 enabled: !mosimOrchestrator.busy
                                          && mosimOrchestrator.lifecycleState !== "starting"
                                          && mosimOrchestrator.lifecycleState !== "running"
-                                         && controllerBox.currentIndex >= 0
-                                         && mosimOrchestrator.controllers[controllerBox.currentIndex].enabled
-                                         && vehicleCounts[vehicleBox.currentIndex].enabled
-                                         && profiles[profileBox.currentIndex].enabled
-                                         && taskSelectionCompatible()
-                                onClicked: mosimOrchestrator.prepareRun(profiles[profileBox.currentIndex].path,
-                                                                        controllerBox.currentValue,
-                                                                        vehicleCounts[vehicleBox.currentIndex].value, 0,
+                                         && currentProfile().id !== ""
+                                         && currentProfile().enabled
+                                onClicked: mosimOrchestrator.prepareRun(currentProfile().profile_path,
+                                                                        currentProfile().controller_id,
+                                                                        currentProfile().vehicle_count, 0,
                                                                         manualTaskSelected)
                             }
                             QGCButton {
@@ -934,7 +920,7 @@ Item {
                             Layout.fillWidth: true
                         }
                         QGCLabel {
-                            visible: profiles[profileBox.currentIndex].takeoff !== "qgc"
+                            visible: currentProfile().manual_control !== true
                                      && missionStatus().adapter_id !== undefined
                             text: "Adapter：" + String(missionStatus().adapter_id || "-")
                                   + " · 状态：" + String(missionStatus().state || "-")
@@ -942,7 +928,7 @@ Item {
                             Layout.fillWidth: true
                         }
                         Repeater {
-                            model: profiles[profileBox.currentIndex].takeoff === "qgc"
+                            model: currentProfile().manual_control === true
                                    ? [] : (missionStatus().vehicles || [])
                             delegate: QGCLabel {
                                 required property var modelData
@@ -954,7 +940,7 @@ Item {
                             }
                         }
                         QGCLabel {
-                            visible: profiles[profileBox.currentIndex].takeoff !== "qgc"
+                            visible: currentProfile().manual_control !== true
                                      && missionStatus().terminal === true
                                      && missionStatus().accepted !== true
                             text: "终态原因：" + String(missionStatus().reason_code || "未知")
@@ -990,9 +976,9 @@ Item {
                             }
                         }
                         QGCLabel {
-                            visible: runtimeTelemetryFresh() && runtimeVehicles().length !== profiles[profileBox.currentIndex].count
+                            visible: runtimeTelemetryFresh() && runtimeVehicles().length !== currentProfile().vehicle_count
                             text: "状态不完整：收到 " + runtimeVehicles().length + "/"
-                                  + profiles[profileBox.currentIndex].count + " 架飞机遥测"
+                                  + currentProfile().vehicle_count + " 架飞机遥测"
                             color: qgcPal.colorRed
                             font.bold: true
                             wrapMode: Text.Wrap
@@ -1021,17 +1007,17 @@ Item {
                         ComboBox {
                             id: injectionVehicle
                             Layout.fillWidth: true
-                            model: ["uav1", "uav2", "uav3"]
-                            delegate: ItemDelegate {
-                                width: injectionVehicle.width
-                                text: modelData
-                                enabled: index < profiles[profileBox.currentIndex].count
-                            }
+                            model: root.injectionVehicleIds()
                         }
                         QGCLabel { text: "风速（m/s）" }
                         Slider { id: windSlider; Layout.fillWidth: true; from: 0; to: 20; stepSize: 0.5 }
                         QGCLabel { text: windSlider.value.toFixed(1) }
-                        QGCButton { text: "应用风扰"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.applyWind(injectionVehicle.currentText, windSlider.value) }
+                        QGCButton {
+                            text: "暂存风扰"
+                            Layout.fillWidth: true
+                            enabled: faultStagingAllowed && injectionVehicle.currentText.length > 0
+                            onClicked: mosimOrchestrator.stageWind(injectionVehicle.currentText, windSlider.value)
+                        }
                         QGCLabel { text: "电机效率" }
                         RowLayout {
                             Layout.fillWidth: true
@@ -1039,11 +1025,34 @@ Item {
                             Slider { id: motorSlider; Layout.fillWidth: true; from: 0; to: 1; value: 1; stepSize: 0.05 }
                             QGCLabel { text: motorSlider.value.toFixed(2) }
                         }
-                        QGCButton { text: "应用电机故障"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.applyMotorEffectiveness(injectionVehicle.currentText, rotorIndex.value, motorSlider.value) }
+                        QGCButton {
+                            text: "暂存电机故障"
+                            Layout.fillWidth: true
+                            enabled: faultStagingAllowed && injectionVehicle.currentText.length > 0
+                            onClicked: mosimOrchestrator.stageMotorEffectiveness(injectionVehicle.currentText,
+                                                                                  rotorIndex.value, motorSlider.value)
+                        }
+                        QGCLabel { text: "待应用故障"; font.bold: true }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: pendingInjectionText()
+                            color: pendingInjectionIsReady() ? qgcPal.colorOrange : qgcPal.text
+                            wrapMode: Text.Wrap
+                        }
                         RowLayout {
                             Layout.fillWidth: true
-                            QGCButton { text: "恢复无风"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.restoreInjection(injectionVehicle.currentText, "wind_speed_mps") }
-                            QGCButton { text: "恢复电机"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.restoreInjection(injectionVehicle.currentText, "motor_effectiveness", rotorIndex.value) }
+                            QGCButton {
+                                text: "应用待应用故障"
+                                Layout.fillWidth: true
+                                enabled: faultApplyAllowed
+                                onClicked: mosimOrchestrator.applyStagedInjection()
+                            }
+                            QGCButton {
+                                text: "恢复正常"
+                                Layout.fillWidth: true
+                                enabled: faultRestoreAllowed && injectionVehicle.currentText.length > 0
+                                onClicked: mosimOrchestrator.restoreNormal(injectionVehicle.currentText)
+                            }
                         }
                     }
                 }
@@ -1235,9 +1244,9 @@ Item {
     Connections {
         target: mosimOrchestrator
         function onResponseChanged() {
-            if (!controllerCatalogSynced && mosimOrchestrator.controllers.length > 0) {
+            if (!operatorProfileCatalogSynced && mosimOrchestrator.operatorProfiles.length > 0) {
                 syncProfileSelection()
-                controllerCatalogSynced = true
+                operatorProfileCatalogSynced = true
             }
         }
     }

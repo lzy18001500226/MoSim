@@ -56,12 +56,20 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
     assert "切换UE视角" not in qml
     assert "独立UE视图" in qml
     assert "RViz点云地图" in qml and "RViz栅格地图" in qml
-    assert "应用风扰" in qml and "应用电机故障" in qml
+    assert "暂存风扰" in qml and "暂存电机故障" in qml
+    assert "应用待应用故障" in qml and "恢复正常" in qml
+    assert "应用风扰" not in qml and "应用电机故障" not in qml
+    assert "mosimOrchestrator.stageWind" in qml
+    assert "mosimOrchestrator.stageMotorEffectiveness" in qml
+    assert "mosimOrchestrator.applyStagedInjection()" in qml
+    assert "mosimOrchestrator.restoreNormal" in qml
+    assert "pendingInjectionText()" in qml
     assert "一键关闭全部RViz" in qml
-    assert "cascade_pid_figure8_generated_c_v1.json" in qml
-    assert "model: mosimOrchestrator.controllers" in qml
+    assert "readonly property var profiles: mosimOrchestrator.operatorProfiles || []" in qml
+    assert "model: profiles" in qml
+    assert "controllerCatalogSynced" not in qml
+    assert "controllerBox" not in qml and "vehicleBox" not in qml and "vehicleCounts" not in qml
     assert "disabled_reason" in qml
-    assert "4（规模验收未完成）" in qml and "9（规模验收未完成）" in qml
     assert "FlyViewBottomRightRowLayout" in qml
 
     assert "required property var mapConfig" in fly_map
@@ -86,6 +94,10 @@ def test_custom_overlay_uses_supported_qgc_extension_points() -> None:
 
     assert "Q_PROPERTY(QVariantMap operatorMap" in bridge_header
     assert "Q_PROPERTY(QVariantMap runtimeTelemetry" in bridge_header
+    assert "Q_PROPERTY(QVariantList operatorProfiles" in bridge_header
+    assert "Q_PROPERTY(QVariantMap pendingInjection" in bridge_header
+    assert "stageWind" in bridge_header and "stageMotorEffectiveness" in bridge_header
+    assert "applyStagedInjection" in bridge_header and "restoreNormal" in bridge_header
     assert "operator_map_catalog.json" in bridge_source
     assert "telemetryRunId == _runId" in bridge_source
     assert "_autoAttachUnrealAfterStart" not in bridge_header
@@ -269,15 +281,10 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     qml = (CUSTOM / "src" / "FlyViewCustomLayer.qml").read_text(encoding="utf-8")
     fly_map = (CUSTOM / "src" / "FactoryFlyMap.qml").read_text(encoding="utf-8")
     bridge_header = (CUSTOM / "src" / "MoSimOrchestratorBridge.h").read_text(encoding="utf-8")
-    for label in (
-        "单机定点操纵",
-        "单机8字飞行",
-        "生成代码控制器8字飞行",
-        "FUEL单机自主探索",
-        "三机固定编队避障",
-        "MWORKS实时联合仿真（50 Hz）",
-    ):
-        assert label in qml
+    assert "operatorProfiles" in bridge_header
+    assert "readonly property var profiles: mosimOrchestrator.operatorProfiles || []" in qml
+    assert "controller_label" in qml and "vehicle_count" in qml
+    assert "model: profiles" in qml
     assert "activeVehicle.virtualTabletJoystickValue(roll, pitch, 0.0, 0.5)" in qml
     assert "readonly property bool manualControlReady" in qml
     assert 'activeVehicle.flightMode === "Position"' in qml
@@ -335,12 +342,8 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert 'if (state === "失败")' in qml
     assert 'label: "5. 降落、锁定与结束"' in qml
     assert "selectionMatchesPreparedRun()" in qml
-    assert "function controllerCompatibleWithTask(moduleId)" in qml
-    assert "function vehicleCountCompatibleWithTask(vehicleCount)" in qml
-    assert "function taskSelectionCompatible()" in qml
-    assert "当前任务没有该控制器的运行后端" in qml
-    assert "当前任务固定为" in qml
-    assert "当前控制器或机数与任务运行后端不匹配" in qml
+    assert "controllerBox" not in qml and "vehicleBox" not in qml
+    assert "控制器（已绑定）" in qml and "无人机（已绑定）" in qml
     assert "另一个任务仍在运行" in qml
     assert "experimentProfileId" in bridge_header
     assert "selectedControllerId" in bridge_header
@@ -353,8 +356,7 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert "mosimOrchestrator.proposeOperatorTask(agentPrompt.text)" in qml
     assert "proposal.may_start_flight === false" in qml
     assert "Codex诊断能力尚未接入" not in qml
-    assert "factory_l2_fuel_fixed64_exploration_v1.json" in qml
-    assert 'label: "FUEL单机自主探索"' in qml
+    assert "FUEL单机自主探索" in qml
     assert 'text: "请求安全停止"' in qml
     assert "mosimOrchestrator.requestSafeStop()" in qml
     assert 'text: "停止当前仿真"' in qml

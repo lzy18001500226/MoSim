@@ -68,7 +68,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
     payload: dict[str, Any] = {"schema": "mosim.orchestrator.request.v1", "action": args.action}
     if getattr(args, "request_id", None):
         payload["request_id"] = args.request_id
-    if args.action == "list_controllers":
+    if args.action in {"list_controllers", "list_operator_profiles"}:
         return payload
     if args.action == "propose_operator_task":
         if not args.prompt:
@@ -128,7 +128,7 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         payload["operation_id"] = args.operation_id
         return payload
 
-    if args.action in {"apply_injection", "restore_injection"}:
+    if args.action in {"stage_injection", "apply_injection", "restore_injection"}:
         if not args.target or args.value is None:
             raise ValueError(f"{args.action} requires target and value")
         command: dict[str, Any] = {
@@ -149,6 +149,10 @@ def build_payload(args: argparse.Namespace) -> dict[str, Any]:
         if args.vehicle_id is not None:
             command["vehicle_id"] = args.vehicle_id
         payload["command"] = command
+    elif args.action == "restore_normal":
+        if not args.vehicle_id:
+            raise ValueError("restore_normal requires a vehicle id")
+        payload["vehicle_id"] = args.vehicle_id
     elif args.action == "prepare_display_session":
         payload["displays"] = args.display
     return payload
@@ -165,6 +169,9 @@ def main() -> int:
             "request_safe_stop",
             "stop_run",
             "reset_run",
+            "stage_injection",
+            "apply_staged_injection",
+            "restore_normal",
             "apply_injection",
             "restore_injection",
             "prepare_display_session",
@@ -178,6 +185,7 @@ def main() -> int:
             "generate_code",
             "get_model_gate_state",
             "list_controllers",
+            "list_operator_profiles",
             "propose_operator_task",
             "get_operation_progress",
             "close_all_rviz",
