@@ -337,16 +337,25 @@ def test_map_state_can_report_a_display_only_rejection() -> None:
 
 
 def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() -> None:
-    bridge = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.cc").read_text(encoding="utf-8")
-    bridge_header = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.h").read_text(
+    bridge = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOperatorBridge.cc").read_text(encoding="utf-8")
+    bridge_header = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOperatorBridge.h").read_text(
         encoding="utf-8"
     )
     fly_map = (ROOT / "apps/flight_console/mosim/custom/src/FactoryFlyMap.qml").read_text(encoding="utf-8")
     plan_view = (ROOT / "apps/flight_console/mosim/custom/src/PlanView.qml").read_text(encoding="utf-8")
 
-    assert 'Q_PROPERTY(QVariantMap operatorMap READ operatorMap NOTIFY responseChanged)' in bridge_header
-    assert 'manifestSnapshot = _runManifest.value(QStringLiteral("operator_map_snapshot"))' in bridge
-    assert 'manifestSnapshotHash = _runManifest.value(QStringLiteral("operator_map_snapshot_hash"))' in bridge
+    assert 'Q_PROPERTY(QVariantMap operatorMap READ operatorMap NOTIFY stateChanged)' in bridge_header
+    assert 'Q_PROPERTY(QVariantList operatorMaps READ operatorMaps NOTIFY stateChanged)' in bridge_header
+    assert 'Q_PROPERTY(QString selectedMapId READ selectedMapId NOTIFY stateChanged)' in bridge_header
+    assert 'const QVariantMap snapshot = manifest.value(QStringLiteral("operator_map_snapshot")).toMap()' in bridge
+    assert '_operatorMap.insert(QStringLiteral("operator_map_snapshot_hash"), snapshotHash)' in bridge
+    assert 'void MoSimOperatorBridge::selectOperatorMap(const QString &mapId)' in bridge
+    assert 'map_locked_by_run_manifest' in bridge
+    refresh_start = bridge.index('void MoSimOperatorBridge::refreshRuntimeState()')
+    refresh_end = bridge.index('\nQVariantMap MoSimOperatorBridge::profileForId', refresh_start)
+    refresh_body = bridge[refresh_start:refresh_end]
+    unlocked_selection = refresh_body.index('_selectedProfileId = selected;')
+    assert 'syncSelectedMapFromProfile();' in refresh_body[unlocked_selection:]
     assert 'String(mapMetadata.operator_map_snapshot_hash || "")' in fly_map
     assert 'readonly property bool mapFrameAccepted' in fly_map
     assert '实时地图坐标系与证据不匹配' in fly_map

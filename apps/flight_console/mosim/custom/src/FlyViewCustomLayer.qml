@@ -27,6 +27,7 @@ Item {
     readonly property var profiles: mosimOperator.operatorProfiles || []
     readonly property var controllerFamilies: mosimOperator.controllerFamilies || []
     readonly property var controllerSchemes: mosimOperator.controllerSchemes || []
+    readonly property var operatorMaps: mosimOperator.operatorMaps || []
     readonly property var selectedProfile: mosimOperator.selectedProfile || ({})
     readonly property var selectedController: root.controllerForId(mosimOperator.selectedControllerSchemeId)
     readonly property var compatibleProfiles: root.profilesForController(mosimOperator.selectedControllerSchemeId)
@@ -81,6 +82,14 @@ Item {
     function controllerOptionIndex(options, schemeId) {
         for (var index = 0; index < options.length; ++index) {
             if (String(options[index].scheme_id || "") === String(schemeId || ""))
+                return index
+        }
+        return 0
+    }
+
+    function operatorMapIndex(options, mapId) {
+        for (var index = 0; index < options.length; ++index) {
+            if (String(options[index].map_id || "") === String(mapId || ""))
                 return index
         }
         return 0
@@ -422,6 +431,43 @@ Item {
                     ColumnLayout {
                         width: parent.width
                         spacing: ScreenTools.defaultFontPixelHeight * 0.35
+                        QGCLabel { text: "二维地图"; font.bold: true }
+                        ComboBox {
+                            id: operatorMapBox
+                            Layout.fillWidth: true
+                            model: root.operatorMaps
+                            textRole: "display_name"
+                            currentIndex: root.operatorMapIndex(root.operatorMaps, mosimOperator.selectedMapId)
+                            enabled: !mosimOperator.profileSelectionLocked
+                            delegate: ItemDelegate {
+                                required property var modelData
+                                required property int index
+                                width: operatorMapBox.width
+                                text: String(modelData.display_name || "未命名地图")
+                                      + (modelData.selectable === true ? "" : "（未发布）")
+                                enabled: modelData.selectable === true
+                                opacity: enabled ? 1.0 : 0.55
+                                ToolTip.visible: hovered && !enabled
+                                ToolTip.text: String(modelData.disabled_reason || "尚无兼容 Profile")
+                                onClicked: {
+                                    operatorMapBox.currentIndex = index
+                                    operatorMapBox.popup.close()
+                                    mosimOperator.selectOperatorMap(String(modelData.map_id || ""))
+                                }
+                            }
+                            onActivated: {
+                                var map = root.operatorMaps[currentIndex] || ({})
+                                mosimOperator.selectOperatorMap(String(map.map_id || ""))
+                            }
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: mosimOperator.profileSelectionLocked
+                                  ? "地图已由当前 RunManifest 冻结。"
+                                  : "地图切换会自动绑定兼容的已发布 Profile。"
+                            wrapMode: Text.Wrap
+                            color: mosimOperator.profileSelectionLocked ? qgcPal.colorOrange : qgcPal.text
+                        }
                         QGCLabel { text: "二维地图图层"; font.bold: true }
                         QGCCheckBox { text: "飞机位置与航向"; checked: root.showMapVehicles; onToggled: root.showMapVehicles = checked }
                         QGCCheckBox { text: "实际飞行轨迹"; checked: root.showMapActualTracks; onToggled: root.showMapActualTracks = checked }

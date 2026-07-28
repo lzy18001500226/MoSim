@@ -154,13 +154,14 @@ void MoSimOperatorBridge::loadCatalogs()
     _operatorProfiles.clear();
     _controllerFamilies.clear();
     _controllerSchemes.clear();
+    _operatorMaps.clear();
+    _operatorMap.clear();
     _runtimeBackendCatalog = readJsonObject(projectPath(QStringLiteral("Config/control_platform/runtime_backend_catalog.json")));
     const QVariantMap mapCatalog = readJsonObject(projectPath(QStringLiteral("Config/control_platform/operator_map_catalog.json")));
     for (const QVariant &value : mapCatalog.value(QStringLiteral("maps")).toList()) {
         const QVariantMap candidate = value.toMap();
         if (candidate.value(QStringLiteral("enabled")).toBool()) {
-            _operatorMap = candidate;
-            break;
+            _operatorMaps.append(candidate);
         }
     }
 
@@ -180,6 +181,12 @@ void MoSimOperatorBridge::loadCatalogs()
             profile.insert(QStringLiteral("planner_profile"), experiment.value(QStringLiteral("planner_profile")));
             profile.insert(QStringLiteral("safety_profile"), experiment.value(QStringLiteral("safety_profile")));
             profile.insert(QStringLiteral("fault_profile"), experiment.value(QStringLiteral("fault_profile")));
+            profile.insert(QStringLiteral("operator_map_id"), experiment.value(QStringLiteral("operator_map_id")));
+        }
+        const QString operatorMapId = profile.value(QStringLiteral("operator_map_id")).toString();
+        if (profile.value(QStringLiteral("enabled")).toBool() && mapForId(operatorMapId).isEmpty()) {
+            profile.insert(QStringLiteral("enabled"), false);
+            profile.insert(QStringLiteral("disabled_reason"), QStringLiteral("Profile 未登记可用二维地图"));
         }
         const QVariantMap backend = runtimeBackendForProfile(profileId);
         profile.insert(QStringLiteral("runtime_command_available"), !backend.isEmpty());
@@ -189,6 +196,40 @@ void MoSimOperatorBridge::loadCatalogs()
             profile.insert(QStringLiteral("disabled_reason"), QStringLiteral("未登记可复制的运行入口"));
         }
         _operatorProfiles.append(profile);
+    }
+
+    for (int index = 0; index < _operatorMaps.size(); ++index) {
+        QVariantMap map = _operatorMaps.at(index).toMap();
+        const QString mapId = map.value(QStringLiteral("map_id")).toString();
+        QVariantList compatibleProfileIds;
+        int enabledProfileCount = 0;
+        QString disabledReason;
+        for (const QVariant &profileValue : _operatorProfiles) {
+            const QVariantMap profile = profileValue.toMap();
+            if (profile.value(QStringLiteral("operator_map_id")).toString() != mapId) {
+                continue;
+            }
+            compatibleProfileIds.append(profile.value(QStringLiteral("profile_id")));
+            if (profile.value(QStringLiteral("enabled")).toBool()) {
+                ++enabledProfileCount;
+            } else if (disabledReason.isEmpty()) {
+                disabledReason = profile.value(QStringLiteral("disabled_reason")).toString();
+            }
+        }
+        map.insert(QStringLiteral("compatible_profile_ids"), compatibleProfileIds);
+        map.insert(QStringLiteral("compatible_profile_count"), compatibleProfileIds.size());
+        map.insert(QStringLiteral("enabled_profile_count"), enabledProfileCount);
+        map.insert(QStringLiteral("selectable"), enabledProfileCount > 0);
+        if (compatibleProfileIds.isEmpty()) {
+            map.insert(QStringLiteral("disabled_reason"), QStringLiteral("尚无已发布兼容 Profile"));
+        } else if (enabledProfileCount == 0) {
+            map.insert(
+                QStringLiteral("disabled_reason"),
+                disabledReason.isEmpty() ? QStringLiteral("兼容 Profile 尚未开放") : disabledReason);
+        } else {
+            map.insert(QStringLiteral("disabled_reason"), QString());
+        }
+        _operatorMaps[index] = map;
     }
 
     const QVariantMap controllerCatalog = readJsonObject(
@@ -285,6 +326,7 @@ void MoSimOperatorBridge::loadCatalogs()
     if (!selectedScheme.isEmpty()) {
         _selectedControllerSchemeId = selectedScheme;
     }
+    syncSelectedMapFromProfile();
 }
 
 void MoSimOperatorBridge::loadActiveRun()
@@ -334,6 +376,7 @@ void MoSimOperatorBridge::loadActiveRun()
     if (!snapshot.isEmpty() && !snapshotHash.isEmpty()) {
         _operatorMap = snapshot;
         _operatorMap.insert(QStringLiteral("operator_map_snapshot_hash"), snapshotHash);
+        _selectedMapId = snapshot.value(QStringLiteral("map_id")).toString();
     }
     const QVariantMap telemetry = readJsonObject(QDir(runDirectory).filePath(QStringLiteral("telemetry.json")));
     if (telemetry.value(QStringLiteral("run_id")).toString() == _runId) {
@@ -366,6 +409,7 @@ void MoSimOperatorBridge::refreshRuntimeState()
     if (_runId.isEmpty()) {
         _selectedProfileId = selected;
         _selectedControllerSchemeId = selectedController;
+        syncSelectedMapFromProfile();
         _runtimeTelemetry.clear();
         setStatus(QStringLiteral("active_run_missing"), QStringLiteral("未检测到活动运行清单"));
         return;
@@ -399,9 +443,33 @@ QVariantMap MoSimOperatorBridge::controllerForId(const QString &schemeId) const
     return {};
 }
 
+QVariantMap MoSimOperatorBridge::mapForId(const QString &mapId) const
+{
+    for (const QVariant &value : _operatorMaps) {
+        const QVariantMap map = value.toMap();
+        if (map.value(QStringLiteral("map_id")).toString() == mapId) {
+            return map;
+        }
+    }
+    return {};
+}
+
 QString MoSimOperatorBridge::controllerSchemeForProfile(const QString &profileId) const
 {
     return profileForId(profileId).value(QStringLiteral("controller_scheme_id")).toString();
+}
+
+void MoSimOperatorBridge::syncSelectedMapFromProfile()
+{
+    const QString profileMapId = selectedProfile().value(QStringLiteral("operator_map_id")).toString();
+    const QVariantMap map = mapForId(profileMapId);
+    if (map.isEmpty()) {
+        _selectedMapId.clear();
+        _operatorMap.clear();
+        return;
+    }
+    _selectedMapId = profileMapId;
+    _operatorMap = map;
 }
 
 QVariantMap MoSimOperatorBridge::runtimeBackendForProfile(const QString &profileId) const
@@ -565,6 +633,7 @@ void MoSimOperatorBridge::selectProfile(const QString &profileId)
     }
     _selectedProfileId = profileId;
     _selectedControllerSchemeId = controllerSchemeForProfile(profileId);
+    syncSelectedMapFromProfile();
     setStatus(QStringLiteral("profile_selected"), QStringLiteral("已选择已发布 Profile"));
 }
 
@@ -611,7 +680,68 @@ void MoSimOperatorBridge::selectControllerScheme(const QString &schemeId)
     }
     _selectedProfileId = selected.value(QStringLiteral("profile_id")).toString();
     _selectedControllerSchemeId = schemeId;
+    syncSelectedMapFromProfile();
     setStatus(QStringLiteral("controller_selected"), QStringLiteral("已选择控制器并绑定兼容任务 Profile"));
+}
+
+void MoSimOperatorBridge::selectOperatorMap(const QString &mapId)
+{
+    if (profileSelectionLocked()) {
+        setStatus(
+            QStringLiteral("map_locked_by_run_manifest"),
+            QStringLiteral("当前 RunManifest 已冻结地图，不能切换二维地图"));
+        return;
+    }
+    const QVariantMap map = mapForId(mapId);
+    if (map.isEmpty()) {
+        setStatus(QStringLiteral("map_not_found"), QStringLiteral("未找到所选二维地图"));
+        return;
+    }
+    if (!map.value(QStringLiteral("selectable")).toBool()) {
+        setStatus(
+            QStringLiteral("map_not_published"),
+            map.value(QStringLiteral("disabled_reason")).toString());
+        return;
+    }
+
+    const QVariantMap current = selectedProfile();
+    const QString currentControllerId = current.value(QStringLiteral("controller_scheme_id")).toString();
+    const QString currentTaskKey = current.value(QStringLiteral("task_key")).toString();
+    QVariantMap fallback;
+    QVariantMap selected;
+    for (const QVariant &profileValue : _operatorProfiles) {
+        const QVariantMap candidate = profileValue.toMap();
+        if (!candidate.value(QStringLiteral("enabled")).toBool()
+            || candidate.value(QStringLiteral("operator_map_id")).toString() != mapId) {
+            continue;
+        }
+        if (fallback.isEmpty()) {
+            fallback = candidate;
+        }
+        if (candidate.value(QStringLiteral("controller_scheme_id")).toString() != currentControllerId) {
+            continue;
+        }
+        if (selected.isEmpty()) {
+            selected = candidate;
+        }
+        if (candidate.value(QStringLiteral("task_key")).toString() == currentTaskKey) {
+            selected = candidate;
+            break;
+        }
+    }
+    if (selected.isEmpty()) {
+        selected = fallback;
+    }
+    if (selected.isEmpty()) {
+        setStatus(QStringLiteral("map_no_compatible_profile"), QStringLiteral("所选地图没有可用的已发布 Profile"));
+        return;
+    }
+
+    _selectedProfileId = selected.value(QStringLiteral("profile_id")).toString();
+    _selectedControllerSchemeId = selected.value(QStringLiteral("controller_scheme_id")).toString();
+    _selectedMapId = mapId;
+    _operatorMap = map;
+    setStatus(QStringLiteral("map_selected"), QStringLiteral("已选择地图并绑定兼容 Profile"));
 }
 
 void MoSimOperatorBridge::copySelectedLaunchCommand()

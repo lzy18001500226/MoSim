@@ -48,13 +48,16 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "operatorProfiles" in bridge_header
     assert "controllerFamilies" in bridge_header
     assert "controllerSchemes" in bridge_header
+    assert "operatorMaps" in bridge_header
     assert "operatorMap" in bridge_header
     assert "runManifest" in bridge_header
     assert "runtimeTelemetry" in bridge_header
     assert "pendingFault" in bridge_header
     assert "profileSelectionLocked" in bridge_header
     assert "selectedControllerSchemeId" in bridge_header
+    assert "selectedMapId" in bridge_header
     assert "selectControllerScheme" in bridge_header
+    assert "selectOperatorMap" in bridge_header
     assert "copySelectedLaunchCommand" in bridge_header
     assert "copyClearActiveRunCommand" in bridge_header
     assert "copyStagedFaultCommand" in bridge_header
@@ -107,6 +110,9 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "mosimOperator.selectControllerScheme" in fly_layer
     assert "（未发布）" in fly_layer
     assert "profileSelectionLocked" in fly_layer
+    assert "operatorMapBox" in fly_layer
+    assert "root.operatorMaps" in fly_layer
+    assert "mosimOperator.selectOperatorMap" in fly_layer
     assert "mosimOrchestrator" not in fly_layer
     assert "WindowContainer" not in fly_layer
 

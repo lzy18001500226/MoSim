@@ -12,9 +12,11 @@ class MoSimOperatorBridge final : public QObject
     Q_PROPERTY(QVariantList operatorProfiles READ operatorProfiles NOTIFY stateChanged)
     Q_PROPERTY(QVariantList controllerFamilies READ controllerFamilies NOTIFY stateChanged)
     Q_PROPERTY(QVariantList controllerSchemes READ controllerSchemes NOTIFY stateChanged)
+    Q_PROPERTY(QVariantList operatorMaps READ operatorMaps NOTIFY stateChanged)
     Q_PROPERTY(QVariantMap selectedProfile READ selectedProfile NOTIFY stateChanged)
     Q_PROPERTY(QString selectedProfileId READ selectedProfileId NOTIFY stateChanged)
     Q_PROPERTY(QString selectedControllerSchemeId READ selectedControllerSchemeId NOTIFY stateChanged)
+    Q_PROPERTY(QString selectedMapId READ selectedMapId NOTIFY stateChanged)
     Q_PROPERTY(QVariantMap operatorMap READ operatorMap NOTIFY stateChanged)
     Q_PROPERTY(QVariantMap runManifest READ runManifest NOTIFY stateChanged)
     Q_PROPERTY(QVariantMap runtimeTelemetry READ runtimeTelemetry NOTIFY stateChanged)
@@ -31,9 +33,11 @@ public:
     QVariantList operatorProfiles() const { return _operatorProfiles; }
     QVariantList controllerFamilies() const { return _controllerFamilies; }
     QVariantList controllerSchemes() const { return _controllerSchemes; }
+    QVariantList operatorMaps() const { return _operatorMaps; }
     QVariantMap selectedProfile() const;
     QString selectedProfileId() const { return _selectedProfileId; }
     QString selectedControllerSchemeId() const { return _selectedControllerSchemeId; }
+    QString selectedMapId() const { return _selectedMapId; }
     QVariantMap operatorMap() const { return _operatorMap; }
     QVariantMap runManifest() const { return _runManifest; }
     QVariantMap runtimeTelemetry() const { return _runtimeTelemetry; }
@@ -48,6 +52,7 @@ public:
     Q_INVOKABLE void refreshRuntimeState();
     Q_INVOKABLE void selectProfile(const QString &profileId);
     Q_INVOKABLE void selectControllerScheme(const QString &schemeId);
+    Q_INVOKABLE void selectOperatorMap(const QString &mapId);
     Q_INVOKABLE void copySelectedLaunchCommand();
     Q_INVOKABLE void copyClearActiveRunCommand();
     Q_INVOKABLE void stageWind(const QString &vehicleId, double speedMps);
@@ -69,8 +74,10 @@ private:
     void loadActiveRun();
     QVariantMap profileForId(const QString &profileId) const;
     QVariantMap controllerForId(const QString &schemeId) const;
+    QVariantMap mapForId(const QString &mapId) const;
     QVariantMap runtimeBackendForProfile(const QString &profileId) const;
     QString controllerSchemeForProfile(const QString &profileId) const;
+    void syncSelectedMapFromProfile();
     QString activeRunDirectory() const;
     QString renderRuntimeCommand(const QVariantMap &profile, const QVariantMap &backend) const;
     void copyCommand(const QString &command, const QString &label);
@@ -80,6 +87,7 @@ private:
     QVariantList _operatorProfiles;
     QVariantList _controllerFamilies;
     QVariantList _controllerSchemes;
+    QVariantList _operatorMaps;
     QVariantMap _runtimeBackendCatalog;
     QVariantMap _operatorMap;
     QVariantMap _runManifest;
@@ -87,6 +95,7 @@ private:
     QVariantMap _pendingFault;
     QString _selectedProfileId;
     QString _selectedControllerSchemeId;
+    QString _selectedMapId;
     QString _runId;
     QString _statusText = QStringLiteral("正在读取 MoSim 操作配置");
     QString _reasonCode = QStringLiteral("initializing");
