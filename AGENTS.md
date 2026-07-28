@@ -51,8 +51,8 @@ two `BODY_RATE_THRUST`, and one `WRENCH`. The final check-only evidence is
 review. On 2026-07-29 CST, the user explicitly authorized one bounded exception:
 run only `OfficialPidFormalRunner` and `Px4CtrlFormalRunner` against all seven
 versioned profiles (14 MWORKS runs), retaining valid and invalid evidence alike.
-This exception does not authorize G2, other-controller runs, gain tuning, code
-export, Gazebo/ROS runtime validation, G7, or R1.
+At that point the exception did not authorize G2, other-controller runs, gain
+tuning, code export, Gazebo/ROS runtime validation, G7, or R1.
 
 
 The six-candidate recovery record at
@@ -72,6 +72,19 @@ matrix is `SCENARIO_RMSE_MATRIX.pending_syslab.json`; the raw-trace injection
 checks retain both passed and not-evaluable states. Commit, push, send the
 review email, and stop. Do not launch further MWORKS cases on this line.
 
+On 2026-07-29 CST, the user subsequently authorized G2: one nominal 50 s
+`ClimbPath` attempt for every one of the 48
+`MoSimQuadrotorModel.Experiment.Runners.Formal.*` entries, with no scenario
+injection, gain tuning, model edits, or seven-scenario work. The batch is
+complete at `Results/control_platform/phase2_full_48_climbpath/`: all 48
+routes have terminal records against frozen matrix
+`a9f85d8cb8b4b942b88056bf4eb336ba17a9c40b26fe1ae5d21ab12649599d80`.
+Seventeen passed the terminal-error gate and 31 failed: 10 terminal-error
+violations, four simulation-API failures, nine MCP timeouts, and eight
+dedicated Sysplorer-session startup failures. This is a result-screening
+record, not authorization to repair failures, enter G3, rerun any route, tune
+gains, export code, or start a new scenario. Commit the exact G2 evidence
+index, push, send the Chinese review email, and wait for the next instruction.
 `Docs/Workflows/mainline_operations_board.md` is the sole task authority and
 contains the exact scope, evidence, and stopping/handoff conditions. Update this
 cue whenever that board's current action or next executable gate changes; it is

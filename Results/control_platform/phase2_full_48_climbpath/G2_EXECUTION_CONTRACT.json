@@ -1,0 +1,34 @@
+{
+  "schema": "mosim.phase2_full_48_climbpath_contract.v1",
+  "generated_at": "2026-07-29T05:34:18+08:00",
+  "matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/G2_MATRIX.json",
+    "sha256": "a9f85d8cb8b4b942b88056bf4eb336ba17a9c40b26fe1ae5d21ab12649599d80"
+  },
+  "scope": {
+    "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50.0,
+    "scenario_injection": "none",
+    "runner_directory": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal",
+    "runner_count": 48
+  },
+  "acceptance": {
+    "status_values": [
+      "pass",
+      "fail"
+    ],
+    "terminal_position_error_limit_m": 5.0,
+    "all_48_records_required": true,
+    "no_gain_tuning": true,
+    "no_model_source_changes": true,
+    "no_seven_scenario_runs": true
+  },
+  "preflight": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/preflight/mworks_gui_sentinel.json",
+    "status": "incident_detected",
+    "matched_license_patterns": [],
+    "login_activation_window_count": 0,
+    "authorization_window_count": 0,
+    "helper_mworks_window_count": 2
+  }
+}

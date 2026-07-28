@@ -111,23 +111,27 @@ controller-performance claim.
 
 Current action:
 
-1. G1 bridge/Adapter implementation and the FormalRunner completion subgate
-   remain structurally complete and under review. Native `CheckModel` passed all
-   40 named whole-aircraft runners and four reusable templates; this does not
-   authorize a broader controller run.
-2. The bounded 14-case A/B execution is complete. All six non-fault px4ctrl
-   cases are `valid`; px4ctrl motor fault is retained as an `invalid` partial
-   result, and all seven Official PID cases are retained as `invalid` evidence.
-   The 14-row matrix is
-   `Results/control_platform/seven_scenario_ab/SCENARIO_RMSE_MATRIX.pending_syslab.json`.
-3. Injection evidence is explicit: px4ctrl wind passed across 0-50 s; Official
-   PID wind retained 0-10.95 s of the expected 0.25 N force but is
-   `not_evaluable` for the complete window after divergence; both retained
-   parameter-mismatch traces show Plant 1.2 kg versus controller 1.0 kg; px4ctrl
-   motor-fault trace shows rotor 1 transition at 15 s and the other rotors at
-   1.0, while Official PID has no raw motor-fault trace and is `not_evaluable`.
-4. Commit, push, send one Chinese review email, and stop. Do not run other
-   controllers, enter G2, tune gains, export code, or start Gazebo/ROS work.
+### G2 Full 48-Route ClimbPath Verification - Review Required
+
+The later user authorization superseded the former G2 hold. All 48 public
+`Runners.Formal.*` entries received one nominal 50 s `ClimbPath` attempt with
+no scenario injection, gain tuning, model edit, or seven-scenario work. The
+frozen matrix and terminal records are at
+`Results/control_platform/phase2_full_48_climbpath/`: 17 routes passed and 31
+failed. The failure record is explicit: 10 terminal-error violations, four
+simulation-API failures, nine MCP timeouts, and eight dedicated
+Sysplorer-session startup failures. No failed route was silently rerun.
+
+Current action:
+
+1. Commit and push only the G2 driver, compact matrix/status/contract indexes,
+   and this current-task pointer update; retain native results locally and do
+   not stage `.msr` artifacts.
+2. Send one Chinese G2 review email with the 17/31 result and failure-reason
+   distribution, then stop for review.
+3. Do not repair a failed route, enter G3, tune gains, export code, start
+   Gazebo/ROS work, or run another controller/scenario without a new user
+   instruction.
 
 ### Historical Seven-Scenario Pre-Simulation Gate
 
@@ -228,22 +232,30 @@ current completion.
 
 ## 3. Next Engineering Selection
 
-The bounded 14-run Official PID + px4ctrl A/B gate is complete and awaits
-review. The completed G1-0 reconciliation remains the authority for the G1 and
-G2 denominator; do not infer an additional runnable route from a historical
-`adapter_missing` row or the planned ESO profile.
+G2 is complete and awaits review. The completed G1-0 reconciliation remains
+the authority for the fixed 48-route denominator; do not infer an additional
+runnable route from a historical `adapter_missing` row or the planned ESO
+profile. The next executable engineering gate has not been selected.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant
 topic workflow and declare the evidence path under `Results/`.
 
 ## 4. Stopping And Handoff Conditions
 
-For the active bounded seven-scenario A/B gate:
+For the historical bounded seven-scenario A/B gate:
 
 - Retain valid and invalid records for all 14 cases; no failed run may silently
   abort or be replaced by an unrecorded rerun.
-- Do not proceed to G2, other controllers, gain tuning, export, Gazebo/ROS,
-  G7, or R1. After the exact-path commit, push, and review email, wait.
+- Its stop condition was satisfied before the later G2 authorization; it does
+  not authorize any new execution by itself.
+
+For the completed G2 full-route gate:
+
+- Preserve all 48 terminal records, including every failure, as the current
+  screening evidence. Do not replace a timeout or session-start failure with an
+  unrecorded rerun.
+- After the exact-path commit, push, and review email, wait for a new user
+  instruction.
 
 For the later G0-G3 controller line:
 
@@ -254,9 +266,9 @@ For the later G0-G3 controller line:
   of less than 5 m. A completed solver call with a divergent signal is a fail.
 - The old P0b and pre-repair six-candidate RMSE values are trace-back evidence,
   not current-source ranking data.
-- Do not begin broader seven-scenario A/B, ESO ablation, code export, ROS1
-  runtime validation, G7, or R1 until G3 is complete and the user supplies a
-  new instruction.
+- Do not enter G3, broader seven-scenario A/B, ESO ablation, code export, ROS1
+  runtime validation, G7, or R1 until review is complete and the user supplies
+  a new instruction.
 
 ## 5. Board Update Rule
 

@@ -1,0 +1,515 @@
+{
+  "schema": "mosim.phase2_full_48_climbpath_status.v1",
+  "generated_at": "2026-07-29T07:24:30+08:00",
+  "matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/G2_MATRIX.json",
+    "sha256": "a9f85d8cb8b4b942b88056bf4eb336ba17a9c40b26fe1ae5d21ab12649599d80"
+  },
+  "runner_count": 48,
+  "terminal_record_count": 48,
+  "pending_count": 0,
+  "passed_count": 17,
+  "failed_count": 31,
+  "failure_counts": {
+    "simulate_failed": 4,
+    "terminal_position_error_exceeds_5m": 10,
+    "other": 17
+  },
+  "completed": true,
+  "rows": [
+    {
+      "controller_id": "adaptive_backstepping",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveBacksteppingFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 2.289471013723613,
+      "terminal_position_error_norm_m": 2.421473426786086,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "adaptive_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveMpcFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "simulate_failed",
+      "failure_reasons": [
+        "simulation API reported failure: {'ok': True, 'api': 'ModelingPy.SimulateModel', 'simulation_options': None, 'data': False, 'simulate_api_reported_failure': True, 'last_errors': [''], 'last_errors_error': None, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.008000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'result_verification': {'result_probe': {'ok': True, 'has_readable_result': True, 'data': 'Real', 'error': None}, 'get_var_value_at': {'ok': True, 'data': 10.001137187080946, 'error': None}}, 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.008000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 10.001137187080946}, 'raw_tool_result': {'ok': True, 'tool': 'mworks_run_script', 'stdout': '', 'stderr': '', 'exception': '', 'traceback': '', 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.008000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 10.001137187080946}, 'script_path_resolved': '', 'hint': ''}}"
+      ]
+    },
+    {
+      "controller_id": "adaptive_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveSmcFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 2.0461191600375335,
+      "terminal_position_error_norm_m": 2.762559114765275,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "awff",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AwffFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 98.71388033781155,
+      "terminal_position_error_norm_m": 491.36289797914617,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 491.363m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "backstepping_baseline",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.BacksteppingBaselineFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 1.8004411559773,
+      "terminal_position_error_norm_m": 1.852120705583879,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "cascade_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.CascadePidFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "dfbc_basic",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcBasicFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.2760519080261363,
+      "terminal_position_error_norm_m": 0.00830026773207186,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "dfbc_high_order",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.3576972701279664,
+      "terminal_position_error_norm_m": 0.003031802154681142,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "dfbc_high_order_body_rate",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderBodyRateFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 8463.819108021473,
+      "terminal_position_error_norm_m": 19866.854802213395,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 19866.9m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "dfbc_smooth_robust",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcSmoothRobustFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 1.6336244568153713,
+      "terminal_position_error_norm_m": 1.675879351051941,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "dfbc_smooth_robust_body_rate",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcSmoothRobustBodyRateFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 4587.165098009437,
+      "terminal_position_error_norm_m": 10646.544902383204,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 10646.5m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "explicit_gain_scheduled_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.ExplicitGainScheduledMpcFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.2042904972194766,
+      "terminal_position_error_norm_m": 0.004321100426104121,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "fault_compensation",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FaultCompensationFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 4720.4618755550855,
+      "terminal_position_error_norm_m": 13533.368398856424,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 13533.4m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "feedback_linearization",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FeedbackLinearizationFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 2.162091102107092,
+      "terminal_position_error_norm_m": 2.196260919695625,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "fopid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FopidFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 1482.9049157806335,
+      "terminal_position_error_norm_m": 4774.432206801114,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 4774.43m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "fuzzy_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzyPidFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "fuzzy_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzySmcFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Sysplorer MCP health failed: {'ok': False, 'mcp_server': {'version': '0.1', 'version_display': '0.1', 'version_base': '0.1', 'version_core': '0.1', 'build_counter': 0, 'git_commit_count': 196, 'build_kind': 'release', 'build_time': '2026-05-08T11:14:45+08:00', 'git_revision': '24314a1'}, 'python': {'python_version': '3.11.4', 'major': 3, 'minor': 11, 'compatible': True, 'required': '3.10+ (recommended 3.11 for mworks-sysplorer)'}, 'driver_ready': False, 'driver_error': 'Sysplorer launch did not add any FindSysplorer port', 'advice': ['Set MWORKS_BIN64 to your MWorks Bin64 folder if needed.'], 'sysplorer_startup': {'attempted': True, 'started': False, 'already_running': False, 'wait_ms': 0, 'error': 'Sysplorer launch did not add any FindSysplorer port', 'dedicated_sysplorer_port': None, 'timestamp': '2026-07-28T22:08:12.059829+00:00'}, 'paths': {'workspace_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim', 'deploy_root': 'D:\\\\Program Files\\\\MWORKS\\\\Sysplorer 2026a\\\\Tools\\\\sysplorer_mcp', 'resources_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\resources'}}"
+      ]
+    },
+    {
+      "controller_id": "gain_scheduled_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.GainScheduledPidFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "h_2_state_feedback",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.H2StateFeedbackFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Sysplorer MCP health failed: {'ok': False, 'mcp_server': {'version': '0.1', 'version_display': '0.1', 'version_base': '0.1', 'version_core': '0.1', 'build_counter': 0, 'git_commit_count': 196, 'build_kind': 'release', 'build_time': '2026-05-08T11:14:45+08:00', 'git_revision': '24314a1'}, 'python': {'python_version': '3.11.4', 'major': 3, 'minor': 11, 'compatible': True, 'required': '3.10+ (recommended 3.11 for mworks-sysplorer)'}, 'driver_ready': False, 'driver_error': 'Sysplorer launch did not add any FindSysplorer port', 'advice': ['Set MWORKS_BIN64 to your MWorks Bin64 folder if needed.'], 'sysplorer_startup': {'attempted': True, 'started': False, 'already_running': False, 'wait_ms': 0, 'error': 'Sysplorer launch did not add any FindSysplorer port', 'dedicated_sysplorer_port': None, 'timestamp': '2026-07-28T22:16:11.030350+00:00'}, 'paths': {'workspace_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim', 'deploy_root': 'D:\\\\Program Files\\\\MWORKS\\\\Sysplorer 2026a\\\\Tools\\\\sysplorer_mcp', 'resources_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\resources'}}"
+      ]
+    },
+    {
+      "controller_id": "hinf_hover_wrench",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.HinfHoverWrenchFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 5708.653680813823,
+      "terminal_position_error_norm_m": 13075.11783959431,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 13075.1m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "ilqr",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.IlqrFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.2185471293759734,
+      "terminal_position_error_norm_m": 0.006165810860597446,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "improved_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.ImprovedPidFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "simulate_failed",
+      "failure_reasons": [
+        "simulation API reported failure: {'ok': True, 'api': 'ModelingPy.SimulateModel', 'simulation_options': None, 'data': False, 'simulate_api_reported_failure': True, 'last_errors': [''], 'last_errors_error': None, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 14.562000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'result_verification': {'result_probe': {'ok': True, 'has_readable_result': True, 'data': 'Real', 'error': None}, 'get_var_value_at': {'ok': True, 'data': -17315538.470649038, 'error': None}}, 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 14.562000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': -17315538.470649038}, 'raw_tool_result': {'ok': True, 'tool': 'mworks_run_script', 'stdout': '', 'stderr': '', 'exception': '', 'traceback': '', 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 14.562000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': -17315538.470649038}, 'script_path_resolved': '', 'hint': ''}}"
+      ]
+    },
+    {
+      "controller_id": "indi",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.IndiFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 97.16158884318506,
+      "terminal_position_error_norm_m": 482.0639729404656,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 482.064m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "integral_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.IntegralSmcFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 2.0516091179139857,
+      "terminal_position_error_norm_m": 1.6605705226404683,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "l_1",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.L1FormalRunner",
+      "status": "fail",
+      "position_rmse_m": 115.34257420374476,
+      "terminal_position_error_norm_m": 553.6475040661167,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 553.648m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "linear_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "linear_mpc_rotor",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcRotorFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Sysplorer MCP health failed: {'ok': False, 'mcp_server': {'version': '0.1', 'version_display': '0.1', 'version_base': '0.1', 'version_core': '0.1', 'build_counter': 0, 'git_commit_count': 196, 'build_kind': 'release', 'build_time': '2026-05-08T11:14:45+08:00', 'git_revision': '24314a1'}, 'python': {'python_version': '3.11.4', 'major': 3, 'minor': 11, 'compatible': True, 'required': '3.10+ (recommended 3.11 for mworks-sysplorer)'}, 'driver_ready': False, 'driver_error': 'Sysplorer launch did not add any FindSysplorer port', 'advice': ['Set MWORKS_BIN64 to your MWorks Bin64 folder if needed.'], 'sysplorer_startup': {'attempted': True, 'started': False, 'already_running': False, 'wait_ms': 0, 'error': 'Sysplorer launch did not add any FindSysplorer port', 'dedicated_sysplorer_port': None, 'timestamp': '2026-07-28T22:31:59.344121+00:00'}, 'paths': {'workspace_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim', 'deploy_root': 'D:\\\\Program Files\\\\MWORKS\\\\Sysplorer 2026a\\\\Tools\\\\sysplorer_mcp', 'resources_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\resources'}}"
+      ]
+    },
+    {
+      "controller_id": "lqg",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LqgFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.2427607354330561,
+      "terminal_position_error_norm_m": 0.0035707744599062347,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "lqi",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LqiFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.21221954634435075,
+      "terminal_position_error_norm_m": 0.022064896641067727,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "lqr_baseline",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.20429428437790634,
+      "terminal_position_error_norm_m": 0.0027137995146974798,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "mppi",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.MppiFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.20497592464335546,
+      "terminal_position_error_norm_m": 0.004429334159247959,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "mrac",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.MracFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "ndi",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.NdiFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Sysplorer MCP health failed: {'ok': False, 'mcp_server': {'version': '0.1', 'version_display': '0.1', 'version_base': '0.1', 'version_core': '0.1', 'build_counter': 0, 'git_commit_count': 196, 'build_kind': 'release', 'build_time': '2026-05-08T11:14:45+08:00', 'git_revision': '24314a1'}, 'python': {'python_version': '3.11.4', 'major': 3, 'minor': 11, 'compatible': True, 'required': '3.10+ (recommended 3.11 for mworks-sysplorer)'}, 'driver_ready': False, 'driver_error': 'Sysplorer launch did not add any FindSysplorer port', 'advice': ['Set MWORKS_BIN64 to your MWorks Bin64 folder if needed.'], 'sysplorer_startup': {'attempted': True, 'started': False, 'already_running': False, 'wait_ms': 0, 'error': 'Sysplorer launch did not add any FindSysplorer port', 'dedicated_sysplorer_port': None, 'timestamp': '2026-07-28T22:44:30.508948+00:00'}, 'paths': {'workspace_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim', 'deploy_root': 'D:\\\\Program Files\\\\MWORKS\\\\Sysplorer 2026a\\\\Tools\\\\sysplorer_mcp', 'resources_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\resources'}}"
+      ]
+    },
+    {
+      "controller_id": "neural_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.NeuralPidFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "nonsingular_terminal_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.NonsingularTerminalSmcFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Sysplorer MCP health failed: {'ok': False, 'mcp_server': {'version': '0.1', 'version_display': '0.1', 'version_base': '0.1', 'version_core': '0.1', 'build_counter': 0, 'git_commit_count': 196, 'build_kind': 'release', 'build_time': '2026-05-08T11:14:45+08:00', 'git_revision': '24314a1'}, 'python': {'python_version': '3.11.4', 'major': 3, 'minor': 11, 'compatible': True, 'required': '3.10+ (recommended 3.11 for mworks-sysplorer)'}, 'driver_ready': False, 'driver_error': 'Sysplorer launch did not add any FindSysplorer port', 'advice': ['Set MWORKS_BIN64 to your MWorks Bin64 folder if needed.'], 'sysplorer_startup': {'attempted': True, 'started': False, 'already_running': False, 'wait_ms': 0, 'error': 'Sysplorer launch did not add any FindSysplorer port', 'dedicated_sysplorer_port': None, 'timestamp': '2026-07-28T22:52:29.604744+00:00'}, 'paths': {'workspace_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim', 'deploy_root': 'D:\\\\Program Files\\\\MWORKS\\\\Sysplorer 2026a\\\\Tools\\\\sysplorer_mcp', 'resources_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\resources'}}"
+      ]
+    },
+    {
+      "controller_id": "official_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "simulate_failed",
+      "failure_reasons": [
+        "simulation API reported failure: {'ok': True, 'api': 'ModelingPy.SimulateModel', 'simulation_options': None, 'data': False, 'simulate_api_reported_failure': True, 'last_errors': [''], 'last_errors_error': None, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.78}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'result_verification': {'result_probe': {'ok': True, 'has_readable_result': True, 'data': 'Real', 'error': None}, 'get_var_value_at': {'ok': True, 'data': 35648566.93684283, 'error': None}}, 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.78}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 35648566.93684283}, 'raw_tool_result': {'ok': True, 'tool': 'mworks_run_script', 'stdout': '', 'stderr': '', 'exception': '', 'traceback': '', 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.78}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 35648566.93684283}, 'script_path_resolved': '', 'hint': ''}}"
+      ]
+    },
+    {
+      "controller_id": "official_pid_yaw_authority_mapped",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidYawAuthorityMappedFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "simulate_failed",
+      "failure_reasons": [
+        "simulation API reported failure: {'ok': True, 'api': 'ModelingPy.SimulateModel', 'simulation_options': None, 'data': False, 'simulate_api_reported_failure': True, 'last_errors': [''], 'last_errors_error': None, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.78}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'result_verification': {'result_probe': {'ok': True, 'has_readable_result': True, 'data': 'Real', 'error': None}, 'get_var_value_at': {'ok': True, 'data': 35648566.93684283, 'error': None}}, 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.78}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 35648566.93684283}, 'raw_tool_result': {'ok': True, 'tool': 'mworks_run_script', 'stdout': '', 'stderr': '', 'exception': '', 'traceback': '', 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.78}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 35648566.93684283}, 'script_path_resolved': '', 'hint': ''}}"
+      ]
+    },
+    {
+      "controller_id": "official_pid_yaw_corrected",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidYawCorrectedFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 9336.801419119834,
+      "terminal_position_error_norm_m": 21301.947794127896,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 21301.9m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "passivity_based_control",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.PassivityBasedControlFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 2.162091102107092,
+      "terminal_position_error_norm_m": 2.196260919695625,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "pole_placement_luenberger",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.PolePlacementLuenbergerFormalRunner",
+      "status": "fail",
+      "position_rmse_m": 7.513797274722888,
+      "terminal_position_error_norm_m": 26.241705909454428,
+      "failure_class": "terminal_position_error_exceeds_5m",
+      "failure_reasons": [
+        "terminal position_error_norm 26.2417m is not below 5m"
+      ]
+    },
+    {
+      "controller_id": "px4ctrl",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.2766961601143172,
+      "terminal_position_error_norm_m": 0.002682854466775294,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "rl_gain_scheduler",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.RlGainSchedulerFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "robust_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.RobustMpcFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Sysplorer MCP health failed: {'ok': False, 'mcp_server': {'version': '0.1', 'version_display': '0.1', 'version_base': '0.1', 'version_core': '0.1', 'build_counter': 0, 'git_commit_count': 196, 'build_kind': 'release', 'build_time': '2026-05-08T11:14:45+08:00', 'git_revision': '24314a1'}, 'python': {'python_version': '3.11.4', 'major': 3, 'minor': 11, 'compatible': True, 'required': '3.10+ (recommended 3.11 for mworks-sysplorer)'}, 'driver_ready': False, 'driver_error': 'Sysplorer launch did not add any FindSysplorer port', 'advice': ['Set MWORKS_BIN64 to your MWorks Bin64 folder if needed.'], 'sysplorer_startup': {'attempted': True, 'started': False, 'already_running': False, 'wait_ms': 0, 'error': 'Sysplorer launch did not add any FindSysplorer port', 'dedicated_sysplorer_port': None, 'timestamp': '2026-07-28T23:07:12.250202+00:00'}, 'paths': {'workspace_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim', 'deploy_root': 'D:\\\\Program Files\\\\MWORKS\\\\Sysplorer 2026a\\\\Tools\\\\sysplorer_mcp', 'resources_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\resources'}}"
+      ]
+    },
+    {
+      "controller_id": "se_3_basic",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Se3BasicFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.2765318225908831,
+      "terminal_position_error_norm_m": 0.0029811618353429636,
+      "failure_class": null,
+      "failure_reasons": []
+    },
+    {
+      "controller_id": "super_twisting_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "terminal_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.TerminalSmcFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Sysplorer MCP health failed: {'ok': False, 'mcp_server': {'version': '0.1', 'version_display': '0.1', 'version_base': '0.1', 'version_core': '0.1', 'build_counter': 0, 'git_commit_count': 196, 'build_kind': 'release', 'build_time': '2026-05-08T11:14:45+08:00', 'git_revision': '24314a1'}, 'python': {'python_version': '3.11.4', 'major': 3, 'minor': 11, 'compatible': True, 'required': '3.10+ (recommended 3.11 for mworks-sysplorer)'}, 'driver_ready': False, 'driver_error': 'Sysplorer launch did not add any FindSysplorer port', 'advice': ['Set MWORKS_BIN64 to your MWorks Bin64 folder if needed.'], 'sysplorer_startup': {'attempted': True, 'started': False, 'already_running': False, 'wait_ms': 0, 'error': 'Sysplorer launch did not add any FindSysplorer port', 'dedicated_sysplorer_port': None, 'timestamp': '2026-07-28T23:16:09.325466+00:00'}, 'paths': {'workspace_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim', 'deploy_root': 'D:\\\\Program Files\\\\MWORKS\\\\Sysplorer 2026a\\\\Tools\\\\sysplorer_mcp', 'resources_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\resources'}}"
+      ]
+    },
+    {
+      "controller_id": "trained_neural_residual",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.TrainedNeuralResidualFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Timeout waiting for MCP method tools/call"
+      ]
+    },
+    {
+      "controller_id": "tube_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.TubeMpcFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "other",
+      "failure_reasons": [
+        "Sysplorer MCP health failed: {'ok': False, 'mcp_server': {'version': '0.1', 'version_display': '0.1', 'version_base': '0.1', 'version_core': '0.1', 'build_counter': 0, 'git_commit_count': 196, 'build_kind': 'release', 'build_time': '2026-05-08T11:14:45+08:00', 'git_revision': '24314a1'}, 'python': {'python_version': '3.11.4', 'major': 3, 'minor': 11, 'compatible': True, 'required': '3.10+ (recommended 3.11 for mworks-sysplorer)'}, 'driver_ready': False, 'driver_error': 'Sysplorer launch did not add any FindSysplorer port', 'advice': ['Set MWORKS_BIN64 to your MWorks Bin64 folder if needed.'], 'sysplorer_startup': {'attempted': True, 'started': False, 'already_running': False, 'wait_ms': 0, 'error': 'Sysplorer launch did not add any FindSysplorer port', 'dedicated_sysplorer_port': None, 'timestamp': '2026-07-28T23:24:30.971434+00:00'}, 'paths': {'workspace_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim', 'deploy_root': 'D:\\\\Program Files\\\\MWORKS\\\\Sysplorer 2026a\\\\Tools\\\\sysplorer_mcp', 'resources_root': 'C:\\\\Users\\\\HP\\\\Desktop\\\\MoSim\\\\resources'}}"
+      ]
+    }
+  ]
+}

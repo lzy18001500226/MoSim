@@ -1,0 +1,1855 @@
+{
+  "schema": "mosim.phase2_full_48_climbpath_matrix.v1",
+  "generated_at": "2026-07-29T05:31:55+08:00",
+  "scope": {
+    "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50.0,
+    "scenario_injection": "none",
+    "runner_directory": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal",
+    "runner_count": 48
+  },
+  "rows": [
+    {
+      "runner_id": "AdaptiveBackstepping",
+      "controller_id": "adaptive_backstepping",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveBacksteppingFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveBacksteppingFormalRunner.mo",
+      "adapter_class": "AdaptiveBacksteppingAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveBacksteppingFormalRunner.mo",
+          "sha256": "5d4ff188e3dbc37f63796693dc91a2c6bd716ac751fb698c46d86222aeb26714"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/AdaptiveBacksteppingAttitudeThrustAdapter.mo",
+          "sha256": "ffe2b33a7d016490e9f019090fb27e2b91feb39a11c8f271068fc22d689414fe"
+        }
+      ]
+    },
+    {
+      "runner_id": "AdaptiveMpc",
+      "controller_id": "adaptive_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveMpcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveMpcFormalRunner.mo",
+      "adapter_class": "AdaptiveMpcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveMpcFormalRunner.mo",
+          "sha256": "9c11bd6d14b63b944aa3b043507a813fef4db396a4ace559ea07cbd6c2cb7f8b"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/AdaptiveMpcAttitudeThrustAdapter.mo",
+          "sha256": "b70ee647fdf60d81add84b0080af99afce5e81b2134f52e5a2a396b76334a8d4"
+        }
+      ]
+    },
+    {
+      "runner_id": "AdaptiveSmc",
+      "controller_id": "adaptive_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveSmcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveSmcFormalRunner.mo",
+      "adapter_class": "AdaptiveSmcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveSmcFormalRunner.mo",
+          "sha256": "3f885db0f629d25fc96ce6c4bc54310e9995957af1271278aabc81dee33c83af"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/AdaptiveSmcAttitudeThrustAdapter.mo",
+          "sha256": "2ab02aff54faa2ea0a9ddf1ae0e7db06c2195cb54782b74c2c9126446f3996f5"
+        }
+      ]
+    },
+    {
+      "runner_id": "Awff",
+      "controller_id": "awff",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AwffFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AwffFormalRunner.mo",
+      "adapter_class": "AWFFRotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AwffFormalRunner.mo",
+          "sha256": "c7e7d50135354a3830b9b0ca9ed7a1b478325305054b37f775732eec0efa976e"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/AWFFRotorAdapter.mo",
+          "sha256": "e39086b7bf1f384d76baa838ca8d56afd44fbf8ad77039f9a82281b31211e150"
+        }
+      ]
+    },
+    {
+      "runner_id": "BacksteppingBaseline",
+      "controller_id": "backstepping_baseline",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.BacksteppingBaselineFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/BacksteppingBaselineFormalRunner.mo",
+      "adapter_class": "BacksteppingBaselineAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/BacksteppingBaselineFormalRunner.mo",
+          "sha256": "313c7a49780ce765449dcba51cbf4fbe60859dad5ccf0c860eb3d5d089707ead"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/BacksteppingBaselineAttitudeThrustAdapter.mo",
+          "sha256": "12698b4848a968df1b438416d45cb9696fd4eb0b5fc9aeba64092a445bd0f5e5"
+        }
+      ]
+    },
+    {
+      "runner_id": "CascadePid",
+      "controller_id": "cascade_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.CascadePidFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/CascadePidFormalRunner.mo",
+      "adapter_class": "CascadePidAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/CascadePidFormalRunner.mo",
+          "sha256": "66ed833d32166629ec5880fb3fbaea8f0a63399bc648d2348e58589332dece8b"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/CascadePidAttitudeThrustAdapter.mo",
+          "sha256": "eee0d01b9a825fe1d59684c8242c7b3a7b18617289f4c47033b84f9d1b0978b1"
+        }
+      ]
+    },
+    {
+      "runner_id": "DfbcBasic",
+      "controller_id": "dfbc_basic",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcBasicFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcBasicFormalRunner.mo",
+      "adapter_class": "DfbcBasicAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcBasicFormalRunner.mo",
+          "sha256": "3a88667b45fd2e09bfea142beecaa0a60206126214be03f7dccc0925be7e8f12"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcBasicAttitudeThrustAdapter.mo",
+          "sha256": "01585adfc3a10031027ea037b5123bf7c77c29c120785a7fd7c7f84e78a85870"
+        }
+      ]
+    },
+    {
+      "runner_id": "DfbcHighOrderBodyRate",
+      "controller_id": "dfbc_high_order_body_rate",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderBodyRateFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderBodyRateFormalRunner.mo",
+      "adapter_class": "DfbcHighOrderBodyRateAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderBodyRateFormalRunner.mo",
+          "sha256": "32be9ab89fba9e5be67bf0e159334132447c28f067e2156f3613c298f414a893"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalBodyRateThrustRunnerBase.mo",
+          "sha256": "ac5e189a4ec4f78a18ceeca8ac68dc5f99be11b8605df585b38bf03bf372938d"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcHighOrderBodyRateAdapter.mo",
+          "sha256": "899b8cdd854e7cd760be9ef2de12c54f1148125f3dbe58e4d6004dd2ee976b9f"
+        }
+      ]
+    },
+    {
+      "runner_id": "DfbcHighOrder",
+      "controller_id": "dfbc_high_order",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderFormalRunner.mo",
+      "adapter_class": "DfbcHighOrderAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderFormalRunner.mo",
+          "sha256": "890ed18658a23537528537261b0031bba63750d3f555f4609bf99cd99ea431d6"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcHighOrderAttitudeThrustAdapter.mo",
+          "sha256": "abf8ae1fb8e50f0435265e089b10df71dbb0466f46fe6478146c58bcf59b31ca"
+        }
+      ]
+    },
+    {
+      "runner_id": "DfbcSmoothRobustBodyRate",
+      "controller_id": "dfbc_smooth_robust_body_rate",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcSmoothRobustBodyRateFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcSmoothRobustBodyRateFormalRunner.mo",
+      "adapter_class": "DfbcSmoothRobustBodyRateAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcSmoothRobustBodyRateFormalRunner.mo",
+          "sha256": "e7af561e751cce8947e1423bd6de7e04b85e469ed7db2f5da07bd61440844728"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalBodyRateThrustRunnerBase.mo",
+          "sha256": "ac5e189a4ec4f78a18ceeca8ac68dc5f99be11b8605df585b38bf03bf372938d"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcSmoothRobustBodyRateAdapter.mo",
+          "sha256": "230b7dd56b236836f44ac3d9a1731706c07b80f20317aafdfd9673a3f5e61dbd"
+        }
+      ]
+    },
+    {
+      "runner_id": "DfbcSmoothRobust",
+      "controller_id": "dfbc_smooth_robust",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcSmoothRobustFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcSmoothRobustFormalRunner.mo",
+      "adapter_class": "DfbcSmoothRobustAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcSmoothRobustFormalRunner.mo",
+          "sha256": "f4592cc6223b73c5e544a44abf00d147be92e88ccf750da23fa14319148fcba4"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcSmoothRobustAttitudeThrustAdapter.mo",
+          "sha256": "24f85ffd4c369ab60a99bc7894c9090bdfb5ba21c3067f6ab48b5f596f20cdda"
+        }
+      ]
+    },
+    {
+      "runner_id": "ExplicitGainScheduledMpc",
+      "controller_id": "explicit_gain_scheduled_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.ExplicitGainScheduledMpcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/ExplicitGainScheduledMpcFormalRunner.mo",
+      "adapter_class": "ExplicitGainScheduledMpcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/ExplicitGainScheduledMpcFormalRunner.mo",
+          "sha256": "a191adc892c9441849abf50b64bb8d7fdcd092f62663f561e6c6bd4908d4f614"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/ExplicitGainScheduledMpcAttitudeThrustAdapter.mo",
+          "sha256": "44abf2ec9be3f5d7e4acd14418db0a4098cb8f57f129a881d8ff64e0d5a0bebe"
+        }
+      ]
+    },
+    {
+      "runner_id": "FaultCompensation",
+      "controller_id": "fault_compensation",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FaultCompensationFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FaultCompensationFormalRunner.mo",
+      "adapter_class": "FaultCompensationRotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FaultCompensationFormalRunner.mo",
+          "sha256": "62870ebe1e452402dfbb2f365e7206ada675db027128454f5a6a2e6b2761227d"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/FaultCompensationRotorAdapter.mo",
+          "sha256": "41b93ae1c7120d74b16b723cdc8e4055f70cdd202b7b35685ea0be2d141f1087"
+        }
+      ]
+    },
+    {
+      "runner_id": "FeedbackLinearization",
+      "controller_id": "feedback_linearization",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FeedbackLinearizationFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FeedbackLinearizationFormalRunner.mo",
+      "adapter_class": "FeedbackLinearizationAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FeedbackLinearizationFormalRunner.mo",
+          "sha256": "93c613fa0b930ca58c3775bd36fe4ae65fc9c0a1cd3dbff39e78b61f015092bf"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/FeedbackLinearizationAttitudeThrustAdapter.mo",
+          "sha256": "f82c9f59cba9a6b9822f4745bf84dab4bf894326d61330ca9e18de6eee92b802"
+        }
+      ]
+    },
+    {
+      "runner_id": "Fopid",
+      "controller_id": "fopid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FopidFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FopidFormalRunner.mo",
+      "adapter_class": "FopidAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FopidFormalRunner.mo",
+          "sha256": "c3eee5672c549a0d827baa81b02939e7a7026d92d9041ada8df4ea54f0aaf358"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/FopidAttitudeThrustAdapter.mo",
+          "sha256": "8b7c6f7ae8e5657dc0619df9825540b48a782c140a6ee5ed39491faba176f38f"
+        }
+      ]
+    },
+    {
+      "runner_id": "FuzzyPid",
+      "controller_id": "fuzzy_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzyPidFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzyPidFormalRunner.mo",
+      "adapter_class": "FuzzyPidAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzyPidFormalRunner.mo",
+          "sha256": "9556602336c6343637cfb89776a2a9fa208997149cff499634639db4a791dcfd"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/FuzzyPidAttitudeThrustAdapter.mo",
+          "sha256": "09055382c6817fb72fd051f8c2dcfa4b3728b146bc00752fa6b2b37c0b0fa0a5"
+        }
+      ]
+    },
+    {
+      "runner_id": "FuzzySmc",
+      "controller_id": "fuzzy_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzySmcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzySmcFormalRunner.mo",
+      "adapter_class": "FuzzySmcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzySmcFormalRunner.mo",
+          "sha256": "e822e84d2bf355db49bfdff87e9c365f3ed36981691d5f089304a0feb5f2ced2"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/FuzzySmcAttitudeThrustAdapter.mo",
+          "sha256": "0b623eb7e230f881c1eefb5b29fc412f3db239681e67545cd090b3c3af0090bf"
+        }
+      ]
+    },
+    {
+      "runner_id": "GainScheduledPid",
+      "controller_id": "gain_scheduled_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.GainScheduledPidFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/GainScheduledPidFormalRunner.mo",
+      "adapter_class": "GainScheduledPidAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/GainScheduledPidFormalRunner.mo",
+          "sha256": "c8244f5974fad31ec2e24db616d06d3bfa6a9a0cd01f1196676945a8be1abc10"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/GainScheduledPidAttitudeThrustAdapter.mo",
+          "sha256": "3040959763f16de4f6fe6487a82a9c988c145309a098273fb06f2e450fd21b85"
+        }
+      ]
+    },
+    {
+      "runner_id": "H2StateFeedback",
+      "controller_id": "h_2_state_feedback",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.H2StateFeedbackFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/H2StateFeedbackFormalRunner.mo",
+      "adapter_class": "H2StateFeedbackAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/H2StateFeedbackFormalRunner.mo",
+          "sha256": "e204d6e4658de09de61d0eea7fd9a0be0c0fecf1b9ec6fdd16ba9d92e75aadd1"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/H2StateFeedbackAttitudeThrustAdapter.mo",
+          "sha256": "9d3deb07001981158b270fc14e196b483a99d8ffc2a873d60a8d0a119f79fce8"
+        }
+      ]
+    },
+    {
+      "runner_id": "HinfHoverWrench",
+      "controller_id": "hinf_hover_wrench",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.HinfHoverWrenchFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/HinfHoverWrenchFormalRunner.mo",
+      "adapter_class": "HinfHoverWrenchAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/HinfHoverWrenchFormalRunner.mo",
+          "sha256": "c974040479328f69fc41dc4df335aa8572c67707efc066a2c84034f56ddc5730"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalWrenchRunnerBase.mo",
+          "sha256": "cabf27223e715e1aa46181f101633bdee4337081581382ac5a28b1629be83683"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/HinfHoverWrenchAdapter.mo",
+          "sha256": "68ca8e371ca643b768046c83b4d170c49467c633173ee8d27ba59a446f62e048"
+        }
+      ]
+    },
+    {
+      "runner_id": "Ilqr",
+      "controller_id": "ilqr",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.IlqrFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IlqrFormalRunner.mo",
+      "adapter_class": "IlqrAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IlqrFormalRunner.mo",
+          "sha256": "b965376fd212f14953a4c1fb25d886ee514a724a8b49a213eca868a98d782a7a"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/IlqrAttitudeThrustAdapter.mo",
+          "sha256": "cc9902615ebe8965be9d463da552a3f9d129e6e818cfed00c4960526d577a107"
+        }
+      ]
+    },
+    {
+      "runner_id": "ImprovedPid",
+      "controller_id": "improved_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.ImprovedPidFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/ImprovedPidFormalRunner.mo",
+      "adapter_class": "ImprovedPIDRotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/ImprovedPidFormalRunner.mo",
+          "sha256": "ec77d0f44b90977a659123a8a459d34e2b48b241d3c3c3e653c3cc7fa5269490"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/ImprovedPIDRotorAdapter.mo",
+          "sha256": "4af1d76056e10bc5ae8612e89911532270fc04204d925d4f2924b070bd6f49e3"
+        }
+      ]
+    },
+    {
+      "runner_id": "Indi",
+      "controller_id": "indi",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.IndiFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IndiFormalRunner.mo",
+      "adapter_class": "INDIRotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IndiFormalRunner.mo",
+          "sha256": "a9a753679d1592ed6438a5c5c8fac2f0463d659d7f06bde64f3bc29b7012d39f"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/INDIRotorAdapter.mo",
+          "sha256": "224f3a5433af0e5710240c97cb93c95b8c71282b663416d1313be0391cf307f7"
+        }
+      ]
+    },
+    {
+      "runner_id": "IntegralSmc",
+      "controller_id": "integral_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.IntegralSmcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IntegralSmcFormalRunner.mo",
+      "adapter_class": "IntegralSmcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IntegralSmcFormalRunner.mo",
+          "sha256": "9b077bff7e21a0b00600688c5ac5bd4e511e2cec47bbd7a054d8cdcdec9bb2a9"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/IntegralSmcAttitudeThrustAdapter.mo",
+          "sha256": "33729fe32933b2996eddaabec5cd280e4d0fdadfc7784d53adf2b42dd2c0b859"
+        }
+      ]
+    },
+    {
+      "runner_id": "L1",
+      "controller_id": "l_1",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.L1FormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/L1FormalRunner.mo",
+      "adapter_class": "L1RotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/L1FormalRunner.mo",
+          "sha256": "3aa73b600b50db8e35c5dbefcc26ed087990a1896bb0f8f4d81acf5d743cb6d2"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/L1RotorAdapter.mo",
+          "sha256": "6d34fe780769df0d32e4c480e161e14596c3494fc088d95ce2ba4431c8dfb5e8"
+        }
+      ]
+    },
+    {
+      "runner_id": "LinearMpc",
+      "controller_id": "linear_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcFormalRunner.mo",
+      "adapter_class": "LinearMpcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcFormalRunner.mo",
+          "sha256": "31b90c29aa7913014f9cc3919e3883f6651afc2568e62b42a5115ceaac5802f8"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/LinearMpcAttitudeThrustAdapter.mo",
+          "sha256": "ab5dba59eea9d479376a9653e045b12d9f7bf6e41b5a541325950f81e3cedd68"
+        }
+      ]
+    },
+    {
+      "runner_id": "LinearMpcRotor",
+      "controller_id": "linear_mpc_rotor",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcRotorFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcRotorFormalRunner.mo",
+      "adapter_class": "LinearMPCRotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcRotorFormalRunner.mo",
+          "sha256": "a9b1a7e5d34c1518a601fbc271a6b5b740bf669eed96f95dd3fb170e580c3912"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/LinearMPCRotorAdapter.mo",
+          "sha256": "f824be4f1db0446397f0eabdd85ab5fd208d73fe467550568495fb65adf1360b"
+        }
+      ]
+    },
+    {
+      "runner_id": "Lqg",
+      "controller_id": "lqg",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LqgFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqgFormalRunner.mo",
+      "adapter_class": "LqgAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqgFormalRunner.mo",
+          "sha256": "cd1ed94ccb1f78ae4d3600abda4528059a2590925494db83a2ef94b352515bd5"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/LqgAttitudeThrustAdapter.mo",
+          "sha256": "da5a98c39fbc68983125cff9e7e86bc9a39eca2343138fcbea9a257adbd6c8fa"
+        }
+      ]
+    },
+    {
+      "runner_id": "Lqi",
+      "controller_id": "lqi",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LqiFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqiFormalRunner.mo",
+      "adapter_class": "LqiAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqiFormalRunner.mo",
+          "sha256": "1c35f7481593db7955242c37d160433ab5f89e7f4c1994abb8e5456ad8d3db1f"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/LqiAttitudeThrustAdapter.mo",
+          "sha256": "18a1b54a697f37ac5bb43d27145c6c39d66de207c50d436dc31e8eacfcd4f075"
+        }
+      ]
+    },
+    {
+      "runner_id": "LqrBaseline",
+      "controller_id": "lqr_baseline",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqrBaselineFormalRunner.mo",
+      "adapter_class": "LqrBaselineAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqrBaselineFormalRunner.mo",
+          "sha256": "be22cbf0d06e1df69e5945d03aa0d10ca74ee419976685c9abb828aa6a0e7b0f"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/LqrBaselineAttitudeThrustAdapter.mo",
+          "sha256": "3c5d887252e5a141876c6e47ef1c1a127a072ff2ded7032b0204f4af21c616bb"
+        }
+      ]
+    },
+    {
+      "runner_id": "Mppi",
+      "controller_id": "mppi",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.MppiFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MppiFormalRunner.mo",
+      "adapter_class": "MppiAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MppiFormalRunner.mo",
+          "sha256": "032e43fd491bb8e97b454f26df28c70a528c1f771de82ccccb80dd792de57c7f"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/MppiAttitudeThrustAdapter.mo",
+          "sha256": "fefcced184f4958620e97a94dbbff7a6f071e0cddfff2fc9a4ee14dfc5b69c42"
+        }
+      ]
+    },
+    {
+      "runner_id": "Mrac",
+      "controller_id": "mrac",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.MracFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MracFormalRunner.mo",
+      "adapter_class": "MracAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MracFormalRunner.mo",
+          "sha256": "f937273153e6fb0ce3bc03e559ea0c689d5aea8768e5c1ad0d908d8229d6fe50"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/MracAttitudeThrustAdapter.mo",
+          "sha256": "84c47eafa29a2b1216bfe4d345473f994e80f56db3d56513023e2e7b3220ba5f"
+        }
+      ]
+    },
+    {
+      "runner_id": "Ndi",
+      "controller_id": "ndi",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.NdiFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NdiFormalRunner.mo",
+      "adapter_class": "NdiAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NdiFormalRunner.mo",
+          "sha256": "9c33ca2b74c888a95776516a0b18fcf3141793715730ab584bc2c7e421e971ff"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/NdiAttitudeThrustAdapter.mo",
+          "sha256": "c16425285dce4189988d8b6f121d003723b663851c44a5cee9fdef3bb827bde6"
+        }
+      ]
+    },
+    {
+      "runner_id": "NeuralPid",
+      "controller_id": "neural_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.NeuralPidFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NeuralPidFormalRunner.mo",
+      "adapter_class": "NeuralPidAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NeuralPidFormalRunner.mo",
+          "sha256": "73eff4986d12d709527f6943bf027543211dae57670a403a66bdd83b14f365ae"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/NeuralPidAttitudeThrustAdapter.mo",
+          "sha256": "18b566405eb706314a3980753a7f2a6af22c774754d8a8348ca252a8689eabbd"
+        }
+      ]
+    },
+    {
+      "runner_id": "NonsingularTerminalSmc",
+      "controller_id": "nonsingular_terminal_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.NonsingularTerminalSmcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NonsingularTerminalSmcFormalRunner.mo",
+      "adapter_class": "NonsingularTerminalSmcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NonsingularTerminalSmcFormalRunner.mo",
+          "sha256": "cdf5d40c290426aaa51df3dd447484a3ceb320d06965a927fc89703afff764da"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/NonsingularTerminalSmcAttitudeThrustAdapter.mo",
+          "sha256": "c499bc8e8371d907b974299fed5778b985d8b64c61631a6a0686f2e3cb07be20"
+        }
+      ]
+    },
+    {
+      "runner_id": "OfficialPid",
+      "controller_id": "official_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+      "adapter_class": "OfficialPIDRotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+          "sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+          "sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4"
+        }
+      ]
+    },
+    {
+      "runner_id": "OfficialPidYawAuthorityMapped",
+      "controller_id": "official_pid_yaw_authority_mapped",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidYawAuthorityMappedFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidYawAuthorityMappedFormalRunner.mo",
+      "adapter_class": "OfficialPIDYawAuthorityMappedRotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidYawAuthorityMappedFormalRunner.mo",
+          "sha256": "75f323c86b3d3d6d6942e248b3260a88623960682ba4acfd3fbb0119c3e120ed"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDYawAuthorityMappedRotorAdapter.mo",
+          "sha256": "4e281fb37ac7896e97cbe8fb6c3fc29bcbb437131bd479baba4067c49afcec64"
+        }
+      ]
+    },
+    {
+      "runner_id": "OfficialPidYawCorrected",
+      "controller_id": "official_pid_yaw_corrected",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidYawCorrectedFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidYawCorrectedFormalRunner.mo",
+      "adapter_class": "OfficialPIDYawCorrectedRotorAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidYawCorrectedFormalRunner.mo",
+          "sha256": "9b2819497800ba720dc7f807b44bf6ad8d83bbc7f0bc18c62b0f005e93a28450"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "sha256": "ee7edca7d45e9441ef572cd4eff05975d8a3bb46588ebd0c5174e8c8d8030dca"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDYawCorrectedRotorAdapter.mo",
+          "sha256": "ca66cffd49e4638a4f9dd362149acf1445859c487728bcd7e92835faf50bdcce"
+        }
+      ]
+    },
+    {
+      "runner_id": "PassivityBasedControl",
+      "controller_id": "passivity_based_control",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.PassivityBasedControlFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PassivityBasedControlFormalRunner.mo",
+      "adapter_class": "PassivityBasedControlAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PassivityBasedControlFormalRunner.mo",
+          "sha256": "3734a386610fb8aabfb52bc0f5ed766946688a7f1846835e8eb2d4df8e283772"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/PassivityBasedControlAttitudeThrustAdapter.mo",
+          "sha256": "bbb76943c65eda92828c655ccc3f35051009484e49f5d1484f7fc2b60b813d45"
+        }
+      ]
+    },
+    {
+      "runner_id": "PolePlacementLuenberger",
+      "controller_id": "pole_placement_luenberger",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.PolePlacementLuenbergerFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PolePlacementLuenbergerFormalRunner.mo",
+      "adapter_class": "PolePlacementLuenbergerAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PolePlacementLuenbergerFormalRunner.mo",
+          "sha256": "3139086385af7013130f0059530b2a65e85cf8e7db708624c1c59dd5bb9145f3"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/PolePlacementLuenbergerAttitudeThrustAdapter.mo",
+          "sha256": "f7207fb0aee322c2c4d0ee943e7b5128c250a3fe7ad185529f23199e81c5ae09"
+        }
+      ]
+    },
+    {
+      "runner_id": "Px4Ctrl",
+      "controller_id": "px4ctrl",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo",
+      "adapter_class": "Px4CtrlAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo",
+          "sha256": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlAttitudeThrustAdapter.mo",
+          "sha256": "e3c97cd09041c2e53e744c74c49dec69383b462cdbe916fac3f5cb777f58e057"
+        }
+      ]
+    },
+    {
+      "runner_id": "RlGainScheduler",
+      "controller_id": "rl_gain_scheduler",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.RlGainSchedulerFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RlGainSchedulerFormalRunner.mo",
+      "adapter_class": "RlGainSchedulerAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RlGainSchedulerFormalRunner.mo",
+          "sha256": "4e069782721fea06cd0d5aae49cfdc8df7a9f4565170d7de5774e75136f3b6c6"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/RlGainSchedulerAttitudeThrustAdapter.mo",
+          "sha256": "a71103344ce6c0eabddf1767ac2a5d4d3b5637635f09833ac9fa5914388daad0"
+        }
+      ]
+    },
+    {
+      "runner_id": "RobustMpc",
+      "controller_id": "robust_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.RobustMpcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RobustMpcFormalRunner.mo",
+      "adapter_class": "RobustMpcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RobustMpcFormalRunner.mo",
+          "sha256": "e4b83ecd849530a939ad0446d4b412873089459a8f12b2317600fa8c09968999"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/RobustMpcAttitudeThrustAdapter.mo",
+          "sha256": "5fad6157e561568f923df04dc2a03f1c6f2c690c71e2d7a670c5863eaba9bd3d"
+        }
+      ]
+    },
+    {
+      "runner_id": "Se3Basic",
+      "controller_id": "se_3_basic",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Se3BasicFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Se3BasicFormalRunner.mo",
+      "adapter_class": "Se3BasicAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Se3BasicFormalRunner.mo",
+          "sha256": "3d2f2ae5a14774ec0c98a8524ca1479db20f3ca929e86b3c7a88f45fb1a03944"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/Se3BasicAttitudeThrustAdapter.mo",
+          "sha256": "789e3aef93393a95388fbb128e3f5a46d77b386198029aa89ebfdb8873428c5a"
+        }
+      ]
+    },
+    {
+      "runner_id": "SuperTwistingSmc",
+      "controller_id": "super_twisting_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/SuperTwistingSmcFormalRunner.mo",
+      "adapter_class": "SuperTwistingSmcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/SuperTwistingSmcFormalRunner.mo",
+          "sha256": "ba974034357330febb227275741e476fc9f93ffba0e915230a8314667de9f719"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/SuperTwistingSmcAttitudeThrustAdapter.mo",
+          "sha256": "44b154c582da4b889b80bc295245e4aa446708a784fad1794f41c6d54d9b56e9"
+        }
+      ]
+    },
+    {
+      "runner_id": "TerminalSmc",
+      "controller_id": "terminal_smc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.TerminalSmcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TerminalSmcFormalRunner.mo",
+      "adapter_class": "TerminalSmcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TerminalSmcFormalRunner.mo",
+          "sha256": "044e1fe2f48a10d8a84ee736ae2f221dca1ffda6ba34975de735c41fde0b114f"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/TerminalSmcAttitudeThrustAdapter.mo",
+          "sha256": "c56ce538a0132f8b41f85c316994b280b7c709b82ba4a3373543dd3cff6576d7"
+        }
+      ]
+    },
+    {
+      "runner_id": "TrainedNeuralResidual",
+      "controller_id": "trained_neural_residual",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.TrainedNeuralResidualFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TrainedNeuralResidualFormalRunner.mo",
+      "adapter_class": "TrainedNeuralResidualAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TrainedNeuralResidualFormalRunner.mo",
+          "sha256": "eb0510babafd2ebf9ceb75513c55fc019e2be3c720448ca992bd3d2178d86dc9"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/TrainedNeuralResidualAttitudeThrustAdapter.mo",
+          "sha256": "ecdb4ce39425eb6b67260d355ab58e6b5d7743d58681984bfbf11b861523ab1a"
+        }
+      ]
+    },
+    {
+      "runner_id": "TubeMpc",
+      "controller_id": "tube_mpc",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.TubeMpcFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TubeMpcFormalRunner.mo",
+      "adapter_class": "TubeMpcAttitudeThrustAdapter",
+      "source_bindings": [
+        {
+          "role": "formal_runner",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TubeMpcFormalRunner.mo",
+          "sha256": "429b3ac23d86d4b762b333774a9bd2eb6c3c0c8f2c17ea4c4fe0e3b6407afcc6"
+        },
+        {
+          "role": "package_root",
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "role": "shared_plant",
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "role": "trajectory",
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "role": "shared_runner_base",
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalAttitudeThrustRunnerBase.mo",
+          "sha256": "c822c96d94a365b9f94788e85a05ea017a63ae9a6a593d372815c12cc5f99aaf"
+        },
+        {
+          "role": "formal_adapter",
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/TubeMpcAttitudeThrustAdapter.mo",
+          "sha256": "5cb871cde81dfd75ce12156b3d552b63afc878e5e5dcdc8c4e71cbfa65c6770e"
+        }
+      ]
+    }
+  ]
+}
