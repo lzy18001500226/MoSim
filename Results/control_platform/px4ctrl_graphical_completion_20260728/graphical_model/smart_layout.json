@@ -1,0 +1,3047 @@
+{
+  "id": "PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
+  "edges": [
+    {
+      "id": "edge_001_yaw_mea_to_sin_yaw",
+      "sources": [
+        "yaw_mea"
+      ],
+      "targets": [
+        "sin_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_001_yaw_mea_to_sin_yaw",
+          "startPoint": {
+            "x": -174.0,
+            "y": -286.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -208.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -286.0
+            },
+            {
+              "x": -168.0,
+              "y": -208.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_002_yaw_mea_to_cos_yaw",
+      "sources": [
+        "yaw_mea"
+      ],
+      "targets": [
+        "cos_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_002_yaw_mea_to_cos_yaw",
+          "startPoint": {
+            "x": -174.0,
+            "y": -286.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -156.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -286.0
+            },
+            {
+              "x": -168.0,
+              "y": -156.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_003_ref_yaw_to_yaw_command_identity",
+      "sources": [
+        "ref_yaw"
+      ],
+      "targets": [
+        "yaw_command_identity"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_003_ref_yaw_to_yaw_command_identity",
+          "startPoint": {
+            "x": -174.0,
+            "y": -182.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -104.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -182.0
+            },
+            {
+              "x": -168.0,
+              "y": -104.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_004_yaw_command_identity_to_yaw_cmd",
+      "sources": [
+        "yaw_command_identity"
+      ],
+      "targets": [
+        "yaw_cmd"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_004_yaw_command_identity_to_yaw_cmd",
+          "startPoint": {
+            "x": -126.0,
+            "y": -104.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": -182.0
+          },
+          "bendPoints": [
+            {
+              "x": -120.0,
+              "y": -104.0
+            },
+            {
+              "x": -120.0,
+              "y": -182.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_005_ref_vx_to_velocity_error_x",
+      "sources": [
+        "ref_vx"
+      ],
+      "targets": [
+        "velocity_error_x"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_005_ref_vx_to_velocity_error_x",
+          "startPoint": {
+            "x": -174.0,
+            "y": 390.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 208.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 390.0
+            },
+            {
+              "x": -168.0,
+              "y": 208.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_006_vx_to_velocity_error_x",
+      "sources": [
+        "vx"
+      ],
+      "targets": [
+        "velocity_error_x"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_006_vx_to_velocity_error_x",
+          "startPoint": {
+            "x": -174.0,
+            "y": 338.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 208.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 338.0
+            },
+            {
+              "x": -168.0,
+              "y": 208.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_007_velocity_error_x_to_Kv_x",
+      "sources": [
+        "velocity_error_x"
+      ],
+      "targets": [
+        "Kv_x"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_007_velocity_error_x_to_Kv_x",
+          "startPoint": {
+            "x": -126.0,
+            "y": 208.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": 130.0
+          },
+          "bendPoints": [
+            {
+              "x": -120.0,
+              "y": 208.0
+            },
+            {
+              "x": -120.0,
+              "y": 130.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_008_ref_py_to_position_error_y",
+      "sources": [
+        "ref_py"
+      ],
+      "targets": [
+        "position_error_y"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_008_ref_py_to_position_error_y",
+          "startPoint": {
+            "x": -174.0,
+            "y": 234.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 156.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 234.0
+            },
+            {
+              "x": -168.0,
+              "y": 156.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_009_py_to_position_error_y",
+      "sources": [
+        "py"
+      ],
+      "targets": [
+        "position_error_y"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_009_py_to_position_error_y",
+          "startPoint": {
+            "x": -174.0,
+            "y": 286.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 156.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 286.0
+            },
+            {
+              "x": -168.0,
+              "y": 156.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_010_position_error_y_to_Kp_y",
+      "sources": [
+        "position_error_y"
+      ],
+      "targets": [
+        "Kp_y"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_010_position_error_y_to_Kp_y",
+          "startPoint": {
+            "x": -126.0,
+            "y": 156.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": 78.0
+          },
+          "bendPoints": [
+            {
+              "x": -120.0,
+              "y": 156.0
+            },
+            {
+              "x": -120.0,
+              "y": 78.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_011_ref_vy_to_velocity_error_y",
+      "sources": [
+        "ref_vy"
+      ],
+      "targets": [
+        "velocity_error_y"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_011_ref_vy_to_velocity_error_y",
+          "startPoint": {
+            "x": -174.0,
+            "y": 182.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 104.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 182.0
+            },
+            {
+              "x": -168.0,
+              "y": 104.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_012_vy_to_velocity_error_y",
+      "sources": [
+        "vy"
+      ],
+      "targets": [
+        "velocity_error_y"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_012_vy_to_velocity_error_y",
+          "startPoint": {
+            "x": -174.0,
+            "y": 130.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 104.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 130.0
+            },
+            {
+              "x": -168.0,
+              "y": 104.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_013_velocity_error_y_to_Kv_y",
+      "sources": [
+        "velocity_error_y"
+      ],
+      "targets": [
+        "Kv_y"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_013_velocity_error_y_to_Kv_y",
+          "startPoint": {
+            "x": -126.0,
+            "y": 104.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": 26.0
+          },
+          "bendPoints": [
+            {
+              "x": -120.0,
+              "y": 104.0
+            },
+            {
+              "x": -120.0,
+              "y": 26.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_014_ref_pz_to_position_error_z",
+      "sources": [
+        "ref_pz"
+      ],
+      "targets": [
+        "position_error_z"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_014_ref_pz_to_position_error_z",
+          "startPoint": {
+            "x": -174.0,
+            "y": 26.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 52.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 26.0
+            },
+            {
+              "x": -168.0,
+              "y": 52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_015_pz_to_position_error_z",
+      "sources": [
+        "pz"
+      ],
+      "targets": [
+        "position_error_z"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_015_pz_to_position_error_z",
+          "startPoint": {
+            "x": -174.0,
+            "y": 78.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 52.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 78.0
+            },
+            {
+              "x": -168.0,
+              "y": 52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_016_position_error_z_to_Kp_z",
+      "sources": [
+        "position_error_z"
+      ],
+      "targets": [
+        "Kp_z"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_016_position_error_z_to_Kp_z",
+          "startPoint": {
+            "x": -126.0,
+            "y": 52.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": -26.0
+          },
+          "bendPoints": [
+            {
+              "x": -120.0,
+              "y": 52.0
+            },
+            {
+              "x": -120.0,
+              "y": -26.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_017_ref_vz_to_velocity_error_z",
+      "sources": [
+        "ref_vz"
+      ],
+      "targets": [
+        "velocity_error_z"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_017_ref_vz_to_velocity_error_z",
+          "startPoint": {
+            "x": -174.0,
+            "y": -26.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -0.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -26.0
+            },
+            {
+              "x": -168.0,
+              "y": -0.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_018_vz_to_velocity_error_z",
+      "sources": [
+        "vz"
+      ],
+      "targets": [
+        "velocity_error_z"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_018_vz_to_velocity_error_z",
+          "startPoint": {
+            "x": -174.0,
+            "y": -78.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -0.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -78.0
+            },
+            {
+              "x": -168.0,
+              "y": -0.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_019_velocity_error_z_to_Kv_z",
+      "sources": [
+        "velocity_error_z"
+      ],
+      "targets": [
+        "Kv_z"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_019_velocity_error_z_to_Kv_z",
+          "startPoint": {
+            "x": -126.0,
+            "y": -0.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": -78.0
+          },
+          "bendPoints": [
+            {
+              "x": -120.0,
+              "y": -0.0
+            },
+            {
+              "x": -120.0,
+              "y": -78.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_020_sin_yaw_to_ax_times_sin_yaw",
+      "sources": [
+        "sin_yaw"
+      ],
+      "targets": [
+        "ax_times_sin_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_020_sin_yaw_to_ax_times_sin_yaw",
+          "startPoint": {
+            "x": -126.0,
+            "y": -208.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": 52.0
+          },
+          "bendPoints": [
+            {
+              "x": -48.0,
+              "y": -208.0
+            },
+            {
+              "x": -48.0,
+              "y": 52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_021_cos_yaw_to_ay_times_cos_yaw",
+      "sources": [
+        "cos_yaw"
+      ],
+      "targets": [
+        "ay_times_cos_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_021_cos_yaw_to_ay_times_cos_yaw",
+          "startPoint": {
+            "x": -126.0,
+            "y": -156.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": -0.0
+          },
+          "bendPoints": [
+            {
+              "x": -48.0,
+              "y": -156.0
+            },
+            {
+              "x": -48.0,
+              "y": -0.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_022_ax_times_sin_yaw_to_roll_numerator",
+      "sources": [
+        "ax_times_sin_yaw"
+      ],
+      "targets": [
+        "roll_numerator"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_022_ax_times_sin_yaw_to_roll_numerator",
+          "startPoint": {
+            "x": 66.0,
+            "y": 52.0
+          },
+          "endPoint": {
+            "x": 78.0,
+            "y": 26.0
+          },
+          "bendPoints": [
+            {
+              "x": 72.0,
+              "y": 52.0
+            },
+            {
+              "x": 72.0,
+              "y": 26.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_023_ay_times_cos_yaw_to_roll_numerator",
+      "sources": [
+        "ay_times_cos_yaw"
+      ],
+      "targets": [
+        "roll_numerator"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_023_ay_times_cos_yaw_to_roll_numerator",
+          "startPoint": {
+            "x": 66.0,
+            "y": -0.0
+          },
+          "endPoint": {
+            "x": 78.0,
+            "y": 26.0
+          },
+          "bendPoints": [
+            {
+              "x": 72.0,
+              "y": -0.0
+            },
+            {
+              "x": 72.0,
+              "y": 26.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_024_roll_numerator_to_roll_divide_gravity",
+      "sources": [
+        "roll_numerator"
+      ],
+      "targets": [
+        "roll_divide_gravity"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_024_roll_numerator_to_roll_divide_gravity",
+          "startPoint": {
+            "x": 114.0,
+            "y": 26.0
+          },
+          "endPoint": {
+            "x": 126.0,
+            "y": 26.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_025_gravity_mps2_to_roll_divide_gravity",
+      "sources": [
+        "gravity_mps2"
+      ],
+      "targets": [
+        "roll_divide_gravity"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_025_gravity_mps2_to_roll_divide_gravity",
+          "startPoint": {
+            "x": -174.0,
+            "y": -234.0
+          },
+          "endPoint": {
+            "x": 126.0,
+            "y": 26.0
+          },
+          "bendPoints": [
+            {
+              "x": -24.0,
+              "y": -234.0
+            },
+            {
+              "x": -24.0,
+              "y": 26.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_026_roll_divide_gravity_to_roll_cmd",
+      "sources": [
+        "roll_divide_gravity"
+      ],
+      "targets": [
+        "roll_cmd"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_026_roll_divide_gravity_to_roll_cmd",
+          "startPoint": {
+            "x": 162.0,
+            "y": 26.0
+          },
+          "endPoint": {
+            "x": 174.0,
+            "y": -0.0
+          },
+          "bendPoints": [
+            {
+              "x": 168.0,
+              "y": 26.0
+            },
+            {
+              "x": 168.0,
+              "y": -0.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_027_cos_yaw_to_ax_times_cos_yaw",
+      "sources": [
+        "cos_yaw"
+      ],
+      "targets": [
+        "ax_times_cos_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_027_cos_yaw_to_ax_times_cos_yaw",
+          "startPoint": {
+            "x": -126.0,
+            "y": -156.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": 156.0
+          },
+          "bendPoints": [
+            {
+              "x": -48.0,
+              "y": -156.0
+            },
+            {
+              "x": -48.0,
+              "y": 156.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_028_sin_yaw_to_ay_times_sin_yaw",
+      "sources": [
+        "sin_yaw"
+      ],
+      "targets": [
+        "ay_times_sin_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_028_sin_yaw_to_ay_times_sin_yaw",
+          "startPoint": {
+            "x": -126.0,
+            "y": -208.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": 104.0
+          },
+          "bendPoints": [
+            {
+              "x": -48.0,
+              "y": -208.0
+            },
+            {
+              "x": -48.0,
+              "y": 104.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_029_ax_times_cos_yaw_to_pitch_numerator",
+      "sources": [
+        "ax_times_cos_yaw"
+      ],
+      "targets": [
+        "pitch_numerator"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_029_ax_times_cos_yaw_to_pitch_numerator",
+          "startPoint": {
+            "x": 66.0,
+            "y": 156.0
+          },
+          "endPoint": {
+            "x": 78.0,
+            "y": 78.0
+          },
+          "bendPoints": [
+            {
+              "x": 72.0,
+              "y": 156.0
+            },
+            {
+              "x": 72.0,
+              "y": 78.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_030_ay_times_sin_yaw_to_pitch_numerator",
+      "sources": [
+        "ay_times_sin_yaw"
+      ],
+      "targets": [
+        "pitch_numerator"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_030_ay_times_sin_yaw_to_pitch_numerator",
+          "startPoint": {
+            "x": 66.0,
+            "y": 104.0
+          },
+          "endPoint": {
+            "x": 78.0,
+            "y": 78.0
+          },
+          "bendPoints": [
+            {
+              "x": 72.0,
+              "y": 104.0
+            },
+            {
+              "x": 72.0,
+              "y": 78.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_031_pitch_numerator_to_pitch_divide_gravity",
+      "sources": [
+        "pitch_numerator"
+      ],
+      "targets": [
+        "pitch_divide_gravity"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_031_pitch_numerator_to_pitch_divide_gravity",
+          "startPoint": {
+            "x": 114.0,
+            "y": 78.0
+          },
+          "endPoint": {
+            "x": 126.0,
+            "y": 78.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_032_gravity_mps2_to_pitch_divide_gravity",
+      "sources": [
+        "gravity_mps2"
+      ],
+      "targets": [
+        "pitch_divide_gravity"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_032_gravity_mps2_to_pitch_divide_gravity",
+          "startPoint": {
+            "x": -174.0,
+            "y": -234.0
+          },
+          "endPoint": {
+            "x": 126.0,
+            "y": 78.0
+          },
+          "bendPoints": [
+            {
+              "x": -24.0,
+              "y": -234.0
+            },
+            {
+              "x": -24.0,
+              "y": 78.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_033_pitch_divide_gravity_to_pitch_cmd",
+      "sources": [
+        "pitch_divide_gravity"
+      ],
+      "targets": [
+        "pitch_cmd"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_033_pitch_divide_gravity_to_pitch_cmd",
+          "startPoint": {
+            "x": 162.0,
+            "y": 78.0
+          },
+          "endPoint": {
+            "x": 174.0,
+            "y": 52.0
+          },
+          "bendPoints": [
+            {
+              "x": 168.0,
+              "y": 78.0
+            },
+            {
+              "x": 168.0,
+              "y": 52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_034_gravity_mps2_to_gravity_over_hover",
+      "sources": [
+        "gravity_mps2"
+      ],
+      "targets": [
+        "gravity_over_hover"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_034_gravity_mps2_to_gravity_over_hover",
+          "startPoint": {
+            "x": -174.0,
+            "y": -234.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -260.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -234.0
+            },
+            {
+              "x": -168.0,
+              "y": -260.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_035_hover_fraction_to_gravity_over_hover",
+      "sources": [
+        "hover_fraction"
+      ],
+      "targets": [
+        "gravity_over_hover"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_035_hover_fraction_to_gravity_over_hover",
+          "startPoint": {
+            "x": -174.0,
+            "y": -338.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -260.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -338.0
+            },
+            {
+              "x": -168.0,
+              "y": -260.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_036_gravity_over_hover_to_normalized_thrust_divide",
+      "sources": [
+        "gravity_over_hover"
+      ],
+      "targets": [
+        "normalized_thrust_divide"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_036_gravity_over_hover_to_normalized_thrust_divide",
+          "startPoint": {
+            "x": -126.0,
+            "y": -260.0
+          },
+          "endPoint": {
+            "x": 78.0,
+            "y": -26.0
+          },
+          "bendPoints": [
+            {
+              "x": -24.0,
+              "y": -260.0
+            },
+            {
+              "x": -24.0,
+              "y": -26.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_037_normalized_thrust_divide_to_normalized_thrust",
+      "sources": [
+        "normalized_thrust_divide"
+      ],
+      "targets": [
+        "normalized_thrust"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_037_normalized_thrust_divide_to_normalized_thrust",
+          "startPoint": {
+            "x": 114.0,
+            "y": -26.0
+          },
+          "endPoint": {
+            "x": 126.0,
+            "y": -78.0
+          },
+          "bendPoints": [
+            {
+              "x": 120.0,
+              "y": -26.0
+            },
+            {
+              "x": 120.0,
+              "y": -78.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_038_mass_kg_to_mass_times_gravity",
+      "sources": [
+        "mass_kg"
+      ],
+      "targets": [
+        "mass_times_gravity"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_038_mass_kg_to_mass_times_gravity",
+          "startPoint": {
+            "x": -174.0,
+            "y": -130.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -52.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -130.0
+            },
+            {
+              "x": -168.0,
+              "y": -52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_039_gravity_mps2_to_mass_times_gravity",
+      "sources": [
+        "gravity_mps2"
+      ],
+      "targets": [
+        "mass_times_gravity"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_039_gravity_mps2_to_mass_times_gravity",
+          "startPoint": {
+            "x": -174.0,
+            "y": -234.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": -52.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": -234.0
+            },
+            {
+              "x": -168.0,
+              "y": -52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_040_mass_times_gravity_to_full_collective_thrust",
+      "sources": [
+        "mass_times_gravity"
+      ],
+      "targets": [
+        "full_collective_thrust"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_040_mass_times_gravity_to_full_collective_thrust",
+          "startPoint": {
+            "x": -126.0,
+            "y": -52.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": -130.0
+          },
+          "bendPoints": [
+            {
+              "x": -120.0,
+              "y": -52.0
+            },
+            {
+              "x": -120.0,
+              "y": -130.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_041_hover_fraction_to_full_collective_thrust",
+      "sources": [
+        "hover_fraction"
+      ],
+      "targets": [
+        "full_collective_thrust"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_041_hover_fraction_to_full_collective_thrust",
+          "startPoint": {
+            "x": -174.0,
+            "y": -338.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": -130.0
+          },
+          "bendPoints": [
+            {
+              "x": -144.0,
+              "y": -338.0
+            },
+            {
+              "x": -144.0,
+              "y": -130.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_042_normalized_thrust_divide_to_collective_thrust_multiply",
+      "sources": [
+        "normalized_thrust_divide"
+      ],
+      "targets": [
+        "collective_thrust_multiply"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_042_normalized_thrust_divide_to_collective_thrust_multiply",
+          "startPoint": {
+            "x": 114.0,
+            "y": -26.0
+          },
+          "endPoint": {
+            "x": 126.0,
+            "y": -26.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_043_full_collective_thrust_to_collective_thrust_multiply",
+      "sources": [
+        "full_collective_thrust"
+      ],
+      "targets": [
+        "collective_thrust_multiply"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_043_full_collective_thrust_to_collective_thrust_multiply",
+          "startPoint": {
+            "x": -78.0,
+            "y": -130.0
+          },
+          "endPoint": {
+            "x": 126.0,
+            "y": -26.0
+          },
+          "bendPoints": [
+            {
+              "x": 24.0,
+              "y": -130.0
+            },
+            {
+              "x": 24.0,
+              "y": -26.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_044_collective_thrust_multiply_to_collective_thrust_n",
+      "sources": [
+        "collective_thrust_multiply"
+      ],
+      "targets": [
+        "collective_thrust_n"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_044_collective_thrust_multiply_to_collective_thrust_n",
+          "startPoint": {
+            "x": 162.0,
+            "y": -26.0
+          },
+          "endPoint": {
+            "x": 174.0,
+            "y": -52.0
+          },
+          "bendPoints": [
+            {
+              "x": 168.0,
+              "y": -26.0
+            },
+            {
+              "x": 168.0,
+              "y": -52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_045_Kp_x_to_feedback_acc_x_sum",
+      "sources": [
+        "Kp_x"
+      ],
+      "targets": [
+        "feedback_acc_x_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_045_Kp_x_to_feedback_acc_x_sum",
+          "startPoint": {
+            "x": -78.0,
+            "y": 182.0
+          },
+          "endPoint": {
+            "x": -66.0,
+            "y": 52.0
+          },
+          "bendPoints": [
+            {
+              "x": -72.0,
+              "y": 182.0
+            },
+            {
+              "x": -72.0,
+              "y": 52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_046_Kv_x_to_feedback_acc_x_sum",
+      "sources": [
+        "Kv_x"
+      ],
+      "targets": [
+        "feedback_acc_x_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_046_Kv_x_to_feedback_acc_x_sum",
+          "startPoint": {
+            "x": -78.0,
+            "y": 130.0
+          },
+          "endPoint": {
+            "x": -66.0,
+            "y": 52.0
+          },
+          "bendPoints": [
+            {
+              "x": -72.0,
+              "y": 130.0
+            },
+            {
+              "x": -72.0,
+              "y": 52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_047_feedback_acc_x_sum_to_desired_acc_x_sum",
+      "sources": [
+        "feedback_acc_x_sum"
+      ],
+      "targets": [
+        "desired_acc_x_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_047_feedback_acc_x_sum_to_desired_acc_x_sum",
+          "startPoint": {
+            "x": -30.0,
+            "y": 52.0
+          },
+          "endPoint": {
+            "x": -18.0,
+            "y": 52.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_048_ref_ax_to_desired_acc_x_sum",
+      "sources": [
+        "ref_ax"
+      ],
+      "targets": [
+        "desired_acc_x_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_048_ref_ax_to_desired_acc_x_sum",
+          "startPoint": {
+            "x": -174.0,
+            "y": -390.0
+          },
+          "endPoint": {
+            "x": -18.0,
+            "y": 52.0
+          },
+          "bendPoints": [
+            {
+              "x": -96.0,
+              "y": -390.0
+            },
+            {
+              "x": -96.0,
+              "y": 52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_049_desired_acc_x_sum_to_desired_acc_x",
+      "sources": [
+        "desired_acc_x_sum"
+      ],
+      "targets": [
+        "desired_acc_x"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_049_desired_acc_x_sum_to_desired_acc_x",
+          "startPoint": {
+            "x": 18.0,
+            "y": 52.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": -104.0
+          },
+          "bendPoints": [
+            {
+              "x": 24.0,
+              "y": 52.0
+            },
+            {
+              "x": 24.0,
+              "y": -104.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_050_desired_acc_x_sum_to_ax_times_sin_yaw",
+      "sources": [
+        "desired_acc_x_sum"
+      ],
+      "targets": [
+        "ax_times_sin_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_050_desired_acc_x_sum_to_ax_times_sin_yaw",
+          "startPoint": {
+            "x": 18.0,
+            "y": 52.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": 52.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_051_desired_acc_x_sum_to_ax_times_cos_yaw",
+      "sources": [
+        "desired_acc_x_sum"
+      ],
+      "targets": [
+        "ax_times_cos_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_051_desired_acc_x_sum_to_ax_times_cos_yaw",
+          "startPoint": {
+            "x": 18.0,
+            "y": 52.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": 156.0
+          },
+          "bendPoints": [
+            {
+              "x": 24.0,
+              "y": 52.0
+            },
+            {
+              "x": 24.0,
+              "y": 156.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_052_Kp_y_to_feedback_acc_y_sum",
+      "sources": [
+        "Kp_y"
+      ],
+      "targets": [
+        "feedback_acc_y_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_052_Kp_y_to_feedback_acc_y_sum",
+          "startPoint": {
+            "x": -78.0,
+            "y": 78.0
+          },
+          "endPoint": {
+            "x": -66.0,
+            "y": -0.0
+          },
+          "bendPoints": [
+            {
+              "x": -72.0,
+              "y": 78.0
+            },
+            {
+              "x": -72.0,
+              "y": -0.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_053_Kv_y_to_feedback_acc_y_sum",
+      "sources": [
+        "Kv_y"
+      ],
+      "targets": [
+        "feedback_acc_y_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_053_Kv_y_to_feedback_acc_y_sum",
+          "startPoint": {
+            "x": -78.0,
+            "y": 26.0
+          },
+          "endPoint": {
+            "x": -66.0,
+            "y": -0.0
+          },
+          "bendPoints": [
+            {
+              "x": -72.0,
+              "y": 26.0
+            },
+            {
+              "x": -72.0,
+              "y": -0.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_054_feedback_acc_y_sum_to_desired_acc_y_sum",
+      "sources": [
+        "feedback_acc_y_sum"
+      ],
+      "targets": [
+        "desired_acc_y_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_054_feedback_acc_y_sum_to_desired_acc_y_sum",
+          "startPoint": {
+            "x": -30.0,
+            "y": -0.0
+          },
+          "endPoint": {
+            "x": -18.0,
+            "y": -0.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_055_ref_ay_to_desired_acc_y_sum",
+      "sources": [
+        "ref_ay"
+      ],
+      "targets": [
+        "desired_acc_y_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_055_ref_ay_to_desired_acc_y_sum",
+          "startPoint": {
+            "x": -174.0,
+            "y": -442.0
+          },
+          "endPoint": {
+            "x": -18.0,
+            "y": -0.0
+          },
+          "bendPoints": [
+            {
+              "x": -96.0,
+              "y": -442.0
+            },
+            {
+              "x": -96.0,
+              "y": -0.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_056_desired_acc_y_sum_to_desired_acc_y",
+      "sources": [
+        "desired_acc_y_sum"
+      ],
+      "targets": [
+        "desired_acc_y"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_056_desired_acc_y_sum_to_desired_acc_y",
+          "startPoint": {
+            "x": 18.0,
+            "y": -0.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": -156.0
+          },
+          "bendPoints": [
+            {
+              "x": 24.0,
+              "y": -0.0
+            },
+            {
+              "x": 24.0,
+              "y": -156.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_057_desired_acc_y_sum_to_ay_times_cos_yaw",
+      "sources": [
+        "desired_acc_y_sum"
+      ],
+      "targets": [
+        "ay_times_cos_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_057_desired_acc_y_sum_to_ay_times_cos_yaw",
+          "startPoint": {
+            "x": 18.0,
+            "y": -0.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": -0.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_058_desired_acc_y_sum_to_ay_times_sin_yaw",
+      "sources": [
+        "desired_acc_y_sum"
+      ],
+      "targets": [
+        "ay_times_sin_yaw"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_058_desired_acc_y_sum_to_ay_times_sin_yaw",
+          "startPoint": {
+            "x": 18.0,
+            "y": -0.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": 104.0
+          },
+          "bendPoints": [
+            {
+              "x": 24.0,
+              "y": -0.0
+            },
+            {
+              "x": 24.0,
+              "y": 104.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_059_Kp_z_to_feedback_acc_z_sum",
+      "sources": [
+        "Kp_z"
+      ],
+      "targets": [
+        "feedback_acc_z_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_059_Kp_z_to_feedback_acc_z_sum",
+          "startPoint": {
+            "x": -78.0,
+            "y": -26.0
+          },
+          "endPoint": {
+            "x": -66.0,
+            "y": -52.0
+          },
+          "bendPoints": [
+            {
+              "x": -72.0,
+              "y": -26.0
+            },
+            {
+              "x": -72.0,
+              "y": -52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_060_Kv_z_to_feedback_acc_z_sum",
+      "sources": [
+        "Kv_z"
+      ],
+      "targets": [
+        "feedback_acc_z_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_060_Kv_z_to_feedback_acc_z_sum",
+          "startPoint": {
+            "x": -78.0,
+            "y": -78.0
+          },
+          "endPoint": {
+            "x": -66.0,
+            "y": -52.0
+          },
+          "bendPoints": [
+            {
+              "x": -72.0,
+              "y": -78.0
+            },
+            {
+              "x": -72.0,
+              "y": -52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_061_feedback_acc_z_sum_to_desired_acc_z_reference_sum",
+      "sources": [
+        "feedback_acc_z_sum"
+      ],
+      "targets": [
+        "desired_acc_z_reference_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_061_feedback_acc_z_sum_to_desired_acc_z_reference_sum",
+          "startPoint": {
+            "x": -30.0,
+            "y": -52.0
+          },
+          "endPoint": {
+            "x": -18.0,
+            "y": -52.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_062_ref_az_to_desired_acc_z_reference_sum",
+      "sources": [
+        "ref_az"
+      ],
+      "targets": [
+        "desired_acc_z_reference_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_062_ref_az_to_desired_acc_z_reference_sum",
+          "startPoint": {
+            "x": -174.0,
+            "y": -494.0
+          },
+          "endPoint": {
+            "x": -18.0,
+            "y": -52.0
+          },
+          "bendPoints": [
+            {
+              "x": -96.0,
+              "y": -494.0
+            },
+            {
+              "x": -96.0,
+              "y": -52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_063_desired_acc_z_reference_sum_to_desired_acc_z_sum",
+      "sources": [
+        "desired_acc_z_reference_sum"
+      ],
+      "targets": [
+        "desired_acc_z_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_063_desired_acc_z_reference_sum_to_desired_acc_z_sum",
+          "startPoint": {
+            "x": 18.0,
+            "y": -52.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": -52.0
+          },
+          "bendPoints": []
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_064_gravity_mps2_to_desired_acc_z_sum",
+      "sources": [
+        "gravity_mps2"
+      ],
+      "targets": [
+        "desired_acc_z_sum"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_064_gravity_mps2_to_desired_acc_z_sum",
+          "startPoint": {
+            "x": -174.0,
+            "y": -234.0
+          },
+          "endPoint": {
+            "x": 30.0,
+            "y": -52.0
+          },
+          "bendPoints": [
+            {
+              "x": -72.0,
+              "y": -234.0
+            },
+            {
+              "x": -72.0,
+              "y": -52.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_065_desired_acc_z_sum_to_desired_acc_z",
+      "sources": [
+        "desired_acc_z_sum"
+      ],
+      "targets": [
+        "desired_acc_z"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_065_desired_acc_z_sum_to_desired_acc_z",
+          "startPoint": {
+            "x": 66.0,
+            "y": -52.0
+          },
+          "endPoint": {
+            "x": 78.0,
+            "y": -78.0
+          },
+          "bendPoints": [
+            {
+              "x": 72.0,
+              "y": -52.0
+            },
+            {
+              "x": 72.0,
+              "y": -78.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_066_desired_acc_z_sum_to_normalized_thrust_divide",
+      "sources": [
+        "desired_acc_z_sum"
+      ],
+      "targets": [
+        "normalized_thrust_divide"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_066_desired_acc_z_sum_to_normalized_thrust_divide",
+          "startPoint": {
+            "x": 66.0,
+            "y": -52.0
+          },
+          "endPoint": {
+            "x": 78.0,
+            "y": -26.0
+          },
+          "bendPoints": [
+            {
+              "x": 72.0,
+              "y": -52.0
+            },
+            {
+              "x": 72.0,
+              "y": -26.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_067_ref_px_to_position_error_x",
+      "sources": [
+        "ref_px"
+      ],
+      "targets": [
+        "position_error_x"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_067_ref_px_to_position_error_x",
+          "startPoint": {
+            "x": -174.0,
+            "y": 442.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 260.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 442.0
+            },
+            {
+              "x": -168.0,
+              "y": 260.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_068_px_to_position_error_x",
+      "sources": [
+        "px"
+      ],
+      "targets": [
+        "position_error_x"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_068_px_to_position_error_x",
+          "startPoint": {
+            "x": -174.0,
+            "y": 494.0
+          },
+          "endPoint": {
+            "x": -162.0,
+            "y": 260.0
+          },
+          "bendPoints": [
+            {
+              "x": -168.0,
+              "y": 494.0
+            },
+            {
+              "x": -168.0,
+              "y": 260.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    },
+    {
+      "id": "edge_069_position_error_x_to_Kp_x",
+      "sources": [
+        "position_error_x"
+      ],
+      "targets": [
+        "Kp_x"
+      ],
+      "sections": [
+        {
+          "id": "sec_edge_069_position_error_x_to_Kp_x",
+          "startPoint": {
+            "x": -126.0,
+            "y": 260.0
+          },
+          "endPoint": {
+            "x": -114.0,
+            "y": 182.0
+          },
+          "bendPoints": [
+            {
+              "x": -120.0,
+              "y": 260.0
+            },
+            {
+              "x": -120.0,
+              "y": 182.0
+            }
+          ]
+        }
+      ],
+      "_color": [
+        0,
+        0,
+        127
+      ]
+    }
+  ],
+  "children": [
+    {
+      "id": "ref_px",
+      "label": "ref_px",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 431.0,
+      "rotation": 0
+    },
+    {
+      "id": "px",
+      "label": "px",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 483.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_vx",
+      "label": "ref_vx",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 379.0,
+      "rotation": 0
+    },
+    {
+      "id": "vx",
+      "label": "vx",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 327.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_ax",
+      "label": "ref_ax",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -401.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_py",
+      "label": "ref_py",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 223.0,
+      "rotation": 0
+    },
+    {
+      "id": "py",
+      "label": "py",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 275.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_vy",
+      "label": "ref_vy",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 171.0,
+      "rotation": 0
+    },
+    {
+      "id": "vy",
+      "label": "vy",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 119.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_ay",
+      "label": "ref_ay",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -453.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_pz",
+      "label": "ref_pz",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 15.0,
+      "rotation": 0
+    },
+    {
+      "id": "pz",
+      "label": "pz",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": 67.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_vz",
+      "label": "ref_vz",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -37.0,
+      "rotation": 0
+    },
+    {
+      "id": "vz",
+      "label": "vz",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -89.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_az",
+      "label": "ref_az",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -505.0,
+      "rotation": 0
+    },
+    {
+      "id": "yaw_mea",
+      "label": "yaw_mea",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -297.0,
+      "rotation": 0
+    },
+    {
+      "id": "ref_yaw",
+      "label": "ref_yaw",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -193.0,
+      "rotation": 0
+    },
+    {
+      "id": "Kp_x",
+      "label": "Kp_x",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -114.0,
+      "y": 171.0,
+      "rotation": 0
+    },
+    {
+      "id": "Kv_x",
+      "label": "Kv_x",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -114.0,
+      "y": 119.0,
+      "rotation": 0
+    },
+    {
+      "id": "Kp_y",
+      "label": "Kp_y",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -114.0,
+      "y": 67.0,
+      "rotation": 0
+    },
+    {
+      "id": "Kv_y",
+      "label": "Kv_y",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -114.0,
+      "y": 15.0,
+      "rotation": 0
+    },
+    {
+      "id": "Kp_z",
+      "label": "Kp_z",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -114.0,
+      "y": -37.0,
+      "rotation": 0
+    },
+    {
+      "id": "Kv_z",
+      "label": "Kv_z",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -114.0,
+      "y": -89.0,
+      "rotation": 0
+    },
+    {
+      "id": "gravity_mps2",
+      "label": "gravity_mps2",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -245.0,
+      "rotation": 0
+    },
+    {
+      "id": "mass_kg",
+      "label": "mass_kg",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -141.0,
+      "rotation": 0
+    },
+    {
+      "id": "hover_fraction",
+      "label": "hover_fraction",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -210.0,
+      "y": -349.0,
+      "rotation": 0
+    },
+    {
+      "id": "desired_acc_x",
+      "label": "desired_acc_x",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 30.0,
+      "y": -115.0,
+      "rotation": 0
+    },
+    {
+      "id": "desired_acc_y",
+      "label": "desired_acc_y",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 30.0,
+      "y": -167.0,
+      "rotation": 0
+    },
+    {
+      "id": "desired_acc_z",
+      "label": "desired_acc_z",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 78.0,
+      "y": -89.0,
+      "rotation": 0
+    },
+    {
+      "id": "sin_yaw",
+      "label": "sin_yaw",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": -219.0,
+      "rotation": 0
+    },
+    {
+      "id": "cos_yaw",
+      "label": "cos_yaw",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": -167.0,
+      "rotation": 0
+    },
+    {
+      "id": "yaw_command_identity",
+      "label": "yaw_command_identity",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": -115.0,
+      "rotation": 0
+    },
+    {
+      "id": "roll_cmd",
+      "label": "roll_cmd",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 174.0,
+      "y": -11.0,
+      "rotation": 0
+    },
+    {
+      "id": "pitch_cmd",
+      "label": "pitch_cmd",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 174.0,
+      "y": 41.0,
+      "rotation": 0
+    },
+    {
+      "id": "yaw_cmd",
+      "label": "yaw_cmd",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -114.0,
+      "y": -193.0,
+      "rotation": 0
+    },
+    {
+      "id": "collective_thrust_n",
+      "label": "collective_thrust_n",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 174.0,
+      "y": -63.0,
+      "rotation": 0
+    },
+    {
+      "id": "normalized_thrust",
+      "label": "normalized_thrust",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 126.0,
+      "y": -89.0,
+      "rotation": 0
+    },
+    {
+      "id": "velocity_error_x",
+      "label": "velocity_error_x",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": 197.0,
+      "rotation": 0
+    },
+    {
+      "id": "position_error_y",
+      "label": "position_error_y",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": 145.0,
+      "rotation": 0
+    },
+    {
+      "id": "velocity_error_y",
+      "label": "velocity_error_y",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": 93.0,
+      "rotation": 0
+    },
+    {
+      "id": "position_error_z",
+      "label": "position_error_z",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": 41.0,
+      "rotation": 0
+    },
+    {
+      "id": "velocity_error_z",
+      "label": "velocity_error_z",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": -11.0,
+      "rotation": 0
+    },
+    {
+      "id": "ax_times_sin_yaw",
+      "label": "ax_times_sin_yaw",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 30.0,
+      "y": 41.0,
+      "rotation": 0
+    },
+    {
+      "id": "ay_times_cos_yaw",
+      "label": "ay_times_cos_yaw",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 30.0,
+      "y": -11.0,
+      "rotation": 0
+    },
+    {
+      "id": "ax_times_cos_yaw",
+      "label": "ax_times_cos_yaw",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 30.0,
+      "y": 145.0,
+      "rotation": 0
+    },
+    {
+      "id": "ay_times_sin_yaw",
+      "label": "ay_times_sin_yaw",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 30.0,
+      "y": 93.0,
+      "rotation": 0
+    },
+    {
+      "id": "roll_numerator",
+      "label": "roll_numerator",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 78.0,
+      "y": 15.0,
+      "rotation": 0
+    },
+    {
+      "id": "roll_divide_gravity",
+      "label": "roll_divide_gravity",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 126.0,
+      "y": 15.0,
+      "rotation": 0
+    },
+    {
+      "id": "pitch_numerator",
+      "label": "pitch_numerator",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 78.0,
+      "y": 67.0,
+      "rotation": 0
+    },
+    {
+      "id": "pitch_divide_gravity",
+      "label": "pitch_divide_gravity",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 126.0,
+      "y": 67.0,
+      "rotation": 0
+    },
+    {
+      "id": "gravity_over_hover",
+      "label": "gravity_over_hover",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": -271.0,
+      "rotation": 0
+    },
+    {
+      "id": "normalized_thrust_divide",
+      "label": "normalized_thrust_divide",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 78.0,
+      "y": -37.0,
+      "rotation": 0
+    },
+    {
+      "id": "mass_times_gravity",
+      "label": "mass_times_gravity",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": -63.0,
+      "rotation": 0
+    },
+    {
+      "id": "full_collective_thrust",
+      "label": "full_collective_thrust",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -114.0,
+      "y": -141.0,
+      "rotation": 0
+    },
+    {
+      "id": "collective_thrust_multiply",
+      "label": "collective_thrust_multiply",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 126.0,
+      "y": -37.0,
+      "rotation": 0
+    },
+    {
+      "id": "feedback_acc_x_sum",
+      "label": "feedback_acc_x_sum",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -66.0,
+      "y": 41.0,
+      "rotation": 0
+    },
+    {
+      "id": "desired_acc_x_sum",
+      "label": "desired_acc_x_sum",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -18.0,
+      "y": 41.0,
+      "rotation": 0
+    },
+    {
+      "id": "feedback_acc_y_sum",
+      "label": "feedback_acc_y_sum",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -66.0,
+      "y": -11.0,
+      "rotation": 0
+    },
+    {
+      "id": "desired_acc_y_sum",
+      "label": "desired_acc_y_sum",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -18.0,
+      "y": -11.0,
+      "rotation": 0
+    },
+    {
+      "id": "feedback_acc_z_sum",
+      "label": "feedback_acc_z_sum",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -66.0,
+      "y": -63.0,
+      "rotation": 0
+    },
+    {
+      "id": "desired_acc_z_reference_sum",
+      "label": "desired_acc_z_reference_sum",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -18.0,
+      "y": -63.0,
+      "rotation": 0
+    },
+    {
+      "id": "desired_acc_z_sum",
+      "label": "desired_acc_z_sum",
+      "width": 36.0,
+      "height": 22.0,
+      "x": 30.0,
+      "y": -63.0,
+      "rotation": 0
+    },
+    {
+      "id": "position_error_x",
+      "label": "position_error_x",
+      "width": 36.0,
+      "height": 22.0,
+      "x": -162.0,
+      "y": 249.0,
+      "rotation": 0
+    }
+  ],
+  "_modelica_coords": true
+}

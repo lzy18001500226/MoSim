@@ -12,9 +12,16 @@ domain-specific workflows in the linked documents below.
 Fast entry cue, 2026-07-28 CST: G0 of the user-authorized 48-controller
 MWORKS closed-loop line passed. `Px4CtrlFormalRunner` completed `ClimbPath`
 for 50 s with a native `CheckModel` diagnostic of 0 errors and 0 warnings;
-the current evidence is
+the original baseline evidence is
 `Results/control_platform/px4ctrl_baseline_verification/` (RMSE 0.276705 m,
-terminal position error 0.002734 m). G1-0 reconciled the 48-entry catalog;
+terminal position error 0.002734 m). The bounded px4ctrl graphical-completion
+subgate also passed: the native `PX4CTRL_Original_OuterLoop_Graphical_Sysblock`
+diagram has reviewable components and wires, and the hash-bound equation-bridge
+runner replayed `ClimbPath` for 50 s with 5001 finite samples, RMSE 0.276705 m,
+and terminal position error 0.002734 m. Its evidence is
+`Results/control_platform/px4ctrl_graphical_completion_20260728/`; this remains
+MWORKS equation-bridge closure evidence only, not PX4, Gazebo, ROS, or C++
+deployment equivalence. G1-0 reconciled the 48-entry catalog;
 G1 Batch 1 then added seven linear/robust controller routes and passed native
 `CheckModel` for its eight Bridges and seven Adapters without source drift.
 G1 Batch 2 then added five nonlinear/adaptive routes and passed native
@@ -40,8 +47,8 @@ native `CheckModel` for 40 named 100 Hz whole-aircraft runners and four
 reusable interface templates: 29 `ATTITUDE_THRUST`, eight `ROTOR_COMMAND`,
 two `BODY_RATE_THRUST`, and one `WRENCH`. The final check-only evidence is
 `Results/control_platform/g1_formal_runner_checkmodel_20260728/attempt_02_after_rotor_annotation_fix/CHECK_MODEL_RESULTS.json`
-(44/44 passed; no simulation started and no source drift). Await user review;
-do not launch `ClimbPath` or any other simulation, enter G2, begin
+(44/44 passed; no simulation started and no source drift). G1 is awaiting user
+review; do not launch `ClimbPath` or any other simulation, enter G2, begin
 seven-scenario simulation, code export, Gazebo/ROS runtime validation, G7, or
 R1 on this line.
 

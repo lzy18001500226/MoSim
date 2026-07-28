@@ -31,6 +31,21 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
+### px4ctrl Graphical Completion - Completed
+
+The bounded correction completed before G1 review resumed. The native
+`PX4CTRL_Original_OuterLoop_Graphical_Sysblock` diagram is the reviewable
+Sysblock artifact; the separately checked equation bridge remains only for the
+whole-aircraft runner because the current MWORKS compiler cannot embed its
+multi-operator Sysblock topology in a Modelica composite. `Px4CtrlFormalRunner`
+then replayed `ClimbPath` for 50 s: `CheckModel` passed, 5001 samples were
+finite, `position_rmse_m=0.276705`, and terminal position error was `0.002734`
+m. Native graphical/model/result-window captures, raw CSV, metrics, MCP log,
+and session-cleanup record are at
+`Results/control_platform/px4ctrl_graphical_completion_20260728/`. This is
+MWORKS equation-bridge closure evidence only, not authorization or proof for
+G2, seven-scenario work, export, Gazebo, ROS, or runtime validation.
+
 ### Controller Evidence G1 - Review Required
 
 The user authorized the 48-controller MWORKS closed-loop evidence line on
@@ -101,9 +116,8 @@ Current action:
    `WRENCH`. Final check-only evidence is
    `Results/control_platform/g1_formal_runner_checkmodel_20260728/attempt_02_after_rotor_annotation_fix/CHECK_MODEL_RESULTS.json`;
    it records 44/44 passed, zero simulations, and no source drift.
-2. This returns G1 to user review. Do not launch `ClimbPath` or any other
-   MWORKS simulation, enter G2, or begin seven-scenario work until the
-   committed, pushed evidence is reviewed.
+2. G1 remains under user review. Do not launch any MWORKS simulation, enter G2,
+   or begin seven-scenario work until the committed, pushed evidence is reviewed.
 3. The 47-profile catalog denominator remains visible through the two
    overview-only plus one planned/non-runnable exclusions; they do not receive
    fabricated runtime records while G1 is under review.

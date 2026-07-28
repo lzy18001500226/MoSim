@@ -10,17 +10,20 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Px4CtrlFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.Px4CtrlFormalRunner",
-    "model_sha256": "aea731c0008e667b33e15efb85290a8ba6363257f82eb37a138372fa3b8ca59f"
+    "model_sha256": "93e5113f56d3990a8cdc08638cc2358a8a170aff94bb658475f8402467e8cd6e"
   },
   "formal_adapter": {
     "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlAttitudeThrustAdapter.mo",
     "model_class": "MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter",
-    "model_sha256": "49f55776a71574010f260e7776b4d045f6b5c1feac1d15b0e4a4069e9da7ddeb",
+    "model_sha256": "e3c97cd09041c2e53e744c74c49dec69383b462cdbe916fac3f5cb777f58e057",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
-      "kind": "equation_bridge",
+      "kind": "graphical_outer_loop_plus_equation_bridge",
+      "graphical_outer_loop_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
+      "graphical_outer_loop_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
+      "graphical_outer_loop_sha256": "b021acd243d696bb3c99265e500b5cfbb95548938bf5f434c9f386d464046a8b",
       "bridge_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock",
-      "reason": "The adapter binds the MWORKS px4ctrl equation bridge to the shared ATTITUDE_THRUST interface. It does not assert equivalence to the ROS1/C++ deployment implementation."
+      "reason": "The native Sysblock graphical outer loop is the reviewable MWORKS controller artifact. The separately checked equation bridge is retained only to bind that outer-loop law to the shared ATTITUDE_THRUST whole-aircraft harness; this does not assert ROS1/C++ deployment equivalence."
     }
   },
   "formal_harness_feedback_boundary": {
@@ -43,17 +46,22 @@
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Px4CtrlFormalRunner.mo",
-      "expected_sha256": "aea731c0008e667b33e15efb85290a8ba6363257f82eb37a138372fa3b8ca59f"
+      "expected_sha256": "93e5113f56d3990a8cdc08638cc2358a8a170aff94bb658475f8402467e8cd6e"
     },
     {
       "role": "formal_adapter",
       "path": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlAttitudeThrustAdapter.mo",
-      "expected_sha256": "49f55776a71574010f260e7776b4d045f6b5c1feac1d15b0e4a4069e9da7ddeb"
+      "expected_sha256": "e3c97cd09041c2e53e744c74c49dec69383b462cdbe916fac3f5cb777f58e057"
     },
     {
       "role": "px4ctrl_equation_bridge",
       "path": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock.mo",
-      "expected_sha256": "edb2d45690a75717c43f6af57e7a5031438489de7e0aad6fd37dde9f055311dc"
+      "expected_sha256": "8d0ddf71a58e0d2be5e8a8f8322fd6477bc8387ba687d308bf6a6f4812156bb4"
+    },
+    {
+      "role": "px4ctrl_graphical_outer_loop",
+      "path": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
+      "expected_sha256": "b021acd243d696bb3c99265e500b5cfbb95548938bf5f434c9f386d464046a8b"
     },
     {
       "role": "shared_attitude_rate_allocator",
