@@ -31,7 +31,7 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Controller Evidence G1 Batch 5 - Active
+### Controller Evidence G1 Batch 6 - Active
 
 The user authorized the 48-controller MWORKS closed-loop evidence line on
 2026-07-28 CST. G0 is complete: `Px4CtrlFormalRunner` passed the common 50 s
@@ -73,13 +73,22 @@ passed all 13 classes without source drift; the compact result record is
 This proves model integrity only, not closed-loop behavior or controller
 performance.
 
+G1 Batch 5 added `SE3 Basic`, `DFBC Basic`, `DFBC SmoothRobust` attitude,
+`DFBC SmoothRobust` body-rate, and `DFBC HighOrder` body-rate routes as five
+named Bridges and five thin Adapters. The two body-rate routes use the
+BODY_RATE_THRUST boundary; the graphical source models remain unchanged.
+Native `CheckModel` passed all 10 classes without source drift; the compact
+result record is
+`Results/control_platform/g1_batch5_checkmodel_20260728/CHECK_MODEL_RESULTS.json`.
+This proves model integrity only, not closed-loop behavior or controller
+performance.
+
 Current action:
 
-1. G1 Batch 5: add only the approved geometric/flatness EquationBridge plus
-   thin Adapter routes for `SE3 Basic`, `DFBC Basic`, `DFBC SmoothRobust`
-   attitude, `DFBC SmoothRobust` body-rate, and `DFBC HighOrder` body-rate.
-   The two body-rate routes use the BODY_RATE_THRUST boundary; keep the source
-   graphical models unchanged.
+1. G1 Batch 6: add only the approved PID-subfamily EquationBridge plus thin
+   Adapter routes for `GainScheduled PID`, `Fuzzy PID`, `Neural PID`, and
+   `RL GainScheduler`. The first three are PID subblocks and must be composed
+   with the existing cascade boundary rather than treated as standalone plants.
 2. G1: add only EquationBridge plus thin Adapter implementations in the six
    approved batches. Each batch must pass native `CheckModel`, then commit and
    push before the next batch.

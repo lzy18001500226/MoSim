@@ -1,0 +1,372 @@
+{
+  "schema": "mosim.g1_batch_checkmodel.v1",
+  "batch": "G1_Batch5_GeometricFlatness",
+  "scope": "Native CheckModel only; no solver simulation, model save, controller performance claim, code generation, or runtime validation.",
+  "model_root": "Models/MoSimQuadrotorModel/package.mo",
+  "targets": [
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/Se3BasicEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.Se3BasicEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.087,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.083,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.Se3BasicEquationBridge",
+            "dt_s": 0.081
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/DfbcBasicEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.DfbcBasicEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.065,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.061,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.DfbcBasicEquationBridge",
+            "dt_s": 0.06
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/DfbcSmoothRobustAttitudeEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.DfbcSmoothRobustAttitudeEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.062,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.058,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.DfbcSmoothRobustAttitudeEquationBridge",
+            "dt_s": 0.054
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/DfbcSmoothRobustBodyRateEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.DfbcSmoothRobustBodyRateEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.085,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.081,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.DfbcSmoothRobustBodyRateEquationBridge",
+            "dt_s": 0.066
+          }
+        ]
+      }
+    },
+    {
+      "kind": "bridge",
+      "source": "Models/MoSimQuadrotorModel/Control/Bridges/DfbcHighOrderBodyRateEquationBridge.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Bridges.DfbcHighOrderBodyRateEquationBridge",
+      "status": "passed",
+      "elapsed_s": 0.07,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.067,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Bridges.DfbcHighOrderBodyRateEquationBridge",
+            "dt_s": 0.066
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/Se3BasicAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.Se3BasicAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.081,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.077,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.Se3BasicAttitudeThrustAdapter",
+            "dt_s": 0.075
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcBasicAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.DfbcBasicAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.073,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.07,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.DfbcBasicAttitudeThrustAdapter",
+            "dt_s": 0.068
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcSmoothRobustAttitudeThrustAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.DfbcSmoothRobustAttitudeThrustAdapter",
+      "status": "passed",
+      "elapsed_s": 0.085,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.082,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.DfbcSmoothRobustAttitudeThrustAdapter",
+            "dt_s": 0.08
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcSmoothRobustBodyRateAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.DfbcSmoothRobustBodyRateAdapter",
+      "status": "passed",
+      "elapsed_s": 0.089,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.084,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.DfbcSmoothRobustBodyRateAdapter",
+            "dt_s": 0.083
+          }
+        ]
+      }
+    },
+    {
+      "kind": "adapter",
+      "source": "Models/MoSimQuadrotorModel/Control/Adapters/DfbcHighOrderBodyRateAdapter.mo",
+      "model_class": "MoSimQuadrotorModel.Control.Adapters.DfbcHighOrderBodyRateAdapter",
+      "status": "passed",
+      "elapsed_s": 0.159,
+      "error": null,
+      "mcp_response": {
+        "ok": true,
+        "tool": "check_model",
+        "model_type": "MODELICA",
+        "elapsed_s": 0.154,
+        "count": 1,
+        "results": [
+          {
+            "ok": true,
+            "api": "CheckModel",
+            "data": true,
+            "model_name": "MoSimQuadrotorModel.Control.Adapters.DfbcHighOrderBodyRateAdapter",
+            "dt_s": 0.149
+          }
+        ]
+      }
+    }
+  ],
+  "live_mworks_touched": true,
+  "will_not_click_activation_login": true,
+  "simulation_started": false,
+  "allowed_mcp_tools": [
+    "check_model",
+    "model_manager",
+    "session_manager"
+  ],
+  "raw_mcp_log": "Results/control_platform/g1_batch5_checkmodel_20260728/SYSPLORER_MCP_CHECK_ONLY.jsonl",
+  "source_hashes_before": {
+    "Models/MoSimQuadrotorModel/package.mo": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+    "Models/MoSimQuadrotorModel/Control/Bridges/package.order": "8c0bf2890b9400e01f414d28452dcf44a4d5982939374318a15cf61c5ac10ed3",
+    "Models/MoSimQuadrotorModel/Control/Adapters/package.order": "bc77b6b8e155461caed64f686e532f9d94dd7b07d83e8c4ff61cdec22ec14191",
+    "Models/MoSimQuadrotorModel/Control/Bridges/Se3BasicEquationBridge.mo": "d7b5e81dbd6090beb421eff770ce6eecfae5d1bf6bd73df98d529248dfcfe521",
+    "Models/MoSimQuadrotorModel/Control/Bridges/DfbcBasicEquationBridge.mo": "87a621be9a24dbb8c95704c7d2a1965a0da2767df2f89f0bddb41bdb801d03a7",
+    "Models/MoSimQuadrotorModel/Control/Bridges/DfbcSmoothRobustAttitudeEquationBridge.mo": "8a520e91d1ce8aa6f1a8768c1971d19404e75ee2c8368795b154a480cba40e29",
+    "Models/MoSimQuadrotorModel/Control/Bridges/DfbcSmoothRobustBodyRateEquationBridge.mo": "57a3c9fa5303bdfa7dd0ccbb371415ffaa16a5f7e6cb9b6dfecfeb4b0cdc4f64",
+    "Models/MoSimQuadrotorModel/Control/Bridges/DfbcHighOrderBodyRateEquationBridge.mo": "7fa3c9d5c6485ca42112d12c4198152e2f643c8f80eae2220012249f06ea0bbb",
+    "Models/MoSimQuadrotorModel/Control/Adapters/Se3BasicAttitudeThrustAdapter.mo": "789e3aef93393a95388fbb128e3f5a46d77b386198029aa89ebfdb8873428c5a",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcBasicAttitudeThrustAdapter.mo": "01585adfc3a10031027ea037b5123bf7c77c29c120785a7fd7c7f84e78a85870",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcSmoothRobustAttitudeThrustAdapter.mo": "24f85ffd4c369ab60a99bc7894c9090bdfb5ba21c3067f6ab48b5f596f20cdda",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcSmoothRobustBodyRateAdapter.mo": "230b7dd56b236836f44ac3d9a1731706c07b80f20317aafdfd9673a3f5e61dbd",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcHighOrderBodyRateAdapter.mo": "899b8cdd854e7cd760be9ef2de12c54f1148125f3dbe58e4d6004dd2ee976b9f"
+  },
+  "status": "passed",
+  "wrapper": "C:\\Users\\HP\\Desktop\\MoSim\\mcp-wrappers\\sysplorer_mcp.cmd",
+  "mcp_initialize": {
+    "ok": true,
+    "mcp_server": {
+      "version": "0.1",
+      "version_display": "0.1",
+      "version_base": "0.1",
+      "version_core": "0.1",
+      "build_counter": 0,
+      "git_commit_count": 196,
+      "build_kind": "release",
+      "build_time": "2026-05-08T11:14:45+08:00",
+      "git_revision": "24314a1"
+    },
+    "python": {
+      "python_version": "3.11.4",
+      "major": 3,
+      "minor": 11,
+      "compatible": true,
+      "required": "3.10+ (recommended 3.11 for mworks-sysplorer)"
+    },
+    "driver_ready": true,
+    "driver_error": "",
+    "advice": [],
+    "sysplorer_startup": {
+      "attempted": true,
+      "started": true,
+      "already_running": false,
+      "wait_ms": 0,
+      "error": "",
+      "dedicated_sysplorer_port": 49162,
+      "timestamp": "2026-07-28T01:20:57.574033+00:00"
+    },
+    "paths": {
+      "workspace_root": "C:\\Users\\HP\\Desktop\\MoSim",
+      "deploy_root": "D:\\Program Files\\MWORKS\\Sysplorer 2026a\\Tools\\sysplorer_mcp",
+      "resources_root": "C:\\Users\\HP\\Desktop\\MoSim\\resources"
+    },
+    "bin64_path": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Bin64",
+    "workdir": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Tools\\SYSPLO~1\\SYSPLO~1\\temp",
+    "site_packages": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\External\\python64\\Lib\\SITE-P~1",
+    "api_ready": true
+  },
+  "load_root": {
+    "ok": true,
+    "api": "OpenModelFile",
+    "data": true,
+    "cached": false,
+    "file_path": "C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\package.mo",
+    "unload_loaded_classes_for_mo": {
+      "ok": true,
+      "api": "unload_loaded_classes_for_mo",
+      "data": [
+        {
+          "class": "MoSimQuadrotorModel",
+          "class_exist": false,
+          "erased": false
+        }
+      ]
+    },
+    "auto_loaded_libs": {
+      "Modelica": {
+        "ok": true,
+        "error": "",
+        "cached": false
+      },
+      "Icons": {
+        "ok": false,
+        "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [\u4e0a\u4e00\u6761\u547d\u4ee4\u6ca1\u6709\u65e5\u5fd7\u4fe1\u606f]",
+        "cached": false
+      },
+      "TY": {
+        "ok": false,
+        "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [\u4e0a\u4e00\u6761\u547d\u4ee4\u6ca1\u6709\u65e5\u5fd7\u4fe1\u606f]",
+        "cached": false
+      }
+    },
+    "manager_action": "load_file"
+  },
+  "passed_count": 10,
+  "failed_count": 0,
+  "source_hashes_after": {
+    "Models/MoSimQuadrotorModel/package.mo": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+    "Models/MoSimQuadrotorModel/Control/Bridges/package.order": "8c0bf2890b9400e01f414d28452dcf44a4d5982939374318a15cf61c5ac10ed3",
+    "Models/MoSimQuadrotorModel/Control/Adapters/package.order": "bc77b6b8e155461caed64f686e532f9d94dd7b07d83e8c4ff61cdec22ec14191",
+    "Models/MoSimQuadrotorModel/Control/Bridges/Se3BasicEquationBridge.mo": "d7b5e81dbd6090beb421eff770ce6eecfae5d1bf6bd73df98d529248dfcfe521",
+    "Models/MoSimQuadrotorModel/Control/Bridges/DfbcBasicEquationBridge.mo": "87a621be9a24dbb8c95704c7d2a1965a0da2767df2f89f0bddb41bdb801d03a7",
+    "Models/MoSimQuadrotorModel/Control/Bridges/DfbcSmoothRobustAttitudeEquationBridge.mo": "8a520e91d1ce8aa6f1a8768c1971d19404e75ee2c8368795b154a480cba40e29",
+    "Models/MoSimQuadrotorModel/Control/Bridges/DfbcSmoothRobustBodyRateEquationBridge.mo": "57a3c9fa5303bdfa7dd0ccbb371415ffaa16a5f7e6cb9b6dfecfeb4b0cdc4f64",
+    "Models/MoSimQuadrotorModel/Control/Bridges/DfbcHighOrderBodyRateEquationBridge.mo": "7fa3c9d5c6485ca42112d12c4198152e2f643c8f80eae2220012249f06ea0bbb",
+    "Models/MoSimQuadrotorModel/Control/Adapters/Se3BasicAttitudeThrustAdapter.mo": "789e3aef93393a95388fbb128e3f5a46d77b386198029aa89ebfdb8873428c5a",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcBasicAttitudeThrustAdapter.mo": "01585adfc3a10031027ea037b5123bf7c77c29c120785a7fd7c7f84e78a85870",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcSmoothRobustAttitudeThrustAdapter.mo": "24f85ffd4c369ab60a99bc7894c9090bdfb5ba21c3067f6ab48b5f596f20cdda",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcSmoothRobustBodyRateAdapter.mo": "230b7dd56b236836f44ac3d9a1731706c07b80f20317aafdfd9673a3f5e61dbd",
+    "Models/MoSimQuadrotorModel/Control/Adapters/DfbcHighOrderBodyRateAdapter.mo": "899b8cdd854e7cd760be9ef2de12c54f1148125f3dbe58e4d6004dd2ee976b9f"
+  },
+  "source_changed_by_check": false,
+  "completed_at_utc": "2026-07-28T01:21:00Z",
+  "elapsed_s": 52.146
+}

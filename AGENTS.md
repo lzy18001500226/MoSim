@@ -26,9 +26,13 @@ evidence is `Results/control_platform/g1_batch3_checkmodel_20260728/`. G1
 Batch 4 then added six approved predictive/optimization routes through one
 shared kernel, six named Bridges, and six Adapters; native `CheckModel` passed
 all 13 classes without source drift, with evidence at
-`Results/control_platform/g1_batch4_checkmodel_20260728/`. The current action
-is G1 Batch 5: add only the approved geometric/flatness EquationBridge/Adapter
-pairs, then run its independent `CheckModel` batch. G2 runs the 44
+`Results/control_platform/g1_batch4_checkmodel_20260728/`. G1 Batch 5 then
+added `SE3 Basic`, `DFBC Basic`, `DFBC SmoothRobust` attitude/body-rate, and
+`DFBC HighOrder` body-rate routes as five named Bridges and five thin Adapters;
+native `CheckModel` passed all 10 classes without source drift, with evidence
+at `Results/control_platform/g1_batch5_checkmodel_20260728/`. The current
+action is G1 Batch 6: complete only the approved PID-subfamily Bridge/Adapter
+routes, then run its independent `CheckModel` batch. G2 runs the 44
 current-source runnable MWORKS routes on `ClimbPath` and records the two
 overview-only plus one planned MWORKS catalog exclusions; G3 makes bounded repairs
 only for divergence, interface defects, or terminal error over 5 m. Do not
