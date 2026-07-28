@@ -39,6 +39,7 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "MoSimOrchestratorBridge.cc" not in cmake
     assert "QGroundControl/FlightDisplay/FlyView.qml" in resources
     assert "QGroundControl/FlightDisplay/FlyViewCustomLayer.qml" in resources
+    assert "QGroundControl/FlightDisplay/FactoryFlyMap.qml" in resources
     assert "QGroundControl/Controls/PlanView.qml" in resources
 
     assert 'setContextProperty(QStringLiteral("mosimOperator")' in plugin
@@ -97,6 +98,8 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "UE" not in fly_view
 
     assert "FactoryFlyMap {" in fly_layer
+    assert 'import "qrc:/Custom/qml/QGroundControl/FlightDisplay" as MoSimFlightDisplay' in fly_layer
+    assert "MoSimFlightDisplay.FactoryFlyMap {" in fly_layer
     assert "mapConfig: mosimOperator.operatorMap || ({})" in fly_layer
     assert "runManifest: mosimOperator.runManifest || ({})" in fly_layer
     assert "mapState: root.runtimeTelemetry.map_state || ({})" in fly_layer
@@ -188,6 +191,8 @@ def test_windows_build_entrypoint_never_installs_dependencies() -> None:
     assert "choco install" not in lowered
     assert "materialize_qgc_custom_overlay.py" in script
     assert "generate_qgc_vendor_manifest.py" in script
+    assert '$CustomResource = Join-Path $VendorRoot "custom/custom.qrc"' in script
+    assert "-E touch $CustomResource" in script
     assert "Ninja Multi-Config" in script
     assert "[switch]$Incremental" in script
     assert 'if ($Incremental) { "" } else { "--fresh " }' in script
@@ -241,6 +246,8 @@ def test_plan_view_uses_georeferenced_factory_overlay_without_orchestrator() -> 
     overlay = (CUSTOM / "src" / "FactoryPlanMapOverlay.qml").read_text(encoding="utf-8")
 
     assert "FactoryPlanMapOverlay {" in plan_view
+    assert 'import "qrc:/Custom/qml/QGroundControl/Controls" as MoSimControls' in plan_view
+    assert "MoSimControls.FactoryPlanMapOverlay {" in plan_view
     assert "map: editorMap" in plan_view
     assert "mapConfig: mosimOperator.operatorMap || ({})" in plan_view
     assert "runManifest: mosimOperator.runManifest || ({})" in plan_view
@@ -305,6 +312,10 @@ def test_windows_run_entrypoint_uses_private_runtime_and_reuses_existing_instanc
     assert "Flight Console executable:" in script
     assert "[switch]$ResolveOnly" in script
     assert "if ($ResolveOnly)" in script
+    assert "[int]$StartupTimeoutSeconds = 15" in script
+    assert "MainWindowHandle" in script
+    assert "exited during startup" in script
+    assert "did not create a main window" in script
 
 
 def test_private_toolchain_layout_is_supported(tmp_path: Path, monkeypatch) -> None:

@@ -13,6 +13,9 @@
 2. 等待 Flight Console 打开。Factory L2 二维底图、右侧操作页和原生 QGC 飞控工具应可见。
 3. 没有活动 RunManifest 时，二维图只显示底图和任务草案，不显示飞机、轨迹或演示坐标。
 
+启动入口会在最多 15 秒内检查主窗口是否出现。只有输出 `main window ready` 才表示地面站已启动；
+若进程提前退出或超时未创建主窗口，入口会直接报错，不能将仅有 PID 的输出视为成功。
+
 `Scripts/ui/run_qgc_with_ue.ps1` 是旧的 UE/Orchestrator 编排脚本，不属于当前默认流程，
 不得作为比赛演示入口。
 

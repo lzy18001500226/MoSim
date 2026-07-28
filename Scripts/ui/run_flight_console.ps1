@@ -3,7 +3,9 @@ param(
     [string]$Preflight = "",
     [string]$Executable = "",
     [switch]$PassThru,
-    [switch]$ResolveOnly
+    [switch]$ResolveOnly,
+    [ValidateRange(1, 60)]
+    [int]$StartupTimeoutSeconds = 15
 )
 
 $ErrorActionPreference = "Stop"
@@ -69,6 +71,28 @@ $env:PATH = "$QtBin;$GStreamerBin;$env:PATH"
 $process = Start-Process -FilePath (Resolve-Path $Executable).Path `
     -WorkingDirectory (Split-Path -Parent (Resolve-Path $Executable).Path) `
     -PassThru
-Write-Output "Started MoSim Flight Console (PID $($process.Id))."
+$deadline = [DateTime]::UtcNow.AddSeconds($StartupTimeoutSeconds)
+$windowReady = $false
+while ([DateTime]::UtcNow -lt $deadline) {
+    Start-Sleep -Milliseconds 250
+    $process.Refresh()
+    if ($process.HasExited) {
+        throw "MoSim Flight Console exited during startup (PID $($process.Id), exit code $($process.ExitCode))."
+    }
+    if ($process.MainWindowHandle -ne [IntPtr]::Zero) {
+        $windowReady = $true
+        break
+    }
+}
+
+if (-not $windowReady) {
+    $process.Refresh()
+    if ($process.HasExited) {
+        throw "MoSim Flight Console exited during startup (PID $($process.Id), exit code $($process.ExitCode))."
+    }
+    throw "MoSim Flight Console did not create a main window within $StartupTimeoutSeconds seconds (PID $($process.Id))."
+}
+
+Write-Output "Started MoSim Flight Console (PID $($process.Id), main window ready)."
 Write-Output "Flight Console executable: $((Resolve-Path $Executable).Path)"
 if ($PassThru) { $process }

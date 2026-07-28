@@ -27,6 +27,8 @@ import QGroundControl.ShapeFileHelper
 import QGroundControl.FlightDisplay
 import QGroundControl.UTMSP
 
+import "qrc:/Custom/qml/QGroundControl/Controls" as MoSimControls
+
 
 Item {
     id: _root
@@ -409,7 +411,7 @@ Item {
 
             QGCMapPalette { id: mapPal; lightColors: editorMap.isSatelliteMap }
 
-            FactoryPlanMapOverlay {
+            MoSimControls.FactoryPlanMapOverlay {
                 id: factoryPlanMap
                 map: editorMap
                 mapConfig: mosimOperator.operatorMap || ({})

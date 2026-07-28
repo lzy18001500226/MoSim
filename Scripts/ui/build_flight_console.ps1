@@ -43,6 +43,12 @@ if ($LASTEXITCODE -ne 0) { throw "Failed to materialize the MoSim QGC custom ove
 & python (Join-Path $ProjectRoot "Scripts/ui/generate_qgc_vendor_manifest.py") --verify
 if ($LASTEXITCODE -ne 0) { throw "Frozen QGroundControl source verification failed" }
 
+# The materializer preserves source timestamps. Refresh the resource manifest
+# so Qt RCC rescans copied QML assets during an incremental build.
+$CustomResource = Join-Path $VendorRoot "custom/custom.qrc"
+& ([string]$report.detected.cmake) -E touch $CustomResource
+if ($LASTEXITCODE -ne 0) { throw "Failed to refresh the Flight Console custom resource manifest" }
+
 $freshArgument = if ($Incremental) { "" } else { "--fresh " }
 $configure = "set `"PATH=$NinjaDir;$QtRoot\bin;$GStreamerRoot\bin;%PATH%`" && " +
     "call `"$VsDevCmd`" -arch=x64 -host_arch=x64 >nul && " +

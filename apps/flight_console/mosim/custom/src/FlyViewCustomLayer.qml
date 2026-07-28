@@ -7,6 +7,8 @@ import QGroundControl.Controls
 import QGroundControl.Palette
 import QGroundControl.ScreenTools
 
+import "qrc:/Custom/qml/QGroundControl/FlightDisplay" as MoSimFlightDisplay
+
 Item {
     id: root
 
@@ -328,7 +330,7 @@ Item {
         }
     }
 
-    FactoryFlyMap {
+    MoSimFlightDisplay.FactoryFlyMap {
         id: factoryFlyMap
         anchors.fill: parent
         mapConfig: mosimOperator.operatorMap || ({})
