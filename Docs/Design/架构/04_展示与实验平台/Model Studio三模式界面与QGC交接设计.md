@@ -20,7 +20,7 @@ QGC/Flight Console 是在线飞行操作入口。运行命令、日志和错误�
 Model Studio
   -> 编辑、校验、发布 ExperimentProfile
   -> 打开 MWORKS 模型、结果和代码工程
-  -> 不替用户启动 MWORKS、代码导出或飞行运行时
+  -> 不替用户启动模型仿真、代码导出或飞行运行时
 
 QGC / Flight Console
   -> 选择已发布 Profile
