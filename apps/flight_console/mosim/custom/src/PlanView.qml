@@ -420,6 +420,46 @@ Item {
                 runId: mosimOperator.runId || ""
             }
 
+            function zoomAtPointer(viewX, viewY, wheelDelta) {
+                if (!isFinite(wheelDelta) || Math.abs(wheelDelta) < 0.0001)
+                    return
+                var pointer = Qt.point(viewX, viewY)
+                var anchor = editorMap.toCoordinate(pointer, false /* clipToViewPort */)
+                var oldZoom = editorMap.zoomLevel
+                editorMap.zoomLevel = oldZoom + wheelDelta / 120.0
+                if (Math.abs(editorMap.zoomLevel - oldZoom) >= 0.0001)
+                    editorMap.alignCoordinateToPoint(anchor, pointer)
+            }
+
+            // QGC's stock WheelHandler changes zoomLevel around map center.
+            // The Factory task map keeps the coordinate under the mouse fixed.
+            MouseArea {
+                id: factoryPlanWheelArea
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
+                hoverEnabled: true
+                z: QGroundControl.zOrderWaypointLines - 1
+                onWheel: function(wheel) {
+                    var delta = wheel.angleDelta.y
+                    if (Math.abs(delta) < 0.0001)
+                        delta = wheel.pixelDelta.y
+                    editorMap.zoomAtPointer(wheel.x, wheel.y, delta)
+                    wheel.accepted = true
+                }
+            }
+
+            MapScale {
+                id: factoryPlanMapScale
+                anchors.left: toolStrip.right
+                anchors.leftMargin: _toolsMargin
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: _toolsMargin
+                mapControl: editorMap
+                buttonsOnLeft: true
+                zoomButtonsVisible: true
+                z: QGroundControl.zOrderWidgets
+            }
+
             Connections {
                 target: mosimOperator
                 function onStateChanged() {

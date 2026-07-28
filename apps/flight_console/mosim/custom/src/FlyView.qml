@@ -142,6 +142,7 @@ Item {
             visible:                !QGroundControl.videoManager.fullScreen
             utmspActTrigger:        utmspSendActTrigger
             isViewer3DOpen:         viewer3DWindow.isOpen
+            showNativeMapScale:      false
         }
 
         FlyViewInsetViewer {

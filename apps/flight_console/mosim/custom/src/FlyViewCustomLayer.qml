@@ -343,6 +343,9 @@ Item {
         showFuturePath: root.showMapFuturePath
         showTaskBoundary: root.showMapTaskBoundary
         showFormationTarget: root.showMapFormationTarget
+        leftControlInset: Math.max(ScreenTools.defaultFontPixelWidth * 7,
+                                   Number((root.parentToolInsets || ({})).leftEdgeTopInset || 0)
+                                   + ScreenTools.defaultFontPixelWidth)
     }
 
     Rectangle {

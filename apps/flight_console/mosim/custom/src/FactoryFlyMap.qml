@@ -28,6 +28,7 @@ Item {
     property bool showFuturePath: true
     property bool showTaskBoundary: true
     property bool showFormationTarget: true
+    property real leftControlInset: ScreenTools.defaultFontPixelWidth * 7
 
     readonly property var bounds: mapConfig.world_bounds_m || ({})
     readonly property bool mapConfigValid: mapConfig.enabled === true && imageCoordinateContractValid
@@ -41,6 +42,11 @@ Item {
             && factoryImage.sourceSize.width > 0 && factoryImage.sourceSize.height > 0
         ? factoryImage.sourceSize.width / factoryImage.sourceSize.height
         : 2048.0 / 800.0
+    readonly property real renderedPixelsPerMeter: imageCoordinateContractValid && factoryImage.width > 0
+            ? Math.abs(Number(worldToPixelMatrix[0][0])) * factoryImage.width / imageWidthPx : 0
+    readonly property real metersPerPixel: renderedPixelsPerMeter > 0 ? 1.0 / renderedPixelsPerMeter : 1.0
+    readonly property real scaleMeters: niceScaleMeters(105 * metersPerPixel)
+    readonly property real scaleWidth: scaleMeters / metersPerPixel
     readonly property var imageCoordinateContract: mapConfig.image_coordinate_contract || ({})
     readonly property var imageSizePx: imageCoordinateContract.image_size_px || ({})
     readonly property var worldToPixelMatrix: imageCoordinateContract.world_to_pixel_3x3 || []
@@ -265,7 +271,7 @@ Item {
         if (!loadedImageSizeMatchesContract)
             return "工厂地图尺寸与坐标契约不匹配"
         if (!manifestMatchesRun)
-            return "等待当前运行清单"
+            return ""
         if (String(mapState.run_id || "") !== runId)
             return "等待当前运行地图数据"
         if (!mapSnapshotHashMatches)
@@ -417,18 +423,25 @@ Item {
     }
 
     function zoomAt(viewX, viewY, wheelDelta) {
+        if (!isFinite(wheelDelta) || Math.abs(wheelDelta) < 0.0001)
+            return
         var oldZoom = zoomFactor
         var nextZoom = clamp(oldZoom * (wheelDelta > 0 ? 1.2 : 1.0 / 1.2), minZoom, maxZoom)
         if (Math.abs(nextZoom - oldZoom) < 0.0001)
             return
-        var imageX = mapFlickable.contentX + viewX - factoryImage.x
-        var imageY = mapFlickable.contentY + viewY - factoryImage.y
+
+        // viewX/viewY are always viewport-local. Preserve this exact image
+        // point while the content surface and the image anchors are resized.
+        var viewportX = clamp(viewX, 0, mapFlickable.width)
+        var viewportY = clamp(viewY, 0, mapFlickable.height)
+        var imageX = mapFlickable.contentX + viewportX - factoryImage.x
+        var imageY = mapFlickable.contentY + viewportY - factoryImage.y
         var imageRatioX = clamp(imageX / factoryImage.width, 0, 1)
         var imageRatioY = clamp(imageY / factoryImage.height, 0, 1)
         zoomFactor = nextZoom
         Qt.callLater(function() {
-            var targetX = factoryImage.x + imageRatioX * factoryImage.width - viewX
-            var targetY = factoryImage.y + imageRatioY * factoryImage.height - viewY
+            var targetX = factoryImage.x + imageRatioX * factoryImage.width - viewportX
+            var targetY = factoryImage.y + imageRatioY * factoryImage.height - viewportY
             mapFlickable.contentX = clamp(targetX, 0, Math.max(0, mapFlickable.contentWidth - mapFlickable.width))
             mapFlickable.contentY = clamp(targetY, 0, Math.max(0, mapFlickable.contentHeight - mapFlickable.height))
         })
@@ -577,69 +590,55 @@ Item {
             }
         }
 
-        MouseArea {
-            anchors.fill: parent
-            acceptedButtons: Qt.NoButton
-            hoverEnabled: true
-            onWheel: function(wheel) {
-                root.zoomAt(wheel.x, wheel.y, wheel.angleDelta.y)
-                wheel.accepted = true
-            }
+    }
+
+    // This area belongs to the viewport, not Flickable.contentItem. Wheel
+    // coordinates therefore stay stable after the map has been panned.
+    MouseArea {
+        id: mapWheelArea
+        anchors.fill: mapFlickable
+        acceptedButtons: Qt.NoButton
+        hoverEnabled: true
+        z: 10
+        onWheel: function(wheel) {
+            var delta = wheel.angleDelta.y
+            if (Math.abs(delta) < 0.0001)
+                delta = wheel.pixelDelta.y
+            root.zoomAt(wheel.x, wheel.y, delta)
+            wheel.accepted = true
         }
     }
 
-    Rectangle {
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.margins: ScreenTools.defaultFontPixelWidth
-        width: mapTitle.implicitWidth + ScreenTools.defaultFontPixelWidth * 2
-        height: mapTitle.implicitHeight + ScreenTools.defaultFontPixelHeight
-        color: "#bf111820"
-        border.color: "#7d8a94"
-        border.width: 1
-
-        Text {
-            id: mapTitle
-            anchors.centerIn: parent
-            text: String(root.mapConfig.display_name || "Factory L2")
-            color: "#ffffff"
-            font.pixelSize: ScreenTools.defaultFontPixelHeight
-        }
-    }
-
+    // This replaces QGC's online-tile MapScale in the same upper-left
+    // location. Its buttons drive the Factory raster rather than the hidden
+    // background FlightMap.
     Row {
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.margins: ScreenTools.defaultFontPixelWidth
-        spacing: 4
-
-        QGCButton { text: "-"; onClicked: root.zoomAt(root.width / 2, root.height / 2, -1) }
-        QGCButton { text: "适配"; onClicked: root.fitMap() }
-        QGCButton { text: "+"; onClicked: root.zoomAt(root.width / 2, root.height / 2, 1) }
-    }
-
-    Column {
+        id: mapScaleControls
         anchors.left: parent.left
-        anchors.bottom: parent.bottom
-        anchors.margins: ScreenTools.defaultFontPixelWidth
+        anchors.top: parent.top
+        anchors.leftMargin: root.leftControlInset
+        anchors.topMargin: ScreenTools.defaultFontPixelWidth
         spacing: 4
-        visible: root.mapConfigValid
+        z: 20
 
-        readonly property real renderedPixelsPerMeter: root.imageCoordinateContractValid && factoryImage.width > 0
-                ? Math.abs(Number(root.worldToPixelMatrix[0][0])) * factoryImage.width / root.imageWidthPx : 0
-        readonly property real metersPerPixel: renderedPixelsPerMeter > 0 ? 1.0 / renderedPixelsPerMeter : 1.0
-        readonly property real scaleMeters: root.niceScaleMeters(105 * metersPerPixel)
-        readonly property real scaleWidth: scaleMeters / metersPerPixel
+        QGCButton { text: "+"; onClicked: root.zoomAt(mapFlickable.width / 2, mapFlickable.height / 2, 1) }
+        QGCButton { text: "-"; onClicked: root.zoomAt(mapFlickable.width / 2, mapFlickable.height / 2, -1) }
 
-        Text {
-            text: scaleMeters >= 1000 ? (scaleMeters / 1000).toFixed(1) + " km" : scaleMeters.toFixed(0) + " m"
-            color: "#ffffff"
-            font.pixelSize: ScreenTools.defaultFontPixelHeight * 0.9
-        }
-        Rectangle {
-            width: Math.max(24, Math.min(150, parent.scaleWidth))
-            height: 3
-            color: "#ffffff"
+        Column {
+            spacing: 2
+            readonly property real scaleMeters: root.scaleMeters
+            readonly property real scaleWidth: root.scaleWidth
+
+            Text {
+                text: parent.scaleMeters >= 1000 ? (parent.scaleMeters / 1000).toFixed(1) + " km" : parent.scaleMeters.toFixed(0) + " m"
+                color: "#ffffff"
+                font.pixelSize: ScreenTools.defaultFontPixelHeight * 0.9
+            }
+            Rectangle {
+                width: Math.max(24, Math.min(150, parent.scaleWidth))
+                height: 3
+                color: "#ffffff"
+            }
         }
     }
 
@@ -685,7 +684,10 @@ Item {
 
     Text {
         anchors.centerIn: parent
-        visible: !root.mapConfigValid || factoryImage.status === Image.Error || !root.mapStateReady
+        // The floorplan remains useful before a run is prepared. Only surface
+        // a telemetry/map diagnostic after the current run is identifiable.
+        visible: !root.mapConfigValid || factoryImage.status === Image.Error
+                 || (root.manifestMatchesRun && !root.mapStateReady)
         text: !root.mapConfigValid ? "等待地图配置"
               : (factoryImage.status === Image.Error ? "工厂地图资源不可用" : root.mapDataGateText())
         color: "#f4b183"
