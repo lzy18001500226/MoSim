@@ -1,6 +1,6 @@
 within MoSimQuadrotorModel.Experiment.Runners;
 model AttitudeThrustRunner
-  "Offline ATTITUDE_THRUST runner using the MWORKS inner loop and allocator"
+  "Exploratory/debug ATTITUDE_THRUST runner with continuous direct wiring; not for formal comparisons"
 
   replaceable model Controller = MoSimQuadrotorModel.Control.Baselines.OfflineAttitudeThrustController
     constrainedby MoSimQuadrotorModel.Control.Interfaces.PartialAttitudeThrustController;

@@ -1,6 +1,6 @@
 within MoSimQuadrotorModel.Experiment.Runners;
 model FormalAttitudeThrustRunnerBase
-  "Reusable 100 Hz formal whole-aircraft runner for ATTITUDE_THRUST adapters"
+  "Reusable 100 Hz formal whole-aircraft runner for ATTITUDE_THRUST adapters and formal experiments"
 
   replaceable model Controller =
       MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter
