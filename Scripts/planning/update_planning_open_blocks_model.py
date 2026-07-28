@@ -415,7 +415,7 @@ def update_model(model_path: Path, planner_config_path: Path, report_path: Path)
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", type=Path, default=ROOT / "Models/MoSimQuadrotorModel/Planning/Scenarios/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo")
+    parser.add_argument("--model", type=Path, default=ROOT / "Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo")
     parser.add_argument("--planner-config", type=Path, default=ROOT / "Config/planners/astar_min_snap/map_open_blocks.yaml")
     parser.add_argument("--report", type=Path, default=ROOT / "Results/planning/single_obstacle_astar_awff/metrics/trackability_report.json")
     return parser.parse_args()

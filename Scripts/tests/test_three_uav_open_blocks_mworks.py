@@ -7,7 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 RESULT_DIR = ROOT / "Results/planning/three_uav_open_blocks_mworks_20260720"
-MODEL_DIR = ROOT / "Models/MoSimQuadrotorModel/Planning/Scenarios"
+MODEL_DIR = ROOT / "Models/MoSimQuadrotorModel/Guidance/Planning"
 
 
 def load_auditor():
@@ -35,7 +35,7 @@ class ThreeUavOpenBlocksMworksTest(unittest.TestCase):
         model = (MODEL_DIR / "ThreeUavOpenBlocksReconfigurableFormationLinearMPC.mo").read_text(encoding="utf-8")
         vehicle = (MODEL_DIR / "OpenBlocksLinearMPCVehicle.mo").read_text(encoding="utf-8")
         self.assertEqual(model.count("OpenBlocksLinearMPCVehicle vehicle"), 3)
-        self.assertEqual(vehicle.count("QuadrotorModel.Electricals.Actuator actuator"), 4)
+        self.assertEqual(vehicle.count("MoSimQuadrotorModel.Vehicle.Electricals.Actuator actuator"), 4)
         self.assertIn("terrain_render_stride = 10", model)
         vehicle_reference_connections = [
             line for line in model.splitlines()

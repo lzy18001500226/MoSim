@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Guidance.Planning.Scenarios;
+within MoSimQuadrotorModel.Guidance.Planning;
 model Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
   "Sunray150 single-UAV A* obstacle-avoidance reference tracked by the LinearMPC-style Sysblock controller"
   parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604
@@ -608,7 +608,7 @@ model Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
   Modelica.Blocks.Math.Feedback x_error;
   Modelica.Blocks.Math.Feedback y_error;
   Modelica.Blocks.Math.Feedback z_error;
-  AWFF_LinearMPCOuterLoopControllerEquation_Sysblock controller3_2;
+  MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock controller3_2;
 
 equation
   connect(actuator1_1.flange_a, quadChassisTest17_1.flange_a);

@@ -6,12 +6,12 @@ evidence_level: real_sysplorer_mcp_planning_column_truth_0p2_sensor_20hz_simulat
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Guidance.Planning.Scenarios.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlannedQuinticReference.mo
-    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlanningNavigationDisplay.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/PlannedQuinticReference.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/PlanningNavigationDisplay.mo
   official_description: Sunray150 单机局部感知避障 + 实时重规划 LinearMPC-style Sysblock 闭环
 
 controller:

@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Guidance.Planning.Scenarios;
+within MoSimQuadrotorModel.Guidance.Planning;
 model OpenBlocksLinearMPCVehicle
   "Reusable whole-aircraft Linear-MPC tracking vehicle for multi-UAV planning experiments"
   parameter Real initial_position[3] = {0, 0, 0.22};

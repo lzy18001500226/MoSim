@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Guidance.Planning.Scenarios;
+within MoSimQuadrotorModel.Guidance.Planning;
 model Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop
   "Sunray150 single-UAV corridor-gate A* reference tracked by the LinearMPC-style Sysblock controller"
   parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604
@@ -10,21 +10,22 @@ model Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop
 
   PlannedQuinticReference planningReference(
     n_segments = 5,
-    p_x = {-0.5, -0.5, 2.2, 4.2, 5.8, 6.6},
-    p_y = {-2.25, -2.25, -1.0, 0.15, 1.25, 2.1},
-    p_z = {0.5279007479379901, 1.0, 1.0, 1.0, 1.0, 1.0},
-    segment_duration = {3.0, 10.744961467121772, 2.197265625, 4.026470337517248, 2.197265625});
+    p_x = cat(1, {-0.5, -0.5, 2.2, 4.2, 5.8, 6.6}, fill(6.6, 85)),
+    p_y = cat(1, {-2.25, -2.25, -1.0, 0.15, 1.25, 2.1}, fill(2.1, 85)),
+    p_z = cat(1, {0.5279007479379901, 1.0, 1.0, 1.0, 1.0, 1.0}, fill(1.0, 85)),
+    segment_duration = cat(1, {3.0, 10.744961467121772, 2.197265625, 4.026470337517248, 2.197265625}, fill(1.0, 85)));
   PlanningNavigationDisplay navigationDisplay(
     n_segments = 5,
-    p_x = {-0.5, -0.5, 2.2, 4.2, 5.8, 6.6},
-    p_y = {-2.25, -2.25, -1.0, 0.15, 1.25, 2.1},
-    p_z = {0.5279007479379901, 1.0, 1.0, 1.0, 1.0, 1.0},
-    segment_duration = {3.0, 10.744961467121772, 2.197265625, 4.026470337517248, 2.197265625},
+    p_x = cat(1, {-0.5, -0.5, 2.2, 4.2, 5.8, 6.6}, fill(6.6, 85)),
+    p_y = cat(1, {-2.25, -2.25, -1.0, 0.15, 1.25, 2.1}, fill(2.1, 85)),
+    p_z = cat(1, {0.5279007479379901, 1.0, 1.0, 1.0, 1.0, 1.0}, fill(1.0, 85)),
+    segment_duration = cat(1, {3.0, 10.744961467121772, 2.197265625, 4.026470337517248, 2.197265625}, fill(1.0, 85)),
     x_min = -1.0,
     x_max = 8.0,
     y_min = -2.5,
     y_max = 2.5,
     local_costmap_radius_m = 100.0,
+    max_pillars = 40,
     pillar_count = 34,
     pillar_center = {{1.05, -1.55}, {1.21, -1.55}, {1.13, -1.39},
       {1.55, 1.35}, {1.71, 1.35}, {1.55, 1.51}, {1.71, 1.51},
@@ -73,7 +74,7 @@ model Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop
   Modelica.Blocks.Math.Feedback x_error;
   Modelica.Blocks.Math.Feedback y_error;
   Modelica.Blocks.Math.Feedback z_error;
-  AWFF_LinearMPCOuterLoopControllerEquation_Sysblock controller3_2;
+  MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_LinearMPCOuterLoopControllerEquation_Sysblock controller3_2;
 
 equation
   connect(actuator1_1.flange_a, quadChassisTest17_1.flange_a);

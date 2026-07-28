@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Guidance.Planning.Scenarios;
+within MoSimQuadrotorModel.Guidance.Planning;
 block PlannedQuinticReference
   "Piecewise quintic reference source generated from an accepted A* planning path"
   parameter Integer n_segments(min = 1, max = 90) = 1;

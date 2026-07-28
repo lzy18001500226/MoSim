@@ -1,0 +1,40 @@
+{
+  "schema": "mosim.model_library_refactor.phase04_checks.v1",
+  "phase": "Guidance.Planning flattening",
+  "timestamp_cst": "2026-07-29",
+  "scope": {
+    "removed_namespace": "MoSimQuadrotorModel.Guidance.Planning.Scenarios",
+    "new_namespace": "MoSimQuadrotorModel.Guidance.Planning",
+    "model_count": 9,
+    "simulation_started": false
+  },
+  "static_checks": {
+    "canonical_root_check": {
+      "command": "python Scripts/quality/consolidate_mosimquad_model_root.py --check",
+      "passed": true
+    },
+    "retired_planning_namespace_scan": {
+      "pattern": "Guidance.Planning.Scenarios and Guidance/Planning/Scenarios",
+      "active_references_found": 0,
+      "passed": true
+    },
+    "affected_python_syntax": {
+      "passed": true
+    }
+  },
+  "native_check_model": {
+    "tool": "Sysplorer MCP check_model",
+    "passed": true,
+    "models": [
+      "MoSimQuadrotorModel.Guidance.Planning.PlannedQuinticReference",
+      "MoSimQuadrotorModel.Guidance.Planning.PlanningNavigationDisplay",
+      "MoSimQuadrotorModel.Guidance.Planning.OpenBlocksLinearMPCVehicle",
+      "MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop",
+      "MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop",
+      "MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksColorMapReview",
+      "MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningCorridorGateAWFFSysblockClosedLoop",
+      "MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop",
+      "MoSimQuadrotorModel.Guidance.Planning.ThreeUavOpenBlocksReconfigurableFormationLinearMPC"
+    ]
+  }
+}

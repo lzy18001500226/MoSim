@@ -208,7 +208,7 @@ def write_control_interface_package(scene_dir: Path, handoff: dict[str, Any]) ->
             "  model_name: TBD.UEAcceptedSceneLinearMPCClosedLoop",
             "  base_model_path_hint: Models/MoSimQuadrotorModel/package.mo",
             "  extra_model_files:",
-            "    - Models/MoSimQuadrotorModel/Planning/Scenarios/PlannedQuinticReference.mo",
+            "    - Models/MoSimQuadrotorModel/Guidance/Planning/PlannedQuinticReference.mo",
             "",
             "controller:",
             "  params_file: Config/controllers/linear_mpc_sysblock/default.yaml",

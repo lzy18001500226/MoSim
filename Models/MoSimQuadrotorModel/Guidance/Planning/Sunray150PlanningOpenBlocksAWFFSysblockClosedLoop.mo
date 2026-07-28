@@ -1,6 +1,6 @@
-within MoSimQuadrotorModel.Guidance.Planning.Scenarios;
-model Sunray150PlanningCorridorGateAWFFSysblockClosedLoop
-  "Sunray150 single-UAV corridor-gate A* reference tracked by the AWFF Sysblock controller"
+within MoSimQuadrotorModel.Guidance.Planning;
+model Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop
+  "Sunray150 single-UAV A* obstacle-avoidance reference tracked by the AWFF Sysblock controller"
   parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604
     "Original MWORKS-equivalent hover command before Sunray150 SDF motorConstant calibration";
   parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s
@@ -9,11 +9,11 @@ model Sunray150PlanningCorridorGateAWFFSysblockClosedLoop
     "Scale legacy controller speed increments to the Sunray150 SDF motorConstant speed domain";
 
   PlannedQuinticReference planningReference(
-    n_segments = 5,
-    p_x = {0.0, 0.0, 4.4, 5.0, 6.6, 7.0},
-    p_y = {0.0, 0.0, -0.1, -0.7, -0.3, 0.0},
-    p_z = {0.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-    segment_duration = {3.0, 10.744961467121772, 2.197265625, 4.026470337517248, 2.197265625});
+    n_segments = 4,
+    p_x = cat(1, {0.0, 0.0, 3.4, 4.2, 6.0, 6.0}, fill(6.0, 85)),
+    p_y = cat(1, {0.0, 0.0, 0.3, -0.1, 0.0, 0.0}, fill(0.0, 85)),
+    p_z = cat(1, {0.0, 1.0, 1.0, 1.0, 1.0, 1.0}, fill(1.0, 85)),
+    segment_duration = cat(1, {3.0, 6.944192775828457, 1.953125, 3.667756424422189, 1.0}, fill(1.0, 85)));
   MoSimQuadrotorModel.Vehicle.Mechanics.QuadChassis quadChassisTest17_1;
   MoSimQuadrotorModel.Vehicle.Electricals.Actuator actuator1_1(dcpm(wMechanical(start = hover_motor_speed_cmd)));
   MoSimQuadrotorModel.Vehicle.Electricals.Actuator actuator1_2(dcpm(wMechanical(start = -hover_motor_speed_cmd)));
@@ -37,7 +37,7 @@ model Sunray150PlanningCorridorGateAWFFSysblockClosedLoop
   Modelica.Blocks.Math.Feedback x_error;
   Modelica.Blocks.Math.Feedback y_error;
   Modelica.Blocks.Math.Feedback z_error;
-  AWFF_FullControllerEquation_Sysblock controller3_2;
+  MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_FullControllerEquation_Sysblock controller3_2;
 
 equation
   connect(actuator1_1.flange_a, quadChassisTest17_1.flange_a);
@@ -84,6 +84,6 @@ equation
   connect(actuator1_3.flange_a, speedSensor[3].flange);
   connect(actuator1_4.flange_a, speedSensor[4].flange);
 
-  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 23, Tolerance = 0.0001, Interval = 0.01));
+  annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 16, Tolerance = 0.0001, Interval = 0.01));
   annotation(__MWORKS(hide=true,version="26.3.0"));
-end Sunray150PlanningCorridorGateAWFFSysblockClosedLoop;
+end Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop;

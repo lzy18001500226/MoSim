@@ -75,7 +75,7 @@ def audit(raw_path: Path, planning_path: Path) -> dict[str, Any]:
     metrics: dict[str, Any] = {
         "schema": "mosim.mworks.three_uav_open_blocks.metrics.v1",
         "source": "MWORKS_MCP",
-        "model_name": "MoSimQuadrotorModel.Planning.Scenarios.ThreeUavOpenBlocksReconfigurableFormationLinearMPC",
+        "model_name": "MoSimQuadrotorModel.Guidance.Planning.ThreeUavOpenBlocksReconfigurableFormationLinearMPC",
         "raw_result": str(raw_path.resolve()),
         "planning_result": str(planning_path.resolve()),
         "sample_count": len(times),

@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Guidance.Planning.Scenarios;
+within MoSimQuadrotorModel.Guidance.Planning;
 model Sunray150PlanningOpenBlocksColorMapReview
   "Video-review variant with the global colored static map enabled"
   extends Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop(

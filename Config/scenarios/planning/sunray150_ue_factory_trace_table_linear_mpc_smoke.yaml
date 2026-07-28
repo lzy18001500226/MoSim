@@ -13,7 +13,7 @@ model:
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
     - Models/MoSimQuadrotorModel/Common/Models/TraceInlineReference.mo
-    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlanningNavigationDisplay.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/PlanningNavigationDisplay.mo
 
 controller:
   params_file: Config/controllers/linear_mpc_sysblock/default.yaml

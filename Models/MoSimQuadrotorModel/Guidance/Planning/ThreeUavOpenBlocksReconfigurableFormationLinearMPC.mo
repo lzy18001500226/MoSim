@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Guidance.Planning.Scenarios;
+within MoSimQuadrotorModel.Guidance.Planning;
 model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
   "Three whole-aircraft Linear-MPC loops following synchronized collision-safe OpenBlocks references"
   parameter Real planned_clearance_m[3] = {0.446636389524, 0.44832134251, 0.445867622045};

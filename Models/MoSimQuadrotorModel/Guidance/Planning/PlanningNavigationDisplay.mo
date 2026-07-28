@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Guidance.Planning.Scenarios;
+within MoSimQuadrotorModel.Guidance.Planning;
 model PlanningNavigationDisplay
   "Lightweight native 3D navigation display: pillar-cluster obstacle map and short-horizon local plan"
   parameter Integer n_segments(min = 1, max = 90) = 1;

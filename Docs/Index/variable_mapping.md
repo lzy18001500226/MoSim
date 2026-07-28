@@ -46,7 +46,7 @@ The three official examples use the same component names for result extraction:
 | Example1 | `MoSimQuadrotorModel.Vehicle.Examples.Example1` | `climbePath` (`PathPlanning.ClimbPath`) | `sensors1_1` | `controller3_2` |
 | Example2 | `MoSimQuadrotorModel.Vehicle.Examples.Example2` | `climbePath` (`PathPlanning.CirclePath`) | `sensors1_1` | `controller3_2` |
 | Example3 | `MoSimQuadrotorModel.Vehicle.Examples.Example3` | `climbePath` (`PathPlanning.EightPath`) | `sensors1_1` | `controller3_2` |
-| Planning | `MoSimQuadrotorModel.Guidance.Planning.Scenarios.Sunray150Planning*SysblockClosedLoop` | `planningReference` (`PlannedQuinticReference`) | `sensors1_1` | `controller3_2` |
+| Planning | `MoSimQuadrotorModel.Guidance.Planning.Sunray150Planning*SysblockClosedLoop` | `planningReference` (`PlannedQuinticReference`) | `sensors1_1` | `controller3_2` |
 
 First `result_manager` query list:
 

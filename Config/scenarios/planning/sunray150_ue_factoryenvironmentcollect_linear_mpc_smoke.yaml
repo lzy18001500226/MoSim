@@ -12,8 +12,8 @@ model:
   model_path_hint: Models/MoSimQuadrotorModel/Visualization/Scenarios/Sunray150UEFactoryLinearMPCSysblockSmoke.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlannedQuinticReference.mo
-    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlanningNavigationDisplay.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/PlannedQuinticReference.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/PlanningNavigationDisplay.mo
 
 controller:
   params_file: Config/controllers/linear_mpc_sysblock/default.yaml

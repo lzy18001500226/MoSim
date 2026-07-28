@@ -6,12 +6,12 @@ evidence_level: real_sysplorer_mcp_sysblock_planning_corridor_gate_linear_mpc
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Guidance.Planning.Scenarios.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlannedQuinticReference.mo
-    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlanningNavigationDisplay.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/PlannedQuinticReference.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/PlanningNavigationDisplay.mo
   official_description: Sunray150 单机 corridor gate A* 轨迹 LinearMPC-style Sysblock 闭环
 
 controller:

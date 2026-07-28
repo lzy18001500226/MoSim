@@ -8,11 +8,11 @@ inactive_reason: AWFF planning closed-loop is retained as a controller-suitabili
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Guidance.Planning.Scenarios.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop
+  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningOpenBlocksAWFFSysblockClosedLoop.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
-    - Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/PlannedQuinticReference.mo
+    - Models/MoSimQuadrotorModel/Guidance/Planning/PlannedQuinticReference.mo
   official_description: Sunray150 单机 A* 障碍避让轨迹 AWFF Sysblock 闭环
 
 controller:

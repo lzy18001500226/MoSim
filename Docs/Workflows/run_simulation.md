@@ -195,7 +195,7 @@ mistake.
 
 ### Planning Model GUI Review Variables
 
-For `MoSimQuadrotorModel.Guidance.Planning.Scenarios.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`,
+For `MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`,
 the reference trajectory is exported from `planningReference`, not from the
 official Example1 `climbePath`. When using `run_sysplorer_mcp_smoke.py` for
 GUI review or reproducible export, override the reference aliases explicitly:
@@ -566,7 +566,7 @@ the same pillar map rendered in Sysplorer:
 
 ```bash
 uv run python Scripts/planning/check_planning_display_collision.py \
-  Models/MoSimQuadrotorModel/Guidance/Planning/Scenarios/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo \
+  Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo \
   --required-clearance-m 0.35
 ```
 
@@ -704,7 +704,7 @@ keep the numerical evidence, reduce display load, and rerun a short
 `check_model`/`simulate_model` smoke before any full run.
 
 For video capture that needs the full colored global map, open
-`MoSimQuadrotorModel.Guidance.Planning.Scenarios.Sunray150PlanningOpenBlocksColorMapReview`. This model is
+`MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksColorMapReview`. This model is
 a thin review-only extension of
 `Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`: it keeps the same
 controller, vehicle, path, local sensing overlay, and timing, but enables
