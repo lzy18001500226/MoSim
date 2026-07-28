@@ -99,3 +99,23 @@ UE 保持独立展示窗口，不嵌入 Flight Console，也不承担控制、�
 QGC 的静态界面、地图、命令复制和 rosbag 回放只证明操作面/数据合同。运行成功必须由对应的
 Gazebo、PX4、MAVROS、ROS、任务 Adapter、日志和结果包独立验收；MWORKS 控制器正确性仍由
 MWORKS 模型、原生结果和代码生成一致性证据判定。
+
+## 9. 尚未执行的运行时验收清单
+
+以下是后续单独开放运行时权限后才执行的清单，不是当前静态 UI 或 Windows 构建的完成声明。
+每一项失败都保留当前终端、日志和 `run_id`，停止后续飞行操作，不通过重启隐藏进程规避错误。
+
+| Gate | 操作者动作 | 必须观察到的证据 | 不得据此声称 |
+| --- | --- | --- | --- |
+| Q0 地面站独立启动 | 双击 `cmd/启动MoSim地面站.cmd` | Flight Console/QGC 打开，显示 Factory L2 底图；没有自动启动 UE、Gazebo、ROS、PX4、MAVROS 或 RViz | 已连接飞机、已启动仿真或已生成 RunManifest |
+| Q1 Profile 与地图 | 在 QGC 选择一个已发布 Profile，确认控制器、机数、任务和地图由同一条目派生 | 无活动运行时，图上只有底图和任务草案；禁用 Profile 不可选择并给出原因 | 控制器已加载、任务已开始或飞机已起飞 |
+| Q2 运行准备 | 在 QGC 点击“复制启动命令”，由操作者在一个可见终端执行 | `Results/runs/<run_id>/RUN_MANIFEST.json` 与 `Results/ui_platform/qgc_active_run.json` 身份、Profile hash 和地图快照一致 | 后端 launcher、ROS、Gazebo、PX4、MAVROS、控制器或规划器已接受执行 |
+| Q3 二维坐标门禁 | 由同一可见终端启动已绑定 run_id 的地图 sidecar，并提供匹配的坐标证据 | `map_state` 的 run/profile/map 快照一致且 `coordinate_contract_status=verified`；之后才可显示飞机、航向、实际/未来轨迹与边界 | 原生 QGC 航点已经发布到飞控 |
+| Q4 rosbag 回放 | 在 QGC 复制回放命令，再由可见终端对真实 bag 执行 | QGC 显示 `rosbag_replay` 的播放/暂停/结束状态及同一 run_id 的派生几何 | 实时飞行、控制器成功或规划器成功 |
+| Q5 原生飞控与任务 | 仅在 Sunray ROS1 运行时预检通过且该任务已明确授权后，使用 QGC 原生连接、解锁、起飞、模式和降落工具 | 可见 Gazebo/PX4/MAVROS 日志、车辆遥测和任务运行端日志同属一个 run_id；QGC 不发送竞争性第二控制链 | MWORKS 控制器已完成联合仿真或任意规划器已经通过 |
+| Q6 故障与恢复 | 在活动 run 内暂存故障，复制并在可见终端执行应用/恢复命令 | 运行端或 sidecar 写回同一 run_id 的 ACK、当前生效值和失败原因；恢复 ACK 证明风扰归零、四电机效率为 100% | 命令复制或请求文件写入即代表故障已生效 |
+| Q7 Plan View 发布 | 编辑航点或边界草案，并执行世界坐标与经纬度往返验收 | 未通过往返门禁时上传明确保持阻止；通过后才允许单独审核任务发布 | 二维底图或草案可见即代表飞控航点已发布 |
+| Q8 UE 独立展示 | 仅在需要视频/展示且相关运行时已授权后单独打开 UE | UE 不嵌入 QGC；鼠标可通过 `Esc` 或失焦释放；其画面与 run bundle 对应 | UE 画面替代 Gazebo/PX4/MAVROS/RViz 的运行真值 |
+
+Q5 至 Q8 的控制、规划、避障、故障容错和显示结论分别由各自运行工作流的日志、指标和结果包
+判定。一次 QGC 页面刷新、回放画面或 UE 视频都不跨越这些证据边界。

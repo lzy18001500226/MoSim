@@ -1,36 +1,42 @@
 # Model Studio 三模式界面与 QGC 交接设计
 
-> 状态：界面设计基线，2026-07-21。本文冻结 Model Studio、QGC 与
-> Orchestrator 的职责和第一版界面，不证明 MWORKS Live、Gazebo 或飞行运行已通过。
+> 状态：界面设计基线，2026-07-28。本文冻结 Model Studio 与 QGC/Flight
+> Console 的职责和第一版界面，不证明 MWORKS Live、Gazebo 或飞行运行已通过。
 
-实现边界：本文是目标界面合同，不是当前 APP 的完成报告。当前源码仍保留旧的
-多下拉控件和 `FaultDropDown`；目标中的“主控制器先选、环路 owner 自动解析、场景
-注入默认关闭”需要后续 APP 任务单独实现。当前实现核对以
-`MWORKS控制器关系与组合架构.md` 第 4 节为准。
+实现边界：本文是目标界面合同，不是当前 APP 的完成报告。2026-07-28 起，比赛与
+交付主线不再依赖 Orchestrator：已发布 Profile 是配置事实来源，操作者在可见终端执行
+QGC 复制出的受审计命令，`prepare_operator_run.py` 冻结 RunManifest；QGC 只读消费其
+状态。目标中的“主控制器先选、环路 owner 自动解析、场景注入默认关闭”仍由独立 APP
+任务实现。当前实现核对以 `MWORKS控制器关系与组合架构.md` 第 4 节和
+`Docs/Design/架构.md` 第 7、8 节为准。
 
 ## 1. 产品定位
 
-Model Studio 是控制器与实验 Profile 的设计、校验和发布入口，不是飞行地面站。
-QGC/Flight Console 是在线飞行操作入口。Orchestrator 是唯一运行状态机和命令裁决者。
+Model Studio 是控制器与实验 Profile 的设计、校验、发布和工程入口，不是飞行地面站。
+QGC/Flight Console 是在线飞行操作入口。运行命令、日志和错误始终保留在操作者可见的
+终端中，不能由任一 GUI 隐藏启动或接管。
 
 ```text
 Model Studio
   -> 编辑、校验、发布 ExperimentProfile
-  -> 执行离线模型检查、MIL、代码生成和结果打开
-  -> 请求 prepare_run
+  -> 打开 MWORKS 模型、结果和代码工程
+  -> 不替用户启动 MWORKS、代码导出或飞行运行时
 
 QGC / Flight Console
   -> 选择已发布 Profile
   -> 连接、解锁、起飞、任务、悬停、降落和安全停止
+  -> 显示 Factory 二维态势、故障 ACK 与运行身份
+  -> 复制已审计的前台命令，不在后台执行
 
-Orchestrator
-  -> 校验 Profile、MissionArtifact 和运行环境
-  -> 生成不可变 RunManifest
-  -> 裁决所有运行命令、ACK、状态和冲突
+可见终端 / 既有运行脚本
+  -> 执行 prepare_operator_run.py，冻结不可变 RunManifest
+  -> 启动经 Profile 绑定的 ROS/Gazebo/PX4/MAVROS 运行入口
+  -> 将后端 ACK、日志与遥测写回本次 run_id 的证据目录
 ```
 
 高频控制数据不得经过两个 GUI、JSON 文件队列或 Orchestrator 控制面。ROS1 承载实时
 状态、参考、控制命令、诊断和注入事件；标准 MAVLink 承载 PX4 飞行状态和标准 ACK。
+GUI 只承载低频 Profile、命令复制、状态展示和人工确认。
 
 ## 2. 顶部三模式
 
@@ -107,9 +113,9 @@ frame_contract_id = mosim_enu_flu_quaternion_xyzw_v1
 拖动滑块
   -> 开启“场景注入”
   -> 更新 requested_value
-  -> 点击“应用”
-  -> Orchestrator 受理
-  -> Gazebo 插件返回 applied/rejected
+  -> 点击“复制应用命令”
+  -> 操作者在可见终端执行离散故障请求
+  -> ROS sidecar 或运行端返回同一 run_id 的 applied/rejected ACK
   -> UI 更新 applied_value
 ```
 
@@ -122,23 +128,24 @@ frame_contract_id = mosim_enu_flu_quaternion_xyzw_v1
 离线模式：
 
 ```text
-校验配置 | 打开模型 | 运行 MWORKS MIL | 生成 C 代码 | 打开结果
+校验配置 | 打开模型 | 打开结果 | 打开代码工程
 ```
 
 在线模式：
 
 ```text
-校验配置 | 发布 Profile | 准备运行 | 进入 QGC | 请求安全停止
+校验配置 | 发布 Profile | 查看 QGC 交接状态 | 查看 Flight Console 入口
 ```
 
-Model Studio 不提供“解锁”“起飞”或“开始任务”。“请求安全停止”与 QGC 调用同一个
-幂等 Orchestrator `safe_stop`，不得直接发布 ROS/MAVROS/PX4 命令，也不得把杀进程或
+Model Studio 不提供“解锁”“起飞”“开始任务”或“请求安全停止”。飞行中的安全停止只能
+通过 QGC 原生安全操作或已绑定任务运行时的安全停止语义完成；不得把杀进程或
 `stop_run` 当作飞行安全停止。
 
 ## 6. RunManifest 与状态
 
-ExperimentProfile 由 Model Studio 维护，MissionArtifact 由 QGC 任务侧维护，最终不可变
-RunManifest 由 Orchestrator 生成。最小字段包括：
+ExperimentProfile 由 Model Studio/配置目录维护，MissionArtifact 由 QGC 任务侧维护；
+操作者执行可见终端中的 `prepare_operator_run.py` 后，才生成最终不可变 RunManifest。
+QGC 不创建、修改或补写该文件，只读取当前活动指针和本次运行状态。最小字段包括：
 
 ```text
 run_id
@@ -157,26 +164,27 @@ requested_rate_hz / selected_rate_hz / protocol_version
 preflight_id / preflight_result_hash
 ```
 
-RunManifest 在 `ready_on_ground` 后不可修改。运行状态、分阶段 ACK、故障事件和遥测进入
+RunManifest 在 `launch_prepared` 后不可修改。运行状态、分阶段 ACK、故障事件和遥测进入
 独立 RunStatus/Event 记录，不持续回写 Manifest。
 
 ## 7. 在线连接与频率能力口径
 
-在线页提供目标主机、RT1 UDP端口、ROS Master URI、本机广播IP和50/100/200 Hz目标频率。
-用户必须先点击“测试连接”，看到ROS Master与RT1双向请求-响应分别通过，才能进入prepare。
-连接失败显示阶段、reason code、耗时和建议动作；测试期间按钮禁用，重复点击复用同一预检。
+Model Studio 可以编辑目标主机、RT1 UDP端口、ROS Master URI、本机广播 IP 和
+50/100/200 Hz候选频率，并把它们随候选 Profile 进入校验。发布后 QGC 只能显示冻结的
+端点和健康状态，不能维护第二套地址或频率编辑器。真实连接测试由可见终端中的对应预检
+执行；失败时必须记录阶段、reason code、耗时和建议动作。
 
 当前能力分层为：
 
 ```text
-50 Hz = RT0已通过的可用基线
-100 Hz = 已测试未通过，不能发布
-200 Hz = 新目标，能力待验证，不能发布
+50 Hz = 候选基线，必须由 RT0 结果确认
+100 Hz = 候选值，未形成能力声明前不能发布为实时可用
+200 Hz = 新目标，能力待验证，不能发布为实时可用
 ```
 
 200 Hz目标需要5 ms周期，因此其deadline、command age和fallback阈值必须由新的RT0结果重新
-冻结，不能沿用50 Hz参数，也不能原地修改`mworks_live_*_50hz_v2`。QGC只显示Orchestrator
-冻结后的端点、Profile、RT0状态、RTT、command age、丢包和fallback，不提供第二套端点编辑。
+冻结，不能沿用50 Hz参数，也不能原地修改既有 Profile 哈希。QGC只显示 RunManifest 冻结后的
+端点、Profile、RT0状态、RTT、command age、丢包和fallback，不提供第二套端点编辑。
 
 ## 8. 第一版界面验收
 
@@ -190,7 +198,8 @@ RunManifest 在 `ready_on_ground` 后不可修改。运行状态、分阶段 ACK
 - 请求值与实际值分开显示；
 - 不包含合成曲线、静态整机拓扑预览或伪运行结果；
 - 离线操作和 QGC 飞行操作不会混淆；
-- 在线地址可编辑、连接测试有真实握手结果，未通过时prepare保持禁用；
-- 50 Hz已通过与200 Hz待验证在界面上不会混为一个“实时可用”状态；
+- Studio 中的候选地址可编辑，但 QGC 对已发布 Profile 只读；真实握手结果必须来自可见终端，
+  未通过时对应运行入口保持禁用；
+- 50/100/200 Hz候选值与已经过 RT0 验证的能力不会混为一个“实时可用”状态；
 - 普通桌面和较小窗口下文字不重叠、不越界；
 - 审核版不启动 MWORKS、Gazebo、QGC 或修改模型。
