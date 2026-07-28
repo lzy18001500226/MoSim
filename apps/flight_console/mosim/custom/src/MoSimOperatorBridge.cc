@@ -821,7 +821,7 @@ void MoSimOperatorBridge::copyClearActiveRunCommand()
     }
     const QString command = QStringLiteral("python \"%1\" --clear-active")
         .arg(nativePath(projectPath(QStringLiteral("Scripts/ui/prepare_operator_run.py"))));
-    copyCommand(command, QStringLiteral("结束当前运行命令"));
+    copyCommand(command, QStringLiteral("清除运行清单命令"));
 }
 
 void MoSimOperatorBridge::stageWind(const QString &vehicleId, double speedMps)
