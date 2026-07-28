@@ -40,7 +40,7 @@ class DynamicsBatchASourceMigrationTest(unittest.TestCase):
                     "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperSurface",
                 ],
             )
-            self.assertIn("MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke", summary["deferred_targets"])
+            self.assertIn("MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke", summary["deferred_targets"])
 
             matrix = json.loads((Path(tmp) / "batch_a_source_migration_matrix.json").read_text(encoding="utf-8"))
             self.assertEqual(matrix["status"], "passed_static")

@@ -4,10 +4,3 @@ OptionalDampingGyroLayer
 PhysicalWrenchAdapter
 RotorActuatorCore
 WrapperSurface
-HoverSmoke
-YawStepSmoke
-PhysicalWrenchHoverSmoke
-PhysicalWrenchYawStepSmoke
-RotorEffectivenessSmoke
-WrapperHoverSmoke
-WrapperYawStepSmoke

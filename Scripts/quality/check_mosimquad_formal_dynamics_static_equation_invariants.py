@@ -17,6 +17,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE_ROOTS = {
     "vehicle": ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle",
+    "dynamics": ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Dynamics",
     "legacy_diagnostics": ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "LegacyDiagnostics",
     "parameters": ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters",
 }
@@ -33,6 +34,7 @@ DEFAULT_OUTPUT = CURRENT_STATIC_ROOT / "formal_dynamics_invariants.json"
 
 ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
     "rotor_core": {
+        "source_root": "dynamics",
         "source": "RotorActuatorCore.mo",
         "anchors": [
             "parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile",
@@ -66,6 +68,7 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
         ],
     },
     "wrapper_surface": {
+        "source_root": "dynamics",
         "source": "WrapperSurface.mo",
         "anchors": [
             "dynamics.motor_command = motor_command",
@@ -82,6 +85,7 @@ ANCHOR_GROUPS: dict[str, dict[str, Any]] = {
         ],
     },
     "physical_wrench_adapter": {
+        "source_root": "dynamics",
         "source": "PhysicalWrenchAdapter.mo",
         "anchors": [
             "applied_force_body = {0, 0, wrapper.total_thrust}",
@@ -121,19 +125,13 @@ IMPLEMENTATION_BY_MODEL = {
     "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.RotorEffectivenessSmoke": "RotorEffectivenessSmoke.mo",
 }
 
-HISTORICAL_DIAGNOSTICS_ALIASES = {
-    f"MoSimQuadrotorModel.Vehicle.Dynamics.{name}":
-    f"MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.{name}"
-    for name in (
-        "HoverSmoke",
-        "YawStepSmoke",
-        "WrapperHoverSmoke",
-        "WrapperYawStepSmoke",
-        "PhysicalWrenchHoverSmoke",
-        "PhysicalWrenchYawStepSmoke",
-        "RotorEffectivenessSmoke",
-    )
-}
+HISTORICAL_DIAGNOSTIC_NAMESPACES = (
+    "MoSimQuadrotorModel.Vehicle.Dynamics.",
+    "MoSimQuadrotorModel.Dynamics.",
+)
+HISTORICAL_DIAGNOSTIC_NAMES = frozenset(
+    model_name.rsplit(".", 1)[1] for model_name in IMPLEMENTATION_BY_MODEL
+)
 
 DEPENDENCY_GROUPS_BY_MODEL = {
     "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke": ["rotor_core", "virtual_px4_classic_profile"],
@@ -146,26 +144,26 @@ DEPENDENCY_GROUPS_BY_MODEL = {
 }
 
 INSTANCE_ANCHORS_BY_MODEL = {
-    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke": ["RotorActuatorCore dynamics"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke": ["MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore dynamics"],
     "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.YawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
-        "RotorActuatorCore dynamics",
+        "MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore dynamics",
     ],
-    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperHoverSmoke": ["WrapperSurface wrapper"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperHoverSmoke": ["MoSimQuadrotorModel.Vehicle.Dynamics.WrapperSurface wrapper"],
     "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.WrapperYawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
-        "WrapperSurface wrapper",
+        "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperSurface wrapper",
     ],
-    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchHoverSmoke": ["PhysicalWrenchAdapter adapter"],
+    "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchHoverSmoke": ["MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter adapter"],
     "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.PhysicalWrenchYawStepSmoke": [
         "Real yaw_step",
         "Real rotor_speed_mag[4]",
-        "PhysicalWrenchAdapter adapter",
+        "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter adapter",
     ],
     "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.RotorEffectivenessSmoke": [
-        "RotorActuatorCore dynamics",
+        "MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore dynamics",
         "thrust_effectiveness = {",
         "Real total_thrust_loss",
         "Real roll_moment_imbalance",
@@ -193,9 +191,14 @@ def normalized(text: str) -> str:
 
 
 def canonical_model_name(model_name: str) -> str:
-    """Resolve a retained Vehicle.Dynamics smoke FQN to its owned source."""
+    """Map historical result references onto the current diagnostic source FQN."""
 
-    return HISTORICAL_DIAGNOSTICS_ALIASES.get(model_name, model_name)
+    for namespace in HISTORICAL_DIAGNOSTIC_NAMESPACES:
+        if model_name.startswith(namespace):
+            leaf_name = model_name[len(namespace) :]
+            if leaf_name in HISTORICAL_DIAGNOSTIC_NAMES:
+                return "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics." + leaf_name
+    return model_name
 
 
 def add_finding(findings: list[dict[str, Any]], code: str, message: str, target: str | None = None) -> None:

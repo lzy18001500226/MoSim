@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 VEHICLE_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle"
 LEGACY_DIAGNOSTICS_DIR = VEHICLE_DIR / "LegacyDiagnostics"
-COMPATIBILITY_DYNAMICS_DIR = VEHICLE_DIR / "Dynamics"
+DYNAMICS_DIR = VEHICLE_DIR / "Dynamics"
 FORMAL_PARAMETERS_DIR = ROOT / "Models" / "MoSimQuadrotorModel" / "Parameters"
 RETIRED_ROOTS = (
     ROOT / "Models" / "QuadrotorExperiments",
@@ -35,18 +35,22 @@ ROOT_CONSOLIDATION_DIR = (
 
 REQUEST_ID = "PMO-MWORKS-R1-MOSIMQUAD-FORMAL-SMOKE-SURFACE-STATIC-PREP-20260608-023"
 
-FORMAL_PACKAGE_ORDER = [
-    "RotorActuatorCore",
-    "HoverSmoke",
-    "YawStepSmoke",
-    "RotorEffectivenessSmoke",
-    "WrapperSurface",
+DYNAMICS_FORMAL_ORDER = [
     "ActuatorCommandMapper",
     "ActuatorMappedWrapperSurface",
     "OptionalDampingGyroLayer",
+    "PhysicalWrenchAdapter",
+    "RotorActuatorCore",
+    "WrapperSurface",
+]
+
+FORMAL_PACKAGE_ORDER = [
+    *DYNAMICS_FORMAL_ORDER,
+    "HoverSmoke",
+    "YawStepSmoke",
+    "RotorEffectivenessSmoke",
     "WrapperHoverSmoke",
     "WrapperYawStepSmoke",
-    "PhysicalWrenchAdapter",
     "PhysicalWrenchHoverSmoke",
     "PhysicalWrenchYawStepSmoke",
 ]
@@ -515,7 +519,7 @@ def requires_dedicated_formal_source(formal_name: str) -> bool:
 
 def source_dir_for(formal_name: str) -> Path:
     if formal_name in PRODUCTION_FORMAL_NAMES:
-        return VEHICLE_DIR
+        return DYNAMICS_DIR
     if formal_name in DIAGNOSTIC_FORMAL_NAMES:
         return LEGACY_DIAGNOSTICS_DIR
     raise ValueError(f"unknown formal source owner: {formal_name}")
@@ -523,7 +527,7 @@ def source_dir_for(formal_name: str) -> Path:
 
 def target_namespace_for(formal_name: str) -> str:
     if formal_name in PRODUCTION_FORMAL_NAMES:
-        return "MoSimQuadrotorModel.Vehicle"
+        return "MoSimQuadrotorModel.Vehicle.Dynamics"
     if formal_name in DIAGNOSTIC_FORMAL_NAMES:
         return "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics"
     raise ValueError(f"unknown formal target namespace: {formal_name}")
@@ -537,30 +541,25 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
     findings: list[str] = []
     vehicle_order = read_order(VEHICLE_DIR / "package.order")
     diagnostics_order = read_order(LEGACY_DIAGNOSTICS_DIR / "package.order")
-    compatibility_order = read_order(COMPATIBILITY_DYNAMICS_DIR / "package.order")
+    dynamics_order = read_order(DYNAMICS_DIR / "package.order")
     parameter_package = read_text(FORMAL_PARAMETERS_DIR / "package.mo")
     parameter_profile_record = read_text(
         FORMAL_PARAMETERS_DIR / "Sunray150VirtualPx4Classic.mo"
     )
     parameter_order = read_order(FORMAL_PARAMETERS_DIR / "package.order")
 
-    missing_vehicle_sources = sorted(PRODUCTION_FORMAL_NAMES - set(vehicle_order))
-    if missing_vehicle_sources:
+    if "Dynamics" not in vehicle_order:
         findings.append(
-            f"Vehicle package.order omits production source(s): {missing_vehicle_sources!r}"
+            "Vehicle package.order omits the Dynamics production package"
         )
     if diagnostics_order != DIAGNOSTIC_FORMAL_ORDER:
         findings.append(
             f"LegacyDiagnostics package.order mismatch: {diagnostics_order!r}"
         )
-    expected_compatibility_names = set(FORMAL_PACKAGE_ORDER)
-    if (
-        len(compatibility_order) != len(expected_compatibility_names)
-        or set(compatibility_order) != expected_compatibility_names
-    ):
+    if dynamics_order != DYNAMICS_FORMAL_ORDER:
         findings.append(
-            "Vehicle.Dynamics compatibility package.order must contain each retained "
-            f"alias exactly once: {compatibility_order!r}"
+            "Vehicle.Dynamics package.order must contain the production sources exactly: "
+            f"{dynamics_order!r}"
         )
     for retired_root in RETIRED_ROOTS:
         if retired_root.exists():
@@ -616,8 +615,9 @@ def build_matrix() -> tuple[list[dict[str, Any]], list[str]]:
             {
                 "formal_target": canonical_target,
                 "retired_predecessor": target["compat_name"],
-                "compatibility_alias": (
-                    f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}"
+                "pre_refactor_namespace": (
+                    f"MoSimQuadrotorModel.Vehicle.{formal_name}"
+                    if formal_name in PRODUCTION_FORMAL_NAMES else None
                 ),
                 "implementation_model": f"{source_namespace}.{implementation_model}",
                 "implementation_file": rel(implementation_path),
@@ -682,17 +682,17 @@ def build_future_surface(matrix: list[dict[str, Any]]) -> dict[str, Any]:
         ],
         "optional_probe_queue": [
             {
-                "target": "MoSimQuadrotorModel.Vehicle.ActuatorMappedWrapperSurface",
+                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.ActuatorMappedWrapperSurface",
                 "probe": "normalized_actuator_command feeds signed_visual_rotor_speed_command into wrapper.motor_command",
                 "not_claimed_by_023": True,
             },
             {
-                "target": "MoSimQuadrotorModel.Vehicle.OptionalDampingGyroLayer",
+                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.OptionalDampingGyroLayer",
                 "probe": "default_disabled_force_delta and default_disabled_moment_delta remain zero under default flags",
                 "not_claimed_by_023": True,
             },
             {
-                "target": "MoSimQuadrotorModel.Vehicle.PhysicalWrenchAdapter",
+                "target": "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter",
                 "probe": "applied_force_body and applied_torque_body reach explicit minimal MultiBody body through WorldForceAndTorque",
                 "not_claimed_by_023": True,
             },
@@ -770,12 +770,12 @@ def write_source_materialization_rationale(path: Path) -> None:
     lines = [
         "# Source Anchor Materialization Rationale",
         "",
-        "023 inspects canonical production sources under `MoSimQuadrotorModel.Vehicle`, retained historical smoke sources under `Vehicle.LegacyDiagnostics`, and the `MoSimQuadrotorModel.Parameters` provenance record.",
+        "023 inspects canonical production sources under `MoSimQuadrotorModel.Vehicle.Dynamics`, retained historical smoke sources under `Vehicle.LegacyDiagnostics`, and the `MoSimQuadrotorModel.Parameters` provenance record.",
         "",
         "The current formal source-surface rule is:",
         "",
-        "- Production Vehicle entries and retained diagnostics each have canonical project-owned implementation `.mo` files.",
-        "- `Vehicle.Dynamics` is hidden compatibility aliases only; it is not implementation ownership.",
+        "- Production Dynamics entries and retained diagnostics each have canonical project-owned implementation `.mo` files.",
+        "- `Vehicle.Dynamics` owns the production actuator and physical-wrench models; it is not a compatibility-alias package.",
         "- Retired top-level model roots must be absent from `Models/`.",
         "",
         "Current materialized dedicated surfaces:",
@@ -796,9 +796,9 @@ def write_source_materialization_rationale(path: Path) -> None:
         "",
         "Static acceptance basis:",
         "",
-        "- Six production entries are owned directly by `Vehicle`; seven historical smoke entries are owned by `Vehicle.LegacyDiagnostics`.",
+        "- Six production entries are owned by `Vehicle.Dynamics`; seven historical smoke entries are owned by `Vehicle.LegacyDiagnostics`.",
         "- All formal entries exist as canonical source files with their own implementation anchors.",
-        "- `Dynamics/package.mo` contains hidden aliases that preserve old fully-qualified names.",
+        "- `Dynamics/package.mo` is a production package; historical smoke aliases were removed after active references migrated.",
         "- No second package is needed to load any Dynamics entry.",
         "- The formal smoke surface can be prepared as a target matrix, expected variable manifest, and future live validation queue without duplicating dynamics behavior.",
         "",

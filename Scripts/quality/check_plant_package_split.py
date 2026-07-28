@@ -32,12 +32,7 @@ DEFAULT_OUTPUT = (
 EXPECTED_ORDER = (
     "Sunray150Assembly",
     "Sunray150GazeboAlignedVisualChassis",
-    "ActuatorCommandMapper",
-    "ActuatorMappedWrapperSurface",
-    "OptionalDampingGyroLayer",
-    "PhysicalWrenchAdapter",
-    "RotorActuatorCore",
-    "WrapperSurface",
+    "Dynamics",
     "Blocks",
     "Electricals",
     "Examples",
@@ -46,14 +41,13 @@ EXPECTED_ORDER = (
     "Sensors",
     "Utilities",
     "LegacyDiagnostics",
-    "Dynamics",
 )
 RUNNER_SOURCES = (
     "AttitudeThrustRunner.mo",
     "BodyRateThrustRunner.mo",
     "WrenchRunner.mo",
     "RotorCommandRunner.mo",
-    "CascadePidFormalRunner.mo",
+    "FormalAttitudeThrustRunnerBase.mo",
 )
 CANONICAL_CHASSIS = VEHICLE_ROOT / "Sunray150GazeboAlignedVisualChassis.mo"
 CANONICAL_ASSEMBLY = VEHICLE_ROOT / "Sunray150Assembly.mo"
@@ -120,7 +114,7 @@ def check_vehicle_contract() -> dict[str, Any]:
         "Modelica.Blocks.Interfaces.RealOutput position[3];",
         "Modelica.Blocks.Interfaces.RealOutput attitude[3];",
         "Modelica.Blocks.Interfaces.RealOutput rotor_speed[4];",
-        "MoSimQuadrotorModel.Vehicle.PhysicalWrenchAdapter physical(",
+        "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter physical(",
         "MoSimQuadrotorModel.Vehicle.Sensors.Sensors sensors;",
         "connect(gust.frame_b, physical.body.frame_a);",
         "connect(physical.body.frame_a, sensors.frame_a);",

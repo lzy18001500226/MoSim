@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle;
+within MoSimQuadrotorModel.Vehicle.Dynamics;
 model OptionalDampingGyroLayer
   "Optional source-labeled rotor gyro, body drag, and angular damping layer"
   parameter Boolean enable_rotor_gyro = false

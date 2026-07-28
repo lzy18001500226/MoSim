@@ -965,8 +965,8 @@ Current canonical project-owned experimental models:
 
 ```text
 MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore
-MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke
-MoSimQuadrotorModel.Vehicle.Dynamics.YawStepSmoke
+MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke
+MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.YawStepSmoke
 ```
 
 Implemented structure:

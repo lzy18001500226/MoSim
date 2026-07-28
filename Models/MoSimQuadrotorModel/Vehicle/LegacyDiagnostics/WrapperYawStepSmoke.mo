@@ -5,7 +5,7 @@ model WrapperYawStepSmoke
     "Small differential omega^2 command preserving approximate total thrust";
   Real yaw_step;
   Real rotor_speed_mag[4](each unit = "rad/s");
-  WrapperSurface wrapper;
+  MoSimQuadrotorModel.Vehicle.Dynamics.WrapperSurface wrapper;
 equation
   yaw_step = if time >= 0.05 then yaw_delta_omega2 else 0;
   for i in 1:4 loop

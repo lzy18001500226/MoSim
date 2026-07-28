@@ -7,7 +7,7 @@ model RotorEffectivenessSmoke
     "Smoke value only; not an identified Sunray150 fault model";
   parameter Real expected_nominal_total_thrust(unit = "N") = 9.80665
     "Reference hover thrust for the default mass seed";
-  RotorActuatorCore dynamics(
+  MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore dynamics(
     thrust_effectiveness = {
       if degraded_rotor_index == 1 then degraded_rotor_thrust_effectiveness else 1,
       if degraded_rotor_index == 2 then degraded_rotor_thrust_effectiveness else 1,

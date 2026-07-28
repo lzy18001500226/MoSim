@@ -1,7 +1,7 @@
 within MoSimQuadrotorModel.Vehicle.LegacyDiagnostics;
 model WrapperHoverSmoke
   "Hover smoke for the project-owned Sunray150 dynamics wrapper surface"
-  WrapperSurface wrapper;
+  MoSimQuadrotorModel.Vehicle.Dynamics.WrapperSurface wrapper;
 equation
   wrapper.motor_command = {
     wrapper.dynamics.spin_command_sign[1] * wrapper.dynamics.hover_motor_speed_cmd,

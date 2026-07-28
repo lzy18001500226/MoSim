@@ -1,7 +1,7 @@
 within MoSimQuadrotorModel.Vehicle.LegacyDiagnostics;
 model PhysicalWrenchHoverSmoke
   "Hover smoke for the project-owned physical wrench frame adapter"
-  PhysicalWrenchAdapter adapter;
+  MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter adapter;
 equation
   adapter.wrapper.motor_command = {
     adapter.wrapper.dynamics.spin_command_sign[1] * adapter.wrapper.dynamics.hover_motor_speed_cmd,

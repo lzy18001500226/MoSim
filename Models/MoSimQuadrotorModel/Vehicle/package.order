@@ -1,11 +1,6 @@
 Sunray150Assembly
 Sunray150GazeboAlignedVisualChassis
-ActuatorCommandMapper
-ActuatorMappedWrapperSurface
-OptionalDampingGyroLayer
-PhysicalWrenchAdapter
-RotorActuatorCore
-WrapperSurface
+Dynamics
 Blocks
 Electricals
 Examples
@@ -14,4 +9,3 @@ Mechanics
 Sensors
 Utilities
 LegacyDiagnostics
-Dynamics

@@ -31,7 +31,7 @@ model Sunray150Assembly
   Modelica.Blocks.Interfaces.RealOutput attitude[3];
   Modelica.Blocks.Interfaces.RealOutput rotor_speed[4];
 
-  MoSimQuadrotorModel.Vehicle.PhysicalWrenchAdapter physical(
+  MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter physical(
     profile = profile,
     initial_rotor_speed = initial_rotor_speed,
     lift_coefficient = lift_coefficient,

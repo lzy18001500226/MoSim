@@ -23,6 +23,18 @@ def load_module():
 
 
 class FormalDynamicsStaticEquationInvariantsTest(unittest.TestCase):
+    def test_only_historical_diagnostic_names_are_remapped(self) -> None:
+        module = load_module()
+
+        self.assertEqual(
+            module.canonical_model_name("MoSimQuadrotorModel.Vehicle.Dynamics.HoverSmoke"),
+            "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.HoverSmoke",
+        )
+        self.assertEqual(
+            module.canonical_model_name("MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore"),
+            "MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore",
+        )
+
     def test_summary_passes_current_sources(self) -> None:
         module = load_module()
         summary = module.build_summary(module.READINESS)

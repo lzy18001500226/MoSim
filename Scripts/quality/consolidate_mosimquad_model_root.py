@@ -59,7 +59,7 @@ RETIRED_NAMESPACE_REFERENCE = re.compile(
     r"(?<![A-Za-z0-9_])QuadrotorModel(?:\.|[\\/])"
 )
 RETIRED_NESTED_NAMESPACE_REFERENCE = re.compile(
-    r"\bMoSimQuadrotorModel\.(?:Plant|Dynamics|Controllers|ExperimentRunner|Missions|Robustness|System)(?:\.|(?=[\s;\"']))"
+    r"\bMoSimQuadrotorModel\.(?:Plant|Controllers|ExperimentRunner|Missions|Robustness|System)(?:\.|(?=[\s;\"']))"
 )
 RETIRED_RESOURCE_URI = re.compile(
     r"modelica://MoSimQuadrotorModel/(?:Plant|LiveIntegration)/Resources/"
@@ -70,7 +70,6 @@ PACKAGE_MEMBER_DECLARATION = re.compile(
     r"(?m)^\s*(?:package|model|block|record|function|connector|type|class)\s+([A-Za-z_]\w*)\b"
 )
 HIDDEN_BROWSER_PACKAGE_PATHS = (
-    "Vehicle/Dynamics/package.mo",
     "Vehicle/Examples/package.mo",
     "Vehicle/LegacyDiagnostics/package.mo",
     "Experiment/Probes/package.mo",

@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle;
+within MoSimQuadrotorModel.Vehicle.Dynamics;
 model PhysicalWrenchAdapter
   "Apply the project-owned Sunray150 wrapper force and torque to a MultiBody frame"
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;

@@ -1,4 +1,4 @@
-within MoSimQuadrotorModel.Vehicle;
+within MoSimQuadrotorModel.Vehicle.Dynamics;
 model WrapperSurface
   "Project-owned wrapper surface for the Sunray150 Rfly-style rotor dynamics core"
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;

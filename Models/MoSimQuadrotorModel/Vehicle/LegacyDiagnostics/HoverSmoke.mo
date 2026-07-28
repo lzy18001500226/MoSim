@@ -1,7 +1,7 @@
 within MoSimQuadrotorModel.Vehicle.LegacyDiagnostics;
 model HoverSmoke
   "Hover smoke for the experimental Sunray150 rotor dynamics upgrade"
-  RotorActuatorCore dynamics;
+  MoSimQuadrotorModel.Vehicle.Dynamics.RotorActuatorCore dynamics;
 equation
   dynamics.motor_command = {
     dynamics.spin_command_sign[1] * dynamics.hover_motor_speed_cmd,

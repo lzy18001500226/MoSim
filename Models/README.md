@@ -43,7 +43,7 @@ The following namespaces remain loadable for historical result trace-back but
 are hidden in the normal MWORKS browser. New models and active configuration
 must not depend on them:
 
-- `Vehicle.Dynamics`: compatibility aliases for pre-cleanup fully-qualified names.
+- `Vehicle.Dynamics`: production actuator, rotor-dynamics, and physical-wrench building blocks.
 - `Vehicle.LegacyDiagnostics`: fixed-input plant smoke models.
 - `Vehicle.Examples`: legacy graphical examples.
 - `Experiment.Probes`, `Experiment.Scenarios`, and `Experiment.Templates`: retained
