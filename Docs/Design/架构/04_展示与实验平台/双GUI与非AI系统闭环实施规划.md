@@ -1,6 +1,14 @@
 # MoSim双GUI与非AI系统闭环实施规划
 
-> 状态：长期Goal实施入口，2026-07-17。
+> 状态：历史产品蓝图，2026-07-17；当前操作基线于 2026-07-28 更新。
+>
+> 本文保留当时的 Orchestrator、UE 内嵌、统一 Operation Center 与自动启动设想，供后续
+> 能力评估使用，不再是当前运行语义。当前比赛与交付路线为：MoSim Studio 发布 Profile，
+> QGC/Flight Console 选择并复制命令，操作者在可见终端执行；RunManifest 由
+> `prepare_operator_run.py` 冻结；UE 保持独立，不嵌入 QGC。当前流程见
+> `Docs/Workflows/qgc_ue_operator_startup.md`、
+> `Docs/Design/架构/04_展示与实验平台/Model Studio三模式界面与QGC交接设计.md`
+> 和根 `Docs/Design/架构.md`。
 >
 > 本文冻结MoSim Model Studio、MoSim Flight Console和Orchestrator的产品边界、
 > 实施顺序与验收门禁。当前Goal不实现AI助手，只预留上下文和受控操作接口。

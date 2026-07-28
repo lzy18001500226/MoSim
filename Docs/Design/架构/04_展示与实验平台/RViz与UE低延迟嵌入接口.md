@@ -1,6 +1,12 @@
 # RViz与UE低延迟嵌入接口
 
-> 状态：接口设计冻结草案，2026-07-15。
+> 状态：未来研究草案，2026-07-15；不是当前 QGC 操作路径。
+>
+> 当前交付基线不把 RViz 或 UE 嵌入 QGC，也不要求 Orchestrator 持有显示会话。RViz
+> 继续作为独立工程审核窗口，UE 继续作为独立可选展示窗口，QGC 只负责 Factory 二维图、
+> 原生飞控操作与命令复制。当前操作流程见
+> `Docs/Workflows/qgc_ue_operator_startup.md`。以下内容保留为未来低延迟显示研究，
+> 不授权当前运行时或窗口自动化。
 >
 > 本文只定义未来 MoSim Frontend 如何低延迟接入 RViz 和 UE，以及如何复用已启动
 > 的显示进程。当前阶段不实现前端，也不改变 ROS1/Sunray/Gazebo/PX4/RACER 运行链。

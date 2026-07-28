@@ -1,6 +1,13 @@
 # MWORKS实时联合仿真与双GUI接口设计
 
-> 状态：50 Hz RT0 已通过；RT1与200 Hz能力待验证，2026-07-19。
+> 状态：未来实时联合仿真设计，2026-07-19；不构成当前运行授权。
+>
+> 本文保留 MWORKS Live 的技术合同、门禁和风险分析。其 Orchestrator 语义属于未来
+> 方案，不能覆盖当前“发布 Profile -> QGC 复制命令 -> 可见终端执行”的操作边界。
+> 本文中的历史频率记录也不能单独证明当前源码、当前模型或当前 ROS/Gazebo 链路已经
+> 通过实时飞行验收。当前交付流程以
+> `Docs/Workflows/qgc_ue_operator_startup.md`、
+> `Model Studio三模式界面与QGC交接设计.md` 和根 `Docs/Design/架构.md` 为准。
 >
 > 本文定义MWORKS实时控制器实验路径、Model Studio配置归属、Flight Console操作语义、
 > Orchestrator状态机和安全回退。本文不证明MWORKS已达到实时频率，也不证明任何实时

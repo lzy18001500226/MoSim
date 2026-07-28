@@ -1,6 +1,12 @@
 # MoSim Flight Console与二维任务地图详细设计
 
-> 状态：产品与接口冻结设计，2026-07-18。
+> 状态：历史产品蓝图，2026-07-18；当前操作基线于 2026-07-28 更新。
+>
+> 本文中的“UE 必须嵌入主窗口”“右上角缩略图”和“Orchestrator 统一发布”不属于当前
+> 交付路线。当前 Flight Console/QGC 使用完整 Factory 二维图作为 Fly/Plan 主操作面，
+> 不嵌入 UE，也不隐藏启动任何运行时；它只复制命令，操作者在可见终端执行。当前流程和
+> 运行时门禁见 `Docs/Workflows/qgc_ue_operator_startup.md` 与根
+> `Docs/Design/架构.md`。保留以下内容作为未来扩展的需求与风险分析。
 >
 > 本文细化`双GUI与非AI系统闭环实施规划.md`中的Flight Console，并定义
 > `MoSimMapView`的产品行为、任务编辑、坐标合同和QGroundControl复用边界。
