@@ -414,6 +414,8 @@ Item {
                 map: editorMap
                 mapConfig: mosimOperator.operatorMap || ({})
                 runManifest: mosimOperator.runManifest || ({})
+                mapState: (mosimOperator.runtimeTelemetry || ({})).map_state || ({})
+                runId: mosimOperator.runId || ""
             }
 
             Connections {
@@ -553,6 +555,10 @@ Item {
 
             // Add the vehicles to the map
             MapItemView {
+                // Factory map geometry is drawn only from the run-bound,
+                // coordinate-evidence-gated map_state.  Avoid placing an
+                // unrelated MAVLink GPS icon over the factory floorplan.
+                visible: !factoryPlanMap.visible
                 model: QGroundControl.multiVehicleManager.vehicles
                 delegate: VehicleMapItem {
                     vehicle:        object

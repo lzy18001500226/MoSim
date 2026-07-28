@@ -399,9 +399,16 @@ def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() 
     assert 'identity === _appliedOperatorMapIdentity' in plan_view
     assert 'function factoryMissionPublicationAllowed()' in plan_view
     assert '任务上传已阻止' in plan_view
+    assert 'mapState: (mosimOperator.runtimeTelemetry || ({})).map_state || ({})' in plan_view
+    assert 'visible: !factoryPlanMap.visible' in plan_view
     assert 'function worldForImagePixel(pixelX, pixelY)' in plan_overlay
     assert 'function imageWorldBoundsForPixels()' in plan_overlay
     assert 'pixelToWorldMatrix' in plan_overlay
+    assert 'required property var mapState' in plan_overlay
+    assert 'readonly property bool mapStateReady' in plan_overlay
+    assert 'function appendActualTracks()' in plan_overlay
+    assert 'function paintTaskPaths(canvas)' in plan_overlay
+    assert 'root.vehicleMapPositionValid(vehicle)' in plan_overlay
 
     invalid = _snapshot()
     invalid["coordinate_contract_status"] = "not_a_state"

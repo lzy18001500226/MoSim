@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+import Scripts.ui.replay_rosbag_operator_map as replay_entry
 from Scripts.ui.replay_rosbag_operator_map import _telemetry_payload, run_replay
 from Scripts.ui.runtime_sidecar import _canonical_hash, build_operator_map_state, load_operator_map_snapshot
 from src.orchestration.operator_map_replay import (
@@ -86,6 +87,7 @@ def test_verified_coordinate_evidence_projects_a_drawable_replay_frame() -> None
     )
 
     assert frames[-1]["playback_time_s"] == 0.5
+    assert frames[-1]["bag_time_s"] == 10.5
     assert frames[-1]["vehicles"][0]["state"]["position_frame"] == "mworks_world"
     state_map = dict(snapshot)
     state_map["coordinate_contract_status"] = "verified"
@@ -142,7 +144,9 @@ def test_coordinate_evidence_cannot_be_reused_for_another_map_snapshot() -> None
         )
 
 
-def test_replay_entry_writes_completed_run_bound_telemetry(tmp_path: Path) -> None:
+def test_replay_entry_writes_completed_run_bound_telemetry(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     run_dir = tmp_path / "run"
     run_dir.mkdir()
     manifest = _manifest()
@@ -153,8 +157,28 @@ def test_replay_entry_writes_completed_run_bound_telemetry(tmp_path: Path) -> No
     records_path = tmp_path / "records.jsonl"
     records_path.write_text(
         "\n".join(
-            json.dumps(sample)
-            for sample in [_sample("uav1", 2.0, 0.0, 0.0), _sample("uav1", 2.2, 1.0, 0.0)]
+            json.dumps(record)
+            for record in [
+                _sample("uav1", 2.0, 0.0, 0.0),
+                {
+                    "record_type": "expected_path",
+                    "bag_time_s": 2.1,
+                    "source_timestamp_s": 102.1,
+                    "source_topic": "/mosim/reference_path",
+                    "frame_id": "mworks_world",
+                    "points": [{"x": 0.0, "y": 0.0, "z": 1.2}, {"x": 1.0, "y": 0.0, "z": 1.2}],
+                },
+                _sample("uav1", 2.2, 1.0, 0.0),
+                {
+                    "record_type": "future_path",
+                    "bag_time_s": 2.4,
+                    "source_timestamp_s": 102.4,
+                    "source_topic": "/planning/bspline",
+                    "frame_id": "mworks_world",
+                    "points": [{"x": 1.0, "y": 0.0, "z": 1.2}, {"x": 2.0, "y": 0.5, "z": 1.2}],
+                },
+                _sample("uav1", 2.3, 1.5, 0.0),
+            ]
         )
         + "\n",
         encoding="utf-8",
@@ -170,6 +194,15 @@ def test_replay_entry_writes_completed_run_bound_telemetry(tmp_path: Path) -> No
         no_wait=True,
     )
 
+    original_atomic_write = replay_entry.atomic_write_json
+    written_map_states: list[dict[str, object]] = []
+
+    def capture_atomic_write(path: Path, payload: object) -> None:
+        original_atomic_write(path, payload)
+        if path.name == "telemetry.json" and isinstance(payload, dict):
+            written_map_states.append(json.loads(json.dumps(payload["map_state"])))
+
+    monkeypatch.setattr(replay_entry, "atomic_write_json", capture_atomic_write)
     assert run_replay(args) == 0
     telemetry = json.loads((run_dir / "telemetry.json").read_text(encoding="utf-8"))
     replay_manifest = json.loads((run_dir / "OPERATOR_MAP_REPLAY_MANIFEST.json").read_text(encoding="utf-8"))
@@ -178,6 +211,20 @@ def test_replay_entry_writes_completed_run_bound_telemetry(tmp_path: Path) -> No
     validate_operator_map_state(telemetry["map_state"], manifest=manifest)
     assert telemetry["map_state"]["transport"]["playback_state"] == "completed"
     assert telemetry["map_state"]["map"]["coordinate_contract_status"] == "verified"
+    assert telemetry["map_state"]["task_paths"]["expected"]["status"] == "available"
+    assert telemetry["map_state"]["task_paths"]["expected"]["semantics"] == "exploration_target_sequence"
+    assert telemetry["map_state"]["task_paths"]["expected"]["points"][-1] == {"x": 1.0, "y": 0.0, "z": 1.2}
+    assert telemetry["map_state"]["task_paths"]["future"]["status"] == "available"
+    assert telemetry["map_state"]["task_paths"]["future"]["semantics"] == "planner_sampled_future_trajectory"
+    assert telemetry["map_state"]["task_paths"]["future"]["points"][-1] == {"x": 2.0, "y": 0.5, "z": 1.2}
+    states_by_playback_time = {
+        round(float(state["transport"]["playback_time_s"]), 4): state for state in written_map_states
+    }
+    assert states_by_playback_time[0.0]["task_paths"] == {}
+    assert set(states_by_playback_time[0.1]["task_paths"]) == {"expected"}
+    assert set(states_by_playback_time[0.2]["task_paths"]) == {"expected"}
+    assert set(states_by_playback_time[0.3]["task_paths"]) == {"expected"}
+    assert set(states_by_playback_time[0.4]["task_paths"]) == {"expected", "future"}
     assert telemetry["operator_runtime_status"] == {
         "schema": "mosim.operator_runtime_status.v1",
         "run_id": manifest["run_id"],
@@ -190,6 +237,9 @@ def test_replay_entry_writes_completed_run_bound_telemetry(tmp_path: Path) -> No
     }
     assert replay_manifest["source"]["kind"] == "normalized_rosbag_export_test_only"
     assert replay_manifest["output"]["transport_mode"] == "rosbag_replay"
+    assert replay_manifest["frame_count"] == 5
+    assert replay_manifest["odom_frame_count"] == 3
+    assert replay_manifest["duration_s"] == pytest.approx(0.4)
     assert status["state"] == "completed"
 
 

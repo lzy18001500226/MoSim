@@ -339,6 +339,10 @@ def derive_replay_frames(
             index += 1
         frames.append(
             {
+                # Keep the original bag time alongside the relative playback
+                # clock.  The entry point uses it to reveal recorded task-path
+                # updates only after their corresponding bag record arrives.
+                "bag_time_s": bag_time,
                 "playback_time_s": bag_time - first_time,
                 "source_timestamp_s": max(source_times) if source_times else None,
                 "vehicles": [current[vehicle_id] for vehicle_id in expected_ids]
@@ -362,9 +366,18 @@ def build_replay_manifest(
     coordinate_evidence: dict[str, Any] | None,
     coordinate_evidence_sha256: str,
     frames: list[dict[str, Any]],
+    task_path_topics: dict[str, str] | None = None,
+    timeline_frame_count: int | None = None,
+    timeline_duration_s: float | None = None,
 ) -> dict[str, Any]:
     if not frames:
         raise ValueError("operator_map_replay_samples_missing")
+    if timeline_frame_count is not None and timeline_frame_count <= 0:
+        raise ValueError("operator_map_replay_timeline_invalid")
+    if timeline_duration_s is not None and (
+        not math.isfinite(timeline_duration_s) or timeline_duration_s < 0.0
+    ):
+        raise ValueError("operator_map_replay_timeline_invalid")
     return {
         "schema": REPLAY_MANIFEST_SCHEMA,
         "run_id": manifest.get("run_id"),
@@ -377,13 +390,15 @@ def build_replay_manifest(
             "sha256": source_sha256,
             "bag_id": bag_id,
             "odom_topics": dict(odom_topics),
+            "task_path_topics": dict(task_path_topics or {}),
         },
         "coordinate_evidence": {
             "status": "verified" if coordinate_evidence is not None else "pending_runtime_validation",
             "evidence_id": coordinate_evidence.get("evidence_id", "") if coordinate_evidence else "",
             "sha256": coordinate_evidence_sha256,
         },
-        "frame_count": len(frames),
-        "duration_s": frames[-1]["playback_time_s"],
+        "frame_count": timeline_frame_count if timeline_frame_count is not None else len(frames),
+        "odom_frame_count": len(frames),
+        "duration_s": timeline_duration_s if timeline_duration_s is not None else frames[-1]["playback_time_s"],
         "output": {"telemetry_path": "telemetry.json", "transport_mode": "rosbag_replay"},
     }

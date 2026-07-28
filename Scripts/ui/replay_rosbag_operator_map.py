@@ -20,7 +20,11 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from Scripts.ui.runtime_sidecar import build_operator_map_state, resolve_runtime_operator_map
+from Scripts.ui.runtime_sidecar import (
+    build_operator_map_state,
+    project_live_operator_map_frame,
+    resolve_runtime_operator_map,
+)
 from src.orchestration.operator_map_replay import (
     build_bag_id,
     build_replay_manifest,
@@ -29,6 +33,10 @@ from src.orchestration.operator_map_replay import (
     sha256_file,
 )
 from src.orchestration.runtime_sidecar_contract import atomic_write_json, build_operator_runtime_status
+
+
+MAX_TASK_PATH_POINTS = 1200
+TASK_PATH_RECORD_TYPES = {"expected_path": "expected", "future_path": "future"}
 
 
 def _time_to_seconds(value: Any, reason_code: str) -> float:
@@ -99,26 +107,241 @@ def _sample_from_odom(vehicle_id: str, message: Any, bag_time: Any) -> dict[str,
     }
 
 
-def _load_rosbag_samples(path: Path, topics_by_vehicle: dict[str, str]) -> list[dict[str, Any]]:
+def _path_metadata(profile_id: str, vehicle_count: int, kind: str) -> tuple[str, str]:
+    if kind == "future":
+        return "planner_sampled_future_trajectory", "uav1" if vehicle_count == 1 else "planner_default"
+    if profile_id == "factory_l2_three_uav_swarm_formation_v1":
+        return "formation_center_reference", "formation_center"
+    if profile_id == "factory_l2_fuel_fixed64_exploration_v1":
+        return "exploration_target_sequence", "uav1"
+    return "mission_reference", "uav1" if vehicle_count == 1 else "all_vehicles"
+
+
+def _header_source_timestamp(header: Any) -> float | None:
+    stamp = getattr(header, "stamp", None)
+    if stamp is None:
+        return None
+    candidate = _time_to_seconds(stamp, "operator_map_replay_header_time_invalid")
+    return candidate if candidate > 0.0 else None
+
+
+def _bounded_message_points(points: Any, reason_code: str) -> list[dict[str, float]]:
+    if not isinstance(points, (list, tuple)):
+        raise ValueError(reason_code)
+    stride = max(1, math.ceil(len(points) / MAX_TASK_PATH_POINTS))
+    return [_vector(point, reason_code) for point in points[::stride]][:MAX_TASK_PATH_POINTS]
+
+
+def _bounded_json_points(points: Any, reason_code: str) -> list[dict[str, float]]:
+    if not isinstance(points, list):
+        raise ValueError(reason_code)
+    stride = max(1, math.ceil(len(points) / MAX_TASK_PATH_POINTS))
+    normalized: list[dict[str, float]] = []
+    for point in points[::stride][:MAX_TASK_PATH_POINTS]:
+        if not isinstance(point, dict):
+            raise ValueError(reason_code)
+        try:
+            coordinates = {axis: float(point[axis]) for axis in ("x", "y", "z")}
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError(reason_code) from exc
+        if any(not math.isfinite(value) for value in coordinates.values()):
+            raise ValueError(reason_code)
+        normalized.append(coordinates)
+    return normalized
+
+
+def _task_path_event(
+    *,
+    kind: str,
+    bag_time_s: float,
+    source_timestamp_s: float | None,
+    frame_id: str,
+    points: list[dict[str, float]],
+    source_topic: str,
+    profile_id: str,
+    vehicle_count: int,
+) -> dict[str, Any]:
+    if kind not in {"expected", "future"}:
+        raise ValueError("operator_map_replay_task_path_kind_invalid")
+    if not math.isfinite(bag_time_s) or bag_time_s < 0.0:
+        raise ValueError("operator_map_replay_bag_time_invalid")
+    if source_timestamp_s is not None and (
+        not math.isfinite(source_timestamp_s) or source_timestamp_s < 0.0
+    ):
+        raise ValueError("operator_map_replay_source_time_invalid")
+    if not frame_id:
+        raise ValueError("operator_map_replay_task_path_frame_missing")
+    if not source_topic.startswith("/"):
+        raise ValueError("operator_map_replay_task_path_topic_invalid")
+    semantics, vehicle_scope = _path_metadata(profile_id, vehicle_count, kind)
+    return {
+        "kind": kind,
+        "bag_time_s": bag_time_s,
+        "source_timestamp_s": source_timestamp_s,
+        "semantics": semantics,
+        "vehicle_scope": vehicle_scope,
+        "source_topic": source_topic,
+        "frame_id": frame_id,
+        "points": points,
+    }
+
+
+def _expected_path_event_from_message(
+    message: Any,
+    bag_time: Any,
+    *,
+    source_topic: str,
+    profile_id: str,
+    vehicle_count: int,
+) -> dict[str, Any]:
+    header = getattr(message, "header", None)
+    frame_id = str(getattr(header, "frame_id", ""))
+    poses = getattr(message, "poses", None)
+    points = _bounded_message_points(
+        [getattr(getattr(pose, "pose", None), "position", None) for pose in poses]
+        if isinstance(poses, (list, tuple))
+        else poses,
+        "operator_map_replay_expected_path_message_invalid",
+    )
+    return _task_path_event(
+        kind="expected",
+        bag_time_s=_time_to_seconds(bag_time, "operator_map_replay_bag_time_invalid"),
+        source_timestamp_s=_header_source_timestamp(header),
+        frame_id=frame_id,
+        points=points,
+        source_topic=source_topic,
+        profile_id=profile_id,
+        vehicle_count=vehicle_count,
+    )
+
+
+def _future_path_event_from_marker(
+    message: Any,
+    bag_time: Any,
+    *,
+    source_topic: str,
+    profile_id: str,
+    vehicle_count: int,
+) -> dict[str, Any] | None:
+    add_action = getattr(message, "ADD", None)
+    if (
+        add_action is None
+        or getattr(message, "action", None) != add_action
+        or getattr(message, "ns", None) != "B-Spline"
+        or getattr(message, "id", 50) >= 50
+        or not getattr(message, "points", None)
+    ):
+        return None
+    header = getattr(message, "header", None)
+    return _task_path_event(
+        kind="future",
+        bag_time_s=_time_to_seconds(bag_time, "operator_map_replay_bag_time_invalid"),
+        source_timestamp_s=_header_source_timestamp(header),
+        frame_id=str(getattr(header, "frame_id", "")),
+        points=_bounded_message_points(getattr(message, "points", None), "operator_map_replay_future_path_message_invalid"),
+        source_topic=source_topic,
+        profile_id=profile_id,
+        vehicle_count=vehicle_count,
+    )
+
+
+def _load_rosbag_records(
+    path: Path,
+    *,
+    topics_by_vehicle: dict[str, str],
+    expected_path_topic: str,
+    future_marker_topic: str,
+    profile_id: str,
+    vehicle_count: int,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Read odometry and optional task-path events from one ROS1 bag.
+
+    The event time is the bag record time.  A path is not exposed to the map
+    before its own record has appeared in replay, which prevents a later plan
+    update from being displayed as if it were known at takeoff.
+    """
+
     try:
         import rosbag  # type: ignore[import-not-found]
     except ImportError as exc:
         raise ValueError("operator_map_replay_rosbag_python_unavailable") from exc
+
     topic_to_vehicle = {topic: vehicle_id for vehicle_id, topic in topics_by_vehicle.items()}
+    requested_topics = list(topic_to_vehicle)
+    if expected_path_topic:
+        requested_topics.append(expected_path_topic)
+    if future_marker_topic:
+        requested_topics.append(future_marker_topic)
     samples: list[dict[str, Any]] = []
+    task_path_events: list[dict[str, Any]] = []
     try:
         with rosbag.Bag(str(path), "r") as bag:
-            for topic, message, bag_time in bag.read_messages(topics=list(topic_to_vehicle)):
-                samples.append(_sample_from_odom(topic_to_vehicle[topic], message, bag_time))
+            for topic, message, bag_time in bag.read_messages(topics=requested_topics):
+                if topic in topic_to_vehicle:
+                    samples.append(_sample_from_odom(topic_to_vehicle[topic], message, bag_time))
+                elif topic == expected_path_topic:
+                    task_path_events.append(
+                        _expected_path_event_from_message(
+                            message,
+                            bag_time,
+                            source_topic=topic,
+                            profile_id=profile_id,
+                            vehicle_count=vehicle_count,
+                        )
+                    )
+                elif topic == future_marker_topic:
+                    event = _future_path_event_from_marker(
+                        message,
+                        bag_time,
+                        source_topic=topic,
+                        profile_id=profile_id,
+                        vehicle_count=vehicle_count,
+                    )
+                    if event is not None:
+                        task_path_events.append(event)
     except ValueError:
         raise
     except Exception as exc:  # rosbag exposes several reader-specific exception types.
         raise ValueError("operator_map_replay_rosbag_read_failed") from exc
-    return samples
+    return samples, task_path_events
 
 
-def _load_jsonl_samples(path: Path) -> list[dict[str, Any]]:
+def _normalize_jsonl_task_path_event(
+    value: dict[str, Any],
+    *,
+    kind: str,
+    profile_id: str,
+    vehicle_count: int,
+) -> dict[str, Any]:
+    try:
+        bag_time_s = float(value["bag_time_s"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError("operator_map_replay_bag_time_invalid") from exc
+    source_timestamp_raw = value.get("source_timestamp_s")
+    if source_timestamp_raw is None:
+        source_timestamp_s = None
+    else:
+        try:
+            source_timestamp_s = float(source_timestamp_raw)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("operator_map_replay_source_time_invalid") from exc
+    return _task_path_event(
+        kind=kind,
+        bag_time_s=bag_time_s,
+        source_timestamp_s=source_timestamp_s,
+        frame_id=str(value.get("frame_id", "")),
+        points=_bounded_json_points(value.get("points"), "operator_map_replay_task_path_points_invalid"),
+        source_topic=str(value.get("source_topic", "")),
+        profile_id=profile_id,
+        vehicle_count=vehicle_count,
+    )
+
+
+def _load_jsonl_records(
+    path: Path, *, profile_id: str, vehicle_count: int
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     samples: list[dict[str, Any]] = []
+    task_path_events: list[dict[str, Any]] = []
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
     except OSError as exc:
@@ -132,8 +355,69 @@ def _load_jsonl_samples(path: Path) -> list[dict[str, Any]]:
             raise ValueError(f"operator_map_replay_records_json_invalid:{line_number}") from exc
         if not isinstance(value, dict):
             raise ValueError(f"operator_map_replay_records_json_invalid:{line_number}")
-        samples.append(value)
-    return samples
+        record_type = value.get("record_type", "odom")
+        if record_type == "odom":
+            sample = dict(value)
+            sample.pop("record_type", None)
+            samples.append(sample)
+            continue
+        kind = TASK_PATH_RECORD_TYPES.get(record_type)
+        if kind is None:
+            raise ValueError(f"operator_map_replay_records_type_invalid:{line_number}")
+        try:
+            task_path_events.append(
+                _normalize_jsonl_task_path_event(
+                    value,
+                    kind=kind,
+                    profile_id=profile_id,
+                    vehicle_count=vehicle_count,
+                )
+            )
+        except ValueError as exc:
+            raise ValueError(f"{exc}:{line_number}") from exc
+    return samples, task_path_events
+
+
+def _event_to_raw_task_path(event: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "status": "available",
+        "semantics": event["semantics"],
+        "vehicle_scope": event["vehicle_scope"],
+        "source_topic": event["source_topic"],
+        "frame_id": event["frame_id"],
+        "updated_at": event["source_timestamp_s"]
+        if event["source_timestamp_s"] is not None
+        else event["bag_time_s"],
+        "points": event["points"],
+    }
+
+
+def _project_replay_task_paths(
+    raw_task_paths: dict[str, dict[str, Any]],
+    *,
+    coordinate_evidence: dict[str, Any] | None,
+    run_id: str,
+) -> dict[str, dict[str, Any]]:
+    _, projected_paths, _ = project_live_operator_map_frame(
+        vehicles=[],
+        task_paths=raw_task_paths,
+        coordinate_evidence=coordinate_evidence,
+        run_id=run_id,
+    )
+    return projected_paths
+
+
+def _replay_timeline(
+    frames: list[dict[str, Any]], task_path_events: list[tuple[int, dict[str, Any]]]
+) -> list[float]:
+    """Return every telemetry-update time from odometry and recorded paths."""
+
+    times = {float(frame["bag_time_s"]) for frame in frames}
+    times.update(float(event["bag_time_s"]) for _, event in task_path_events)
+    timeline = sorted(times)
+    if not timeline:
+        raise ValueError("operator_map_replay_samples_missing")
+    return timeline
 
 
 def _telemetry_payload(manifest: dict[str, Any], map_state: dict[str, Any], *, now: float) -> dict[str, Any]:
@@ -196,18 +480,42 @@ def run_replay(args: argparse.Namespace) -> int:
         map_snapshot["coordinate_contract_status"] = "verified"
 
     topics_by_vehicle = _parse_odom_topics(args.odom_topic, vehicle_count)
+    expected_path_topic = str(getattr(args, "expected_path_topic", ""))
+    future_marker_topic = str(getattr(args, "future_marker_topic", ""))
     source_path = args.bag or args.records_jsonl
     if source_path is None or not source_path.is_file():
         raise ValueError("operator_map_replay_source_missing")
     if args.bag is not None:
-        samples = _load_rosbag_samples(source_path, topics_by_vehicle)
+        samples, task_path_events = _load_rosbag_records(
+            source_path,
+            topics_by_vehicle=topics_by_vehicle,
+            expected_path_topic=expected_path_topic,
+            future_marker_topic=future_marker_topic,
+            profile_id=str(manifest.get("experiment_profile_id", "")),
+            vehicle_count=vehicle_count,
+        )
         source_kind = "ros1_bag"
     else:
-        samples = _load_jsonl_samples(source_path)
+        samples, task_path_events = _load_jsonl_records(
+            source_path,
+            profile_id=str(manifest.get("experiment_profile_id", "")),
+            vehicle_count=vehicle_count,
+        )
         source_kind = "normalized_rosbag_export_test_only"
     source_sha256 = sha256_file(source_path)
     bag_id = build_bag_id(source_path, source_sha256)
     frames = derive_replay_frames(samples, vehicle_count=vehicle_count, coordinate_evidence=coordinate_evidence)
+    task_path_events = sorted(
+        enumerate(task_path_events), key=lambda item: (float(item[1]["bag_time_s"]), item[0])
+    )
+    task_path_topics = {
+        kind: topic
+        for kind, topic in (("expected", expected_path_topic), ("future", future_marker_topic))
+        if topic
+    }
+    timeline = _replay_timeline(frames, task_path_events)
+    timeline_start_s = timeline[0]
+    timeline_duration_s = timeline[-1] - timeline_start_s
     replay_manifest = build_replay_manifest(
         manifest=manifest,
         source_kind=source_kind,
@@ -215,9 +523,12 @@ def run_replay(args: argparse.Namespace) -> int:
         source_sha256=source_sha256,
         bag_id=bag_id,
         odom_topics=topics_by_vehicle,
+        task_path_topics=task_path_topics,
         coordinate_evidence=coordinate_evidence,
         coordinate_evidence_sha256=coordinate_evidence_sha256,
         frames=frames,
+        timeline_frame_count=len(timeline),
+        timeline_duration_s=timeline_duration_s,
     )
     args.run_dir.mkdir(parents=True, exist_ok=True)
     atomic_write_json(args.run_dir / "OPERATOR_MAP_REPLAY_MANIFEST.json", replay_manifest)
@@ -235,28 +546,54 @@ def run_replay(args: argparse.Namespace) -> int:
     )
 
     sequence = 0
-    previous_playback_time = 0.0
-    last_frame = frames[-1]
-    for frame in frames:
+    previous_bag_time_s = timeline_start_s
+    frames_by_bag_time = {float(frame["bag_time_s"]): frame for frame in frames}
+    task_path_event_index = 0
+    active_task_paths: dict[str, dict[str, Any]] = {}
+    projected_task_paths: dict[str, dict[str, Any]] = {}
+    last_vehicles: list[dict[str, Any]] = []
+    last_source_timestamp_s: float | None = None
+    last_playback_time_s = 0.0
+    for bag_time_s in timeline:
+        playback_time_s = bag_time_s - timeline_start_s
         if not args.no_wait:
-            delay = max(0.0, frame["playback_time_s"] - previous_playback_time) / args.speed
+            delay = max(0.0, bag_time_s - previous_bag_time_s) / args.speed
             if delay > 0.0:
                 time.sleep(delay)
-        previous_playback_time = frame["playback_time_s"]
+        previous_bag_time_s = bag_time_s
+        frame = frames_by_bag_time.get(bag_time_s)
+        if frame is not None:
+            last_vehicles = frame["vehicles"]
+            if frame["source_timestamp_s"] is not None:
+                last_source_timestamp_s = frame["source_timestamp_s"]
         sequence += 1
         now = time.time()
+        while (
+            task_path_event_index < len(task_path_events)
+            and float(task_path_events[task_path_event_index][1]["bag_time_s"]) <= bag_time_s
+        ):
+            event = task_path_events[task_path_event_index][1]
+            active_task_paths[str(event["kind"])] = _event_to_raw_task_path(event)
+            if event["source_timestamp_s"] is not None:
+                last_source_timestamp_s = event["source_timestamp_s"]
+            task_path_event_index += 1
+        projected_task_paths = _project_replay_task_paths(
+            active_task_paths,
+            coordinate_evidence=coordinate_evidence,
+            run_id=str(manifest["run_id"]),
+        )
         map_state = build_operator_map_state(
             manifest=manifest,
             map_snapshot=map_snapshot,
             transport_mode="rosbag_replay",
             sequence=sequence,
             received_at_unix_s=now,
-            source_timestamp_s=frame["source_timestamp_s"],
+            source_timestamp_s=last_source_timestamp_s,
             playback_state="playing",
-            playback_time_s=frame["playback_time_s"],
+            playback_time_s=playback_time_s,
             bag_id=bag_id,
-            vehicles=frame["vehicles"],
-            task_paths={},
+            vehicles=last_vehicles,
+            task_paths=projected_task_paths,
         )
         atomic_write_json(args.run_dir / "telemetry.json", _telemetry_payload(manifest, map_state, now=now))
         _write_status(
@@ -267,10 +604,11 @@ def run_replay(args: argparse.Namespace) -> int:
                 "state": "playing",
                 "bag_id": bag_id,
                 "sequence": sequence,
-                "playback_time_s": frame["playback_time_s"],
+                "playback_time_s": playback_time_s,
                 "updated_at": now,
             },
         )
+        last_playback_time_s = playback_time_s
 
     sequence += 1
     now = time.time()
@@ -280,12 +618,12 @@ def run_replay(args: argparse.Namespace) -> int:
         transport_mode="rosbag_replay",
         sequence=sequence,
         received_at_unix_s=now,
-        source_timestamp_s=last_frame["source_timestamp_s"],
+        source_timestamp_s=last_source_timestamp_s,
         playback_state="completed",
-        playback_time_s=last_frame["playback_time_s"],
+        playback_time_s=last_playback_time_s,
         bag_id=bag_id,
-        vehicles=last_frame["vehicles"],
-        task_paths={},
+        vehicles=last_vehicles,
+        task_paths=projected_task_paths,
     )
     atomic_write_json(args.run_dir / "telemetry.json", _telemetry_payload(manifest, completed_state, now=now))
     _write_status(
@@ -296,7 +634,7 @@ def run_replay(args: argparse.Namespace) -> int:
             "state": "completed",
             "bag_id": bag_id,
             "sequence": sequence,
-            "playback_time_s": last_frame["playback_time_s"],
+            "playback_time_s": last_playback_time_s,
             "updated_at": now,
         },
     )
@@ -311,6 +649,16 @@ def parse_args() -> argparse.Namespace:
     source.add_argument("--bag", type=Path, help="ROS1 .bag input; run under an environment with python rosbag.")
     source.add_argument("--records-jsonl", type=Path, help="Test-only normalized rosbag export.")
     parser.add_argument("--odom-topic", action="append", default=[], metavar="UAV=TOPIC")
+    parser.add_argument(
+        "--expected-path-topic",
+        default="",
+        help="Optional ROS1 nav_msgs/Path topic recorded in the bag for task expected trajectory.",
+    )
+    parser.add_argument(
+        "--future-marker-topic",
+        default="",
+        help="Optional ROS1 visualization_msgs/Marker topic recorded in the bag for future planner trajectory.",
+    )
     parser.add_argument("--coordinate-evidence", type=Path)
     parser.add_argument("--speed", type=float, default=1.0)
     parser.add_argument("--no-wait", action="store_true", help="Write frames immediately for deterministic tests.")

@@ -68,8 +68,15 @@ QGC 原生飞控交互，不得与程控任务并行争抢控制权。
 
 1. 当前运行目录必须已有冻结的 `RUN_MANIFEST.json` 和 `operator_map_snapshot`。
 2. 在可见终端执行 QGC “复制回放命令”生成的 `replay_rosbag_operator_map.py` 命令，并填写真实
-   bag、里程计 topic 和坐标证据路径。
-3. QGC 只轮询回放器写入的 `telemetry.json`，显示 `rosbag_replay` 状态和轨迹；它不会启动回放器。
+   bag、里程计 topic 和坐标证据路径。若 bag 同时记录了 `nav_msgs/Path` 的任务预期路径或
+   `visualization_msgs/Marker` 的 B-Spline 未来轨迹，显式补充 `--expected-path-topic` 和
+   `--future-marker-topic`；未记录的字段保持隐藏，不能用手写坐标替代。
+3. QGC 只轮询回放器写入的 `telemetry.json`，显示 `rosbag_replay` 状态、真实位置、实际航迹和
+   已到达 bag 时间的任务路径；它不会启动回放器。
+
+回放器把 Odom 与已录制的路径事件按 bag 时间合并成状态更新。`OPERATOR_MAP_REPLAY_MANIFEST.json`
+中的 `frame_count` 是合并后的地图更新数，`odom_frame_count` 单独保留里程计帧数，避免把路径更新
+误计为飞行遥测采样。
 
 回放可用于复盘、截图和二维态势审核，不得被标注为实时运行、控制器成功或规划器成功。
 
