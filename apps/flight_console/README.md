@@ -20,8 +20,8 @@ vehicle scales and controllers without a compatible published Profile remain
 visible but disabled. The active RunManifest locks the selected Profile.
 
 The Windows baseline requires Qt 6.8.3, Ninja, Visual Studio 2022 C++ Build
-Tools, and a Windows SDK. The current machine audit is recorded under
-`Results/ui_platform/qgc_d2_gate_20260717/`.
+Tools, a Windows SDK, and GStreamer 1.22.12. The current machine preflight is
+recorded in `Results/ui_platform/flight_console_windows_toolchain_preflight.json`.
 
 ## MoSim custom build
 
@@ -49,11 +49,12 @@ The D5 source gate is recorded at:
 Results/ui_platform/flight_console_d5_source_gate_20260717/GATE.json
 ```
 
-The source/contract gate is not a Windows executable gate. The latest read-only
-preflight found the existing VS2022 Community, MSVC, and Windows SDK 10.0.26100
-toolchain. Native configure remains blocked by missing Qt 6.8.3, Ninja, and
-GStreamer. Installing those system dependencies requires explicit
-infrastructure authorization.
+The source/contract gate is not a Windows executable gate. The current
+preflight is `status=ready`, and the 2026-07-28 Release build produced
+`build/flight-console-qgc/Release/MoSimFlightConsole.exe`. This establishes
+that the current custom source compiles and links on this machine. It does not
+establish QGC, ROS, Gazebo, PX4, MAVROS, controller, planner, or flight-runtime
+success.
 
 Run the read-only preflight at any time:
 
@@ -62,8 +63,8 @@ python Scripts/ui/check_qgc_windows_toolchain.py `
   --output Results/ui_platform/flight_console_windows_toolchain_preflight.json
 ```
 
-After the named dependencies have been installed, configure and build through
-the fixed project entrypoint:
+When the preflight is `ready`, configure and build through the fixed project
+entrypoint:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File Scripts/ui/build_flight_console.ps1
@@ -71,3 +72,14 @@ powershell -ExecutionPolicy Bypass -File Scripts/ui/build_flight_console.ps1
 
 The build entrypoint verifies the frozen upstream manifest and regenerates the
 custom overlay before CMake. It never installs system software.
+
+To start only the QGC operation surface after a successful build, use the
+separate visible-terminal entrypoint:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File Scripts/ui/run_flight_console.ps1
+```
+
+This starts no simulator. Runtime commands shown in Flight Console are copied
+for the operator to run in a visible terminal; each ROS1/Gazebo/PX4/MAVROS/UE
+runtime acceptance remains a separately authorized step.

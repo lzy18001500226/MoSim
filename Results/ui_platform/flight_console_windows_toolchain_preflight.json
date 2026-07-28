@@ -1,6 +1,6 @@
 {
   "schema": "mosim.flight_console.windows_toolchain_preflight.v1",
-  "status": "blocked",
+  "status": "ready",
   "required": {
     "qt_version": "6.8.3",
     "qt_kit": "msvc2022_64",
@@ -22,30 +22,14 @@
   },
   "detected": {
     "cmake": "D:\\Program Files\\Dev\\CMake\\bin\\cmake.EXE",
-    "ninja": null,
+    "ninja": "C:\\Users\\HP\\Desktop\\MoSim\\.tools\\flight-console\\python\\Scripts\\ninja.exe",
     "visual_studio_installation": "D:\\Program Files\\Microsoft Visual Studio\\2022\\Community",
     "windows_sdk": true,
-    "qt_root": null,
-    "gstreamer_root": null
+    "qt_root": "C:\\Users\\HP\\Desktop\\MoSim\\.tools\\flight-console\\qt\\6.8.3\\msvc2022_64",
+    "gstreamer_root": "C:\\Users\\HP\\Desktop\\MoSim\\.tools\\flight-console\\gstreamer\\gstreamer\\1.0\\msvc_x86_64"
   },
-  "missing_qt_modules": [
-    "Qt6Charts",
-    "Qt6Location",
-    "Qt6Positioning",
-    "Qt6TextToSpeech",
-    "Qt6Core5Compat",
-    "Qt6Multimedia",
-    "Qt6SerialPort",
-    "Qt6ShaderTools",
-    "Qt6Bluetooth",
-    "Qt6Quick3D",
-    "Qt6Sensors"
-  ],
-  "blockers": [
-    "ninja",
-    "qt_root",
-    "gstreamer_root",
-    "qt_modules"
-  ],
+  "private_tool_root": "C:\\Users\\HP\\Desktop\\MoSim\\.tools\\flight-console",
+  "missing_qt_modules": [],
+  "blockers": [],
   "mutated_system": false
 }
