@@ -109,6 +109,11 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "faultAckText" in fly_layer
     assert "运行态（只读）" in fly_layer
     assert "copyRosbagReplayCommand" in fly_layer
+    assert "function mapTransportStatusText()" in fly_layer
+    assert "ROS1 实时数据" in fly_layer
+    assert "rosbag 回放中" in fly_layer
+    assert "rosbag 回放已完成" in fly_layer
+    assert "function mapTransportDetailText()" in fly_layer
     assert "controllerFamilyBox" in fly_layer
     assert "controllerBox" in fly_layer
     assert "controllerOptionsForFamily" in fly_layer

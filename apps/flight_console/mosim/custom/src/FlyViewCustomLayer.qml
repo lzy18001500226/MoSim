@@ -179,6 +179,40 @@ Item {
                 + "（" + String(ack.reason_code || "-") + "）"
     }
 
+    function mapTransportStatusText() {
+        var transport = mapState.transport || ({})
+        var mode = String(transport.mode || "")
+        var playbackState = String(transport.playback_state || "")
+        if (mode === "live_ros1")
+            return "ROS1 实时数据"
+        if (mode === "rosbag_replay") {
+            if (playbackState === "playing")
+                return "rosbag 回放中"
+            if (playbackState === "paused")
+                return "rosbag 回放已暂停"
+            if (playbackState === "completed")
+                return "rosbag 回放已完成"
+            if (playbackState === "failed")
+                return "rosbag 回放失败"
+            return "rosbag 回放状态未知"
+        }
+        return "等待地图数据"
+    }
+
+    function mapTransportDetailText() {
+        var transport = mapState.transport || ({})
+        if (String(transport.mode || "") !== "rosbag_replay")
+            return ""
+        var details = []
+        var bagId = String(transport.bag_id || "")
+        if (bagId.length > 0)
+            details.push("记录：" + bagId)
+        var playbackTime = Number(transport.playback_time_s)
+        if (isFinite(playbackTime) && playbackTime >= 0)
+            details.push("回放时间：" + playbackTime.toFixed(1) + " s")
+        return details.join("；")
+    }
+
     function agentSuggest() {
         var text = agentPrompt.text.trim().toLowerCase()
         if (text.indexOf("fuel") >= 0 || text.indexOf("探索") >= 0)
@@ -560,9 +594,14 @@ Item {
                         QGCLabel { text: "rosbag 回放"; font.bold: true }
                         QGCLabel {
                             Layout.fillWidth: true
-                            text: String((root.mapState.transport || ({})).mode || "无地图数据")
-                                    + "  " + String((root.mapState.transport || ({})).playback_state || "")
+                            text: root.mapTransportStatusText()
                             wrapMode: Text.Wrap
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: root.mapTransportDetailText()
+                            visible: text.length > 0
+                            wrapMode: Text.WrapAnywhere
                         }
                         QGCButton {
                             text: "复制回放命令"
