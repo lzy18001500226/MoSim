@@ -46,11 +46,15 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "QMetaObject::invokeMethod(rootObject, \"showPlanView\")" not in plugin
 
     assert "operatorProfiles" in bridge_header
+    assert "controllerFamilies" in bridge_header
+    assert "controllerSchemes" in bridge_header
     assert "operatorMap" in bridge_header
     assert "runManifest" in bridge_header
     assert "runtimeTelemetry" in bridge_header
     assert "pendingFault" in bridge_header
     assert "profileSelectionLocked" in bridge_header
+    assert "selectedControllerSchemeId" in bridge_header
+    assert "selectControllerScheme" in bridge_header
     assert "copySelectedLaunchCommand" in bridge_header
     assert "copyClearActiveRunCommand" in bridge_header
     assert "copyStagedFaultCommand" in bridge_header
@@ -59,6 +63,8 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "QProcess" not in bridge_source
     assert "orchestrator_client" not in bridge_source
     assert "operator_profiles.json" in bridge_source
+    assert "control_scheme_catalog.json" in bridge_source
+    assert "controller_scheme_id" in bridge_source
     assert "runtime_backend_catalog.json" in bridge_source
     assert "operator_invocation" in bridge_source
     assert "prepare_operator_run.py" in bridge_source
@@ -93,6 +99,13 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "copyStagedFaultCommand" in fly_layer
     assert "copyRestoreNormalCommand" in fly_layer
     assert "copyRosbagReplayCommand" in fly_layer
+    assert "controllerFamilyBox" in fly_layer
+    assert "controllerBox" in fly_layer
+    assert "controllerOptionsForFamily" in fly_layer
+    assert "profilesForController" in fly_layer
+    assert "model: root.compatibleProfiles" in fly_layer
+    assert "mosimOperator.selectControllerScheme" in fly_layer
+    assert "（未发布）" in fly_layer
     assert "profileSelectionLocked" in fly_layer
     assert "mosimOrchestrator" not in fly_layer
     assert "WindowContainer" not in fly_layer
@@ -227,11 +240,22 @@ def test_operator_console_exposes_profiles_fault_staging_and_visible_commands() 
     header = (CUSTOM / "src" / "MoSimOperatorBridge.h").read_text(encoding="utf-8")
 
     assert "operatorProfiles" in header
+    assert "controllerFamilies" in header
+    assert "controllerSchemes" in header
     assert "selectedProfile" in header
+    assert "selectedControllerSchemeId" in header
     assert "pendingFault" in header
     assert "readonly property var profiles: mosimOperator.operatorProfiles || []" in qml
-    assert "model: root.profiles" in qml
+    assert "readonly property var controllerFamilies: mosimOperator.controllerFamilies || []" in qml
+    assert "readonly property var controllerSchemes: mosimOperator.controllerSchemes || []" in qml
+    assert "model: root.compatibleProfiles" in qml
     assert "controller_profile" in qml and "vehicle_count" in qml
+    assert "当前控制器：" in qml
+    assert "controllerFamilyBox" in qml and "controllerBox" in qml
+    assert "controllerOptionsForFamily" in qml
+    assert "profilesForController" in qml
+    assert "model: root.compatibleProfiles" in qml
+    assert "mosimOperator.selectControllerScheme" in qml
     assert "stageWind" in qml and "stageMotorEffectiveness" in qml
     assert "copyStagedFaultCommand" in qml
     assert "copyRestoreNormalCommand" in qml

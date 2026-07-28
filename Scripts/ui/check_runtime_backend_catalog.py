@@ -13,11 +13,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CATALOG = ROOT / "Config" / "control_platform" / "runtime_backend_catalog.json"
 DEFAULT_OPERATOR_PROFILES = ROOT / "Config" / "profiles" / "operator_profiles.json"
+DEFAULT_CONTROLLER_SCHEMES = ROOT / "Config" / "control_platform" / "control_scheme_catalog.json"
 PREPARE_OPERATOR_RUN = ROOT / "Scripts" / "ui" / "prepare_operator_run.py"
 EXPECTED_SCHEMA = "mosim.runtime_backend_catalog.v2"
 INVOCATION_SCHEMA = "mosim.operator_invocation.v1"
 SAFE_ENVIRONMENT_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 SAFE_SHELL_TOKEN = re.compile(r"^[A-Za-z0-9_./:=+\-]+$")
+SAFE_TASK_KEY = re.compile(r"^[a-z][a-z0-9_\-]{0,63}$")
 MISSION_ADAPTER_MARKERS = (
     "MissionStatusChannel",
     "SafeStopChannel",
@@ -120,10 +122,39 @@ def _operator_mode_matches_contract(mode: str, contract: Any) -> bool:
     return False
 
 
-def check(catalog_path: Path, operator_profiles_path: Path = DEFAULT_OPERATOR_PROFILES) -> dict[str, Any]:
+def _load_controller_scheme_ids(path: Path, errors: list[str]) -> set[str]:
+    try:
+        catalog = _read_object(path)
+    except (OSError, ValueError, json.JSONDecodeError):
+        errors.append("controller_scheme_catalog_missing_or_invalid")
+        return set()
+    if catalog.get("schema") != "mosim.control_profile_catalog.v2":
+        errors.append(f"controller_scheme_catalog_schema_invalid:{catalog.get('schema', '')}")
+    schemes = catalog.get("schemes")
+    if not isinstance(schemes, list) or not schemes:
+        errors.append("controller_scheme_catalog_entries_missing")
+        return set()
+    identifiers: set[str] = set()
+    for scheme in schemes:
+        scheme_id = str(scheme.get("scheme_id", "")) if isinstance(scheme, dict) else ""
+        if not scheme_id or scheme_id in identifiers:
+            errors.append(f"controller_scheme_id_duplicate_or_missing:{scheme_id}")
+        identifiers.add(scheme_id)
+    declared_count = catalog.get("frozen_scheme_count")
+    if declared_count != len(identifiers):
+        errors.append(f"controller_scheme_count_mismatch:{declared_count}:{len(identifiers)}")
+    return identifiers
+
+
+def check(
+    catalog_path: Path,
+    operator_profiles_path: Path = DEFAULT_OPERATOR_PROFILES,
+    controller_schemes_path: Path = DEFAULT_CONTROLLER_SCHEMES,
+) -> dict[str, Any]:
     catalog = _read_object(catalog_path)
     operator_catalog = _read_object(operator_profiles_path)
     errors: list[str] = []
+    controller_scheme_ids = _load_controller_scheme_ids(controller_schemes_path, errors)
     identifiers: set[str] = set()
     operations: set[str] = set()
     backends_by_profile: dict[str, list[dict[str, Any]]] = {}
@@ -187,6 +218,8 @@ def check(catalog_path: Path, operator_profiles_path: Path = DEFAULT_OPERATOR_PR
         errors.append("operator_profile_catalog_missing")
         profiles = []
     seen_operator_profiles: set[str] = set()
+    published_controller_scheme_ids: set[str] = set()
+    enabled_controller_scheme_ids: set[str] = set()
     enabled_count = 0
     enabled_invocation_count = 0
     for item in profiles:
@@ -204,6 +237,19 @@ def check(catalog_path: Path, operator_profiles_path: Path = DEFAULT_OPERATOR_PR
         experiment = _read_object(profile_path).get("experiment_profile", {})
         if experiment.get("id") != profile_id:
             errors.append(f"operator_profile_id_mismatch:{profile_id}:{experiment.get('id', '')}")
+
+        controller_scheme_id = str(item.get("controller_scheme_id", ""))
+        if not controller_scheme_id:
+            errors.append(f"operator_profile_controller_scheme_missing:{profile_id}")
+        elif controller_scheme_id not in controller_scheme_ids:
+            errors.append(f"operator_profile_controller_scheme_unknown:{profile_id}:{controller_scheme_id}")
+        else:
+            published_controller_scheme_ids.add(controller_scheme_id)
+            if item.get("enabled") is True:
+                enabled_controller_scheme_ids.add(controller_scheme_id)
+        task_key = str(item.get("task_key", ""))
+        if not SAFE_TASK_KEY.fullmatch(task_key):
+            errors.append(f"operator_profile_task_key_invalid:{profile_id}:{task_key}")
 
         matches = backends_by_profile.get(profile_id, [])
         if not matches:
@@ -253,6 +299,9 @@ def check(catalog_path: Path, operator_profiles_path: Path = DEFAULT_OPERATOR_PR
         "operator_profile_count": len(seen_operator_profiles),
         "enabled_operator_profile_count": enabled_count,
         "enabled_operator_invocation_count": enabled_invocation_count,
+        "controller_scheme_count": len(controller_scheme_ids),
+        "published_controller_scheme_count": len(published_controller_scheme_ids),
+        "enabled_controller_scheme_count": len(enabled_controller_scheme_ids),
         "shared_gazebo_px4_touched": False,
         "actual_end_to_end_runtime_accepted": False,
         "claim_ceiling": "Copy-only QGC invocation contract and source allowlist; no runtime launch, readiness, controller, planner, or flight acceptance was performed.",
@@ -263,9 +312,14 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
     parser.add_argument("--operator-profiles", type=Path, default=DEFAULT_OPERATOR_PROFILES)
+    parser.add_argument("--controller-schemes", type=Path, default=DEFAULT_CONTROLLER_SCHEMES)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    result = check(args.catalog, operator_profiles_path=args.operator_profiles)
+    result = check(
+        args.catalog,
+        operator_profiles_path=args.operator_profiles,
+        controller_schemes_path=args.controller_schemes,
+    )
     rendered = json.dumps(result, ensure_ascii=False, indent=2) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

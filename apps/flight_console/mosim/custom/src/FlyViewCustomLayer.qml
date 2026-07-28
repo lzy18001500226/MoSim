@@ -21,19 +21,79 @@ Item {
     property bool showMapTaskBoundary: true
     property bool showMapFormationTarget: true
     property string assistantReply: "请选择已发布 Profile 或输入任务描述。"
+    property string selectedControllerFamilyId: "pid_family"
+    property string observedControllerSchemeId: ""
 
     readonly property var profiles: mosimOperator.operatorProfiles || []
+    readonly property var controllerFamilies: mosimOperator.controllerFamilies || []
+    readonly property var controllerSchemes: mosimOperator.controllerSchemes || []
     readonly property var selectedProfile: mosimOperator.selectedProfile || ({})
+    readonly property var selectedController: root.controllerForId(mosimOperator.selectedControllerSchemeId)
+    readonly property var compatibleProfiles: root.profilesForController(mosimOperator.selectedControllerSchemeId)
     readonly property var mapState: (mosimOperator.runtimeTelemetry || ({})).map_state || ({})
     readonly property var pendingFault: mosimOperator.pendingFault || ({})
     readonly property int panelWidth: Math.min(360, Math.max(282, width * 0.30))
 
-    function profileIndex() {
-        for (var index = 0; index < profiles.length; ++index) {
-            if (String(profiles[index].profile_id || "") === mosimOperator.selectedProfileId)
+    function profileIndex(options) {
+        for (var index = 0; index < options.length; ++index) {
+            if (String(options[index].profile_id || "") === mosimOperator.selectedProfileId)
                 return index
         }
         return 0
+    }
+
+    function profilesForController(schemeId) {
+        if (!schemeId)
+            return profiles
+        var options = []
+        for (var index = 0; index < profiles.length; ++index) {
+            if (String(profiles[index].controller_scheme_id || "") === String(schemeId))
+                options.push(profiles[index])
+        }
+        return options
+    }
+
+    function controllerForId(schemeId) {
+        for (var index = 0; index < controllerSchemes.length; ++index) {
+            if (String(controllerSchemes[index].scheme_id || "") === String(schemeId || ""))
+                return controllerSchemes[index]
+        }
+        return ({})
+    }
+
+    function controllerFamilyIndex(category) {
+        for (var index = 0; index < controllerFamilies.length; ++index) {
+            if (String(controllerFamilies[index].category || "") === String(category || ""))
+                return index
+        }
+        return 0
+    }
+
+    function controllerOptionsForFamily(category) {
+        var options = []
+        for (var index = 0; index < controllerSchemes.length; ++index) {
+            if (String(controllerSchemes[index].category || "") === String(category || ""))
+                options.push(controllerSchemes[index])
+        }
+        return options
+    }
+
+    function controllerOptionIndex(options, schemeId) {
+        for (var index = 0; index < options.length; ++index) {
+            if (String(options[index].scheme_id || "") === String(schemeId || ""))
+                return index
+        }
+        return 0
+    }
+
+    function syncControllerFamily() {
+        var schemeId = String(mosimOperator.selectedControllerSchemeId || "")
+        if (!schemeId || schemeId === root.observedControllerSchemeId)
+            return
+        var controller = root.controllerForId(schemeId)
+        if (controller.category)
+            root.selectedControllerFamilyId = String(controller.category)
+        root.observedControllerSchemeId = schemeId
     }
 
     function vehicleIds() {
@@ -81,13 +141,23 @@ Item {
         bottomEdgeRightInset: parentToolInsets.bottomEdgeRightInset
     }
 
-    Component.onCompleted: mosimOperator.refresh()
+    Component.onCompleted: {
+        mosimOperator.refresh()
+        root.syncControllerFamily()
+    }
 
     Timer {
         interval: 1000
         repeat: true
         running: true
         onTriggered: mosimOperator.refreshRuntimeState()
+    }
+
+    Connections {
+        target: mosimOperator
+        function onStateChanged() {
+            root.syncControllerFamily()
+        }
     }
 
     FactoryFlyMap {
@@ -166,14 +236,70 @@ Item {
                         width: parent.width
                         spacing: ScreenTools.defaultFontPixelHeight * 0.45
 
-                        QGCLabel { text: "已发布 Profile"; font.bold: true }
+                        QGCLabel { text: "控制器族"; font.bold: true }
+                        ComboBox {
+                            id: controllerFamilyBox
+                            Layout.fillWidth: true
+                            model: root.controllerFamilies
+                            textRole: "display_name_zh"
+                            currentIndex: root.controllerFamilyIndex(root.selectedControllerFamilyId)
+                            enabled: !mosimOperator.profileSelectionLocked
+                            onActivated: {
+                                var family = root.controllerFamilies[currentIndex] || ({})
+                                root.selectedControllerFamilyId = String(family.category || "")
+                            }
+                        }
+                        QGCLabel { text: "控制器"; font.bold: true }
+                        ComboBox {
+                            id: controllerBox
+                            readonly property var options: root.controllerOptionsForFamily(root.selectedControllerFamilyId)
+                            Layout.fillWidth: true
+                            model: options
+                            textRole: "display_name_zh"
+                            currentIndex: root.controllerOptionIndex(options, mosimOperator.selectedControllerSchemeId)
+                            enabled: !mosimOperator.profileSelectionLocked
+                            delegate: ItemDelegate {
+                                required property var modelData
+                                required property int index
+                                width: controllerBox.width
+                                text: String(modelData.display_name_zh || "未命名控制器")
+                                      + (modelData.selectable === true ? "" : "（未发布）")
+                                enabled: modelData.selectable === true
+                                opacity: enabled ? 1.0 : 0.55
+                                ToolTip.visible: hovered && !enabled
+                                ToolTip.text: String(modelData.disabled_reason || "尚无可用 Profile")
+                                onClicked: {
+                                    controllerBox.currentIndex = index
+                                    controllerBox.popup.close()
+                                    mosimOperator.selectControllerScheme(String(modelData.scheme_id || ""))
+                                }
+                            }
+                            onActivated: {
+                                var controller = options[currentIndex] || ({})
+                                mosimOperator.selectControllerScheme(String(controller.scheme_id || ""))
+                            }
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: "当前控制器：" + String(root.selectedController.display_name_zh
+                                                           || root.selectedProfile.controller_profile || "-")
+                            wrapMode: Text.Wrap
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            visible: root.selectedController.selectable !== true
+                            text: String(root.selectedController.disabled_reason || "当前控制器未开放")
+                            wrapMode: Text.Wrap
+                            color: qgcPal.colorOrange
+                        }
+                        QGCLabel { text: "任务 Profile"; font.bold: true }
                         ComboBox {
                             id: profileBox
                             Layout.fillWidth: true
                             enabled: !mosimOperator.profileSelectionLocked
-                            model: root.profiles
+                            model: root.compatibleProfiles
                             textRole: "label"
-                            currentIndex: root.profileIndex()
+                            currentIndex: root.profileIndex(root.compatibleProfiles)
                             delegate: ItemDelegate {
                                 required property var modelData
                                 required property int index
@@ -188,14 +314,9 @@ Item {
                                 }
                             }
                             onActivated: {
-                                var profile = root.profiles[currentIndex] || ({})
+                                var profile = root.compatibleProfiles[currentIndex] || ({})
                                 mosimOperator.selectProfile(String(profile.profile_id || ""))
                             }
-                        }
-                        QGCLabel {
-                            Layout.fillWidth: true
-                            text: "控制器：" + String(root.selectedProfile.controller_profile || "-")
-                            wrapMode: Text.Wrap
                         }
                         QGCLabel {
                             Layout.fillWidth: true

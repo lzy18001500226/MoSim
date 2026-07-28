@@ -152,6 +152,8 @@ QVariantMap MoSimOperatorBridge::readJsonObject(const QString &path) const
 void MoSimOperatorBridge::loadCatalogs()
 {
     _operatorProfiles.clear();
+    _controllerFamilies.clear();
+    _controllerSchemes.clear();
     _runtimeBackendCatalog = readJsonObject(projectPath(QStringLiteral("Config/control_platform/runtime_backend_catalog.json")));
     const QVariantMap mapCatalog = readJsonObject(projectPath(QStringLiteral("Config/control_platform/operator_map_catalog.json")));
     for (const QVariant &value : mapCatalog.value(QStringLiteral("maps")).toList()) {
@@ -189,6 +191,83 @@ void MoSimOperatorBridge::loadCatalogs()
         _operatorProfiles.append(profile);
     }
 
+    const QVariantMap controllerCatalog = readJsonObject(
+        projectPath(QStringLiteral("Config/control_platform/control_scheme_catalog.json")));
+    QVariantMap familyLabels;
+    QVariantMap familyCounts;
+    for (const QVariant &value : controllerCatalog.value(QStringLiteral("families")).toList()) {
+        QVariantMap family = value.toMap();
+        const QString category = family.value(QStringLiteral("category")).toString();
+        if (category.isEmpty()) {
+            continue;
+        }
+        family.insert(QStringLiteral("controller_count"), 0);
+        familyLabels.insert(category, family.value(QStringLiteral("display_name_zh")).toString());
+        _controllerFamilies.append(family);
+    }
+
+    for (const QVariant &value : controllerCatalog.value(QStringLiteral("schemes")).toList()) {
+        QVariantMap scheme = value.toMap();
+        const QString schemeId = scheme.value(QStringLiteral("scheme_id")).toString();
+        const QString category = scheme.value(QStringLiteral("category")).toString();
+        if (schemeId.isEmpty() || category.isEmpty()) {
+            continue;
+        }
+
+        QVariantList publishedProfileIds;
+        int enabledProfileCount = 0;
+        QString disabledReason;
+        for (const QVariant &profileValue : _operatorProfiles) {
+            const QVariantMap profile = profileValue.toMap();
+            if (profile.value(QStringLiteral("controller_scheme_id")).toString() != schemeId) {
+                continue;
+            }
+            publishedProfileIds.append(profile.value(QStringLiteral("profile_id")));
+            if (profile.value(QStringLiteral("enabled")).toBool()) {
+                ++enabledProfileCount;
+            } else if (disabledReason.isEmpty()) {
+                disabledReason = profile.value(QStringLiteral("disabled_reason")).toString();
+            }
+        }
+
+        scheme.insert(QStringLiteral("published_profile_ids"), publishedProfileIds);
+        scheme.insert(QStringLiteral("published_profile_count"), publishedProfileIds.size());
+        scheme.insert(QStringLiteral("enabled_profile_count"), enabledProfileCount);
+        scheme.insert(QStringLiteral("selectable"), enabledProfileCount > 0);
+        if (publishedProfileIds.isEmpty()) {
+            scheme.insert(QStringLiteral("availability"), QStringLiteral("not_published"));
+            scheme.insert(QStringLiteral("disabled_reason"), QStringLiteral("尚无已发布兼容 Profile"));
+        } else if (enabledProfileCount == 0) {
+            scheme.insert(QStringLiteral("availability"), QStringLiteral("profile_disabled"));
+            scheme.insert(
+                QStringLiteral("disabled_reason"),
+                disabledReason.isEmpty() ? QStringLiteral("兼容 Profile 尚未开放") : disabledReason);
+        } else {
+            scheme.insert(QStringLiteral("availability"), QStringLiteral("published"));
+            scheme.insert(QStringLiteral("disabled_reason"), QString());
+        }
+        _controllerSchemes.append(scheme);
+        familyCounts.insert(category, familyCounts.value(category).toInt() + 1);
+        if (!familyLabels.contains(category)) {
+            QVariantMap family {
+                {QStringLiteral("category"), category},
+                {QStringLiteral("display_name_zh"), category == QStringLiteral("engineering_deployment_baseline")
+                    ? QStringLiteral("工程部署基线")
+                    : category},
+                {QStringLiteral("controller_count"), 0},
+            };
+            _controllerFamilies.append(family);
+            familyLabels.insert(category, family.value(QStringLiteral("display_name_zh")).toString());
+        }
+    }
+    for (int index = 0; index < _controllerFamilies.size(); ++index) {
+        QVariantMap family = _controllerFamilies.at(index).toMap();
+        family.insert(
+            QStringLiteral("controller_count"),
+            familyCounts.value(family.value(QStringLiteral("category")).toString()).toInt());
+        _controllerFamilies[index] = family;
+    }
+
     if (profileForId(_selectedProfileId).isEmpty()) {
         _selectedProfileId.clear();
         for (const QVariant &value : _operatorProfiles) {
@@ -201,6 +280,10 @@ void MoSimOperatorBridge::loadCatalogs()
         if (_selectedProfileId.isEmpty() && !_operatorProfiles.isEmpty()) {
             _selectedProfileId = _operatorProfiles.first().toMap().value(QStringLiteral("profile_id")).toString();
         }
+    }
+    const QString selectedScheme = controllerSchemeForProfile(_selectedProfileId);
+    if (!selectedScheme.isEmpty()) {
+        _selectedControllerSchemeId = selectedScheme;
     }
 }
 
@@ -245,6 +328,7 @@ void MoSimOperatorBridge::loadActiveRun()
     _runId = runId;
     _runManifest = manifest;
     _selectedProfileId = frozenProfileId;
+    _selectedControllerSchemeId = controllerSchemeForProfile(frozenProfileId);
     const QVariantMap snapshot = manifest.value(QStringLiteral("operator_map_snapshot")).toMap();
     const QString snapshotHash = manifest.value(QStringLiteral("operator_map_snapshot_hash")).toString();
     if (!snapshot.isEmpty() && !snapshotHash.isEmpty()) {
@@ -277,9 +361,11 @@ void MoSimOperatorBridge::refresh()
 void MoSimOperatorBridge::refreshRuntimeState()
 {
     const QString selected = _selectedProfileId;
+    const QString selectedController = _selectedControllerSchemeId;
     loadActiveRun();
     if (_runId.isEmpty()) {
         _selectedProfileId = selected;
+        _selectedControllerSchemeId = selectedController;
         _runtimeTelemetry.clear();
         setStatus(QStringLiteral("active_run_missing"), QStringLiteral("未检测到活动运行清单"));
         return;
@@ -300,6 +386,22 @@ QVariantMap MoSimOperatorBridge::profileForId(const QString &profileId) const
         }
     }
     return {};
+}
+
+QVariantMap MoSimOperatorBridge::controllerForId(const QString &schemeId) const
+{
+    for (const QVariant &value : _controllerSchemes) {
+        const QVariantMap scheme = value.toMap();
+        if (scheme.value(QStringLiteral("scheme_id")).toString() == schemeId) {
+            return scheme;
+        }
+    }
+    return {};
+}
+
+QString MoSimOperatorBridge::controllerSchemeForProfile(const QString &profileId) const
+{
+    return profileForId(profileId).value(QStringLiteral("controller_scheme_id")).toString();
 }
 
 QVariantMap MoSimOperatorBridge::runtimeBackendForProfile(const QString &profileId) const
@@ -462,7 +564,54 @@ void MoSimOperatorBridge::selectProfile(const QString &profileId)
         return;
     }
     _selectedProfileId = profileId;
+    _selectedControllerSchemeId = controllerSchemeForProfile(profileId);
     setStatus(QStringLiteral("profile_selected"), QStringLiteral("已选择已发布 Profile"));
+}
+
+void MoSimOperatorBridge::selectControllerScheme(const QString &schemeId)
+{
+    if (profileSelectionLocked()) {
+        setStatus(QStringLiteral("profile_locked_by_run_manifest"), QStringLiteral("当前 RunManifest 已冻结 Profile，不能切换控制器"));
+        return;
+    }
+    const QVariantMap scheme = controllerForId(schemeId);
+    if (scheme.isEmpty()) {
+        setStatus(QStringLiteral("controller_not_found"), QStringLiteral("未找到所选控制器"));
+        return;
+    }
+    if (!scheme.value(QStringLiteral("selectable")).toBool()) {
+        setStatus(
+            QStringLiteral("controller_not_published"),
+            scheme.value(QStringLiteral("disabled_reason")).toString());
+        return;
+    }
+
+    const QString currentTaskKey = selectedProfile().value(QStringLiteral("task_key")).toString();
+    QVariantMap selected;
+    for (const QVariant &value : scheme.value(QStringLiteral("published_profile_ids")).toList()) {
+        const QVariantMap candidate = profileForId(value.toString());
+        if (candidate.value(QStringLiteral("enabled")).toBool()
+            && candidate.value(QStringLiteral("task_key")).toString() == currentTaskKey) {
+            selected = candidate;
+            break;
+        }
+    }
+    if (selected.isEmpty()) {
+        for (const QVariant &value : scheme.value(QStringLiteral("published_profile_ids")).toList()) {
+            const QVariantMap candidate = profileForId(value.toString());
+            if (candidate.value(QStringLiteral("enabled")).toBool()) {
+                selected = candidate;
+                break;
+            }
+        }
+    }
+    if (selected.isEmpty()) {
+        setStatus(QStringLiteral("controller_not_published"), QStringLiteral("控制器没有可用的已发布 Profile"));
+        return;
+    }
+    _selectedProfileId = selected.value(QStringLiteral("profile_id")).toString();
+    _selectedControllerSchemeId = schemeId;
+    setStatus(QStringLiteral("controller_selected"), QStringLiteral("已选择控制器并绑定兼容任务 Profile"));
 }
 
 void MoSimOperatorBridge::copySelectedLaunchCommand()
