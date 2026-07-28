@@ -19,10 +19,15 @@ G1 Batch 1 then added seven linear/robust controller routes and passed native
 `CheckModel` for its eight Bridges and seven Adapters without source drift.
 G1 Batch 2 then added five nonlinear/adaptive routes and passed native
 `CheckModel` for its five Bridges and five Adapters without source drift; its
-evidence is `Results/control_platform/g1_batch2_checkmodel_20260728/`. The
-current action is G1 Batch 3: add the approved sliding-mode routes as thin
-EquationBridge/Adapter pairs, then run its independent `CheckModel` batch. G2
-runs the 47 MWORKS routes on `ClimbPath`; G3 makes bounded repairs
+evidence is `Results/control_platform/g1_batch2_checkmodel_20260728/`. G1
+Batch 3 then added five approved sliding-mode routes and passed native
+`CheckModel` for all five Bridges and five Adapters without source drift; its
+evidence is `Results/control_platform/g1_batch3_checkmodel_20260728/`. The
+current action is G1 Batch 4: add the approved predictive/optimization routes
+as thin EquationBridge/Adapter pairs, then run its independent `CheckModel`
+batch. G2 runs the 44 current-source runnable MWORKS routes on `ClimbPath`
+and records the two overview-only plus one planned MWORKS catalog exclusions;
+G3 makes bounded repairs
 only for divergence, interface defects, or terminal error over 5 m. Do not
 begin seven-scenario simulation, code export, Gazebo/ROS runtime validation,
 G7, or R1 on this line.

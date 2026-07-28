@@ -31,7 +31,7 @@ contract. Neither creates another task line or gate meaning.
 
 ## 1. Current Action
 
-### Controller Evidence G1 Batch 3 - Active
+### Controller Evidence G1 Batch 4 - Active
 
 The user authorized the 48-controller MWORKS closed-loop evidence line on
 2026-07-28 CST. G0 is complete: `Px4CtrlFormalRunner` passed the common 50 s
@@ -57,18 +57,29 @@ compact result record is
 This proves model integrity only, not closed-loop behavior or controller
 performance.
 
+G1 Batch 3 added `integral SMC`, `terminal SMC`, `nonsingular terminal SMC`,
+`adaptive SMC`, and `fuzzy SMC` as thin bridge/Adapter pairs. Native
+`CheckModel` passed for all 10 classes without source drift; the compact result
+record is
+`Results/control_platform/g1_batch3_checkmodel_20260728/CHECK_MODEL_RESULTS.json`.
+This proves model integrity only, not closed-loop behavior or controller
+performance.
+
 Current action:
 
-1. G1 Batch 3: add only the approved sliding-mode EquationBridge plus thin
-   Adapter routes for integral SMC, terminal SMC, nonsingular terminal SMC,
-   adaptive SMC, and fuzzy SMC. Keep `SMC_BoundaryLayer` excluded as an
-   overview-only model with no closed-loop Adapter route.
+1. G1 Batch 4: add only the approved predictive/optimization EquationBridge
+   plus thin Adapter routes for robust MPC, adaptive MPC, tube MPC, explicit
+   gain-scheduled MPC, iLQR, and MPPI. Keep `NMPC_Outer` excluded as an
+   overview-only model; inspect the existing fixed QP-NMPC chain without
+   manufacturing a duplicate Adapter.
 2. G1: add only EquationBridge plus thin Adapter implementations in the six
    approved batches. Each batch must pass native `CheckModel`, then commit and
    push before the next batch.
-3. G2: create needed FormalRunners and run all 47 MWORKS profiles, excluding
-   px4ctrl, on the common 50 s `ClimbPath`; record pass/fail, RMSE, terminal
-   error, and a concrete failure reason.
+3. G2: create needed FormalRunners and run the 44 current-source runnable
+   MWORKS routes on the common 50 s `ClimbPath`; record pass/fail, RMSE,
+   terminal error, and a concrete failure reason. The 47-profile catalog
+   denominator remains visible through explicit records for the two
+   overview-only and one planned/non-runnable exclusions.
 4. G3: repair only divergence, interface defects, or terminal error above 5 m;
    rerun every repaired controller and then the full matrix. Do not do
    performance-only gain tuning in G3.
