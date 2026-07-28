@@ -47,6 +47,7 @@ def _fixture_root(tmp_path: Path) -> Path:
                 "vehicle_count": 3,
                 "operator_map_id": "factory_l2",
                 "controller_profile": "px4ctrl_attitude_thrust_v1",
+                "controller_backend": "fixture_controller_backend_v1",
                 "planner_profile": "swarm_formation",
                 "safety_profile": "basic_limiter_v1",
                 "fault_profile": "none",
@@ -94,6 +95,7 @@ def test_prepare_freezes_profile_map_and_pointer(tmp_path: Path) -> None:
     assert manifest["run_id"] == "qgc-test-run"
     assert manifest["experiment_profile_id"] == "factory_demo_v1"
     assert manifest["experiment_profile_hash"] == hashlib.sha256(profile_path.read_bytes()).hexdigest()
+    assert manifest["controller_backend"] == "fixture_controller_backend_v1"
     assert manifest["vehicle_count"] == 3
     assert manifest["operator_map_snapshot"]["map_id"] == "factory_l2"
     assert manifest["scenario_snapshot"]["formation"]["type"] == "leader_follower"

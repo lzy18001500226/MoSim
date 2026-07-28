@@ -92,6 +92,30 @@ bool isReadableFaultAck(const QVariantMap &ack, const QString &runId, int vehicl
     return target == QStringLiteral("wind_speed_mps") || target == QStringLiteral("wind_direction_deg");
 }
 
+bool isReadableOperatorRuntimeStatus(const QVariantMap &status, const QVariantMap &manifest)
+{
+    const QString expectedBackend = manifest.value(QStringLiteral("controller_backend")).toString();
+    if (expectedBackend.isEmpty()
+        || status.value(QStringLiteral("schema")).toString() != QStringLiteral("mosim.operator_runtime_status.v1")
+        || status.value(QStringLiteral("run_id")).toString() != manifest.value(QStringLiteral("run_id")).toString()
+        || status.value(QStringLiteral("experiment_profile_id")).toString()
+            != manifest.value(QStringLiteral("experiment_profile_id")).toString()
+        || status.value(QStringLiteral("experiment_profile_hash")).toString()
+            != manifest.value(QStringLiteral("experiment_profile_hash")).toString()
+        || status.value(QStringLiteral("state")).toString().isEmpty()
+        || status.value(QStringLiteral("reason_code")).toString().isEmpty()
+        || !status.value(QStringLiteral("updated_at_unix_s")).canConvert<double>()) {
+        return false;
+    }
+    if (status.value(QStringLiteral("controller_backend")).toString() != expectedBackend) {
+        return false;
+    }
+    const QVariant observability = status.value(QStringLiteral("observability"));
+    const QVariant alerts = status.value(QStringLiteral("alerts"));
+    return (!observability.isValid() || observability.canConvert<QVariantMap>())
+        && (!alerts.isValid() || alerts.canConvert<QVariantList>());
+}
+
 QString bashQuote(const QString &value)
 {
     return QStringLiteral("'%1'").arg(value);
@@ -406,7 +430,15 @@ void MoSimOperatorBridge::loadActiveRun()
     }
     const QVariantMap telemetry = readJsonObject(QDir(runDirectory).filePath(QStringLiteral("telemetry.json")));
     if (telemetry.value(QStringLiteral("run_id")).toString() == _runId) {
-        _runtimeTelemetry = telemetry;
+        QVariantMap acceptedTelemetry = telemetry;
+        const QVariantMap runtimeStatus = telemetry.value(QStringLiteral("operator_runtime_status")).toMap();
+        if (!runtimeStatus.isEmpty() && !isReadableOperatorRuntimeStatus(runtimeStatus, manifest)) {
+            acceptedTelemetry.remove(QStringLiteral("operator_runtime_status"));
+            acceptedTelemetry.insert(
+                QStringLiteral("operator_runtime_status_rejected_reason"),
+                QStringLiteral("operator_runtime_status_identity_mismatch"));
+        }
+        _runtimeTelemetry = acceptedTelemetry;
     }
     loadFaultAcks();
 }

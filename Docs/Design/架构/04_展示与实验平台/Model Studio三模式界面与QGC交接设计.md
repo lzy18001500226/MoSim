@@ -167,6 +167,18 @@ preflight_id / preflight_result_hash
 RunManifest 在 `launch_prepared` 后不可修改。运行状态、分阶段 ACK、故障事件和遥测进入
 独立 RunStatus/Event 记录，不持续回写 Manifest。
 
+QGC 的“冻结配置”与“运行反馈”必须分开显示。`controller_backend` 由已发布
+ExperimentProfile 在生成 RunManifest 时冻结；运行端仅可在 `telemetry.json` 写入
+`mosim.operator_runtime_status.v1`。该状态必须同时携带 `run_id`、`experiment_profile_id`、
+`experiment_profile_hash`、`controller_backend`、`state`、`reason_code` 与更新时间。QGC 对这四项
+身份逐项匹配后才显示运行反馈，任何不匹配状态只显示“身份不匹配，已忽略”，不能覆盖地图或
+冻结配置。
+
+运行状态中的 `observability` 是可选的实测字段：RTT（P95）、抖动、命令年龄和丢包率只在对应
+RT1/运行端同一 `run_id` 的指标存在时显示数值；没有指标时统一显示“未测量”。`alerts` 缺失表示
+“运行端未上报告警”，空列表才表示“运行端报告无告警”。QGC 不以主机网卡总流量、候选频率或
+固定零值补齐这些字段。
+
 ## 7. 在线连接与频率能力口径
 
 Model Studio 可以编辑目标主机、RT1 UDP端口、ROS Master URI、本机广播 IP 和

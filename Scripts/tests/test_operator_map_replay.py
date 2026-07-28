@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from Scripts.ui.replay_rosbag_operator_map import run_replay
+from Scripts.ui.replay_rosbag_operator_map import _telemetry_payload, run_replay
 from Scripts.ui.runtime_sidecar import _canonical_hash, build_operator_map_state, load_operator_map_snapshot
 from src.orchestration.operator_map_replay import (
     build_replay_manifest,
@@ -146,6 +146,7 @@ def test_replay_entry_writes_completed_run_bound_telemetry(tmp_path: Path) -> No
     run_dir = tmp_path / "run"
     run_dir.mkdir()
     manifest = _manifest()
+    manifest["controller_backend"] = "fixture_replay_backend_v1"
     (run_dir / "RUN_MANIFEST.json").write_text(json.dumps(manifest), encoding="utf-8")
     evidence_path = tmp_path / "coordinate_evidence.json"
     evidence_path.write_text(json.dumps(_evidence(manifest)), encoding="utf-8")
@@ -177,9 +178,33 @@ def test_replay_entry_writes_completed_run_bound_telemetry(tmp_path: Path) -> No
     validate_operator_map_state(telemetry["map_state"], manifest=manifest)
     assert telemetry["map_state"]["transport"]["playback_state"] == "completed"
     assert telemetry["map_state"]["map"]["coordinate_contract_status"] == "verified"
+    assert telemetry["operator_runtime_status"] == {
+        "schema": "mosim.operator_runtime_status.v1",
+        "run_id": manifest["run_id"],
+        "experiment_profile_id": manifest["experiment_profile_id"],
+        "experiment_profile_hash": manifest["experiment_profile_hash"],
+        "controller_backend": "fixture_replay_backend_v1",
+        "state": "replaying",
+        "reason_code": "operator_map_rosbag_replay",
+        "updated_at_unix_s": pytest.approx(telemetry["timestamp"]),
+    }
     assert replay_manifest["source"]["kind"] == "normalized_rosbag_export_test_only"
     assert replay_manifest["output"]["transport_mode"] == "rosbag_replay"
     assert status["state"] == "completed"
+
+
+def test_legacy_manifest_replay_keeps_map_data_without_runtime_status() -> None:
+    manifest = _manifest()
+    map_state = {
+        "vehicles": [],
+        "task_paths": {},
+        "transport": {"playback_state": "completed"},
+    }
+
+    telemetry = _telemetry_payload(manifest, map_state, now=123.0)
+
+    assert telemetry["map_state"] is map_state
+    assert "operator_runtime_status" not in telemetry
 
 
 def test_replay_manifest_binds_the_source_hash_and_coordinate_status() -> None:

@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 
 from src.orchestration.runtime_sidecar_contract import (
     atomic_write_json,
+    build_operator_runtime_status,
     evaluate_readiness_status,
     load_contract,
     resolve_gazebo_body_name,
@@ -55,6 +56,35 @@ def _canonical_hash(value: Any) -> str:
 
 def _json_copy(value: dict[str, Any]) -> dict[str, Any]:
     return json.loads(json.dumps(value, ensure_ascii=False))
+
+
+def _load_rt1_observability(run_dir: Path, run_id: str) -> dict[str, float]:
+    """Read the current same-run RT1 metrics without manufacturing unavailable values."""
+    candidates = (run_dir / "observability" / "RT1_STATUS.json", run_dir / "RT1_STATUS.json")
+    for candidate in candidates:
+        try:
+            payload = json.loads(candidate.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(payload, dict) or payload.get("run_id") != run_id:
+            continue
+        transport = payload.get("transport")
+        if not isinstance(transport, dict):
+            transport = {}
+        raw_values = {
+            "rtt_ms": transport.get("rtt_ms_p95"),
+            "jitter_ms": transport.get("receive_interval_jitter_ms"),
+            "command_age_ms": payload.get("command_age_ms"),
+            "packet_loss_rate": transport.get("estimated_command_drop_rate"),
+        }
+        values = {
+            key: float(value)
+            for key, value in raw_values.items()
+            if isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value)
+        }
+        if values:
+            return values
+    return {}
 
 
 def _validate_operator_map_snapshot(snapshot: dict[str, Any]) -> None:
@@ -843,6 +873,14 @@ class RosRuntimeSidecar:
                 max_age_s=self.args.mission_status_max_age_s,
             ),
         }
+        if isinstance(self.manifest.get("controller_backend"), str) and self.manifest["controller_backend"]:
+            telemetry["operator_runtime_status"] = build_operator_runtime_status(
+                manifest=self.manifest,
+                state=status,
+                reason_code=reason_code,
+                updated_at_unix_s=now,
+                observability=_load_rt1_observability(self.run_dir, self.manifest["run_id"]) or None,
+            )
         if len(vehicles) == 1:
             telemetry.update({key: value for key, value in vehicles[0].items() if key != "vehicle_id"})
         atomic_write_json(self.run_dir / "telemetry.json", telemetry)

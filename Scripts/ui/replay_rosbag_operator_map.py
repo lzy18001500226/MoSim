@@ -28,7 +28,7 @@ from src.orchestration.operator_map_replay import (
     load_coordinate_evidence,
     sha256_file,
 )
-from src.orchestration.runtime_sidecar_contract import atomic_write_json
+from src.orchestration.runtime_sidecar_contract import atomic_write_json, build_operator_runtime_status
 
 
 def _time_to_seconds(value: Any, reason_code: str) -> float:
@@ -138,19 +138,20 @@ def _load_jsonl_samples(path: Path) -> list[dict[str, Any]]:
 
 def _telemetry_payload(manifest: dict[str, Any], map_state: dict[str, Any], *, now: float) -> dict[str, Any]:
     vehicles = map_state["vehicles"]
-    return {
+    readiness = {
+        "schema": "mosim.runtime_status.v1",
+        "run_id": manifest["run_id"],
+        "status": "replaying",
+        "reason_code": "operator_map_rosbag_replay",
+        "vehicle_count": manifest["vehicle_count"],
+        "updated_at": now,
+    }
+    payload = {
         "schema": "mosim.runtime_telemetry.v2",
         "run_id": manifest["run_id"],
         "timestamp": now,
         "vehicle_count": manifest["vehicle_count"],
-        "readiness": {
-            "schema": "mosim.runtime_status.v1",
-            "run_id": manifest["run_id"],
-            "status": "replaying",
-            "reason_code": "operator_map_rosbag_replay",
-            "vehicle_count": manifest["vehicle_count"],
-            "updated_at": now,
-        },
+        "readiness": readiness,
         "vehicles": vehicles,
         "task_paths": map_state["task_paths"],
         "map_state": map_state,
@@ -161,6 +162,14 @@ def _telemetry_payload(manifest: dict[str, Any], map_state: dict[str, Any], *, n
             "reason_code": "rosbag_replay_display_only",
         },
     }
+    if manifest.get("controller_backend"):
+        payload["operator_runtime_status"] = build_operator_runtime_status(
+            manifest=manifest,
+            state="replaying",
+            reason_code="operator_map_rosbag_replay",
+            updated_at_unix_s=now,
+        )
+    return payload
 
 
 def _write_status(run_dir: Path, payload: dict[str, Any]) -> None:

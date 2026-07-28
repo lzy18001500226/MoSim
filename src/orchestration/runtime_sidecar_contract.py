@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import time
 from pathlib import Path
@@ -13,6 +14,14 @@ COMMAND_ID_PATTERN = re.compile(r"^inj-[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
 
 
 VEHICLE_ID_PATTERN = re.compile(r"^uav([1-9])$")
+
+OPERATOR_RUNTIME_STATUS_SCHEMA = "mosim.operator_runtime_status.v1"
+OPERATOR_RUNTIME_OBSERVABILITY_FIELDS = (
+    "rtt_ms",
+    "jitter_ms",
+    "command_age_ms",
+    "packet_loss_rate",
+)
 
 
 def evaluate_readiness_status(
@@ -30,6 +39,64 @@ def evaluate_readiness_status(
     if elapsed_s >= timeout_s:
         return "blocked", "runtime_readiness_timeout", False
     return "starting", "runtime_readiness_pending", False
+
+
+def build_operator_runtime_status(
+    *,
+    manifest: dict[str, Any],
+    state: str,
+    reason_code: str,
+    updated_at_unix_s: float,
+    observability: dict[str, Any] | None = None,
+    alerts: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Create the identity-bound status envelope consumed by the operator UI.
+
+    This deliberately carries only values measured by an attached runtime
+    producer. Missing metrics and alerts stay absent so a UI can distinguish
+    them from measured zero values or an explicit empty alert report.
+    """
+    run_id = manifest.get("run_id")
+    profile_id = manifest.get("experiment_profile_id")
+    profile_hash = manifest.get("experiment_profile_hash")
+    controller_backend = manifest.get("controller_backend")
+    if any(not isinstance(value, str) or not value for value in (run_id, profile_id, profile_hash, controller_backend)):
+        raise ValueError("operator_runtime_status_manifest_identity_invalid")
+    if not isinstance(state, str) or not state:
+        raise ValueError("operator_runtime_status_state_invalid")
+    if not isinstance(reason_code, str) or not reason_code:
+        raise ValueError("operator_runtime_status_reason_code_invalid")
+    if not isinstance(updated_at_unix_s, (int, float)) or not math.isfinite(updated_at_unix_s) or updated_at_unix_s < 0:
+        raise ValueError("operator_runtime_status_updated_at_invalid")
+
+    payload: dict[str, Any] = {
+        "schema": OPERATOR_RUNTIME_STATUS_SCHEMA,
+        "run_id": run_id,
+        "experiment_profile_id": profile_id,
+        "experiment_profile_hash": profile_hash,
+        "controller_backend": controller_backend,
+        "state": state,
+        "reason_code": reason_code,
+        "updated_at_unix_s": float(updated_at_unix_s),
+    }
+    if observability is not None:
+        if not isinstance(observability, dict):
+            raise ValueError("operator_runtime_status_observability_invalid")
+        normalized = {
+            key: float(value)
+            for key, value in observability.items()
+            if key in OPERATOR_RUNTIME_OBSERVABILITY_FIELDS
+            and isinstance(value, (int, float))
+            and not isinstance(value, bool)
+            and math.isfinite(value)
+        }
+        if normalized:
+            payload["observability"] = normalized
+    if alerts is not None:
+        if not isinstance(alerts, list) or any(not isinstance(alert, dict) for alert in alerts):
+            raise ValueError("operator_runtime_status_alerts_invalid")
+        payload["alerts"] = alerts
+    return payload
 
 
 def resolve_gazebo_body_name(

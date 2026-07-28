@@ -188,6 +188,9 @@ def prepare_run(
     run_directory.mkdir(parents=True, exist_ok=False)
     controller_ids = backend.get("controller_ids")
     controller_id = controller_ids[0] if isinstance(controller_ids, list) and controller_ids else ""
+    controller_backend = experiment.get("controller_backend", controller_id)
+    if not isinstance(controller_backend, str) or not controller_backend:
+        raise ValueError("operator_run_controller_backend_missing")
     manifest = {
         "schema": "mosim.operator_run_manifest.v1",
         "run_id": selected_run_id,
@@ -195,6 +198,7 @@ def prepare_run(
         "experiment_profile_hash": profile_hash,
         "runtime_profile_id": runtime_profile_id,
         "runtime_operation_id": backend.get("operation_id", ""),
+        "controller_backend": controller_backend,
         "controller_id": controller_id,
         "controller_profile": experiment.get("controller_profile", ""),
         "vehicle_count": vehicle_count,

@@ -31,7 +31,9 @@ Item {
     readonly property var selectedProfile: mosimOperator.selectedProfile || ({})
     readonly property var selectedController: root.controllerForId(mosimOperator.selectedControllerSchemeId)
     readonly property var compatibleProfiles: root.profilesForController(mosimOperator.selectedControllerSchemeId)
+    readonly property var runManifest: mosimOperator.runManifest || ({})
     readonly property var runtimeTelemetry: mosimOperator.runtimeTelemetry || ({})
+    readonly property var runtimeStatus: root.runtimeTelemetry.operator_runtime_status || ({})
     readonly property var mapState: root.runtimeTelemetry.map_state || ({})
     readonly property var faultAcks: mosimOperator.faultAcks || []
     readonly property var pendingFault: mosimOperator.pendingFault || ({})
@@ -211,6 +213,72 @@ Item {
         if (isFinite(playbackTime) && playbackTime >= 0)
             details.push("回放时间：" + playbackTime.toFixed(1) + " s")
         return details.join("；")
+    }
+
+    function runtimeStatusIsBound() {
+        return String(runtimeStatus.schema || "") === "mosim.operator_runtime_status.v1"
+                && String(runtimeStatus.run_id || "") === String(runManifest.run_id || "")
+                && String(runtimeStatus.experiment_profile_id || "")
+                        === String(runManifest.experiment_profile_id || "")
+                && String(runtimeStatus.experiment_profile_hash || "")
+                        === String(runManifest.experiment_profile_hash || "")
+    }
+
+    function frozenControllerBackendText() {
+        if (!runManifest.run_id)
+            return "未冻结"
+        var backend = String(runManifest.controller_backend || "")
+        return backend.length > 0 ? backend : "未声明"
+    }
+
+    function runtimeStateText() {
+        if (!runtimeStatusIsBound()) {
+            return runtimeTelemetry.operator_runtime_status_rejected_reason
+                    ? "身份不匹配，已忽略" : "运行端未上报状态"
+        }
+        var state = String(runtimeStatus.state || "")
+        if (state === "starting")
+            return "启动中"
+        if (state === "running")
+            return String(runtimeStatus.reason_code || "") === "runtime_readiness_degraded"
+                    ? "运行中（健康降级）" : "运行中"
+        if (state === "blocked")
+            return "已阻塞"
+        if (state === "replaying")
+            return "回放中"
+        return state.length > 0 ? state : "运行端未上报状态"
+    }
+
+    function runtimeReasonText() {
+        return runtimeStatusIsBound()
+                ? String(runtimeStatus.reason_code || "未上报")
+                : "未上报"
+    }
+
+    function runtimeMetricText(key, unit, multiplier) {
+        if (!runtimeStatusIsBound())
+            return "未测量"
+        var value = (runtimeStatus.observability || ({}))[key]
+        if (typeof value !== "number" || !isFinite(value))
+            return "未测量"
+        var scale = multiplier === undefined ? 1.0 : multiplier
+        return (value * scale).toFixed(2) + unit
+    }
+
+    function runtimeAlertsText() {
+        if (!runtimeStatusIsBound())
+            return "运行端未上报告警"
+        var alerts = runtimeStatus.alerts
+        if (alerts === undefined || alerts === null)
+            return "运行端未上报告警"
+        if (alerts.length === 0)
+            return "运行端报告无告警"
+        var values = []
+        for (var index = 0; index < alerts.length; ++index) {
+            var alert = alerts[index] || ({})
+            values.push(String(alert.code || alert.reason_code || "未命名告警"))
+        }
+        return values.join("；")
     }
 
     function agentSuggest() {
@@ -454,6 +522,41 @@ Item {
                             Layout.fillWidth: true
                             text: "运行：" + (mosimOperator.runId || "未绑定")
                             wrapMode: Text.WrapAnywhere
+                        }
+                        Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: qgcPal.windowShade }
+                        QGCLabel { text: "冻结配置"; font.bold: true }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: "控制后端：" + root.frozenControllerBackendText()
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        QGCLabel { text: "运行反馈"; font.bold: true }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: "状态：" + root.runtimeStateText()
+                            wrapMode: Text.Wrap
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: "原因：" + root.runtimeReasonText()
+                            wrapMode: Text.WrapAnywhere
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: "RTT（P95）：" + root.runtimeMetricText("rtt_ms", " ms")
+                                    + "；抖动：" + root.runtimeMetricText("jitter_ms", " ms")
+                            wrapMode: Text.Wrap
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: "命令年龄：" + root.runtimeMetricText("command_age_ms", " ms")
+                                    + "；丢包率：" + root.runtimeMetricText("packet_loss_rate", " %", 100.0)
+                            wrapMode: Text.Wrap
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: "告警：" + root.runtimeAlertsText()
+                            wrapMode: Text.Wrap
                         }
                     }
                 }
