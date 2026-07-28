@@ -198,6 +198,29 @@ def _matrix_vector(matrix: list[list[float]], vector: dict[str, float], *, trans
     }
 
 
+def transform_operator_map_vector(
+    coordinate_evidence: dict[str, Any],
+    vector: dict[str, Any],
+    *,
+    translate: bool,
+    pseudovector: bool = False,
+) -> dict[str, float]:
+    """Transform a vector through a validated map-coordinate evidence record.
+
+    ``pseudovector`` is for angular velocity. A coordinate transform can be a
+    reflection, so angular velocity needs the determinant correction while a
+    position or linear velocity does not.
+    """
+
+    matrix = _transform_matrix(coordinate_evidence.get("transform_target_from_source_4x4"))
+    normalized = _vector(vector, "operator_map_coordinate_vector_invalid")
+    transformed = _matrix_vector(matrix, normalized, translate=translate)
+    if pseudovector:
+        determinant = _determinant_3x3([row[:3] for row in matrix[:3]])
+        transformed = {axis: determinant * value for axis, value in transformed.items()}
+    return transformed
+
+
 def _quaternion_rotate_vector(quaternion: dict[str, float], vector: dict[str, float]) -> dict[str, float]:
     w, x, y, z = (quaternion[axis] for axis in ("w", "x", "y", "z"))
     vx, vy, vz = (vector[axis] for axis in ("x", "y", "z"))
@@ -219,6 +242,40 @@ def _yaw_quaternion(forward: dict[str, float]) -> dict[str, float] | None:
     return {"w": math.cos(half_yaw), "x": 0.0, "y": 0.0, "z": math.sin(half_yaw)}
 
 
+def transform_operator_map_orientation(
+    coordinate_evidence: dict[str, Any], quaternion: dict[str, Any]
+) -> dict[str, float] | None:
+    """Project a source-frame orientation to the drawable target-frame heading.
+
+    The Factory 2D surface uses yaw only. Deriving it from the transformed
+    body-forward vector also remains valid when the coordinate evidence uses a
+    handedness-changing reflection.
+    """
+
+    normalized = _quaternion(quaternion, "operator_map_coordinate_orientation_invalid")
+    forward = _quaternion_rotate_vector(normalized, {"x": 1.0, "y": 0.0, "z": 0.0})
+    transformed = transform_operator_map_vector(
+        coordinate_evidence, forward, translate=False
+    )
+    return _yaw_quaternion(transformed)
+
+
+def transform_operator_map_points(
+    points: list[dict[str, Any]],
+    *,
+    source_frame_id: str,
+    coordinate_evidence: dict[str, Any],
+) -> list[dict[str, float]]:
+    """Transform path points after enforcing the evidence source-frame match."""
+
+    if source_frame_id != coordinate_evidence["source_frame_id"]:
+        raise ValueError("operator_map_coordinate_evidence_source_frame_mismatch")
+    return [
+        transform_operator_map_vector(coordinate_evidence, point, translate=True)
+        for point in points
+    ]
+
+
 def replay_vehicle_from_sample(sample: dict[str, Any], coordinate_evidence: dict[str, Any] | None) -> dict[str, Any]:
     """Project one normalized odometry sample into a drawable vehicle state."""
 
@@ -231,21 +288,18 @@ def replay_vehicle_from_sample(sample: dict[str, Any], coordinate_evidence: dict
     if coordinate_evidence is not None:
         if frame_id != coordinate_evidence["source_frame_id"]:
             raise ValueError("operator_map_coordinate_evidence_source_frame_mismatch")
-        matrix = coordinate_evidence["transform_target_from_source_4x4"]
-        position = _matrix_vector(matrix, position, translate=True)
+        position = transform_operator_map_vector(coordinate_evidence, position, translate=True)
         frame_id = coordinate_evidence["target_frame_id"]
         if linear_velocity is not None:
-            linear_velocity = _matrix_vector(matrix, linear_velocity, translate=False)
+            linear_velocity = transform_operator_map_vector(
+                coordinate_evidence, linear_velocity, translate=False
+            )
         if angular_velocity is not None:
-            rotation = [row[:3] for row in matrix[:3]]
-            determinant = _determinant_3x3(rotation)
-            angular_velocity = {
-                axis: determinant * value
-                for axis, value in _matrix_vector(matrix, angular_velocity, translate=False).items()
-            }
+            angular_velocity = transform_operator_map_vector(
+                coordinate_evidence, angular_velocity, translate=False, pseudovector=True
+            )
         if orientation is not None:
-            forward = _quaternion_rotate_vector(orientation, {"x": 1.0, "y": 0.0, "z": 0.0})
-            orientation = _yaw_quaternion(_matrix_vector(matrix, forward, translate=False))
+            orientation = transform_operator_map_orientation(coordinate_evidence, orientation)
     state["position"] = position
     state["position_frame"] = frame_id
     if orientation is not None:

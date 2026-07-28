@@ -8,8 +8,10 @@ from Scripts.ui.runtime_sidecar import (
     _canonical_hash,
     build_operator_map_state,
     load_operator_map_snapshot,
+    project_live_operator_map_frame,
     resolve_runtime_operator_map,
 )
+from src.orchestration.operator_map_replay import validate_coordinate_evidence
 from src.orchestration.operator_map_state import validate_operator_map_state
 
 
@@ -46,6 +48,30 @@ def _snapshot() -> dict[str, object]:
     )
     snapshot["coordinate_contract_status"] = "verified"
     return snapshot
+
+
+def _coordinate_evidence(manifest: dict[str, object], *, source_frame_id: str = "factory_odom") -> dict[str, object]:
+    snapshot = manifest["operator_map_snapshot"]
+    assert isinstance(snapshot, dict)
+    return {
+        "schema": "mosim.operator_map_coordinate_evidence.v1",
+        "status": "verified",
+        "evidence_id": "factory-l2-live-fixture",
+        "operator_map_snapshot_hash": manifest["operator_map_snapshot_hash"],
+        "map_id": snapshot["map_id"],
+        "map_version": snapshot["map_version"],
+        "asset_sha256": snapshot["asset_sha256"],
+        "world_frame": snapshot["world_frame"],
+        "coordinate_contract_id": snapshot["coordinate_contract_id"],
+        "source_frame_id": source_frame_id,
+        "target_frame_id": "mworks_world",
+        "transform_target_from_source_4x4": [
+            [0.0, -1.0, 0.0, 10.0],
+            [1.0, 0.0, 0.0, -5.0],
+            [0.0, 0.0, 1.0, 1.0],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+    }
 
 
 def test_live_map_state_keeps_receive_time_distinct_from_ros_source_time() -> None:
@@ -191,6 +217,125 @@ def test_map_state_validator_rejects_identity_and_verified_frame_mismatches() ->
         validate_operator_map_state(state, manifest=_manifest())
 
 
+def test_live_sidecar_projects_only_evidence_bound_geometry() -> None:
+    manifest = _manifest()
+    snapshot = manifest["operator_map_snapshot"]
+    assert isinstance(snapshot, dict)
+    evidence = validate_coordinate_evidence(
+        _coordinate_evidence(manifest),
+        map_snapshot=snapshot,
+        snapshot_hash=str(manifest["operator_map_snapshot_hash"]),
+    )
+    vehicles, task_paths, map_data_status = project_live_operator_map_frame(
+        vehicles=[
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 2.0, "y": 3.0, "z": 0.0},
+                    "position_frame": "factory_odom",
+                    "orientation": {"w": 1.0, "x": 0.0, "y": 0.0, "z": 0.0},
+                    "linear_velocity": {"x": 1.0, "y": 0.0, "z": 0.0},
+                    "linear_velocity_frame": "factory_odom",
+                    "angular_velocity": {"x": 0.0, "y": 0.0, "z": 0.1},
+                    "angular_velocity_frame": "factory_odom",
+                },
+            }
+        ],
+        task_paths={
+            "expected": {
+                "semantics": "mission_reference",
+                "vehicle_scope": "uav1",
+                "source_topic": "/mosim/reference_path",
+                "updated_at": 10.0,
+                "frame_id": "factory_odom",
+                "points": [{"x": 2.0, "y": 3.0, "z": 0.0}, {"x": 4.0, "y": 3.0, "z": 0.0}],
+            }
+        },
+        coordinate_evidence=evidence,
+        run_id=str(manifest["run_id"]),
+    )
+
+    assert map_data_status == {"state": "accepted", "reason_code": ""}
+    assert vehicles[0]["state"]["position"] == {"x": 7.0, "y": -3.0, "z": 1.0}
+    assert vehicles[0]["state"]["position_frame"] == "mworks_world"
+    assert vehicles[0]["state"]["linear_velocity"] == {"x": 0.0, "y": 1.0, "z": 0.0}
+    assert vehicles[0]["state"]["linear_velocity_frame"] == "mworks_world"
+    assert vehicles[0]["state"]["orientation"]["z"] == pytest.approx(2**-0.5)
+    assert task_paths["expected"]["status"] == "available"
+    assert task_paths["expected"]["frame_id"] == "mworks_world"
+    assert task_paths["expected"]["points"][1] == {"x": 7.0, "y": -1.0, "z": 1.0}
+
+
+def test_live_sidecar_hides_unverified_or_source_mismatched_geometry_without_stopping_telemetry() -> None:
+    manifest = _manifest()
+    raw_vehicles = [
+        {
+            "vehicle_id": "uav1",
+            "state": {
+                "connected": True,
+                "position": {"x": 2.0, "y": 3.0, "z": 0.0},
+                "position_frame": "factory_odom",
+            },
+        }
+    ]
+    pending_vehicles, pending_paths, pending_status = project_live_operator_map_frame(
+        vehicles=raw_vehicles,
+        task_paths={
+            "future": {
+                "frame_id": "factory_odom",
+                "points": [{"x": 2.0, "y": 3.0, "z": 0.0}],
+            }
+        },
+        coordinate_evidence=None,
+        run_id=str(manifest["run_id"]),
+    )
+    assert pending_status == {"state": "accepted", "reason_code": ""}
+    assert pending_vehicles == [{"vehicle_id": "uav1", "state": {"connected": True}}]
+    assert pending_paths["future"]["status"] == "pending_coordinate_evidence"
+
+    snapshot = manifest["operator_map_snapshot"]
+    assert isinstance(snapshot, dict)
+    evidence = validate_coordinate_evidence(
+        _coordinate_evidence(manifest, source_frame_id="other_frame"),
+        map_snapshot=snapshot,
+        snapshot_hash=str(manifest["operator_map_snapshot_hash"]),
+    )
+    rejected_vehicles, _, rejected_status = project_live_operator_map_frame(
+        vehicles=raw_vehicles,
+        task_paths={},
+        coordinate_evidence=evidence,
+        run_id=str(manifest["run_id"]),
+    )
+    assert rejected_status == {
+        "state": "rejected",
+        "reason_code": "operator_map_coordinate_evidence_source_frame_mismatch",
+    }
+    assert rejected_vehicles == [{"vehicle_id": "uav1", "state": {"connected": True}}]
+
+
+def test_map_state_can_report_a_display_only_rejection() -> None:
+    state = build_operator_map_state(
+        manifest=_manifest(),
+        map_snapshot=_snapshot(),
+        transport_mode="live_ros1",
+        sequence=2,
+        received_at_unix_s=1_784_000_200.0,
+        source_timestamp_s=None,
+        playback_state="live",
+        playback_time_s=None,
+        bag_id="",
+        vehicles=[],
+        task_paths={},
+        map_data_status={
+            "state": "rejected",
+            "reason_code": "operator_map_coordinate_evidence_source_frame_mismatch",
+        },
+    )
+    validate_operator_map_state(state, manifest=_manifest())
+    assert state["map_data_status"]["state"] == "rejected"
+
+
 def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() -> None:
     bridge = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.cc").read_text(encoding="utf-8")
     bridge_header = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.h").read_text(
@@ -203,6 +348,8 @@ def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() 
     assert 'manifestSnapshot = _runManifest.value(QStringLiteral("operator_map_snapshot"))' in bridge
     assert 'manifestSnapshotHash = _runManifest.value(QStringLiteral("operator_map_snapshot_hash"))' in bridge
     assert 'String(mapMetadata.operator_map_snapshot_hash || "")' in fly_map
+    assert 'readonly property bool mapFrameAccepted' in fly_map
+    assert '实时地图坐标系与证据不匹配' in fly_map
     assert 'function applyOperatorMapViewport()' in plan_view
     assert 'identity === _appliedOperatorMapIdentity' in plan_view
     assert 'function factoryMissionPublicationAllowed()' in plan_view

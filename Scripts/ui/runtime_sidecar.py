@@ -31,6 +31,12 @@ from src.orchestration.operator_map_state import (
     OPERATOR_MAP_TRANSPORT_MODES,
     validate_operator_map_state,
 )
+from src.orchestration.operator_map_replay import (
+    load_coordinate_evidence,
+    transform_operator_map_orientation,
+    transform_operator_map_points,
+    transform_operator_map_vector,
+)
 
 
 OPERATOR_MAP_SNAPSHOT_REQUIRED_FIELDS = (
@@ -157,6 +163,7 @@ def build_operator_map_state(
     bag_id: str,
     vehicles: list[dict[str, Any]],
     task_paths: dict[str, dict[str, Any]],
+    map_data_status: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Project runtime telemetry into the strict 2D operator-map envelope."""
     if transport_mode not in OPERATOR_MAP_TRANSPORT_MODES:
@@ -204,6 +211,8 @@ def build_operator_map_state(
         "vehicles": vehicles,
         "task_paths": task_paths,
     }
+    if map_data_status is not None:
+        state["map_data_status"] = dict(map_data_status)
     boundary = scenario.get("exploration_boundary")
     if isinstance(boundary, dict):
         state["task_boundary"] = boundary
@@ -224,6 +233,151 @@ def _quaternion(value: Any) -> dict[str, float]:
 
 def _sample(message: Any = None) -> tuple[Any, float] | None:
     return None if message is None else (message, time.time())
+
+
+def _map_vehicle_skeleton(vehicle: dict[str, Any]) -> dict[str, Any]:
+    """Keep connection state while withholding unprojected ROS geometry."""
+
+    source_state = vehicle.get("state")
+    source_state = source_state if isinstance(source_state, dict) else {}
+    return {
+        "vehicle_id": str(vehicle.get("vehicle_id", "")),
+        "state": {"connected": bool(source_state.get("connected", False))},
+    }
+
+
+def _project_map_vehicle(
+    vehicle: dict[str, Any], coordinate_evidence: dict[str, Any]
+) -> dict[str, Any]:
+    """Convert one telemetry vehicle to the frozen operator-map world frame."""
+
+    projected = _map_vehicle_skeleton(vehicle)
+    source_state = vehicle.get("state")
+    source_state = source_state if isinstance(source_state, dict) else {}
+    position = source_state.get("position")
+    if position is None:
+        return projected
+
+    source_frame_id = source_state.get("position_frame")
+    if source_frame_id != coordinate_evidence["source_frame_id"]:
+        raise ValueError("operator_map_coordinate_evidence_source_frame_mismatch")
+
+    target_state = projected["state"]
+    target_state["position"] = transform_operator_map_vector(
+        coordinate_evidence, position, translate=True
+    )
+    target_state["position_frame"] = coordinate_evidence["target_frame_id"]
+    orientation = source_state.get("orientation")
+    if orientation is not None:
+        transformed_orientation = transform_operator_map_orientation(coordinate_evidence, orientation)
+        if transformed_orientation is not None:
+            target_state["orientation"] = transformed_orientation
+
+    for field, pseudovector in (("linear_velocity", False), ("angular_velocity", True)):
+        value = source_state.get(field)
+        source_velocity_frame = source_state.get(f"{field}_frame")
+        # Odometry twist may be body-frame data. It is not safe to display as
+        # a Factory-world vector unless the producer explicitly declares the
+        # same source frame as the coordinate evidence.
+        if value is not None and source_velocity_frame == coordinate_evidence["source_frame_id"]:
+            target_state[field] = transform_operator_map_vector(
+                coordinate_evidence, value, translate=False, pseudovector=pseudovector
+            )
+            target_state[f"{field}_frame"] = coordinate_evidence["target_frame_id"]
+    return projected
+
+
+def _path_metadata(path: dict[str, Any], *, run_id: str) -> dict[str, Any]:
+    result = {
+        key: path[key]
+        for key in ("semantics", "vehicle_scope", "source_topic", "updated_at")
+        if key in path
+    }
+    result["run_id"] = run_id
+    return result
+
+
+def _project_map_task_paths(
+    task_paths: dict[str, dict[str, Any]],
+    *,
+    coordinate_evidence: dict[str, Any] | None,
+    run_id: str,
+) -> dict[str, dict[str, Any]]:
+    """Project only paths that explicitly declare the evidence source frame."""
+
+    projected: dict[str, dict[str, Any]] = {}
+    for kind in ("expected", "future"):
+        path = task_paths.get(kind)
+        if not isinstance(path, dict):
+            continue
+        metadata = _path_metadata(path, run_id=run_id)
+        if coordinate_evidence is None:
+            projected[kind] = {
+                **metadata,
+                "status": "pending_coordinate_evidence",
+                "reason_code": "operator_map_coordinate_evidence_missing",
+            }
+            continue
+        source_frame_id = path.get("frame_id")
+        points = path.get("points")
+        if not isinstance(source_frame_id, str) or not isinstance(points, list):
+            projected[kind] = {
+                **metadata,
+                "status": "rejected",
+                "reason_code": "operator_map_task_path_source_invalid",
+            }
+            continue
+        try:
+            target_points = transform_operator_map_points(
+                points,
+                source_frame_id=source_frame_id,
+                coordinate_evidence=coordinate_evidence,
+            )
+        except ValueError as exc:
+            projected[kind] = {**metadata, "status": "rejected", "reason_code": str(exc)}
+            continue
+        projected[kind] = {
+            **metadata,
+            "status": "available",
+            "frame_id": coordinate_evidence["target_frame_id"],
+            "points": target_points,
+        }
+    return projected
+
+
+def project_live_operator_map_frame(
+    *,
+    vehicles: list[dict[str, Any]],
+    task_paths: dict[str, dict[str, Any]],
+    coordinate_evidence: dict[str, Any] | None,
+    run_id: str,
+) -> tuple[list[dict[str, Any]], dict[str, dict[str, Any]], dict[str, str]]:
+    """Build display-only live map data without changing control telemetry.
+
+    A source-frame failure rejects the current map frame, but returns a valid
+    empty geometry envelope. The caller can therefore keep publishing runtime
+    readiness and flight telemetry without turning a display contract failure
+    into a process restart or a control intervention.
+    """
+
+    map_paths = _project_map_task_paths(
+        task_paths, coordinate_evidence=coordinate_evidence, run_id=run_id
+    )
+    if coordinate_evidence is None:
+        return (
+            [_map_vehicle_skeleton(vehicle) for vehicle in vehicles],
+            map_paths,
+            {"state": "accepted", "reason_code": ""},
+        )
+    try:
+        map_vehicles = [_project_map_vehicle(vehicle, coordinate_evidence) for vehicle in vehicles]
+    except ValueError as exc:
+        return (
+            [_map_vehicle_skeleton(vehicle) for vehicle in vehicles],
+            map_paths,
+            {"state": "rejected", "reason_code": str(exc)},
+        )
+    return map_vehicles, map_paths, {"state": "accepted", "reason_code": ""}
 
 
 def load_mission_status(
@@ -308,6 +462,19 @@ class RosRuntimeSidecar:
             requested_coordinate_contract_id=args.coordinate_contract_id,
             coordinate_contract_status=args.coordinate_contract_status,
         )
+        self.coordinate_evidence: dict[str, Any] | None = None
+        self.coordinate_evidence_sha256 = ""
+        coordinate_evidence_path = getattr(args, "coordinate_evidence", None)
+        if coordinate_evidence_path is not None:
+            self.coordinate_evidence, self.coordinate_evidence_sha256 = load_coordinate_evidence(
+                coordinate_evidence_path,
+                map_snapshot=self.operator_map,
+                snapshot_hash=self.operator_map_snapshot_hash,
+            )
+            # The frozen map identity remains unchanged. Only a separately
+            # audited evidence artifact can lift the display state to verified.
+            self.operator_map = dict(self.operator_map)
+            self.operator_map["coordinate_contract_status"] = "verified"
         manifest_count = self.manifest.get("vehicle_count", args.vehicle_count)
         if manifest_count != args.vehicle_count:
             raise ValueError("sidecar_vehicle_count_manifest_mismatch")
@@ -563,12 +730,15 @@ class RosRuntimeSidecar:
             telemetry["state"] = {"connected": bool(msg.connected), "armed": bool(msg.armed), "mode": msg.mode}
         if vehicle["odom"]:
             msg = vehicle["odom"][0]
+            velocity_frame = str(getattr(msg, "child_frame_id", "") or msg.header.frame_id)
             telemetry["state"].update({
                 "position": _vector(msg.pose.pose.position),
                 "position_frame": str(msg.header.frame_id),
                 "orientation": _quaternion(msg.pose.pose.orientation),
                 "linear_velocity": _vector(msg.twist.twist.linear),
                 "angular_velocity": _vector(msg.twist.twist.angular),
+                "linear_velocity_frame": velocity_frame,
+                "angular_velocity_frame": velocity_frame,
             })
         if vehicle["position_command"]:
             msg = vehicle["position_command"][0]
@@ -629,6 +799,12 @@ class RosRuntimeSidecar:
         }
         atomic_write_json(self.run_dir / "RUNTIME_STATUS.json", status_payload)
         vehicles = [self._vehicle_telemetry(vehicle_id) for vehicle_id in self.vehicle_ids]
+        map_vehicles, map_task_paths, map_data_status = project_live_operator_map_frame(
+            vehicles=vehicles,
+            task_paths=self.task_paths,
+            coordinate_evidence=self.coordinate_evidence,
+            run_id=self.manifest["run_id"],
+        )
         self.map_sequence += 1
         map_state = build_operator_map_state(
             manifest=self.manifest,
@@ -640,14 +816,21 @@ class RosRuntimeSidecar:
             playback_state=self.args.replay_state,
             playback_time_s=self.args.replay_time_s,
             bag_id=self.args.replay_bag_id,
-            vehicles=vehicles,
-            task_paths=self.task_paths,
+            vehicles=map_vehicles,
+            task_paths=map_task_paths,
+            map_data_status=map_data_status,
         )
         telemetry: dict[str, Any] = {
             "schema": "mosim.runtime_telemetry.v2", "run_id": self.manifest["run_id"], "timestamp": now,
             "vehicle_count": len(vehicles), "readiness": status_payload, "vehicles": vehicles,
             "task_paths": self.task_paths,
             "map_state": map_state,
+            "operator_map_coordinate_evidence": {
+                "status": "verified" if self.coordinate_evidence is not None else "pending_runtime_validation",
+                "evidence_id": self.coordinate_evidence.get("evidence_id", "")
+                if self.coordinate_evidence is not None else "",
+                "sha256": self.coordinate_evidence_sha256,
+            },
             "mission_status": load_mission_status(
                 self.run_dir / "mission_status.json",
                 expected_run_id=self.manifest["run_id"],
@@ -698,6 +881,14 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--coordinate-contract-id", default="")
     parser.add_argument(
+        "--coordinate-evidence",
+        type=Path,
+        help=(
+            "Reviewed mosim.operator_map_coordinate_evidence.v1 bound to the frozen "
+            "RunManifest map snapshot. Required before live geometry is drawable."
+        ),
+    )
+    parser.add_argument(
         "--coordinate-contract-status",
         choices=tuple(sorted(COORDINATE_CONTRACT_STATUSES)),
         default="",
@@ -733,6 +924,8 @@ def main() -> int:
         raise SystemExit("live_ros1 map transport cannot declare rosbag replay fields")
     if args.transport_mode == "rosbag_replay" and not args.replay_bag_id:
         raise SystemExit("rosbag_replay map transport requires --replay-bag-id")
+    if args.coordinate_evidence is not None and args.coordinate_contract_status:
+        raise SystemExit("coordinate evidence cannot be combined with a status override")
     args.run_dir.mkdir(parents=True, exist_ok=True)
     import rospy
     rospy.init_node("mosim_orchestrator_runtime_sidecar", anonymous=False)

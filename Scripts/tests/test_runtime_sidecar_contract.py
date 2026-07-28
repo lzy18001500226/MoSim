@@ -103,6 +103,8 @@ def test_runtime_wrapper_starts_sidecar_and_reuses_ftc_plugin() -> None:
     assert '--body-name "uav1::base_link"' in wrapper
     assert '--expected-path-topic "${expected_path_topic}"' in wrapper
     assert '--future-marker-topic "${future_marker_topic}"' in wrapper
+    assert 'ORCHESTRATOR_MAP_COORDINATE_EVIDENCE' in wrapper
+    assert 'sidecar_coordinate_args+=(--coordinate-evidence "${ORCHESTRATOR_MAP_COORDINATE_EVIDENCE}")' in wrapper
     assert 'start_sidecar 1 "/mosim/px4ctrl/reference_path"' in wrapper
     assert 'start_sidecar 1 "/mosim/goal4/target_path" "/planning_vis/trajectory"' in wrapper
     assert 'start_sidecar 3 "/mosim/goal5/target_path"' in wrapper
@@ -163,6 +165,9 @@ def test_sidecar_exports_only_real_reference_and_future_path_sources() -> None:
     assert '"mission_status": load_mission_status(' in sidecar
     assert 'payload.get("run_id") == expected_run_id' in sidecar
     assert '"transport_state": "terminal" if terminal' in sidecar
+    assert '"--coordinate-evidence"' in sidecar
+    assert "project_live_operator_map_frame(" in sidecar
+    assert "coordinate evidence cannot be combined with a status override" in sidecar
 
 
 def test_generated_backend_ensure_is_fail_closed() -> None:

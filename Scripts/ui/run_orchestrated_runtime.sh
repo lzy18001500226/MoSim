@@ -69,6 +69,7 @@ start_sidecar() {
   local ready_timeout_s="${ORCHESTRATOR_RUNTIME_READY_TIMEOUT_S:-90}"
   local sidecar_readiness_args=()
   local sidecar_path_args=()
+  local sidecar_coordinate_args=()
   if [[ "${ORCHESTRATOR_REQUIRE_CONTROLLER_COMMAND:-true}" == "false" ]]; then
     sidecar_readiness_args+=(--skip-controller-command-readiness)
   fi
@@ -80,6 +81,9 @@ start_sidecar() {
   fi
   if [[ -n "${future_marker_topic}" ]]; then
     sidecar_path_args+=(--future-marker-topic "${future_marker_topic}")
+  fi
+  if [[ -n "${ORCHESTRATOR_MAP_COORDINATE_EVIDENCE:-}" ]]; then
+    sidecar_coordinate_args+=(--coordinate-evidence "${ORCHESTRATOR_MAP_COORDINATE_EVIDENCE}")
   fi
   set +u
   source /opt/ros/noetic/setup.bash
@@ -96,6 +100,7 @@ start_sidecar() {
     --ready-timeout-s "${ready_timeout_s}" \
     "${sidecar_readiness_args[@]}" \
     "${sidecar_path_args[@]}" \
+    "${sidecar_coordinate_args[@]}" \
     > "${ORCHESTRATOR_RUN_DIR}/runtime_sidecar.log" 2>&1 &
   SIDECAR_PID="$!"
   printf '%s\n' "${SIDECAR_PID}" > "${ORCHESTRATOR_RUN_DIR}/runtime_sidecar_pid.txt"

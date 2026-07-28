@@ -42,6 +42,7 @@ Item {
         ? factoryImage.sourceSize.width / factoryImage.sourceSize.height
         : 2048.0 / 800.0
     readonly property var mapMetadata: mapState.map || ({})
+    readonly property var mapDataStatus: mapState.map_data_status || ({})
     readonly property var mapTransport: mapState.transport || ({})
     readonly property bool manifestMatchesRun: runId.length > 0 && runManifest.run_id === runId
             && String(runManifest.experiment_profile_id || "").length > 0
@@ -77,8 +78,9 @@ Item {
             return ["playing", "paused", "completed"].indexOf(String(mapTransport.playback_state || "")) >= 0
         return false
     }
+    readonly property bool mapFrameAccepted: String(mapDataStatus.state || "accepted") === "accepted"
     readonly property bool mapStateReady: mapConfigValid && mapIdentityMatches && mapTransportFresh
-            && String(mapMetadata.coordinate_contract_status || "") === "verified"
+            && String(mapMetadata.coordinate_contract_status || "") === "verified" && mapFrameAccepted
     readonly property var vehicles: mapStateReady && mapState.vehicles && mapState.vehicles.length !== undefined
         ? mapState.vehicles : []
     readonly property string taskPathSummary: taskPathStatusText()
@@ -218,6 +220,15 @@ Item {
             return "地图或 Profile 身份不匹配"
         if (String(mapMetadata.coordinate_contract_status || "") !== "verified")
             return "坐标契约待验证"
+        if (!mapFrameAccepted) {
+            var reason = String(mapDataStatus.reason_code || "")
+            if (reason === "operator_map_coordinate_evidence_source_frame_mismatch")
+                return "实时地图坐标系与证据不匹配"
+            if (reason === "operator_map_coordinate_vector_invalid"
+                    || reason === "operator_map_coordinate_orientation_invalid")
+                return "实时地图坐标数据无效"
+            return "实时地图帧已拒绝"
+        }
         if (String(mapTransport.mode || "") === "live_ros1")
             return "实时地图数据已过期"
         if (String(mapTransport.mode || "") === "rosbag_replay")

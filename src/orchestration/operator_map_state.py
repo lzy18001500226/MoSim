@@ -18,6 +18,7 @@ OPERATOR_MAP_IDENTITY_FIELDS = (
     "coordinate_contract_id",
 )
 REPLAY_STATES = frozenset({"playing", "paused", "completed", "failed"})
+MAP_DATA_STATES = frozenset({"accepted", "rejected"})
 VEHICLE_ID_PATTERN = re.compile(r"^uav([1-9])$")
 MAX_PATH_POINTS = 1200
 
@@ -153,6 +154,20 @@ def _validate_formation_target(value: Any, *, bounds: dict[str, float]) -> None:
     _validate_point({"x": target[0], "y": target[1]}, bounds, "operator_map_formation_target_invalid")
 
 
+def _validate_map_data_status(value: Any) -> None:
+    """Validate an optional per-frame display rejection without touching flight state."""
+
+    if value is None:
+        return
+    status = _mapping(value, "operator_map_data_status_invalid")
+    state = status.get("state")
+    reason_code = status.get("reason_code", "")
+    if state not in MAP_DATA_STATES or not isinstance(reason_code, str):
+        raise ValueError("operator_map_data_status_invalid")
+    if state == "rejected" and not reason_code:
+        raise ValueError("operator_map_data_status_invalid")
+
+
 def validate_operator_map_state(value: Any, *, manifest: dict[str, Any]) -> None:
     """Reject map frames that do not belong to the frozen run/map contract.
 
@@ -234,6 +249,7 @@ def validate_operator_map_state(value: Any, *, manifest: dict[str, Any]) -> None
         world_frame=world_frame,
         coordinate_verified=coordinate_verified,
     )
+    _validate_map_data_status(state.get("map_data_status"))
     if "task_boundary" in state:
         _validate_boundary(state["task_boundary"], bounds=bounds)
     if "formation_target" in state:
