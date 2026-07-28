@@ -246,6 +246,9 @@ def test_factory_floorplan_is_packaged_for_the_flight_console() -> None:
     assert "showVehicles: root.showMapVehicles" in fly_qml
     assert "showActualTracks: root.showMapActualTracks" in fly_qml
     assert 'text: "二维地图图层"' in fly_qml
+    assert "property bool replayTelemetryMonitoring: false" in fly_qml
+    assert 'text: root.replayTelemetryMonitoring ? "停止回放监看" : "开始回放监看"' in fly_qml
+    assert "runtimeTelemetrySourceText()" in fly_qml
     assert "WindowContainer" not in fly_qml
     assert "setUnrealOverlayHole" not in fly_qml
 
@@ -339,6 +342,8 @@ def test_competition_console_exposes_chinese_tasks_and_native_manual_control() -
     assert 'text: "飞机位置与航向"' in qml
     assert 'text: "实际飞行轨迹"' in qml
     assert 'text: "规划器未来轨迹"' in qml
+    assert "actualTrackSourceIdentity" in fly_map
+    assert "actualTrackLastSequence" in fly_map
     assert 'text: "场景哈希："' not in qml
     assert 'QGCLabel { text: "任务Adapter确认"; font.bold: true }' in qml
     assert 'text: "Adapter：" + String(missionStatus().adapter_id || "-")' in qml

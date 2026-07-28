@@ -27,6 +27,7 @@ Item {
     property bool showMapFuturePath: true
     property bool showMapTaskBoundary: true
     property bool showMapFormationTarget: true
+    property bool replayTelemetryMonitoring: false
 
     property var parentToolInsets
     property var totalToolInsets: toolInsets
@@ -299,7 +300,8 @@ Item {
         repeat: true
         running: mosimOrchestrator.runId !== ""
                  && (mosimOrchestrator.lifecycleState === "starting"
-                     || mosimOrchestrator.lifecycleState === "running")
+                     || mosimOrchestrator.lifecycleState === "running"
+                     || replayTelemetryMonitoring)
         onTriggered: {
             if (!mosimOrchestrator.busy)
                 mosimOrchestrator.refreshTelemetry()
@@ -309,9 +311,22 @@ Item {
     function runtimeTelemetryFresh() {
         var telemetry = mosimOrchestrator.runtimeTelemetry || ({})
         var timestamp = Number(telemetry.timestamp || 0)
+        var transport = telemetry.map_state ? telemetry.map_state.transport || ({}) : ({})
+        if (telemetry.run_id === mosimOrchestrator.runId && String(transport.mode || "") === "rosbag_replay")
+            return ["playing", "paused", "completed"].indexOf(String(transport.playback_state || "")) >= 0
         return telemetry.run_id === mosimOrchestrator.runId
                 && timestamp > 0
                 && Math.abs(Date.now() / 1000.0 - timestamp) <= 2.5
+    }
+
+    function runtimeTelemetrySourceText() {
+        var telemetry = mosimOrchestrator.runtimeTelemetry || ({})
+        var transport = telemetry.map_state ? telemetry.map_state.transport || ({}) : ({})
+        if (String(transport.mode || "") === "rosbag_replay") {
+            var state = String(transport.playback_state || "")
+            return state === "completed" ? "Rosbag回放遥测：已完成" : "Rosbag回放遥测：" + state
+        }
+        return "Sidecar实时遥测"
     }
 
     function runtimeVehicles() {
@@ -910,7 +925,7 @@ Item {
                         QGCLabel { text: "逐机运行状态"; font.bold: true }
                         QGCLabel {
                             text: runtimeTelemetryFresh()
-                                  ? "Sidecar实时遥测：新鲜，且属于当前运行编号"
+                                  ? runtimeTelemetrySourceText() + "，且属于当前运行编号"
                                   : "Sidecar实时遥测：不可用或已过期"
                             color: runtimeTelemetryFresh() ? qgcPal.colorGreen : qgcPal.colorRed
                             font.bold: true
@@ -1006,6 +1021,16 @@ Item {
                             Layout.fillWidth: true
                             QGCButton { text: "刷新运行状态"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.refreshState() }
                             QGCButton { text: "刷新遥测"; Layout.fillWidth: true; enabled: !mosimOrchestrator.busy; onClicked: mosimOrchestrator.refreshTelemetry() }
+                        }
+                        QGCButton {
+                            text: root.replayTelemetryMonitoring ? "停止回放监看" : "开始回放监看"
+                            Layout.fillWidth: true
+                            enabled: mosimOrchestrator.runId !== ""
+                            onClicked: {
+                                root.replayTelemetryMonitoring = !root.replayTelemetryMonitoring
+                                if (root.replayTelemetryMonitoring && !mosimOrchestrator.busy)
+                                    mosimOrchestrator.refreshTelemetry()
+                            }
                         }
                     }
                 }

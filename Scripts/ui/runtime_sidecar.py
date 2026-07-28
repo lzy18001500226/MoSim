@@ -123,6 +123,8 @@ def resolve_runtime_operator_map(
         raise ValueError("operator_map_cli_coordinate_contract_override_mismatch")
     if coordinate_contract_status and coordinate_contract_status not in COORDINATE_CONTRACT_STATUSES:
         raise ValueError("operator_map_coordinate_status_invalid")
+    if coordinate_contract_status == "verified":
+        raise ValueError("operator_map_coordinate_evidence_required")
     state_map = _json_copy(snapshot)
     if coordinate_contract_status:
         state_map["coordinate_contract_status"] = coordinate_contract_status

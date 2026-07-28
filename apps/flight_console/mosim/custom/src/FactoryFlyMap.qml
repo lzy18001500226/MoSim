@@ -20,6 +20,8 @@ Item {
     property var actualTracksByVehicle: ({})
     property int actualTrackRevision: 0
     property string actualTrackRunId: ""
+    property string actualTrackSourceIdentity: ""
+    property int actualTrackLastSequence: 0
     property bool showVehicles: true
     property bool showActualTracks: true
     property bool showExpectedPath: true
@@ -89,6 +91,8 @@ Item {
         actualTracksByVehicle = ({})
         actualTrackRevision += 1
         actualTrackRunId = runId
+        actualTrackSourceIdentity = String(mapTransport.mode || "") + "|" + String(mapTransport.bag_id || "")
+        actualTrackLastSequence = 0
     }
 
     function validWorldPoint(point) {
@@ -126,7 +130,10 @@ Item {
     function appendActualTracks() {
         if (!mapStateReady)
             return
-        if (actualTrackRunId !== runId)
+        var sourceIdentity = String(mapTransport.mode || "") + "|" + String(mapTransport.bag_id || "")
+        var sequence = Number(mapTransport.sequence || 0)
+        if (actualTrackRunId !== runId || actualTrackSourceIdentity !== sourceIdentity
+                || (actualTrackLastSequence > 0 && sequence > 0 && sequence < actualTrackLastSequence))
             resetTracks()
         var nextTracks = actualTracksByVehicle
         var changed = false
@@ -152,6 +159,7 @@ Item {
             actualTracksByVehicle = nextTracks
             actualTrackRevision += 1
         }
+        actualTrackLastSequence = Math.max(actualTrackLastSequence, sequence)
     }
 
     function taskPath(kind) {

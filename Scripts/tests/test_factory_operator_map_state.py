@@ -127,15 +127,13 @@ def test_replay_requires_a_bag_identity_and_valid_coordinate_status() -> None:
 
 def test_runtime_map_uses_the_manifest_snapshot_and_rejects_cli_identity_overrides() -> None:
     manifest = _manifest()
-    state_map, snapshot_hash = resolve_runtime_operator_map(
-        manifest,
-        requested_map_id="factory_l2",
-        coordinate_contract_status="verified",
-    )
+    state_map, snapshot_hash = resolve_runtime_operator_map(manifest, requested_map_id="factory_l2")
 
     assert state_map["map_id"] == "factory_l2"
-    assert state_map["coordinate_contract_status"] == "verified"
+    assert state_map["coordinate_contract_status"] == "pending_runtime_validation"
     assert snapshot_hash == manifest["operator_map_snapshot_hash"]
+    with pytest.raises(ValueError, match="operator_map_coordinate_evidence_required"):
+        resolve_runtime_operator_map(manifest, coordinate_contract_status="verified")
     with pytest.raises(ValueError, match="operator_map_cli_map_override_mismatch"):
         resolve_runtime_operator_map(manifest, requested_map_id="city_l3")
     with pytest.raises(ValueError, match="operator_map_cli_coordinate_contract_override_mismatch"):
