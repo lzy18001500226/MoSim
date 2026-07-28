@@ -9,6 +9,7 @@
 #include "CollisionQueryParams.h"
 #include "CollisionShape.h"
 #include "Engine/HitResult.h"
+#include "Framework/Application/SlateApplication.h"
 #include "InputCoreTypes.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
@@ -71,7 +72,7 @@ void AMworksReviewCameraPawn::BeginPlay()
     UE_LOG(
         LogTemp,
         Display,
-        TEXT("MWORKS review camera active at location=(%.1f, %.1f, %.1f) rotation=(pitch=%.1f, yaw=%.1f, roll=%.1f) head_light=%s. Controls: hold RMB+mouse look, WASD move, Z/E down/up, arrows look/orbit, Q cycle formation/UAV views, Shift fast, Ctrl slow."),
+        TEXT("MWORKS review camera active at location=(%.1f, %.1f, %.1f) rotation=(pitch=%.1f, yaw=%.1f, roll=%.1f) head_light=%s. Controls: N near, M far, arrows orbit, Q cycle formation/UAV views."),
         InitialCameraLocation.X,
         InitialCameraLocation.Y,
         InitialCameraLocation.Z,
@@ -134,7 +135,15 @@ void AMworksReviewCameraPawn::SetupPlayerInputComponent(UInputComponent* PlayerI
     PlayerInputComponent->BindAxis(TEXT("MworksReviewLookUp"), this, &AMworksReviewCameraPawn::LookUpKeyboard);
     PlayerInputComponent->BindAxis(TEXT("Turn"), this, &AMworksReviewCameraPawn::MouseTurn);
     PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AMworksReviewCameraPawn::MouseLookUp);
+    PlayerInputComponent->BindAxis(TEXT("MworksReviewZoom"), this, &AMworksReviewCameraPawn::AdjustFollowDistance);
     PlayerInputComponent->BindAction(TEXT("MworksReviewCycleTarget"), IE_Pressed, this, &AMworksReviewCameraPawn::CycleFollowView);
+    PlayerInputComponent->BindAction(TEXT("MworksReviewZoomIn"), IE_Pressed, this, &AMworksReviewCameraPawn::ZoomFollowIn);
+    PlayerInputComponent->BindAction(TEXT("MworksReviewZoomOut"), IE_Pressed, this, &AMworksReviewCameraPawn::ZoomFollowOut);
+    PlayerInputComponent->BindAction(TEXT("MworksReviewOrbitLeft"), IE_Pressed, this, &AMworksReviewCameraPawn::NudgeFollowLeft);
+    PlayerInputComponent->BindAction(TEXT("MworksReviewOrbitRight"), IE_Pressed, this, &AMworksReviewCameraPawn::NudgeFollowRight);
+    PlayerInputComponent->BindAction(TEXT("MworksReviewOrbitUp"), IE_Pressed, this, &AMworksReviewCameraPawn::NudgeFollowUp);
+    PlayerInputComponent->BindAction(TEXT("MworksReviewOrbitDown"), IE_Pressed, this, &AMworksReviewCameraPawn::NudgeFollowDown);
+    PlayerInputComponent->BindAction(TEXT("MworksReviewReleasePointer"), IE_Pressed, this, &AMworksReviewCameraPawn::ReleaseReviewPointer);
 
     UE_LOG(LogTemp, Display, TEXT("MWORKS review camera input bindings installed."));
 }
@@ -550,7 +559,17 @@ void AMworksReviewCameraPawn::ApplyFollowOrbitInput(float DeltaSeconds)
     const float PolledLookUpAxis = AxisFromKeys(PlayerController, EKeys::Up, EKeys::Down);
     const float OrbitYawAxis = FMath::Abs(TurnKeyboardAxis) > KINDA_SMALL_NUMBER ? TurnKeyboardAxis : PolledTurnAxis;
     const float OrbitElevationAxis = FMath::Abs(LookUpKeyboardAxis) > KINDA_SMALL_NUMBER ? LookUpKeyboardAxis : PolledLookUpAxis;
-    if (FMath::Abs(OrbitYawAxis) <= KINDA_SMALL_NUMBER && FMath::Abs(OrbitElevationAxis) <= KINDA_SMALL_NUMBER)
+    float MouseDeltaX = 0.0f;
+    float MouseDeltaY = 0.0f;
+    if (PlayerController->IsInputKeyDown(EKeys::LeftMouseButton) ||
+        PlayerController->IsInputKeyDown(EKeys::RightMouseButton))
+    {
+        PlayerController->GetInputMouseDelta(MouseDeltaX, MouseDeltaY);
+    }
+    if (FMath::Abs(OrbitYawAxis) <= KINDA_SMALL_NUMBER &&
+        FMath::Abs(OrbitElevationAxis) <= KINDA_SMALL_NUMBER &&
+        FMath::Abs(MouseDeltaX) <= KINDA_SMALL_NUMBER &&
+        FMath::Abs(MouseDeltaY) <= KINDA_SMALL_NUMBER)
     {
         return;
     }
@@ -561,8 +580,10 @@ void AMworksReviewCameraPawn::ApplyFollowOrbitInput(float DeltaSeconds)
     float ElevationDeg = FMath::RadiansToDegrees(FMath::Atan2(FollowOffsetCm.Z, HorizontalRadius));
 
     AzimuthDeg -= OrbitYawAxis * FollowOrbitDegPerSec * SpeedScale * DeltaSeconds;
+    AzimuthDeg -= MouseDeltaX * FollowMouseOrbitSensitivityDeg;
     ElevationDeg = FMath::Clamp(
-        ElevationDeg + OrbitElevationAxis * FollowOrbitDegPerSec * SpeedScale * DeltaSeconds,
+        ElevationDeg + OrbitElevationAxis * FollowOrbitDegPerSec * SpeedScale * DeltaSeconds +
+            MouseDeltaY * FollowMouseOrbitSensitivityDeg,
         FollowMinElevationDeg,
         FollowMaxElevationDeg);
 
@@ -583,9 +604,11 @@ void AMworksReviewCameraPawn::ApplyFollowOrbitInput(float DeltaSeconds)
             UE_LOG(
                 LogTemp,
                 Display,
-                TEXT("MWORKS review camera follow orbit input yaw_axis=%.1f elevation_axis=%.1f radius_cm=%.2f offset=%s"),
+                TEXT("MWORKS review camera follow orbit input yaw_axis=%.1f elevation_axis=%.1f mouse_delta=(%.1f, %.1f) radius_cm=%.2f offset=%s"),
                 OrbitYawAxis,
                 OrbitElevationAxis,
+                MouseDeltaX,
+                MouseDeltaY,
                 Radius,
                 *FollowOffsetCm.ToCompactString());
         }
@@ -684,15 +707,29 @@ void AMworksReviewCameraPawn::ApplyReviewInputMode(APlayerController* PlayerCont
     }
 
     PlayerController->SetViewTarget(this);
-    PlayerController->bShowMouseCursor = false;
+    PlayerController->bShowMouseCursor = true;
     PlayerController->bEnableClickEvents = false;
     PlayerController->bEnableMouseOverEvents = false;
     PlayerController->SetIgnoreMoveInput(false);
     PlayerController->SetIgnoreLookInput(false);
 
-    FInputModeGameOnly InputMode;
-    InputMode.SetConsumeCaptureMouseDown(false);
+    if (FSlateApplication::IsInitialized())
+    {
+        FSlateApplication::Get().ReleaseAllPointerCapture();
+    }
+    FInputModeGameAndUI InputMode;
+    InputMode.SetHideCursorDuringCapture(false);
+    InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
     PlayerController->SetInputMode(InputMode);
+}
+
+void AMworksReviewCameraPawn::ReleaseReviewPointer()
+{
+    if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+    {
+        ApplyReviewInputMode(PlayerController);
+        UE_LOG(LogTemp, Display, TEXT("MWORKS review camera released pointer capture."));
+    }
 }
 
 void AMworksReviewCameraPawn::MoveForward(float Value)
@@ -728,6 +765,75 @@ void AMworksReviewCameraPawn::MouseTurn(float Value)
 void AMworksReviewCameraPawn::MouseLookUp(float Value)
 {
     MouseLookUpAxis = Value;
+}
+
+void AMworksReviewCameraPawn::AdjustFollowDistance(float Value)
+{
+    if (!bFollowTarget || FMath::Abs(Value) <= KINDA_SMALL_NUMBER || FollowOffsetCm.IsNearlyZero())
+    {
+        return;
+    }
+
+    const float CurrentDistance = FollowOffsetCm.Size();
+    const float NewDistance = FMath::Clamp(
+        CurrentDistance - Value * FollowZoomStepCm,
+        FollowMinDistanceCm,
+        FollowMaxDistanceCm);
+    FollowOffsetCm = FollowOffsetCm.GetSafeNormal() * NewDistance;
+}
+
+void AMworksReviewCameraPawn::ZoomFollowIn()
+{
+    AdjustFollowDistance(1.0f);
+}
+
+void AMworksReviewCameraPawn::ZoomFollowOut()
+{
+    AdjustFollowDistance(-1.0f);
+}
+
+void AMworksReviewCameraPawn::NudgeFollowLeft()
+{
+    OrbitFollowBy(FollowOrbitNudgeDeg, 0.0f);
+}
+
+void AMworksReviewCameraPawn::NudgeFollowRight()
+{
+    OrbitFollowBy(-FollowOrbitNudgeDeg, 0.0f);
+}
+
+void AMworksReviewCameraPawn::NudgeFollowUp()
+{
+    OrbitFollowBy(0.0f, -FollowOrbitNudgeDeg);
+}
+
+void AMworksReviewCameraPawn::NudgeFollowDown()
+{
+    OrbitFollowBy(0.0f, FollowOrbitNudgeDeg);
+}
+
+void AMworksReviewCameraPawn::OrbitFollowBy(float AzimuthDeltaDeg, float ElevationDeltaDeg)
+{
+    if (!bFollowTarget || FollowOffsetCm.IsNearlyZero())
+    {
+        return;
+    }
+
+    const float Radius = FollowOffsetCm.Size();
+    const float HorizontalRadius = FVector2D(FollowOffsetCm.X, FollowOffsetCm.Y).Size();
+    const float AzimuthDeg = FMath::RadiansToDegrees(FMath::Atan2(FollowOffsetCm.Y, FollowOffsetCm.X)) +
+        AzimuthDeltaDeg;
+    const float ElevationDeg = FMath::Clamp(
+        FMath::RadiansToDegrees(FMath::Atan2(FollowOffsetCm.Z, HorizontalRadius)) + ElevationDeltaDeg,
+        FollowMinElevationDeg,
+        FollowMaxElevationDeg);
+    const float AzimuthRad = FMath::DegreesToRadians(AzimuthDeg);
+    const float ElevationRad = FMath::DegreesToRadians(ElevationDeg);
+    const float NewHorizontalRadius = Radius * FMath::Cos(ElevationRad);
+    FollowOffsetCm = FVector(
+        NewHorizontalRadius * FMath::Cos(AzimuthRad),
+        NewHorizontalRadius * FMath::Sin(AzimuthRad),
+        Radius * FMath::Sin(ElevationRad));
 }
 
 void AMworksReviewCameraPawn::LogReviewCameraMotionIfNeeded(bool bMoved, bool bRotated)

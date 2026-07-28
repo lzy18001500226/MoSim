@@ -74,6 +74,38 @@ def test_unreal_receiver_and_frame_metrics_are_run_scoped() -> None:
     assert "-MoSimObservabilityRunId=$RunId" in launcher
 
 
+def test_fuel_ue_smoothing_uses_arrival_timing_without_changing_runtime_truth() -> None:
+    fuel_launcher = Path("Scripts/sunray/start_factory_fuel_single_exploration_review.ps1").read_text(
+        encoding="utf-8"
+    )
+    playback_header = Path(
+        "UE5/Bridge/Source/QuadrotorMworksBridge/Public/QuadrotorMworksPlaybackComponent.h"
+    ).read_text(encoding="utf-8")
+    playback = Path(
+        "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksPlaybackComponent.cpp"
+    ).read_text(encoding="utf-8")
+    gate = Path("Scripts/sunray/run_px4ctrl_ego_single_gate.sh").read_text(encoding="utf-8")
+
+    assert '"-MoSimPlaybackInterpolate"' in fuel_launcher
+    assert '"-MoSimPlaybackUseArrivalTiming"' in fuel_launcher
+    assert '"-MoSimPlaybackNominalRateHz=$UnrealPlaybackNominalRateHz"' in fuel_launcher
+    assert "bUseArrivalTimeForInterpolation" in playback_header
+    assert "FMath::Max(NominalDurationSeconds, ArrivalDurationSeconds)" in playback
+    assert "UE display smoothing only; Gazebo/MAVROS trajectories remain authoritative." in fuel_launcher
+    assert '--metrics-output "${RESULT_DIR}/observability/gazebo_ue_sender.json"' in gate
+
+
+def test_fuel_launcher_uses_nonoverflow_fastlio_localization_voxels() -> None:
+    fuel_launcher = Path("Scripts/sunray/start_factory_fuel_single_exploration_review.ps1").read_text(
+        encoding="utf-8"
+    )
+
+    assert "[double]$FastlioFilterSizeSurfM = 0.5" in fuel_launcher
+    assert "[double]$FastlioFilterSizeMapM = 0.5" in fuel_launcher
+    assert '"FASTLIO_FILTER_SIZE_SURF=$FastlioFilterSizeSurfM"' in fuel_launcher
+    assert '"FASTLIO_FILTER_SIZE_MAP=$FastlioFilterSizeMapM"' in fuel_launcher
+
+
 def test_ue_live_bridge_does_not_retransmit_stale_pose() -> None:
     path = Path("Scripts/UE5/stream_ros1_state_to_ue_udp.py")
     spec = importlib.util.spec_from_file_location("mosim_ue_streamer_test", path)
@@ -119,17 +151,45 @@ def test_ue_default_uav_pose_matches_gazebo_ground_spawn_height() -> None:
     assert '<arg name="uav1_init_z" default="0.2"/>' in gazebo_launch
 
 
-def test_qgc_keeps_unreal_native_container_mounted_during_overlays() -> None:
+def test_qgc_does_not_embed_or_control_the_unreal_window() -> None:
     qml = Path("apps/flight_console/mosim/custom/src/FlyViewCustomLayer.qml").read_text(encoding="utf-8")
     bridge = Path("apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.cc").read_text(
         encoding="utf-8"
     )
 
-    assert "visible: window !== null" in qml
-    assert "visible: window !== null && !mainWindow.mosimNativeOverlayVisible" not in qml
-    assert "setUnrealPresentationSuppressed(mainWindow.mosimNativeOverlayVisible)" in qml
-    assert "_unrealContainerReadyAttempt < 200" in bridge
-    assert "_unrealPresentationSuppressed ? SW_HIDE : SW_SHOWNA" in bridge
+    assert "WindowContainer" not in qml
+    assert "mosimOrchestrator.unrealWindow" not in qml
+    assert "setUnrealPresentationSuppressed" not in qml
+    assert "cycleUnrealView" not in qml
+    assert "zoomUnrealIn" not in qml
+    assert "zoomUnrealOut" not in qml
+    assert "_autoAttachUnrealAfterStart" not in bridge
+    assert "QTimer::singleShot(0, this, &MoSimOrchestratorBridge::refreshUnrealEmbedding)" not in bridge
+
+
+def test_standalone_ue_releases_pointer_capture_by_default() -> None:
+    input_config = Path("UE5/MoSimSceneLibrary/Config/DefaultInput.ini").read_text(encoding="utf-8")
+    camera_source = Path(
+        "UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.cpp"
+    ).read_text(encoding="utf-8")
+    camera_header = Path(
+        "UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MworksReviewCameraPawn.h"
+    ).read_text(encoding="utf-8")
+    launcher = Path("Scripts/ui/attach_orchestrated_displays.ps1").read_text(encoding="utf-8-sig")
+
+    assert "bCaptureMouseOnLaunch=False" in input_config
+    assert "DefaultViewportMouseCaptureMode=NoCapture" in input_config
+    assert "DefaultViewportMouseLockMode=DoNotLock" in input_config
+    assert 'ActionName="MworksReviewReleasePointer"' in input_config and "Key=Escape" in input_config
+    assert "MworksReviewReleasePointer" in camera_source
+    assert "ReleaseReviewPointer" in camera_header
+    assert "PlayerController->bShowMouseCursor = true;" in camera_source
+    assert "FSlateApplication::Get().ReleaseAllPointerCapture();" in camera_source
+    assert "InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);" in camera_source
+    assert "FInputModeGameOnly InputMode;" not in camera_source
+    assert "MoSimEmbeddedViewport" not in camera_source
+    assert "WindowsHWrapper.h" not in camera_source
+    assert "-MoSimEmbeddedViewport" not in launcher
 
 
 def test_basic_runner_guards_ros1_mavlink_startup_from_uxrce_failure() -> None:

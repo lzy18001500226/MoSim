@@ -290,7 +290,7 @@ if ($Display -contains "unreal") {
                 "-MoSimFollowCameraBackCm=231.25", "-MoSimFollowCameraRightCm=0",
                 "-MoSimFollowCameraUpCm=95", "-MoSimFollowCameraLocationInterpSpeed=0",
                 "-MoSimFollowCameraRotationInterpSpeed=0", "-MoSimNoReviewCollision",
-                "-MoSimEmbeddedViewport", "-MoSimObservabilityRunId=$RunId",
+                "-MoSimObservabilityRunId=$RunId",
                 "-MoSimUeReceiverMetrics=$ueReceiverMetrics", "-MoSimUeFrameMetrics=$ueFrameMetrics"
             )
             Start-TrackedProcess "unreal" $editor $ueArgs "unreal"

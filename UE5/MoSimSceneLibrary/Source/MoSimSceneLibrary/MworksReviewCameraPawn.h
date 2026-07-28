@@ -87,10 +87,25 @@ public:
     float FollowOrbitDegPerSec = 70.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowMouseOrbitSensitivityDeg = 0.18f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowOrbitNudgeDeg = 0.72f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
     float FollowMinElevationDeg = -80.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
     float FollowMaxElevationDeg = 80.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowZoomStepCm = 25.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowMinDistanceCm = 100.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Review Camera|Follow")
+    float FollowMaxDistanceCm = 1200.0f;
 
 protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MWORKS Review Camera")
@@ -119,6 +134,15 @@ private:
     void LookUpKeyboard(float Value);
     void MouseTurn(float Value);
     void MouseLookUp(float Value);
+    void AdjustFollowDistance(float Value);
+    void ZoomFollowIn();
+    void ZoomFollowOut();
+    void NudgeFollowLeft();
+    void NudgeFollowRight();
+    void NudgeFollowUp();
+    void NudgeFollowDown();
+    void ReleaseReviewPointer();
+    void OrbitFollowBy(float AzimuthDeltaDeg, float ElevationDeltaDeg);
     void LogReviewCameraMotionIfNeeded(bool bMoved, bool bRotated);
     void LogReviewCollisionIfNeeded(const FHitResult& Hit);
 
