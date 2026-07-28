@@ -26,16 +26,28 @@ def test_flight_simulation_and_ground_station_have_separate_owners() -> None:
     assert "managed UE viewport will start for that run_id" in ground
 
 
-def test_qgc_start_ack_opens_separate_runtime_status_terminal() -> None:
-    bridge = Path("apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.cc").read_text(encoding="utf-8")
-    header = Path("apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.h").read_text(encoding="utf-8")
+def test_qgc_command_surface_does_not_autostart_runtime() -> None:
+    operator_bridge = Path("apps/flight_console/mosim/custom/src/MoSimOperatorBridge.cc").read_text(
+        encoding="utf-8"
+    )
+    operator_qml = Path("apps/flight_console/mosim/custom/src/FlyViewCustomLayer.qml").read_text(
+        encoding="utf-8"
+    )
+    legacy_bridge = Path("apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.cc").read_text(
+        encoding="utf-8"
+    )
 
-    assert "void MoSimOrchestratorBridge::launchRuntimeStatusTerminal()" in bridge
-    assert "launchRuntimeStatusTerminal();" in bridge
-    assert 'QStringLiteral("cmd/启动Gazebo飞行仿真.cmd")' in bridge
-    assert 'QStringLiteral("cmd.exe")' in bridge
-    assert "QProcess::startDetached" in bridge
-    assert "void launchRuntimeStatusTerminal();" in header
+    assert "void MoSimOperatorBridge::copySelectedLaunchCommand()" in operator_bridge
+    assert "copyCommand(renderRuntimeCommand" in operator_bridge
+    assert "QProcess" not in operator_bridge
+    assert "startDetached" not in operator_bridge
+    assert "mosimOperator.copySelectedLaunchCommand()" in operator_qml
+
+    # The legacy bridge remains for compatibility, but the active QML must not
+    # route a launch through it or auto-open an additional terminal.
+    assert "void MoSimOrchestratorBridge::launchRuntimeStatusTerminal()" in legacy_bridge
+    assert "launchRuntimeStatusTerminal();" not in legacy_bridge
+    assert "mosimOrchestrator" not in operator_qml
 
 
 def test_ground_station_reconciles_duplicate_managed_unreal_processes() -> None:
@@ -85,12 +97,7 @@ def test_stop_script_uses_active_run_and_scoped_process_records() -> None:
 def test_operator_workflow_distinguishes_manual_and_automatic_flight_authority() -> None:
     workflow = Path("Docs/Workflows/qgc_ue_operator_startup.md").read_text(encoding="utf-8")
 
-    assert "使用 QGC 原生飞行操作解锁并起飞" in workflow
-    assert "未连接、未解锁或不在 `Position` 模式时" in workflow
-    assert "以下任务不要求操作者手动解锁" in workflow
-    assert "FUEL单机自主探索" in workflow
-    assert "三机固定编队避障" in workflow
-    assert "启动并执行自动任务" in workflow
-    assert "任务 Adapter 返回终态 ACK" in workflow
-    assert "不得再使用 QGC 手动解锁" in workflow
-    assert "UE 已嵌入且显示当前运行的飞机，不是上一 `run_id` 的残留画面" in workflow
+    assert "\u5f53\u524d\u5165\u53e3\uff1a`cmd/\u542f\u52a8MoSim\u5730\u9762\u7ad9.cmd`" in workflow
+    assert "\u5b83\u4e0d\u542f\u52a8 UE\u3001Gazebo\u3001PX4\u3001MAVROS\u3001RViz\u3001ROS \u8282\u70b9\u6216" in workflow
+    assert "\u6240\u6709\u8fd0\u884c\u547d\u4ee4\u5747\u7531\u7528\u6237\u5728\u4e00\u4e2a\u53ef\u89c1\u7ec8\u7aef\u6267\u884c" in workflow
+    assert "Plan View \u53ef\u7f16\u8f91\u539f\u751f QGC \u822a\u70b9\u548c\u8fb9\u754c\u8349\u6848" in workflow
