@@ -143,4 +143,5 @@ package GroundModel "地面模型"
       fillColor = {255, 255, 255},
       extent = {{-21.0, 21.0}, {21.0, -21.0}})}));
   extends Modelica.Icons.Package;
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end GroundModel;

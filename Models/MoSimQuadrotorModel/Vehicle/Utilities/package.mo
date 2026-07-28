@@ -34,4 +34,5 @@ package Utilities "附件"
       F_f := N * MoSimQuadrotorModel.Vehicle.Utilities.Functions.Step(V, -V_s, -1, V_s, 1) * MoSimQuadrotorModel.Vehicle.Utilities.Functions.Step(abs(V), V_s, Cst, Vtr, Cdy);
     end Friction;
   end Functions;
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Utilities;

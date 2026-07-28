@@ -70,7 +70,12 @@ PACKAGE_MEMBER_DECLARATION = re.compile(
     r"(?m)^\s*(?:package|model|block|record|function|connector|type|class)\s+([A-Za-z_]\w*)\b"
 )
 HIDDEN_BROWSER_PACKAGE_PATHS = (
-    "Vehicle/Examples/package.mo",
+    "Vehicle/Blocks/package.mo",
+    "Vehicle/Electricals/package.mo",
+    "Vehicle/GroundModel/package.mo",
+    "Vehicle/Mechanics/package.mo",
+    "Vehicle/Sensors/package.mo",
+    "Vehicle/Utilities/package.mo",
     "Vehicle/LegacyDiagnostics/package.mo",
     "Experiment/Probes/package.mo",
     "Experiment/Scenarios/package.mo",

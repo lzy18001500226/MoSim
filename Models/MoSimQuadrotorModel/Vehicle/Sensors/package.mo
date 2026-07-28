@@ -257,4 +257,5 @@ way and provides the result as output signal <strong>w</strong>
         extent = {{70, -30}, {120, -70}},
         textString = "w")}));
   end SpeedSensor;
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Sensors;

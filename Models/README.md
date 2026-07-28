@@ -37,19 +37,23 @@ Nested `package.mo` files define Modelica namespaces. They are not independent
 projects. A package is nested only when it owns a reusable subsystem or a
 large collection of peer models, such as the controller-route runner collection.
 
-## Hidden Compatibility Surface
+## Browser Visibility
 
-The following namespaces remain loadable for historical result trace-back but
-are hidden in the normal MWORKS browser. New models and active configuration
-must not depend on them:
+The normal MWORKS browser hides lower-level support packages and retained
+historical diagnostics. New models and active configuration may depend on their
+public classes, but they are not primary model-library entry points:
 
-- `Vehicle.Dynamics`: production actuator, rotor-dynamics, and physical-wrench building blocks.
+- `Vehicle.Blocks`, `Vehicle.Electricals`, `Vehicle.GroundModel`, `Vehicle.Mechanics`,
+  `Vehicle.Sensors`, and `Vehicle.Utilities`: implementation support packages.
 - `Vehicle.LegacyDiagnostics`: fixed-input plant smoke models.
-- `Vehicle.Examples`: legacy graphical examples.
 - `Experiment.Probes`, `Experiment.Scenarios`, and `Experiment.Templates`: retained
   diagnostic, historical scenario, and implementation-template sources.
 - `Guidance.Formation.Scenarios` and `Visualization.Diagnostics`: historical
   prototype and trace diagnostics.
+
+`Vehicle.Dynamics` remains visible as the production actuator, rotor-dynamics,
+and physical-wrench package. `Vehicle.Examples` also remains visible so the
+original graphical examples can be opened directly for report and demo review.
 
 The formal seven-scenario work is composed through a formal runner plus a
 trajectory and injection parameters. It does not require selecting one of the

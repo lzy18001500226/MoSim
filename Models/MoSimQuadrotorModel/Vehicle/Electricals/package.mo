@@ -165,4 +165,5 @@ package Electricals "电气系统"
         points = {{-11.0, 1.0}, {19.0, 1.0}},
         color = {0, 0, 127}));
   end Actuator;
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Electricals;

@@ -563,4 +563,5 @@ package Blocks "控制系统"
           color = {0, 0, 127}));
     end Controller;
   end Controller;
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Blocks;

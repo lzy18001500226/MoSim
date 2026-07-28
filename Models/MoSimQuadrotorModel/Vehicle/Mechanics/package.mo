@@ -777,4 +777,5 @@ package Mechanics "机械多体库"
         color = {95, 95, 95},
         thickness = 0.5));
   end QuadChassis;
+  annotation(__MWORKS(hide=true,version="26.3.0"));
 end Mechanics;
