@@ -220,6 +220,7 @@ def test_factory_floorplan_is_packaged_for_the_flight_console() -> None:
     catalog = json.loads(
         (ROOT / "Config" / "control_platform" / "operator_map_catalog.json").read_text(encoding="utf-8")
     )
+    assert catalog["default_map_id"] == "factory_l2"
     factory = catalog["maps"][0]
     assert factory["map_id"] == "factory_l2"
     assert factory["map_version"] == "v1"
@@ -229,6 +230,10 @@ def test_factory_floorplan_is_packaged_for_the_flight_console() -> None:
     assert factory["resource_url"] == "qrc:/Custom/maps/factory_l2/v1/floorplan.png"
     assert factory["world_bounds_m"]["max_x_m"] - factory["world_bounds_m"]["min_x_m"] > 1100
     assert factory["mission_publication"]["status"] == "blocked_until_runtime_round_trip_gate"
+    bridge_source = (CUSTOM / "src" / "MoSimOperatorBridge.cc").read_text(encoding="utf-8")
+    assert 'mapCatalog.value(QStringLiteral("default_map_id"))' in bridge_source
+    assert "requestedDefaultMapId" in bridge_source
+    assert "_defaultMapId" in bridge_source
 
 
 def test_plan_view_uses_georeferenced_factory_overlay_without_orchestrator() -> None:

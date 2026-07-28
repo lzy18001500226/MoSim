@@ -205,6 +205,7 @@ void MoSimOperatorBridge::loadCatalogs()
     _controllerSchemes.clear();
     _operatorMaps.clear();
     _operatorMap.clear();
+    _defaultMapId.clear();
     _runtimeBackendCatalog = readJsonObject(projectPath(QStringLiteral("Config/control_platform/runtime_backend_catalog.json")));
     const QVariantMap mapCatalog = readJsonObject(projectPath(QStringLiteral("Config/control_platform/operator_map_catalog.json")));
     for (const QVariant &value : mapCatalog.value(QStringLiteral("maps")).toList()) {
@@ -212,6 +213,10 @@ void MoSimOperatorBridge::loadCatalogs()
         if (candidate.value(QStringLiteral("enabled")).toBool()) {
             _operatorMaps.append(candidate);
         }
+    }
+    const QString requestedDefaultMapId = mapCatalog.value(QStringLiteral("default_map_id")).toString();
+    if (!mapForId(requestedDefaultMapId).isEmpty()) {
+        _defaultMapId = requestedDefaultMapId;
     }
 
     const QVariantMap catalog = readJsonObject(projectPath(QStringLiteral("Config/profiles/operator_profiles.json")));
@@ -362,9 +367,20 @@ void MoSimOperatorBridge::loadCatalogs()
         _selectedProfileId.clear();
         for (const QVariant &value : _operatorProfiles) {
             const QVariantMap profile = value.toMap();
-            if (profile.value(QStringLiteral("enabled")).toBool()) {
+            if (profile.value(QStringLiteral("enabled")).toBool()
+                && (_defaultMapId.isEmpty()
+                    || profile.value(QStringLiteral("operator_map_id")).toString() == _defaultMapId)) {
                 _selectedProfileId = profile.value(QStringLiteral("profile_id")).toString();
                 break;
+            }
+        }
+        if (_selectedProfileId.isEmpty()) {
+            for (const QVariant &value : _operatorProfiles) {
+                const QVariantMap profile = value.toMap();
+                if (profile.value(QStringLiteral("enabled")).toBool()) {
+                    _selectedProfileId = profile.value(QStringLiteral("profile_id")).toString();
+                    break;
+                }
             }
         }
         if (_selectedProfileId.isEmpty() && !_operatorProfiles.isEmpty()) {
@@ -539,13 +555,14 @@ QString MoSimOperatorBridge::controllerSchemeForProfile(const QString &profileId
 void MoSimOperatorBridge::syncSelectedMapFromProfile()
 {
     const QString profileMapId = selectedProfile().value(QStringLiteral("operator_map_id")).toString();
-    const QVariantMap map = mapForId(profileMapId);
+    const QString requestedMapId = profileMapId.isEmpty() ? _defaultMapId : profileMapId;
+    const QVariantMap map = mapForId(requestedMapId);
     if (map.isEmpty()) {
         _selectedMapId.clear();
         _operatorMap.clear();
         return;
     }
-    _selectedMapId = profileMapId;
+    _selectedMapId = requestedMapId;
     _operatorMap = map;
 }
 

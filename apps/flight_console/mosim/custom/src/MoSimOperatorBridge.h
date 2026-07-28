@@ -100,6 +100,7 @@ private:
     QString _selectedProfileId;
     QString _selectedControllerSchemeId;
     QString _selectedMapId;
+    QString _defaultMapId;
     QString _runId;
     QString _statusText = QStringLiteral("正在读取 MoSim 操作配置");
     QString _reasonCode = QStringLiteral("initializing");

@@ -1,5 +1,6 @@
 {
   "schema": "mosim.operator_map_catalog.v1",
+  "default_map_id": "factory_l2",
   "maps": [
     {
       "map_id": "factory_l2",
