@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Archive legacy exports and materialize current G5 native screenshots."""
+"""Index controller graphical screenshots without overstating simulation evidence."""
 
 from __future__ import annotations
 
@@ -17,6 +17,10 @@ MAP_PATH = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
 ACTIVE_ROOT = ROOT / "Docs" / "报告" / "图" / "控制器"
 ARCHIVE_ROOT = ROOT / "Docs" / "报告" / "图" / "归档" / "控制器旧导出资产_20260722"
 ARCHIVE_MANIFEST = ARCHIVE_ROOT / "LEGACY_CONTROLLER_EXPORT_ARCHIVE_MANIFEST.json"
+REVIEWED_ARCHIVE_ROOT = ROOT / "Docs" / "报告" / "图" / "归档" / "控制器未绑定截图候选_20260727"
+REVIEWED_ARCHIVE_MANIFEST = REVIEWED_ARCHIVE_ROOT / "UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json"
+REVIEWED_ARCHIVE_ROLE = "pre_v2_unbound_structure_candidate"
+REVIEWED_ARCHIVE_REVIEW_DATE = "2026-07-28"
 OUTPUT_ROOT = ROOT / "Docs" / "报告" / "审计" / "控制器原生截图归位"
 OUTPUT_JSON = OUTPUT_ROOT / "CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json"
 OUTPUT_MD = OUTPUT_ROOT / "CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.md"
@@ -36,7 +40,7 @@ FAMILIES = {
 }
 EXCLUSIONS = {
     "pid_awff_linear_eso": "已批准的 MWORKS Profile 设计项；尚无模型、Adapter、Runner 或图审对象。",
-    "px4ctrl": "工程/部署基线；MWORKS 等效核尚未实现，不伪造 MWORKS 图形模型。",
+    "px4ctrl": "工程/部署基线；已有独立 MWORKS 图形化闭环证据，但不纳入本批 46 条 MWORKS 控制器图审/对比范围。",
 }
 
 
@@ -139,6 +143,52 @@ def available_g5_structure_source(scheme_id: str) -> dict[str, Any] | None:
     return metadata
 
 
+def reviewed_archive_structure_sources() -> dict[str, dict[str, Any]]:
+    """Return user-reviewed historical graphical candidates keyed by controller ID.
+
+    These assets are allowed to illustrate controller internals after the user's
+    visual review. They remain distinct from current G5 packet-bound captures
+    and cannot establish a current-source simulation result.
+    """
+
+    if not REVIEWED_ARCHIVE_MANIFEST.is_file():
+        raise RebuildError(f"missing reviewed screenshot archive: {rp(REVIEWED_ARCHIVE_MANIFEST)}")
+    manifest = read(REVIEWED_ARCHIVE_MANIFEST)
+    if manifest.get("schema") != "mosim.unbound_controller_screenshot_archive.v1":
+        raise RebuildError("reviewed screenshot archive schema is invalid")
+    rows = manifest.get("files")
+    if not isinstance(rows, list):
+        raise RebuildError("reviewed screenshot archive has no file rows")
+
+    sources: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if not isinstance(row, dict) or row.get("role") != REVIEWED_ARCHIVE_ROLE:
+            continue
+        archived_path = row.get("archived_path")
+        source_sha256 = row.get("sha256")
+        if not isinstance(archived_path, str) or not isinstance(source_sha256, str):
+            raise RebuildError("reviewed screenshot archive row is incomplete")
+        source = ROOT / archived_path
+        if source.name != "01_图形模型.png" or not source.is_file():
+            raise RebuildError(f"reviewed structure screenshot is missing: {archived_path}")
+        if digest(source).lower() != source_sha256.lower():
+            raise RebuildError(f"reviewed structure screenshot hash drifted: {archived_path}")
+        scheme_id = source.parent.name
+        if scheme_id in sources:
+            raise RebuildError(f"duplicate reviewed structure screenshot: {scheme_id}")
+        width, height = png_dimensions(source)
+        sources[scheme_id] = {
+            "review_status": "user_visual_reviewed",
+            "review_date": REVIEWED_ARCHIVE_REVIEW_DATE,
+            "archive_manifest": rp(REVIEWED_ARCHIVE_MANIFEST),
+            "source_screenshot": rp(source),
+            "source_sha256": source_sha256,
+            "source_width": width,
+            "source_height": height,
+        }
+    return sources
+
+
 def current_rows() -> list[dict[str, Any]]:
     value = read(MAP_PATH)
     rows = value.get("schemes")
@@ -158,7 +208,7 @@ def current_rows() -> list[dict[str, Any]]:
     if len(by_id) != 48 or actual != expected:
         raise RebuildError(f"unexpected current-model distribution: {dict(actual)}")
     if by_id.get("px4ctrl", {}).get("mapping_state") != "pending_mworks_equivalent_core":
-        raise RebuildError("px4ctrl must remain pending its MWORKS-equivalent core")
+        raise RebuildError("px4ctrl catalog row must remain excluded from the 46-controller screenshot scope")
     if by_id.get("pid_awff_linear_eso", {}).get("mapping_state") != "planned_profile_no_model":
         raise RebuildError("pid_awff_linear_eso must remain a planned profile without a model")
     return rows
@@ -223,9 +273,9 @@ def write_readmes() -> None:
     )
     ACTIVE_ROOT.mkdir(parents=True, exist_ok=True)
     (ACTIVE_ROOT / "README.md").write_text(
-        "# 当前控制器原生窗口截图\n\n"
-        "本目录为 46 条当前 MWORKS 图审对象保留原生整窗截图槽位。每条路线的 01_图形模型.png 只能在当前 G5 packet 绑定原生截图后写入，且必须保持窗口原生宽高比；不得使用 MWORKS 导出画布、报告副本、历史结果图或裁切变形图。具体来源、冻结模型入口和哈希见 Docs/报告/审计/控制器原生截图归位/CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json。\n\n"
-        "02_最小闭环结果原生窗口.png 只允许在后续正式仿真后写入；截图槽位或结构图不代表图审、仿真、代码生成或运行时通过。旧导出图片和旧阻塞说明已归档到同级归档目录，不能复制回本目录。\n",
+        "# 控制器图形模型截图\n\n"
+        "本目录按当前七个语义控制族收纳 46 条 MWORKS 图审对象。2026-07-28 经用户视觉审核后，01_图形模型.png 从可追溯候选归档按控制器 ID 复制归位；它们用于展示控制器内部结构和连线，不等价于当前源的仿真、性能、代码生成或运行时通过。来源哈希和当前模型入口见 Docs/报告/审计/控制器原生截图归位/CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json。\n\n"
+        "02_最小闭环结果原生窗口.png 仍只允许在后续当前源正式仿真后写入。历史结果图继续留在归档中，不得作为当前 RMSE、排名或七场景结论。\n",
         encoding="utf-8",
         newline="\n",
     )
@@ -280,7 +330,7 @@ def archive_legacy() -> dict[str, Any]:
     }
 
 
-def screenshot_slot(row: dict[str, Any]) -> dict[str, Any]:
+def screenshot_slot(row: dict[str, Any], reviewed_sources: dict[str, dict[str, Any]]) -> dict[str, Any]:
     scheme_id = str(row["scheme_id"])
     category = str(row["category"])
     role = str(row.get("current_model_role"))
@@ -316,8 +366,10 @@ def screenshot_slot(row: dict[str, Any]) -> dict[str, Any]:
             "g5_review_packet": source_metadata["g5_review_packet"] if source_metadata else None,
         },
         "source_capture": source_metadata,
+        "user_reviewed_archive_source": reviewed_sources.get(scheme_id),
         "capture_rules": {
             "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+            "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
             "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
             "preserve_window_native_aspect_ratio": True,
             "forbidden_sources": [
@@ -432,10 +484,17 @@ def materialize_native_structure(slots: list[dict[str, Any]]) -> list[dict[str, 
 
 def build_manifest() -> dict[str, Any]:
     rows = current_rows()
+    reviewed_sources = reviewed_archive_structure_sources()
     slots = sorted(
-        [screenshot_slot(row) for row in rows if row.get("mapping_state") == "resolved_current_model"],
+        [
+            screenshot_slot(row, reviewed_sources)
+            for row in rows
+            if row.get("mapping_state") == "resolved_current_model"
+        ],
         key=lambda item: (item["family_directory"], item["scheme_id"]),
     )
+    if set(reviewed_sources) != {str(slot["scheme_id"]) for slot in slots}:
+        raise RebuildError("reviewed graphical screenshot IDs do not match the 46 current screenshot slots")
     active = {rp(path) for path in ACTIVE_ROOT.rglob("*.png") if path.is_file()}
     expected = {
         path
@@ -448,15 +507,18 @@ def build_manifest() -> dict[str, Any]:
     for slot in slots:
         assets = slot["required_assets"]
         source_capture = slot["source_capture"]
+        reviewed_source = slot["user_reviewed_archive_source"]
         structure_path = ROOT / assets["structure_native_window"]
         if not structure_path.is_file():
             structure_status = "not_captured"
-        elif not isinstance(source_capture, dict):
-            structure_status = "unbound_active_asset"
-        elif digest(structure_path).lower() != str(source_capture["source_sha256"]).lower():
+        elif isinstance(source_capture, dict) and digest(structure_path).lower() == str(source_capture["source_sha256"]).lower():
+            structure_status = "present_unreviewed"
+        elif isinstance(reviewed_source, dict) and digest(structure_path).lower() == str(reviewed_source["source_sha256"]).lower():
+            structure_status = "present_user_reviewed_historical_graphical"
+        elif isinstance(source_capture, dict):
             structure_status = "source_hash_mismatch"
         else:
-            structure_status = "present_unreviewed"
+            structure_status = "unbound_active_asset"
         slot["capture_status"] = {
             "structure_native_window": structure_status,
             "minimum_closed_loop_result_native_window": "present_unreviewed" if assets["minimum_closed_loop_result_native_window"] in active else "not_captured",
@@ -488,7 +550,13 @@ def build_manifest() -> dict[str, Any]:
                 (ROOT / slot["directory_version_marker"]).is_file() for slot in slots
             ),
             "excluded_from_current_screenshot_scope_count": len(excluded),
-            "structure_capture_count": sum(slot["capture_status"]["structure_native_window"] == "present_unreviewed" for slot in slots),
+            "current_native_structure_capture_count": sum(
+                slot["capture_status"]["structure_native_window"] == "present_unreviewed" for slot in slots
+            ),
+            "user_reviewed_historical_structure_count": sum(
+                slot["capture_status"]["structure_native_window"] == "present_user_reviewed_historical_graphical"
+                for slot in slots
+            ),
             "minimum_result_capture_count": sum(slot["capture_status"]["minimum_closed_loop_result_native_window"] == "present_unreviewed" for slot in slots),
             "unexpected_active_png_count": len(active - expected),
             "legacy_archive_valid": not errors,
@@ -540,6 +608,8 @@ def validate_manifest(manifest: dict[str, Any]) -> list[str]:
             continue
         if rules.get("allowed_source") != "windows_mcp_direct_whole_window_capture_only":
             errors.append("screenshot slot must require a Windows MCP whole-window capture")
+        if rules.get("approved_historical_structure_source") != "user_visual_reviewed_archive_candidate_only":
+            errors.append("screenshot slot must define the approved historical graphical source")
         if rules.get("preserve_window_native_aspect_ratio") is not True:
             errors.append("screenshot slot must preserve the native window aspect ratio")
         marker = ROOT / str(slot.get("directory_version_marker") or "")
@@ -550,14 +620,23 @@ def validate_manifest(manifest: dict[str, Any]) -> list[str]:
         capture_status = slot.get("capture_status") if isinstance(slot.get("capture_status"), dict) else {}
         structure_status = capture_status.get("structure_native_window")
         source_capture = slot.get("source_capture")
+        reviewed_source = slot.get("user_reviewed_archive_source")
         assets = slot.get("required_assets") if isinstance(slot.get("required_assets"), dict) else {}
         if structure_status == "present_unreviewed":
             if not isinstance(source_capture, dict):
                 errors.append(f"{slot.get('scheme_id')}: captured structure image lacks a current G5 packet binding")
             elif assets.get("capture_manifest") != source_capture.get("capture_manifest") or assets.get("g5_review_packet") != source_capture.get("g5_review_packet"):
                 errors.append(f"{slot.get('scheme_id')}: captured structure image packet binding drifted")
+        elif structure_status == "present_user_reviewed_historical_graphical":
+            structure_path = ROOT / str(assets.get("structure_native_window") or "")
+            if not isinstance(reviewed_source, dict):
+                errors.append(f"{slot.get('scheme_id')}: reviewed graphical image lacks archive provenance")
+            elif reviewed_source.get("review_status") != "user_visual_reviewed" or reviewed_source.get("review_date") != REVIEWED_ARCHIVE_REVIEW_DATE:
+                errors.append(f"{slot.get('scheme_id')}: reviewed graphical image has invalid review metadata")
+            elif not structure_path.is_file() or digest(structure_path).lower() != str(reviewed_source.get("source_sha256")).lower():
+                errors.append(f"{slot.get('scheme_id')}: reviewed graphical image hash drifted")
         elif structure_status != "not_captured":
-            errors.append(f"{slot.get('scheme_id')}: active structure image is not bound to a current G5 packet")
+            errors.append(f"{slot.get('scheme_id')}: active structure image has no approved provenance")
     return errors
 
 
@@ -567,8 +646,8 @@ def render_markdown(manifest: dict[str, Any]) -> str:
     lines = [
         "# 控制器原生截图重建清单",
         "",
-        "状态：native_structure_materialized。本清单记录当前 G5 packet 绑定的原生结构截图归位情况；它不代表任何路线已通过最小闭环仿真、代码生成、运行时或报告性能验收。"
-        if summary["structure_capture_count"] == summary["current_screenshot_scope_count"]
+        "状态：user_reviewed_graphical_assets。46 张历史图形结构候选已在 2026-07-28 经用户视觉审核并按当前族类归位；它们不等价于当前源最小闭环、性能、代码生成或运行时通过。"
+        if summary["user_reviewed_historical_structure_count"] == summary["current_screenshot_scope_count"]
         else "状态：screenshot_slots_prepared。本清单只定义截图槽位和来源边界，不代表任何路线已通过图审或仿真。",
         "",
         "| 项目 | 数量 |",
@@ -578,10 +657,11 @@ def render_markdown(manifest: dict[str, Any]) -> str:
         f"| 已初始化截图目录 | {summary['asset_directory_count']} |",
         f"| 已版本化目录占位符 | {summary['directory_version_marker_count']} |",
         f"| 已归档旧导出资产 | {'完整' if summary['legacy_archive_valid'] else '异常'} |",
-        f"| 已采集内部结构原生图 | {summary['structure_capture_count']} |",
+        f"| 当前 G5 绑定原生结构图 | {summary['current_native_structure_capture_count']} |",
+        f"| 用户审核历史图形结构图 | {summary['user_reviewed_historical_structure_count']} |",
         f"| 已采集最小闭环结果原生图 | {summary['minimum_result_capture_count']} |",
         "",
-        "七个语义控制族分别入库；五条命名整机 Profile 按其 PID 或最优/预测归属入库，不另设控制器族。导出画布、旧报告副本和历史结果截图不能写回当前目录。",
+        "七个语义控制族分别入库；五条命名整机 Profile 按其 PID 或最优/预测归属入库，不另设控制器族。用户审核通过的历史图形结构候选可按本清单归位；旧结果截图继续归档，不能作为当前性能结论。",
         "",
         "| 目录 | 路线数 |",
         "|---|---:|",
@@ -592,7 +672,7 @@ def render_markdown(manifest: dict[str, Any]) -> str:
     lines.extend(
         [
             "",
-            "每个 01_图形模型.png 必须来自冻结模型入口的 Windows MCP 原生整窗/桌面采集，保持窗口原生宽高比，并与当前 G5 截图 manifest、图审 packet 绑定。02_最小闭环结果原生窗口.png 只能在后续正式仿真后写入，不能用结构图、历史结果或空白窗口代替。",
+            "当前新采集的 01_图形模型.png 必须来自冻结模型入口的 Windows MCP 原生整窗/桌面采集，保持窗口原生宽高比，并与当前 G5 截图 manifest、图审 packet 绑定。本批用户审核的历史图形结构候选仅用于结构展示。02_最小闭环结果原生窗口.png 只能在后续当前源正式仿真后写入，不能用结构图、历史结果或空白窗口代替。",
             "",
         ]
     )

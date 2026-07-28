@@ -14,7 +14,8 @@
     "asset_directory_count": 46,
     "directory_version_marker_count": 46,
     "excluded_from_current_screenshot_scope_count": 2,
-    "structure_capture_count": 0,
+    "current_native_structure_capture_count": 0,
+    "user_reviewed_historical_structure_count": 46,
     "minimum_result_capture_count": 0,
     "unexpected_active_png_count": 0,
     "legacy_archive_valid": true
@@ -28,7 +29,7 @@
     {
       "scheme_id": "px4ctrl",
       "mapping_state": "pending_mworks_equivalent_core",
-      "reason_zh": "工程/部署基线；MWORKS 等效核尚未实现，不伪造 MWORKS 图形模型。"
+      "reason_zh": "工程/部署基线；已有独立 MWORKS 图形化闭环证据，但不纳入本批 46 条 MWORKS 控制器图审/对比范围。"
     }
   ],
   "slots": [
@@ -53,8 +54,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/01_PID族/cascade_pid/01_图形模型.png",
+        "source_sha256": "360ea4b06a8f419ddb877486ba36f3e79efdfb2b26a334437c09994dc269526a",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -66,7 +77,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -91,8 +102,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/07_固定集成链/fixed_awff_l1_indi/01_图形模型.png",
+        "source_sha256": "f725928139da672ac59b42e077f585bf3b8fa3d1e40edcf3d781a1cc1645095d",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -104,7 +125,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -129,8 +150,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/07_固定集成链/fixed_awff_l1_residual/01_图形模型.png",
+        "source_sha256": "8c46e96172939b78aefb886259176191215364a15b2b8d2b6c848af31000c19d",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -142,7 +173,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -167,8 +198,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/07_固定集成链/fixed_awff_pid/01_图形模型.png",
+        "source_sha256": "bcf5304ba027e5071565aaad5db576fafe818e3c89ac4907b8c4ba65968ec4af",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -180,7 +221,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -205,8 +246,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/fopid/01_图形模型.png",
+        "source_sha256": "68bd0253eec8d385c5e206a37cf876e0f767e59c7b037ae67d9a6b2a7f4b73f2",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -218,7 +269,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -243,8 +294,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/01_PID族/fuzzy_pid/01_图形模型.png",
+        "source_sha256": "58f3bfb03da279897bf7bf1aa141317bc1edee0605b4c348604e1b2bf8dadb56",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -256,7 +317,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -281,8 +342,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/01_PID族/gain_scheduled_pid/01_图形模型.png",
+        "source_sha256": "f85e565cfb93b34e9f0050011a64bede2a3fcf9e098eaefe740eacf9b24453a5",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -294,7 +365,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -319,8 +390,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/01_PID族/neural_pid/01_图形模型.png",
+        "source_sha256": "27e0829c0b9fc4c050b71b9dac15532b13beb5948b6b98660d9501ccc4f2f985",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -332,7 +413,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -357,8 +438,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/01_PID族/official_pid/01_图形模型.png",
+        "source_sha256": "1d60472a946cf52f5720aff02fcc4b544d701d7f5c370976da9448371d32b83e",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -370,7 +461,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -395,8 +486,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/h2_state_feedback/01_图形模型.png",
+        "source_sha256": "5a1ec7be44efa6001b8ae6f755d5c4da8355c88ab0c669cb3fee2d83b4a6ddfd",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -408,7 +509,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -433,8 +534,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/hinf_hover_wrench/01_图形模型.png",
+        "source_sha256": "abb060c93b7363900ede937716a97d839712255ab2911286728a5f34d28a670d",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -446,7 +557,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -471,8 +582,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/lqg/01_图形模型.png",
+        "source_sha256": "b3fa17aa527c03e9753e686c1d510d4093ea32673397e455d4e908308994a04f",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -484,7 +605,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -509,8 +630,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/lqi_baseline/01_图形模型.png",
+        "source_sha256": "6f00d7209485fa00436abc055ee74320b6bc712205da32b43658103bd8972f4a",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -522,7 +653,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -547,8 +678,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/lqr_baseline/01_图形模型.png",
+        "source_sha256": "27e9b2f375bd359316023f803614aa6e03c3779f12d83f47d149d0fdd889cae2",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -560,7 +701,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -585,8 +726,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/pole_placement_luenberger/01_图形模型.png",
+        "source_sha256": "8a6974b5f5745e0769c627913c7383dc95c6f5fb7c7dcb3fe1473f188a4b04d5",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -598,7 +749,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -623,8 +774,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/adaptive_backstepping/01_图形模型.png",
+        "source_sha256": "bea7cef55a1b440edbd4fad28b1c0ce5fdf4e8a7a27636d319d0053e51da81c6",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -636,7 +797,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -661,8 +822,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/backstepping_baseline/01_图形模型.png",
+        "source_sha256": "71b448845272d850510135238fe0e453347060d1a97a3a5f5ad7735fc3a8357d",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -674,7 +845,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -699,8 +870,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/feedback_linearization/01_图形模型.png",
+        "source_sha256": "51e8e2f6d94d8e3d840add58fbe15d5ca1c9a624b054939c4bb6f77b2c608c4b",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -712,7 +893,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -737,8 +918,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/mrac/01_图形模型.png",
+        "source_sha256": "16956b205c256994d3e5b07f46d683176cd2681620c0f553a017770228c9d2bd",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -750,7 +941,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -775,8 +966,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/ndi/01_图形模型.png",
+        "source_sha256": "d83d07618c1bc45ac955b67eb1f113dd00c13364e80e5a14b50062118477dc28",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -788,7 +989,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -813,8 +1014,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/02_线性与鲁棒/passivity_based_control/01_图形模型.png",
+        "source_sha256": "0c4ad2edfcf51d793c8ee5514eb202db6b0ea5ddf71fdaccc651502b559c04eb",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -826,7 +1037,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -851,8 +1062,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/03_滑模控制/adaptive_smc/01_图形模型.png",
+        "source_sha256": "919fb3d240d587273243a33c71be97d5e0e7cd21cb34ab984ff2f90fba39e9c7",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -864,7 +1085,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -889,8 +1110,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/03_滑模控制/fuzzy_smc/01_图形模型.png",
+        "source_sha256": "9d881fd838d2b037b95a809d52aa15db09821450641423927e3191bf6357a385",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -902,7 +1133,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -927,8 +1158,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/03_滑模控制/integral_smc/01_图形模型.png",
+        "source_sha256": "637eabc310b04d1675d9d05ee6d425bb1d25a39e1fdfbaaaf8380019a9c368e9",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -940,7 +1181,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -965,8 +1206,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/03_滑模控制/nonsingular_terminal_smc/01_图形模型.png",
+        "source_sha256": "2e35a39e022f5926fc3348d346411a6f6f061a3a8de195a5eeaaf1f414fc449f",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -978,7 +1229,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1003,8 +1254,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/03_滑模控制/smc_boundary_layer/01_图形模型.png",
+        "source_sha256": "f3fe7bf8f65af55d68504fc5816d9538a31350918d3a413872943825e261ee33",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1016,7 +1277,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1041,8 +1302,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/03_滑模控制/super_twisting_smc/01_图形模型.png",
+        "source_sha256": "05ce04e6f8c36728f4f82a33183b1337239ec515242e6b799d3bbb1398512371",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1054,7 +1325,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1079,8 +1350,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/03_滑模控制/terminal_smc/01_图形模型.png",
+        "source_sha256": "5a7a690ae988e486febaac2435fbde5931a2903aa258e02511538ffaad0e392c",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1092,7 +1373,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1117,8 +1398,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/04_MPC族/adaptive_mpc/01_图形模型.png",
+        "source_sha256": "7ddbfcec052995705a2a65030fc474e27be73a3cf913aab1751e4560fa12d5dd",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1130,7 +1421,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1155,8 +1446,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/04_MPC族/explicit_gain_scheduled_mpc/01_图形模型.png",
+        "source_sha256": "0094be8570da82f9d278803adcaaa5ca3f79b0c6272912f1f359b2324864d4d6",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1168,7 +1469,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1193,8 +1494,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/07_固定集成链/fixed_linear_mpc_l1_indi/01_图形模型.png",
+        "source_sha256": "8d70a7c96dc473b0ef2c61ab5df27803f13dfd8e9f4577844e629b16f2d7f30f",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1206,7 +1517,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1231,8 +1542,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/07_固定集成链/fixed_qp_nmpc_l1_indi_cbf/01_图形模型.png",
+        "source_sha256": "93eb6c8dff1b90a25841fc5f3fdae2df03fe0a25b11efbf55538fab7e1dc8020",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1244,7 +1565,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1269,8 +1590,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/04_MPC族/ilqr/01_图形模型.png",
+        "source_sha256": "80983b1060b88b34b6f5b036c6131255a57655aeec83e39caef9220b640d55b3",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1282,7 +1613,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1307,8 +1638,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/04_MPC族/linear_mpc/01_图形模型.png",
+        "source_sha256": "22fcfa7d54fd43107bbcdec7b74e0bca0140799c481fce696660e473026e6425",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1320,7 +1661,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1345,8 +1686,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/04_MPC族/mppi/01_图形模型.png",
+        "source_sha256": "fb97100688c0875b106fddef469282140e11444e693379e9f964edc1df011c72",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1358,7 +1709,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1383,8 +1734,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/04_MPC族/nmpc_outer/01_图形模型.png",
+        "source_sha256": "29f302a2cc82ba55a77981d942279a3f573056d4e2998f0ca68550697d959d87",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1396,7 +1757,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1421,8 +1782,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/04_MPC族/robust_mpc/01_图形模型.png",
+        "source_sha256": "09d17da2f2ce456cf7d139e85361e52cb1b0dee8ee5eb4effc4d6df33f1f9acf",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1434,7 +1805,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1459,8 +1830,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/04_MPC族/tube_mpc/01_图形模型.png",
+        "source_sha256": "a2e67cb30acdd46fe25b88fe7fe9897214eb9b5bddc595abcc9b4981648120de",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1472,7 +1853,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1497,8 +1878,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/05_几何与平坦/dfbc_basic/01_图形模型.png",
+        "source_sha256": "e43efa8a948832c3c581176e3470cb13446138537a53ec79f9740fae2e85c37f",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1510,7 +1901,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1535,8 +1926,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/05_几何与平坦/dfbc_high_order_attitude/01_图形模型.png",
+        "source_sha256": "0206f29fb323227338385db455bedab2e1fda380ef64c4605256f54cd1f6af56",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1548,7 +1949,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1573,8 +1974,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/05_几何与平坦/dfbc_high_order_bodyrate/01_图形模型.png",
+        "source_sha256": "144d9f173fb57b5658ff4d5e2b47591ec0382b737b367932542da33f345c04b8",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1586,7 +1997,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1611,8 +2022,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/05_几何与平坦/dfbc_smooth_robust_attitude/01_图形模型.png",
+        "source_sha256": "3f8a92603ac2f2a26cbd9a3dabc7160e56349ff2c94a3dda913fb024bfee9838",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1624,7 +2045,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1649,8 +2070,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/05_几何与平坦/dfbc_smooth_robust_bodyrate/01_图形模型.png",
+        "source_sha256": "ff19173afb63d0cfdfe7dc639c033f64414860bd65628ffc7c5c41c03aaec592",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1662,7 +2093,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1687,8 +2118,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/05_几何与平坦/se3_basic/01_图形模型.png",
+        "source_sha256": "079b8ce969bd609ec09b4a85e4fb9980c61ee98b89297dbddf95260d05541be2",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1700,7 +2141,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1725,8 +2166,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/06_学习控制/rl_gain_scheduler/01_图形模型.png",
+        "source_sha256": "3943ad822af40e152343b8de414b3b072a7676bf9a8eb2936f3b331251798900",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1738,7 +2189,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1763,8 +2214,18 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "user_reviewed_archive_source": {
+        "review_status": "user_visual_reviewed",
+        "review_date": "2026-07-28",
+        "archive_manifest": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/UNBOUND_SCREENSHOT_ARCHIVE_MANIFEST.json",
+        "source_screenshot": "Docs/报告/图/归档/控制器未绑定截图候选_20260727/06_学习控制/trained_neural_residual/01_图形模型.png",
+        "source_sha256": "4bf4fbd0ba806c8a12f9195bea15c507bbc3d57b8bf4b2f50d8ba34503d8fbba",
+        "source_width": 2578,
+        "source_height": 1398
+      },
       "capture_rules": {
         "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
         "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
         "preserve_window_native_aspect_ratio": true,
         "forbidden_sources": [
@@ -1776,7 +2237,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "not_captured",
+        "structure_native_window": "present_user_reviewed_historical_graphical",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     }

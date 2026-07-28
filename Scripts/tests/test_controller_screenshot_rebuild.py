@@ -28,7 +28,8 @@ def test_controller_screenshot_rebuild_preserves_46_route_scope_and_archive_boun
         "asset_directory_count": 46,
         "directory_version_marker_count": 46,
         "excluded_from_current_screenshot_scope_count": 2,
-        "structure_capture_count": 0,
+        "current_native_structure_capture_count": 0,
+        "user_reviewed_historical_structure_count": 46,
         "minimum_result_capture_count": 0,
         "unexpected_active_png_count": 0,
         "legacy_archive_valid": True,
@@ -43,9 +44,10 @@ def test_controller_screenshot_rebuild_preserves_46_route_scope_and_archive_boun
         and item["capture_rules"]["preserve_window_native_aspect_ratio"] is True
         and item["directory_version_marker"].endswith("/.gitkeep")
         and item["required_assets"]["structure_native_window"].endswith("/01_图形模型.png")
-        and item["capture_status"]["structure_native_window"] == "not_captured"
+        and item["capture_status"]["structure_native_window"] == "present_user_reviewed_historical_graphical"
         and item["capture_status"]["minimum_closed_loop_result_native_window"] == "not_captured"
         and item["source_capture"] is None
+        and item["user_reviewed_archive_source"]["review_status"] == "user_visual_reviewed"
         and item["required_assets"]["capture_manifest"] is None
         and item["required_assets"]["g5_review_packet"] is None
         for item in manifest["slots"]
