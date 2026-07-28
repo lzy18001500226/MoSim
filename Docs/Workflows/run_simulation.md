@@ -237,8 +237,9 @@ Sysplorer MCP server from the current shell. The runner auto-detects these
 locations:
 
 ```text
-/home/linux/mcp-wrappers/sysplorer_mcp.sh
+Docs/Skills/Mworks/mworks-mcp-operations/wrappers/sysplorer_mcp.cmd  (Windows)
 Scripts/mworks/sysplorer_mcp_wsl_bridge.sh
+/home/linux/mcp-wrappers/sysplorer_mcp.sh
 ~/mcp-wrappers/sysplorer_mcp.sh
 ~/mcp-wrappers/sysplorer_mcp.bat
 ~/mcp-wrappers/sysplorer_mcp.cmd

@@ -37,12 +37,22 @@ def default_wrapper_candidates() -> list[str]:
     project_root = Path(__file__).resolve().parents[2]
     names = ["sysplorer_mcp.sh", "sysplorer_mcp.bat", "sysplorer_mcp.cmd", "sysplorer_mcp.ps1"]
     raw_candidates = []
-    if os.name != "nt":
-        raw_candidates.append(str(project_root / "Scripts" / "sysplorer_mcp_wsl_bridge.sh"))
-    raw_candidates.append("/home/linux/mcp-wrappers/sysplorer_mcp.sh")
-    raw_candidates.extend(str(home / "mcp-wrappers" / name) for name in names)
     if os.name == "nt":
-        raw_candidates.extend(str(project_root / "mcp-wrappers" / name) for name in names)
+        raw_candidates.append(
+            str(
+                project_root
+                / "Docs"
+                / "Skills"
+                / "Mworks"
+                / "mworks-mcp-operations"
+                / "wrappers"
+                / "sysplorer_mcp.cmd"
+            )
+        )
+    else:
+        raw_candidates.append(str(project_root / "Scripts" / "mworks" / "sysplorer_mcp_wsl_bridge.sh"))
+        raw_candidates.append("/home/linux/mcp-wrappers/sysplorer_mcp.sh")
+    raw_candidates.extend(str(home / "mcp-wrappers" / name) for name in names)
     candidates: list[str] = []
     seen: set[str] = set()
     for candidate in raw_candidates:
@@ -605,7 +615,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=os.environ.get("SYSPLORER_MCP_WRAPPER"),
         help=(
             "Sysplorer MCP wrapper path. Defaults to SYSPLORER_MCP_WRAPPER, "
-            "/home/linux/mcp-wrappers/sysplorer_mcp.sh, then ~/mcp-wrappers/sysplorer_mcp.{sh,bat,cmd,ps1}."
+            "the project MWORKS skill wrapper on Windows, /home/linux/mcp-wrappers/sysplorer_mcp.sh, "
+            "then ~/mcp-wrappers/sysplorer_mcp.{sh,bat,cmd,ps1}."
         ),
     )
     parser.add_argument("--model-file", default=DEFAULT_MODEL_FILE)

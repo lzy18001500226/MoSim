@@ -22,7 +22,7 @@ Use `/mnt/c/Users/HP/Desktop/MoSim` in WSL. Do not read or write outside the pro
 Prefer auto-detection in scripts:
 
 ```text
-C:\Users\HP\Desktop\MoSim\Docs\Skills\*\wrappers\*.cmd
+C:\Users\HP\Desktop\MoSim\Docs\Skills\Mworks\mworks-mcp-operations\wrappers\sysplorer_mcp.cmd
 /home/linux/mcp-wrappers/*.sh
 ~/mcp-wrappers/*.sh
 environment variable override when available
@@ -116,7 +116,7 @@ native-result locator, artifact manifest, and Git commit.
 | Symptom | Action |
 |---|---|
 | `Tools: (none)` | Follow `workflows/debug_mcp.md` |
-| wrapper missing | check server path, then `~/mcp-wrappers/` |
+| wrapper missing | check the project MWORKS skill wrapper, then `~/mcp-wrappers/` |
 | Syslab stale state | call `restart_julia` |
 | Sysplorer not ready | call `session_manager` health/probe/ensure |
 | demo edition / activation lost / login prompt | screenshot and classify first; if bounded recovery is explicitly authorized, operate the smallest official recovery/login/activation control and re-check within the 1-2 minute normal wait / 5 minute max wait; otherwise return `license_or_login` blocker |

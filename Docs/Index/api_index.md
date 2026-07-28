@@ -14,6 +14,12 @@ This file keeps concrete API/tool sequences and examples.
 
 ## 1. Sysplorer MCP Tools
 
+Project-local Windows wrapper:
+
+```text
+Docs/Skills/Mworks/mworks-mcp-operations/wrappers/sysplorer_mcp.cmd
+```
+
 | Tool | Main Use | Use When |
 |---|---|---|
 | `session_manager` | Manage Sysplorer sessions | Start, connect, probe, reconnect, or close Sysplorer |

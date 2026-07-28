@@ -120,7 +120,7 @@ Model Studio / ExperimentProfile
 | `cmd/` | Windows 双击入口；只做启动和停止转发。 |
 | `apps/` | Flight Console、Model Studio 和项目应用代码。 |
 | `src/` | 可复用的项目编排代码；不能绕过 `Models/`、`Config/` 或运行时权威边界。 |
-| `mcp-wrappers/` | 兼容性 MCP 启动包装器；配置与具体工具说明仍以 `Docs/Skills/` 和 API 索引为准。 |
+| `Docs/Skills/Mworks/mworks-mcp-operations/wrappers/` | Sysplorer MCP 兼容性启动包装器；配置与具体工具说明仍以 `Docs/Skills/` 和 API 索引为准。 |
 | `build/` | 本地应用构建或候选目录；不是模型、配置或正式证据的唯一来源。 |
 | `Tools/` | 外部工具与运行支持资产；不作为竞赛算法或模型实现入口。 |
 | `image/` | 原始视觉资产；报告采用的图件必须仍能追溯到 `Results/` 或 `Docs/报告/`。 |
