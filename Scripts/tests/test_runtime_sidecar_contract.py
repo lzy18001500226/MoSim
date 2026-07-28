@@ -146,6 +146,14 @@ def test_wind_wrench_success_has_stable_reason_code() -> None:
     assert 'reason = "wind_wrench_applied"' in sidecar
 
 
+def test_sidecar_ack_keeps_the_fault_identity_for_qgc_readback() -> None:
+    sidecar = Path("Scripts/ui/runtime_sidecar.py").read_text(encoding="utf-8")
+    assert '"target": command.get("target", "")' in sidecar
+    assert '"rotor_index": command.get("rotor_index")' in sidecar
+    assert '"apply_mode": command.get("apply_mode", "")' in sidecar
+    assert '"source": command.get("source", "")' in sidecar
+
+
 def test_sidecar_can_skip_ftc_readiness_for_non_fault_profiles() -> None:
     sidecar = Path("Scripts/ui/runtime_sidecar.py").read_text(encoding="utf-8")
     assert "if not self.args.skip_actuator_telemetry_readiness:" in sidecar

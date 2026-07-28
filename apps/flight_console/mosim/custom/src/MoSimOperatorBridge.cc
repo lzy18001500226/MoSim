@@ -67,6 +67,31 @@ bool isActiveRunState(const QString &value)
         || value == QStringLiteral("replaying");
 }
 
+bool isExpectedVehicleId(const QString &value, int vehicleCount)
+{
+    static const QRegularExpression pattern(QStringLiteral("^uav([1-9])$"));
+    const QRegularExpressionMatch match = pattern.match(value);
+    return vehicleCount >= 1 && match.hasMatch() && match.captured(1).toInt() <= vehicleCount;
+}
+
+bool isReadableFaultAck(const QVariantMap &ack, const QString &runId, int vehicleCount)
+{
+    const QString target = ack.value(QStringLiteral("target")).toString();
+    if (ack.value(QStringLiteral("schema")).toString() != QStringLiteral("mosim.runtime_injection_ack.v1")
+        || ack.value(QStringLiteral("run_id")).toString() != runId
+        || ack.value(QStringLiteral("command_id")).toString().isEmpty()
+        || !isExpectedVehicleId(ack.value(QStringLiteral("vehicle_id")).toString(), vehicleCount)
+        || !ack.contains(QStringLiteral("accepted"))
+        || !ack.contains(QStringLiteral("applied_at"))) {
+        return false;
+    }
+    if (target == QStringLiteral("motor_effectiveness")) {
+        const int rotorIndex = ack.value(QStringLiteral("rotor_index")).toInt();
+        return rotorIndex >= 1 && rotorIndex <= 4;
+    }
+    return target == QStringLiteral("wind_speed_mps") || target == QStringLiteral("wind_direction_deg");
+}
+
 QString bashQuote(const QString &value)
 {
     return QStringLiteral("'%1'").arg(value);
@@ -334,6 +359,7 @@ void MoSimOperatorBridge::loadActiveRun()
     _runId.clear();
     _runManifest.clear();
     _runtimeTelemetry.clear();
+    _faultAcks.clear();
     if (_projectRoot.isEmpty()) {
         return;
     }
@@ -381,6 +407,25 @@ void MoSimOperatorBridge::loadActiveRun()
     const QVariantMap telemetry = readJsonObject(QDir(runDirectory).filePath(QStringLiteral("telemetry.json")));
     if (telemetry.value(QStringLiteral("run_id")).toString() == _runId) {
         _runtimeTelemetry = telemetry;
+    }
+    loadFaultAcks();
+}
+
+void MoSimOperatorBridge::loadFaultAcks()
+{
+    _faultAcks.clear();
+    const int vehicleCount = _runManifest.value(QStringLiteral("vehicle_count")).toInt();
+    if (_runId.isEmpty() || vehicleCount < 1) {
+        return;
+    }
+    const QDir ackDirectory(QDir(activeRunDirectory()).filePath(QStringLiteral("injection_acks")));
+    const QFileInfoList entries = ackDirectory.entryInfoList(
+        QStringList{QStringLiteral("*.json")}, QDir::Files, QDir::Name);
+    for (const QFileInfo &entry : entries) {
+        const QVariantMap ack = readJsonObject(entry.absoluteFilePath());
+        if (isReadableFaultAck(ack, _runId, vehicleCount)) {
+            _faultAcks.append(ack);
+        }
     }
 }
 
@@ -627,8 +672,13 @@ void MoSimOperatorBridge::selectProfile(const QString &profileId)
         setStatus(QStringLiteral("profile_locked_by_run_manifest"), QStringLiteral("当前 RunManifest 已冻结 Profile，不能切换任务"));
         return;
     }
-    if (profileForId(profileId).isEmpty()) {
+    const QVariantMap profile = profileForId(profileId);
+    if (profile.isEmpty()) {
         setStatus(QStringLiteral("profile_not_found"), QStringLiteral("未找到所选 Profile"));
+        return;
+    }
+    if (!profile.value(QStringLiteral("enabled")).toBool()) {
+        setStatus(QStringLiteral("profile_disabled"), profile.value(QStringLiteral("disabled_reason")).toString());
         return;
     }
     _selectedProfileId = profileId;

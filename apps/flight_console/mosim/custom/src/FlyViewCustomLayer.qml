@@ -31,7 +31,9 @@ Item {
     readonly property var selectedProfile: mosimOperator.selectedProfile || ({})
     readonly property var selectedController: root.controllerForId(mosimOperator.selectedControllerSchemeId)
     readonly property var compatibleProfiles: root.profilesForController(mosimOperator.selectedControllerSchemeId)
-    readonly property var mapState: (mosimOperator.runtimeTelemetry || ({})).map_state || ({})
+    readonly property var runtimeTelemetry: mosimOperator.runtimeTelemetry || ({})
+    readonly property var mapState: root.runtimeTelemetry.map_state || ({})
+    readonly property var faultAcks: mosimOperator.faultAcks || []
     readonly property var pendingFault: mosimOperator.pendingFault || ({})
     readonly property int panelWidth: Math.min(360, Math.max(282, width * 0.30))
 
@@ -120,6 +122,61 @@ Item {
             return String(pendingFault.vehicle_id) + " 电机" + String(pendingFault.rotor_index)
                     + " 效率 " + Number(pendingFault.value).toFixed(2)
         return String(pendingFault.vehicle_id) + " 风速 " + Number(pendingFault.value).toFixed(1) + " m/s"
+    }
+
+    function telemetryVehicle(vehicleId) {
+        var vehicles = runtimeTelemetry.vehicles || []
+        for (var index = 0; index < vehicles.length; ++index) {
+            if (String(vehicles[index].vehicle_id || "") === String(vehicleId || ""))
+                return vehicles[index]
+        }
+        return ({})
+    }
+
+    function faultStateText(vehicleId) {
+        var injectionState = telemetryVehicle(vehicleId).injection_state || ({})
+        var effectiveness = injectionState.motor_effectiveness || []
+        if (injectionState.wind_speed_mps === undefined || effectiveness.length !== 4)
+            return "当前生效值：未收到本次运行遥测"
+        var motors = []
+        for (var index = 0; index < effectiveness.length; ++index)
+            motors.push("M" + String(index + 1) + "=" + Number(effectiveness[index]).toFixed(2))
+        return "当前生效值：风速 " + Number(injectionState.wind_speed_mps).toFixed(1)
+                + " m/s；" + motors.join(" ")
+    }
+
+    function latestFaultAck(vehicleId) {
+        var latest = ({})
+        var latestAt = -1
+        for (var index = 0; index < faultAcks.length; ++index) {
+            var ack = faultAcks[index] || ({})
+            if (String(ack.vehicle_id || "") !== String(vehicleId || ""))
+                continue
+            var appliedAt = Number(ack.applied_at || 0)
+            if (appliedAt >= latestAt) {
+                latest = ack
+                latestAt = appliedAt
+            }
+        }
+        return latest
+    }
+
+    function faultAckText(vehicleId) {
+        var ack = latestFaultAck(vehicleId)
+        if (!ack.command_id)
+            return "最新 ACK：尚未收到本次运行确认"
+        var target = String(ack.target || "故障命令")
+        if (target === "motor_effectiveness")
+            target = "电机" + String(ack.rotor_index || "-") + "效率"
+        else if (target === "wind_speed_mps")
+            target = "风扰"
+        else if (target === "wind_direction_deg")
+            target = "风向"
+        var outcome = ack.accepted === true ? "已接受" : "已拒绝"
+        var valueText = ack.applied_value === undefined || ack.applied_value === null
+                ? "" : "，生效值 " + Number(ack.applied_value).toFixed(2)
+        return "最新 ACK：" + outcome + "，" + target + valueText
+                + "（" + String(ack.reason_code || "-") + "）"
     }
 
     function agentSuggest() {
@@ -422,6 +479,18 @@ Item {
                             text: "复制恢复正常命令"
                             Layout.fillWidth: true
                             onClicked: mosimOperator.copyRestoreNormalCommand(faultVehicle.currentText)
+                        }
+                        Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: qgcPal.windowShade }
+                        QGCLabel { text: "运行态（只读）"; font.bold: true }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: root.faultStateText(faultVehicle.currentText)
+                            wrapMode: Text.Wrap
+                        }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: root.faultAckText(faultVehicle.currentText)
+                            wrapMode: Text.Wrap
                         }
                     }
                 }

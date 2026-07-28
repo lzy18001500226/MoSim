@@ -52,6 +52,7 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "operatorMap" in bridge_header
     assert "runManifest" in bridge_header
     assert "runtimeTelemetry" in bridge_header
+    assert "faultAcks" in bridge_header
     assert "pendingFault" in bridge_header
     assert "profileSelectionLocked" in bridge_header
     assert "selectedControllerSchemeId" in bridge_header
@@ -80,6 +81,9 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "operator_map_catalog.json" in bridge_source
     assert "RUN_MANIFEST.json" in bridge_source
     assert "telemetry.json" in bridge_source
+    assert "injection_acks" in bridge_source
+    assert "loadFaultAcks" in bridge_source
+    assert "profile_disabled" in bridge_source
     assert "QClipboard" in bridge_source
 
     # Factory map is below native QGC controls. It replaces online tiles but
@@ -95,12 +99,15 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "FactoryFlyMap {" in fly_layer
     assert "mapConfig: mosimOperator.operatorMap || ({})" in fly_layer
     assert "runManifest: mosimOperator.runManifest || ({})" in fly_layer
-    assert "mapState: (mosimOperator.runtimeTelemetry || ({})).map_state || ({})" in fly_layer
+    assert "mapState: root.runtimeTelemetry.map_state || ({})" in fly_layer
     assert "runId: mosimOperator.runId" in fly_layer
     assert "copySelectedLaunchCommand" in fly_layer
     assert "copyClearActiveRunCommand" in fly_layer
     assert "copyStagedFaultCommand" in fly_layer
     assert "copyRestoreNormalCommand" in fly_layer
+    assert "faultStateText" in fly_layer
+    assert "faultAckText" in fly_layer
+    assert "运行态（只读）" in fly_layer
     assert "copyRosbagReplayCommand" in fly_layer
     assert "controllerFamilyBox" in fly_layer
     assert "controllerBox" in fly_layer

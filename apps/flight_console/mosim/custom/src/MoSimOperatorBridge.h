@@ -20,6 +20,7 @@ class MoSimOperatorBridge final : public QObject
     Q_PROPERTY(QVariantMap operatorMap READ operatorMap NOTIFY stateChanged)
     Q_PROPERTY(QVariantMap runManifest READ runManifest NOTIFY stateChanged)
     Q_PROPERTY(QVariantMap runtimeTelemetry READ runtimeTelemetry NOTIFY stateChanged)
+    Q_PROPERTY(QVariantList faultAcks READ faultAcks NOTIFY stateChanged)
     Q_PROPERTY(QVariantMap pendingFault READ pendingFault NOTIFY stateChanged)
     Q_PROPERTY(QString runId READ runId NOTIFY stateChanged)
     Q_PROPERTY(bool profileSelectionLocked READ profileSelectionLocked NOTIFY stateChanged)
@@ -41,6 +42,7 @@ public:
     QVariantMap operatorMap() const { return _operatorMap; }
     QVariantMap runManifest() const { return _runManifest; }
     QVariantMap runtimeTelemetry() const { return _runtimeTelemetry; }
+    QVariantList faultAcks() const { return _faultAcks; }
     QVariantMap pendingFault() const { return _pendingFault; }
     QString runId() const { return _runId; }
     bool profileSelectionLocked() const;
@@ -72,6 +74,7 @@ private:
     QVariantMap readJsonObject(const QString &path) const;
     void loadCatalogs();
     void loadActiveRun();
+    void loadFaultAcks();
     QVariantMap profileForId(const QString &profileId) const;
     QVariantMap controllerForId(const QString &schemeId) const;
     QVariantMap mapForId(const QString &mapId) const;
@@ -92,6 +95,7 @@ private:
     QVariantMap _operatorMap;
     QVariantMap _runManifest;
     QVariantMap _runtimeTelemetry;
+    QVariantList _faultAcks;
     QVariantMap _pendingFault;
     QString _selectedProfileId;
     QString _selectedControllerSchemeId;
