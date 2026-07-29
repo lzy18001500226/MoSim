@@ -93,3 +93,11 @@ def test_sunray150_imu_calibration_applies_before_any_fastlio_branch() -> None:
     assert "CAL_GYRO0_PRIO=50" in gate
     assert "CAL_ACC0_PRIO=50" in gate
     assert "PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=true" in gate
+
+
+def test_basic_gate_enables_verified_mavlink_message_intervals_by_default() -> None:
+    gate = BASIC_GATE.read_text(encoding="utf-8")
+
+    assert 'MAVROS_SET_MESSAGE_INTERVALS="${MAVROS_SET_MESSAGE_INTERVALS:-true}"' in gate
+    assert "command: 511" in gate
+    assert "32:LOCAL_POSITION_NED" in gate
