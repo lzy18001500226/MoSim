@@ -1,6 +1,6 @@
 {
-  "schema": "mosim.control_scheme_execution_inventory.v1",
-  "version": 1,
+  "schema": "mosim.control_scheme_execution_inventory.v2",
+  "version": 2,
   "scope": "G1 audit only. This inventory does not authorize MWORKS, code generation, or runtime execution.",
   "source_files": {
     "control_scheme_catalog": "Config/control_platform/control_scheme_catalog.json",
@@ -11,36 +11,35 @@
     "offline_composition_catalog": "Config/control_platform/offline_composition_catalog.json"
   },
   "source_sha256": {
-    "control_scheme_catalog": "1b142cf6a272770643c0d1b3123ff703f5081ea6238b1044f570d999f954d925",
+    "control_scheme_catalog": "07c5a36da6842a06e4b88d5f9b2d887a93c5bf99c36fb5465f17ff3024821f03",
     "classic_controller_final_matrix": "9c16fd2f08ef3442f190bafeff150be906a4e78ddead46d485ab7d01b680dd5b",
-    "control_module_registry": "57a0121140f37d98ff64890057e771dce6eabc7cb6362bbc675b1e772535b9dd",
+    "control_module_registry": "2b6f7af423fa7a4f712eb2aa477fc34225c80204173d378f189cbe666830e182",
     "controller_document_evidence_inventory": "649ab7dde4674ab04bc09317df0e1c743b0e6ed881cb22b9ef869e6aee9ceac7",
     "model_operation_catalog": "4572e2e4a5f497de0d879b621b44de70b6a0e98412c5eaa088acef52906d2ed4",
-    "offline_composition_catalog": "32b37bd65554db6809bb4c368693d40ea3cef70f43231cd1526aa83672aef2f8"
+    "offline_composition_catalog": "aaef90b321c59748d69145594d4c19a88995271ef01449c0b323a20f6d71759e"
   },
   "summary": {
-    "top_level_scheme_count": 49,
+    "active_top_level_entry_count": 48,
     "entry_type_counts": {
-      "competition_primary_route": 43,
-      "engineering_baseline": 1,
-      "fixed_integrated_scheme": 5
+      "engineering_deployment_baseline": 1,
+      "mworks_control_profile": 47
     },
     "category_counts": {
-      "classic_robust": 14,
-      "engineering_baseline": 1,
-      "fixed_integrated": 5,
+      "engineering_deployment_baseline": 1,
       "geometric_flatness": 6,
       "learning": 2,
-      "optimization": 8,
-      "pid_family": 5,
-      "sliding_mode": 8
+      "linear_robust_state_feedback": 6,
+      "nonlinear_adaptive": 6,
+      "optimization_predictive": 10,
+      "pid_family": 10,
+      "sliding_mode": 7
     },
-    "matrix_status_counts_for_primary_routes": {
+    "matrix_status_counts_for_graphical_cores": {
       "accepted": 11,
       "executed_blocked": 26,
-      "not_run": 6
+      "not_run": 4
     },
-    "exact_registry_binding_count": 37,
+    "exact_registry_binding_count": 35,
     "primary_source_model_present_count": 41,
     "current_mworks_model_mapping_ready_count": 0,
     "mworks_run_eligible_count": 0
@@ -50,8 +49,11 @@
       "scheme_id": "cascade_pid",
       "display_name_zh": "串级 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "cascade_pid",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -59,7 +61,7 @@
         "profile_id": "cascade_pid_attitude_thrust_v1",
         "status": "accepted",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -91,7 +93,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -101,7 +103,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -129,8 +131,11 @@
       "scheme_id": "gain_scheduled_pid",
       "display_name_zh": "增益调度 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "gain_scheduled_pid",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -138,7 +143,7 @@
         "profile_id": "gain_scheduled_pid_attitude_thrust_v1",
         "status": "accepted",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -161,7 +166,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -171,7 +176,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -199,8 +204,11 @@
       "scheme_id": "fuzzy_pid",
       "display_name_zh": "模糊 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "fuzzy_pid",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -208,7 +216,7 @@
         "profile_id": "fuzzy_pid_attitude_thrust_v1",
         "status": "accepted",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -231,7 +239,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -241,7 +249,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -269,8 +277,11 @@
       "scheme_id": "neural_pid",
       "display_name_zh": "神经 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "neural_pid",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -278,7 +289,7 @@
         "profile_id": "neural_pid_attitude_thrust_v1",
         "status": "accepted",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -301,7 +312,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -311,7 +322,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -339,8 +350,11 @@
       "scheme_id": "official_pid",
       "display_name_zh": "官方 PID",
       "category": "pid_family",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "reference_baseline",
+      "selection_eligibility": "reference_baseline_only",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "official_pid",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -348,7 +362,7 @@
         "profile_id": "official_pid_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -371,7 +385,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -381,7 +395,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -406,19 +420,22 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "lqg",
-      "display_name_zh": "LQG",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "lqg",
+      "scheme_id": "fopid",
+      "display_name_zh": "分数阶 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
+      "evidence_route": "fopid",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
-        "module_id": "lqg",
-        "profile_id": "lqg_attitude_thrust_v1",
+        "module_id": "fopid",
+        "profile_id": "fopid_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -426,8 +443,7 @@
         "current_model_file": null,
         "current_model_name": null,
         "source_model_candidates": [
-          "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
-          "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_LQG_MIL.mo"
+          "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_FOPID_MIL.mo"
         ],
         "existing_model_operation_candidates": []
       },
@@ -441,7 +457,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -451,24 +467,29 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
         "matrix_status": "executed_blocked",
         "implementation_state": "implemented",
-        "claim_ceiling": "executed_not_accepted",
+        "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
         "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
-        "model_source_count": 2,
+        "model_source_count": 1,
         "result_viewer_screenshot_count": 1,
-        "numeric_result_count": 3,
+        "numeric_result_count": 8,
         "native_result_msr_count": 0,
         "evidence_paths": [
-          "Results/control_platform/p2_linear_robust_runtime_20260716/lqg/PX4CTRL_BASIC_MISSION_METRICS.json"
+          "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
+          "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+          "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+          "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+          "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/PX4CTRL_BASIC_MISSION_METRICS.json",
+          "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
         ]
       },
       "blockers": [
-        "hover_xy_rmse_above_max:0.05751968270141498;hover_xy_max_above_max:0.06594786493098181;hover_z_rmse_above_max:0.05622366268766644;hover_z_max_above_max:0.07285001216967557",
+        "hover_z_rmse_above_max:0.030180420832681104;hover_z_max_above_max:0.05733039396824757",
         "missing_evidence:native_result_msr_live_confirmation",
         "current_model_entry_unmapped"
       ],
@@ -476,33 +497,42 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "feedback_linearization",
-      "display_name_zh": "反馈线性化",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "feedback_linearization",
+      "scheme_id": "fixed_awff_pid",
+      "display_name_zh": "抗积分饱和与参考前馈 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
+      "control_owner": "full_profile_whole_aircraft",
+      "evidence_route": null,
       "registry_binding": {
-        "mapping_state": "exact_registry_binding",
-        "module_id": "feedback_linearization",
-        "profile_id": "feedback_linearization_attitude_thrust_v1",
-        "status": "implemented",
-        "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+        "mapping_state": "full_profile_source_config",
+        "module_id": "awff_pid",
+        "profile_id": null,
+        "status": null,
+        "output_variant": null,
+        "offline_runner": null,
+        "offline_inner_owner": null
       },
       "model_entry": {
-        "mapping_state": "source_candidates_need_g4_mapping",
+        "mapping_state": "source_config_candidates_need_g4_mapping",
         "current_model_file": null,
         "current_model_name": null,
-        "source_model_candidates": [
-          "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
-          "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_FEEDBACK_LINEARIZATION_MIL.mo"
-        ],
-        "existing_model_operation_candidates": []
+        "source_model_candidates": [],
+        "source_config": "Config/controllers/awff_pid/default.yaml",
+        "source_config_exists": true,
+        "declared_model_names": [],
+        "offline_composition_binding": null
       },
+      "profile_chain": [
+        "pid_outer_and_attitude_chain",
+        "conditional_integration_anti_windup",
+        "vertical_reference_feedforward",
+        "motor_mixing"
+      ],
       "scenario_contract": {
-        "g5_nominal_screening": {
+        "current_mworks_route_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -511,7 +541,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -521,58 +551,65 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "family_screening"
         }
       },
       "current_evidence": {
-        "matrix_status": "executed_blocked",
-        "implementation_state": "implemented",
-        "claim_ceiling": "executed_not_accepted",
-        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
-        "model_source_count": 2,
-        "result_viewer_screenshot_count": 1,
-        "numeric_result_count": 3,
-        "native_result_msr_count": 0,
+        "matrix_status": null,
+        "implementation_state": null,
+        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
         "evidence_paths": [
-          "Results/control_platform/p2_linear_robust_runtime_20260716/feedback_linearization/PX4CTRL_BASIC_MISSION_METRICS.json"
+          "Config/controllers/awff_pid/default.yaml"
         ]
       },
       "blockers": [
-        "hover_xy_rmse_above_max:0.040061624031686026;hover_xy_max_above_max:0.0538885269235946;hover_z_rmse_above_max:0.06049444268045179;hover_z_max_above_max:0.08143961883526629",
-        "missing_evidence:native_result_msr_live_confirmation",
         "current_model_entry_unmapped"
       ],
       "mworks_run_eligible": false,
-      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
+      "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "passivity_based_control",
-      "display_name_zh": "无源控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "passivity_based_control",
+      "scheme_id": "fixed_awff_l1_residual",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
+      "control_owner": "full_profile_whole_aircraft",
+      "evidence_route": null,
       "registry_binding": {
-        "mapping_state": "exact_registry_binding",
-        "module_id": "passivity_based_control",
-        "profile_id": "passivity_based_control_attitude_thrust_v1",
-        "status": "implemented",
-        "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+        "mapping_state": "full_profile_source_config",
+        "module_id": "l1_residual_sysblock",
+        "profile_id": null,
+        "status": null,
+        "output_variant": null,
+        "offline_runner": null,
+        "offline_inner_owner": null
       },
       "model_entry": {
-        "mapping_state": "source_candidates_need_g4_mapping",
+        "mapping_state": "source_config_candidates_need_g4_mapping",
         "current_model_file": null,
         "current_model_name": null,
-        "source_model_candidates": [
-          "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
-          "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_PASSIVITY_BASED_CONTROL_MIL.mo"
+        "source_model_candidates": [],
+        "source_config": "Config/controllers/l1_residual_sysblock/default.yaml",
+        "source_config_exists": true,
+        "declared_model_names": [
+          "MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Templates.Official.Example3L1SysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1Mass20L1SysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1WindGustL1SysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15L1SysblockClosedLoop"
         ],
-        "existing_model_operation_candidates": []
+        "offline_composition_binding": null
       },
+      "profile_chain": [
+        "awff_pid_base_chain",
+        "bounded_l1_inspired_residual_compensation",
+        "motor_mixing"
+      ],
       "scenario_contract": {
-        "g5_nominal_screening": {
+        "current_mworks_route_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -581,7 +618,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -591,58 +628,64 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "family_screening"
         }
       },
       "current_evidence": {
-        "matrix_status": "executed_blocked",
-        "implementation_state": "implemented",
-        "claim_ceiling": "executed_not_accepted",
-        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
-        "model_source_count": 2,
-        "result_viewer_screenshot_count": 1,
-        "numeric_result_count": 3,
-        "native_result_msr_count": 0,
+        "matrix_status": null,
+        "implementation_state": null,
+        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
         "evidence_paths": [
-          "Results/control_platform/p2_linear_robust_runtime_20260716/passivity_based_control/PX4CTRL_BASIC_MISSION_METRICS.json"
+          "Config/controllers/l1_residual_sysblock/default.yaml"
         ]
       },
       "blockers": [
-        "hover_xy_rmse_above_max:0.03125234705705186;hover_z_rmse_above_max:0.05664976329424122;hover_z_max_above_max:0.07195761943142043",
-        "missing_evidence:native_result_msr_live_confirmation",
         "current_model_entry_unmapped"
       ],
       "mworks_run_eligible": false,
-      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
+      "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "adaptive_backstepping",
-      "display_name_zh": "自适应反步控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "adaptive_backstepping",
+      "scheme_id": "fixed_awff_l1_indi",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
+      "control_owner": "full_profile_whole_aircraft",
+      "evidence_route": null,
       "registry_binding": {
-        "mapping_state": "exact_registry_binding",
-        "module_id": "adaptive_backstepping",
-        "profile_id": "adaptive_backstepping_attitude_thrust_v1",
-        "status": "implemented",
-        "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+        "mapping_state": "full_profile_source_config",
+        "module_id": "awff_indi_sysblock",
+        "profile_id": null,
+        "status": null,
+        "output_variant": null,
+        "offline_runner": null,
+        "offline_inner_owner": null
       },
       "model_entry": {
-        "mapping_state": "source_candidates_need_g4_mapping",
+        "mapping_state": "source_config_candidates_need_g4_mapping",
         "current_model_file": null,
         "current_model_name": null,
-        "source_model_candidates": [
-          "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
-          "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_ADAPTIVE_BACKSTEPPING_MIL.mo"
+        "source_model_candidates": [],
+        "source_config": "Config/controllers/awff_indi_sysblock/default.yaml",
+        "source_config_exists": true,
+        "declared_model_names": [
+          "MoSimQuadrotorModel.Experiment.Templates.Official.Example1INDISysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Templates.Official.Example3INDISysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Templates.Official.Example2HelixTunedINDISysblockClosedLoop"
         ],
-        "existing_model_operation_candidates": []
+        "offline_composition_binding": null
       },
+      "profile_chain": [
+        "awff_pid_base_chain",
+        "bounded_l1_inspired_residual_compensation",
+        "indi_like_attitude_correction",
+        "motor_mixing"
+      ],
       "scenario_contract": {
-        "g5_nominal_screening": {
+        "current_mworks_route_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -651,7 +694,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -661,36 +704,32 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "family_screening"
         }
       },
       "current_evidence": {
-        "matrix_status": "executed_blocked",
-        "implementation_state": "implemented",
-        "claim_ceiling": "executed_not_accepted",
-        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
-        "model_source_count": 2,
-        "result_viewer_screenshot_count": 1,
-        "numeric_result_count": 3,
-        "native_result_msr_count": 0,
+        "matrix_status": null,
+        "implementation_state": null,
+        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
         "evidence_paths": [
-          "Results/control_platform/p2_linear_robust_runtime_20260716/adaptive_backstepping_retry2/PX4CTRL_BASIC_MISSION_METRICS.json"
+          "Config/controllers/awff_indi_sysblock/default.yaml"
         ]
       },
       "blockers": [
-        "hover_xy_rmse_above_max:0.4941291107500093;hover_xy_max_above_max:0.5377037841471708;hover_z_rmse_above_max:0.40829276904845296;hover_z_max_above_max:0.4526939850038475",
-        "missing_evidence:native_result_msr_live_confirmation",
         "current_model_entry_unmapped"
       ],
       "mworks_run_eligible": false,
-      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
+      "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL"
     },
     {
       "scheme_id": "lqr_baseline",
       "display_name_zh": "LQR",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "lqr_baseline",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -698,7 +737,7 @@
         "profile_id": "lqr_baseline_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -720,7 +759,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -730,7 +769,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -758,9 +797,12 @@
     {
       "scheme_id": "lqi_baseline",
       "display_name_zh": "LQI",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "lqi_baseline",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -768,7 +810,7 @@
         "profile_id": "lqi_baseline_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -790,7 +832,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -800,7 +842,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -827,11 +869,164 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
+      "scheme_id": "lqg",
+      "display_name_zh": "LQG",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
+      "evidence_route": "lqg",
+      "registry_binding": {
+        "mapping_state": "exact_registry_binding",
+        "module_id": "lqg",
+        "profile_id": "lqg_attitude_thrust_v1",
+        "status": "implemented",
+        "output_variant": "ATTITUDE_THRUST",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
+        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+      },
+      "model_entry": {
+        "mapping_state": "source_candidates_need_g4_mapping",
+        "current_model_file": null,
+        "current_model_name": null,
+        "source_model_candidates": [
+          "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
+          "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_LQG_MIL.mo"
+        ],
+        "existing_model_operation_candidates": []
+      },
+      "scenario_contract": {
+        "g5_nominal_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral"
+          ],
+          "eligibility": "blocked_until_g4_current_model_mapping"
+        },
+        "family_winner_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral",
+            "wind",
+            "parameter_mismatch",
+            "motor_efficiency_fault"
+          ],
+          "eligibility": "not_selected_until_current_46_route_screening"
+        }
+      },
+      "current_evidence": {
+        "matrix_status": "executed_blocked",
+        "implementation_state": "implemented",
+        "claim_ceiling": "executed_not_accepted",
+        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
+        "model_source_count": 2,
+        "result_viewer_screenshot_count": 1,
+        "numeric_result_count": 3,
+        "native_result_msr_count": 0,
+        "evidence_paths": [
+          "Results/control_platform/p2_linear_robust_runtime_20260716/lqg/PX4CTRL_BASIC_MISSION_METRICS.json"
+        ]
+      },
+      "blockers": [
+        "hover_xy_rmse_above_max:0.05751968270141498;hover_xy_max_above_max:0.06594786493098181;hover_z_rmse_above_max:0.05622366268766644;hover_z_max_above_max:0.07285001216967557",
+        "missing_evidence:native_result_msr_live_confirmation",
+        "current_model_entry_unmapped"
+      ],
+      "mworks_run_eligible": false,
+      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
+    },
+    {
+      "scheme_id": "h2_state_feedback",
+      "display_name_zh": "H2 状态反馈",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
+      "evidence_route": "h2_state_feedback",
+      "registry_binding": {
+        "mapping_state": "exact_registry_binding",
+        "module_id": "h2_state_feedback",
+        "profile_id": "h2_state_feedback_attitude_thrust_v1",
+        "status": "implemented",
+        "output_variant": "ATTITUDE_THRUST",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
+        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+      },
+      "model_entry": {
+        "mapping_state": "source_candidates_need_g4_mapping",
+        "current_model_file": null,
+        "current_model_name": null,
+        "source_model_candidates": [
+          "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo"
+        ],
+        "existing_model_operation_candidates": []
+      },
+      "scenario_contract": {
+        "g5_nominal_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral"
+          ],
+          "eligibility": "blocked_until_g4_current_model_mapping"
+        },
+        "family_winner_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral",
+            "wind",
+            "parameter_mismatch",
+            "motor_efficiency_fault"
+          ],
+          "eligibility": "not_selected_until_current_46_route_screening"
+        }
+      },
+      "current_evidence": {
+        "matrix_status": "executed_blocked",
+        "implementation_state": "implemented",
+        "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
+        "model_source_count": 1,
+        "result_viewer_screenshot_count": 5,
+        "numeric_result_count": 8,
+        "native_result_msr_count": 0,
+        "evidence_paths": [
+          "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
+          "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
+          "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
+          "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
+          "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/PX4CTRL_BASIC_MISSION_METRICS.json",
+          "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+        ]
+      },
+      "blockers": [
+        "hover_z_rmse_above_max:0.022701384839746073",
+        "missing_evidence:native_result_msr_live_confirmation",
+        "current_model_entry_unmapped"
+      ],
+      "mworks_run_eligible": false,
+      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
+    },
+    {
       "scheme_id": "hinf_hover_wrench",
       "display_name_zh": "H 无穷悬停控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "hinf_hover_wrench",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -839,7 +1034,7 @@
         "profile_id": "hinf_hover_wrench_v1",
         "status": "implemented",
         "output_variant": "WRENCH",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.WrenchRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.WrenchRunner",
         "offline_inner_owner": "mworks_offline_control_allocator_v1"
       },
       "model_entry": {
@@ -861,7 +1056,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -871,7 +1066,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -899,153 +1094,14 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "mu_synthesis",
-      "display_name_zh": "mu 综合",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "mu_synthesis",
-      "registry_binding": {
-        "mapping_state": "exact_registry_binding",
-        "module_id": "mu_synthesis",
-        "profile_id": "mu_synthesis_attitude_thrust_v1",
-        "status": "blocked",
-        "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
-      },
-      "model_entry": {
-        "mapping_state": "implementation_blocked",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [],
-        "existing_model_operation_candidates": []
-      },
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_selected_until_g5_screening"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": "not_run",
-        "implementation_state": "blocked",
-        "claim_ceiling": "syslab_constant_matrix_mu_analysis_available_but_dynamic_musyn_controller_synthesis_unavailable",
-        "document_inventory_next_action": "terminal_implementation_blocker_documented",
-        "model_source_count": 0,
-        "result_viewer_screenshot_count": 0,
-        "numeric_result_count": 1,
-        "native_result_msr_count": 0,
-        "evidence_paths": [
-          "Results/control_platform/p2_mu_syslab_capability_20260716/SYSLAB_MU_CAPABILITY_AUDIT.json"
-        ]
-      },
-      "blockers": [
-        "installed Syslab lacks dynamic musyn; constant-matrix mu analysis is not a controller",
-        "missing_evidence:model_source",
-        "missing_evidence:graphical_model_screenshot",
-        "missing_evidence:result_viewer_screenshot",
-        "missing_evidence:native_result_msr_live_confirmation",
-        "implementation_blocked"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
-    },
-    {
-      "scheme_id": "backstepping_baseline",
-      "display_name_zh": "反步控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "backstepping_baseline",
-      "registry_binding": {
-        "mapping_state": "exact_registry_binding",
-        "module_id": "backstepping_baseline",
-        "profile_id": "backstepping_baseline_attitude_thrust_v1",
-        "status": "implemented",
-        "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
-      },
-      "model_entry": {
-        "mapping_state": "source_candidates_need_g4_mapping",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [
-          "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL.mo",
-          "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL_backup/crash_recovery/20260716183950/MoSim_WaveA_BACKSTEPPING_MIL.mo"
-        ],
-        "existing_model_operation_candidates": []
-      },
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_selected_until_g5_screening"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": "executed_blocked",
-        "implementation_state": "implemented",
-        "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
-        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
-        "model_source_count": 2,
-        "result_viewer_screenshot_count": 1,
-        "numeric_result_count": 3,
-        "native_result_msr_count": 0,
-        "evidence_paths": [
-          "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
-          "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
-          "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
-        ]
-      },
-      "blockers": [
-        "takeoff_not_reached_altitude;hover_xy_rmse_above_max:0.037253418577168254;hover_xy_max_above_max:0.05502251134614933;hover_z_rmse_above_max:0.7578290628291051;hover_z_max_above_max:0.7736349914784704;truth_local_delta_error_bad_z:6.094002934124275",
-        "missing_evidence:native_result_msr_live_confirmation",
-        "current_model_entry_unmapped"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
-    },
-    {
       "scheme_id": "pole_placement_luenberger",
       "display_name_zh": "极点配置与 Luenberger 观测器",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "pole_placement_luenberger",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1053,7 +1109,7 @@
         "profile_id": "pole_placement_luenberger_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1075,7 +1131,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1085,7 +1141,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1115,11 +1171,235 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
+      "scheme_id": "backstepping_baseline",
+      "display_name_zh": "反步控制",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
+      "evidence_route": "backstepping_baseline",
+      "registry_binding": {
+        "mapping_state": "exact_registry_binding",
+        "module_id": "backstepping_baseline",
+        "profile_id": "backstepping_baseline_attitude_thrust_v1",
+        "status": "implemented",
+        "output_variant": "ATTITUDE_THRUST",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
+        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+      },
+      "model_entry": {
+        "mapping_state": "source_candidates_need_g4_mapping",
+        "current_model_file": null,
+        "current_model_name": null,
+        "source_model_candidates": [
+          "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL.mo",
+          "Results/control_platform/g5_mworks_closeout_20260716/wave_a/models/MoSim_WaveA_BACKSTEPPING_MIL_backup/crash_recovery/20260716183950/MoSim_WaveA_BACKSTEPPING_MIL.mo"
+        ],
+        "existing_model_operation_candidates": []
+      },
+      "scenario_contract": {
+        "g5_nominal_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral"
+          ],
+          "eligibility": "blocked_until_g4_current_model_mapping"
+        },
+        "family_winner_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral",
+            "wind",
+            "parameter_mismatch",
+            "motor_efficiency_fault"
+          ],
+          "eligibility": "not_selected_until_current_46_route_screening"
+        }
+      },
+      "current_evidence": {
+        "matrix_status": "executed_blocked",
+        "implementation_state": "implemented",
+        "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
+        "model_source_count": 2,
+        "result_viewer_screenshot_count": 1,
+        "numeric_result_count": 3,
+        "native_result_msr_count": 0,
+        "evidence_paths": [
+          "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4CTRL_BASIC_MISSION_METRICS.json",
+          "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/WAVE_A_GENERATED_RUNTIME_PROVENANCE.json",
+          "Results/control_platform/wave_a_generated_gazebo_20260718/backstepping_baseline/takeoff_hover_land_r1_ram_dataman_wait120/PX4_RAM_DATAMAN_RCS.json"
+        ]
+      },
+      "blockers": [
+        "takeoff_not_reached_altitude;hover_xy_rmse_above_max:0.037253418577168254;hover_xy_max_above_max:0.05502251134614933;hover_z_rmse_above_max:0.7578290628291051;hover_z_max_above_max:0.7736349914784704;truth_local_delta_error_bad_z:6.094002934124275",
+        "missing_evidence:native_result_msr_live_confirmation",
+        "current_model_entry_unmapped"
+      ],
+      "mworks_run_eligible": false,
+      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
+    },
+    {
+      "scheme_id": "adaptive_backstepping",
+      "display_name_zh": "自适应反步控制",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
+      "evidence_route": "adaptive_backstepping",
+      "registry_binding": {
+        "mapping_state": "exact_registry_binding",
+        "module_id": "adaptive_backstepping",
+        "profile_id": "adaptive_backstepping_attitude_thrust_v1",
+        "status": "implemented",
+        "output_variant": "ATTITUDE_THRUST",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
+        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+      },
+      "model_entry": {
+        "mapping_state": "source_candidates_need_g4_mapping",
+        "current_model_file": null,
+        "current_model_name": null,
+        "source_model_candidates": [
+          "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
+          "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_ADAPTIVE_BACKSTEPPING_MIL.mo"
+        ],
+        "existing_model_operation_candidates": []
+      },
+      "scenario_contract": {
+        "g5_nominal_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral"
+          ],
+          "eligibility": "blocked_until_g4_current_model_mapping"
+        },
+        "family_winner_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral",
+            "wind",
+            "parameter_mismatch",
+            "motor_efficiency_fault"
+          ],
+          "eligibility": "not_selected_until_current_46_route_screening"
+        }
+      },
+      "current_evidence": {
+        "matrix_status": "executed_blocked",
+        "implementation_state": "implemented",
+        "claim_ceiling": "executed_not_accepted",
+        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
+        "model_source_count": 2,
+        "result_viewer_screenshot_count": 1,
+        "numeric_result_count": 3,
+        "native_result_msr_count": 0,
+        "evidence_paths": [
+          "Results/control_platform/p2_linear_robust_runtime_20260716/adaptive_backstepping_retry2/PX4CTRL_BASIC_MISSION_METRICS.json"
+        ]
+      },
+      "blockers": [
+        "hover_xy_rmse_above_max:0.4941291107500093;hover_xy_max_above_max:0.5377037841471708;hover_z_rmse_above_max:0.40829276904845296;hover_z_max_above_max:0.4526939850038475",
+        "missing_evidence:native_result_msr_live_confirmation",
+        "current_model_entry_unmapped"
+      ],
+      "mworks_run_eligible": false,
+      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
+    },
+    {
+      "scheme_id": "feedback_linearization",
+      "display_name_zh": "反馈线性化",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
+      "evidence_route": "feedback_linearization",
+      "registry_binding": {
+        "mapping_state": "exact_registry_binding",
+        "module_id": "feedback_linearization",
+        "profile_id": "feedback_linearization_attitude_thrust_v1",
+        "status": "implemented",
+        "output_variant": "ATTITUDE_THRUST",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
+        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+      },
+      "model_entry": {
+        "mapping_state": "source_candidates_need_g4_mapping",
+        "current_model_file": null,
+        "current_model_name": null,
+        "source_model_candidates": [
+          "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
+          "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_FEEDBACK_LINEARIZATION_MIL.mo"
+        ],
+        "existing_model_operation_candidates": []
+      },
+      "scenario_contract": {
+        "g5_nominal_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral"
+          ],
+          "eligibility": "blocked_until_g4_current_model_mapping"
+        },
+        "family_winner_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral",
+            "wind",
+            "parameter_mismatch",
+            "motor_efficiency_fault"
+          ],
+          "eligibility": "not_selected_until_current_46_route_screening"
+        }
+      },
+      "current_evidence": {
+        "matrix_status": "executed_blocked",
+        "implementation_state": "implemented",
+        "claim_ceiling": "executed_not_accepted",
+        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
+        "model_source_count": 2,
+        "result_viewer_screenshot_count": 1,
+        "numeric_result_count": 3,
+        "native_result_msr_count": 0,
+        "evidence_paths": [
+          "Results/control_platform/p2_linear_robust_runtime_20260716/feedback_linearization/PX4CTRL_BASIC_MISSION_METRICS.json"
+        ]
+      },
+      "blockers": [
+        "hover_xy_rmse_above_max:0.040061624031686026;hover_xy_max_above_max:0.0538885269235946;hover_z_rmse_above_max:0.06049444268045179;hover_z_max_above_max:0.08143961883526629",
+        "missing_evidence:native_result_msr_live_confirmation",
+        "current_model_entry_unmapped"
+      ],
+      "mworks_run_eligible": false,
+      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
+    },
+    {
       "scheme_id": "mrac",
       "display_name_zh": "模型参考自适应控制",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "mrac",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1127,7 +1407,7 @@
         "profile_id": "mrac_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1149,7 +1429,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1159,7 +1439,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1193,9 +1473,12 @@
     {
       "scheme_id": "ndi",
       "display_name_zh": "非线性动态逆",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "ndi",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1203,7 +1486,7 @@
         "profile_id": "ndi_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1225,7 +1508,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1235,7 +1518,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1267,19 +1550,22 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "fopid",
-      "display_name_zh": "分数阶 PID",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "fopid",
+      "scheme_id": "passivity_based_control",
+      "display_name_zh": "无源控制",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
+      "evidence_route": "passivity_based_control",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
-        "module_id": "fopid",
-        "profile_id": "fopid_attitude_thrust_v1",
+        "module_id": "passivity_based_control",
+        "profile_id": "passivity_based_control_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1287,7 +1573,8 @@
         "current_model_file": null,
         "current_model_name": null,
         "source_model_candidates": [
-          "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_FOPID_MIL.mo"
+          "Results/control_platform/p2_linear_robust_mworks_20260716/models/graphical_variants/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
+          "Results/control_platform/p2_linear_robust_mworks_20260716/models/MoSim_P2_PASSIVITY_BASED_CONTROL_MIL.mo"
         ],
         "existing_model_operation_candidates": []
       },
@@ -1301,7 +1588,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1311,103 +1598,24 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
         "matrix_status": "executed_blocked",
         "implementation_state": "implemented",
-        "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
+        "claim_ceiling": "executed_not_accepted",
         "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
-        "model_source_count": 1,
+        "model_source_count": 2,
         "result_viewer_screenshot_count": 1,
-        "numeric_result_count": 8,
+        "numeric_result_count": 3,
         "native_result_msr_count": 0,
         "evidence_paths": [
-          "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
-          "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
-          "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
-          "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
-          "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/PX4CTRL_BASIC_MISSION_METRICS.json",
-          "Results/control_platform/classic_controller_closeout_20260717/gazebo/fopid/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
+          "Results/control_platform/p2_linear_robust_runtime_20260716/passivity_based_control/PX4CTRL_BASIC_MISSION_METRICS.json"
         ]
       },
       "blockers": [
-        "hover_z_rmse_above_max:0.030180420832681104;hover_z_max_above_max:0.05733039396824757",
-        "missing_evidence:native_result_msr_live_confirmation",
-        "current_model_entry_unmapped"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
-    },
-    {
-      "scheme_id": "h2_state_feedback",
-      "display_name_zh": "H2 状态反馈",
-      "category": "classic_robust",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "h2_state_feedback",
-      "registry_binding": {
-        "mapping_state": "exact_registry_binding",
-        "module_id": "h2_state_feedback",
-        "profile_id": "h2_state_feedback_attitude_thrust_v1",
-        "status": "implemented",
-        "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
-      },
-      "model_entry": {
-        "mapping_state": "source_candidates_need_g4_mapping",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [
-          "Results/control_platform/classic_controller_closeout_20260717/mworks/models/MoSim_Classic_H2_STATE_FEEDBACK_MIL.mo"
-        ],
-        "existing_model_operation_candidates": []
-      },
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_selected_until_g5_screening"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": "executed_blocked",
-        "implementation_state": "implemented",
-        "claim_ceiling": "generated_c_gazebo_executed_hover_acceptance_blocked",
-        "document_inventory_next_action": "confirm_native_result_msr_in_live_session",
-        "model_source_count": 1,
-        "result_viewer_screenshot_count": 5,
-        "numeric_result_count": 8,
-        "native_result_msr_count": 0,
-        "evidence_paths": [
-          "Results/control_platform/classic_controller_closeout_20260717/source_gate/CLASSIC_CONTROLLER_SOURCE_GATE.json",
-          "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_MIL_MANIFEST.json",
-          "Results/control_platform/classic_controller_closeout_20260717/mworks/MWORKS_CODEGEN_MANIFEST.json",
-          "Results/control_platform/classic_controller_closeout_20260717/mworks/sil/CLASSIC_CONTROLLER_GENERATED_SIL.json",
-          "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/PX4CTRL_BASIC_MISSION_METRICS.json",
-          "Results/control_platform/classic_controller_closeout_20260717/gazebo/h2_state_feedback/CLASSIC_CONTROLLER_RUNTIME_PROVENANCE.json"
-        ]
-      },
-      "blockers": [
-        "hover_z_rmse_above_max:0.022701384839746073",
+        "hover_xy_rmse_above_max:0.03125234705705186;hover_z_rmse_above_max:0.05664976329424122;hover_z_max_above_max:0.07195761943142043",
         "missing_evidence:native_result_msr_live_confirmation",
         "current_model_entry_unmapped"
       ],
@@ -1418,8 +1626,11 @@
       "scheme_id": "integral_smc",
       "display_name_zh": "积分滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "integral_smc",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1427,7 +1638,7 @@
         "profile_id": "integral_smc_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1450,7 +1661,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1460,7 +1671,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1489,8 +1700,11 @@
       "scheme_id": "terminal_smc",
       "display_name_zh": "终端滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "terminal_smc",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1498,7 +1712,7 @@
         "profile_id": "terminal_smc_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1523,7 +1737,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1533,7 +1747,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1562,8 +1776,11 @@
       "scheme_id": "nonsingular_terminal_smc",
       "display_name_zh": "非奇异终端滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "nonsingular_terminal_smc",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1571,7 +1788,7 @@
         "profile_id": "nonsingular_terminal_smc_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1594,7 +1811,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1604,7 +1821,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1633,8 +1850,11 @@
       "scheme_id": "super_twisting_smc",
       "display_name_zh": "Super-Twisting 滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "super_twisting_smc",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1642,7 +1862,7 @@
         "profile_id": "super_twisting_smc_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1665,7 +1885,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1675,7 +1895,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1703,8 +1923,11 @@
       "scheme_id": "adaptive_smc",
       "display_name_zh": "自适应滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "adaptive_smc",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1712,7 +1935,7 @@
         "profile_id": "adaptive_smc_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1735,7 +1958,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1745,7 +1968,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1774,8 +1997,11 @@
       "scheme_id": "fuzzy_smc",
       "display_name_zh": "模糊滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "fuzzy_smc",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1783,7 +2009,7 @@
         "profile_id": "fuzzy_smc_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1806,7 +2032,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1816,7 +2042,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1842,81 +2068,14 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "neural_smc",
-      "display_name_zh": "神经滑模控制",
-      "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
-      "evidence_route": "neural_smc",
-      "registry_binding": {
-        "mapping_state": "exact_registry_binding",
-        "module_id": "neural_smc",
-        "profile_id": "neural_smc_attitude_thrust_v1",
-        "status": "blocked",
-        "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
-      },
-      "model_entry": {
-        "mapping_state": "implementation_blocked",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [],
-        "existing_model_operation_candidates": []
-      },
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_selected_until_g5_screening"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": "not_run",
-        "implementation_state": "blocked",
-        "claim_ceiling": "interface_only_no_frozen_training_dataset_or_model_artifact",
-        "document_inventory_next_action": "terminal_implementation_blocker_documented",
-        "model_source_count": 0,
-        "result_viewer_screenshot_count": 0,
-        "numeric_result_count": 1,
-        "native_result_msr_count": 0,
-        "evidence_paths": [
-          "Results/control_platform/p3_sliding_mode_source_20260716/P3_SLIDING_MODE_SOURCE_GATE.json"
-        ]
-      },
-      "blockers": [
-        "no frozen training dataset or trained Neural-SMC artifact",
-        "missing_evidence:model_source",
-        "missing_evidence:graphical_model_screenshot",
-        "missing_evidence:result_viewer_screenshot",
-        "missing_evidence:native_result_msr_live_confirmation",
-        "implementation_blocked"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
-    },
-    {
       "scheme_id": "smc_boundary_layer",
       "display_name_zh": "边界层滑模控制",
       "category": "sliding_mode",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "smc_boundary_layer",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -1924,7 +2083,7 @@
         "profile_id": "smc_boundary_layer_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -1947,7 +2106,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -1957,7 +2116,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -1983,9 +2142,12 @@
     {
       "scheme_id": "linear_mpc",
       "display_name_zh": "线性 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "linear_mpc",
       "registry_binding": {
         "mapping_state": "no_exact_registry_binding",
@@ -2016,7 +2178,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2026,7 +2188,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2053,9 +2215,12 @@
     {
       "scheme_id": "robust_mpc",
       "display_name_zh": "鲁棒 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "robust_mpc",
       "registry_binding": {
         "mapping_state": "no_exact_registry_binding",
@@ -2086,7 +2251,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2096,7 +2261,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2124,9 +2289,12 @@
     {
       "scheme_id": "adaptive_mpc",
       "display_name_zh": "自适应 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "adaptive_mpc",
       "registry_binding": {
         "mapping_state": "no_exact_registry_binding",
@@ -2157,7 +2325,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2167,7 +2335,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2195,9 +2363,12 @@
     {
       "scheme_id": "tube_mpc",
       "display_name_zh": "管束 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "tube_mpc",
       "registry_binding": {
         "mapping_state": "no_exact_registry_binding",
@@ -2228,7 +2399,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2238,7 +2409,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2267,9 +2438,12 @@
     {
       "scheme_id": "explicit_gain_scheduled_mpc",
       "display_name_zh": "显式增益调度 MPC",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "explicit_gain_scheduled_mpc",
       "registry_binding": {
         "mapping_state": "no_exact_registry_binding",
@@ -2300,7 +2474,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2310,7 +2484,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2338,9 +2512,12 @@
     {
       "scheme_id": "ilqr",
       "display_name_zh": "iLQR",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "ilqr",
       "registry_binding": {
         "mapping_state": "no_exact_registry_binding",
@@ -2371,7 +2548,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2381,7 +2558,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2409,9 +2586,12 @@
     {
       "scheme_id": "mppi",
       "display_name_zh": "MPPI",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "mppi",
       "registry_binding": {
         "mapping_state": "no_exact_registry_binding",
@@ -2442,7 +2622,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2452,7 +2632,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2480,9 +2660,12 @@
     {
       "scheme_id": "nmpc_outer",
       "display_name_zh": "NMPC 外环",
-      "category": "optimization",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "nmpc_outer",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -2490,7 +2673,7 @@
         "profile_id": "nmpc_outer_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -2513,7 +2696,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2523,7 +2706,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2547,11 +2730,166 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
+      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
+      "control_owner": "full_profile_whole_aircraft",
+      "evidence_route": null,
+      "registry_binding": {
+        "mapping_state": "full_profile_source_config",
+        "module_id": "linear_mpc_sysblock",
+        "profile_id": null,
+        "status": null,
+        "output_variant": null,
+        "offline_runner": null,
+        "offline_inner_owner": null
+      },
+      "model_entry": {
+        "mapping_state": "source_config_candidates_need_g4_mapping",
+        "current_model_file": null,
+        "current_model_name": null,
+        "source_model_candidates": [],
+        "source_config": "Config/controllers/linear_mpc_sysblock/default.yaml",
+        "source_config_exists": true,
+        "declared_model_names": [
+          "MoSimQuadrotorModel.Experiment.Templates.Official.Example1LinearMPCSysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Templates.Official.Example2LinearMPCSysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Templates.Official.Example3LinearMPCSysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1Mass20LinearMPCSysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1WindGustLinearMPCSysblockClosedLoop",
+          "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.RotorLoss.Example1Rotor1Loss15LinearMPCSysblockClosedLoop"
+        ],
+        "offline_composition_binding": null
+      },
+      "profile_chain": [
+        "finite_horizon_linear_mpc_outer_loop",
+        "bounded_l1_inspired_residual_feedforward",
+        "indi_like_attitude_inner_loop",
+        "motor_mixing"
+      ],
+      "scenario_contract": {
+        "current_mworks_route_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral"
+          ],
+          "eligibility": "blocked_until_g4_current_model_mapping"
+        },
+        "family_winner_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral",
+            "wind",
+            "parameter_mismatch",
+            "motor_efficiency_fault"
+          ],
+          "eligibility": "family_screening"
+        }
+      },
+      "current_evidence": {
+        "matrix_status": null,
+        "implementation_state": null,
+        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
+        "evidence_paths": [
+          "Config/controllers/linear_mpc_sysblock/default.yaml"
+        ]
+      },
+      "blockers": [
+        "current_model_entry_unmapped"
+      ],
+      "mworks_run_eligible": false,
+      "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL"
+    },
+    {
+      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "full_profile_whole_aircraft",
+      "control_owner": "full_profile_whole_aircraft",
+      "evidence_route": null,
+      "registry_binding": {
+        "mapping_state": "full_profile_source_config",
+        "module_id": "nmpc_indi_l1",
+        "profile_id": null,
+        "status": null,
+        "output_variant": null,
+        "offline_runner": null,
+        "offline_inner_owner": null
+      },
+      "model_entry": {
+        "mapping_state": "source_config_candidates_need_g4_mapping",
+        "current_model_file": null,
+        "current_model_name": null,
+        "source_model_candidates": [],
+        "source_config": "Config/controllers/nmpc_indi_l1/default.yaml",
+        "source_config_exists": true,
+        "declared_model_names": [],
+        "offline_composition_binding": null
+      },
+      "profile_chain": [
+        "fixed_iteration_qp_mpc_with_nmpc_projection",
+        "bounded_l1_compensation",
+        "indi_attitude_inner_loop",
+        "cbf_style_reference_and_command_projection",
+        "mode_manager_and_motor_mixing"
+      ],
+      "scenario_contract": {
+        "current_mworks_route_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral"
+          ],
+          "eligibility": "blocked_until_g4_current_model_mapping"
+        },
+        "family_winner_screening": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral",
+            "wind",
+            "parameter_mismatch",
+            "motor_efficiency_fault"
+          ],
+          "eligibility": "family_screening"
+        }
+      },
+      "current_evidence": {
+        "matrix_status": null,
+        "implementation_state": null,
+        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
+        "evidence_paths": [
+          "Config/controllers/nmpc_indi_l1/default.yaml"
+        ]
+      },
+      "blockers": [
+        "current_model_entry_unmapped"
+      ],
+      "mworks_run_eligible": false,
+      "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL"
+    },
+    {
       "scheme_id": "se3_basic",
       "display_name_zh": "SE(3) 几何控制",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "se3_basic",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -2559,7 +2897,7 @@
         "profile_id": "se3_basic_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -2582,7 +2920,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2592,7 +2930,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2619,8 +2957,11 @@
       "scheme_id": "dfbc_basic",
       "display_name_zh": "基础微分平坦控制",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "dfbc_basic",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -2628,7 +2969,7 @@
         "profile_id": "dfbc_basic_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -2651,7 +2992,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2661,7 +3002,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2688,8 +3029,11 @@
       "scheme_id": "dfbc_high_order_attitude",
       "display_name_zh": "高阶微分平坦姿态输出",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "dfbc_high_order_attitude",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -2697,7 +3041,7 @@
         "profile_id": "dfbc_high_order_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -2719,7 +3063,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2729,7 +3073,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2759,8 +3103,11 @@
       "scheme_id": "dfbc_high_order_bodyrate",
       "display_name_zh": "高阶微分平坦角速度输出",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "dfbc_high_order_bodyrate",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -2768,7 +3115,7 @@
         "profile_id": "dfbc_high_order_bodyrate_thrust_v1",
         "status": "implemented",
         "output_variant": "BODY_RATE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.BodyRateThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.BodyRateThrustRunner",
         "offline_inner_owner": "mworks_offline_body_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -2790,7 +3137,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2800,7 +3147,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2830,8 +3177,11 @@
       "scheme_id": "dfbc_smooth_robust_attitude",
       "display_name_zh": "平滑鲁棒微分平坦姿态输出",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "dfbc_smooth_robust_attitude",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -2839,7 +3189,7 @@
         "profile_id": "dfbc_smooth_robust_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -2861,7 +3211,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2871,7 +3221,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2901,8 +3251,11 @@
       "scheme_id": "dfbc_smooth_robust_bodyrate",
       "display_name_zh": "平滑鲁棒微分平坦角速度输出",
       "category": "geometric_flatness",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "dfbc_smooth_robust_bodyrate",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -2910,7 +3263,7 @@
         "profile_id": "dfbc_smooth_robust_bodyrate_thrust_v1",
         "status": "blocked",
         "output_variant": "BODY_RATE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.BodyRateThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.BodyRateThrustRunner",
         "offline_inner_owner": "mworks_offline_body_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -2932,7 +3285,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -2942,7 +3295,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -2972,8 +3325,11 @@
       "scheme_id": "trained_neural_residual",
       "display_name_zh": "训练神经残差控制",
       "category": "learning",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "trained_neural_residual",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -2981,7 +3337,7 @@
         "profile_id": "trained_neural_residual_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -3004,7 +3360,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -3014,7 +3370,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -3042,8 +3398,11 @@
       "scheme_id": "rl_gain_scheduler",
       "display_name_zh": "强化学习增益调度",
       "category": "learning",
-      "entry_type": "competition_primary_route",
-      "control_owner": "nominal_controller",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "candidate",
+      "selection_eligibility": "family_screening",
+      "execution_kind": "graphical_control_core",
+      "control_owner": "profile_graphical_control_core",
       "evidence_route": "rl_gain_scheduler",
       "registry_binding": {
         "mapping_state": "exact_registry_binding",
@@ -3051,7 +3410,7 @@
         "profile_id": "rl_gain_scheduler_attitude_thrust_v1",
         "status": "implemented",
         "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
         "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
       },
       "model_entry": {
@@ -3074,7 +3433,7 @@
           ],
           "eligibility": "blocked_until_g4_current_model_mapping"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -3084,7 +3443,7 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "not_selected_until_g5_screening"
+          "eligibility": "not_selected_until_current_46_route_screening"
         }
       },
       "current_evidence": {
@@ -3109,34 +3468,38 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "px4ctrl",
-      "display_name_zh": "px4ctrl 工程基线",
-      "category": "engineering_baseline",
-      "entry_type": "engineering_baseline",
-      "control_owner": "nominal_controller_runtime_baseline",
+      "scheme_id": "pid_awff_linear_eso",
+      "profile_id": "PidAwffLinearEso",
+      "display_name_zh": "AWFF PID 加线性 ESO 扰动观测补偿",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "profile_role": "planned",
+      "selection_eligibility": "not_runnable",
+      "execution_kind": "planned_profile",
+      "control_owner": "planned_profile",
       "evidence_route": null,
       "registry_binding": {
-        "mapping_state": "exact_registry_binding",
-        "module_id": "px4ctrl",
-        "profile_id": "px4ctrl_attitude_thrust_v1",
-        "status": "accepted",
-        "output_variant": "ATTITUDE_THRUST",
-        "offline_runner": "MoSimQuadrotorModel.ExperimentRunner.Runners.AttitudeThrustRunner",
-        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+        "mapping_state": "not_applicable_until_implemented",
+        "module_id": null,
+        "profile_id": "PidAwffLinearEso",
+        "status": "planned",
+        "output_variant": null,
+        "offline_runner": null,
+        "offline_inner_owner": null
       },
       "model_entry": {
-        "mapping_state": "not_applicable_runtime_baseline",
+        "mapping_state": "planned_profile_no_model",
         "current_model_file": null,
         "current_model_name": null,
         "source_model_candidates": [],
         "existing_model_operation_candidates": []
       },
       "scenario_contract": {
-        "g5_nominal_screening": {
+        "current_mworks_route_screening": {
           "scenario_ids": [],
-          "eligibility": "not_applicable_px4ctrl_is_not_an_mworks_graphical_scheme"
+          "eligibility": "not_runnable_until_model_and_adapter_exist"
         },
-        "g6_family_champion": {
+        "family_winner_screening": {
           "scenario_ids": [
             "hover",
             "step",
@@ -3146,7 +3509,63 @@
             "parameter_mismatch",
             "motor_efficiency_fault"
           ],
-          "eligibility": "runtime_baseline_only_after_this_goal"
+          "eligibility": "not_runnable_until_model_and_adapter_exist"
+        }
+      },
+      "current_evidence": {
+        "matrix_status": null,
+        "implementation_state": "planned",
+        "claim_ceiling": "architecture_design_only",
+        "evidence_paths": []
+      },
+      "blockers": [
+        "planned_profile_implementation_not_started"
+      ],
+      "mworks_run_eligible": false,
+      "next_gate": "Implement the declared profile, adapter, formal runner, and minimum-closure evidence before screening"
+    },
+    {
+      "scheme_id": "px4ctrl",
+      "display_name_zh": "px4ctrl 工程基线",
+      "category": "engineering_deployment_baseline",
+      "entry_type": "engineering_deployment_baseline",
+      "profile_role": "engineering_deployment_baseline",
+      "selection_eligibility": "comparison_baseline_pending_mworks_equivalence",
+      "execution_kind": "mworks_equivalent_core_pending",
+      "control_owner": "engineering_deployment_baseline",
+      "evidence_route": null,
+      "registry_binding": {
+        "mapping_state": "exact_registry_binding",
+        "module_id": "px4ctrl",
+        "profile_id": "px4ctrl_attitude_thrust_v1",
+        "status": "accepted",
+        "output_variant": "ATTITUDE_THRUST",
+        "offline_runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
+        "offline_inner_owner": "mworks_offline_attitude_rate_inner_and_allocator_v1"
+      },
+      "model_entry": {
+        "mapping_state": "pending_mworks_equivalent_core",
+        "current_model_file": null,
+        "current_model_name": null,
+        "source_model_candidates": [],
+        "existing_model_operation_candidates": []
+      },
+      "scenario_contract": {
+        "current_mworks_route_screening": {
+          "scenario_ids": [],
+          "eligibility": "pending_mworks_equivalent_core"
+        },
+        "seven_scenario_comparison": {
+          "scenario_ids": [
+            "hover",
+            "step",
+            "figure8",
+            "spiral",
+            "wind",
+            "parameter_mismatch",
+            "motor_efficiency_fault"
+          ],
+          "eligibility": "pending_cpp_behavior_and_interface_equivalence"
         }
       },
       "current_evidence": {
@@ -3156,372 +3575,10 @@
         "evidence_paths": []
       },
       "blockers": [
-        "out_of_scope_runtime_baseline_until_post_G7_deployment"
+        "mworks_equivalent_px4ctrl_core_not_implemented"
       ],
       "mworks_run_eligible": false,
-      "next_gate": "Post-G7 ROS1/Sunray/Gazebo/PX4 baseline verification"
-    },
-    {
-      "scheme_id": "fixed_awff_pid",
-      "display_name_zh": "抗积分饱和与参考前馈 PID",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
-      "control_owner": "fixed_integrated_chain",
-      "evidence_route": null,
-      "registry_binding": {
-        "mapping_state": "fixed_chain_source_config",
-        "module_id": "awff_pid",
-        "profile_id": null,
-        "status": "offline_evidence_available",
-        "output_variant": null,
-        "offline_runner": null,
-        "offline_inner_owner": null
-      },
-      "model_entry": {
-        "mapping_state": "source_config_candidates_need_g4_mapping",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [],
-        "source_config": "Config/controllers/awff_pid/default.yaml",
-        "source_config_exists": true,
-        "declared_model_names": [],
-        "offline_composition_binding": null
-      },
-      "fixed_order": [
-        "pid_outer_and_attitude_chain",
-        "conditional_integration_anti_windup",
-        "vertical_reference_feedforward",
-        "motor_mixing"
-      ],
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_automatically_in_six_nominal_family_champions"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": null,
-        "implementation_state": "offline_evidence_available",
-        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
-        "evidence_paths": [
-          "Config/controllers/awff_pid/default.yaml"
-        ]
-      },
-      "blockers": [
-        "current_model_entry_unmapped"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 fixed-chain source-to-current-model mapping, then G5 CheckModel and minimum MIL"
-    },
-    {
-      "scheme_id": "fixed_awff_l1_residual",
-      "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
-      "control_owner": "fixed_integrated_chain",
-      "evidence_route": null,
-      "registry_binding": {
-        "mapping_state": "fixed_chain_source_config",
-        "module_id": "l1_residual_sysblock",
-        "profile_id": null,
-        "status": "offline_evidence_available",
-        "output_variant": null,
-        "offline_runner": null,
-        "offline_inner_owner": null
-      },
-      "model_entry": {
-        "mapping_state": "source_config_candidates_need_g4_mapping",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [],
-        "source_config": "Config/controllers/l1_residual_sysblock/default.yaml",
-        "source_config_exists": true,
-        "declared_model_names": [
-          "QuadrotorExperiments.Example1L1SysblockClosedLoop",
-          "QuadrotorExperiments.Example3L1SysblockClosedLoop",
-          "QuadrotorExperiments.Example1Mass20L1SysblockClosedLoop",
-          "QuadrotorExperiments.Example1WindGustL1SysblockClosedLoop",
-          "QuadrotorExperiments.Example1Rotor1Loss15L1SysblockClosedLoop"
-        ],
-        "offline_composition_binding": null
-      },
-      "fixed_order": [
-        "awff_pid_base_chain",
-        "bounded_l1_inspired_residual_compensation",
-        "motor_mixing"
-      ],
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_automatically_in_six_nominal_family_champions"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": null,
-        "implementation_state": "offline_evidence_available",
-        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
-        "evidence_paths": [
-          "Config/controllers/l1_residual_sysblock/default.yaml"
-        ]
-      },
-      "blockers": [
-        "current_model_entry_unmapped"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 fixed-chain source-to-current-model mapping, then G5 CheckModel and minimum MIL"
-    },
-    {
-      "scheme_id": "fixed_awff_l1_indi",
-      "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
-      "control_owner": "fixed_integrated_chain",
-      "evidence_route": null,
-      "registry_binding": {
-        "mapping_state": "fixed_chain_source_config",
-        "module_id": "awff_indi_sysblock",
-        "profile_id": null,
-        "status": "offline_evidence_available",
-        "output_variant": null,
-        "offline_runner": null,
-        "offline_inner_owner": null
-      },
-      "model_entry": {
-        "mapping_state": "source_config_candidates_need_g4_mapping",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [],
-        "source_config": "Config/controllers/awff_indi_sysblock/default.yaml",
-        "source_config_exists": true,
-        "declared_model_names": [
-          "QuadrotorExperiments.Example1INDISysblockClosedLoop",
-          "QuadrotorExperiments.Example3INDISysblockClosedLoop",
-          "QuadrotorExperiments.Example2HelixTunedINDISysblockClosedLoop"
-        ],
-        "offline_composition_binding": null
-      },
-      "fixed_order": [
-        "awff_pid_base_chain",
-        "bounded_l1_inspired_residual_compensation",
-        "indi_like_attitude_correction",
-        "motor_mixing"
-      ],
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_automatically_in_six_nominal_family_champions"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": null,
-        "implementation_state": "offline_evidence_available",
-        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
-        "evidence_paths": [
-          "Config/controllers/awff_indi_sysblock/default.yaml"
-        ]
-      },
-      "blockers": [
-        "current_model_entry_unmapped"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 fixed-chain source-to-current-model mapping, then G5 CheckModel and minimum MIL"
-    },
-    {
-      "scheme_id": "fixed_linear_mpc_l1_indi",
-      "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
-      "control_owner": "fixed_integrated_chain",
-      "evidence_route": null,
-      "registry_binding": {
-        "mapping_state": "fixed_chain_source_config",
-        "module_id": "linear_mpc_sysblock",
-        "profile_id": null,
-        "status": "offline_evidence_available",
-        "output_variant": null,
-        "offline_runner": null,
-        "offline_inner_owner": null
-      },
-      "model_entry": {
-        "mapping_state": "source_config_candidates_need_g4_mapping",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [],
-        "source_config": "Config/controllers/linear_mpc_sysblock/default.yaml",
-        "source_config_exists": true,
-        "declared_model_names": [
-          "QuadrotorExperiments.Example1LinearMPCSysblockClosedLoop",
-          "QuadrotorExperiments.Example2LinearMPCSysblockClosedLoop",
-          "QuadrotorExperiments.Example3LinearMPCSysblockClosedLoop",
-          "QuadrotorExperiments.Example1Mass20LinearMPCSysblockClosedLoop",
-          "QuadrotorExperiments.Example1WindGustLinearMPCSysblockClosedLoop",
-          "QuadrotorExperiments.Example1Rotor1Loss15LinearMPCSysblockClosedLoop"
-        ],
-        "offline_composition_binding": null
-      },
-      "fixed_order": [
-        "finite_horizon_linear_mpc_outer_loop",
-        "bounded_l1_inspired_residual_feedforward",
-        "indi_like_attitude_inner_loop",
-        "motor_mixing"
-      ],
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_automatically_in_six_nominal_family_champions"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": null,
-        "implementation_state": "offline_evidence_available",
-        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
-        "evidence_paths": [
-          "Config/controllers/linear_mpc_sysblock/default.yaml"
-        ]
-      },
-      "blockers": [
-        "current_model_entry_unmapped"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 fixed-chain source-to-current-model mapping, then G5 CheckModel and minimum MIL"
-    },
-    {
-      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
-      "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
-      "category": "fixed_integrated",
-      "entry_type": "fixed_integrated_scheme",
-      "control_owner": "fixed_integrated_chain",
-      "evidence_route": null,
-      "registry_binding": {
-        "mapping_state": "fixed_chain_source_config",
-        "module_id": "nmpc_indi_l1",
-        "profile_id": null,
-        "status": "visible_disabled",
-        "output_variant": null,
-        "offline_runner": null,
-        "offline_inner_owner": null
-      },
-      "model_entry": {
-        "mapping_state": "source_config_candidates_need_g4_mapping",
-        "current_model_file": null,
-        "current_model_name": null,
-        "source_model_candidates": [],
-        "source_config": "Config/controllers/nmpc_indi_l1/default.yaml",
-        "source_config_exists": true,
-        "declared_model_names": [],
-        "offline_composition_binding": null
-      },
-      "fixed_order": [
-        "fixed_iteration_qp_mpc_with_nmpc_projection",
-        "bounded_l1_compensation",
-        "indi_attitude_inner_loop",
-        "cbf_style_reference_and_command_projection",
-        "mode_manager_and_motor_mixing"
-      ],
-      "scenario_contract": {
-        "g5_nominal_screening": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral"
-          ],
-          "eligibility": "blocked_until_g4_current_model_mapping"
-        },
-        "g6_family_champion": {
-          "scenario_ids": [
-            "hover",
-            "step",
-            "figure8",
-            "spiral",
-            "wind",
-            "parameter_mismatch",
-            "motor_efficiency_fault"
-          ],
-          "eligibility": "not_automatically_in_six_nominal_family_champions"
-        }
-      },
-      "current_evidence": {
-        "matrix_status": null,
-        "implementation_state": "visible_disabled",
-        "claim_ceiling": "offline_chain_claim_only_until_g5_evidence",
-        "evidence_paths": [
-          "Config/controllers/nmpc_indi_l1/default.yaml"
-        ]
-      },
-      "blockers": [
-        "current_model_entry_unmapped"
-      ],
-      "mworks_run_eligible": false,
-      "next_gate": "G4 fixed-chain source-to-current-model mapping, then G5 CheckModel and minimum MIL"
+      "next_gate": "Implement and validate the MWORKS-equivalent px4ctrl core before formal seven-scenario comparison"
     }
   ]
 }

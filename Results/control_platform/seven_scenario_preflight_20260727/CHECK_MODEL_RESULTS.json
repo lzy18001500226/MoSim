@@ -12,14 +12,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.064,
+        "elapsed_s": 0.063,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.062,
+            "dt_s": 0.061,
             "model_name": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
             "ok": true
           }
@@ -32,14 +32,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.052,
+        "elapsed_s": 0.044,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.051,
+            "dt_s": 0.043,
             "model_name": "MoSimQuadrotorModel.Guidance.Trajectories.HoverHold",
             "ok": true
           }
@@ -52,14 +52,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.055,
+        "elapsed_s": 0.068,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.054,
+            "dt_s": 0.053,
             "model_name": "MoSimQuadrotorModel.Guidance.Trajectories.StepResponse",
             "ok": true
           }
@@ -72,14 +72,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.054,
+        "elapsed_s": 0.052,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.053,
+            "dt_s": 0.045,
             "model_name": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
             "ok": true
           }
@@ -92,14 +92,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.051,
+        "elapsed_s": 0.05,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.05,
+            "dt_s": 0.041,
             "model_name": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
             "ok": true
           }
@@ -119,7 +119,7 @@
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.053,
+            "dt_s": 0.043,
             "model_name": "MoSimQuadrotorModel.Guidance.Trajectories.WindDisturbance",
             "ok": true
           }
@@ -132,14 +132,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.056,
+        "elapsed_s": 0.051,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.055,
+            "dt_s": 0.041,
             "model_name": "MoSimQuadrotorModel.Guidance.Trajectories.ParameterMismatch",
             "ok": true
           }
@@ -152,14 +152,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.056,
+        "elapsed_s": 0.057,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.055,
+            "dt_s": 0.048,
             "model_name": "MoSimQuadrotorModel.Guidance.Trajectories.MotorFault",
             "ok": true
           }
@@ -172,14 +172,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.216,
+        "elapsed_s": 0.195,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.215,
+            "dt_s": 0.183,
             "model_name": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
             "ok": true
           }
@@ -192,14 +192,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.2,
+        "elapsed_s": 0.152,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.199,
+            "dt_s": 0.151,
             "model_name": "MoSimQuadrotorModel.Experiment.Runners.BodyRateThrustRunner",
             "ok": true
           }
@@ -212,14 +212,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.221,
+        "elapsed_s": 0.184,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.22,
+            "dt_s": 0.183,
             "model_name": "MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner",
             "ok": true
           }
@@ -232,14 +232,14 @@
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.192,
+        "elapsed_s": 0.144,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.191,
+            "dt_s": 0.143,
             "model_name": "MoSimQuadrotorModel.Experiment.Runners.WrenchRunner",
             "ok": true
           }
@@ -248,19 +248,19 @@
       }
     },
     {
-      "model_name": "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.223,
+        "elapsed_s": 0.208,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.222,
-            "model_name": "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner",
+            "dt_s": 0.202,
+            "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
             "ok": true
           }
         ],
@@ -268,19 +268,19 @@
       }
     },
     {
-      "model_name": "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.CascadePidFormalRunner",
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.217,
+        "elapsed_s": 0.261,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.216,
-            "model_name": "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
+            "dt_s": 0.26,
+            "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.CascadePidFormalRunner",
             "ok": true
           }
         ],
@@ -288,19 +288,19 @@
       }
     },
     {
-      "model_name": "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner",
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.188,
+        "elapsed_s": 0.148,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.187,
-            "model_name": "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
+            "dt_s": 0.146,
+            "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner",
             "ok": true
           }
         ],
@@ -308,19 +308,19 @@
       }
     },
     {
-      "model_name": "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner",
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.211,
+        "elapsed_s": 0.156,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.21,
-            "model_name": "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
+            "dt_s": 0.155,
+            "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner",
             "ok": true
           }
         ],
@@ -328,19 +328,19 @@
       }
     },
     {
-      "model_name": "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner",
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.212,
+        "elapsed_s": 0.157,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.211,
-            "model_name": "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
+            "dt_s": 0.156,
+            "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner",
             "ok": true
           }
         ],
@@ -348,19 +348,19 @@
       }
     },
     {
-      "model_name": "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner",
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.207,
+        "elapsed_s": 0.158,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.206,
-            "model_name": "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
+            "dt_s": 0.157,
+            "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner",
             "ok": true
           }
         ],
@@ -368,19 +368,39 @@
       }
     },
     {
-      "model_name": "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.TrainedNeuralResidualFormalRunner",
       "ok": true,
       "result": {
         "count": 1,
-        "elapsed_s": 0.214,
+        "elapsed_s": 0.184,
         "model_type": "MODELICA",
         "ok": true,
         "results": [
           {
             "api": "CheckModel",
             "data": true,
-            "dt_s": 0.213,
-            "model_name": "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner",
+            "dt_s": 0.183,
+            "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.TrainedNeuralResidualFormalRunner",
+            "ok": true
+          }
+        ],
+        "tool": "check_model"
+      }
+    },
+    {
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
+      "ok": true,
+      "result": {
+        "count": 1,
+        "elapsed_s": 0.228,
+        "model_type": "MODELICA",
+        "ok": true,
+        "results": [
+          {
+            "api": "CheckModel",
+            "data": true,
+            "dt_s": 0.225,
+            "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
             "ok": true
           }
         ],
@@ -389,8 +409,8 @@
     }
   ],
   "claim_boundary": "Native package loading and CheckModel integrity evidence only. No scenario simulation, result extraction, metric calculation, controller ranking, code generation, or runtime validation has run.",
-  "completed_at_unix": 1785162689.0171118,
-  "elapsed_s": 31.35415267944336,
+  "completed_at_unix": 1785264992.3359983,
+  "elapsed_s": 31.944796323776245,
   "health": {
     "advice": [],
     "api_ready": true,
@@ -425,10 +445,10 @@
     "sysplorer_startup": {
       "already_running": false,
       "attempted": true,
-      "dedicated_sysplorer_port": 49154,
+      "dedicated_sysplorer_port": 49155,
       "error": "",
       "started": true,
-      "timestamp": "2026-07-27T14:31:24.451952+00:00",
+      "timestamp": "2026-07-28T18:56:27.810514+00:00",
       "wait_ms": 0
     },
     "workdir": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Tools\\SYSPLO~1\\SYSPLO~1\\temp"
@@ -479,18 +499,19 @@
   "solver_started": false,
   "source": "MWORKS_MCP",
   "source_sha256": {
-    "Config/control_platform/seven_scenario_experiment_profiles.json": "2dee46924e5aef7787305b03dc757ca0b5ed5451c631910456d8d4877d6b6761",
-    "Config/control_platform/seven_scenario_injection_contract.json": "ec76ffbaaa0e0ae47f243239a642ca5aca0d06f014294b1a7ce944aaa89910a7",
-    "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo": "b655950bbcdb7a9efe5e7d2203ee77d64924eb9f1a943f312b0687a46632a210",
+    "Config/control_platform/seven_scenario_experiment_profiles.json": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "Config/control_platform/seven_scenario_injection_contract.json": "c120264f96250493122a202f9aea15761cc277334fffab0194021c582951f03b",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo": "3be6c3e13e080a1016657787af7b337ee7a5e022080628ec2039ceb33c8690da",
     "Models/MoSimQuadrotorModel/Experiment/Runners/BodyRateThrustRunner.mo": "712f84cb294e6d53ee7776ec7b78a2825925b912d8750e9c77c7a94d41f7cf43",
-    "Models/MoSimQuadrotorModel/Experiment/Runners/CascadePidFormalRunner.mo": "85d87c699f7795e08d94e65e908209ffd41b0c5399a88c40f6f8950ebc0adb15",
-    "Models/MoSimQuadrotorModel/Experiment/Runners/DfbcHighOrderFormalRunner.mo": "0528b334233d34cb94d6450892708b2aac8a95646192e879fe0e20f5a7ea61a0",
-    "Models/MoSimQuadrotorModel/Experiment/Runners/LinearMpcFormalRunner.mo": "62e1e1de1c06d4700b269c1793bec21284dfdf26d66768cb986c8ccffb96dea9",
-    "Models/MoSimQuadrotorModel/Experiment/Runners/LqrBaselineFormalRunner.mo": "13479d4053f25b206953586a54d136eb947e16535fa055c27cc112f6b5e5082a",
-    "Models/MoSimQuadrotorModel/Experiment/Runners/OfficialPidFormalRunner.mo": "7b1228c781582e6b2c9b9a7e3abf5c3e06b02b458dd35c09989613f899dabfec",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/CascadePidFormalRunner.mo": "66ed833d32166629ec5880fb3fbaea8f0a63399bc648d2348e58589332dece8b",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderFormalRunner.mo": "890ed18658a23537528537261b0031bba63750d3f555f4609bf99cd99ea431d6",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcFormalRunner.mo": "31b90c29aa7913014f9cc3919e3883f6651afc2568e62b42a5115ceaac5802f8",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqrBaselineFormalRunner.mo": "be22cbf0d06e1df69e5945d03aa0d10ca74ee419976685c9abb828aa6a0e7b0f",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/SuperTwistingSmcFormalRunner.mo": "ba974034357330febb227275741e476fc9f93ffba0e915230a8314667de9f719",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TrainedNeuralResidualFormalRunner.mo": "eb0510babafd2ebf9ceb75513c55fc019e2be3c720448ca992bd3d2178d86dc9",
     "Models/MoSimQuadrotorModel/Experiment/Runners/RotorCommandRunner.mo": "409a640036f1e0667452e8cbabf28a0255f6c4b6d6cbd1e11b7253a5e31b687c",
-    "Models/MoSimQuadrotorModel/Experiment/Runners/SuperTwistingSmcFormalRunner.mo": "2ae952784f5c32c7b863842841576328fc2390a6c0d39606e619015c6f8292af",
-    "Models/MoSimQuadrotorModel/Experiment/Runners/TrainedNeuralResidualFormalRunner.mo": "80d6af60afec3ba3e618be6ba7d19c9e10b9ef7c62eced1205ad7cbabd5e1df8",
     "Models/MoSimQuadrotorModel/Experiment/Runners/WrenchRunner.mo": "3db180801ba2618ba5955b1f4aae4027cd1a65231684031f28b414814ddbb4c4",
     "Models/MoSimQuadrotorModel/Guidance/Trajectories/Figure8.mo": "41817040d8153cc66aea204dd92d77de95ed329fab124346543265d4612377d4",
     "Models/MoSimQuadrotorModel/Guidance/Trajectories/HoverHold.mo": "a780b681f5a6268de543ad098c24856fdfb0e2e2c21d52fe3c144d7b66ed8aad",
@@ -499,14 +520,14 @@
     "Models/MoSimQuadrotorModel/Guidance/Trajectories/SpiralAscent.mo": "4dfc36e2a5d7bde1380a3cda6004d00d8c7d833fae313db91cc6e22cbc6b262c",
     "Models/MoSimQuadrotorModel/Guidance/Trajectories/StepResponse.mo": "62656e9e4c08a15c49ed2ddb3220c8d566e0d4ed9e34d77c6c412d2b369e1df5",
     "Models/MoSimQuadrotorModel/Guidance/Trajectories/WindDisturbance.mo": "527e29fc4155d43f67f8b54747aa24e4730339bf2dc2f21afac34ab4944f48ca",
-    "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo": "84462d0062e3ed27b97e00d3eda76679aa9248be4590a132f97a5f860842f16b",
-    "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo": "94d13eeaee4ab8b5db5fef001e229301dc019d304c270194f0efbeb593b2b485",
-    "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo": "86fc264706fc99afc7d964aa4999c6c4f0bf527e378e867f2a68992a374929bb",
+    "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo": "8dcd99a7115be813e3c50035085461e6c312db3546f880330d269887e4ed6222",
+    "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo": "149587298855446369e0fc7a77e93b2c3b0ae8615476562185abd0fba030e538",
+    "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
     "Models/MoSimQuadrotorModel/package.mo": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
   },
-  "started_at_unix": 1785162657.662959,
+  "started_at_unix": 1785264960.391202,
   "status": "passed",
-  "target_count": 19,
+  "target_count": 20,
   "targets": [
     "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
     "MoSimQuadrotorModel.Guidance.Trajectories.HoverHold",
@@ -520,13 +541,14 @@
     "MoSimQuadrotorModel.Experiment.Runners.BodyRateThrustRunner",
     "MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner",
     "MoSimQuadrotorModel.Experiment.Runners.WrenchRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.OfficialPidFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.CascadePidFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.LqrBaselineFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.SuperTwistingSmcFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.LinearMpcFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.DfbcHighOrderFormalRunner",
-    "MoSimQuadrotorModel.Experiment.Runners.TrainedNeuralResidualFormalRunner"
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.CascadePidFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.TrainedNeuralResidualFormalRunner",
+    "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner"
   ],
-  "wrapper": "C:\\Users\\HP\\Desktop\\MoSim\\mcp-wrappers\\sysplorer_mcp.cmd"
+  "wrapper": "C:\\Users\\HP\\Desktop\\MoSim\\Docs\\Skills\\Mworks\\mworks-mcp-operations\\wrappers\\sysplorer_mcp.cmd"
 }

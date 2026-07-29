@@ -1,78 +1,32 @@
 {
-  "schema": "mosim.mworks.physical_wrench_adapter_surface_check.v1",
-  "request_id": "PMO-MWORKS-R2-MOSIMQUAD-PHYSICAL-WRENCH-ADAPTER-FORMAL-SOURCE-SURFACE-20260609-031",
-  "status": "passed_static",
+  "schema": "mosim.mworks.canonical_dynamics_surface_check.v2",
+  "status": "failed_static",
+  "static_only": true,
   "live_mworks_touched": false,
   "mworks_window_evidence_touched": false,
   "formal_target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
   "formal_source": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchAdapter.mo",
-  "formal_package": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
-  "formal_package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
-  "legacy_alias": "QuadrotorExperiments.DynamicsUpgrade.PhysicalWrenchAdapter",
-  "legacy_package": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
-  "legacy_package_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order",
-  "legacy_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
-  "legacy_wrapper_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
-  "behavior_preservation": {
-    "formal_source_is_extends_only": true,
-    "formal_source_duplicates_physical_wrench_behavior": false,
-    "legacy_alias_preserved": true,
-    "legacy_implementation_preserved": true,
-    "legacy_wrapper_implementation_preserved": true,
-    "physical_wrench_equations_changed_by_031": false,
-    "wrapper_equations_changed_by_031": false,
-    "numeric_parameters_changed_by_031": false,
-    "multibody_world_body_force_adapter_changed_by_031": false,
-    "frame_connection_changed_by_031": false,
-    "motor_order_yaw_gate_behavior_changed_by_031": false
+  "retired_predecessor": {
+    "class_name": "PhysicalWrenchAdapter",
+    "file_name": "Sunray150PhysicalWrenchFrameAdapter.mo",
+    "model_name": "Sunray150PhysicalWrenchFrameAdapter"
   },
-  "physical_wrench_anchors": [
+  "source_authority": {
+    "canonical_source_owns_implementation": true,
+    "retired_roots_absent": true,
+    "formal_package_order_contains_target": true
+  },
+  "canonical_anchors": [
     {
-      "anchor": "inner Modelica.Mechanics.MultiBody.World world",
+      "anchor": "inner Modelica.Mechanics.MultiBody.World world(",
       "present": true
     },
     {
-      "anchor": "Sunray150DynamicsWrapperSurface wrapper",
-      "present": true
+      "anchor": "WrapperSurface wrapper;",
+      "present": false
     },
     {
-      "anchor": "Modelica.Mechanics.MultiBody.Parts.Body body",
-      "present": true
-    },
-    {
-      "anchor": "Modelica.Mechanics.MultiBody.Forces.WorldForceAndTorque forceAndTorque",
-      "present": true
-    },
-    {
-      "anchor": "Real applied_force_body[3](each unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real applied_torque_body[3](each unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real force_application_error(unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real torque_application_error(unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real wrapper_total_thrust(unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real wrapper_yaw_moment(unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real motor_order_gate_error",
-      "present": true
-    },
-    {
-      "anchor": "Real yaw_direction_gate_error",
+      "anchor": "Modelica.Mechanics.MultiBody.Forces.WorldForceAndTorque forceAndTorque(",
       "present": true
     },
     {
@@ -94,81 +48,28 @@
     {
       "anchor": "connect(forceAndTorque.frame_b, body.frame_a)",
       "present": true
-    },
-    {
-      "anchor": "wrapper_total_thrust = wrapper.total_thrust",
-      "present": true
-    },
-    {
-      "anchor": "wrapper_yaw_moment = wrapper.total_moment_body[3]",
-      "present": true
-    },
-    {
-      "anchor": "force_application_error = abs(body.frame_a.f[3] - applied_force_z_body)",
-      "present": true
-    },
-    {
-      "anchor": "torque_application_error = abs(body.frame_a.t[3] - applied_yaw_torque_body)",
-      "present": true
-    },
-    {
-      "anchor": "motor_order_gate_error = wrapper.motor_order_gate_error",
-      "present": true
-    },
-    {
-      "anchor": "yaw_direction_gate_error = wrapper.yaw_direction_gate_error",
-      "present": true
     }
   ],
-  "wrapper_anchors": [
+  "related_canonical_anchors": [
     {
-      "anchor": "model Sunray150DynamicsWrapperSurface",
-      "present": true
+      "anchor": "model WrapperSurface",
+      "present": true,
+      "source": "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
+      "label": "wrapper"
     },
     {
-      "anchor": "Sunray150RflyStyleRotorDynamics dynamics",
-      "present": true
-    },
-    {
-      "anchor": "Real motor_command[4](each unit = \"rad/s\")",
-      "present": true
-    },
-    {
-      "anchor": "Real total_thrust(unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real total_moment_body[3](each unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real motor_order_gate_error",
-      "present": true
-    },
-    {
-      "anchor": "Real yaw_direction_gate_error",
-      "present": true
-    },
-    {
-      "anchor": "dynamics.motor_command = motor_command",
-      "present": true
-    },
-    {
-      "anchor": "total_thrust = dynamics.total_thrust",
-      "present": true
-    },
-    {
-      "anchor": "total_moment_body = dynamics.total_moment_body",
-      "present": true
-    },
-    {
-      "anchor": "motor_order_gate_error = sum({abs(dynamics.rotor_center[i, j] - expected_rotor_center[i, j]) for i in 1:4, j in 1:3})",
-      "present": true
-    },
-    {
-      "anchor": "yaw_direction_gate_error = sum({abs(dynamics.yaw_direction[i] - expected_yaw_direction[i]) for i in 1:4})",
-      "present": true
+      "anchor": "motor_order_gate_error =",
+      "present": true,
+      "source": "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
+      "label": "wrapper"
     }
   ],
-  "findings": []
+  "findings": [
+    {
+      "severity": "error",
+      "code": "canonical_anchor_missing",
+      "message": "missing canonical source anchor 'WrapperSurface wrapper;'",
+      "target": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchAdapter.mo"
+    }
+  ]
 }

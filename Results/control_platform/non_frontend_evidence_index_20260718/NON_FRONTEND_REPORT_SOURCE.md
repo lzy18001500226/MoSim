@@ -5,13 +5,13 @@
 ## Controller Family Summary
 
 - accepted: `27`
-- executed_blocked: `25`
-- not_run: `15`
+- executed_blocked: `33`
+- not_run: `7`
 
 | Cohort | Accepted | Executed blocked | Not run |
 |---|---:|---:|---:|
 | G9_CORE_COMPARISON | 0 | 1 | 5 |
-| P10_CLASSIC_RECONCILIATION | 0 | 4 | 10 |
+| P10_CLASSIC_RECONCILIATION | 0 | 12 | 2 |
 | P11_CLASSIC_ADDITIONS | 0 | 5 | 0 |
 | P1_PID | 6 | 0 | 0 |
 | P2_LINEAR_ROBUST | 0 | 4 | 0 |

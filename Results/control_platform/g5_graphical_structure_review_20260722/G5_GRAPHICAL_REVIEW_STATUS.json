@@ -1,6 +1,6 @@
 {
   "schema": "mosim.g5_graphical_review_status.v1",
-  "scope": "Evidence-backed current G5 layout-review status only. It excludes pre-normalization historical packets and does not promote any route to simulation, code generation, runtime, or report performance acceptance.",
+  "scope": "Evidence-backed current G5 screening and processing status. A reviewed row is only screened unless processing_state=graphical_ready. This status excludes pre-normalization historical packets and does not promote any route to simulation, code generation, runtime, or report performance acceptance.",
   "queue": "Results/control_platform/g5_graphical_structure_review_20260722/G5_GRAPHICAL_REVIEW_QUEUE.json",
   "historical_packet_archive": {
     "path": "Results/control_platform/g5_graphical_structure_review_20260722/historical_reviews_pre_normalization_20260722",
@@ -8,45 +8,18 @@
     "reason": "Packets retain pre-normalization model hashes and are trace-back records only, not current G5 review evidence."
   },
   "summary": {
-    "top_level_scheme_count": 49,
+    "active_top_level_entry_count": 48,
     "live_review_candidate_count": 46,
     "reviewed_count": 0,
     "pending_count": 46,
-    "verdict_counts": {}
+    "verdict_counts": {},
+    "terminal_status_counts": {},
+    "processing_state_counts": {},
+    "graphical_ready_count": 0,
+    "graphical_processing_pending_count": 46,
+    "g6_unlocked": false
   },
   "families": {
-    "classic_robust": {
-      "candidate_count": 13,
-      "reviewed_count": 0,
-      "pending_scheme_ids": [
-        "adaptive_backstepping",
-        "backstepping_baseline",
-        "feedback_linearization",
-        "fopid",
-        "h2_state_feedback",
-        "hinf_hover_wrench",
-        "lqg",
-        "lqi_baseline",
-        "lqr_baseline",
-        "mrac",
-        "ndi",
-        "passivity_based_control",
-        "pole_placement_luenberger"
-      ],
-      "verdict_counts": {}
-    },
-    "fixed_integrated": {
-      "candidate_count": 5,
-      "reviewed_count": 0,
-      "pending_scheme_ids": [
-        "fixed_awff_l1_indi",
-        "fixed_awff_l1_residual",
-        "fixed_awff_pid",
-        "fixed_linear_mpc_l1_indi",
-        "fixed_qp_nmpc_l1_indi_cbf"
-      ],
-      "verdict_counts": {}
-    },
     "geometric_flatness": {
       "candidate_count": 6,
       "reviewed_count": 0,
@@ -58,7 +31,8 @@
         "dfbc_smooth_robust_bodyrate",
         "se3_basic"
       ],
-      "verdict_counts": {}
+      "verdict_counts": {},
+      "terminal_status_counts": {}
     },
     "learning": {
       "candidate_count": 2,
@@ -67,14 +41,45 @@
         "rl_gain_scheduler",
         "trained_neural_residual"
       ],
-      "verdict_counts": {}
+      "verdict_counts": {},
+      "terminal_status_counts": {}
     },
-    "optimization": {
-      "candidate_count": 8,
+    "linear_robust_state_feedback": {
+      "candidate_count": 6,
+      "reviewed_count": 0,
+      "pending_scheme_ids": [
+        "h2_state_feedback",
+        "hinf_hover_wrench",
+        "lqg",
+        "lqi_baseline",
+        "lqr_baseline",
+        "pole_placement_luenberger"
+      ],
+      "verdict_counts": {},
+      "terminal_status_counts": {}
+    },
+    "nonlinear_adaptive": {
+      "candidate_count": 6,
+      "reviewed_count": 0,
+      "pending_scheme_ids": [
+        "adaptive_backstepping",
+        "backstepping_baseline",
+        "feedback_linearization",
+        "mrac",
+        "ndi",
+        "passivity_based_control"
+      ],
+      "verdict_counts": {},
+      "terminal_status_counts": {}
+    },
+    "optimization_predictive": {
+      "candidate_count": 10,
       "reviewed_count": 0,
       "pending_scheme_ids": [
         "adaptive_mpc",
         "explicit_gain_scheduled_mpc",
+        "fixed_linear_mpc_l1_indi",
+        "fixed_qp_nmpc_l1_indi_cbf",
         "ilqr",
         "linear_mpc",
         "mppi",
@@ -82,19 +87,25 @@
         "robust_mpc",
         "tube_mpc"
       ],
-      "verdict_counts": {}
+      "verdict_counts": {},
+      "terminal_status_counts": {}
     },
     "pid_family": {
-      "candidate_count": 5,
+      "candidate_count": 9,
       "reviewed_count": 0,
       "pending_scheme_ids": [
         "cascade_pid",
+        "fixed_awff_l1_indi",
+        "fixed_awff_l1_residual",
+        "fixed_awff_pid",
+        "fopid",
         "fuzzy_pid",
         "gain_scheduled_pid",
         "neural_pid",
         "official_pid"
       ],
-      "verdict_counts": {}
+      "verdict_counts": {},
+      "terminal_status_counts": {}
     },
     "sliding_mode": {
       "candidate_count": 7,
@@ -108,25 +119,21 @@
         "super_twisting_smc",
         "terminal_smc"
       ],
-      "verdict_counts": {}
+      "verdict_counts": {},
+      "terminal_status_counts": {}
     }
   },
   "reviewed": [],
   "non_live_routes": [
     {
-      "scheme_id": "mu_synthesis",
-      "review_disposition": "blocked_before_live_review",
-      "blocker_code": "missing_dynamic_mu_synthesis_controller_implementation"
-    },
-    {
-      "scheme_id": "neural_smc",
-      "review_disposition": "blocked_before_live_review",
-      "blocker_code": "missing_frozen_neural_smc_training_artifact"
+      "scheme_id": "pid_awff_linear_eso",
+      "review_disposition": "planned_profile_no_live_review",
+      "blocker_code": "planned_profile_implementation_not_started"
     },
     {
       "scheme_id": "px4ctrl",
-      "review_disposition": "not_applicable_runtime_baseline",
-      "blocker_code": "runtime_baseline_not_an_mworks_graphical_scheme"
+      "review_disposition": "pending_mworks_equivalent_core",
+      "blocker_code": "mworks_equivalent_px4ctrl_core_not_implemented"
     }
   ]
 }

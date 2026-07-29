@@ -21,8 +21,8 @@
   },
   "controller_matrix_counts": {
     "accepted": 27,
-    "executed_blocked": 25,
-    "not_run": 15
+    "executed_blocked": 33,
+    "not_run": 7
   },
   "final_ab_counts": {
     "accepted": 1,
@@ -46,7 +46,7 @@
       "evidence": [
         "Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json"
       ],
-      "claim_ceiling": "67 rows are visible: 27 accepted, 25 executed-blocked, 15 not-run; only accepted rows may be presented as selectable Gazebo controllers."
+      "claim_ceiling": "67 rows are visible: 27 accepted, 33 executed-blocked, 7 not-run; only accepted rows may be presented as selectable Gazebo controllers."
     },
     {
       "requirement_id": "REQ-TRAJ-01..04",

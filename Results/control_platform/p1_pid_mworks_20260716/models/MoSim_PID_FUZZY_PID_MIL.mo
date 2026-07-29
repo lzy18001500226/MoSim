@@ -2,7 +2,7 @@ model MoSim_PID_FUZZY_PID_MIL
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0),Diagram(coordinateSystem(extent={{-260,-180},{260,180}},grid={2,2})));
+  annotation(__MWORKS(version="26.3.0",modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.2,StoreEventValue=0,InlineIntegrator=false,InlineStepSize=false,Tolerance=0.0001,ZeroCrossing=false),Diagram(coordinateSystem(extent={{-260,-180},{260,180}},grid={2,2})));
   MoSim_PID_Unified_CFunction_Sysblock controller annotation(Placement(transformation(origin={{0,0}},extent={{-24,-24},{24,24}})));
   SysplorerEmbeddedCoder.Sources.Constant controller_id_source(k=3.0) annotation(Placement(transformation(origin={{-210,130}},extent={{-8,-8},{8,8}})));
   SysplorerEmbeddedCoder.Sources.Constant setpoint_source(k=0.5) annotation(Placement(transformation(origin={{-210,106}},extent={{-8,-8},{8,8}})));

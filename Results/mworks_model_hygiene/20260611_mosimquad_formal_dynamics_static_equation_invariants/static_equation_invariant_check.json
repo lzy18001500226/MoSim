@@ -7,25 +7,25 @@
   "anchor_groups": [
     {
       "group": "rotor_core",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/RotorActuatorCore.mo",
       "anchor_count": 12,
       "missing_anchors": []
     },
     {
       "group": "wrapper_surface",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
       "anchor_count": 11,
       "missing_anchors": []
     },
     {
       "group": "physical_wrench_adapter",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchFrameAdapter.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchAdapter.mo",
       "anchor_count": 10,
       "missing_anchors": []
     },
     {
       "group": "rotor_effectiveness_smoke",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RotorEffectivenessSmoke.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/RotorEffectivenessSmoke.mo",
       "anchor_count": 6,
       "missing_anchors": []
     }
@@ -33,38 +33,38 @@
   "model_sources": [
     {
       "model_name": "MoSimQuadrotorModel.Dynamics.HoverSmoke",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeHoverSmoke.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/HoverSmoke.mo",
       "dependency_anchor_groups": [
         "rotor_core"
       ],
-      "expected_variable_count": 5,
+      "expected_variable_count": 9,
       "missing_instance_anchors": []
     },
     {
       "model_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchHoverSmoke",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchHoverSmoke.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchHoverSmoke.mo",
       "dependency_anchor_groups": [
         "physical_wrench_adapter",
         "wrapper_surface",
         "rotor_core"
       ],
-      "expected_variable_count": 9,
+      "expected_variable_count": 7,
       "missing_instance_anchors": []
     },
     {
       "model_name": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchYawStepSmoke",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150PhysicalWrenchYawStepSmoke.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchYawStepSmoke.mo",
       "dependency_anchor_groups": [
         "physical_wrench_adapter",
         "wrapper_surface",
         "rotor_core"
       ],
-      "expected_variable_count": 9,
+      "expected_variable_count": 10,
       "missing_instance_anchors": []
     },
     {
       "model_name": "MoSimQuadrotorModel.Dynamics.RotorEffectivenessSmoke",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RotorEffectivenessSmoke.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/RotorEffectivenessSmoke.mo",
       "dependency_anchor_groups": [
         "rotor_effectiveness_smoke",
         "rotor_core"
@@ -74,7 +74,7 @@
     },
     {
       "model_name": "MoSimQuadrotorModel.Dynamics.WrapperHoverSmoke",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperHoverSmoke.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/WrapperHoverSmoke.mo",
       "dependency_anchor_groups": [
         "wrapper_surface",
         "rotor_core"
@@ -84,21 +84,21 @@
     },
     {
       "model_name": "MoSimQuadrotorModel.Dynamics.WrapperYawStepSmoke",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperYawStepSmoke.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/WrapperYawStepSmoke.mo",
       "dependency_anchor_groups": [
         "wrapper_surface",
         "rotor_core"
       ],
-      "expected_variable_count": 8,
+      "expected_variable_count": 9,
       "missing_instance_anchors": []
     },
     {
       "model_name": "MoSimQuadrotorModel.Dynamics.YawStepSmoke",
-      "source": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsUpgradeYawStepSmoke.mo",
+      "source": "Models/MoSimQuadrotorModel/Dynamics/YawStepSmoke.mo",
       "dependency_anchor_groups": [
         "rotor_core"
       ],
-      "expected_variable_count": 6,
+      "expected_variable_count": 12,
       "missing_instance_anchors": []
     }
   ],
