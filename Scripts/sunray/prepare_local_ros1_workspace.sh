@@ -159,6 +159,16 @@ sanitize_ros_build_environment() {
   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib"
 }
 
+# `--force-cmake` reconfigures a Catkin workspace but retains package-discovery
+# cache entries. Remove the known host-IDE package roots so WSL resolves the
+# Ubuntu ROS/Gazebo dependency set again.
+CMAKE_SYSTEM_PACKAGE_RESET_ARGS=(
+  -UGTest_DIR
+  -UProtobuf_DIR
+  -Uabsl_DIR
+  -Uutf8_range_DIR
+)
+
 verify_workspace_packages() {
   [[ -f "${WORKSPACE}/devel/setup.bash" ]] || die "workspace has no generated setup.bash; build before --verify: ${WORKSPACE}"
   sanitize_ros_build_environment
@@ -245,7 +255,9 @@ printf 'WORKSPACE_MANIFEST=%s\n' "${WORKSPACE}/workspace_manifest.json"
 printf 'CATKIN_COMMAND='
 printf 'catkin_make -C %q --force-cmake --only-pkg-with-deps' "${WORKSPACE}"
 printf ' %q' "${BUILD_PACKAGES[@]}"
-printf ' -j%q\n' "${CATKIN_JOBS}"
+printf ' -j%q --cmake-args' "${CATKIN_JOBS}"
+printf ' %q' "${CMAKE_SYSTEM_PACKAGE_RESET_ARGS[@]}"
+printf '\n'
 
 if [[ "${BUILD}" == "true" ]]; then
   [[ -f /opt/ros/noetic/setup.bash ]] || die "ROS Noetic setup is missing: /opt/ros/noetic/setup.bash"
@@ -255,7 +267,8 @@ if [[ "${BUILD}" == "true" ]]; then
   source /opt/ros/noetic/setup.bash
   set -u
   command -v catkin_make >/dev/null 2>&1 || die "catkin_make is unavailable after sourcing ROS Noetic"
-  catkin_make -C "${WORKSPACE}" --force-cmake --only-pkg-with-deps "${BUILD_PACKAGES[@]}" -j"${CATKIN_JOBS}"
+  catkin_make -C "${WORKSPACE}" --force-cmake --only-pkg-with-deps "${BUILD_PACKAGES[@]}" \
+    -j"${CATKIN_JOBS}" --cmake-args "${CMAKE_SYSTEM_PACKAGE_RESET_ARGS[@]}"
 fi
 
 if [[ "${VERIFY}" == "true" ]]; then

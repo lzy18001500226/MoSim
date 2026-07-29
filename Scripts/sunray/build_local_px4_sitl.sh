@@ -96,6 +96,16 @@ sanitize_px4_build_environment() {
   export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib"
 }
 
+# Clear persistent host-IDE package roots before configuring an existing build
+# directory. The PX4 build must resolve its CMake packages from Ubuntu, not a
+# Windows Anaconda installation mounted by WSL.
+CMAKE_SYSTEM_PACKAGE_RESET_ARGS=(
+  -UGTest_DIR
+  -UProtobuf_DIR
+  -Uabsl_DIR
+  -Uutf8_range_DIR
+)
+
 sanitize_px4_build_environment
 command -v cmake >/dev/null || die "cmake is not available"
 command -v ninja >/dev/null || die "ninja is not available"
@@ -124,8 +134,11 @@ printf 'PX4_SOURCE=%s\n' "${PX4_SOURCE_DIR}"
 printf 'PX4_BUILD=%s\n' "${BUILD_DIR_REAL}"
 printf 'PX4_PYTHON_DEPS=%s\n' "${PYTHON_DEPS_DIR_REAL}"
 printf 'PX4_CONFIG=px4_sitl_default\n'
-printf 'CONFIGURE_COMMAND=cmake -S %q -B %q -GNinja -DCONFIG=px4_sitl_default\n' "${PX4_SOURCE_DIR}" "${BUILD_DIR_REAL}"
-cmake -S "${PX4_SOURCE_DIR}" -B "${BUILD_DIR_REAL}" -GNinja -DCONFIG=px4_sitl_default
+printf 'CONFIGURE_COMMAND=cmake -S %q -B %q -GNinja -DCONFIG=px4_sitl_default' "${PX4_SOURCE_DIR}" "${BUILD_DIR_REAL}"
+printf ' %q' "${CMAKE_SYSTEM_PACKAGE_RESET_ARGS[@]}"
+printf '\n'
+cmake -S "${PX4_SOURCE_DIR}" -B "${BUILD_DIR_REAL}" -GNinja -DCONFIG=px4_sitl_default \
+  "${CMAKE_SYSTEM_PACKAGE_RESET_ARGS[@]}"
 
 if [[ "${ACTION}" == "build" ]]; then
   printf 'BUILD_COMMAND=cmake --build %q --target %q -- -j%s\n' "${BUILD_DIR_REAL}" "${BUILD_TARGET}" "${BUILD_JOBS}"
