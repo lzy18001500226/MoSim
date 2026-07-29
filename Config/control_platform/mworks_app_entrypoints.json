@@ -1,0 +1,87 @@
+{
+  "schema": "mosim.mworks_app_entrypoints.v1",
+  "version": 1,
+  "status": "design_ready_app_binding_deferred_until_g3_review",
+  "scope": "Read-only handoff for a future MoSim Studio view of the current MWORKS formal models and recorded evidence. It does not modify the App, launch MWORKS, start a simulation, replay a native result, or certify a controller.",
+  "canonical_package": {
+    "package_file": "Models/MoSimQuadrotorModel/package.mo",
+    "package_class": "MoSimQuadrotorModel",
+    "load_policy": "Load this package root once before opening any listed model."
+  },
+  "source_authorities": {
+    "seven_scenario_profiles": "Config/control_platform/seven_scenario_experiment_profiles.json",
+    "formal_harness_policy": "Config/control_platform/formal_closed_loop_harness_map.json",
+    "current_task_board": "Docs/Workflows/mainline_operations_board.md",
+    "formal_runner_directory": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal"
+  },
+  "app_boundary": {
+    "app_source_change": "deferred_until_g3_review",
+    "mworks_launch": "not_app_managed",
+    "simulation_execution": "not_app_managed",
+    "result_directory_behavior": "read_only_link",
+    "native_result_msr": {
+      "usage": "manual_optional",
+      "requirement_for_entry_visibility": false,
+      "replay_normalization": "not_authorized",
+      "rerun_to_create_replay": "not_authorized"
+    }
+  },
+  "review_entrypoints": [
+    {
+      "entry_id": "sunray150_assembly",
+      "display_name_zh": "云纵150整机动画",
+      "entry_kind": "visual_model",
+      "model_file": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "model_class": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly",
+      "thumbnail_asset": "Models/MoSimQuadrotorModel/Vehicle/Resources/Images/Sunray150-Side.png",
+      "existing_evidence_root": "Results/control_platform/animation_visual_shell_20260729",
+      "open_behavior": "Open the model from the canonical package root; any simulation or animation playback remains a user action inside MWORKS.",
+      "claim_boundary": "The entry exposes the reviewable assembly and visual asset only. It is not controller or runtime evidence."
+    },
+    {
+      "entry_id": "px4ctrl_primary",
+      "display_name_zh": "px4ctrl 主控制器",
+      "entry_kind": "formal_whole_aircraft_runner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
+      "controller_review_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
+      "controller_review_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+      "boundary_kind": "unified_100hz_discrete_boundary",
+      "existing_result_roots": [
+        "Results/control_platform/px4ctrl_baseline_verification",
+        "Results/control_platform/px4ctrl_graphical_completion_20260728"
+      ],
+      "claim_boundary": "Existing evidence is MWORKS whole-aircraft equation-bridge closure only; it is not PX4, Gazebo, ROS, or C++ deployment equivalence."
+    },
+    {
+      "entry_id": "official_pid_baseline",
+      "display_name_zh": "Official PID 基线",
+      "entry_kind": "formal_whole_aircraft_runner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "controller_review_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/AWFF_PID_Sysblock_Demo.mo",
+      "controller_review_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.AWFF_PID_Sysblock_Demo",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+      "boundary_kind": "native_continuous_boundary",
+      "existing_result_roots": [
+        "Results/control_platform/official_pid_current_source_baseline_20260728",
+        "Results/control_platform/seven_scenario_ab/official_pid"
+      ],
+      "negative_evidence_root": "Results/control_platform/seven_scenario_ab/official_pid/motor_efficiency_fault",
+      "claim_boundary": "The motor-efficiency-fault record remains a truthful failed baseline case and must not be relabeled as a passing result."
+    }
+  ],
+  "g3_deferred_population": {
+    "tier2_route_target_count": 45,
+    "tier1_review_only_scheme_ids": [
+      "pid_awff_linear_eso",
+      "smc_boundary_layer",
+      "nmpc_outer"
+    ],
+    "historical_g2_record_count": 48,
+    "historical_g2_result_root": "Results/control_platform/phase2_full_48_climbpath",
+    "app_binding_status": "deferred_until_g3_review",
+    "rule": "Do not present the historical G2 screening rows as final controller availability or import them into the App before G3 review."
+  }
+}

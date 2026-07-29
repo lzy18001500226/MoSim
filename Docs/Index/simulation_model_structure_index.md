@@ -126,6 +126,24 @@ Config/control_platform/formal_closed_loop_harness_map.json
 Docs/Workflows/controller_evidence_closeout.md
 ```
 
+### 6.1 MWORKS App Handoff (G3 Pending)
+
+`Config/control_platform/mworks_app_entrypoints.json` is the small, read-only
+handoff for a later MoSim Studio integration. It names only the canonical
+package root and three actual review entrypoints: the Sunray150 assembly,
+px4ctrl, and Official PID. Each controller entry binds its formal Runner,
+reviewable graphical source, and already-existing evidence directories.
+
+It deliberately does not copy the 45-route Tier2 inventory, rewrite historical
+G2 records, move result files, require `Result.msr`, or launch MWORKS. Native
+`Result.msr` remains an optional manual review asset on a machine with the same
+project directory and a compatible MWORKS installation. App source changes and
+any G3 controller-result binding remain deferred until G3 review.
+
+`offline_composition_catalog.json` remains the legacy offline-composition and
+certification authority. It is not the current formal-runner/App entry registry
+and must not be repurposed to represent G3 status.
+
 ## 7. Historical Material
 
 Historical results may retain the model names recorded when they were produced. They are provenance only and must never be used as an opening instruction or a substitute for a current canonical run. Automatic MWORKS crash-recovery copies likewise remain outside `Models/`; they are recovery cache, not source or a second package root.
