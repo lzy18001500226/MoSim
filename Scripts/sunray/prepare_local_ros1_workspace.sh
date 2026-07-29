@@ -10,7 +10,9 @@ WORKSPACE="${WORKSPACE:-${PROJECT_ROOT}/build/ros1/local_source_ws}"
 PROFILE="foundation"
 BUILD=false
 VERIFY=false
-CATKIN_JOBS="${CATKIN_JOBS:-2}"
+# The generated Catkin tree lives on the Windows-mounted project volume.
+# Single-threaded default avoids timestamp/dependency-file races on that mount.
+CATKIN_JOBS="${CATKIN_JOBS:-1}"
 
 usage() {
   cat <<'EOF'
@@ -27,7 +29,7 @@ Options:
   --build                 Run the profile's visible catkin_make command.
   --verify                Source the generated workspace and prove each profile
                           package resolves to project src/ through rospack.
-  --jobs <count>          catkin_make parallel job count (default: 2).
+  --jobs <count>          catkin_make parallel job count (default: 1).
   -h, --help              Show this help.
 EOF
 }
