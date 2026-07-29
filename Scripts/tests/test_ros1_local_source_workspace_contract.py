@@ -50,6 +50,28 @@ class LocalRos1SourceWorkspaceContractTest(unittest.TestCase):
                 self.assertNotIn(link["workspace_path"], workspace_paths, link)
                 workspace_paths.add(link["workspace_path"])
 
+    def test_extended_profiles_include_parent_build_packages(self) -> None:
+        profiles = self.manifest["profiles"]
+
+        def collect_packages(profile_id: str) -> list[str]:
+            profile = profiles[profile_id]
+            packages: list[str] = []
+            if "extends" in profile:
+                packages.extend(collect_packages(profile["extends"]))
+            packages.extend(profile.get("build_packages", []))
+            return list(dict.fromkeys(packages))
+
+        self.assertEqual(
+            collect_packages("controller"),
+            [
+                "sunray_msgs",
+                "livox_ros_driver",
+                "livox_laser_simulation",
+                "sunray_simulator",
+                "px4ctrl",
+            ],
+        )
+
     def test_workspace_script_rejects_legacy_source_roots(self) -> None:
         script = SCRIPT_PATH.read_text(encoding="utf-8")
         self.assertIn("workspace must remain below", script)
@@ -57,6 +79,7 @@ class LocalRos1SourceWorkspaceContractTest(unittest.TestCase):
         self.assertIn("--only-pkg-with-deps", script)
         self.assertIn("sanitize_ros_build_environment", script)
         self.assertIn("--verify", script)
+        self.assertIn("build_packages.extend(parent_packages)", script)
         self.assertIn("ROSPACK_REALPATH", script)
         self.assertIn("unset ROS_PACKAGE_PATH", script)
         self.assertNotIn("References/", script)
