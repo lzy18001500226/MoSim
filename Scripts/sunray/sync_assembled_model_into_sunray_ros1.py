@@ -84,7 +84,6 @@ SUNRAY_MID360_RAY_SENSOR_LOCAL_POSE = "0 0 0.1 0 0 0"
 SUNRAY_MID360_PLUGIN_DOWNSAMPLE = int(os.environ.get("SUNRAY_MID360_PLUGIN_DOWNSAMPLE", "1"))
 SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ = float(os.environ.get("SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ", "20.0"))
 SUNRAY_MID360_IMU_UPDATE_RATE_HZ = 200
-SUNRAY_FLIGHT_CONTROLLER_IMU_UPDATE_RATE_HZ = 400
 SUNRAY_GAZEBO_MAX_STEP_SIZE_S = os.environ.get("SUNRAY_GAZEBO_MAX_STEP_SIZE_S", "0.001")
 SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ = int(os.environ.get("SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ", "1000"))
 SUNRAY_LIVOX_PLUGIN_FILENAME = os.environ.get("SUNRAY_LIVOX_PLUGIN_FILENAME", "liblivox_laser_simulation.so")
@@ -629,22 +628,36 @@ def patch_drone_model_text(
         replacements["inline_mid360_sensor_inserted"] = count
         replacements["nested_mid360_include_restored"] = 0
 
-    text, count = re.subn(
-        r"\s*<pubRate>\s*400\s*</pubRate>",
-        "",
-        text,
-        count=1,
+    # PX4's gazebo_imu_plugin publishes once per Gazebo world update and does
+    # not parse a pubRate/updateRate SDF setting. Keep rate fields scoped to
+    # this plugin when cleaning up legacy input so a later p3d updateRate can
+    # never be matched across plugin boundaries.
+    imu_plugin_pattern = (
+        r"(<plugin name='gazebo_imu_plugin' "
+        r"filename='libgazebo_imu_plugin\.so'>)(.*?)(</plugin>)"
     )
-    replacements["unsupported_flight_controller_imu_pub_rate_removed"] = count
+    imu_rate_tags_removed = 0
 
-    text, count = re.subn(
-        r"(<plugin name='gazebo_imu_plugin' filename='libgazebo_imu_plugin\.so'>.*?<updateRate>)\s*[^<]+\s*(</updateRate>)",
-        rf"\g<1>{float(SUNRAY_FLIGHT_CONTROLLER_IMU_UPDATE_RATE_HZ):.1f}\2",
+    def remove_unsupported_imu_rate_tags(match: re.Match[str]) -> str:
+        nonlocal imu_rate_tags_removed
+        body, count = re.subn(
+            r"\s*<(?:pubRate|updateRate)>\s*[^<]+\s*</(?:pubRate|updateRate)>",
+            "",
+            match.group(2),
+        )
+        imu_rate_tags_removed += count
+        return f"{match.group(1)}{body}{match.group(3)}"
+
+    text, imu_plugin_count = re.subn(
+        imu_plugin_pattern,
+        remove_unsupported_imu_rate_tags,
         text,
         count=1,
         flags=re.DOTALL,
     )
-    replacements["flight_controller_imu_update_rate_hz"] = count
+    if imu_plugin_count != 1:
+        raise RuntimeError("expected exactly one gazebo_imu_plugin block")
+    replacements["unsupported_flight_controller_imu_rate_tags_removed"] = imu_rate_tags_removed
 
     text, count = re.subn(
         r"(<enable_lockstep>)\s*(?:true|false)\s*(</enable_lockstep>)",
@@ -1212,8 +1225,8 @@ def main() -> int:
         "frequency_baseline": {
             "gazebo_physics_hz": SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ,
             "gazebo_max_step_size_s": float(SUNRAY_GAZEBO_MAX_STEP_SIZE_S),
-            "flight_controller_imu_expected_hz": SUNRAY_FLIGHT_CONTROLLER_IMU_UPDATE_RATE_HZ,
-            "flight_controller_imu_source": "gazebo_imu_plugin /imu updateRate is explicitly patched in the assembled Sunray150 SDF",
+            "flight_controller_imu_expected_hz": None,
+            "flight_controller_imu_source": "gazebo_imu_plugin publishes /imu on every Gazebo world update; it has no independent pubRate/updateRate SDF setting",
             "mid360_lidar_update_rate_hz": SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ,
             "mid360_imu_update_rate_hz": SUNRAY_MID360_IMU_UPDATE_RATE_HZ,
         },
@@ -1238,7 +1251,7 @@ def main() -> int:
             f"Sets the MID360 LiDAR Gazebo update rate to {SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ:g}Hz for the current FAST-LIO localization profile.",
             f"Sets the Livox plugin downsample to {SUNRAY_MID360_PLUGIN_DOWNSAMPLE} so the raw PointCloud2 density is not reduced before localization review.",
             f"Sets the Livox internal IMU Gazebo update rate to {SUNRAY_MID360_IMU_UPDATE_RATE_HZ}Hz to support the current 20Hz LiDAR/FAST-LIO profile.",
-            f"Sets Gazebo physics to {SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ}Hz and the PX4 flight-controller IMU /imu plugin updateRate to {SUNRAY_FLIGHT_CONTROLLER_IMU_UPDATE_RATE_HZ}Hz; /imu and /uav1/mavros/imu/data must still be verified by rostopic hz.",
+            f"Sets Gazebo real_time_update_rate to {SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ}Hz. The PX4 flight-controller IMU follows Gazebo world updates and must be measured from /imu and /uav1/mavros/imu/data in the same run.",
             "Does not claim FAST-LIO success or flight-control performance.",
         ],
     }

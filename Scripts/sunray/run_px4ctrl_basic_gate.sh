@@ -31,6 +31,7 @@ SUNRAY_MID360_CSV_FILE_NAME="${SUNRAY_MID360_CSV_FILE_NAME:-mid360-real-centr.cs
 SUNRAY_MID360_GOAL5_CSV_STRIDE="${SUNRAY_MID360_GOAL5_CSV_STRIDE:-4}"
 TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-180}"
 MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-60}"
+MAVROS_LAUNCH_PARAM_TIMEOUT_S="${MAVROS_LAUNCH_PARAM_TIMEOUT_S:-30}"
 MAVROS_STREAM_RATE_HZ="${MAVROS_STREAM_RATE_HZ:-100}"
 MAVROS_SET_STREAM_GROUPS="${MAVROS_SET_STREAM_GROUPS:-raw_sensors position extra1 extra2}"
 MAVROS_SET_MESSAGE_INTERVALS="${MAVROS_SET_MESSAGE_INTERVALS:-false}"
@@ -141,7 +142,7 @@ PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}"
 PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}"
 PX4CTRL_EXTRA_PARAM_OVERRIDES="${PX4CTRL_EXTRA_PARAM_OVERRIDES:-}"
 PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED:-true}"
-PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES:-CAL_GYRO0_XOFF=-0.001141657936386764,CAL_GYRO0_YOFF=-0.004853107035160065,CAL_GYRO0_ZOFF=-0.00022918041213415563,CAL_ACC0_XOFF=-0.19448795914649963,CAL_ACC0_YOFF=0.1512581706047058,CAL_ACC0_ZOFF=-0.0606503039598465}"
+PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES:-CAL_GYRO0_PRIO=50,CAL_GYRO0_XOFF=-0.001141657936386764,CAL_GYRO0_YOFF=-0.004853107035160065,CAL_GYRO0_ZOFF=-0.00022918041213415563,CAL_ACC0_PRIO=50,CAL_ACC0_XOFF=-0.19448795914649963,CAL_ACC0_YOFF=0.1512581706047058,CAL_ACC0_ZOFF=-0.0606503039598465}"
 PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=false
 PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT="EKF2_GPS_CTRL=0,EKF2_BARO_CTRL=0,EKF2_RNG_CTRL=0,EKF2_OF_CTRL=0,EKF2_EV_CTRL=15,EKF2_HGT_REF=3,EKF2_EV_DELAY=0,EKF2_EV_NOISE_MD=1,EKF2_EVP_NOISE=0.03,EKF2_EVA_NOISE=0.03"
 PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED=false
@@ -181,7 +182,10 @@ FASTLIO_AXES_INPUT_POSE_FRAME="${FASTLIO_AXES_INPUT_POSE_FRAME:-${FASTLIO_ODOM_I
 FASTLIO_MOUNT_XYZ="${FASTLIO_MOUNT_XYZ:--0.000005 0.032295 0.050167}"
 FASTLIO_MOUNT_RPY="${FASTLIO_MOUNT_RPY:-0 0 4.712389}"
 
-resolve_fastlio_px4_boot_contract() {
+resolve_px4_boot_contract() {
+  local required_contract="$1"
+  local required_label="$2"
+  local mark_fastlio_contract="$3"
   local resolved_boot_overrides
   local calibration_overrides=""
   if [[ "${VEHICLE}" == "sunray150_with_mid360" ]]; then
@@ -198,9 +202,13 @@ resolve_fastlio_px4_boot_contract() {
         ;;
     esac
   fi
+  if [[ -z "${required_contract}" && -z "${calibration_overrides}" ]]; then
+    return
+  fi
   if ! resolved_boot_overrides="$(
     python3 - \
-      "${PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT}" \
+      "${required_contract}" \
+      "${required_label}" \
       "${calibration_overrides}" \
       "${PX4CTRL_BOOT_PARAM_OVERRIDES}" \
       "${PX4CTRL_EXTRA_PARAM_OVERRIDES}" \
@@ -211,7 +219,7 @@ import sys
 from collections import OrderedDict
 from decimal import Decimal, InvalidOperation
 
-required_raw, calibration_raw, boot_raw, postboot_raw, ev_ctrl_override, hgt_ref_override = sys.argv[1:]
+required_raw, required_label, calibration_raw, boot_raw, postboot_raw, ev_ctrl_override, hgt_ref_override = sys.argv[1:]
 number = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?$")
 name_pattern = re.compile(r"[A-Z][A-Z0-9_]*$")
 
@@ -246,7 +254,7 @@ def parse_assignments(raw: str, source: str):
     return values
 
 
-required = parse_assignments(required_raw, "FAST-LIO boot contract")
+required = parse_assignments(required_raw, required_label)
 calibration = parse_assignments(calibration_raw, "Sunray150 IMU calibration")
 boot = parse_assignments(boot_raw, "boot")
 postboot = parse_assignments(postboot_raw, "post-boot")
@@ -263,7 +271,7 @@ for name, expected in required.items():
     ):
         if observed and not numeric_equal(observed, expected):
             raise SystemExit(
-                f"FAST-LIO EKF boot contract requires {name}={expected}; "
+                f"{required_label} requires {name}={expected}; "
                 f"{source} requested {observed}"
             )
 
@@ -291,12 +299,32 @@ for name, value in boot.items():
 print(",".join(f"{name}={value}" for name, value in resolved.items()))
 PY
   )"; then
-    echo "Unable to resolve the FAST-LIO PX4 boot parameter contract." >&2
+    echo "Unable to resolve the PX4 boot parameter contract." >&2
     exit 2
   fi
   PX4CTRL_BOOT_PARAM_OVERRIDES="${resolved_boot_overrides}"
-  PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED=true
+  if [[ -n "${calibration_overrides}" ]]; then
+    PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=true
+  fi
+  if [[ "${mark_fastlio_contract}" == "true" ]]; then
+    PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED=true
+  fi
 }
+
+resolve_sunray150_imu_calibration_boot_contract() {
+  if [[ "${VEHICLE}" == "sunray150_with_mid360" ]]; then
+    resolve_px4_boot_contract "" "PX4 boot contract" false
+  fi
+}
+
+resolve_fastlio_px4_boot_contract() {
+  resolve_px4_boot_contract \
+    "${PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT}" \
+    "FAST-LIO EKF boot contract" \
+    true
+}
+
+resolve_sunray150_imu_calibration_boot_contract
 
 if [[ "${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION}" == "true" ]]; then
   if [[ "${PX4CTRL_ODOM_SOURCE}" != "mavros_local" ]]; then
@@ -470,7 +498,7 @@ prepare_px4_ros1_runtime_overlay() {
   local overlay_airframe="${overlay_etc}/init.d-posix/airframes/10020_gazebo-classic_sunray"
   local gcs_remote_host="${PX4_GCS_REMOTE_HOST}"
 
-  for path in "${original_px4_etc}" "${original_px4_bin}" "${original_package}"; do
+  for path in "${original_px4_etc}" "${original_px4_bin}" "${original_px4_bin}/px4" "${original_package}"; do
     if [[ ! -e "${path}" ]]; then
       echo "PX4 ROS1 overlay input missing: ${path}" >&2
       exit 2
@@ -481,6 +509,9 @@ prepare_px4_ros1_runtime_overlay() {
   cp "${original_package}" "${overlay_pkg}/package.xml"
   cp -a "${original_px4_etc}" "${overlay_etc}"
   ln -s "${original_px4_bin}" "${overlay_build}/bin"
+  # ROS1 resolves <node pkg="px4" type="px4"> relative to the package root.
+  # Keep the patched etc tree isolated while exposing the validated SITL binary.
+  ln -s "${overlay_build}/bin/px4" "${overlay_pkg}/px4"
 
   if [[ -n "${PX4CTRL_BOOT_PARAM_OVERRIDES}" ]]; then
     python3 - "${overlay_airframe}" "${PX4CTRL_BOOT_PARAM_OVERRIDES}" <<'PY'
@@ -674,13 +705,13 @@ PY
 
 capture_mavros_plugin_params_before_node() {
   local output_path="${RESULT_DIR}/mavros_plugin_params_before_node.txt"
-  local deadline=$((SECONDS + 7))
+  local deadline=$((SECONDS + MAVROS_LAUNCH_PARAM_TIMEOUT_S))
 
   while (( SECONDS < deadline )); do
     if rosparam get /uav1/mavros/plugin_whitelist >/dev/null 2>&1; then
       {
-        echo "# MAVROS plugin parameters captured after roslaunch parameter load"
-        echo "# and before the delayed MAVROS node is expected to initialize."
+        echo "# MAVROS plugin parameters captured from the active launch-loaded profile."
+        echo "# The launch file owns this configuration; this runner only verifies it."
         echo "## plugin_blacklist"
         rosparam get /uav1/mavros/plugin_blacklist
         echo "## plugin_whitelist"
@@ -691,14 +722,14 @@ capture_mavros_plugin_params_before_node() {
     sleep 0.2
   done
 
-  echo "MAVROS plugin parameters were unavailable before delayed node start" > "${output_path}"
+  echo "MAVROS plugin parameters were unavailable after launch configuration load" > "${output_path}"
   return 1
 }
 
 apply_project_mavros_plugin_profile_before_node() {
   local profile_path="${PROJECT_ROOT}/Config/gazebo/mavros/px4_pluginlists.yaml"
   local output_path="${RESULT_DIR}/mavros_plugin_profile_apply.txt"
-  local deadline=$((SECONDS + 7))
+  local deadline=$((SECONDS + MAVROS_LAUNCH_PARAM_TIMEOUT_S))
   local blacklist
   local whitelist
 
@@ -708,48 +739,33 @@ apply_project_mavros_plugin_profile_before_node() {
   fi
 
   while (( SECONDS < deadline )); do
-    if rosparam get /uav1/mavros/plugin_whitelist >/dev/null 2>&1; then
-      if rosnode list 2>/dev/null | grep -Fxq "/uav1/mavros"; then
-        echo "MAVROS node was already running before plugin-profile application" > "${output_path}"
-        return 1
-      fi
+    if rosparam get /uav1/mavros/plugin_blacklist >/dev/null 2>&1 && \
+      rosparam get /uav1/mavros/plugin_whitelist >/dev/null 2>&1; then
       {
-        echo "# Explicit project MAVROS plugin-profile application before MAVROS startup"
+        echo "# Project MAVROS plugin profile is loaded by the Gazebo launch file."
+        echo "# This runner verifies the active profile and never mutates MAVROS parameters."
+        echo "application_mode=launch_loaded"
         echo "profile_path=${profile_path}"
         echo "profile_sha256=$(sha256sum "${profile_path}" | awk '{print $1}')"
-        echo "## before/plugin_blacklist"
+        echo "mavros_node_seen=$(rosnode list 2>/dev/null | grep -Fxq '/uav1/mavros' && echo true || echo false)"
+        echo "## active/plugin_blacklist"
         rosparam get /uav1/mavros/plugin_blacklist
-        echo "## before/plugin_whitelist"
+        echo "## active/plugin_whitelist"
         rosparam get /uav1/mavros/plugin_whitelist
       } > "${output_path}" 2>&1
 
-      if ! rosparam load "${profile_path}" /uav1/mavros >> "${output_path}" 2>&1; then
-        echo "status=blocked rosparam_load_failed" >> "${output_path}"
-        return 1
-      fi
-
       blacklist="$(rosparam get /uav1/mavros/plugin_blacklist)" || {
-        echo "status=blocked missing_plugin_blacklist_after_apply" >> "${output_path}"
+        echo "status=blocked missing_plugin_blacklist_after_launch_load" >> "${output_path}"
         return 1
       }
       whitelist="$(rosparam get /uav1/mavros/plugin_whitelist)" || {
-        echo "status=blocked missing_plugin_whitelist_after_apply" >> "${output_path}"
+        echo "status=blocked missing_plugin_whitelist_after_launch_load" >> "${output_path}"
         return 1
       }
-      {
-        echo "## after/plugin_blacklist"
-        printf '%s\n' "${blacklist}"
-        echo "## after/plugin_whitelist"
-        printf '%s\n' "${whitelist}"
-      } >> "${output_path}"
 
       if grep -Eq '^[[:space:]]*-[[:space:]]*home_position([[:space:]]|$)' <<< "${blacklist}" || \
         ! grep -Eq '^[[:space:]]*-[[:space:]]*home_position([[:space:]]|$)' <<< "${whitelist}"; then
-        echo "status=blocked home_position_profile_contract_failed" >> "${output_path}"
-        return 1
-      fi
-      if rosnode list 2>/dev/null | grep -Fxq "/uav1/mavros"; then
-        echo "status=blocked mavros_started_during_plugin_profile_apply" >> "${output_path}"
+        echo "status=blocked home_position_active_profile_contract_failed" >> "${output_path}"
         return 1
       fi
 
@@ -759,7 +775,7 @@ apply_project_mavros_plugin_profile_before_node() {
     sleep 0.2
   done
 
-  echo "MAVROS plugin parameters were unavailable before project-profile application" > "${output_path}"
+  echo "MAVROS plugin parameters were unavailable after launch profile load" > "${output_path}"
   return 1
 }
 
