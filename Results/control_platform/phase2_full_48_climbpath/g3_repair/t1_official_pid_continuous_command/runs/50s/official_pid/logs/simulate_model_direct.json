@@ -1,0 +1,141 @@
+{
+  "ok": true,
+  "api": "ModelingPy.SimulateModel",
+  "simulation_options": null,
+  "data": false,
+  "simulate_api_reported_failure": true,
+  "last_errors": [
+    ""
+  ],
+  "last_errors_error": null,
+  "post_simulation_diagnostics": {
+    "GetSimulationExitState": {
+      "api": "GetSimulationExitState",
+      "ok": true,
+      "data": 2
+    },
+    "GetSimulationState": {
+      "api": "GetSimulationState",
+      "ok": true,
+      "data": "Idle"
+    },
+    "GetCurrentSimTime": {
+      "api": "GetCurrentSimTime",
+      "ok": true,
+      "data": 42.97
+    },
+    "MessageText": {
+      "api": "MessageText",
+      "ok": true,
+      "data": "[上一条命令没有日志信息]"
+    },
+    "GetLastErrors": {
+      "api": "GetLastErrors",
+      "ok": true,
+      "data": [
+        ""
+      ]
+    }
+  },
+  "result_verification": {
+    "result_probe": {
+      "ok": true,
+      "has_readable_result": true,
+      "data": "Real",
+      "error": null
+    },
+    "get_var_value_at": {
+      "ok": true,
+      "data": 5525038.521412066,
+      "error": null
+    }
+  },
+  "run_script_result": {
+    "simulation_api": "ModelingPy.SimulateModel",
+    "simulate": false,
+    "post_simulation_diagnostics": {
+      "GetSimulationExitState": {
+        "api": "GetSimulationExitState",
+        "ok": true,
+        "data": 2
+      },
+      "GetSimulationState": {
+        "api": "GetSimulationState",
+        "ok": true,
+        "data": "Idle"
+      },
+      "GetCurrentSimTime": {
+        "api": "GetCurrentSimTime",
+        "ok": true,
+        "data": 42.97
+      },
+      "MessageText": {
+        "api": "MessageText",
+        "ok": true,
+        "data": "[上一条命令没有日志信息]"
+      },
+      "GetLastErrors": {
+        "api": "GetLastErrors",
+        "ok": true,
+        "data": [
+          ""
+        ]
+      }
+    },
+    "last_errors": [
+      ""
+    ],
+    "result_probe_type": "Real",
+    "has_readable_result": true,
+    "get_var_value_at": 5525038.521412066
+  },
+  "raw_tool_result": {
+    "ok": true,
+    "tool": "mworks_run_script",
+    "stdout": "",
+    "stderr": "",
+    "exception": "",
+    "traceback": "",
+    "run_script_result": {
+      "simulation_api": "ModelingPy.SimulateModel",
+      "simulate": false,
+      "post_simulation_diagnostics": {
+        "GetSimulationExitState": {
+          "api": "GetSimulationExitState",
+          "ok": true,
+          "data": 2
+        },
+        "GetSimulationState": {
+          "api": "GetSimulationState",
+          "ok": true,
+          "data": "Idle"
+        },
+        "GetCurrentSimTime": {
+          "api": "GetCurrentSimTime",
+          "ok": true,
+          "data": 42.97
+        },
+        "MessageText": {
+          "api": "MessageText",
+          "ok": true,
+          "data": "[上一条命令没有日志信息]"
+        },
+        "GetLastErrors": {
+          "api": "GetLastErrors",
+          "ok": true,
+          "data": [
+            ""
+          ]
+        }
+      },
+      "last_errors": [
+        ""
+      ],
+      "result_probe_type": "Real",
+      "has_readable_result": true,
+      "get_var_value_at": 5525038.521412066
+    },
+    "script_path_resolved": "",
+    "hint": ""
+  }
+}

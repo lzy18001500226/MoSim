@@ -1,0 +1,15 @@
+{
+  "schema": "mosim.phase2_full_48_climbpath_superseded_run.v1",
+  "archived_at": "2026-07-29T10:38:01+08:00",
+  "source_run_dir": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid",
+  "copied": [
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/superseded/20260729_103801/RUN_RECORD.json",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/superseded/20260729_103801/G2_ROUTE_STATUS.json",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/superseded/20260729_103801/RUN_CONFIG.json",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/superseded/20260729_103801/logs",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/superseded/20260729_103801/raw",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/superseded/20260729_103801/metrics",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/superseded/20260729_103801/screenshots",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/superseded/20260729_103801/native_result"
+  ]
+}

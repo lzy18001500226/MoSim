@@ -1,0 +1,17 @@
+{
+  "schema": "mosim.phase2_full_48_climbpath_run_config.v1",
+  "generated_at": "2026-07-29T10:29:56+08:00",
+  "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+  "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+  "target_time_s": [
+    0.0,
+    5.0
+  ],
+  "simulation_timeout_s": 120.0,
+  "scenario_injection": "none",
+  "terminal_position_error_limit_m": 5.0,
+  "matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/T1_MATRIX.json",
+    "sha256": "e805d191dc16de4119141f9ea489098cf2512489872c9f7c52d63aa7a6e1cb29"
+  }
+}

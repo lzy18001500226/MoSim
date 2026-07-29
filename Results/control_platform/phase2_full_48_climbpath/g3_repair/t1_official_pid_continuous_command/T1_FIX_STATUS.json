@@ -1,0 +1,99 @@
+{
+  "schema": "mosim.t1_official_pid_continuous_command_status.v1",
+  "generated_at": "2026-07-29T10:42:03+08:00",
+  "task": "T1-FIX Official PID baseline regression",
+  "status": "blocked",
+  "source_change": {
+    "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+    "change": "Removed sampled_rotor_command and connected controller.rotor_command directly to plant.rotor_command.",
+    "unchanged_by_t1": [
+      "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+      "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo"
+    ]
+  },
+  "frozen_g2_matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/G2_MATRIX.json",
+    "sha256": "a9f85d8cb8b4b942b88056bf4eb336ba17a9c40b26fe1ae5d21ab12649599d80",
+    "mutated": false
+  },
+  "formal_official_pid_regression": [
+    {
+      "duration_s": 5.0,
+      "status": "pass",
+      "position_rmse_m": 0.06675908566065641,
+      "terminal_position_error_norm_m": 0.0015957826751784776,
+      "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/RUN_RECORD.json"
+    },
+    {
+      "duration_s": 10.0,
+      "status": "pass",
+      "position_rmse_m": 0.09599638447966838,
+      "terminal_position_error_norm_m": 0.0021080721576982107,
+      "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/10s/official_pid/RUN_RECORD.json"
+    },
+    {
+      "duration_s": 50.0,
+      "status": "fail",
+      "failure_class": "simulate_failed",
+      "simulation_stopped_at_s": 42.97,
+      "result_probe_value": 5525038.521412066,
+      "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/50s/official_pid/RUN_RECORD.json"
+    }
+  ],
+  "historical_native_continuous_reference": {
+    "runner_class": "MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner",
+    "same_adapter_plant_trajectory_source_diff_since_f943ef2bfd": [
+      "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+      "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo"
+    ],
+    "duration_s": 50.0,
+    "position_rmse_m": 0.17295628754518966,
+    "terminal_position_error_norm_m": 0.00650670018165771,
+    "metrics": "Results/control_platform/official_pid_native_continuous_loop_recovery_20260728/50s/metrics/metrics.json"
+  },
+  "finding": "Removing command-side ZOH improves the shared FormalRotorCommandRunnerBase but does not restore the 50 s Official PID baseline. The remaining 100 Hz reference, position, and attitude holds alter the native continuous Official PID loop; the formal run diverges before 50 s while the preserved native-continuous evidence completes.",
+  "shared_rotor_command_consumers": [
+    {
+      "controller_id": "awff",
+      "g2_failure_class": "terminal_position_error_exceeds_5m",
+      "classification": "exposed_to_removed_command_zoh_but_unresolved"
+    },
+    {
+      "controller_id": "fault_compensation",
+      "g2_failure_class": "terminal_position_error_exceeds_5m",
+      "classification": "exposed_to_removed_command_zoh_but_unresolved"
+    },
+    {
+      "controller_id": "improved_pid",
+      "g2_failure_class": "simulate_failed",
+      "classification": "exposed_to_removed_command_zoh_but_unresolved"
+    },
+    {
+      "controller_id": "indi",
+      "g2_failure_class": "terminal_position_error_exceeds_5m",
+      "classification": "exposed_to_removed_command_zoh_but_unresolved"
+    },
+    {
+      "controller_id": "l_1",
+      "g2_failure_class": "terminal_position_error_exceeds_5m",
+      "classification": "exposed_to_removed_command_zoh_but_unresolved"
+    },
+    {
+      "controller_id": "linear_mpc_rotor",
+      "g2_failure_class": "other",
+      "classification": "exposed_to_removed_command_zoh_but_unresolved"
+    },
+    {
+      "controller_id": "official_pid_yaw_authority_mapped",
+      "g2_failure_class": "simulate_failed",
+      "classification": "exposed_to_removed_command_zoh_but_unresolved"
+    },
+    {
+      "controller_id": "official_pid_yaw_corrected",
+      "g2_failure_class": "terminal_position_error_exceeds_5m",
+      "classification": "exposed_to_removed_command_zoh_but_unresolved"
+    }
+  ],
+  "g2_annotation": "No frozen G2 failure is relabeled as harness_defect because the shared formal harness still fails the Official PID 50 s acceptance after command-side ZOH removal.",
+  "required_user_decision": "Authorize a native-continuous Official PID formal route by reusing RotorCommandRunner, which already carries the scenario injection parameters, or explicitly approve a different formal sampling contract. The current instruction to retain all reference and measurement UnitDelay blocks is incompatible with the required 50 s baseline acceptance."
+}

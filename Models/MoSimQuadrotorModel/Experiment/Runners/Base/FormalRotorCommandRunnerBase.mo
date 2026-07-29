@@ -1,6 +1,6 @@
 within MoSimQuadrotorModel.Experiment.Runners.Base;
 model FormalRotorCommandRunnerBase
-  "Reusable 100 Hz formal whole-aircraft runner for ROTOR_COMMAND adapters"
+  "Formal whole-aircraft runner with 100 Hz reference/measurement holds and continuous rotor commands"
 
   replaceable model Controller =
       MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter
@@ -59,10 +59,6 @@ model FormalRotorCommandRunnerBase
     each samplePeriod = controller_sample_period_s,
     each y_start = 0)
     annotation(Placement(transformation(origin = {65, -55}, extent = {{-18, -12}, {18, 12}})));
-  Modelica.Blocks.Discrete.UnitDelay sampled_rotor_command[4](
-    each samplePeriod = controller_sample_period_s,
-    each y_start = 0)
-    annotation(Placement(transformation(origin = {55, 50}, extent = {{-20, -14}, {20, 14}})));
   Real position_ref[3];
   Real position[3];
   Real attitude[3];
@@ -82,12 +78,11 @@ equation
   connect(velocity_estimator.y, controller.velocity_mea);
   connect(plant.attitude, sampled_attitude.u);
   connect(sampled_attitude.y, controller.attitude_mea);
-  connect(controller.rotor_command, sampled_rotor_command.u);
-  connect(sampled_rotor_command.y, plant.rotor_command);
+  connect(controller.rotor_command, plant.rotor_command);
   position_ref = reference.position_command;
   position = plant.position;
   attitude = plant.attitude;
-  rotor_command = sampled_rotor_command.y;
+  rotor_command = controller.rotor_command;
   position_error_norm = sqrt((position_ref[1] - position[1]) ^ 2
     + (position_ref[2] - position[2]) ^ 2
     + (position_ref[3] - position[3]) ^ 2);

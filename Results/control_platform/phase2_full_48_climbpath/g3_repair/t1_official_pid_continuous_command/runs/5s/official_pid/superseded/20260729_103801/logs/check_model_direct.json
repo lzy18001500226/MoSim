@@ -1,0 +1,16 @@
+{
+  "ok": true,
+  "tool": "check_model",
+  "model_type": "MODELICA",
+  "elapsed_s": 0.185,
+  "count": 1,
+  "results": [
+    {
+      "ok": true,
+      "api": "CheckModel",
+      "data": true,
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "dt_s": 0.184
+    }
+  ]
+}

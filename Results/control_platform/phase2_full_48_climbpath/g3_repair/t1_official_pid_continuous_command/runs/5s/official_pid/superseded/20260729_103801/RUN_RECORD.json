@@ -1,0 +1,567 @@
+{
+  "schema": "mosim.t1_rotor_command_harness_regression_run.v1",
+  "controller_id": "official_pid",
+  "runner_id": "OfficialPid",
+  "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+  "adapter_class": "OfficialPIDRotorAdapter",
+  "scenario_id": "climb_path_50s",
+  "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+  "started_at": "2026-07-29T10:29:56+08:00",
+  "run_dir": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid",
+  "status": "pass",
+  "failure_class": null,
+  "failure_reasons": [],
+  "position_rmse_m": 0.06675908566065641,
+  "terminal_position_error_norm_m": 0.0015957826751784776,
+  "maximum_position_error_norm_m": 0.2104902118826092,
+  "terminal_time_s": 5.0,
+  "simulation_completed": true,
+  "source": "MWORKS_MCP",
+  "live_mworks_touched": true,
+  "will_not_click_activation_login": true,
+  "claim_boundary": "Nominal MWORKS whole-aircraft ClimbPath closure only; not gain tuning, seven-scenario, code-generation, Gazebo, PX4, ROS, or flight-runtime evidence.",
+  "matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/T1_MATRIX.json",
+    "sha256": "e805d191dc16de4119141f9ea489098cf2512489872c9f7c52d63aa7a6e1cb29"
+  },
+  "source_hash_observations": [
+    {
+      "phase": "before_session",
+      "role": "formal_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+      "sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "frozen_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_session",
+      "role": "package_root",
+      "path": "Models/MoSimQuadrotorModel/package.mo",
+      "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "frozen_sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_session",
+      "role": "shared_plant",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "frozen_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_session",
+      "role": "trajectory",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "frozen_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_session",
+      "role": "shared_runner_base",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+      "sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "frozen_sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_session",
+      "role": "formal_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+      "sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "frozen_sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_load",
+      "role": "formal_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+      "sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "frozen_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_load",
+      "role": "package_root",
+      "path": "Models/MoSimQuadrotorModel/package.mo",
+      "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "frozen_sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_load",
+      "role": "shared_plant",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "frozen_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_load",
+      "role": "trajectory",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "frozen_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_load",
+      "role": "shared_runner_base",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+      "sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "frozen_sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_load",
+      "role": "formal_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+      "sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "frozen_sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_check",
+      "role": "formal_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+      "sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "frozen_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_check",
+      "role": "package_root",
+      "path": "Models/MoSimQuadrotorModel/package.mo",
+      "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "frozen_sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_check",
+      "role": "shared_plant",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "frozen_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_check",
+      "role": "trajectory",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "frozen_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_check",
+      "role": "shared_runner_base",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+      "sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "frozen_sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_check",
+      "role": "formal_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+      "sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "frozen_sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_cleanup",
+      "role": "formal_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+      "sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "frozen_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_cleanup",
+      "role": "package_root",
+      "path": "Models/MoSimQuadrotorModel/package.mo",
+      "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "frozen_sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_cleanup",
+      "role": "shared_plant",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "frozen_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_cleanup",
+      "role": "trajectory",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "frozen_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_cleanup",
+      "role": "shared_runner_base",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+      "sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "frozen_sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "matches_frozen": true
+    },
+    {
+      "phase": "before_cleanup",
+      "role": "formal_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+      "sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "frozen_sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_session_shutdown",
+      "role": "formal_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+      "sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "frozen_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_session_shutdown",
+      "role": "package_root",
+      "path": "Models/MoSimQuadrotorModel/package.mo",
+      "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "frozen_sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_session_shutdown",
+      "role": "shared_plant",
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+      "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "frozen_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_session_shutdown",
+      "role": "trajectory",
+      "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+      "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "frozen_sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_session_shutdown",
+      "role": "shared_runner_base",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+      "sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "frozen_sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe",
+      "matches_frozen": true
+    },
+    {
+      "phase": "after_session_shutdown",
+      "role": "formal_adapter",
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+      "sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "frozen_sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4",
+      "matches_frozen": true
+    }
+  ],
+  "mworks_phase_screenshots": [
+    {
+      "phase": "after_check",
+      "capture_mode": "background_restore_minimize",
+      "capture_surface": "model",
+      "title_regex": "^OfficialPidFormalRunner.*Sysplorer.*$",
+      "target_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "expected_mworks_pid": 25668,
+      "source_capture_manifest": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/screenshots/capture_after_check/capture_manifest.json",
+      "source_capture": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/screenshots/capture_after_check/25668_0x2481340_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - Sysplorer _教育版_.png",
+      "selected": {
+        "id": 25668,
+        "process": "mworks",
+        "title": "OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - Sysplorer [教育版]",
+        "class_name": "Qt5QWindowIcon",
+        "handle": 38277952,
+        "handle_hex": "0x2481340",
+        "visible": true,
+        "minimized": false,
+        "helper_window": false,
+        "helper_capture_included": false,
+        "restore_minimized_requested": true,
+        "restore_minimized_applied": true,
+        "skipped_minimized_requires_restore": false,
+        "maximize_applied": false,
+        "minimize_after_requested": true,
+        "restore_wait_ms": 800,
+        "restore_settle_ms": 300,
+        "maximize_wait_ms": 500,
+        "capture_width": 2578,
+        "capture_height": 1398,
+        "still_minimized_at_capture": false,
+        "capture_reliability": "window_level_capture",
+        "recommended_action": "",
+        "known_blind_spot": "PrintWindow cannot capture a full client area for minimized windows without restoring first, and may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -RestoreMinimized and, when needed, -Maximize plus foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.",
+        "capture": "ok=True; was_minimized=False; was_maximized=True; maximize_requested=False; minimize_after_requested=True; restore_wait_ms=800; restore_settle_ms=300; maximize_wait_ms=500; minimized_before_reminimize=False; visible=True; rect=-9,-9,2569,1389; size=2578x1398; title=OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - Sysplorer [教育版]; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2_full_48_climbpath\\g3_repair\\t1_official_pid_continuous_command\\runs\\5s\\official_pid\\screenshots\\capture_after_check\\25668_0x2481340_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - Sysplorer _教育版_.png",
+        "dpi_awareness": "per_monitor_v2",
+        "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2_full_48_climbpath\\g3_repair\\t1_official_pid_continuous_command\\runs\\5s\\official_pid\\screenshots\\capture_after_check\\25668_0x2481340_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - Sysplorer _教育版_.png"
+      },
+      "destination": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/screenshots/01_after_check.png",
+      "destination_sha256": "3c6056bc12e75203e1cd28cccf46b754855a2fff7225c764bc91c179135272ce",
+      "destination_bytes": 133111,
+      "capture_command_exit_code": 0,
+      "capture_stdout": "id                                 : 25668\nprocess                            : mworks\ntitle                              : OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - Sysplorer\n                                      [教育版]\nclass_name                         : Qt5QWindowIcon\nhandle                             : 38277952\nhandle_hex                         : 0x2481340\nvisible                            : True\nminimized                          : False\nhelper_window                      : False\nhelper_capture_included            : False\nrestore_minimized_requested        : True\nrestore_minimized_applied          : True\nskipped_minimized_requires_restore : False\nmaximize_applied                   : False\nminimize_after_requested           : True\nrestore_wait_ms                    : 800\nrestore_settle_ms                  : 300\nmaximize_wait_ms                   : 500\ncapture_width                      : 2578\ncapture_height                     : 1398\nstill_minimized_at_capture         : False\ncapture_reliability                : window_level_capture\nrecommended_action                 : \nknown_blind_spot                   : PrintWindow cannot capture a full client area for minimized windows without restor\n                                     ing first, and may miss Qt/browser-proxy child surfaces such as the right MWORKS A\n                                     I panel or separate login panes; use -RestoreMinimized and, when needed, -Maximize\n                                      plus foreground/Windows MCP visible-desktop evidence for login/license and full G\n                                     UI/layout acceptance.\ncapture                            : ok=True; was_minimized=False; was_maximized=True; maximize_requested=False; minimi\n                                     ze_after_requested=True; restore_wait_ms=800; restore_settle_ms=300; maximize_wait\n                                     _ms=500; minimized_before_reminimize=False; visible=True; rect=-9,-9,2569,1389; si\n                                     ze=2578x1398; title=OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners\n                                     .Formal] - Sysplorer [教育版]; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platfor\n                                     m\\phase2_full_48_climbpath\\g3_repair\\t1_official_pid_continuous_command\\runs\\5s\\of\n                                     ficial_pid\\screenshots\\capture_after_check\\25668_0x2481340_OfficialPidFormalRunner\n                                     _MoSimQuadrotorModel.Experiment.Runners.Formal_ - Sysplorer _教育版_.png\ndpi_awareness                      : per_monitor_v2\npath                               : C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2_full_48_climbpath\\g3_rep\n                                     air\\t1_official_pid_continuous_command\\runs\\5s\\official_pid\\screenshots\\capture_af\n                                     ter_check\\25668_0x2481340_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.R\n                                     unners.Formal_ - Sysplorer _教育版_.png",
+      "capture_stderr": ""
+    },
+    {
+      "phase": "result_window",
+      "capture_mode": "background_restore_minimize",
+      "capture_surface": "result_viewer",
+      "title_regex": "^OfficialPidFormalRunner(?:\\[.*\\])?\\s+-\\s+结果查看器$",
+      "target_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "expected_mworks_pid": 25668,
+      "source_capture_manifest": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/screenshots/capture_result_window/capture_manifest.json",
+      "source_capture": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/screenshots/capture_result_window/25668_0x5D14D0_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - 结果查看器.png",
+      "selected": {
+        "id": 25668,
+        "process": "mworks",
+        "title": "OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - 结果查看器",
+        "class_name": "Qt5QWindowIcon",
+        "handle": 6100176,
+        "handle_hex": "0x5D14D0",
+        "visible": true,
+        "minimized": false,
+        "helper_window": false,
+        "helper_capture_included": false,
+        "restore_minimized_requested": true,
+        "restore_minimized_applied": true,
+        "skipped_minimized_requires_restore": false,
+        "maximize_applied": false,
+        "minimize_after_requested": true,
+        "restore_wait_ms": 800,
+        "restore_settle_ms": 300,
+        "maximize_wait_ms": 500,
+        "capture_width": 1708,
+        "capture_height": 921,
+        "still_minimized_at_capture": false,
+        "capture_reliability": "window_level_capture",
+        "recommended_action": "",
+        "known_blind_spot": "PrintWindow cannot capture a full client area for minimized windows without restoring first, and may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -RestoreMinimized and, when needed, -Maximize plus foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.",
+        "capture": "ok=True; was_minimized=False; was_maximized=False; maximize_requested=False; minimize_after_requested=True; restore_wait_ms=800; restore_settle_ms=300; maximize_wait_ms=500; minimized_before_reminimize=False; visible=True; rect=418,192,2126,1113; size=1708x921; title=OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - 结果查看器; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2_full_48_climbpath\\g3_repair\\t1_official_pid_continuous_command\\runs\\5s\\official_pid\\screenshots\\capture_result_window\\25668_0x5D14D0_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - 结果查看器.png",
+        "dpi_awareness": "per_monitor_v2",
+        "path": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2_full_48_climbpath\\g3_repair\\t1_official_pid_continuous_command\\runs\\5s\\official_pid\\screenshots\\capture_result_window\\25668_0x5D14D0_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - 结果查看器.png"
+      },
+      "destination": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/screenshots/02_result_window.png",
+      "destination_sha256": "613a77d63ce4c434fcc105515759257e4311560d3fee17d4159c72827e347495",
+      "destination_bytes": 94573,
+      "capture_command_exit_code": 0,
+      "capture_stdout": "id                                 : 25668\nprocess                            : mworks\ntitle                              : OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - 结果查看器\nclass_name                         : Qt5QWindowIcon\nhandle                             : 6100176\nhandle_hex                         : 0x5D14D0\nvisible                            : True\nminimized                          : False\nhelper_window                      : False\nhelper_capture_included            : False\nrestore_minimized_requested        : True\nrestore_minimized_applied          : True\nskipped_minimized_requires_restore : False\nmaximize_applied                   : False\nminimize_after_requested           : True\nrestore_wait_ms                    : 800\nrestore_settle_ms                  : 300\nmaximize_wait_ms                   : 500\ncapture_width                      : 1708\ncapture_height                     : 921\nstill_minimized_at_capture         : False\ncapture_reliability                : window_level_capture\nrecommended_action                 : \nknown_blind_spot                   : PrintWindow cannot capture a full client area for minimized windows without restor\n                                     ing first, and may miss Qt/browser-proxy child surfaces such as the right MWORKS A\n                                     I panel or separate login panes; use -RestoreMinimized and, when needed, -Maximize\n                                      plus foreground/Windows MCP visible-desktop evidence for login/license and full G\n                                     UI/layout acceptance.\ncapture                            : ok=True; was_minimized=False; was_maximized=False; maximize_requested=False; minim\n                                     ize_after_requested=True; restore_wait_ms=800; restore_settle_ms=300; maximize_wai\n                                     t_ms=500; minimized_before_reminimize=False; visible=True; rect=418,192,2126,1113;\n                                      size=1708x921; title=OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runne\n                                     rs.Formal] - 结果查看器; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2\n                                     _full_48_climbpath\\g3_repair\\t1_official_pid_continuous_command\\runs\\5s\\official_p\n                                     id\\screenshots\\capture_result_window\\25668_0x5D14D0_OfficialPidFormalRunner_MoSimQ\n                                     uadrotorModel.Experiment.Runners.Formal_ - 结果查看器.png\ndpi_awareness                      : per_monitor_v2\npath                               : C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2_full_48_climbpath\\g3_rep\n                                     air\\t1_official_pid_continuous_command\\runs\\5s\\official_pid\\screenshots\\capture_re\n                                     sult_window\\25668_0x5D14D0_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.\n                                     Runners.Formal_ - 结果查看器.png",
+      "capture_stderr": "",
+      "visual_validation": {
+        "accepted": true,
+        "expected_title_regex": "^OfficialPidFormalRunner(?:\\[.*\\])?\\s+-\\s+结果查看器$",
+        "captured_title": "OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - 结果查看器",
+        "image_width": 1708,
+        "image_height": 921,
+        "chart_trace_pixels": 68718,
+        "minimum_trace_pixels": 120,
+        "reason": null
+      }
+    }
+  ],
+  "mworks_phase_observations": [
+    "Native CheckModel, 50 s ClimbPath simulation, result export, and terminal-error evaluation completed."
+  ],
+  "artifact_refs": [
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/logs/mcp.jsonl",
+      "sha256": "ce454c610ddb5d15ecef4a1b381626f5f0bd0c9bc5784d24244f6b42e8fbfa91",
+      "bytes": 1321077,
+      "claim_role": "log"
+    },
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/logs/load_model.json",
+      "sha256": "26078030b7e68a4a7036c24393acf32e9a132dec4568540e8ba65a3cf6cfe777",
+      "bytes": 1194,
+      "claim_role": "log"
+    },
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/logs/check_model_direct.json",
+      "sha256": "904951da2cf7f3be93ba0b0bf9522ee52b55a7dcf4ffae152f3b310267524cbc",
+      "bytes": 332,
+      "claim_role": "log"
+    },
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/logs/simulate_model_direct.json",
+      "sha256": "8cc1c05dd4a2ebbf54888b792109a34af03a4a6d5e4df957056c14384c63c993",
+      "bytes": 3301,
+      "claim_role": "log"
+    },
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/raw/result.csv",
+      "sha256": "649025733f5d3eca98fe2bf12c1f535ade1c060e76623cad2afbcb8fa12499f2",
+      "bytes": 626422,
+      "claim_role": "raw"
+    },
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/metrics/METRICS.json",
+      "sha256": "6a2f5acd71e5ea81006ceb8de9df4f7ed86ef90d7249f5d3c88281da8f896c15",
+      "bytes": 2547,
+      "claim_role": "metrics"
+    },
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/metrics/metrics.csv",
+      "sha256": "d8b35bb9419107e72e8766a45ab800e666ea0eb569e4a698c44bb09f1b5082ff",
+      "bytes": 2065,
+      "claim_role": "metrics"
+    },
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/screenshots/01_after_check.png",
+      "sha256": "3c6056bc12e75203e1cd28cccf46b754855a2fff7225c764bc91c179135272ce",
+      "bytes": 133111,
+      "claim_role": "figure"
+    },
+    {
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/screenshots/02_result_window.png",
+      "sha256": "613a77d63ce4c434fcc105515759257e4311560d3fee17d4159c72827e347495",
+      "bytes": 94573,
+      "claim_role": "figure"
+    }
+  ],
+  "session": {
+    "health": {
+      "ok": true,
+      "mcp_server": {
+        "version": "0.1",
+        "version_display": "0.1",
+        "version_base": "0.1",
+        "version_core": "0.1",
+        "build_counter": 0,
+        "git_commit_count": 196,
+        "build_kind": "release",
+        "build_time": "2026-05-08T11:14:45+08:00",
+        "git_revision": "24314a1"
+      },
+      "python": {
+        "python_version": "3.11.4",
+        "major": 3,
+        "minor": 11,
+        "compatible": true,
+        "required": "3.10+ (recommended 3.11 for mworks-sysplorer)"
+      },
+      "driver_ready": true,
+      "driver_error": "",
+      "advice": [],
+      "sysplorer_startup": {
+        "attempted": true,
+        "started": true,
+        "already_running": false,
+        "wait_ms": 0,
+        "error": "",
+        "dedicated_sysplorer_port": 49155,
+        "timestamp": "2026-07-29T02:30:22.195107+00:00"
+      },
+      "paths": {
+        "workspace_root": "C:\\Users\\HP\\Desktop\\MoSim",
+        "deploy_root": "D:\\Program Files\\MWORKS\\Sysplorer 2026a\\Tools\\sysplorer_mcp",
+        "resources_root": "C:\\Users\\HP\\Desktop\\MoSim\\resources"
+      },
+      "bin64_path": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Bin64",
+      "workdir": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\Tools\\SYSPLO~1\\SYSPLO~1\\temp",
+      "site_packages": "D:\\PROGRA~1\\MWORKS\\SYSPLO~1\\External\\python64\\Lib\\SITE-P~1",
+      "api_ready": true
+    },
+    "dedicated_sysplorer_port": 49155,
+    "mworks_pid": 25668,
+    "mcp_log": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/official_pid/logs/mcp.jsonl"
+  },
+  "base_package_preload": [
+    {
+      "path": "Models/MoSimQuadrotorModel/package.mo",
+      "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "force_reload": false,
+      "auto_load_deps": true,
+      "ok": true
+    }
+  ],
+  "package_root_materialization": [
+    {
+      "path": "Models/MoSimQuadrotorModel/package.mo",
+      "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+      "force_reload": true,
+      "auto_load_deps": true,
+      "ok": true
+    }
+  ],
+  "native_result_root": {
+    "mode": "fresh_root_per_execution",
+    "preferred_root": "Results/native_result_cache/official_pid",
+    "root": "Results/native_result_cache/official_pid_g6_20260729_103037_939789"
+  },
+  "result_readiness": {
+    "state": "ready",
+    "expected_stop_time": 5.0,
+    "timeout_s": 60.0,
+    "attempt_count": 1,
+    "attempts": [
+      {
+        "elapsed_s": 0.0,
+        "native_result": "Results/native_result_cache/official_pid_g6_20260729_103037_939789/OfficialPidFormalRunner/Result.msr",
+        "native_result_mtime_unix": 1785292240.2587526,
+        "native_result_fresh": true,
+        "native_result_opened": true,
+        "time_sample_count": 2501,
+        "time_start": 0.0,
+        "time_end": 5.0,
+        "time_reaches_expected_stop": true,
+        "full_series_ready": true
+      }
+    ]
+  },
+  "native_result_locator": "Results/native_result_cache/official_pid_g6_20260729_103037_939789/OfficialPidFormalRunner/Result.msr",
+  "metrics_summary": {
+    "row_count": 2501,
+    "duration_s": 5.0,
+    "nan_count": 0,
+    "valid": true
+  },
+  "session_cleanup": {
+    "schema": "mosim.g6_controller_execution_session_cleanup.v1",
+    "created_at": "2026-07-29T10:30:48+08:00",
+    "scope": "runner-owned dedicated Sysplorer session only; no pre-existing MWORKS instance is targeted",
+    "dedicated_sysplorer_port": 49155,
+    "expected_mworks_pid": 25668,
+    "requested": true,
+    "verified_closed": true,
+    "shutdown_response": {
+      "ok": true,
+      "tool": "session_manager",
+      "action": "shutdown",
+      "mcp_server": {
+        "version": "0.1",
+        "version_display": "0.1",
+        "version_base": "0.1",
+        "version_core": "0.1",
+        "build_counter": 0,
+        "git_commit_count": 196,
+        "build_kind": "release",
+        "build_time": "2026-05-08T11:14:45+08:00",
+        "git_revision": "24314a1"
+      },
+      "exit_port": 49155,
+      "exit_api": {
+        "ok": true,
+        "exited_ports": [
+          49155
+        ],
+        "errors": []
+      },
+      "driver_ready": false,
+      "driver_error": ""
+    },
+    "observed_mworks_pid_after_shutdown": null,
+    "post_shutdown_wait_seconds": 30.0,
+    "finished_at": "2026-07-29T10:30:53+08:00"
+  },
+  "result_data_status": "complete",
+  "finished_at": "2026-07-29T10:30:53+08:00"
+}

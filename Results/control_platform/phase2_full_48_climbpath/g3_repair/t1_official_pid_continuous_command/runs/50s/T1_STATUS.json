@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.t1_rotor_command_harness_regression_status.v1",
+  "generated_at": "2026-07-29T10:42:03+08:00",
+  "matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/50s/T1_MATRIX.json",
+    "sha256": "77b622c52ea0fa16770faa3a2eff1ea7f54f8b1e93d6053b1bc147d36d1f2ed5"
+  },
+  "runner_count": 1,
+  "terminal_record_count": 1,
+  "pending_count": 0,
+  "passed_count": 0,
+  "failed_count": 1,
+  "failure_counts": {
+    "simulate_failed": 1
+  },
+  "completed": true,
+  "rows": [
+    {
+      "controller_id": "official_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "status": "fail",
+      "position_rmse_m": null,
+      "terminal_position_error_norm_m": null,
+      "failure_class": "simulate_failed",
+      "failure_reasons": [
+        "simulation API reported failure: {'ok': True, 'api': 'ModelingPy.SimulateModel', 'simulation_options': None, 'data': False, 'simulate_api_reported_failure': True, 'last_errors': [''], 'last_errors_error': None, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 42.97}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'result_verification': {'result_probe': {'ok': True, 'has_readable_result': True, 'data': 'Real', 'error': None}, 'get_var_value_at': {'ok': True, 'data': 5525038.521412066, 'error': None}}, 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 42.97}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 5525038.521412066}, 'raw_tool_result': {'ok': True, 'tool': 'mworks_run_script', 'stdout': '', 'stderr': '', 'exception': '', 'traceback': '', 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 42.97}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 5525038.521412066}, 'script_path_resolved': '', 'hint': ''}}"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "tool": "mworks_run_script",
+  "stdout": "",
+  "stderr": "",
+  "exception": "",
+  "traceback": "",
+  "run_script_result": {
+    "remove_plots": true,
+    "open_result": true,
+    "create_plot": true
+  },
+  "script_path_resolved": "",
+  "hint": ""
+}

@@ -1,0 +1,38 @@
+{
+  "schema": "mosim.g6_controller_execution_session_cleanup.v1",
+  "created_at": "2026-07-29T10:40:40+08:00",
+  "scope": "runner-owned dedicated Sysplorer session only; no pre-existing MWORKS instance is targeted",
+  "dedicated_sysplorer_port": 49155,
+  "expected_mworks_pid": 38420,
+  "requested": true,
+  "verified_closed": true,
+  "shutdown_response": {
+    "ok": true,
+    "tool": "session_manager",
+    "action": "shutdown",
+    "mcp_server": {
+      "version": "0.1",
+      "version_display": "0.1",
+      "version_base": "0.1",
+      "version_core": "0.1",
+      "build_counter": 0,
+      "git_commit_count": 196,
+      "build_kind": "release",
+      "build_time": "2026-05-08T11:14:45+08:00",
+      "git_revision": "24314a1"
+    },
+    "exit_port": 49155,
+    "exit_api": {
+      "ok": true,
+      "exited_ports": [
+        49155
+      ],
+      "errors": []
+    },
+    "driver_ready": false,
+    "driver_error": ""
+  },
+  "observed_mworks_pid_after_shutdown": null,
+  "post_shutdown_wait_seconds": 30.0,
+  "finished_at": "2026-07-29T10:40:46+08:00"
+}

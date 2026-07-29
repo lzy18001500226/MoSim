@@ -1,0 +1,26 @@
+{
+  "schema": "mosim.t1_rotor_command_harness_regression_status.v1",
+  "generated_at": "2026-07-29T10:38:55+08:00",
+  "matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/5s/T1_MATRIX.json",
+    "sha256": "e805d191dc16de4119141f9ea489098cf2512489872c9f7c52d63aa7a6e1cb29"
+  },
+  "runner_count": 1,
+  "terminal_record_count": 1,
+  "pending_count": 0,
+  "passed_count": 1,
+  "failed_count": 0,
+  "failure_counts": {},
+  "completed": true,
+  "rows": [
+    {
+      "controller_id": "official_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "status": "pass",
+      "position_rmse_m": 0.06675908566065641,
+      "terminal_position_error_norm_m": 0.0015957826751784776,
+      "failure_class": null,
+      "failure_reasons": []
+    }
+  ]
+}

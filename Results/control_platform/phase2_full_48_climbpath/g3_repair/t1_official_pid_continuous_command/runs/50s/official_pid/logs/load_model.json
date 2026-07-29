@@ -1,0 +1,35 @@
+{
+  "ok": true,
+  "api": "OpenModelFile",
+  "data": true,
+  "cached": false,
+  "file_path": "C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\Experiment\\Runners\\Formal\\OfficialPidFormalRunner.mo",
+  "auto_loaded_libs": {
+    "Adapters": {
+      "ok": false,
+      "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+      "cached": false
+    },
+    "Base": {
+      "ok": false,
+      "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+      "cached": false
+    },
+    "Control": {
+      "ok": false,
+      "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+      "cached": false
+    },
+    "Experiment": {
+      "ok": false,
+      "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+      "cached": false
+    },
+    "Runners": {
+      "ok": false,
+      "error": "LoadLibrary returned False\nGetLastErrors: \nMessageText: [上一条命令没有日志信息]",
+      "cached": false
+    }
+  },
+  "manager_action": "load_file"
+}

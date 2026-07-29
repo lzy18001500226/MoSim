@@ -1,0 +1,31 @@
+[
+    {
+        "id":  17008,
+        "process":  "mworks",
+        "title":  "OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - Sysplorer [教育版]",
+        "class_name":  "Qt5QWindowIcon",
+        "handle":  1905564,
+        "handle_hex":  "0x1D139C",
+        "visible":  true,
+        "minimized":  false,
+        "helper_window":  false,
+        "helper_capture_included":  false,
+        "restore_minimized_requested":  true,
+        "restore_minimized_applied":  true,
+        "skipped_minimized_requires_restore":  false,
+        "maximize_applied":  false,
+        "minimize_after_requested":  true,
+        "restore_wait_ms":  800,
+        "restore_settle_ms":  300,
+        "maximize_wait_ms":  500,
+        "capture_width":  2578,
+        "capture_height":  1398,
+        "still_minimized_at_capture":  false,
+        "capture_reliability":  "window_level_capture",
+        "recommended_action":  "",
+        "known_blind_spot":  "PrintWindow cannot capture a full client area for minimized windows without restoring first, and may miss Qt/browser-proxy child surfaces such as the right MWORKS AI panel or separate login panes; use -RestoreMinimized and, when needed, -Maximize plus foreground/Windows MCP visible-desktop evidence for login/license and full GUI/layout acceptance.",
+        "capture":  "ok=True; was_minimized=False; was_maximized=True; maximize_requested=False; minimize_after_requested=True; restore_wait_ms=800; restore_settle_ms=300; maximize_wait_ms=500; minimized_before_reminimize=False; visible=True; rect=-9,-9,2569,1389; size=2578x1398; title=OfficialPidFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - Sysplorer [教育版]; path=C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2_full_48_climbpath\\g3_repair\\t1_official_pid_continuous_command\\runs\\5s\\official_pid\\screenshots\\capture_after_check\\17008_0x1D139C_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - Sysplorer _教育版_.png",
+        "dpi_awareness":  "per_monitor_v2",
+        "path":  "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\phase2_full_48_climbpath\\g3_repair\\t1_official_pid_continuous_command\\runs\\5s\\official_pid\\screenshots\\capture_after_check\\17008_0x1D139C_OfficialPidFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - Sysplorer _教育版_.png"
+    }
+]

@@ -1,0 +1,32 @@
+{
+  "acceptance": {
+    "g2_evidence_mutation": "forbidden",
+    "no_controller_gain_tuning": true,
+    "no_plant_change": true,
+    "no_seven_scenario_run": true,
+    "source_change": "FormalRotorCommandRunnerBase command-side ZOH removal only",
+    "status_values": [
+      "pass",
+      "fail"
+    ],
+    "terminal_position_error_limit_m": 5.0
+  },
+  "generated_at": "2026-07-29T10:40:57+08:00",
+  "matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/50s/T1_MATRIX.json",
+    "sha256": "77b622c52ea0fa16770faa3a2eff1ea7f54f8b1e93d6053b1bc147d36d1f2ed5"
+  },
+  "schema": "mosim.t1_rotor_command_harness_regression_contract.v1",
+  "scope": {
+    "controller_count": 1,
+    "duration_s": 50.0,
+    "frozen_g2_matrix": {
+      "path": "Results/control_platform/phase2_full_48_climbpath/G2_MATRIX.json",
+      "sha256": "a9f85d8cb8b4b942b88056bf4eb336ba17a9c40b26fe1ae5d21ab12649599d80"
+    },
+    "harness_change": "FormalRotorCommandRunnerBase retains 100 Hz reference and measurement holds, but connects controller.rotor_command continuously to plant.rotor_command.",
+    "scenario_injection": "none",
+    "task": "T1-FIX RotorCommand continuous-command harness regression",
+    "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath"
+  }
+}

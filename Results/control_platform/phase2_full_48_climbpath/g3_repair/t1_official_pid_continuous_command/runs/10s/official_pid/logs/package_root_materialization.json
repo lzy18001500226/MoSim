@@ -1,0 +1,9 @@
+[
+  {
+    "path": "Models/MoSimQuadrotorModel/package.mo",
+    "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c",
+    "force_reload": true,
+    "auto_load_deps": true,
+    "ok": true
+  }
+]

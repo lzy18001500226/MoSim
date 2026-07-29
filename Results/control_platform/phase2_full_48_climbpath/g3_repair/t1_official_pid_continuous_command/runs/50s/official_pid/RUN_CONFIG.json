@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-07-29T10:40:57+08:00",
+  "matrix": {
+    "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/t1_official_pid_continuous_command/runs/50s/T1_MATRIX.json",
+    "sha256": "77b622c52ea0fa16770faa3a2eff1ea7f54f8b1e93d6053b1bc147d36d1f2ed5"
+  },
+  "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+  "scenario_id": "climb_path_50s",
+  "scenario_injection": "none",
+  "schema": "mosim.t1_rotor_command_harness_regression_run_config.v1",
+  "simulation_timeout_s": 120.0,
+  "target_time_s": [
+    0.0,
+    50.0
+  ],
+  "task": "T1-FIX RotorCommand continuous-command harness regression",
+  "terminal_position_error_limit_m": 5.0,
+  "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath"
+}

@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-07-29T10:39:46+08:00",
+  "rows": [
+    {
+      "adapter_class": "OfficialPIDRotorAdapter",
+      "controller_id": "official_pid",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "runner_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+      "runner_id": "OfficialPid",
+      "source_bindings": [
+        {
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo",
+          "role": "formal_runner",
+          "sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268"
+        },
+        {
+          "path": "Models/MoSimQuadrotorModel/package.mo",
+          "role": "package_root",
+          "sha256": "28bf651ddd95410a26e58fc3f56fd1c1b82acc072cbd0c9fc69de0530568af9c"
+        },
+        {
+          "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
+          "role": "shared_plant",
+          "sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+        },
+        {
+          "path": "Models/MoSimQuadrotorModel/Guidance/Trajectories/package.mo",
+          "role": "trajectory",
+          "sha256": "d7b5097fff5a17f629cb56514efa431ac0c3f24bc14659497ec818f0c37aff61"
+        },
+        {
+          "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Base/FormalRotorCommandRunnerBase.mo",
+          "role": "shared_runner_base",
+          "sha256": "ce7a121dbf051aa84f71f7d6f2a19dec9bae59f07828c9d663e856a1b35d0ffe"
+        },
+        {
+          "path": "Models/MoSimQuadrotorModel/Control/Adapters/OfficialPIDRotorAdapter.mo",
+          "role": "formal_adapter",
+          "sha256": "a1d4880baa1db0d142c7d3928661b24048e1801f9895e1a51e774322a02efcb4"
+        }
+      ]
+    }
+  ],
+  "schema": "mosim.t1_rotor_command_harness_regression_matrix.v1",
+  "scope": {
+    "controller_count": 1,
+    "duration_s": 10.0,
+    "frozen_g2_matrix": {
+      "path": "Results/control_platform/phase2_full_48_climbpath/G2_MATRIX.json",
+      "sha256": "a9f85d8cb8b4b942b88056bf4eb336ba17a9c40b26fe1ae5d21ab12649599d80"
+    },
+    "harness_change": "FormalRotorCommandRunnerBase retains 100 Hz reference and measurement holds, but connects controller.rotor_command continuously to plant.rotor_command.",
+    "scenario_injection": "none",
+    "task": "T1-FIX RotorCommand continuous-command harness regression",
+    "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath"
+  }
+}
