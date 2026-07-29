@@ -81,3 +81,15 @@ def test_fastlio_ekf_fusion_requires_a_boot_time_contract() -> None:
     assert "PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES" in gate
     assert "Sunray150 IMU calibration requires" in gate
     assert '"sunray150_imu_calibration_applied"' in gate
+
+
+def test_sunray150_imu_calibration_applies_before_any_fastlio_branch() -> None:
+    gate = BASIC_GATE.read_text(encoding="utf-8")
+
+    calibration_call = gate.index("resolve_sunray150_imu_calibration_boot_contract\n\nif")
+    fusion_enable = gate.index('if [[ "${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION}" == "true" ]]; then')
+
+    assert calibration_call < fusion_enable
+    assert "CAL_GYRO0_PRIO=50" in gate
+    assert "CAL_ACC0_PRIO=50" in gate
+    assert "PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=true" in gate

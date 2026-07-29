@@ -53,6 +53,28 @@ def test_nested_gps_preserves_px4_transport_contract_and_is_idempotent() -> None
         assert patched == replayed
 
 
+def test_flight_controller_imu_rate_cleanup_cannot_modify_p3d_rate() -> None:
+    sync = load_sync_module()
+    profile = sync.load_virtual_profile(ROOT)
+    source = (SUNRAY_MODEL_ROOT / "sunray150_with_mid360.sdf").read_text(encoding="utf-8")
+
+    patched, replacements = sync.patch_drone_model_text(source, profile, "nested", "nested")
+    source_root = ET.fromstring(source)
+    patched_root = ET.fromstring(patched)
+
+    source_imu = source_root.find(".//plugin[@name='gazebo_imu_plugin']")
+    patched_imu = patched_root.find(".//plugin[@name='gazebo_imu_plugin']")
+    source_p3d = source_root.find(".//plugin[@name='p3d_base_controller']")
+    patched_p3d = patched_root.find(".//plugin[@name='p3d_base_controller']")
+
+    assert source_imu is not None and patched_imu is not None
+    assert source_p3d is not None and patched_p3d is not None
+    assert patched_imu.find("updateRate") is None
+    assert patched_imu.find("pubRate") is None
+    assert patched_p3d.findtext("updateRate") == source_p3d.findtext("updateRate")
+    assert replacements["unsupported_flight_controller_imu_rate_tags_removed"] == 0
+
+
 def test_all_sensor_mass_accounting_modes_close_to_one_kg() -> None:
     sync = load_sync_module()
     profile = json.loads(PROFILE_PATH.read_text(encoding="utf-8"))
