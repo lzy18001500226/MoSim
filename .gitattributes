@@ -56,3 +56,4 @@ Results/control_platform/p8_formation_mode*_gazebo*_20260717/*.csv -whitespace
 Results/control_platform/phase2_full_48_climbpath/** -whitespace
 Results/g9/dfbc_high_order_attitude_thrust_v1/g95_static_gate_20260630_082713/RUN_MANIFEST.json -whitespace
 Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713/RUN_MANIFEST.json -whitespace
+/References/Lab/exploration_coverage/EPIC-main/misc/forest.gif filter=lfs diff=lfs merge=lfs -text
