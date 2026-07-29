@@ -1,0 +1,7 @@
+{
+  "model_name": "SevenScenarioAB_OfficialPid_MotorEfficiencyFault",
+  "reason": "preferred native_result path is too long for reliable Windows/MWORKS OpenResult/CreatePlot binding",
+  "native_result_dir": "Results\\native_result_cache\\diagnostic_stop_16_6",
+  "native_result_file": "Results\\native_result_cache\\diagnostic_stop_16_6\\SevenScenarioAB_OfficialPid_MotorEfficiencyFault\\Result.msr",
+  "native_result_file_windows": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\native_result_cache\\diagnostic_stop_16_6\\SevenScenarioAB_OfficialPid_MotorEfficiencyFault\\Result.msr"
+}

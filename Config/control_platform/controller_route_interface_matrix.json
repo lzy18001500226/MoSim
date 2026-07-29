@@ -3,9 +3,11 @@
   "version": 2,
   "authority": "The deterministic current-source interface and dependency matrix for the 46 MWORKS candidates. It is the migration worklist, not simulation acceptance evidence.",
   "scope": {
-    "included": "46 current MWORKS review routes: 41 graphical controller cores and five named whole-aircraft profiles within the PID and optimization/predictive semantic families.",
+    "included": "46 current MWORKS review routes: 41 graphical controller cores and five named whole-aircraft profiles. Two graphical probes are Tier1-only and cannot enter a Tier2 whole-aircraft adapter or Runner route.",
     "excluded": [
       "pid_awff_linear_eso: planned MWORKS profile without a model or review route",
+      "smc_boundary_layer: Tier1 fixed-input graphical probe without public reference or measurement ports",
+      "nmpc_outer: Tier1 fixed-input graphical probe without public reference or measurement ports",
       "px4ctrl: engineering/deployment baseline with a MWORKS-equivalent core pending"
     ],
     "migration_order": [
@@ -25,9 +27,9 @@
     "offline_runner_interface_contract": "Config/control_platform/offline_runner_interface_contract_v1.json"
   },
   "source_sha256": {
-    "catalog": "07c5a36da6842a06e4b88d5f9b2d887a93c5bf99c36fb5465f17ff3024821f03",
+    "catalog": "75915325a93575f81c23fbc8b8f276614c8548cb9ce99f91400c3139a6dab7de",
     "current_model_entry_map": "4b3e021b729e0834f67ef61e878fb69d146b27d0bedd40e03bc38ef0b03107c0",
-    "formal_closed_loop_harness_map": "ff2db4157ac04f5a4d3cdf66f4e65994964cb83396b26c2ae4c29ed113b62874",
+    "formal_closed_loop_harness_map": "784abf512502068ae970e5da30c94439486d7e7c28dffa40258d7a2c1c35691a",
     "offline_runner_interface_contract": "f84d6e23493a3ee822d2255061a1dabbf3f19381a3821459295a9a302fa7e0ae"
   },
   "shared_runner_contract": {
@@ -186,9 +188,14 @@
       "missing_closed_loop_harness": 41,
       "resolved_canonical_whole_aircraft_harness": 5
     },
+    "whole_aircraft_tier_counts": {
+      "tier1_and_tier2": 44,
+      "tier1_only": 2
+    },
     "target_boundary_counts": {
-      "ATTITUDE_THRUST": 37,
+      "ATTITUDE_THRUST": 35,
       "BODY_RATE_THRUST": 2,
+      "INTERNAL_GRAPHICAL_PROBE_ONLY": 2,
       "ROTOR_COMMAND": 1,
       "WHOLE_AIRCRAFT_EMBEDDED": 5,
       "WRENCH": 1
@@ -283,6 +290,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -433,6 +443,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -586,6 +599,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -752,6 +768,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -884,6 +903,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -1024,6 +1046,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -1187,6 +1212,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -1351,6 +1379,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -1511,6 +1542,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -1672,6 +1706,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -1822,6 +1859,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -1968,6 +2008,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -2075,6 +2118,9 @@
       },
       "formal_closure": {
         "state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": true,
         "canonical_closed_loop_harness": {
           "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Indi.mo",
@@ -2196,6 +2242,9 @@
       },
       "formal_closure": {
         "state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": true,
         "canonical_closed_loop_harness": {
           "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Residual.mo",
@@ -2317,6 +2366,9 @@
       },
       "formal_closure": {
         "state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": true,
         "canonical_closed_loop_harness": {
           "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo",
@@ -2438,6 +2490,9 @@
       },
       "formal_closure": {
         "state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": true,
         "canonical_closed_loop_harness": {
           "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedLinearMpcL1Indi.mo",
@@ -2559,6 +2614,9 @@
       },
       "formal_closure": {
         "state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": true,
         "canonical_closed_loop_harness": {
           "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
@@ -2620,7 +2678,7 @@
             "source_declared_type": "AWFF_QPNMPCSafetyController_Sysblock",
             "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_QPNMPCSafetyController_Sysblock.mo",
             "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_QPNMPCSafetyController_Sysblock",
-            "model_sha256": "6f0dc54ec82e1b4b350b4208432e5916a7868a2cb7a554a580987ff77e92f20e"
+            "model_sha256": "5931e8adfc4f528a5dc600ae19553e0a55d8f1eee4ade4310844b6b13abcb322"
           },
           {
             "role": "namespace_compatibility_alias",
@@ -2739,6 +2797,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -2870,6 +2931,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -3023,6 +3087,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -3154,6 +3221,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -3320,6 +3390,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -3490,6 +3563,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -3640,6 +3716,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -3790,6 +3869,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -3940,6 +4022,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -4092,6 +4177,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -4258,6 +4346,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -4421,6 +4512,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -4592,6 +4686,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -4770,6 +4867,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -4939,6 +5039,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -5070,6 +5173,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -5203,48 +5309,28 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_only",
+        "tier2_closure_eligibility": "excluded",
+        "tier2_exclusion_reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild.",
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
       "integration": {
         "current_boundary": "INTERNAL_GRAPHICAL_PROBE_ONLY",
-        "target_contract": {
-          "boundary": "ATTITUDE_THRUST",
-          "interface": "MoSimQuadrotorModel.Control.Interfaces.PartialAttitudeThrustController",
-          "interface_source": "Models/MoSimQuadrotorModel/Control/Interfaces/PartialAttitudeThrustController.mo",
-          "runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
-          "runner_source": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
-          "outputs": [
-            {
-              "name": "attitude_ref",
-              "dimension": 3,
-              "unit_semantics": "roll_pitch_yaw_rad_offline_only"
-            },
-            {
-              "name": "collective_thrust_delta",
-              "dimension": 1,
-              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
-            }
-          ]
-        },
+        "target_contract": null,
         "current_adapter_binding": null,
         "adapter_candidates": [],
-        "core_migration_state": "parameterize_fixed_graphical_inputs_and_complete_vector_command_semantics",
-        "adapter_migration_state": "add_attitude_thrust_adapter_only_after_vector_semantics_are_explicit",
-        "next_migration_gate": "create_a_formal_root_adapter_and_whole_aircraft_runner_binding_then_update_the_formal_harness_map"
+        "core_migration_state": "tier1_only_graphical_probe_retained",
+        "adapter_migration_state": "not_permitted_until_matching_graphical_model_is_rebuilt",
+        "next_migration_gate": "rebuild_a_matching_graphical_model_with_public_reference_and_measurement_ports_before_any_tier2_adapter_or_runner_is_created"
       },
       "scenarios": {
         "current": {
-          "state": "internal_fixed_input_graphical_probe_only",
-          "internal_probe": {
-            "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
-            "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
-            "probe_kind": "fixed_input_graphical_internal_response",
-            "claim_boundary": "This source-derived GraphicalMIL model may be opened, inspected, and simulated for its own fixed-input internal response. It is not a plant-coupled whole-aircraft closed-loop result."
-          }
+          "state": "tier1_graphical_review_only_not_permitted_for_tier2",
+          "reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild."
         },
         "next_minimum_closure": {
-          "state": "pending_shared_nominal_profile_after_adapter_binding",
+          "state": "not_permitted_for_tier1_only_graphical_probe",
           "intended_scenario_id": "nominal_hover"
         },
         "champion_ab_matrix": {
@@ -5356,6 +5442,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -5476,6 +5565,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -5623,6 +5715,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -5792,6 +5887,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -5928,6 +6026,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -6081,6 +6182,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -6214,6 +6318,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -6348,48 +6455,28 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_only",
+        "tier2_closure_eligibility": "excluded",
+        "tier2_exclusion_reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild.",
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
       "integration": {
         "current_boundary": "INTERNAL_GRAPHICAL_PROBE_ONLY",
-        "target_contract": {
-          "boundary": "ATTITUDE_THRUST",
-          "interface": "MoSimQuadrotorModel.Control.Interfaces.PartialAttitudeThrustController",
-          "interface_source": "Models/MoSimQuadrotorModel/Control/Interfaces/PartialAttitudeThrustController.mo",
-          "runner": "MoSimQuadrotorModel.Experiment.Runners.AttitudeThrustRunner",
-          "runner_source": "Models/MoSimQuadrotorModel/Experiment/Runners/AttitudeThrustRunner.mo",
-          "outputs": [
-            {
-              "name": "attitude_ref",
-              "dimension": 3,
-              "unit_semantics": "roll_pitch_yaw_rad_offline_only"
-            },
-            {
-              "name": "collective_thrust_delta",
-              "dimension": 1,
-              "unit_semantics": "offline_collective_increment_newtons_about_hover_not_online_verified"
-            }
-          ]
-        },
+        "target_contract": null,
         "current_adapter_binding": null,
         "adapter_candidates": [],
-        "core_migration_state": "parameterize_fixed_graphical_inputs_and_complete_vector_command_semantics",
-        "adapter_migration_state": "add_attitude_thrust_adapter_only_after_vector_semantics_are_explicit",
-        "next_migration_gate": "create_a_formal_root_adapter_and_whole_aircraft_runner_binding_then_update_the_formal_harness_map"
+        "core_migration_state": "tier1_only_graphical_probe_retained",
+        "adapter_migration_state": "not_permitted_until_matching_graphical_model_is_rebuilt",
+        "next_migration_gate": "rebuild_a_matching_graphical_model_with_public_reference_and_measurement_ports_before_any_tier2_adapter_or_runner_is_created"
       },
       "scenarios": {
         "current": {
-          "state": "internal_fixed_input_graphical_probe_only",
-          "internal_probe": {
-            "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
-            "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
-            "probe_kind": "fixed_input_graphical_internal_response",
-            "claim_boundary": "This source-derived GraphicalMIL model may be opened, inspected, and simulated for its own fixed-input internal response. It is not a plant-coupled whole-aircraft closed-loop result."
-          }
+          "state": "tier1_graphical_review_only_not_permitted_for_tier2",
+          "reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild."
         },
         "next_minimum_closure": {
-          "state": "pending_shared_nominal_profile_after_adapter_binding",
+          "state": "not_permitted_for_tier1_only_graphical_probe",
           "intended_scenario_id": "nominal_hover"
         },
         "champion_ab_matrix": {
@@ -6504,6 +6591,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -6657,6 +6747,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -6793,6 +6886,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },
@@ -6946,6 +7042,9 @@
       },
       "formal_closure": {
         "state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "tier2_exclusion_reason": null,
         "minimum_whole_aircraft_closure_eligible": false,
         "canonical_closed_loop_harness": null
       },

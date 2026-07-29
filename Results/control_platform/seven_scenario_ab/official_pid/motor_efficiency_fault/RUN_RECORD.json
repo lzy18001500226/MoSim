@@ -1,18 +1,25 @@
 {
   "schema": "mosim.seven_scenario_ab_run_record.v1",
-  "recorded_at": "2026-07-28T20:38:38Z",
+  "recorded_at": "2026-07-29T04:20:15Z",
   "status": "invalid",
   "failure_reasons": [
     "MWORKS runner returned a nonzero exit code",
     "Plant injection self-check not evaluable from the raw trace",
     "raw CSV is missing",
-    "metrics JSON is missing"
+    "metrics JSON is missing",
+    "Bounded native diagnostic confirms an unbounded Official PID response after the correctly scheduled rotor-1 50 percent effectiveness loss"
   ],
   "controller_id": "official_pid",
   "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
   "scenario_id": "motor_efficiency_fault",
   "profile_id": "mworks_seven_scenario_motor_efficiency_fault_v1",
   "source": "MWORKS_MCP",
+  "controller_execution_boundary": {
+    "boundary": "native_continuous_boundary",
+    "reference_path": "direct",
+    "measurement_path": "direct",
+    "command_path": "direct"
+  },
   "execution": {
     "solver_algorithm": "Dassl",
     "solver_tolerance": 0.0001,
@@ -22,9 +29,9 @@
   },
   "result_data_status": "missing",
   "hashes": {
-    "seven_scenario_profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "seven_scenario_profile_sha256": "1b070322b1b3b60ea8e417ccdcf3c2c01cfd96a4a78aa7bf4a44b0b02145046f",
     "harness_sha256": "1c805b44d9ef9969bedc87c5f9991ffd0255bcfd085ecfed3a0117437fdbb463",
-    "runner_source_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+    "runner_source_sha256": "245bfdf0063403af65cfc476adda215e381d6b4e01de8a11a07c45ac62911f04",
     "plant_source_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
     "raw_csv_sha256": null
   },
@@ -32,11 +39,19 @@
     "raw_csv": null,
     "metrics_json": null,
     "native_result_directory": "Results\\control_platform\\seven_scenario_ab\\official_pid\\motor_efficiency_fault\\native_result",
-    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\official_pid\\motor_efficiency_fault\\screenshots\\57796_0x640C20_SevenScenarioAB_OfficialPid_MotorEfficiencyFault - 结果查看器.png",
+    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\official_pid\\motor_efficiency_fault\\screenshots\\55964_0x7E1260_SevenScenarioAB_OfficialPid_MotorEfficiencyFault - 结果查看器.png",
     "screenshot_manifest": "Results\\control_platform\\seven_scenario_ab\\official_pid\\motor_efficiency_fault\\logs\\screenshot_manifest.json",
     "mcp_log": "Results\\control_platform\\seven_scenario_ab\\official_pid\\motor_efficiency_fault\\logs\\sysplorer_mcp.jsonl"
   },
   "numerical_closure": null,
+  "diagnostic_evidence": {
+    "status": "confirms_unbounded_after_verified_fault",
+    "scope": "0-16.6 s diagnostic only; it does not convert the incomplete 50 s run into a valid record",
+    "summary_json": "Results\\control_platform\\seven_scenario_ab\\official_pid\\motor_efficiency_fault\\diagnostic_stop_16_6\\MOTOR_FAULT_DIAGNOSTIC.json",
+    "first_position_error_over_5_m_at_s": 16.44,
+    "position_error_at_16_6_s_m": 35.241432691201474,
+    "injection_verification": "rotor 1 is 1.0 before 15 s and 0.5 from 15 s through 16.6 s; rotors 2-4 remain 1.0"
+  },
   "injection_self_check": {
     "scenario_id": "motor_efficiency_fault",
     "status": "not_evaluable",

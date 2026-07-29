@@ -1,71 +1,69 @@
 {
   "schema": "mosim.seven_scenario_ab_run_record.v1",
-  "recorded_at": "2026-07-28T20:41:09Z",
-  "status": "invalid",
-  "failure_reasons": [
-    "MWORKS runner returned a nonzero exit code",
-    "simulation ended at 10.95s before required 50s",
-    "maximum position error 5.64135e+07m is not below 5m",
-    "Plant injection self-check not evaluable from the raw trace"
-  ],
+  "recorded_at": "2026-07-29T04:13:32Z",
+  "status": "valid",
+  "failure_reasons": [],
   "controller_id": "official_pid",
   "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
   "scenario_id": "wind_disturbance",
   "profile_id": "mworks_seven_scenario_wind_disturbance_v1",
   "source": "MWORKS_MCP",
+  "controller_execution_boundary": {
+    "boundary": "native_continuous_boundary",
+    "reference_path": "direct",
+    "measurement_path": "direct",
+    "command_path": "direct"
+  },
   "execution": {
     "solver_algorithm": "Dassl",
     "solver_tolerance": 0.0001,
     "result_interval_s": 0.01,
     "stop_time_s": 50.0,
-    "runner_command_exit_code": 1
+    "runner_command_exit_code": 0
   },
-  "result_data_status": "partial",
+  "result_data_status": "complete",
   "hashes": {
-    "seven_scenario_profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "seven_scenario_profile_sha256": "1b070322b1b3b60ea8e417ccdcf3c2c01cfd96a4a78aa7bf4a44b0b02145046f",
     "harness_sha256": "3e3f504e80359c1bef44421c9bbc88996297beb7b4f853c5522481da0374e2bf",
-    "runner_source_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+    "runner_source_sha256": "245bfdf0063403af65cfc476adda215e381d6b4e01de8a11a07c45ac62911f04",
     "plant_source_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
-    "raw_csv_sha256": "886d961121213d8433e83a6f55db1f5a1a155e5fbcc7e016d40f2496f7ab300d"
+    "raw_csv_sha256": "5db0427482a2e1ddef471987246e1bd74209c091822aa4c0ae24edad39c676a4"
   },
   "artifacts": {
     "raw_csv": "Results\\control_platform\\seven_scenario_ab\\official_pid\\wind_disturbance\\raw\\result.csv",
     "metrics_json": "Results\\control_platform\\seven_scenario_ab\\official_pid\\wind_disturbance\\metrics\\METRICS.json",
     "native_result_directory": "Results\\control_platform\\seven_scenario_ab\\official_pid\\wind_disturbance\\native_result",
-    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\official_pid\\wind_disturbance\\screenshots\\57796_0x640C20_SevenScenarioAB_OfficialPid_WindDisturbance - 结果查看器.png",
+    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\official_pid\\wind_disturbance\\screenshots\\55964_0x7E1260_SevenScenarioAB_OfficialPid_WindDisturbance - 结果查看器.png",
     "screenshot_manifest": "Results\\control_platform\\seven_scenario_ab\\official_pid\\wind_disturbance\\logs\\screenshot_manifest.json",
     "mcp_log": "Results\\control_platform\\seven_scenario_ab\\official_pid\\wind_disturbance\\logs\\sysplorer_mcp.jsonl"
   },
   "numerical_closure": {
-    "passed": false,
-    "row_count": 1096,
-    "terminal_time_s": 10.950000000000001,
-    "maximum_position_error_m": 56413465.4457476,
-    "terminal_position_error_m": 56413465.4457476,
-    "reasons": [
-      "simulation ended at 10.95s before required 50s",
-      "maximum position error 5.64135e+07m is not below 5m"
-    ]
+    "passed": true,
+    "row_count": 5001,
+    "terminal_time_s": 50.0,
+    "maximum_position_error_m": 0.8229534449524161,
+    "terminal_position_error_m": 0.1707827251257434,
+    "reasons": []
   },
   "injection_self_check": {
     "scenario_id": "wind_disturbance",
-    "status": "not_evaluable",
+    "status": "passed",
     "checks": [
       {
         "name": "persistent_world_frame_gust_force_x_N",
         "expected": 0.25,
         "min": 0.25,
         "max": 0.25,
-        "sample_count": 1096,
+        "sample_count": 5001,
         "passed": true
       },
       {
         "name": "full_disturbance_window_observed",
         "expected_time_window": "0 to 50 s",
         "observed_start_s": 0.0,
-        "observed_stop_s": 10.950000000000001,
-        "passed": false,
-        "reason": "solver output ended before the full disturbance window"
+        "observed_stop_s": 50.0,
+        "passed": true,
+        "reason": null
       }
     ]
   }

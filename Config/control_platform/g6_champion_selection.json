@@ -1,7 +1,7 @@
 {
   "schema": "mosim.g6_measured_family_selection.v2",
   "version": 2,
-  "scope": "Static seven-family winner-selection contract. It records no selected champion and no simulation result. A winner may be written only after every current MWORKS route has a current-source ClimbPath 50 s minimum-closure record.",
+  "scope": "Static seven-family winner-selection contract for Tier2-eligible profiles. It records no selected champion and no simulation result. A winner may be written only after every Tier2-eligible current MWORKS route has a current-source ClimbPath 50 s minimum-closure record.",
   "state": "awaiting_phase1_minimum_closure",
   "family_categories": [
     "pid_family",
@@ -32,10 +32,18 @@
   },
   "pool_policy": {
     "selection_eligibility": "family_screening",
-    "eligible_current_mworks_route_count": 45,
+    "eligible_current_mworks_route_count": 43,
+    "tier2_whole_aircraft_route_count": 45,
+    "tier1_only_scheme_ids": [
+      "pid_awff_linear_eso",
+      "smc_boundary_layer",
+      "nmpc_outer"
+    ],
     "exclusions": [
       "official_pid is the fixed MWORKS A/B reference baseline and is not a PID-family winner candidate.",
       "pid_awff_linear_eso is planned only and has no MWORKS model or minimum-closure record.",
+      "smc_boundary_layer remains Tier1 graphical-review evidence because its current model is a fixed-input probe without public reference or measurement ports.",
+      "nmpc_outer remains Tier1 graphical-review evidence because its current model is a fixed-input probe without public reference or measurement ports.",
       "px4ctrl is the engineering/deployment baseline until a MWORKS-equivalent core passes explicit C++ behavior/interface equivalence."
     ]
   },

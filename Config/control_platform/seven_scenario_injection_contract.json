@@ -1,8 +1,8 @@
 {
   "schema": "mosim.seven_scenario_injection_contract.v1",
   "version": 1,
-  "status": "runner_plant_bound_static_and_checkmodel_passed_waiting_review",
-  "claim_boundary": "This contract fixes offline MWORKS scenario inputs, parameter semantics, metrics, and required binding behavior. The bound source passed static validation and native CheckModel on 2026-07-27, but no disturbance, mismatch, motor fault, seven-scenario A/B, px4ctrl equivalence, code generation, or Gazebo runtime run has occurred.",
+  "status": "official_pid_native_continuous_replay_authorized",
+  "claim_boundary": "This contract fixes offline MWORKS scenario inputs, parameter semantics, metrics, and required binding behavior. The bound source passed static validation and native CheckModel on 2026-07-27. The current authorization is limited to Official PID native-continuous ClimbPath recovery and seven-scenario replay; it does not authorize other-controller replay, gain tuning, code generation, or Gazebo runtime claims.",
   "authority": {
     "workflow": "Docs/Workflows/g6_controller_experiment_execution.md",
     "model_root": "Models/MoSimQuadrotorModel/package.mo",
@@ -24,7 +24,7 @@
       "attitude_mea[3]"
     ],
     "sampling_fairness": {
-      "state": "native_continuous_official_pid_declared_pending_current_source_replay",
+      "state": "native_continuous_official_pid_current_source_replay_authorized",
       "candidate_formal_runners": "Each candidate retains its declared controller-execution boundary. A 0.01 s result interval standardizes exported sample cadence and metric evaluation; it does not imply controller-update equivalence.",
       "official_pid": "The Official PID baseline retains its native continuous reference, measurement, and command loop. Interval = 0.01 only standardizes result sampling and metric cadence; it does not impose a discrete controller update boundary.",
       "required_manifest_fields": [
@@ -200,13 +200,13 @@
     "Completed: restore the Official PID native continuous loop and record explicit controller/reference/measurement/command execution semantics.",
     "Completed: extend Syslab metrics and validate them with deterministic CSV fixtures.",
     "Completed: static validation and native CheckModel of eight trajectories, four shared Runners, Official PID, and six champion Formal Runners; evidence is Results/control_platform/seven_scenario_preflight_20260727/.",
-    "Stop: wait for user review before any seven-scenario simulation."
+    "Current authorized execution: replay only Official PID with its native continuous boundary, retain valid and invalid evidence, then stop for review."
   ],
   "pre_simulation_gate": {
-    "status": "passed_waiting_review",
+    "status": "passed_execution_authorized",
     "static_evidence": "Results/control_platform/seven_scenario_preflight_20260727/STATIC_PREFLIGHT_VALIDATION.json",
     "native_check_model_evidence": "Results/control_platform/seven_scenario_preflight_20260727/CHECK_MODEL_RESULTS.json",
     "native_check_model_scope": "8 trajectories + 4 shared Runners + Official PID + 6 champion Formal Runners",
-    "scenario_simulation_started": false
+    "scenario_simulation_started": true
   }
 }

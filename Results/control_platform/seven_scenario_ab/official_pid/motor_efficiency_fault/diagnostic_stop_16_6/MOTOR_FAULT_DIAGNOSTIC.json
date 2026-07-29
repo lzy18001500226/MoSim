@@ -1,0 +1,56 @@
+{
+  "schema": "mosim.official_pid_motor_fault_diagnostic.v1",
+  "recorded_at": "2026-07-29T12:34:23+08:00",
+  "status": "unbounded_after_verified_fault",
+  "purpose": "Bounded diagnostic for the incomplete 50 s Official PID motor-efficiency-fault run. It does not replace or validate the 50 s run record.",
+  "source": "MWORKS_MCP",
+  "model_name": "SevenScenarioAB_OfficialPid_MotorEfficiencyFault",
+  "controller_id": "official_pid",
+  "execution_boundary": "native_continuous_boundary",
+  "check_model": {
+    "passed": true
+  },
+  "execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "start_time_s": 0.0,
+    "stop_time_s": 16.6,
+    "row_count": 1661
+  },
+  "injection_verification": {
+    "rotor_1": {
+      "before_15_s": 1.0,
+      "from_15_s_through_16_6_s": 0.5
+    },
+    "rotors_2_to_4": {
+      "minimum": 1.0,
+      "maximum": 1.0
+    },
+    "passed": true
+  },
+  "response": {
+    "pre_fault_max_position_error_m": 0.32579474908017036,
+    "first_position_error_over_5_m_at_s": 16.44,
+    "position_error_at_16_6_s_m": 35.241432691201474,
+    "terminal_position_m": [
+      -26.584884703198405,
+      -16.43299385497722,
+      -1.2837095407776344
+    ],
+    "terminal_rotor_command_rad_s": [
+      4745.761858850331,
+      -4803.298484662095,
+      4837.473837691727,
+      -4803.298484662095
+    ],
+    "conclusion": "The unbounded response occurs after the correctly scheduled 50 percent rotor-1 effectiveness loss. It is not an MCP timeout or an injection-wiring failure."
+  },
+  "artifacts": {
+    "raw_csv": "raw/result.csv",
+    "raw_csv_sha256": "d0329b02e86110f17a9c66691f793d82c4763bc523fd79013090c8078fb8b8a7",
+    "metrics_json": "metrics/metrics.python.json",
+    "mcp_log": "logs/sysplorer_mcp.jsonl",
+    "native_result_manifest": "native_result/native_result_manifest.json"
+  }
+}

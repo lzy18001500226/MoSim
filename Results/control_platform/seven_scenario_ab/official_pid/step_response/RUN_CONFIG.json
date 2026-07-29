@@ -1,6 +1,6 @@
 {
   "schema": "mosim.seven_scenario_ab_run_config.v1",
-  "generated_at": "2026-07-28T20:15:29Z",
+  "generated_at": "2026-07-29T04:11:52Z",
   "mode": "simulate",
   "controller_id": "official_pid",
   "scenario_id": "step_response",
@@ -48,7 +48,7 @@
       "position_rmse_m"
     ]
   },
-  "profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+  "profile_sha256": "1b070322b1b3b60ea8e417ccdcf3c2c01cfd96a4a78aa7bf4a44b0b02145046f",
   "harness": "Results\\control_platform\\seven_scenario_ab\\official_pid\\step_response\\harness\\SevenScenarioAB_OfficialPid_StepResponse.mo",
   "command": [
     "D:\\Dev\\Anaconda3\\python.exe",

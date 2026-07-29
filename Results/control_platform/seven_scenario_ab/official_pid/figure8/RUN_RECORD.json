@@ -1,16 +1,19 @@
 {
   "schema": "mosim.seven_scenario_ab_run_record.v1",
-  "recorded_at": "2026-07-28T20:16:11Z",
-  "status": "invalid",
-  "failure_reasons": [
-    "simulation ended at 13.96s before required 50s",
-    "maximum position error 8.286e+07m is not below 5m"
-  ],
+  "recorded_at": "2026-07-29T04:12:43Z",
+  "status": "valid",
+  "failure_reasons": [],
   "controller_id": "official_pid",
   "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
   "scenario_id": "figure8",
   "profile_id": "mworks_seven_scenario_figure8_v1",
   "source": "MWORKS_MCP",
+  "controller_execution_boundary": {
+    "boundary": "native_continuous_boundary",
+    "reference_path": "direct",
+    "measurement_path": "direct",
+    "command_path": "direct"
+  },
   "execution": {
     "solver_algorithm": "Dassl",
     "solver_tolerance": 0.0001,
@@ -18,32 +21,29 @@
     "stop_time_s": 50.0,
     "runner_command_exit_code": 0
   },
-  "result_data_status": "partial",
+  "result_data_status": "complete",
   "hashes": {
-    "seven_scenario_profile_sha256": "a32261f137c922e9b7d61819e0003d2ccd9a2e6ce4df55b3f7da1cf49388d44e",
+    "seven_scenario_profile_sha256": "1b070322b1b3b60ea8e417ccdcf3c2c01cfd96a4a78aa7bf4a44b0b02145046f",
     "harness_sha256": "7f67a58d7c63e177c601091e87ee230a9cb82d429947185b24951518cfe9b35c",
-    "runner_source_sha256": "a8f8f1b30c0fad88fc0e58b9096be16cce96e8ddc8bd5c5ddcb2001a34b80268",
+    "runner_source_sha256": "245bfdf0063403af65cfc476adda215e381d6b4e01de8a11a07c45ac62911f04",
     "plant_source_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
-    "raw_csv_sha256": "7a2585ee2a1eb9998b19902f98237db8f058f1f648026a0891eaf67e95b26c56"
+    "raw_csv_sha256": "04aacad3e3930a1b945500f6cc29840b33008616671a7ea4b61d6c60fcddc316"
   },
   "artifacts": {
     "raw_csv": "Results\\control_platform\\seven_scenario_ab\\official_pid\\figure8\\raw\\result.csv",
     "metrics_json": "Results\\control_platform\\seven_scenario_ab\\official_pid\\figure8\\metrics\\METRICS.json",
     "native_result_directory": "Results\\control_platform\\seven_scenario_ab\\official_pid\\figure8\\native_result",
-    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\official_pid\\figure8\\screenshots\\57796_0x640C20_SevenScenarioAB_OfficialPid_Figure8 - 结果查看器.png",
+    "result_window_screenshot": "C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\seven_scenario_ab\\official_pid\\figure8\\screenshots\\55964_0x7E1260_SevenScenarioAB_OfficialPid_Figure8 - 结果查看器.png",
     "screenshot_manifest": "Results\\control_platform\\seven_scenario_ab\\official_pid\\figure8\\logs\\screenshot_manifest.json",
     "mcp_log": "Results\\control_platform\\seven_scenario_ab\\official_pid\\figure8\\logs\\sysplorer_mcp.jsonl"
   },
   "numerical_closure": {
-    "passed": false,
-    "row_count": 1397,
-    "terminal_time_s": 13.96,
-    "maximum_position_error_m": 82859978.96701434,
-    "terminal_position_error_m": 82859978.96701434,
-    "reasons": [
-      "simulation ended at 13.96s before required 50s",
-      "maximum position error 8.286e+07m is not below 5m"
-    ]
+    "passed": true,
+    "row_count": 5001,
+    "terminal_time_s": 50.0,
+    "maximum_position_error_m": 0.5074123555934925,
+    "terminal_position_error_m": 0.24416290164015353,
+    "reasons": []
   },
   "injection_self_check": {
     "scenario_id": "figure8",

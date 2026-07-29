@@ -3,10 +3,12 @@
   "scope": "D2 static formal-harness mapping and measured-winner selection contract only. It does not prove a MWORKS check, graphical review, simulation, result, metric, code-generation, or runtime success.",
   "source_current_model_map": "Config/control_platform/current_model_entry_map.json",
   "source_current_model_map_sha256": "4b3e021b729e0834f67ef61e878fb69d146b27d0bedd40e03bc38ef0b03107c0",
+  "source_control_scheme_catalog": "Config/control_platform/control_scheme_catalog.json",
+  "source_control_scheme_catalog_sha256": "75915325a93575f81c23fbc8b8f276614c8548cb9ce99f91400c3139a6dab7de",
   "source_g5_graphical_review_queue": "Results/control_platform/g5_graphical_structure_review_20260722/G5_GRAPHICAL_REVIEW_QUEUE.json",
   "source_g5_graphical_review_queue_sha256": "9f50d96847345a5301d6db53eb849c61cd9948e672e1f86f0c371b2d5958cfd1",
   "source_g6_champion_selection": "Config/control_platform/g6_champion_selection.json",
-  "source_g6_champion_selection_sha256": "023f003c2d66be8dbdb531eef3f7e3f3a94188bcc2efe49f421a356eb5e82c34",
+  "source_g6_champion_selection_sha256": "d5ef9fe20a54e480f05c93facabb5594f9034566d99303875333d943b40156cf",
   "summary": {
     "active_top_level_entry_count": 48,
     "current_mworks_route_count": 46,
@@ -14,8 +16,11 @@
     "missing_closed_loop_harness_count": 41,
     "planned_profile_no_model_count": 1,
     "pending_mworks_equivalent_core_count": 1,
+    "tier1_only_profile_count": 3,
+    "tier2_whole_aircraft_route_count": 45,
+    "tier2_current_mworks_route_count": 44,
     "semantic_family_count": 7,
-    "family_screening_candidate_count": 45,
+    "family_screening_candidate_count": 43,
     "selected_family_winner_count": 0,
     "official_pid_baseline_count": 1,
     "px4ctrl_core_baseline_count": 1
@@ -31,7 +36,7 @@
       "geometric_flatness",
       "learning"
     ],
-    "selection_gate": "All 46 current MWORKS routes must first have current-source ClimbPath 50 s minimum-closure records before a measured family winner is selected.",
+    "selection_gate": "All 45 Tier2 whole-aircraft routes must first have current-source ClimbPath 50 s minimum-closure records before a measured family winner is selected.",
     "selection_metric": "Use the valid current-source ClimbPath 50 s position RMSE, with terminal position error and numerical stability as tie breakers. Do not rank from superseded pre-repair results.",
     "baseline_rule": "Official PID and the future MWORKS-equivalent px4ctrl_core are fixed A/B baselines, not predeclared family winners. Official PID is screened with the other 46 routes but remains excluded from the PID-family winner pool because it is the reference baseline.",
     "required_bindings": [
@@ -72,10 +77,18 @@
     },
     "pool_policy": {
       "selection_eligibility": "family_screening",
-      "eligible_current_mworks_route_count": 45,
+      "eligible_current_mworks_route_count": 43,
+      "tier2_whole_aircraft_route_count": 45,
+      "tier1_only_scheme_ids": [
+        "pid_awff_linear_eso",
+        "smc_boundary_layer",
+        "nmpc_outer"
+      ],
       "exclusions": [
         "official_pid is the fixed MWORKS A/B reference baseline and is not a PID-family winner candidate.",
         "pid_awff_linear_eso is planned only and has no MWORKS model or minimum-closure record.",
+        "smc_boundary_layer remains Tier1 graphical-review evidence because its current model is a fixed-input probe without public reference or measurement ports.",
+        "nmpc_outer remains Tier1 graphical-review evidence because its current model is a fixed-input probe without public reference or measurement ports.",
         "px4ctrl is the engineering/deployment baseline until a MWORKS-equivalent core passes explicit C++ behavior/interface equivalence."
       ]
     },
@@ -148,11 +161,10 @@
           "fuzzy_smc",
           "integral_smc",
           "nonsingular_terminal_smc",
-          "smc_boundary_layer",
           "super_twisting_smc",
           "terminal_smc"
         ],
-        "candidate_count": 7,
+        "candidate_count": 6,
         "winner_scheme_id": null,
         "winner_selection_state": "awaiting_all_current_source_phase1_records"
       },
@@ -166,11 +178,10 @@
           "ilqr",
           "linear_mpc",
           "mppi",
-          "nmpc_outer",
           "robust_mpc",
           "tube_mpc"
         ],
-        "candidate_count": 10,
+        "candidate_count": 9,
         "winner_scheme_id": null,
         "winner_selection_state": "awaiting_all_current_source_phase1_records"
       },
@@ -201,9 +212,12 @@
     ],
     "summary": {
       "semantic_family_count": 7,
-      "family_screening_candidate_count": 45,
+      "family_screening_candidate_count": 43,
       "selected_family_winner_count": 0,
       "current_mworks_route_count": 46,
+      "tier2_current_mworks_route_count": 44,
+      "tier2_whole_aircraft_route_count": 45,
+      "tier1_only_profile_count": 3,
       "official_pid_baseline_count": 1,
       "px4ctrl_core_baseline_count": 1
     }
@@ -237,6 +251,9 @@
         "outport_count": 5,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -277,6 +294,9 @@
         "outport_count": 5,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -317,6 +337,9 @@
         "outport_count": 5,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -357,6 +380,9 @@
         "outport_count": 5,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -397,6 +423,9 @@
         "outport_count": 1,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -437,6 +466,9 @@
         "outport_count": 16,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -477,6 +509,9 @@
         "outport_count": 4,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
       "minimum_whole_aircraft_closure_eligible": true,
       "canonical_closed_loop_harness": {
@@ -541,6 +576,9 @@
         "outport_count": 69,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
       "minimum_whole_aircraft_closure_eligible": true,
       "canonical_closed_loop_harness": {
@@ -605,6 +643,9 @@
         "outport_count": 69,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
       "minimum_whole_aircraft_closure_eligible": true,
       "canonical_closed_loop_harness": {
@@ -669,6 +710,9 @@
         "outport_count": 13,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -709,6 +753,9 @@
         "outport_count": 16,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -749,6 +796,9 @@
         "outport_count": 13,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -789,6 +839,9 @@
         "outport_count": 16,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -829,6 +882,9 @@
         "outport_count": 12,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -869,6 +925,9 @@
         "outport_count": 19,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -909,6 +968,9 @@
         "outport_count": 16,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -949,6 +1011,9 @@
         "outport_count": 13,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -989,6 +1054,9 @@
         "outport_count": 13,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1029,6 +1097,9 @@
         "outport_count": 22,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1069,6 +1140,9 @@
         "outport_count": 19,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1109,6 +1183,9 @@
         "outport_count": 13,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1149,6 +1226,9 @@
         "outport_count": 12,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1189,6 +1269,9 @@
         "outport_count": 12,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1229,6 +1312,9 @@
         "outport_count": 12,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1269,6 +1355,9 @@
         "outport_count": 12,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1309,6 +1398,9 @@
         "outport_count": 12,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1349,6 +1441,9 @@
         "outport_count": 12,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1389,6 +1484,9 @@
         "outport_count": 1,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_only",
+      "tier2_closure_eligibility": "excluded",
+      "tier2_exclusion_reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild.",
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1429,6 +1527,9 @@
         "outport_count": 11,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1469,6 +1570,9 @@
         "outport_count": 11,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1509,6 +1613,9 @@
         "outport_count": 11,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1549,6 +1656,9 @@
         "outport_count": 11,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1589,6 +1699,9 @@
         "outport_count": 11,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1629,6 +1742,9 @@
         "outport_count": 11,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1669,6 +1785,9 @@
         "outport_count": 11,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1709,6 +1828,9 @@
         "outport_count": 1,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_only",
+      "tier2_closure_eligibility": "excluded",
+      "tier2_exclusion_reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild.",
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1749,6 +1871,9 @@
         "outport_count": 69,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
       "minimum_whole_aircraft_closure_eligible": true,
       "canonical_closed_loop_harness": {
@@ -1813,6 +1938,9 @@
         "outport_count": 6,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
       "minimum_whole_aircraft_closure_eligible": true,
       "canonical_closed_loop_harness": {
@@ -1835,7 +1963,7 @@
           "source_declared_type": "AWFF_QPNMPCSafetyController_Sysblock",
           "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_QPNMPCSafetyController_Sysblock.mo",
           "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_QPNMPCSafetyController_Sysblock",
-          "model_sha256": "6f0dc54ec82e1b4b350b4208432e5916a7868a2cb7a554a580987ff77e92f20e"
+          "model_sha256": "5931e8adfc4f528a5dc600ae19553e0a55d8f1eee4ade4310844b6b13abcb322"
         },
         {
           "role": "namespace_compatibility_alias",
@@ -1877,6 +2005,9 @@
         "outport_count": 1,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1917,6 +2048,9 @@
         "outport_count": 1,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1957,6 +2091,9 @@
         "outport_count": 21,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -1997,6 +2134,9 @@
         "outport_count": 22,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -2037,6 +2177,9 @@
         "outport_count": 21,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -2077,6 +2220,9 @@
         "outport_count": 22,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -2117,6 +2263,9 @@
         "outport_count": 3,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -2157,6 +2306,9 @@
         "outport_count": 3,
         "claim_boundary": "Static indicators select a review target only; they do not prove readable GUI layout, check_model, simulation, or controller behavior."
       },
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null,
       "formal_harness_state": "missing_closed_loop_harness",
       "minimum_whole_aircraft_closure_eligible": false,
       "canonical_closed_loop_harness": null,
@@ -2181,7 +2333,10 @@
       "formal_harness_state": "planned_profile_no_model",
       "minimum_whole_aircraft_closure_eligible": false,
       "blocker_code": "planned_profile_implementation_not_started",
-      "blocker_reason": "The profile topology is approved, but no MWORKS model, adapter, formal runner, or result evidence exists yet."
+      "blocker_reason": "The profile topology is approved, but no MWORKS model, adapter, formal runner, or result evidence exists yet.",
+      "whole_aircraft_tier": "tier1_only",
+      "tier2_closure_eligibility": "excluded",
+      "tier2_exclusion_reason": "Planned profile only: no matching MWORKS graphical core, Adapter, or FormalRunner exists."
     },
     {
       "scheme_id": "px4ctrl",
@@ -2194,7 +2349,10 @@
       "mapping_state": "pending_mworks_equivalent_core",
       "formal_harness_state": "pending_mworks_equivalent_core",
       "minimum_whole_aircraft_closure_eligible": false,
-      "claim_boundary": "px4ctrl remains the engineering/deployment baseline. Its MWORKS-equivalent core, graphical review, and formal A/B entry are pending an explicit C++ behavior/interface-equivalence gate."
+      "claim_boundary": "px4ctrl remains the engineering/deployment baseline. Its MWORKS-equivalent core, graphical review, and formal A/B entry are pending an explicit C++ behavior/interface-equivalence gate.",
+      "whole_aircraft_tier": "tier1_and_tier2",
+      "tier2_closure_eligibility": "included",
+      "tier2_exclusion_reason": null
     }
   ]
 }

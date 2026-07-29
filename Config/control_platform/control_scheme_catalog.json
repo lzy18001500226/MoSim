@@ -12,6 +12,32 @@
     "engineering_deployment_baseline": 1,
     "total": 48
   },
+  "whole_aircraft_closure_policy": {
+    "tier1": "All 48 active entries remain reviewable as a graphical model or approved design record.",
+    "tier2": {
+      "planned_route_count": 45,
+      "result_count_status": "Pending Official PID native-continuous recovery and G3 outcome; do not infer a completed count from this design population.",
+      "sampling_boundary_policy": {
+        "official_pid": "native_continuous_boundary",
+        "other_tier2_routes": "unified_100hz_discrete_boundary",
+        "rationale": "Use the controller's declared execution type: the supplied Official PID remains continuous; the other Tier2 routes retain their 100 Hz discrete controller boundary. Result export and metrics use a 0.01 s cadence."
+      }
+    },
+    "tier1_only_profiles": [
+      {
+        "scheme_id": "pid_awff_linear_eso",
+        "reason": "Planned profile only: no matching MWORKS graphical core, Adapter, or FormalRunner exists."
+      },
+      {
+        "scheme_id": "smc_boundary_layer",
+        "reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild."
+      },
+      {
+        "scheme_id": "nmpc_outer",
+        "reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild."
+      }
+    ]
+  },
   "families": [
     {
       "category": "pid_family",
@@ -61,7 +87,7 @@
     "generic_augmentation_selector": "not_exposed_in_standard_ui",
     "profile_chain_policy": "A full profile may contain named internal augmentations only when their order, interfaces, limits, fallback, source configuration, and evidence boundary are fixed together.",
     "mpc_role": "MPC/NMPC is a nominal optimization outer-loop family, not a generic augmentation.",
-    "family_selection_policy": "Complete the current 46-route minimum-closure screen before measured family-winner selection. Official PID remains the fixed A/B reference baseline; research_only profiles do not enter the ordinary family-winner screen.",
+    "family_selection_policy": "Complete the 45-route Tier2 whole-aircraft closure screen before measured family-winner selection. Official PID remains the fixed A/B reference baseline; Tier1-only and research_only profiles do not enter the ordinary family-winner screen.",
     "seven_scenario_policy": "After measured selection and px4ctrl_core equivalence, compare Official PID, px4ctrl_core, and one measured winner from each of the seven semantic families under the same seven scenarios.",
     "not_counted_as_top_level_profiles": [
       "generic_augmentation_or_ablation_module",
@@ -505,6 +531,9 @@
       "implementation_status": "implemented",
       "selection_eligibility": "family_screening",
       "execution_kind": "graphical_control_core",
+      "whole_aircraft_tier": "tier1_only",
+      "tier2_closure_eligibility": "excluded",
+      "tier2_exclusion_reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild.",
       "evidence_matrix_controller": "smc_boundary_layer",
       "implementation_package": "SlidingMode"
     },
@@ -617,6 +646,9 @@
       "implementation_status": "implemented",
       "selection_eligibility": "family_screening",
       "execution_kind": "graphical_control_core",
+      "whole_aircraft_tier": "tier1_only",
+      "tier2_closure_eligibility": "excluded",
+      "tier2_exclusion_reason": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild.",
       "evidence_matrix_controller": "nmpc_outer",
       "implementation_package": "Optimization"
     },
@@ -786,6 +818,9 @@
       "implementation_status": "planned",
       "selection_eligibility": "not_runnable",
       "execution_kind": "planned_profile",
+      "whole_aircraft_tier": "tier1_only",
+      "tier2_closure_eligibility": "excluded",
+      "tier2_exclusion_reason": "Planned profile only: no matching MWORKS graphical core, Adapter, or FormalRunner exists.",
       "implementation_note": "The profile topology is approved, but no MWORKS model, adapter, formal runner, or result evidence exists yet."
     },
     {
