@@ -109,7 +109,7 @@
     {
       "id": "livox_laser_simulation",
       "source_path": "src/simulation/gazebo/plugins/sunray/livox_laser_simulation",
-      "role": "Gazebo Classic Livox plugin",
+      "role": "Gazebo Classic Livox plugin with the required Mid-360 scan schedule",
       "activation_stage": "foundation"
     },
     {

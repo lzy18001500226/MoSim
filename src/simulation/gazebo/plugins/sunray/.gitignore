@@ -1,2 +1,3 @@
-# Livox scan patterns are delivered separately from this source snapshot.
+# Keep the validated Mid-360 pattern in the project; other scan patterns remain optional.
 livox_laser_simulation/scan_mode/*.csv
+!livox_laser_simulation/scan_mode/mid360-real-centr.csv

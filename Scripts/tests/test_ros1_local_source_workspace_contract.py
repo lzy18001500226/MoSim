@@ -184,9 +184,64 @@ class LocalRos1SourceWorkspaceContractTest(unittest.TestCase):
         self.assertIn("-UGTest_DIR", script)
         self.assertIn("import menuconfig, defconfig, genconfig, genmsg, future", script)
         self.assertIn("--target", script)
+        self.assertIn("--skip-gazebo-classic-plugins", script)
+        self.assertIn("--plugins-only", script)
+        self.assertIn("PX4_TOP_LEVEL_CONFIGURE=REUSED", script)
+        self.assertIn("--plugins-only requires an existing PX4 executable", script)
+        self.assertIn("GAZEBO_CLASSIC_SOURCE_DIR", script)
+        self.assertIn("GAZEBO_CLASSIC_BUILD_DIR", script)
+        self.assertIn("GAZEBO_CLASSIC_PLUGIN_TARGETS", script)
+        self.assertIn("gazebo_gps_plugin", script)
+        self.assertIn("gazebo_groundtruth_plugin", script)
+        self.assertIn("gazebo_imu_plugin", script)
+        self.assertIn("gazebo_mavlink_interface", script)
+        self.assertIn("gazebo_magnetometer_plugin", script)
+        self.assertIn("gazebo_barometer_plugin", script)
+        self.assertIn("gazebo_motor_model", script)
+        self.assertIn("gazebo_multirotor_base_plugin", script)
+        self.assertIn("-DSEND_ODOMETRY_DATA=ON", script)
+        self.assertIn("-DGENERATE_ROS_MODELS=ON", script)
+        self.assertIn("libgazebo_gps_plugin.so", script)
+        self.assertIn("libgazebo_groundtruth_plugin.so", script)
+        self.assertIn("libgazebo_imu_plugin.so", script)
+        self.assertIn("libgazebo_mavlink_interface.so", script)
+        self.assertIn("libgazebo_magnetometer_plugin.so", script)
+        self.assertIn("libgazebo_barometer_plugin.so", script)
+        self.assertIn("libgazebo_motor_model.so", script)
+        self.assertIn("libgazebo_multirotor_base_plugin.so", script)
         self.assertNotIn("References/", script)
         self.assertNotIn("Results/", script)
         self.assertNotIn("/opt/mosim_work", script)
+
+    def test_preflight_requires_the_complete_sunray_px4_plugin_bundle(self) -> None:
+        script = PREFLIGHT_SCRIPT_PATH.read_text(encoding="utf-8")
+
+        for plugin in (
+            "libgazebo_gps_plugin.so",
+            "libgazebo_groundtruth_plugin.so",
+            "libgazebo_imu_plugin.so",
+            "libgazebo_mavlink_interface.so",
+            "libgazebo_magnetometer_plugin.so",
+            "libgazebo_barometer_plugin.so",
+            "libgazebo_motor_model.so",
+            "libgazebo_multirotor_base_plugin.so",
+        ):
+            self.assertIn(plugin, script)
+
+        self.assertIn("scan_mode/mid360-real-centr.csv", script)
+        self.assertTrue(
+            (
+                ROOT
+                / "src"
+                / "simulation"
+                / "gazebo"
+                / "plugins"
+                / "sunray"
+                / "livox_laser_simulation"
+                / "scan_mode"
+                / "mid360-real-centr.csv"
+            ).is_file()
+        )
 
     def test_px4_snapshot_has_a_version_fallback_without_git_metadata(self) -> None:
         px4 = ROOT / "src" / "flight_stack" / "px4" / "PX4-Autopilot"
