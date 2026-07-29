@@ -10,6 +10,7 @@ if [[ ! "${RUN_ID}" =~ ^run-[A-Za-z0-9][A-Za-z0-9._-]{0,95}$ ]]; then
   echo "invalid run_id" >&2
   exit 2
 fi
+source "${PROJECT_ROOT}/Scripts/sunray/resolve_local_ros1_runtime.sh"
 
 ORCHESTRATOR_RUN_DIR="${PROJECT_ROOT}/Results/ui_platform/orchestrator_runs/${RUN_ID}"
 mkdir -p -- "${ORCHESTRATOR_RUN_DIR}"
@@ -87,9 +88,7 @@ start_sidecar() {
   fi
   set +u
   source /opt/ros/noetic/setup.bash
-  [[ -f /opt/mosim_work/sunray_ws/Sunray/devel/setup.bash ]] && source /opt/mosim_work/sunray_ws/Sunray/devel/setup.bash
-  [[ -f "${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/setup.bash" ]] && \
-    source "${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/setup.bash"
+  [[ -f "${LOCAL_ROS1_WS}/devel/setup.bash" ]] && source "${LOCAL_ROS1_WS}/devel/setup.bash"
   set -u
   python3 -u "${PROJECT_ROOT}/Scripts/ui/runtime_sidecar.py" \
     --run-dir "${ORCHESTRATOR_RUN_DIR}" \
@@ -227,26 +226,19 @@ PY
   esac
   RESULT_DIR="${ORCHESTRATOR_RUN_DIR}/runtime_backend" \
     bash "${PROJECT_ROOT}/Scripts/sunray/ensure_px4ctrl_generated_backend.sh" "${generated_backend}"
-  local plugin_ws="${PROJECT_ROOT}/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2"
+  local plugin_ws="${FTC_PLUGIN_WS}"
   local plugin_library="${plugin_ws}/devel/lib/libmosim_gazebo_ftc_actuator_plugin.so"
   if [[ ! -f "${plugin_library}" ]]; then
     FTC_PLUGIN_WS="${plugin_ws}" bash "${PROJECT_ROOT}/Scripts/sunray/build_p7_ftc_actuator_plugin.sh" \
       > "${ORCHESTRATOR_RUN_DIR}/ftc_plugin_build.log" 2>&1
   fi
-  local factory_root="${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean"
   export RUN_ID="${RUN_ID}"
   export RESULT_DIR="${ORCHESTRATOR_RUN_DIR}/runtime"
   export PX4CTRL_CORE_PROFILE="${controller_profile}"
   export GUI="false"
   export KEEP_ALIVE="false"
-  export REVIEW_START_FASTLIO="true"
-  export REVIEW_START_OCCUPANCY_NODE="true"
-  export WORLD_FILE="${factory_root}/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
-  export SUNRAY_GAZEBO_LAUNCH_FILE="${PROJECT_ROOT}/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch"
-  export GAZEBO_MODEL_PATH="${factory_root}/models:${GAZEBO_MODEL_PATH:-}"
-  export SUNRAY_UAV_INIT_X="-10.575025"
-  export SUNRAY_UAV_INIT_Y="-19.36313"
-  export SUNRAY_UAV_INIT_Z="0.2"
+  export REVIEW_START_FASTLIO="${REVIEW_START_FASTLIO:-false}"
+  export REVIEW_START_OCCUPANCY_NODE="${REVIEW_START_OCCUPANCY_NODE:-false}"
   export MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-180}"
   export ORCHESTRATOR_RUNTIME_READY_TIMEOUT_S="${ORCHESTRATOR_RUNTIME_READY_TIMEOUT_S:-210}"
   export TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-540}"
@@ -260,8 +252,8 @@ PY
     # RT1 capability profiles declare the sparse controller-validation scene.
     # Factory/MID360/UE load is measured separately by the system-load gate.
     export VEHICLE="${MWORKS_LIVE_VEHICLE:-sunray150}"
-    export WORLD_FILE="${MWORKS_LIVE_WORLD_FILE:-/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/worlds/planning_test.world}"
-    export SUNRAY_GAZEBO_LAUNCH_FILE="${MWORKS_LIVE_GAZEBO_LAUNCH_FILE:-/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/launch_uav_demo/sunray_sim_uav_planning.launch}"
+    export WORLD_FILE="${MWORKS_LIVE_WORLD_FILE:-${SUNRAY_WS}/simulation/sunray_simulator/worlds/planning_test.world}"
+    export SUNRAY_GAZEBO_LAUNCH_FILE="${MWORKS_LIVE_GAZEBO_LAUNCH_FILE:-${SUNRAY_WS}/simulation/sunray_simulator/launch_uav_demo/sunray_sim_uav_planning.launch}"
     export SUNRAY_UAV_INIT_X="0.0"
     export SUNRAY_UAV_INIT_Y="0.0"
     export SUNRAY_UAV_INIT_Z="0.2"

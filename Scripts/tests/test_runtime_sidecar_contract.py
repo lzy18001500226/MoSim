@@ -91,8 +91,10 @@ def test_runtime_wrapper_starts_sidecar_and_reuses_ftc_plugin() -> None:
     assert 'mission.get("transport_state") == "terminal"' in wrapper
     assert "build_p7_ftc_actuator_plugin.sh" in wrapper
     assert 'MOSIM_ENABLE_FTC_ACTUATOR_PLUGIN="true"' in wrapper
-    assert "factoryenvironmentcollect_l2_static_review_clean.sdf" in wrapper
-    assert "factory_l2_sunray_px4_gazebo.launch" in wrapper
+    assert "resolve_local_ros1_runtime.sh" in wrapper
+    assert 'local plugin_ws="${FTC_PLUGIN_WS}"' in wrapper
+    assert 'export REVIEW_START_FASTLIO="${REVIEW_START_FASTLIO:-false}"' in wrapper
+    assert 'export REVIEW_START_OCCUPANCY_NODE="${REVIEW_START_OCCUPANCY_NODE:-false}"' in wrapper
     assert 'MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-180}"' in wrapper
     assert 'ORCHESTRATOR_RUNTIME_READY_TIMEOUT_S="${ORCHESTRATOR_RUNTIME_READY_TIMEOUT_S:-210}"' in wrapper
     assert "ensure_px4ctrl_generated_backend.sh" in wrapper
