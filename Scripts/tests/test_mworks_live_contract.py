@@ -498,7 +498,7 @@ def test_200hz_runtime_selects_wall_clock_cpp_rt1_backend() -> None:
     assert '$solver.PriorityClass = $PriorityClass' in priority
     assert 'MWORKS_LIVE_MWSOLVER_PRIORITY:-High' in gate
     assert 'mwsolver_priority.v1' in priority
-    assert 'MWORKS_LIVE_WORLD_FILE:-/opt/mosim_work/sunray_ws/Sunray/simulation/sunray_simulator/worlds/planning_test.world' in gate
+    assert 'MWORKS_LIVE_WORLD_FILE:-${SUNRAY_WS}/simulation/sunray_simulator/worlds/planning_test.world' in gate
     basic_gate = (ROOT / "Scripts/sunray/run_px4ctrl_basic_gate.sh").read_text(encoding="utf-8")
     assert 'vehicle:="${VEHICLE}" gui:="${GUI}" rviz_enable:=false' in basic_gate
 
