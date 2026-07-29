@@ -65,6 +65,20 @@ PROJECT_ROOT=/mnt/c/Users/HP/Desktop/MoSim \
   bash Scripts/sunray/check_sunray_ros1_runtime_preflight.sh --build-livox
 ```
 
+The local PX4 SITL build must also contain the complete Sunray Gazebo Classic
+plugin bundle. Build it from the project source before the first launch:
+
+```bash
+cd /mnt/c/Users/HP/Desktop/MoSim
+bash Scripts/sunray/build_local_px4_sitl.sh --build --jobs 2
+```
+
+The default build includes GPS, ground-truth, IMU, MAVLink, magnetometer,
+barometer, motor, and multirotor-base plugins. Do not use
+`--skip-gazebo-classic-plugins` for a reproducibility run. The plugin's
+`src/simulation/gazebo/plugins/sunray/livox_laser_simulation/scan_mode/mid360-real-centr.csv`
+scan schedule is a required source asset and is checked by preflight.
+
 Failure classification:
 
 | Symptom | Classification | Required Response |

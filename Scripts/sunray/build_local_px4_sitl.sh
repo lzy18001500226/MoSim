@@ -3,17 +3,22 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Usage: build_local_px4_sitl.sh [--configure | --build] [options]
+Usage: build_local_px4_sitl.sh [--configure | --build | --plugins-only] [options]
 
 Build the project-local PX4 SITL source without starting PX4 or Gazebo.
 
 Options:
   --configure              Configure only (default).
-  --build                  Configure, then build the selected target.
+  --build                  Configure, then build PX4 and the required Gazebo
+                           Classic plugin bundle by default.
+  --plugins-only           Reuse an existing validated PX4 build directory and
+                           build only the required Gazebo Classic plugins.
   --bootstrap-python       Install the PX4 Kconfig Python package into the
                            project build tree before configuring.
   --target <name>          CMake target to build (default: px4).
   --jobs <count>           Parallel build jobs (default: 2).
+  --skip-gazebo-classic-plugins
+                           Do not build the Gazebo Classic plugin subproject.
   --build-dir <relative>   Project-relative directory below build/px4/
                            (default: build/px4/px4_sitl_default).
   --help                   Show this help text.
@@ -33,6 +38,7 @@ BUILD_TARGET="px4"
 BUILD_JOBS=2
 ACTION="configure"
 BOOTSTRAP_PYTHON=0
+BUILD_GAZEBO_CLASSIC_PLUGINS="${PX4_BUILD_GAZEBO_CLASSIC_PLUGINS:-true}"
 PX4_BOOTSTRAP_PACKAGES=(kconfiglib future)
 
 while [[ $# -gt 0 ]]; do
@@ -42,6 +48,9 @@ while [[ $# -gt 0 ]]; do
       ;;
     --build)
       ACTION="build"
+      ;;
+    --plugins-only)
+      ACTION="plugins_only"
       ;;
     --bootstrap-python)
       BOOTSTRAP_PYTHON=1
@@ -55,6 +64,9 @@ while [[ $# -gt 0 ]]; do
       [[ $# -ge 2 ]] || die "--jobs requires a value"
       BUILD_JOBS="$2"
       shift
+      ;;
+    --skip-gazebo-classic-plugins)
+      BUILD_GAZEBO_CLASSIC_PLUGINS="false"
       ;;
     --build-dir)
       [[ $# -ge 2 ]] || die "--build-dir requires a value"
@@ -134,13 +146,66 @@ printf 'PX4_SOURCE=%s\n' "${PX4_SOURCE_DIR}"
 printf 'PX4_BUILD=%s\n' "${BUILD_DIR_REAL}"
 printf 'PX4_PYTHON_DEPS=%s\n' "${PYTHON_DEPS_DIR_REAL}"
 printf 'PX4_CONFIG=px4_sitl_default\n'
-printf 'CONFIGURE_COMMAND=cmake -S %q -B %q -GNinja -DCONFIG=px4_sitl_default' "${PX4_SOURCE_DIR}" "${BUILD_DIR_REAL}"
-printf ' %q' "${CMAKE_SYSTEM_PACKAGE_RESET_ARGS[@]}"
-printf '\n'
-cmake -S "${PX4_SOURCE_DIR}" -B "${BUILD_DIR_REAL}" -GNinja -DCONFIG=px4_sitl_default \
-  "${CMAKE_SYSTEM_PACKAGE_RESET_ARGS[@]}"
+if [[ "${ACTION}" == "plugins_only" ]]; then
+  [[ -s "${BUILD_DIR_REAL}/CMakeCache.txt" ]] || die "--plugins-only requires an existing PX4 CMakeCache.txt"
+  [[ -s "${BUILD_DIR_REAL}/build.ninja" ]] || die "--plugins-only requires an existing PX4 build.ninja"
+  [[ -x "${BUILD_DIR_REAL}/bin/px4" ]] || die "--plugins-only requires an existing PX4 executable"
+  grep -Fqx "CMAKE_HOME_DIRECTORY:INTERNAL=${PX4_SOURCE_DIR}" "${BUILD_DIR_REAL}/CMakeCache.txt" \
+    || die "--plugins-only PX4 cache does not belong to the project-local source"
+  printf 'PX4_TOP_LEVEL_CONFIGURE=REUSED\n'
+else
+  printf 'CONFIGURE_COMMAND=cmake -S %q -B %q -GNinja -DCONFIG=px4_sitl_default' "${PX4_SOURCE_DIR}" "${BUILD_DIR_REAL}"
+  printf ' %q' "${CMAKE_SYSTEM_PACKAGE_RESET_ARGS[@]}"
+  printf '\n'
+  cmake -S "${PX4_SOURCE_DIR}" -B "${BUILD_DIR_REAL}" -GNinja -DCONFIG=px4_sitl_default \
+    "${CMAKE_SYSTEM_PACKAGE_RESET_ARGS[@]}"
+fi
 
 if [[ "${ACTION}" == "build" ]]; then
   printf 'BUILD_COMMAND=cmake --build %q --target %q -- -j%s\n' "${BUILD_DIR_REAL}" "${BUILD_TARGET}" "${BUILD_JOBS}"
   cmake --build "${BUILD_DIR_REAL}" --target "${BUILD_TARGET}" -- -j"${BUILD_JOBS}"
+fi
+
+if [[ "${ACTION}" == "build" || "${ACTION}" == "plugins_only" ]]; then
+  if [[ "${BUILD_GAZEBO_CLASSIC_PLUGINS}" == "true" ]]; then
+    GAZEBO_CLASSIC_SOURCE_DIR="${PX4_SOURCE_DIR}/Tools/simulation/gazebo-classic/sitl_gazebo-classic"
+    GAZEBO_CLASSIC_BUILD_DIR="${BUILD_DIR_REAL}/build_gazebo-classic"
+    GAZEBO_CLASSIC_PLUGIN_TARGETS=(
+      gazebo_gps_plugin
+      gazebo_groundtruth_plugin
+      gazebo_imu_plugin
+      gazebo_mavlink_interface
+      gazebo_magnetometer_plugin
+      gazebo_barometer_plugin
+      gazebo_motor_model
+      gazebo_multirotor_base_plugin
+    )
+    printf 'GAZEBO_CLASSIC_CONFIGURE_COMMAND=cmake -S %q -B %q -GNinja -DSEND_ODOMETRY_DATA=ON -DGENERATE_ROS_MODELS=ON\n' \
+      "${GAZEBO_CLASSIC_SOURCE_DIR}" "${GAZEBO_CLASSIC_BUILD_DIR}"
+    cmake -S "${GAZEBO_CLASSIC_SOURCE_DIR}" -B "${GAZEBO_CLASSIC_BUILD_DIR}" -GNinja \
+      -DSEND_ODOMETRY_DATA=ON \
+      -DGENERATE_ROS_MODELS=ON
+    printf 'GAZEBO_CLASSIC_BUILD_COMMAND=cmake --build %q --target' \
+      "${GAZEBO_CLASSIC_BUILD_DIR}"
+    printf ' %q' "${GAZEBO_CLASSIC_PLUGIN_TARGETS[@]}"
+    printf ' -- -j%s\n' "${BUILD_JOBS}"
+    cmake --build "${GAZEBO_CLASSIC_BUILD_DIR}" \
+      --target "${GAZEBO_CLASSIC_PLUGIN_TARGETS[@]}" \
+      -- -j"${BUILD_JOBS}"
+    for plugin in \
+      libgazebo_gps_plugin.so \
+      libgazebo_groundtruth_plugin.so \
+      libgazebo_imu_plugin.so \
+      libgazebo_mavlink_interface.so \
+      libgazebo_magnetometer_plugin.so \
+      libgazebo_barometer_plugin.so \
+      libgazebo_motor_model.so \
+      libgazebo_multirotor_base_plugin.so; do
+      [[ -s "${GAZEBO_CLASSIC_BUILD_DIR}/${plugin}" ]] || die "Gazebo Classic plugin missing after build: ${plugin}"
+    done
+  elif [[ "${BUILD_GAZEBO_CLASSIC_PLUGINS}" != "false" ]]; then
+    die "PX4_BUILD_GAZEBO_CLASSIC_PLUGINS must be true or false"
+  elif [[ "${ACTION}" == "plugins_only" ]]; then
+    die "--plugins-only cannot be combined with --skip-gazebo-classic-plugins"
+  fi
 fi

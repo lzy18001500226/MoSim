@@ -135,13 +135,22 @@ check_file "${PROJECT_ROOT}/Config/gazebo/models/gps/gps.sdf" "project-local PX4
 check_dir "${LOCAL_ROS1_WS}" "local ROS1 build workspace"
 check_file "${LOCAL_ROS1_WS}/devel/setup.bash" "local ROS1 devel setup"
 check_file "${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/setup_gazebo.bash" "PX4 Gazebo Classic setup"
-check_dir "${PX4_BUILD_DIR}" "PX4 SITL build"
+check_file "${PX4_BUILD_DIR}/bin/px4" "PX4 SITL executable"
+check_file "${PX4_BUILD_DIR}/build_gazebo-classic/libgazebo_gps_plugin.so" "PX4 Gazebo GPS plugin"
+check_file "${PX4_BUILD_DIR}/build_gazebo-classic/libgazebo_groundtruth_plugin.so" "PX4 Gazebo ground-truth plugin"
+check_file "${PX4_BUILD_DIR}/build_gazebo-classic/libgazebo_imu_plugin.so" "PX4 Gazebo IMU plugin"
+check_file "${PX4_BUILD_DIR}/build_gazebo-classic/libgazebo_mavlink_interface.so" "PX4 Gazebo MAVLink interface plugin"
+check_file "${PX4_BUILD_DIR}/build_gazebo-classic/libgazebo_magnetometer_plugin.so" "PX4 Gazebo magnetometer plugin"
+check_file "${PX4_BUILD_DIR}/build_gazebo-classic/libgazebo_barometer_plugin.so" "PX4 Gazebo barometer plugin"
+check_file "${PX4_BUILD_DIR}/build_gazebo-classic/libgazebo_motor_model.so" "PX4 Gazebo motor model plugin"
+check_file "${PX4_BUILD_DIR}/build_gazebo-classic/libgazebo_multirotor_base_plugin.so" "PX4 Gazebo multirotor base plugin"
 
 if [[ -d "${LIVOX_PLUGIN_SRC}" ]]; then
   pass "repo-local Livox plugin source: ${LIVOX_PLUGIN_SRC}"
 else
   blocker "repo-local Livox plugin source missing: ${LIVOX_PLUGIN_SRC}"
 fi
+check_file "${LIVOX_PLUGIN_SRC}/scan_mode/mid360-real-centr.csv" "project-local Livox Mid-360 scan schedule"
 
 if [[ -f "${LIVOX_PLUGIN_SO}" ]]; then
   pass "project-local Livox plugin: ${LIVOX_PLUGIN_SO}"
