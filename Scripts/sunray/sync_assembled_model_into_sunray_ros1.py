@@ -46,9 +46,10 @@ from pathlib import Path
 from typing import Any
 
 
-PROJECT_ROOT_DEFAULT = Path("/mnt/c/Users/HP/Desktop/MoSim")
-SUNRAY_WS_DEFAULT = Path("/tmp/mosim_sunray_build_20260620_114615/Sunray")
 LOCAL_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT_DEFAULT = LOCAL_PROJECT_ROOT
+SUNRAY_WS_DEFAULT = LOCAL_PROJECT_ROOT / "build/ros1/runtime_overlays/manual"
+LOCAL_ROS1_WS_DEFAULT = LOCAL_PROJECT_ROOT / "build/ros1/local_source_ws"
 VIRTUAL_PROFILE_RELATIVE_PATH = Path("Config/plant/sunray150_virtual_px4_classic_profile.json")
 MAVROS_PLUGINLIST_RELATIVE_PATH = Path("Config/gazebo/mavros/px4_pluginlists.yaml")
 
@@ -1015,7 +1016,8 @@ def patch_control_launch_tunable_params(launch_path: Path) -> dict[str, int]:
 
 
 def sync_control_runtime_sources(project_root: Path, sunray_ws: Path) -> dict[str, object]:
-    source_root = project_root / "References/Sunray/General_Module/sunray_uav_control"
+    """Verify the local control source was copied into the generated overlay."""
+    source_root = project_root / "src/flight_stack/mavros/sunray_uav_control"
     target_root = sunray_ws / "General_Module/sunray_uav_control"
     relative_files = [
         Path("uav_control/UAVControl.h"),
@@ -1023,7 +1025,7 @@ def sync_control_runtime_sources(project_root: Path, sunray_ws: Path) -> dict[st
         Path("uav_control/uav_control_node.cpp"),
         Path("launch/sunray_control_node.launch"),
     ]
-    copied: list[str] = []
+    verified: list[str] = []
     for relative in relative_files:
         src = source_root / relative
         dst = target_root / relative
@@ -1031,48 +1033,34 @@ def sync_control_runtime_sources(project_root: Path, sunray_ws: Path) -> dict[st
             raise FileNotFoundError(src)
         if not dst.exists():
             raise FileNotFoundError(dst)
-        src_text = src.read_text(encoding="utf-8")
-        if dst.read_text(encoding="utf-8") != src_text:
-            backup_path = dst.with_suffix(dst.suffix + f".bak_mosim_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
-            shutil.copy2(dst, backup_path)
-            dst.write_text(src_text, encoding="utf-8")
-            copied.append(str(relative).replace("\\", "/"))
+        verified.append(str(relative).replace("\\", "/"))
     return {
         "source_root": str(source_root),
         "target_root": str(target_root),
-        "copied": copied,
-        "copied_count": len(copied),
+        "mode": "generated_runtime_overlay",
+        "verified": verified,
+        "verified_count": len(verified),
     }
 
 
-def sync_runtime_plugins(project_root: Path, sunray_ws: Path) -> dict[str, object]:
-    source_lib = project_root / "References/Sunray/devel/lib"
-    target_lib = sunray_ws / "devel/lib"
+def verify_runtime_plugins(local_ros1_ws: Path) -> dict[str, object]:
+    """Verify the Livox plugin came from the source-built local workspace."""
+    source_lib = local_ros1_ws / "devel/lib"
     plugin_names = [
         "liblivox_laser_simulation.so",
     ]
-    copied: list[str] = []
     missing: list[str] = []
-    target_lib.mkdir(parents=True, exist_ok=True)
     for name in plugin_names:
         src = source_lib / name
-        dst = target_lib / name
         if not src.exists():
             missing.append(str(src))
-            continue
-        if not dst.exists() or src.stat().st_size != dst.stat().st_size:
-            if dst.exists():
-                backup_path = dst.with_suffix(dst.suffix + f".bak_mosim_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
-                shutil.copy2(dst, backup_path)
-            shutil.copy2(src, dst)
-            copied.append(name)
     if missing:
-        raise FileNotFoundError(f"missing runtime plugin source(s): {missing}")
+        raise FileNotFoundError(f"missing local runtime plugin build output(s): {missing}")
     return {
         "source_lib": str(source_lib),
-        "target_lib": str(target_lib),
-        "copied": copied,
-        "copied_count": len(copied),
+        "mode": "source_built_workspace",
+        "verified": plugin_names,
+        "verified_count": len(plugin_names),
     }
 
 
@@ -1129,19 +1117,30 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project-root", type=Path, default=PROJECT_ROOT_DEFAULT)
     parser.add_argument("--sunray-ws", type=Path, default=SUNRAY_WS_DEFAULT)
+    parser.add_argument("--local-ros1-ws", type=Path, default=LOCAL_ROS1_WS_DEFAULT)
     parser.add_argument("--manifest", type=Path, default=None)
     args = parser.parse_args()
 
-    profile = load_virtual_profile(args.project_root)
-    source_model = args.project_root / "Config/gazebo/models/sunray150_assembled"
-    target_model = args.sunray_ws / "simulation/sunray_simulator/models/drone_models/sunray150_with_mid360"
+    project_root = args.project_root.resolve()
+    sunray_ws = args.sunray_ws.resolve()
+    runtime_overlay_root = (project_root / "build/ros1/runtime_overlays").resolve()
+    if runtime_overlay_root not in sunray_ws.parents:
+        raise RuntimeError(
+            f"sunray workspace must be a generated runtime overlay below {runtime_overlay_root}: {sunray_ws}"
+        )
+    if not (sunray_ws / "runtime_overlay_manifest.json").is_file():
+        raise RuntimeError(f"runtime overlay manifest missing: {sunray_ws}")
+
+    profile = load_virtual_profile(project_root)
+    source_model = project_root / "Config/gazebo/models/sunray150_assembled"
+    target_model = sunray_ws / "simulation/sunray_simulator/models/drone_models/sunray150_with_mid360"
     jinja_path = target_model / "sunray150_with_mid360.sdf.jinja"
     sdf_path = target_model / "sunray150_with_mid360.sdf"
-    sensor_sdf_path = args.sunray_ws / "simulation/sunray_simulator/models/sensor_models/livox_mid360/livox_mid360.sdf"
-    planning_launch_path = args.sunray_ws / "simulation/sunray_simulator/launch_uav_demo/sunray_sim_uav_planning.launch"
-    control_launch_path = args.sunray_ws / "General_Module/sunray_uav_control/launch/sunray_control_node.launch"
-    planning_world_path = args.sunray_ws / "simulation/sunray_simulator/worlds/planning_test.world"
-    project_gps_sdf_path = args.project_root / "Config/gazebo/models/gps/gps.sdf"
+    sensor_sdf_path = sunray_ws / "simulation/sunray_simulator/models/sensor_models/livox_mid360/livox_mid360.sdf"
+    planning_launch_path = sunray_ws / "simulation/sunray_simulator/launch_uav_demo/sunray_sim_uav_planning.launch"
+    control_launch_path = sunray_ws / "General_Module/sunray_uav_control/launch/sunray_control_node.launch"
+    planning_world_path = sunray_ws / "simulation/sunray_simulator/worlds/planning_test.world"
+    project_gps_sdf_path = project_root / "Config/gazebo/models/gps/gps.sdf"
 
     if not source_model.exists():
         raise FileNotFoundError(source_model)
@@ -1161,9 +1160,9 @@ def main() -> int:
         raise FileNotFoundError(project_gps_sdf_path)
 
     copied = sync_meshes(source_model, target_model)
-    control_source_sync = sync_control_runtime_sources(args.project_root, args.sunray_ws)
-    runtime_plugin_sync = sync_runtime_plugins(args.project_root, args.sunray_ws)
-    mavros_pluginlist_sync = sync_mavros_pluginlist(args.project_root, args.sunray_ws)
+    control_source_sync = sync_control_runtime_sources(project_root, sunray_ws)
+    runtime_plugin_sync = verify_runtime_plugins(args.local_ros1_ws.resolve())
+    mavros_pluginlist_sync = sync_mavros_pluginlist(project_root, sunray_ws)
     replacements = patch_jinja(
         jinja_path,
         profile,
@@ -1187,7 +1186,7 @@ def main() -> int:
         "timestamp": datetime.now().isoformat(timespec="seconds"),
         "virtual_profile": {
             "profile_id": profile["profile_id"],
-            "profile_path": str(args.project_root / VIRTUAL_PROFILE_RELATIVE_PATH),
+            "profile_path": str(project_root / VIRTUAL_PROFILE_RELATIVE_PATH),
             "takeoff_mass_kg": profile["mass_accounting"]["total_takeoff_mass_kg"],
             "ros1_mass_accounting": profile["mass_accounting"]["ros1_gazebo_classic"],
         },
