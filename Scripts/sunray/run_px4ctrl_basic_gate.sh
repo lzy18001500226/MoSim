@@ -4,16 +4,13 @@
 set -eo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
-SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
-SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
 PX4_ROS1_GUARD_UXRCE_DDS="${PX4_ROS1_GUARD_UXRCE_DDS:-true}"
 PX4_ROS1_OVERLAY_PKG=""
 PX4_GCS_REMOTE_HOST="${PX4_GCS_REMOTE_HOST:-auto}"
 PX4CTRL_BOOT_PARAM_OVERRIDES="${PX4CTRL_BOOT_PARAM_OVERRIDES:-}"
-PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws}"
-LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
 MISSION="${1:-${MISSION:-takeoff_hover_land}}"
 RUN_ID="${RUN_ID:-sunray_ros1_px4ctrl_${MISSION}_$(date +%Y%m%d_%H%M%S)}"
+source "${PROJECT_ROOT}/Scripts/sunray/resolve_local_ros1_runtime.sh"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
 MOSIM_RUNTIME_ROS_HOME="${MOSIM_RUNTIME_ROS_HOME:-${RESULT_DIR}/ros_home}"
 GUI="${GUI:-false}"
@@ -169,7 +166,7 @@ REVIEW_OCCUPANCY_INPUT_TOPIC="${REVIEW_OCCUPANCY_INPUT_TOPIC:-/mosim/fastlio/las
 REVIEW_OCCUPANCY_OUTPUT_TOPIC="${REVIEW_OCCUPANCY_OUTPUT_TOPIC:-/mosim/fastlio/occupancy_object_review}"
 REVIEW_OCCUPANCY_VOXEL_SIZE_M="${REVIEW_OCCUPANCY_VOXEL_SIZE_M:-0.20}"
 REVIEW_START_FASTLIO_ALIGNMENT="${REVIEW_START_FASTLIO_ALIGNMENT:-false}"
-FASTLIO_WS="${FASTLIO_WS:-/opt/mosim_work/sunray_ws/fastlio_ws}"
+FASTLIO_WS="${FASTLIO_WS:-${LOCAL_ROS1_WS}}"
 FASTLIO_MODE="${FASTLIO_MODE:-livox_custom}"
 FASTLIO_SCAN_RATE_HZ="${FASTLIO_SCAN_RATE_HZ:-20.0}"
 FASTLIO_SENSOR_START_TIMEOUT_S="${FASTLIO_SENSOR_START_TIMEOUT_S:-120}"
@@ -384,6 +381,10 @@ esac
 
 mkdir -p "${RESULT_DIR}"
 
+bash "${PROJECT_ROOT}/Scripts/sunray/prepare_local_ros1_runtime_overlay.sh" \
+  --workspace "${SUNRAY_WS}" \
+  > "${RESULT_DIR}/local_runtime_overlay.log" 2>&1
+
 source "${PROJECT_ROOT}/Scripts/sunray/sunray_ros1_runtime_lock.sh"
 sunray_ros1_runtime_lock_acquire
 trap sunray_ros1_runtime_lock_release EXIT
@@ -441,7 +442,7 @@ cleanup() {
   pkill -f "gzserver" >/dev/null 2>&1 || true
   pkill -f "gzclient" >/dev/null 2>&1 || true
   pkill -f "mavros_node" >/dev/null 2>&1 || true
-  pkill -f "/opt/mosim_work/sunray_px4.*/px4" >/dev/null 2>&1 || true
+  pkill -f "${PX4_BUILD_DIR}/bin/px4" >/dev/null 2>&1 || true
   pkill -f "px4_ros1_runtime_overlay_.*px4" >/dev/null 2>&1 || true
   pkill -f "rosmaster" >/dev/null 2>&1 || true
   pkill -f "rosout" >/dev/null 2>&1 || true
@@ -457,8 +458,8 @@ prepare_px4_ros1_runtime_overlay() {
     return 0
   fi
 
-  local original_px4_etc="${SUNRAY_PX4_DIR}/build/px4_sitl_default/etc"
-  local original_px4_bin="${SUNRAY_PX4_DIR}/build/px4_sitl_default/bin"
+  local original_px4_etc="${PX4_BUILD_DIR}/etc"
+  local original_px4_bin="${PX4_BUILD_DIR}/bin"
   local original_package="${SUNRAY_PX4_DIR}/package.xml"
   local overlay_root="${RESULT_DIR}/px4_ros1_runtime_overlay_$$"
   local overlay_pkg="${overlay_root}/px4"
@@ -588,17 +589,10 @@ source_env() {
   source /opt/ros/noetic/setup.bash
   source "${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/setup_gazebo.bash" \
     "${SUNRAY_PX4_DIR}" \
-    "${SUNRAY_PX4_DIR}/build/px4_sitl_default"
-  source "${SUNRAY_WS}/devel/setup.bash"
-  if [[ -f "${LIVOX_PLUGIN_WS}/devel/setup.bash" ]]; then
-    source "${LIVOX_PLUGIN_WS}/devel/setup.bash"
-  fi
-  if [[ -f "${FASTLIO_WS}/devel/setup.bash" ]]; then
-    source "${FASTLIO_WS}/devel/setup.bash"
-  fi
+    "${PX4_BUILD_DIR}"
+  source "${LOCAL_ROS1_WS}/devel/setup.bash"
 
   local sunray_models="${SUNRAY_WS}/simulation/sunray_simulator/models"
-  local project_sunray_devel="${PROJECT_ROOT}/References/Sunray/devel"
   local px4_gazebo_models="${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models"
   if [[ "${SUNRAY_STRIP_PX4_MODEL_PATH}" == "true" ]]; then
     GAZEBO_MODEL_PATH="$(
@@ -609,24 +603,15 @@ print(":".join(part for part in value.split(":") if part and part != remove))
 PY
     )"
   fi
-  # The px4ctrl audit workspace was built as a separate catkin workspace whose
-  # setup.bash overwrites other overlays. FAST-LIO is also a separate catkin
-  # workspace. Merge the runtime paths explicitly after all setup.bash calls so
-  # Sunray nodes/messages, Fast-Drone-250 px4ctrl, and Livox FAST-LIO messages
-  # remain visible together.
-  export CMAKE_PREFIX_PATH="${PX4CTRL_WS}/devel:${project_sunray_devel}:${CMAKE_PREFIX_PATH:-}"
-  export ROS_PACKAGE_PATH="${PX4CTRL_WS}/src:${PX4_ROS1_OVERLAY_PKG:+${PX4_ROS1_OVERLAY_PKG}:}${SUNRAY_PX4_DIR}:${SUNRAY_WS}:/opt/ros/noetic/share:${ROS_PACKAGE_PATH:-}"
-  export PYTHONPATH="${PX4CTRL_WS}/devel/lib/python3/dist-packages:${SUNRAY_WS}/devel/lib/python3/dist-packages:${project_sunray_devel}/lib/python3/dist-packages:${PYTHONPATH:-}"
+  # Binaries come from the source-built workspace; mutable launch and Gazebo
+  # assets come from the per-run generated overlay.
+  export CMAKE_PREFIX_PATH="${LOCAL_ROS1_WS}/devel:${CMAKE_PREFIX_PATH:-}"
+  export ROS_PACKAGE_PATH="${SUNRAY_WS}/simulation:${SUNRAY_WS}/General_Module:${LOCAL_ROS1_WS}/src:${PX4_ROS1_OVERLAY_PKG:+${PX4_ROS1_OVERLAY_PKG}:}${SUNRAY_PX4_DIR}:/opt/ros/noetic/share:${ROS_PACKAGE_PATH:-}"
+  export PYTHONPATH="${LOCAL_ROS1_WS}/devel/lib/python3/dist-packages:${PYTHONPATH:-}"
   export GAZEBO_MODEL_PATH="${PROJECT_ROOT}/Config/gazebo/models:${sunray_models}/scence_models:${sunray_models}/drone_models:${sunray_models}/sensor_models:${sunray_models}/fake_models:${sunray_models}/ugv_models:${sunray_models}/aws_models:${sunray_models}/aws_vins_models:${GAZEBO_MODEL_PATH:-}"
   export GAZEBO_RESOURCE_PATH="${SUNRAY_WS}/simulation/sunray_simulator:${GAZEBO_RESOURCE_PATH:-}"
-  export GAZEBO_PLUGIN_PATH="${LIVOX_PLUGIN_WS}/devel/lib:${SUNRAY_WS}/devel/lib:${project_sunray_devel}/lib:${GAZEBO_PLUGIN_PATH:-}"
-  export LD_LIBRARY_PATH="${PX4CTRL_WS}/devel/lib:${LIVOX_PLUGIN_WS}/devel/lib:${SUNRAY_WS}/devel/lib:${project_sunray_devel}/lib:/opt/ros/noetic/lib:${LD_LIBRARY_PATH:-}"
-  if [[ -f "${FASTLIO_WS}/devel/setup.bash" ]]; then
-    export CMAKE_PREFIX_PATH="${FASTLIO_WS}/devel:${CMAKE_PREFIX_PATH:-}"
-    export ROS_PACKAGE_PATH="${FASTLIO_WS}/src:${ROS_PACKAGE_PATH:-}"
-    export PYTHONPATH="${FASTLIO_WS}/devel/lib/python3/dist-packages:${PYTHONPATH:-}"
-    export LD_LIBRARY_PATH="${FASTLIO_WS}/devel/lib:${LD_LIBRARY_PATH:-}"
-  fi
+  export GAZEBO_PLUGIN_PATH="${LOCAL_ROS1_WS}/devel/lib:${GAZEBO_PLUGIN_PATH:-}"
+  export LD_LIBRARY_PATH="${LOCAL_ROS1_WS}/devel/lib:/opt/ros/noetic/lib:${LD_LIBRARY_PATH:-}"
 }
 
 capture_mavros_runtime_config_resolution() {
@@ -996,7 +981,7 @@ pkill -f "rviz.*sunray_ros1_fastlio_accumulated_map_review" >/dev/null 2>&1 || t
 pkill -f "gzserver" >/dev/null 2>&1 || true
 pkill -f "gzclient" >/dev/null 2>&1 || true
 pkill -f "mavros_node" >/dev/null 2>&1 || true
-pkill -f "/opt/mosim_work/sunray_px4.*/px4" >/dev/null 2>&1 || true
+pkill -f "${PX4_BUILD_DIR}/bin/px4" >/dev/null 2>&1 || true
 pkill -f "px4_ros1_runtime_overlay_.*px4" >/dev/null 2>&1 || true
 pkill -f "rosmaster" >/dev/null 2>&1 || true
 pkill -f "rosout" >/dev/null 2>&1 || true
@@ -1345,7 +1330,7 @@ if [[ "${PX4CTRL_START_EXTERNAL_FUSION}" == "true" ]]; then
     start_mavros_local_odom_bridge
     start_fastlio_alignment_adapter
   fi
-  external_fusion_node_bin="${SUNRAY_WS}/devel/lib/sunray_uav_control/external_fusion_node"
+  external_fusion_node_bin="${LOCAL_ROS1_WS}/devel/lib/sunray_uav_control/external_fusion_node"
   if [[ ! -x "${external_fusion_node_bin}" ]]; then
     echo "external_fusion node missing or not executable: ${external_fusion_node_bin}" >&2
     exit 2
@@ -1432,7 +1417,7 @@ if [[ "${PX4CTRL_SET_EKF_GLOBAL_ORIGIN}" == "true" ]]; then
     exit 6
   fi
 
-  PX4_CLIENT_BIN_DIR="${SUNRAY_PX4_DIR}/build/px4_sitl_default/bin"
+  PX4_CLIENT_BIN_DIR="${PX4_BUILD_DIR}/bin"
   EKF_ORIGIN_EVIDENCE="${RESULT_DIR}/px4_ekf_global_origin.txt"
   "${PX4_CLIENT_BIN_DIR}/px4-commander" set_ekf_origin \
     "${PX4CTRL_EKF_ORIGIN_LAT}" \
@@ -1723,7 +1708,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
   "schema": "mosim.sunray_ros1.px4ctrl_basic_gate_manifest.v1",
   "mission": "${MISSION}",
   "result_dir": "${RESULT_DIR}",
-  "controller": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
+  "controller": "src/control/runtime_adapters/px4ctrl",
   "controller_core_profile": "${PX4CTRL_CORE_PROFILE}",
   "claim_boundary": "Fast-Drone-250 px4ctrl ROS wrapper through Sunray ROS1 PX4/Gazebo plant; PX4CTRL_CORE_PROFILE selects original LinearControl, MWORKS generated px4ctrl_core, or G9 ATTITUDE_THRUST controller backend; no Sunray uav_control_node",
   "gazebo": {

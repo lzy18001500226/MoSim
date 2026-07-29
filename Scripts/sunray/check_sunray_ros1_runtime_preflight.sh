@@ -4,12 +4,11 @@
 set -u
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
-SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
-SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
-FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/FAST_LIO}"
-LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
+source "${PROJECT_ROOT}/Scripts/sunray/resolve_local_ros1_runtime.sh"
+FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/src/perception/fast_lio}"
+LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${LOCAL_ROS1_WS}}"
 LIVOX_PLUGIN_SO="${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so"
-LIVOX_PLUGIN_SRC="${LIVOX_PLUGIN_SRC:-${PROJECT_ROOT}/References/Sunray/simulation/gazebo_plugin/livox_laser_simulation}"
+LIVOX_PLUGIN_SRC="${LIVOX_PLUGIN_SRC:-${PROJECT_ROOT}/src/simulation/gazebo/plugins/sunray/livox_laser_simulation}"
 BUILD_LIVOX=false
 
 for arg in "$@"; do
@@ -129,14 +128,14 @@ if [[ -f /opt/ros/noetic/setup.bash ]]; then
 fi
 
 check_dir "${PROJECT_ROOT}" "MoSim project root"
-check_dir "${PROJECT_ROOT}/References/Sunray" "repo-local Sunray source"
-check_dir "${FASTLIO_SRC}" "repo-local FAST-LIO source"
+check_dir "${PROJECT_ROOT}/src/simulation/gazebo/sunray" "project Sunray simulator source"
+check_dir "${PROJECT_ROOT}/src/flight_stack/mavros/sunray_uav_control" "project Sunray control source"
+check_dir "${FASTLIO_SRC}" "project FAST-LIO source"
 check_file "${PROJECT_ROOT}/Config/gazebo/models/gps/gps.sdf" "project-local PX4 GPS model"
-check_dir "${SUNRAY_WS}" "Sunray runtime workspace"
-check_file "${SUNRAY_WS}/devel/setup.bash" "Sunray runtime devel setup"
-check_dir "${SUNRAY_WS}/simulation/sunray_simulator" "Sunray simulator package"
+check_dir "${LOCAL_ROS1_WS}" "local ROS1 build workspace"
+check_file "${LOCAL_ROS1_WS}/devel/setup.bash" "local ROS1 devel setup"
 check_file "${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/setup_gazebo.bash" "PX4 Gazebo Classic setup"
-check_dir "${SUNRAY_PX4_DIR}/build/px4_sitl_default" "PX4 SITL build"
+check_dir "${PX4_BUILD_DIR}" "PX4 SITL build"
 
 if [[ -d "${LIVOX_PLUGIN_SRC}" ]]; then
   pass "repo-local Livox plugin source: ${LIVOX_PLUGIN_SRC}"
@@ -147,22 +146,24 @@ fi
 if [[ -f "${LIVOX_PLUGIN_SO}" ]]; then
   pass "project-local Livox plugin: ${LIVOX_PLUGIN_SO}"
 elif [[ "${BUILD_LIVOX}" == "true" ]]; then
-  if [[ -f "${PROJECT_ROOT}/Scripts/sunray/setup_sunray_livox_gazebo_plugin.sh" ]]; then
-    echo "INFO building project-local Livox plugin overlay..."
+  if [[ -f "${PROJECT_ROOT}/Scripts/sunray/prepare_local_ros1_workspace.sh" ]]; then
+    echo "INFO building the source-local Livox plugin profile..."
     PROJECT_ROOT="${PROJECT_ROOT}" \
-      SUNRAY_WS="${PROJECT_ROOT}/References/Sunray" \
-      LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS}" \
-      bash "${PROJECT_ROOT}/Scripts/sunray/setup_sunray_livox_gazebo_plugin.sh"
+      bash "${PROJECT_ROOT}/Scripts/sunray/prepare_local_ros1_workspace.sh" \
+        --profile foundation \
+        --workspace "${LOCAL_ROS1_WS#${PROJECT_ROOT}/}" \
+        --build \
+        --verify
     if [[ -f "${LIVOX_PLUGIN_SO}" ]]; then
-      pass "project-local Livox plugin built: ${LIVOX_PLUGIN_SO}"
+      pass "source-local Livox plugin built: ${LIVOX_PLUGIN_SO}"
     else
       blocker "Livox plugin build finished without expected library: ${LIVOX_PLUGIN_SO}"
     fi
   else
-    blocker "Livox plugin build script missing: ${PROJECT_ROOT}/Scripts/sunray/setup_sunray_livox_gazebo_plugin.sh"
+    blocker "local ROS1 workspace build script missing: ${PROJECT_ROOT}/Scripts/sunray/prepare_local_ros1_workspace.sh"
   fi
 else
-  blocker "project-local Livox plugin missing: ${LIVOX_PLUGIN_SO}. Build explicitly with: PROJECT_ROOT=${PROJECT_ROOT} bash ${PROJECT_ROOT}/Scripts/sunray/check_sunray_ros1_runtime_preflight.sh --build-livox"
+  blocker "source-local Livox plugin missing: ${LIVOX_PLUGIN_SO}. Build explicitly with: PROJECT_ROOT=${PROJECT_ROOT} bash ${PROJECT_ROOT}/Scripts/sunray/check_sunray_ros1_runtime_preflight.sh --build-livox"
 fi
 
 if [[ "${STATUS}" -eq 0 ]]; then

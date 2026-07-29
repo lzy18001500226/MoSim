@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
-WORKSPACE="${FTC_PLUGIN_WS:-${PROJECT_ROOT}/Results/control_platform/p7_ftc_gazebo_plugin_ws_v2}"
+WORKSPACE="${FTC_PLUGIN_WS:-${PROJECT_ROOT}/build/ros1/ftc_actuator_plugin_ws}"
 PACKAGE_SOURCE="${PROJECT_ROOT}/Scripts/sunray/gazebo_ftc_actuator_plugin"
 
 export PATH=/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
