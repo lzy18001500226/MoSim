@@ -1,0 +1,77 @@
+{
+  "schema": "mosim.plant_package_split_baseline.v1",
+  "authority": "Frozen pre-split source anchors for the Modelica Plant namespace refactor. Each extracted child package must reverse-normalize to the recorded pre-split body before live MWORKS acceptance.",
+  "monolith_source": "Models/MoSimQuadrotorModel/Vehicle/package.mo",
+  "pre_split_monolith_sha256": "d51269accfdbfb08c037d6084d9723ed7af576ab15eaf263b05800322144f90f",
+  "child_package_order": [
+    "Utilities",
+    "GroundModel",
+    "Mechanics",
+    "Electricals",
+    "Sensors",
+    "Blocks",
+    "PathPlanning",
+    "Sunray150GazeboAlignedVisualChassis",
+    "Sunray150Assembly",
+    "Examples"
+  ],
+  "extracted_packages": [
+    {
+      "name": "Examples",
+      "pre_split_start_line": 5,
+      "pre_split_end_line": 359,
+      "pre_split_body_sha256": "61d7f08f22c50e5c85e68dc27b11712f8935c6511933ddd159c80facc988b7ef",
+      "expected_extracted_body_sha256": "972aa38a3a1f83b865ec94dad366c32263f0df269e968442157eb793406e4dcb"
+    },
+    {
+      "name": "PathPlanning",
+      "pre_split_start_line": 360,
+      "pre_split_end_line": 612,
+      "pre_split_body_sha256": "d95fb3ccbc76bd00398bbff91de670f389b54c1ee51de4ba7570784d0f070032",
+      "expected_extracted_body_sha256": "a3132d89623e87b8394d3cd6c74ac5a3c900ee9474b478ca4feadcd57f1460b7"
+    },
+    {
+      "name": "Mechanics",
+      "pre_split_start_line": 613,
+      "pre_split_end_line": 1391,
+      "pre_split_body_sha256": "c6887419bd0332f8f72e62df3dff2e477c82a780da4fde9c60c9adea6040afed",
+      "expected_extracted_body_sha256": "780469642c113eca407b7d73b3e96b02fabae91b7a51d5e95b5dca79fb268a2b"
+    },
+    {
+      "name": "Blocks",
+      "pre_split_start_line": 1392,
+      "pre_split_end_line": 1956,
+      "pre_split_body_sha256": "1de9ea2bde6e2c5d1cb55279717e9d877d1a9ae8698b1f64cd33b2ef065fb440",
+      "expected_extracted_body_sha256": "5eaaac8c4950013ca14f9f63f4257b80086415e84f219ba1444749f6e3164d1b"
+    },
+    {
+      "name": "Electricals",
+      "pre_split_start_line": 1957,
+      "pre_split_end_line": 2123,
+      "pre_split_body_sha256": "d12f8b128b2b09c25d62fa4583c2d56868c7292c18399a2d83236e4d5ae50ca7",
+      "expected_extracted_body_sha256": "6d1325fd0ebbeba024dae954da9c2077086e5be3a034922c0ac5df256deb32a1"
+    },
+    {
+      "name": "GroundModel",
+      "pre_split_start_line": 2124,
+      "pre_split_end_line": 2268,
+      "pre_split_body_sha256": "b217b4dfc2a7868b025f5b0f852d0e663450c80fe30338d585acebb2b8185168",
+      "expected_extracted_body_sha256": "8ab086e226e176c3c5ca05247c5b4c7267c0e554c5bd22badafb7105141f7c51"
+    },
+    {
+      "name": "Sensors",
+      "pre_split_start_line": 2270,
+      "pre_split_end_line": 2528,
+      "pre_split_body_sha256": "4a3d9862a860b6bf5dba8433f0eea4f88807925131657f3bd411ede108c9feaa",
+      "expected_extracted_body_sha256": "12005563e803866d03160e33805394ae1f03ecd102a638576d17d40b9587be6c"
+    },
+    {
+      "name": "Utilities",
+      "pre_split_start_line": 2534,
+      "pre_split_end_line": 2569,
+      "pre_split_body_sha256": "601fceda744ac6c957b4aeffbe63f933889849a21e3550c1323be4dc7ec39955",
+      "expected_extracted_body_sha256": "f2fbeb22e9565bb8b3da1c68b6018653ef3ec561cad1c313fd67b7ab274df5c3"
+    }
+  ],
+  "claim_boundary": "This manifest proves source-body preservation across package extraction only. It does not prove CheckModel, numerical equivalence, native animation, or controller performance."
+}

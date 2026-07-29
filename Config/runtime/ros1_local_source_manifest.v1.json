@@ -1,0 +1,190 @@
+{
+  "schema": "mosim.ros1_local_source_manifest.v1",
+  "project_source_root": "src",
+  "workspace_root": "build/ros1/local_source_ws",
+  "policy": {
+    "source_input_rule": "Generated ROS1 workspaces may link only project src paths. References, Results, and old WSL workspaces are not source inputs.",
+    "workspace_rule": "Build, devel, install, and logs belong under build/ros1/local_source_ws and are disposable generated output.",
+    "runtime_rule": "A successful package build is not a flight, planner, or controller acceptance claim."
+  },
+  "profiles": {
+    "foundation": {
+      "purpose": "Compile Sunray messages, Gazebo simulator package, Livox compatibility messages, and Livox Gazebo plugin without arming or launch.",
+      "links": [
+        {
+          "workspace_path": "General_Module/sunray_common",
+          "source_path": "src/common/utilities/ros1/sunray_common"
+        },
+        {
+          "workspace_path": "perception/livox_ros_driver_compat",
+          "source_path": "src/perception/livox_ros_driver_compat"
+        },
+        {
+          "workspace_path": "simulation/gazebo_plugin/livox_laser_simulation",
+          "source_path": "src/simulation/gazebo/plugins/sunray/livox_laser_simulation"
+        },
+        {
+          "workspace_path": "simulation/sunray_simulator",
+          "source_path": "src/simulation/gazebo/sunray"
+        }
+      ],
+      "build_packages": [
+        "sunray_msgs",
+        "livox_ros_driver",
+        "livox_laser_simulation",
+        "sunray_simulator"
+      ]
+    },
+    "flight_adapter": {
+      "extends": "foundation",
+      "purpose": "Add the Sunray MAVROS adapter after the foundation profile compiles.",
+      "links": [
+        {
+          "workspace_path": "General_Module/sunray_uav_control",
+          "source_path": "src/flight_stack/mavros/sunray_uav_control"
+        }
+      ],
+      "build_packages": [
+        "sunray_uav_control"
+      ]
+    },
+    "perception": {
+      "extends": "foundation",
+      "purpose": "Add FAST-LIO only after the Livox message and simulator packages compile.",
+      "links": [
+        {
+          "workspace_path": "perception/fast_lio",
+          "source_path": "src/perception/fast_lio"
+        }
+      ],
+      "build_packages": [
+        "fast_lio"
+      ]
+    },
+    "controller": {
+      "extends": "foundation",
+      "purpose": "Build px4ctrl against the versioned legacy generated-controller source copied into its package-local generated directory.",
+      "links": [
+        {
+          "workspace_path": "Utils/cmake_utils",
+          "source_path": "src/common/utilities/ros1/cmake_utils"
+        },
+        {
+          "workspace_path": "Utils/uav_utils",
+          "source_path": "src/common/utilities/ros1/uav_utils"
+        },
+        {
+          "workspace_path": "Utils/quadrotor_msgs",
+          "source_path": "src/integration/ros1_launch/quadrotor_msgs"
+        },
+        {
+          "workspace_path": "control/px4ctrl",
+          "source_path": "src/control/runtime_adapters/px4ctrl"
+        }
+      ],
+      "build_packages": [
+        "px4ctrl"
+      ]
+    }
+  },
+  "components": [
+    {
+      "id": "sunray_common",
+      "source_path": "src/common/utilities/ros1/sunray_common",
+      "role": "Sunray common headers and sunray_msgs",
+      "activation_stage": "foundation"
+    },
+    {
+      "id": "sunray_simulator",
+      "source_path": "src/simulation/gazebo/sunray",
+      "role": "Sunray Gazebo Classic ROS1 package",
+      "activation_stage": "foundation"
+    },
+    {
+      "id": "livox_ros_driver_compat",
+      "source_path": "src/perception/livox_ros_driver_compat",
+      "role": "ROS1 Livox message compatibility package",
+      "activation_stage": "foundation"
+    },
+    {
+      "id": "livox_laser_simulation",
+      "source_path": "src/simulation/gazebo/plugins/sunray/livox_laser_simulation",
+      "role": "Gazebo Classic Livox plugin",
+      "activation_stage": "foundation"
+    },
+    {
+      "id": "sunray_uav_control",
+      "source_path": "src/flight_stack/mavros/sunray_uav_control",
+      "role": "Sunray MAVROS adapter",
+      "activation_stage": "flight_adapter"
+    },
+    {
+      "id": "fast_lio",
+      "source_path": "src/perception/fast_lio",
+      "role": "FAST-LIO localization package",
+      "activation_stage": "perception"
+    },
+    {
+      "id": "cmake_utils",
+      "source_path": "src/common/utilities/ros1/cmake_utils",
+      "role": "Fast-Drone catkin CMake utility dependency for uav_utils",
+      "activation_stage": "controller"
+    },
+    {
+      "id": "uav_utils",
+      "source_path": "src/common/utilities/ros1/uav_utils",
+      "role": "px4ctrl utility package",
+      "activation_stage": "controller"
+    },
+    {
+      "id": "quadrotor_msgs",
+      "source_path": "src/integration/ros1_launch/quadrotor_msgs",
+      "role": "px4ctrl message package",
+      "activation_stage": "controller"
+    },
+    {
+      "id": "px4ctrl",
+      "source_path": "src/control/runtime_adapters/px4ctrl",
+      "role": "ROS1 position controller runtime adapter",
+      "activation_stage": "controller",
+      "generated_backend": "legacy_px4ctrl",
+      "generated_source_path": "src/control/runtime_adapters/px4ctrl/generated/legacy_px4ctrl",
+      "generated_core_path": "src/control/runtime_adapters/px4ctrl/generated/golden_slice",
+      "generated_source_policy": "CMake accepts only package-local generated paths. Other controller-family artifacts remain intentionally unmigrated and fail explicitly when selected."
+    },
+    {
+      "id": "px4_autopilot",
+      "source_path": "src/flight_stack/px4/PX4-Autopilot",
+      "role": "PX4 v1.14.0 Gazebo Classic SITL source snapshot with initialized submodules",
+      "activation_stage": "px4_sitl",
+      "build_entrypoint": "Scripts/sunray/build_local_px4_sitl.sh",
+      "default_build_directory": "build/px4/px4_sitl_default",
+      "default_build_target": "px4"
+    }
+  ],
+  "external_dependencies": [
+    {
+      "id": "ros_noetic",
+      "kind": "Ubuntu 20.04 system dependency",
+      "required_for": ["all ROS1 profiles"]
+    },
+    {
+      "id": "gazebo_classic",
+      "kind": "Ubuntu 20.04 system dependency",
+      "required_for": ["foundation", "px4_sitl"]
+    },
+    {
+      "id": "mavros",
+      "kind": "Ubuntu 20.04 ROS package",
+      "required_for": ["flight_adapter", "controller"]
+    }
+  ],
+  "deferred_source_groups": [
+    "FUEL",
+    "fixed_formation",
+    "Diff-Planner",
+    "EGO-Planner-Swarm",
+    "FALCON",
+    "Racer"
+  ]
+}

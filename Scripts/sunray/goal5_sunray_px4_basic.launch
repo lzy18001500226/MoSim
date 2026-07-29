@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Project-local Sunray wrapper. Keep the reference launch untouched while
+         allowing the slow three-UAV Factory simulation to use a longer MAVROS
+         heartbeat timeout. -->
+    <env name="PX4_SIM_MODEL" value="gazebo-classic_sunray" />
+    <env name="PX4_SIM_SPEED_FACTOR" value="1.0" />
+
+    <arg name="est" default="ekf2"/>
+    <arg name="vehicle" default="sunray150"/>
+    <arg name="uav_id" default="1"/>
+    <arg name="ID" value="$(eval arg('uav_id') - 1)"/>
+    <arg name="uav_init_x" default="0"/>
+    <arg name="uav_init_y" default="0"/>
+    <arg name="uav_init_z" default="0.2"/>
+    <arg name="uav_init_yaw" default="0"/>
+    <arg name="mavros_conn_timeout_s" default="60.0"/>
+
+    <arg name="mavlink_id" value="$(eval 1 + arg('ID'))" />
+    <arg name="mavlink_udp_port" value="$(eval 14560 + arg('ID'))"/>
+    <arg name="mavlink_tcp_port" value="$(eval 4560 + arg('ID'))"/>
+    <arg name="mavlink_cam_udp_port" value="$(eval 14530 + arg('ID'))"/>
+    <arg name="gst_udp_port" value="$(eval 5600 + arg('ID'))"/>
+    <arg name="video_uri" value="$(eval 5600 + arg('ID'))"/>
+
+    <group ns="/uav$(arg uav_id)">
+        <arg name="cmd" default="$(find sunray_simulator)/scripts/jinja_gen.py --stdout --mavlink_id=$(arg mavlink_id) --mavlink_udp_port=$(arg mavlink_udp_port) --mavlink_tcp_port=$(arg mavlink_tcp_port) --gst_udp_port=$(arg gst_udp_port) --video_uri=$(arg video_uri) --mavlink_cam_udp_port=$(arg mavlink_cam_udp_port) $(find sunray_simulator)/models/drone_models/$(arg vehicle)/$(arg vehicle).sdf.jinja $(find sunray_simulator)"/>
+        <param command="$(arg cmd)" name="sdf_$(arg vehicle)$(arg ID)"/>
+
+        <arg name="interactive" default="true"/>
+        <arg unless="$(arg interactive)" name="px4_command_arg1" value=""/>
+        <arg if="$(arg interactive)" name="px4_command_arg1" value="-d"/>
+        <node name="px4_sitl_$(arg uav_id)" pkg="px4" type="px4" output="screen"
+            args="$(find px4)/build/px4_sitl_default/etc -s etc/init.d-posix/rcS -i $(arg ID) -w sitl_$(arg vehicle)_$(arg ID) $(arg px4_command_arg1)"/>
+
+        <node name="$(arg vehicle)_$(arg uav_id)_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+            args="-sdf -param sdf_$(arg vehicle)$(arg ID) -model uav$(arg uav_id) -x $(arg uav_init_x) -y $(arg uav_init_y) -z $(arg uav_init_z) -Y $(arg uav_init_yaw)"/>
+
+        <arg name="udp_port_local" value="$(eval 14580 + arg('ID'))"/>
+        <arg name="udp_port_remote" value="$(eval 14540 + arg('ID'))"/>
+        <arg name="fcu_url" default="udp://:$(arg udp_port_remote)@localhost:$(arg udp_port_local)"/>
+        <arg name="gcs_url" default=""/>
+        <node pkg="mavros" type="mavros_node" name="mavros" output="screen" launch-prefix="bash -c 'sleep 8; $0 $@'">
+            <param name="fcu_url" value="$(arg fcu_url)" />
+            <param name="gcs_url" value="$(arg gcs_url)" />
+            <param name="target_system_id" value="$(eval 1 + arg('ID'))"/>
+            <param name="target_component_id" value="1" />
+            <param name="fcu_protocol" value="v2.0" />
+            <rosparam command="load" file="$(find sunray_simulator)/config/px4_config.yaml" />
+            <param name="conn/timeout" value="$(arg mavros_conn_timeout_s)" />
+            <rosparam command="load" file="$(find sunray_simulator)/config/px4_pluginlists.yaml" />
+        </node>
+    </group>
+</launch>

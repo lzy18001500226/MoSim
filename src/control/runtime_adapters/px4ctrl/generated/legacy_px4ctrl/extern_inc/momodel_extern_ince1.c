@@ -1,0 +1,401 @@
+#include "PX4CTRL_Core_CFunction_Sysblock.h"
+/*** Current Block Name: cFunction ***/
+typedef struct MosimPx4ctrlCoreCVec3
+{
+    double x;
+    double y;
+    double z;
+} MosimPx4ctrlCoreCVec3;
+
+typedef struct MosimPx4ctrlCoreCQuat
+{
+    double w;
+    double x;
+    double y;
+    double z;
+} MosimPx4ctrlCoreCQuat;
+
+typedef struct MosimPx4ctrlCoreCParams
+{
+    double kp_x;
+    double kp_y;
+    double kp_z;
+    double kv_x;
+    double kv_y;
+    double kv_z;
+    double mass;
+    double gravity;
+    double hover_percentage;
+} MosimPx4ctrlCoreCParams;
+
+typedef struct MosimPx4ctrlCoreCState
+{
+    double thr2acc;
+    double covariance;
+} MosimPx4ctrlCoreCState;
+
+typedef struct MosimPx4ctrlCoreCInput
+{
+    double dt;
+    MosimPx4ctrlCoreCVec3 position;
+    MosimPx4ctrlCoreCVec3 velocity;
+    MosimPx4ctrlCoreCQuat attitude;
+    MosimPx4ctrlCoreCVec3 angular_velocity;
+    MosimPx4ctrlCoreCVec3 reference_position;
+    MosimPx4ctrlCoreCVec3 reference_velocity;
+    MosimPx4ctrlCoreCVec3 reference_acceleration;
+    double reference_yaw;
+    double reference_yaw_rate;
+    MosimPx4ctrlCoreCQuat imu_attitude;
+    MosimPx4ctrlCoreCVec3 imu_angular_velocity;
+    int enable;
+    int reset;
+} MosimPx4ctrlCoreCInput;
+
+typedef struct MosimPx4ctrlCoreCOutput
+{
+    MosimPx4ctrlCoreCQuat desired_attitude;
+    double normalized_thrust;
+    double collective_thrust_n;
+    MosimPx4ctrlCoreCVec3 position_error;
+    MosimPx4ctrlCoreCVec3 velocity_error;
+    MosimPx4ctrlCoreCVec3 desired_acceleration;
+    MosimPx4ctrlCoreCVec3 desired_force_n;
+    int status_code;
+} MosimPx4ctrlCoreCOutput;
+
+void mosim_px4ctrl_core_c_reset(
+    const MosimPx4ctrlCoreCParams *params,
+    MosimPx4ctrlCoreCState *state);
+
+void mosim_px4ctrl_core_c_step(
+    const MosimPx4ctrlCoreCParams *params,
+    MosimPx4ctrlCoreCState *state,
+    const MosimPx4ctrlCoreCInput *input,
+    MosimPx4ctrlCoreCOutput *output);
+
+void MosimPx4ctrlCoreCStepScalar(
+    double dt,
+    double position_x,
+    double position_y,
+    double position_z,
+    double velocity_x,
+    double velocity_y,
+    double velocity_z,
+    double attitude_w,
+    double attitude_x,
+    double attitude_y,
+    double attitude_z,
+    double angular_velocity_x,
+    double angular_velocity_y,
+    double angular_velocity_z,
+    double reference_position_x,
+    double reference_position_y,
+    double reference_position_z,
+    double reference_velocity_x,
+    double reference_velocity_y,
+    double reference_velocity_z,
+    double reference_acceleration_x,
+    double reference_acceleration_y,
+    double reference_acceleration_z,
+    double reference_yaw,
+    double reference_yaw_rate,
+    double imu_attitude_w,
+    double imu_attitude_x,
+    double imu_attitude_y,
+    double imu_attitude_z,
+    double imu_angular_velocity_x,
+    double imu_angular_velocity_y,
+    double imu_angular_velocity_z,
+    double enable,
+    double reset,
+    double kp_x,
+    double kp_y,
+    double kp_z,
+    double kv_x,
+    double kv_y,
+    double kv_z,
+    double mass,
+    double gravity,
+    double hover_percentage,
+    double *desired_attitude_w,
+    double *desired_attitude_x,
+    double *desired_attitude_y,
+    double *desired_attitude_z,
+    double *normalized_thrust,
+    double *collective_thrust_N,
+    double *position_error_x,
+    double *position_error_y,
+    double *position_error_z,
+    double *velocity_error_x,
+    double *velocity_error_y,
+    double *velocity_error_z,
+    double *desired_acceleration_x,
+    double *desired_acceleration_y,
+    double *desired_acceleration_z,
+    double *desired_force_N_x,
+    double *desired_force_N_y,
+    double *desired_force_N_z,
+    double *status_code);
+
+
+
+
+#include <math.h>
+#include <string.h>
+
+static MosimPx4ctrlCoreCQuat c_quat(double w, double x, double y, double z)
+{
+    MosimPx4ctrlCoreCQuat q;
+    q.w = w;
+    q.x = x;
+    q.y = y;
+    q.z = z;
+    return q;
+}
+
+static MosimPx4ctrlCoreCVec3 c_vec3(double x, double y, double z)
+{
+    MosimPx4ctrlCoreCVec3 v;
+    v.x = x;
+    v.y = y;
+    v.z = z;
+    return v;
+}
+
+static MosimPx4ctrlCoreCQuat c_normalize(MosimPx4ctrlCoreCQuat q)
+{
+    const double n = sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
+    if (n <= 0.0)
+    {
+        return c_quat(1.0, 0.0, 0.0, 0.0);
+    }
+    return c_quat(q.w / n, q.x / n, q.y / n, q.z / n);
+}
+
+static MosimPx4ctrlCoreCQuat c_conjugate(MosimPx4ctrlCoreCQuat q)
+{
+    return c_quat(q.w, -q.x, -q.y, -q.z);
+}
+
+static MosimPx4ctrlCoreCQuat c_multiply(MosimPx4ctrlCoreCQuat a, MosimPx4ctrlCoreCQuat b)
+{
+    return c_normalize(c_quat(
+        a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
+        a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,
+        a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,
+        a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w));
+}
+
+static MosimPx4ctrlCoreCQuat c_inverse(MosimPx4ctrlCoreCQuat q)
+{
+    return c_conjugate(c_normalize(q));
+}
+
+static MosimPx4ctrlCoreCQuat c_angle_axis(double angle, MosimPx4ctrlCoreCVec3 axis)
+{
+    const double half = 0.5 * angle;
+    const double s = sin(half);
+    return c_normalize(c_quat(cos(half), axis.x * s, axis.y * s, axis.z * s));
+}
+
+static double c_yaw_from_quat(MosimPx4ctrlCoreCQuat q_raw)
+{
+    const MosimPx4ctrlCoreCQuat q = c_normalize(q_raw);
+    return atan2(
+        2.0 * (q.x * q.y + q.w * q.z),
+        q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
+}
+
+void mosim_px4ctrl_core_c_reset(
+    const MosimPx4ctrlCoreCParams *params,
+    MosimPx4ctrlCoreCState *state)
+{
+    state->thr2acc = params->gravity / params->hover_percentage;
+    state->covariance = 1.0e6;
+}
+
+void mosim_px4ctrl_core_c_step(
+    const MosimPx4ctrlCoreCParams *params,
+    MosimPx4ctrlCoreCState *state,
+    const MosimPx4ctrlCoreCInput *input,
+    MosimPx4ctrlCoreCOutput *output)
+{
+    memset(output, 0, sizeof(*output));
+    output->desired_attitude = c_quat(1.0, 0.0, 0.0, 0.0);
+
+    if (input->reset)
+    {
+        mosim_px4ctrl_core_c_reset(params, state);
+    }
+
+    if (!input->enable)
+    {
+        output->status_code = 1;
+        output->desired_attitude = c_normalize(input->imu_attitude);
+        output->normalized_thrust = 0.0;
+        output->collective_thrust_n = 0.0;
+        return;
+    }
+
+    output->position_error = c_vec3(
+        input->reference_position.x - input->position.x,
+        input->reference_position.y - input->position.y,
+        input->reference_position.z - input->position.z);
+    output->velocity_error = c_vec3(
+        input->reference_velocity.x - input->velocity.x,
+        input->reference_velocity.y - input->velocity.y,
+        input->reference_velocity.z - input->velocity.z);
+
+    output->desired_acceleration = c_vec3(
+        input->reference_acceleration.x + params->kv_x * output->velocity_error.x + params->kp_x * output->position_error.x,
+        input->reference_acceleration.y + params->kv_y * output->velocity_error.y + params->kp_y * output->position_error.y,
+        input->reference_acceleration.z + params->kv_z * output->velocity_error.z + params->kp_z * output->position_error.z + params->gravity);
+
+    output->normalized_thrust = output->desired_acceleration.z / state->thr2acc;
+    output->collective_thrust_n = output->normalized_thrust * (params->mass * params->gravity / params->hover_percentage);
+    output->desired_force_n = c_vec3(
+        params->mass * output->desired_acceleration.x,
+        params->mass * output->desired_acceleration.y,
+        params->mass * output->desired_acceleration.z);
+
+    {
+        const double yaw_odom = c_yaw_from_quat(input->attitude);
+        const double sin_yaw = sin(yaw_odom);
+        const double cos_yaw = cos(yaw_odom);
+        const double roll = (output->desired_acceleration.x * sin_yaw - output->desired_acceleration.y * cos_yaw) / params->gravity;
+        const double pitch = (output->desired_acceleration.x * cos_yaw + output->desired_acceleration.y * sin_yaw) / params->gravity;
+
+        const MosimPx4ctrlCoreCQuat q_yaw = c_angle_axis(input->reference_yaw, c_vec3(0.0, 0.0, 1.0));
+        const MosimPx4ctrlCoreCQuat q_pitch = c_angle_axis(pitch, c_vec3(0.0, 1.0, 0.0));
+        const MosimPx4ctrlCoreCQuat q_roll = c_angle_axis(roll, c_vec3(1.0, 0.0, 0.0));
+        const MosimPx4ctrlCoreCQuat q_des_world = c_multiply(c_multiply(q_yaw, q_pitch), q_roll);
+
+        output->desired_attitude = c_multiply(c_multiply(input->imu_attitude, c_inverse(input->attitude)), q_des_world);
+    }
+}
+
+void MosimPx4ctrlCoreCStepScalar(
+    double dt,
+    double position_x,
+    double position_y,
+    double position_z,
+    double velocity_x,
+    double velocity_y,
+    double velocity_z,
+    double attitude_w,
+    double attitude_x,
+    double attitude_y,
+    double attitude_z,
+    double angular_velocity_x,
+    double angular_velocity_y,
+    double angular_velocity_z,
+    double reference_position_x,
+    double reference_position_y,
+    double reference_position_z,
+    double reference_velocity_x,
+    double reference_velocity_y,
+    double reference_velocity_z,
+    double reference_acceleration_x,
+    double reference_acceleration_y,
+    double reference_acceleration_z,
+    double reference_yaw,
+    double reference_yaw_rate,
+    double imu_attitude_w,
+    double imu_attitude_x,
+    double imu_attitude_y,
+    double imu_attitude_z,
+    double imu_angular_velocity_x,
+    double imu_angular_velocity_y,
+    double imu_angular_velocity_z,
+    double enable,
+    double reset,
+    double kp_x,
+    double kp_y,
+    double kp_z,
+    double kv_x,
+    double kv_y,
+    double kv_z,
+    double mass,
+    double gravity,
+    double hover_percentage,
+    double *desired_attitude_w,
+    double *desired_attitude_x,
+    double *desired_attitude_y,
+    double *desired_attitude_z,
+    double *normalized_thrust,
+    double *collective_thrust_N,
+    double *position_error_x,
+    double *position_error_y,
+    double *position_error_z,
+    double *velocity_error_x,
+    double *velocity_error_y,
+    double *velocity_error_z,
+    double *desired_acceleration_x,
+    double *desired_acceleration_y,
+    double *desired_acceleration_z,
+    double *desired_force_N_x,
+    double *desired_force_N_y,
+    double *desired_force_N_z,
+    double *status_code)
+{
+    static MosimPx4ctrlCoreCState state = {0.0, 0.0};
+    static int initialized = 0;
+
+    MosimPx4ctrlCoreCParams params;
+    MosimPx4ctrlCoreCInput input;
+    MosimPx4ctrlCoreCOutput output;
+
+    params.kp_x = kp_x;
+    params.kp_y = kp_y;
+    params.kp_z = kp_z;
+    params.kv_x = kv_x;
+    params.kv_y = kv_y;
+    params.kv_z = kv_z;
+    params.mass = mass;
+    params.gravity = gravity;
+    params.hover_percentage = hover_percentage;
+
+    if (!initialized)
+    {
+        mosim_px4ctrl_core_c_reset(&params, &state);
+        initialized = 1;
+    }
+
+    input.dt = dt;
+    input.position = c_vec3(position_x, position_y, position_z);
+    input.velocity = c_vec3(velocity_x, velocity_y, velocity_z);
+    input.attitude = c_quat(attitude_w, attitude_x, attitude_y, attitude_z);
+    input.angular_velocity = c_vec3(angular_velocity_x, angular_velocity_y, angular_velocity_z);
+    input.reference_position = c_vec3(reference_position_x, reference_position_y, reference_position_z);
+    input.reference_velocity = c_vec3(reference_velocity_x, reference_velocity_y, reference_velocity_z);
+    input.reference_acceleration = c_vec3(reference_acceleration_x, reference_acceleration_y, reference_acceleration_z);
+    input.reference_yaw = reference_yaw;
+    input.reference_yaw_rate = reference_yaw_rate;
+    input.imu_attitude = c_quat(imu_attitude_w, imu_attitude_x, imu_attitude_y, imu_attitude_z);
+    input.imu_angular_velocity = c_vec3(imu_angular_velocity_x, imu_angular_velocity_y, imu_angular_velocity_z);
+    input.enable = enable != 0.0;
+    input.reset = reset != 0.0;
+
+    mosim_px4ctrl_core_c_step(&params, &state, &input, &output);
+
+    *desired_attitude_w = output.desired_attitude.w;
+    *desired_attitude_x = output.desired_attitude.x;
+    *desired_attitude_y = output.desired_attitude.y;
+    *desired_attitude_z = output.desired_attitude.z;
+    *normalized_thrust = output.normalized_thrust;
+    *collective_thrust_N = output.collective_thrust_n;
+    *position_error_x = output.position_error.x;
+    *position_error_y = output.position_error.y;
+    *position_error_z = output.position_error.z;
+    *velocity_error_x = output.velocity_error.x;
+    *velocity_error_y = output.velocity_error.y;
+    *velocity_error_z = output.velocity_error.z;
+    *desired_acceleration_x = output.desired_acceleration.x;
+    *desired_acceleration_y = output.desired_acceleration.y;
+    *desired_acceleration_z = output.desired_acceleration.z;
+    *desired_force_N_x = output.desired_force_n.x;
+    *desired_force_N_y = output.desired_force_n.y;
+    *desired_force_N_z = output.desired_force_n.z;
+    *status_code = (double)output.status_code;
+}

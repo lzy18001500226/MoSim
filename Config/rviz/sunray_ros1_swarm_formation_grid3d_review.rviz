@@ -1,0 +1,116 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Alpha: 0.45
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Name: World Grid
+      Plane: XY
+      Plane Cell Count: 80
+      Reference Frame: <Fixed Frame>
+    - Alpha: 0.48
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 4
+        Min Value: -1
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: UAV1 EGO Inflated Occupancy Voxels
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.20
+      Style: Boxes
+      Topic: /drone_0/ego_planner_node/grid_map/occupancy_inflate
+      Use Fixed Frame: true
+      Use rainbow: true
+    - Alpha: 0.48
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 4
+        Min Value: -1
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: UAV2 EGO Inflated Occupancy Voxels
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.20
+      Style: Boxes
+      Topic: /drone_1/ego_planner_node/grid_map/occupancy_inflate
+      Use Fixed Frame: true
+      Use rainbow: true
+    - Alpha: 0.48
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 4
+        Min Value: -1
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Name: UAV3 EGO Inflated Occupancy Voxels
+      Position Transformer: XYZ
+      Queue Size: 5
+      Selectable: true
+      Size (Pixels): 1
+      Size (m): 0.20
+      Style: Boxes
+      Topic: /drone_2/ego_planner_node/grid_map/occupancy_inflate
+      Use Fixed Frame: true
+      Use rainbow: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /mosim/swarm_formation/body_axes
+      Name: UAV Body Axes
+      Queue Size: 5
+  Enabled: true
+  Global Options:
+    Background Color: 38; 38; 38
+    Fixed Frame: world
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 24
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 1
+      Name: Current View
+      Pitch: 0.75
+      Target Frame: world
+      Yaw: 0.785
+Window Geometry:
+  Height: 900
+  Width: 1200
+  X: 1240
+  Y: 40

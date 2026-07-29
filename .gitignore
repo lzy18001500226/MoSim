@@ -14,6 +14,9 @@ node_modules/
 npm-debug.log*
 .mcp-servers/
 
+# Gradle local cache
+.gradle/
+
 # Unreal local build outputs
 UE5/**/Binaries/
 UE5/**/Intermediate/
@@ -348,6 +351,7 @@ References/**/build/
 References/**/Build/
 References/**/BUILD/
 References/**/.catkin_tools/
+References/**/.catkin_workspace
 References/**/devel/
 References/**/install/
 References/**/log/
