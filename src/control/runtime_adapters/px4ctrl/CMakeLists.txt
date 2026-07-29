@@ -18,64 +18,85 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-find_package(Eigen3 REQUIRED) 
+find_package(Eigen3 REQUIRED)
 
 catkin_package(
 )
 
 get_filename_component(MOSIM_PX4CTRL_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" REALPATH)
-get_filename_component(MOSIM_PROJECT_ROOT
-  "${MOSIM_PX4CTRL_SOURCE_DIR}/../../../../../../.." ABSOLUTE)
 set(MOSIM_PX4CTRL_GENERATED_BACKEND "legacy_px4ctrl"
   CACHE STRING "MoSim generated controller backend; see the selection chain below")
+set(MOSIM_PX4CTRL_GENERATED_ROOT
+  "${MOSIM_PX4CTRL_SOURCE_DIR}/generated"
+  CACHE PATH "Project-local generated px4ctrl source root")
+
+# FORCE removes historical cache values that pointed into Results. All backend
+# selectors are intentionally constrained to package-local source directories.
 set(MOSIM_PX4CTRL_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_mworks_goal5_m4a_cfunction_20260629_092411/px4ctrl_core_cfunction_codegen_strict/PX4CTRL_Core_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated px4ctrl_core directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/legacy_px4ctrl"
+  CACHE PATH "Project-local legacy px4ctrl generated source directory" FORCE)
 set(MOSIM_PX4CTRL_G9_FAMILY_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/g9/controller_family_attitude_thrust_v1/g9_family_mworks_codegen_20260630_work/g9_family_cfunction_codegen_strict/G9_Family_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated G9 controller-family directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/g9_family"
+  CACHE PATH "Project-local G9 controller-family generated source directory" FORCE)
 set(MOSIM_PX4CTRL_G10_BDE_FAMILY_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/g10/min_enhancements_v1/g10bde_mworks_codegen_stateiso_20260701_work/g10_bde_family_cfunction_codegen_strict/G10_BDE_Family_CFunction_Sysblock_StateIso"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated G10-B/D/E controller-family directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/g10_bde_family"
+  CACHE PATH "Project-local G10-B/D/E controller-family generated source directory" FORCE)
 set(MOSIM_PX4CTRL_PID_ATTITUDE_THRUST_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p1_pid_attitude_thrust_mworks_20260716/generated_c_v2/MoSim_PID_AttitudeThrust_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated PID ATTITUDE_THRUST directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/pid_attitude_thrust"
+  CACHE PATH "Project-local PID ATTITUDE_THRUST generated source directory" FORCE)
 set(MOSIM_PX4CTRL_WAVE_A_ATTITUDE_THRUST_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated Wave A ATTITUDE/BODY_RATE THRUST directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/wave_a_attitude_thrust"
+  CACHE PATH "Project-local Wave A ATTITUDE/BODY_RATE THRUST generated source directory" FORCE)
 set(MOSIM_PX4CTRL_LINEAR_ROBUST_ATTITUDE_THRUST_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p2_linear_robust_mworks_20260716/generated_c/MoSim_P2_LinearRobust_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated linear/robust ATTITUDE_THRUST directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/linear_robust_attitude_thrust"
+  CACHE PATH "Project-local linear/robust ATTITUDE_THRUST generated source directory" FORCE)
 set(MOSIM_PX4CTRL_CLASSIC_CONTROLLER_ATTITUDE_THRUST_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/classic_controller_closeout_20260717/mworks/codegen/MoSim_Classic_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated classic-controller ATTITUDE_THRUST directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/classic_controller_attitude_thrust"
+  CACHE PATH "Project-local classic-controller ATTITUDE_THRUST generated source directory" FORCE)
 set(MOSIM_PX4CTRL_SLIDING_MODE_ATTITUDE_THRUST_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p3_sliding_mode_mworks_20260716/generated_c/MoSim_P3_SlidingMode_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated sliding-mode ATTITUDE_THRUST directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/sliding_mode_attitude_thrust"
+  CACHE PATH "Project-local sliding-mode ATTITUDE_THRUST generated source directory" FORCE)
 set(MOSIM_PX4CTRL_MPC_ATTITUDE_THRUST_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p4_mpc_mworks_20260716/generated_c_lifecycle_fixed/MoSim_P4_Mpc_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated MPC ATTITUDE_THRUST directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/mpc_attitude_thrust"
+  CACHE PATH "Project-local MPC ATTITUDE_THRUST generated source directory" FORCE)
 set(MOSIM_PX4CTRL_ENHANCEMENT_ATTITUDE_THRUST_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p5_enhancement_mworks_20260717/generated_c/MoSim_P5_Enhancement_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated enhancement ATTITUDE_THRUST directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/enhancement_attitude_thrust"
+  CACHE PATH "Project-local enhancement ATTITUDE_THRUST generated source directory" FORCE)
 set(MOSIM_PX4CTRL_LEARNING_ATTITUDE_THRUST_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p9_learning_mworks_20260717/generated_c/MoSim_P9_Learning_AttitudeThrust_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated learning ATTITUDE_THRUST directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/learning_attitude_thrust"
+  CACHE PATH "Project-local learning ATTITUDE_THRUST generated source directory" FORCE)
 set(MOSIM_PX4CTRL_SAFETY_SUPERVISOR_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p6_safety_mworks_20260717/generated_c/MoSim_P6_SafetySupervisor_CFunction_Sysblock"
-  CACHE PATH "Accepted MoSim MWORKS CFunction generated SafetySupervisor directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/safety_supervisor"
+  CACHE PATH "Project-local SafetySupervisor generated source directory" FORCE)
 set(MOSIM_PX4CTRL_P10_L1_AWFF_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/codegen/MoSim_P10_G10_BDE_CFunction_Sysblock"
-  CACHE PATH "P10 MWORKS-generated minimal L1/AWFF directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/p10_l1_awff"
+  CACHE PATH "Project-local P10 L1/AWFF generated source directory" FORCE)
 set(MOSIM_PX4CTRL_P10_DFBC_FAMILY_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/codegen/MoSim_P10_DFBC_Family_CFunction_Sysblock"
-  CACHE PATH "P10 MWORKS-generated DFBC/DOB family directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/p10_dfbc_family"
+  CACHE PATH "Project-local P10 DFBC/DOB generated source directory" FORCE)
 set(MOSIM_PX4CTRL_P10_HINF_WRENCH_GENERATED_DIR
-  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/codegen/MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock"
-  CACHE PATH "P10 MWORKS-generated frozen-hover H-infinity WRENCH adapter directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/p10_hinf_wrench"
+  CACHE PATH "Project-local P10 frozen-hover H-infinity WRENCH adapter source directory" FORCE)
 set(MOSIM_PX4CTRL_GOLDEN_SLICE_DIR
-  "${MOSIM_PROJECT_ROOT}/Scripts/sunray/px4ctrl_golden_slice"
-  CACHE PATH "MoSim platform-independent px4ctrl/G9 controller core directory")
+  "${MOSIM_PX4CTRL_GENERATED_ROOT}/golden_slice"
+  CACHE PATH "Project-local px4ctrl controller-core source directory" FORCE)
+
+function(mosim_require_path_within _label _root _candidate)
+  get_filename_component(_mosim_root_abs "${_root}" ABSOLUTE)
+  get_filename_component(_mosim_candidate_abs "${_candidate}" ABSOLUTE)
+  if(EXISTS "${_mosim_root_abs}")
+    get_filename_component(_mosim_root_abs "${_mosim_root_abs}" REALPATH)
+  endif()
+  if(EXISTS "${_mosim_candidate_abs}")
+    get_filename_component(_mosim_candidate_abs "${_mosim_candidate_abs}" REALPATH)
+  endif()
+  file(RELATIVE_PATH _mosim_relative "${_mosim_root_abs}" "${_mosim_candidate_abs}")
+  if(_mosim_relative STREQUAL ".." OR _mosim_relative MATCHES "^\\.\\./" OR IS_ABSOLUTE "${_mosim_relative}")
+    message(FATAL_ERROR "${_label} must remain below ${_mosim_root_abs}: ${_mosim_candidate_abs}")
+  endif()
+endfunction()
+
+mosim_require_path_within("px4ctrl generated root" "${MOSIM_PX4CTRL_SOURCE_DIR}" "${MOSIM_PX4CTRL_GENERATED_ROOT}")
 
 if(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "legacy_px4ctrl")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_GENERATED_DIR}")
@@ -141,17 +162,34 @@ else()
   message(FATAL_ERROR "Unsupported MOSIM_PX4CTRL_GENERATED_BACKEND=${MOSIM_PX4CTRL_GENERATED_BACKEND}")
 endif()
 
+mosim_require_path_within("px4ctrl active generated source" "${MOSIM_PX4CTRL_GENERATED_ROOT}" "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}")
+mosim_require_path_within("px4ctrl core source" "${MOSIM_PX4CTRL_GENERATED_ROOT}" "${MOSIM_PX4CTRL_GOLDEN_SLICE_DIR}")
+
 message(STATUS "MoSim px4ctrl generated backend: ${MOSIM_PX4CTRL_GENERATED_BACKEND}")
 message(STATUS "MoSim px4ctrl generated dir: ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}")
 
-foreach(_mosim_generated_file
-    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}.c"
-    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}.h"
-    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_data.c"
-    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_private.h"
-    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c")
+set(MOSIM_PX4CTRL_REQUIRED_GENERATED_FILES
+  "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}.c"
+  "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}.h"
+  "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_data.c"
+  "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_private.h"
+  "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c")
+if(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "legacy_px4ctrl")
+  list(APPEND MOSIM_PX4CTRL_REQUIRED_GENERATED_FILES
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_extern_include.h"
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/mwb_runtime.h"
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/mwb_types.h")
+endif()
+foreach(_mosim_generated_file ${MOSIM_PX4CTRL_REQUIRED_GENERATED_FILES})
   if(NOT EXISTS "${_mosim_generated_file}")
-    message(FATAL_ERROR "Missing accepted MoSim px4ctrl generated file: ${_mosim_generated_file}")
+    message(FATAL_ERROR "Missing project-local px4ctrl generated file: ${_mosim_generated_file}")
+  endif()
+endforeach()
+foreach(_mosim_core_file
+    "${MOSIM_PX4CTRL_GOLDEN_SLICE_DIR}/px4ctrl_core.cpp"
+    "${MOSIM_PX4CTRL_GOLDEN_SLICE_DIR}/px4ctrl_core.h")
+  if(NOT EXISTS "${_mosim_core_file}")
+    message(FATAL_ERROR "Missing project-local px4ctrl core file: ${_mosim_core_file}")
   endif()
 endforeach()
 
@@ -165,7 +203,7 @@ include_directories(
   include
 )
 
-add_executable(px4ctrl_node 
+add_executable(px4ctrl_node
   src/px4ctrl_node.cpp
   src/PX4CtrlFSM.cpp
   src/PX4CtrlParam.cpp
@@ -177,7 +215,7 @@ add_executable(px4ctrl_node
   ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c
 )
 
-add_dependencies(px4ctrl_node quadrotor_msgs)
+add_dependencies(px4ctrl_node ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(px4ctrl_node
   ${catkin_LIBRARIES}

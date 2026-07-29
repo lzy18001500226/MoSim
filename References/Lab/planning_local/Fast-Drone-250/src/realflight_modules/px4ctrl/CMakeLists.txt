@@ -27,7 +27,7 @@ get_filename_component(MOSIM_PX4CTRL_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" REAL
 get_filename_component(MOSIM_PROJECT_ROOT
   "${MOSIM_PX4CTRL_SOURCE_DIR}/../../../../../../.." ABSOLUTE)
 set(MOSIM_PX4CTRL_GENERATED_BACKEND "legacy_px4ctrl"
-  CACHE STRING "MoSim generated controller backend: legacy_px4ctrl, g9_family, g10_bde_family, pid_attitude_thrust, wave_a_attitude_thrust, linear_robust_attitude_thrust, classic_controller_attitude_thrust, sliding_mode_attitude_thrust, mpc_attitude_thrust, enhancement_attitude_thrust, learning_attitude_thrust, or safety_supervisor")
+  CACHE STRING "MoSim generated controller backend; see the selection chain below")
 set(MOSIM_PX4CTRL_GENERATED_DIR
   "${MOSIM_PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_mworks_goal5_m4a_cfunction_20260629_092411/px4ctrl_core_cfunction_codegen_strict/PX4CTRL_Core_CFunction_Sysblock"
   CACHE PATH "Accepted MoSim MWORKS CFunction generated px4ctrl_core directory")
@@ -64,6 +64,15 @@ set(MOSIM_PX4CTRL_LEARNING_ATTITUDE_THRUST_GENERATED_DIR
 set(MOSIM_PX4CTRL_SAFETY_SUPERVISOR_GENERATED_DIR
   "${MOSIM_PROJECT_ROOT}/Results/control_platform/p6_safety_mworks_20260717/generated_c/MoSim_P6_SafetySupervisor_CFunction_Sysblock"
   CACHE PATH "Accepted MoSim MWORKS CFunction generated SafetySupervisor directory")
+set(MOSIM_PX4CTRL_P10_L1_AWFF_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/codegen/MoSim_P10_G10_BDE_CFunction_Sysblock"
+  CACHE PATH "P10 MWORKS-generated minimal L1/AWFF directory")
+set(MOSIM_PX4CTRL_P10_DFBC_FAMILY_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/codegen/MoSim_P10_DFBC_Family_CFunction_Sysblock"
+  CACHE PATH "P10 MWORKS-generated DFBC/DOB family directory")
+set(MOSIM_PX4CTRL_P10_HINF_WRENCH_GENERATED_DIR
+  "${MOSIM_PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/codegen/MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock"
+  CACHE PATH "P10 MWORKS-generated frozen-hover H-infinity WRENCH adapter directory")
 set(MOSIM_PX4CTRL_GOLDEN_SLICE_DIR
   "${MOSIM_PROJECT_ROOT}/Scripts/sunray/px4ctrl_golden_slice"
   CACHE PATH "MoSim platform-independent px4ctrl/G9 controller core directory")
@@ -116,8 +125,20 @@ elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "safety_supervisor")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_SAFETY_SUPERVISOR_GENERATED_DIR}")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P6_SafetySupervisor_CFunction_Sysblock")
   add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_SAFETY_SUPERVISOR=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "p10_l1_awff")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_P10_L1_AWFF_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P10_G10_BDE_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_P10_L1_AWFF=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "p10_dfbc_family")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_P10_DFBC_FAMILY_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P10_DFBC_Family_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "p10_hinf_wrench")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_P10_HINF_WRENCH_GENERATED_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_P10_HINF_WRENCH=1)
 else()
-  message(FATAL_ERROR "Unsupported MOSIM_PX4CTRL_GENERATED_BACKEND=${MOSIM_PX4CTRL_GENERATED_BACKEND}; expected legacy_px4ctrl, g9_family, g10_bde_family, pid_attitude_thrust, wave_a_attitude_thrust, linear_robust_attitude_thrust, classic_controller_attitude_thrust, sliding_mode_attitude_thrust, mpc_attitude_thrust, enhancement_attitude_thrust, learning_attitude_thrust, or safety_supervisor")
+  message(FATAL_ERROR "Unsupported MOSIM_PX4CTRL_GENERATED_BACKEND=${MOSIM_PX4CTRL_GENERATED_BACKEND}")
 endif()
 
 message(STATUS "MoSim px4ctrl generated backend: ${MOSIM_PX4CTRL_GENERATED_BACKEND}")

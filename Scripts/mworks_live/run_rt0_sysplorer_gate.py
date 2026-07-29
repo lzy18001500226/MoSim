@@ -14,21 +14,21 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-MODEL_FILE = ROOT / "Models/MoSimQuadrotorModel/LiveIntegration/package.mo"
+MODEL_FILE = ROOT / "Models/MoSimQuadrotorModel/Deployment/package.mo"
 CLIENT = ROOT / "Scripts/mworks_live/run_rt0_probe_client.py"
 ANALYZER = ROOT / "Scripts/mworks_live/analyze_rt0_trace.py"
 DEFAULT_OUTPUT = ROOT / "Results/control_platform/mworks_live_full_loop_20260719/rt0"
 RATE_CONFIG = {
     50: {
-        "model_name": "MoSimQuadrotorModel.LiveIntegration.RT0RealtimeProbe50Hz",
-        "model_source": ROOT / "Models/MoSimQuadrotorModel/LiveIntegration/RT0RealtimeProbe50Hz.mo",
+        "model_name": "MoSimQuadrotorModel.Deployment.RT0RealtimeProbe50Hz",
+        "model_source": ROOT / "Models/MoSimQuadrotorModel/Deployment/RT0RealtimeProbe50Hz.mo",
         "contract": ROOT / "Config/control_platform/mworks_live_attitude_thrust_contract_v1.json",
         "sim_stop_time": 22.0,
         "frequency_profile": "attitude_thrust_50hz_v1",
     },
     200: {
-        "model_name": "MoSimQuadrotorModel.LiveIntegration.RT0RealtimeProbe200Hz",
-        "model_source": ROOT / "Models/MoSimQuadrotorModel/LiveIntegration/RT0RealtimeProbe200Hz.mo",
+        "model_name": "MoSimQuadrotorModel.Deployment.RT0RealtimeProbe200Hz",
+        "model_source": ROOT / "Models/MoSimQuadrotorModel/Deployment/RT0RealtimeProbe200Hz.mo",
         "contract": ROOT / "Config/control_platform/mworks_live_attitude_thrust_contract_v3_candidate_200hz.json",
         "sim_stop_time": 12.0,
         "frequency_profile": "attitude_thrust_200hz_candidate_v2",

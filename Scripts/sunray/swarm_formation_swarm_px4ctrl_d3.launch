@@ -3,6 +3,9 @@
   <arg name="map_size_x" default="10.0"/>
   <arg name="map_size_y" default="8.0"/>
   <arg name="map_size_z" default="2.5"/>
+  <arg name="use_map_origin_override" default="false"/>
+  <arg name="map_origin_x" default="0.0"/>
+  <arg name="map_origin_y" default="0.0"/>
   <arg name="max_vel" default="0.8"/>
   <arg name="max_acc" default="0.8"/>
   <arg name="planning_horizon" default="4.0"/>
@@ -15,11 +18,21 @@
   <arg name="max_traj_z" default="1000000000.0"/>
   <arg name="weight_height" default="0.0"/>
   <arg name="relative_z" default="1.0"/>
+  <arg name="relative_pos_0_x" default="0.0"/>
+  <arg name="relative_pos_0_y" default="0.0"/>
+  <arg name="relative_pos_1_x" default="1.7321"/>
+  <arg name="relative_pos_1_y" default="-1.0"/>
+  <arg name="relative_pos_2_x" default="0.0"/>
+  <arg name="relative_pos_2_y" default="-2.0"/>
   <arg name="center_z" default="1.0"/>
   <arg name="swarm_traj_time_tolerance_s" default="1.0"/>
+  <arg name="rigid_leader_follower_mode" default="false"/>
   <arg name="grid_resolution" default="0.12"/>
   <arg name="obstacles_inflation" default="0.10"/>
+  <arg name="astar_search_timeout_s" default="0.20"/>
+  <arg name="astar_planar_search" default="false"/>
   <arg name="local_update_range_xy" default="4.5"/>
+  <arg name="virtual_ceil_height" default="1.30"/>
 
   <group ns="drone_0">
     <node pkg="ego_planner" name="ego_planner_node" type="ego_planner_node" output="screen">
@@ -41,6 +54,14 @@
       <param name="optimization/min_traj_z" value="$(arg min_traj_z)" type="double"/>
       <param name="optimization/max_traj_z" value="$(arg max_traj_z)" type="double"/>
       <param name="optimization/weight_height" value="$(arg weight_height)" type="double"/>
+      <param name="optimization/astar_search_timeout_s" value="$(arg astar_search_timeout_s)" type="double"/>
+      <param name="optimization/astar_planar_search" value="$(arg astar_planar_search)" type="bool"/>
+      <param name="global_goal/relative_pos_0/x" value="$(arg relative_pos_0_x)" type="double"/>
+      <param name="global_goal/relative_pos_0/y" value="$(arg relative_pos_0_y)" type="double"/>
+      <param name="global_goal/relative_pos_1/x" value="$(arg relative_pos_1_x)" type="double"/>
+      <param name="global_goal/relative_pos_1/y" value="$(arg relative_pos_1_y)" type="double"/>
+      <param name="global_goal/relative_pos_2/x" value="$(arg relative_pos_2_x)" type="double"/>
+      <param name="global_goal/relative_pos_2/y" value="$(arg relative_pos_2_y)" type="double"/>
       <param name="global_goal/relative_pos_0/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>
@@ -54,11 +75,15 @@
       <param name="fsm/fail_safe" value="true"/>
       <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
       <param name="fsm/swarm_traj_time_tolerance_s" value="$(arg swarm_traj_time_tolerance_s)" type="double"/>
+      <param name="fsm/rigid_leader_follower_mode" value="$(arg rigid_leader_follower_mode)" type="bool"/>
       <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d3_drone0.txt"/>
       <param name="grid_map/resolution" value="$(arg grid_resolution)"/>
       <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
       <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
       <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
+      <param name="grid_map/use_map_origin_override" value="$(arg use_map_origin_override)" type="bool"/>
+      <param name="grid_map/map_origin_x" value="$(arg map_origin_x)" type="double"/>
+      <param name="grid_map/map_origin_y" value="$(arg map_origin_y)" type="double"/>
       <param name="grid_map/local_update_range_x" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_y" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_z" value="2.5"/>
@@ -70,7 +95,7 @@
       <param name="grid_map/p_occ" value="0.80"/>
       <param name="grid_map/min_ray_length" value="0.1"/>
       <param name="grid_map/max_ray_length" value="4.5"/>
-      <param name="grid_map/virtual_ceil_height" value="1.30"/>
+      <param name="grid_map/virtual_ceil_height" value="$(arg virtual_ceil_height)"/>
       <param name="grid_map/visualization_truncate_height" value="1.50"/>
       <param name="grid_map/show_occ_time" value="false"/>
       <param name="grid_map/pose_type" value="1"/>
@@ -120,6 +145,14 @@
       <param name="optimization/min_traj_z" value="$(arg min_traj_z)" type="double"/>
       <param name="optimization/max_traj_z" value="$(arg max_traj_z)" type="double"/>
       <param name="optimization/weight_height" value="$(arg weight_height)" type="double"/>
+      <param name="optimization/astar_search_timeout_s" value="$(arg astar_search_timeout_s)" type="double"/>
+      <param name="optimization/astar_planar_search" value="$(arg astar_planar_search)" type="bool"/>
+      <param name="global_goal/relative_pos_0/x" value="$(arg relative_pos_0_x)" type="double"/>
+      <param name="global_goal/relative_pos_0/y" value="$(arg relative_pos_0_y)" type="double"/>
+      <param name="global_goal/relative_pos_1/x" value="$(arg relative_pos_1_x)" type="double"/>
+      <param name="global_goal/relative_pos_1/y" value="$(arg relative_pos_1_y)" type="double"/>
+      <param name="global_goal/relative_pos_2/x" value="$(arg relative_pos_2_x)" type="double"/>
+      <param name="global_goal/relative_pos_2/y" value="$(arg relative_pos_2_y)" type="double"/>
       <param name="global_goal/relative_pos_1/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>
@@ -133,11 +166,15 @@
       <param name="fsm/fail_safe" value="true"/>
       <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
       <param name="fsm/swarm_traj_time_tolerance_s" value="$(arg swarm_traj_time_tolerance_s)" type="double"/>
+      <param name="fsm/rigid_leader_follower_mode" value="$(arg rigid_leader_follower_mode)" type="bool"/>
       <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d3_drone1.txt"/>
       <param name="grid_map/resolution" value="$(arg grid_resolution)"/>
       <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
       <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
       <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
+      <param name="grid_map/use_map_origin_override" value="$(arg use_map_origin_override)" type="bool"/>
+      <param name="grid_map/map_origin_x" value="$(arg map_origin_x)" type="double"/>
+      <param name="grid_map/map_origin_y" value="$(arg map_origin_y)" type="double"/>
       <param name="grid_map/local_update_range_x" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_y" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_z" value="2.5"/>
@@ -149,7 +186,7 @@
       <param name="grid_map/p_occ" value="0.80"/>
       <param name="grid_map/min_ray_length" value="0.1"/>
       <param name="grid_map/max_ray_length" value="4.5"/>
-      <param name="grid_map/virtual_ceil_height" value="1.30"/>
+      <param name="grid_map/virtual_ceil_height" value="$(arg virtual_ceil_height)"/>
       <param name="grid_map/visualization_truncate_height" value="1.50"/>
       <param name="grid_map/show_occ_time" value="false"/>
       <param name="grid_map/pose_type" value="1"/>
@@ -199,6 +236,14 @@
       <param name="optimization/min_traj_z" value="$(arg min_traj_z)" type="double"/>
       <param name="optimization/max_traj_z" value="$(arg max_traj_z)" type="double"/>
       <param name="optimization/weight_height" value="$(arg weight_height)" type="double"/>
+      <param name="optimization/astar_search_timeout_s" value="$(arg astar_search_timeout_s)" type="double"/>
+      <param name="optimization/astar_planar_search" value="$(arg astar_planar_search)" type="bool"/>
+      <param name="global_goal/relative_pos_0/x" value="$(arg relative_pos_0_x)" type="double"/>
+      <param name="global_goal/relative_pos_0/y" value="$(arg relative_pos_0_y)" type="double"/>
+      <param name="global_goal/relative_pos_1/x" value="$(arg relative_pos_1_x)" type="double"/>
+      <param name="global_goal/relative_pos_1/y" value="$(arg relative_pos_1_y)" type="double"/>
+      <param name="global_goal/relative_pos_2/x" value="$(arg relative_pos_2_x)" type="double"/>
+      <param name="global_goal/relative_pos_2/y" value="$(arg relative_pos_2_y)" type="double"/>
       <param name="global_goal/relative_pos_2/z" value="$(arg relative_z)" type="double"/>
       <param name="global_goal/use_msg_z" value="true" type="bool"/>
       <param name="global_goal/center_z" value="$(arg center_z)" type="double"/>
@@ -212,11 +257,15 @@
       <param name="fsm/fail_safe" value="true"/>
       <param name="fsm/replan_trajectory_time" value="0.1" type="double"/>
       <param name="fsm/swarm_traj_time_tolerance_s" value="$(arg swarm_traj_time_tolerance_s)" type="double"/>
+      <param name="fsm/rigid_leader_follower_mode" value="$(arg rigid_leader_follower_mode)" type="bool"/>
       <param name="fsm/result_file" value="/tmp/mosim_swarm_formation_d3_drone2.txt"/>
       <param name="grid_map/resolution" value="$(arg grid_resolution)"/>
       <param name="grid_map/map_size_x" value="$(arg map_size_x)"/>
       <param name="grid_map/map_size_y" value="$(arg map_size_y)"/>
       <param name="grid_map/map_size_z" value="$(arg map_size_z)"/>
+      <param name="grid_map/use_map_origin_override" value="$(arg use_map_origin_override)" type="bool"/>
+      <param name="grid_map/map_origin_x" value="$(arg map_origin_x)" type="double"/>
+      <param name="grid_map/map_origin_y" value="$(arg map_origin_y)" type="double"/>
       <param name="grid_map/local_update_range_x" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_y" value="$(arg local_update_range_xy)"/>
       <param name="grid_map/local_update_range_z" value="2.5"/>
@@ -228,7 +277,7 @@
       <param name="grid_map/p_occ" value="0.80"/>
       <param name="grid_map/min_ray_length" value="0.1"/>
       <param name="grid_map/max_ray_length" value="4.5"/>
-      <param name="grid_map/virtual_ceil_height" value="1.30"/>
+      <param name="grid_map/virtual_ceil_height" value="$(arg virtual_ceil_height)"/>
       <param name="grid_map/visualization_truncate_height" value="1.50"/>
       <param name="grid_map/show_occ_time" value="false"/>
       <param name="grid_map/pose_type" value="1"/>

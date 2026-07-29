@@ -674,6 +674,28 @@ def patch_drone_model_text(
         count = 0
     replacements["mavlink_interface_disabled"] = count
 
+    ftc_plugin = f"""
+    <plugin name='mosim_ftc_actuator' filename='libmosim_gazebo_ftc_actuator_plugin.so'>
+      <robotNamespace>/uav1</robotNamespace>
+      <commandTopic>/uav1/mosim/ftc_actuator_command</commandTopic>
+      <telemetryTopic>/uav1/mosim/ftc_actuator_telemetry</telemetryTopic>
+      <maxRotVelocity>{format_scalar(motor['max_rotor_velocity_rad_s'])}</maxRotVelocity>
+      <rotorVelocitySlowdownSim>{format_scalar(motor['rotor_velocity_slowdown_sim'])}</rotorVelocitySlowdownSim>
+    </plugin>"""
+    ftc_pattern = r"\s*<plugin name='mosim_ftc_actuator' filename='libmosim_gazebo_ftc_actuator_plugin\.so'>.*?</plugin>"
+    text, removed = re.subn(ftc_pattern, "", text, flags=re.DOTALL)
+    if os.environ.get("MOSIM_ENABLE_FTC_ACTUATOR_PLUGIN", "false").lower() == "true":
+        text, inserted = re.subn(
+            r"(\s*<plugin name='groundtruth_plugin' filename='libgazebo_groundtruth_plugin\.so'>)",
+            ftc_plugin + r"\1",
+            text,
+            count=1,
+        )
+    else:
+        inserted = 0
+    replacements["ftc_actuator_plugin_removed"] = removed
+    replacements["ftc_actuator_plugin_inserted"] = inserted
+
     return text, replacements
 
 

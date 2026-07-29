@@ -76,6 +76,7 @@ namespace ego_planner
     bool swarm_center_use_msg_z_;
     double swarm_center_z_;
     double swarm_traj_time_tolerance_s_;
+    bool rigid_leader_follower_mode_;
 
     /* planning data */
     bool have_trigger_, have_target_, have_odom_, have_new_target_, have_recv_pre_agent_, have_local_traj_;

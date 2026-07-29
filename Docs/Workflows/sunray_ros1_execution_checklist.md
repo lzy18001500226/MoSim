@@ -106,6 +106,28 @@ first error surface. The stop entry deliberately refuses to terminate a
 non-foundation managed run. It is not a substitute for FAST-LIO, controller,
 planner, or formation gates.
 
+Before the first flight mission after a fresh GPS/SDF change, run the dedicated
+GPS/EKF boot-only gate. It starts no controller, external-fusion node, arming,
+or mission publisher, and it must leave an explicit state-chain result before
+the takeoff-hover-land gate is allowed:
+
+```powershell
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/run_sunray_gps_state_chain_gate.sh'
+```
+
+Read `GPS_STATE_CHAIN_STATUS.json` first. A pass requires the project-local
+nested GPS model, `EKF2_GPS_CTRL=7`, MAVROS global/home/local observations,
+Gazebo-local passive agreement, and a matching PX4 ULog analysis. A missing
+ULog or partial state observation is a blocker, not a reason to continue to
+flight.
+
+Before MAVROS starts, the base runner writes
+`mavros_runtime_config_resolution.json`. It must resolve
+`sunray_simulator` to the declared runtime workspace, have the same plugin-list
+hash as `Config/gazebo/mavros/px4_pluginlists.yaml`, and whitelist
+`home_position` without blacklisting it. This file is the first diagnostic
+surface for a missing MAVROS home topic.
+
 Live wait budget: ordinary live probes should wait about 1-2 minutes. A single
 blocking command must not wait more than 5 minutes unless the user explicitly
 authorizes a longer unattended run for that incident. For controller A/B,

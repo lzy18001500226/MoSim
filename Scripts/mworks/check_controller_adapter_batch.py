@@ -124,6 +124,9 @@ def main() -> int:
         MODEL_ROOT / "Control" / "Bridges" / "package.order",
         MODEL_ROOT / "Control" / "Adapters" / "package.order",
         MODEL_ROOT / "Experiment" / "Runners" / "package.order",
+        MODEL_ROOT / "Experiment" / "Runners" / "Base" / "package.order",
+        MODEL_ROOT / "Experiment" / "Runners" / "Formal" / "package.order",
+        MODEL_ROOT / "Experiment" / "Runners" / "Diagnostic" / "package.order",
         *(ROOT / item["source"] for item in targets),
     ]
     hashes_before = {repo_path(path): sha256(path) for path in tracked_paths}

@@ -23,8 +23,8 @@ def test_delivery_manifest_preserves_authority_counts_and_boundaries():
     assert data["scope"]["frontend_excluded"] is True
     assert data["controller_baseline"]["counts"] == {
         "accepted": 27,
-        "executed_blocked": 25,
-        "not_run": 15,
+        "executed_blocked": 33,
+        "not_run": 7,
     }
     assert data["controller_baseline"]["final_ab_counts"] == {
         "accepted": 1,

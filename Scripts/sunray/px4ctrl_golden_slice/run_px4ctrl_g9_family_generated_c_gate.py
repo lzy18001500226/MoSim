@@ -60,6 +60,38 @@ def detect_generated_globals(header_path: Path) -> tuple[str, str]:
     return matches[0], matches[1]
 
 
+def detect_g10_bde_inputs(header_paths: list[Path]) -> bool:
+    header_text = "\n".join(
+        path.read_text(encoding="utf-8", errors="ignore")
+        for path in header_paths
+        if path.is_file()
+    )
+    return all(
+        field in header_text
+        for field in (
+            "l1_model_decay_in",
+            "safety_accel_limit_x_in",
+            "fault_rotor_efficiency_4_in",
+        )
+    )
+
+
+def detect_p10_dfbc_inputs(header_paths: list[Path]) -> bool:
+    header_text = "\n".join(
+        path.read_text(encoding="utf-8", errors="ignore")
+        for path in header_paths
+        if path.is_file()
+    )
+    return all(
+        field in header_text
+        for field in (
+            "high_order_body_rate_limit_x_in",
+            "smooth_feedback_bound_x_in",
+            "disturbance_compensation_limit_z_in",
+        )
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project-root", default="C:/Users/HP/Desktop/MoSim")
@@ -94,8 +126,13 @@ def main() -> int:
     build_dir.mkdir(parents=True, exist_ok=True)
 
     model_name = args.model_name
-    has_g10_bde_inputs = model_name.startswith("G10_BDE_")
-    controller_ids = list(range(1, 10 if has_g10_bde_inputs else 7))
+    generated_headers = [
+        code_dir / f"{model_name}.h",
+        code_dir / f"{model_name}_private.h",
+    ]
+    has_g10_bde_inputs = detect_g10_bde_inputs(generated_headers)
+    has_p10_dfbc_inputs = detect_p10_dfbc_inputs(generated_headers)
+    controller_ids = list(range(1, 12 if has_p10_dfbc_inputs else (10 if has_g10_bde_inputs else 7)))
     required = [
         code_dir / f"{model_name}.c",
         code_dir / f"{model_name}_data.c",
@@ -245,6 +282,7 @@ def main() -> int:
                 f"-DGENERATED_MODEL_INPUT_GLOBAL={input_global}",
                 f"-DGENERATED_MODEL_OUTPUT_GLOBAL={output_global}",
                 f"-DGENERATED_MODEL_HAS_G10_BDE_INPUTS={1 if has_g10_bde_inputs else 0}",
+                f"-DGENERATED_MODEL_HAS_P10_DFBC_INPUTS={1 if has_p10_dfbc_inputs else 0}",
                 "-o",
                 windows_path_to_wsl(gate_obj),
             ],
@@ -268,7 +306,7 @@ def main() -> int:
     manifest: dict[str, object] = {
         "schema": "mosim.g9_family_mworks_generated_c_manifest.v1",
         "status": "unknown",
-        "goal": "G9-G10-BDE-FAMILY-MWORKS-GENERATED-C" if has_g10_bde_inputs else "G9-FAMILY-MWORKS-GENERATED-C",
+        "goal": "G9-G10-P10-FAMILY-MWORKS-GENERATED-C" if has_p10_dfbc_inputs else ("G9-G10-BDE-FAMILY-MWORKS-GENERATED-C" if has_g10_bde_inputs else "G9-FAMILY-MWORKS-GENERATED-C"),
         "controller_profile": "controller_family_attitude_thrust_v1",
         "controller_ids": controller_ids,
         "model_name": model_name,
@@ -278,7 +316,7 @@ def main() -> int:
         "code_dir": str(code_dir),
         "result_dir": str(result_dir),
         "steps": [],
-        "claim_boundary": ("Offline generated-code equivalence for G9-A..F plus accepted G10-B/D/E minimal enhancements only. No ROS, Gazebo, RViz, or flight runtime is executed." if has_g10_bde_inputs else "Offline generated-code equivalence for G9-A..F only. No ROS, Gazebo, RViz, or flight runtime is executed."),
+        "claim_boundary": ("Offline generated-code equivalence for G9-A..F, G10-B/D/E, and P10 DFBC high-order/smooth-robust routes only. No ROS, Gazebo, RViz, or flight runtime is executed." if has_p10_dfbc_inputs else ("Offline generated-code equivalence for G9-A..F plus accepted G10-B/D/E minimal enhancements only. No ROS, Gazebo, RViz, or flight runtime is executed." if has_g10_bde_inputs else "Offline generated-code equivalence for G9-A..F only. No ROS, Gazebo, RViz, or flight runtime is executed.")),
     }
 
     for step in steps:

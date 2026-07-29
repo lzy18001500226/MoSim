@@ -28,6 +28,7 @@ from current_model_entry_map_lib import ROOT
 
 
 CURRENT_MAP_PATH = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
+CATALOG_PATH = ROOT / "Config" / "control_platform" / "control_scheme_catalog.json"
 QUEUE_PATH = (
     ROOT
     / "Results"
@@ -45,6 +46,16 @@ SYSBLOCK_DEFINITION_ROOT = (
     ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Implementations" / "Sysblocks"
 )
 CHAMPION_SELECTION_SCHEMA = "mosim.g6_measured_family_selection.v2"
+ACTIVE_ENTRY_COUNT = 48
+CURRENT_MWORKS_ROUTE_COUNT = 46
+TIER1_ONLY_SCHEME_IDS = (
+    "pid_awff_linear_eso",
+    "smc_boundary_layer",
+    "nmpc_outer",
+)
+TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT = 45
+TIER2_CURRENT_MWORKS_ROUTE_COUNT = 44
+FAMILY_SCREENING_CANDIDATE_COUNT = 43
 
 CHAMPION_HARNESS_PROMOTION_CONTRACT = {
     "state": "required_before_g6",
@@ -57,7 +68,7 @@ CHAMPION_HARNESS_PROMOTION_CONTRACT = {
         "geometric_flatness",
         "learning",
     ],
-    "selection_gate": "All 46 current MWORKS routes must first have current-source ClimbPath 50 s minimum-closure records before a measured family winner is selected.",
+    "selection_gate": "All 45 Tier2 whole-aircraft routes must first have current-source ClimbPath 50 s minimum-closure records before a measured family winner is selected.",
     "selection_metric": "Use the valid current-source ClimbPath 50 s position RMSE, with terminal position error and numerical stability as tie breakers. Do not rank from superseded pre-repair results.",
     "baseline_rule": "Official PID and the future MWORKS-equivalent px4ctrl_core are fixed A/B baselines, not predeclared family winners. Official PID is screened with the other 46 routes but remains excluded from the PID-family winner pool because it is the reference baseline.",
     "required_bindings": [
@@ -103,6 +114,64 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def tier_policy(catalog: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Return the catalog-owned Tier1/Tier2 decision for every active entry."""
+
+    policy = catalog.get("whole_aircraft_closure_policy")
+    if not isinstance(policy, dict):
+        raise HarnessMapError("whole-aircraft closure policy is missing from the catalog")
+    tier2 = policy.get("tier2")
+    if not isinstance(tier2, dict) or tier2.get("planned_route_count") != TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT:
+        raise HarnessMapError("catalog Tier2 route count is invalid")
+    entries = policy.get("tier1_only_profiles")
+    if not isinstance(entries, list):
+        raise HarnessMapError("catalog Tier1-only profile list is missing")
+
+    tier1_only: dict[str, str] = {}
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise HarnessMapError("catalog Tier1-only profile entry is invalid")
+        scheme_id = str(entry.get("scheme_id") or "")
+        reason = str(entry.get("reason") or "")
+        if not scheme_id or not reason or scheme_id in tier1_only:
+            raise HarnessMapError("catalog Tier1-only profile entry is incomplete or duplicated")
+        tier1_only[scheme_id] = reason
+    if tuple(tier1_only) != TIER1_ONLY_SCHEME_IDS:
+        raise HarnessMapError("catalog Tier1-only profile IDs drift from the approved decision")
+
+    schemes = catalog.get("schemes")
+    if not isinstance(schemes, list) or len(schemes) != ACTIVE_ENTRY_COUNT:
+        raise HarnessMapError("catalog must retain 48 active entries")
+    result: dict[str, dict[str, Any]] = {}
+    for entry in schemes:
+        if not isinstance(entry, dict):
+            raise HarnessMapError("catalog contains a non-object scheme")
+        scheme_id = str(entry.get("scheme_id") or "")
+        if not scheme_id or scheme_id in result:
+            raise HarnessMapError("catalog scheme IDs are incomplete or duplicated")
+        if scheme_id in tier1_only:
+            if (
+                entry.get("whole_aircraft_tier") != "tier1_only"
+                or entry.get("tier2_closure_eligibility") != "excluded"
+                or entry.get("tier2_exclusion_reason") != tier1_only[scheme_id]
+            ):
+                raise HarnessMapError(f"{scheme_id}: catalog Tier1-only row is incomplete")
+            result[scheme_id] = {
+                "whole_aircraft_tier": "tier1_only",
+                "tier2_closure_eligibility": "excluded",
+                "tier2_exclusion_reason": tier1_only[scheme_id],
+            }
+        else:
+            result[scheme_id] = {
+                "whole_aircraft_tier": "tier1_and_tier2",
+                "tier2_closure_eligibility": "included",
+                "tier2_exclusion_reason": None,
+            }
+    if len(result) - len(tier1_only) != TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT:
+        raise HarnessMapError("catalog Tier2 population does not equal 45 routes")
+    return result
 
 
 def formal_file(path_text: str, label: str) -> Path:
@@ -157,14 +226,27 @@ def build_measured_family_selection(rows: list[dict[str, Any]]) -> dict[str, Any
         if row.get("formal_harness_state")
         in {"missing_closed_loop_harness", "resolved_canonical_whole_aircraft_harness"}
     ]
-    if len(current_rows) != 46:
+    if len(current_rows) != CURRENT_MWORKS_ROUTE_COUNT:
         raise HarnessMapError("G6 measured family selection requires exactly 46 current MWORKS routes")
+    tier2_current_rows = [
+        row for row in current_rows if row.get("tier2_closure_eligibility") == "included"
+    ]
+    if len(tier2_current_rows) != TIER2_CURRENT_MWORKS_ROUTE_COUNT:
+        raise HarnessMapError("G6 measured family selection requires 44 Tier2 current MWORKS routes")
+    if (
+        pool_policy.get("eligible_current_mworks_route_count")
+        != FAMILY_SCREENING_CANDIDATE_COUNT
+        or pool_policy.get("tier2_whole_aircraft_route_count")
+        != TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT
+        or tuple(pool_policy.get("tier1_only_scheme_ids") or ()) != TIER1_ONLY_SCHEME_IDS
+    ):
+        raise HarnessMapError("G6 pool policy drifts from the approved Tier1/Tier2 decision")
     pools: list[dict[str, Any]] = []
     candidate_ids: list[str] = []
     for category in expected_categories:
         pool_ids = sorted(
             str(row["scheme_id"])
-            for row in current_rows
+            for row in tier2_current_rows
             if row.get("category") == category
             and row.get("selection_eligibility") == "family_screening"
         )
@@ -184,6 +266,8 @@ def build_measured_family_selection(rows: list[dict[str, Any]]) -> dict[str, Any
         raise HarnessMapError("G6 measured family-selection pools overlap")
     if "official_pid" in candidate_ids:
         raise HarnessMapError("Official PID must remain the fixed A/B baseline, not a family-winner candidate")
+    if len(candidate_ids) != FAMILY_SCREENING_CANDIDATE_COUNT:
+        raise HarnessMapError("G6 measured family-selection pool must contain 43 candidates")
     return {
         "schema": CHAMPION_SELECTION_SCHEMA,
         "state": "awaiting_phase1_minimum_closure",
@@ -196,6 +280,9 @@ def build_measured_family_selection(rows: list[dict[str, Any]]) -> dict[str, Any
             "family_screening_candidate_count": len(candidate_ids),
             "selected_family_winner_count": 0,
             "current_mworks_route_count": len(current_rows),
+            "tier2_current_mworks_route_count": len(tier2_current_rows),
+            "tier2_whole_aircraft_route_count": TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT,
+            "tier1_only_profile_count": len(TIER1_ONLY_SCHEME_IDS),
             "official_pid_baseline_count": 1,
             "px4ctrl_core_baseline_count": 1,
         },
@@ -313,7 +400,9 @@ def has_formal_runner_interface(model_path: Path) -> bool:
     )
 
 
-def common_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> dict[str, Any]:
+def common_row(
+    map_row: dict[str, Any], queue_row: dict[str, Any], tier: dict[str, Any]
+) -> dict[str, Any]:
     scheme_id = str(map_row["scheme_id"])
     return {
         "scheme_id": scheme_id,
@@ -329,11 +418,14 @@ def common_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> dict[str, 
         "current_model_class": map_row.get("current_model_class"),
         "current_model_sha256": map_row.get("current_model_sha256"),
         "topology_review_target": review_target(queue_row, scheme_id),
+        **tier,
     }
 
 
-def graphical_core_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> dict[str, Any]:
-    row = common_row(map_row, queue_row)
+def graphical_core_row(
+    map_row: dict[str, Any], queue_row: dict[str, Any], tier: dict[str, Any]
+) -> dict[str, Any]:
+    row = common_row(map_row, queue_row, tier)
     scheme_id = str(row["scheme_id"])
     model_file = str(row["current_model_file"])
     model_path = formal_file(model_file, f"{scheme_id}: graphical core")
@@ -367,8 +459,10 @@ def graphical_core_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> di
     return row
 
 
-def full_profile_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> dict[str, Any]:
-    row = common_row(map_row, queue_row)
+def full_profile_row(
+    map_row: dict[str, Any], queue_row: dict[str, Any], tier: dict[str, Any]
+) -> dict[str, Any]:
+    row = common_row(map_row, queue_row, tier)
     scheme_id = str(row["scheme_id"])
     public_entry = formal_file(str(row["current_model_file"]), f"{scheme_id}: formal public entry")
     provenance = map_row.get("source_provenance")
@@ -410,7 +504,7 @@ def full_profile_row(map_row: dict[str, Any], queue_row: dict[str, Any]) -> dict
     return row
 
 
-def planned_profile_row(map_row: dict[str, Any]) -> dict[str, Any]:
+def planned_profile_row(map_row: dict[str, Any], tier: dict[str, Any]) -> dict[str, Any]:
     return {
         "scheme_id": map_row["scheme_id"],
         "display_name_zh": map_row.get("display_name_zh"),
@@ -424,10 +518,11 @@ def planned_profile_row(map_row: dict[str, Any]) -> dict[str, Any]:
         "minimum_whole_aircraft_closure_eligible": False,
         "blocker_code": map_row.get("blocker_code"),
         "blocker_reason": map_row.get("blocker_reason"),
+        **tier,
     }
 
 
-def pending_mworks_equivalent_core_row(map_row: dict[str, Any]) -> dict[str, Any]:
+def pending_mworks_equivalent_core_row(map_row: dict[str, Any], tier: dict[str, Any]) -> dict[str, Any]:
     return {
         "scheme_id": map_row["scheme_id"],
         "display_name_zh": map_row.get("display_name_zh"),
@@ -440,11 +535,14 @@ def pending_mworks_equivalent_core_row(map_row: dict[str, Any]) -> dict[str, Any
         "formal_harness_state": "pending_mworks_equivalent_core",
         "minimum_whole_aircraft_closure_eligible": False,
         "claim_boundary": "px4ctrl remains the engineering/deployment baseline. Its MWORKS-equivalent core, graphical review, and formal A/B entry are pending an explicit C++ behavior/interface-equivalence gate.",
+        **tier,
     }
 
 
 def build_harness_map() -> dict[str, Any]:
     current_map = read_json(CURRENT_MAP_PATH)
+    catalog = read_json(CATALOG_PATH)
+    tiers = tier_policy(catalog)
     queue = read_json(QUEUE_PATH)
     if current_map.get("schema") != "mosim.current_model_entry_map.v1":
         raise HarnessMapError("Current model entry map schema is invalid")
@@ -452,16 +550,16 @@ def build_harness_map() -> dict[str, Any]:
         raise HarnessMapError("G5 graphical review queue schema is invalid")
     map_rows = current_map.get("schemes")
     queue_rows = queue.get("schemes")
-    if not isinstance(map_rows, list) or len(map_rows) != 48:
+    if not isinstance(map_rows, list) or len(map_rows) != ACTIVE_ENTRY_COUNT:
         raise HarnessMapError("Current model entry map must contain 48 active profiles")
-    if not isinstance(queue_rows, list) or len(queue_rows) != 48:
+    if not isinstance(queue_rows, list) or len(queue_rows) != ACTIVE_ENTRY_COUNT:
         raise HarnessMapError("G5 graphical review queue must contain 48 active profiles")
     queue_by_id = {
         str(row.get("scheme_id")): row
         for row in queue_rows
         if isinstance(row, dict) and row.get("scheme_id")
     }
-    if len(queue_by_id) != 48:
+    if len(queue_by_id) != ACTIVE_ENTRY_COUNT:
         raise HarnessMapError("G5 graphical review queue has duplicate or missing active profile IDs")
 
     rows: list[dict[str, Any]] = []
@@ -472,16 +570,19 @@ def build_harness_map() -> dict[str, Any]:
         state = map_row.get("mapping_state")
         role = map_row.get("current_model_role")
         queue_row = queue_by_id.get(scheme_id)
+        tier = tiers.get(scheme_id)
+        if not isinstance(tier, dict):
+            raise HarnessMapError(f"{scheme_id}: missing catalog Tier1/Tier2 policy")
         if state == "resolved_current_model" and not isinstance(queue_row, dict):
             raise HarnessMapError(f"{scheme_id}: missing G5 queue row")
         if state == "resolved_current_model" and role == "graphical_controller_core":
-            rows.append(graphical_core_row(map_row, queue_row))
+            rows.append(graphical_core_row(map_row, queue_row, tier))
         elif state == "resolved_current_model" and role == "full_profile_whole_aircraft_closed_loop":
-            rows.append(full_profile_row(map_row, queue_row))
+            rows.append(full_profile_row(map_row, queue_row, tier))
         elif state == "planned_profile_no_model":
-            rows.append(planned_profile_row(map_row))
+            rows.append(planned_profile_row(map_row, tier))
         elif state == "pending_mworks_equivalent_core":
-            rows.append(pending_mworks_equivalent_core_row(map_row))
+            rows.append(pending_mworks_equivalent_core_row(map_row, tier))
         else:
             raise HarnessMapError(f"{scheme_id}: unsupported mapping state/role: {state}/{role}")
 
@@ -497,6 +598,8 @@ def build_harness_map() -> dict[str, Any]:
         ),
         "source_current_model_map": "Config/control_platform/current_model_entry_map.json",
         "source_current_model_map_sha256": sha256_file(CURRENT_MAP_PATH),
+        "source_control_scheme_catalog": "Config/control_platform/control_scheme_catalog.json",
+        "source_control_scheme_catalog_sha256": sha256_file(CATALOG_PATH),
         "source_g5_graphical_review_queue": (
             "Results/control_platform/g5_graphical_structure_review_20260722/"
             "G5_GRAPHICAL_REVIEW_QUEUE.json"
@@ -516,6 +619,16 @@ def build_harness_map() -> dict[str, Any]:
             "missing_closed_loop_harness_count": state_counts["missing_closed_loop_harness"],
             "planned_profile_no_model_count": state_counts["planned_profile_no_model"],
             "pending_mworks_equivalent_core_count": state_counts["pending_mworks_equivalent_core"],
+            "tier1_only_profile_count": len(TIER1_ONLY_SCHEME_IDS),
+            "tier2_whole_aircraft_route_count": sum(
+                row.get("tier2_closure_eligibility") == "included" for row in rows
+            ),
+            "tier2_current_mworks_route_count": sum(
+                row.get("tier2_closure_eligibility") == "included"
+                and row.get("formal_harness_state")
+                in {"missing_closed_loop_harness", "resolved_canonical_whole_aircraft_harness"}
+                for row in rows
+            ),
             "semantic_family_count": measured_summary["semantic_family_count"],
             "family_screening_candidate_count": measured_summary["family_screening_candidate_count"],
             "selected_family_winner_count": measured_summary["selected_family_winner_count"],
@@ -533,11 +646,11 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
     if value.get("schema") != FORMAL_HARNESS_MAP_SCHEMA:
         errors.append("schema is invalid")
     rows = value.get("schemes")
-    if not isinstance(rows, list) or len(rows) != 48:
+    if not isinstance(rows, list) or len(rows) != ACTIVE_ENTRY_COUNT:
         errors.append("map must contain exactly 48 active profiles")
         return errors
     identifiers = [str(row.get("scheme_id")) for row in rows if isinstance(row, dict)]
-    if len(identifiers) != 48 or len(set(identifiers)) != 48:
+    if len(identifiers) != ACTIVE_ENTRY_COUNT or len(set(identifiers)) != ACTIVE_ENTRY_COUNT:
         errors.append("scheme IDs must be complete and unique")
     by_id = {str(row.get("scheme_id")): row for row in rows if isinstance(row, dict)}
     for scheme_id in ("mu_synthesis", "neural_smc"):
@@ -547,6 +660,20 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
         errors.append("ESO profile must remain planned_profile_no_model until a MWORKS implementation exists")
     if by_id.get("px4ctrl", {}).get("formal_harness_state") != "pending_mworks_equivalent_core":
         errors.append("px4ctrl must remain pending_mworks_equivalent_core")
+    tier1_only_ids = {
+        scheme_id
+        for scheme_id, row in by_id.items()
+        if row.get("whole_aircraft_tier") == "tier1_only"
+        and row.get("tier2_closure_eligibility") == "excluded"
+        and isinstance(row.get("tier2_exclusion_reason"), str)
+    }
+    if tier1_only_ids != set(TIER1_ONLY_SCHEME_IDS):
+        errors.append("Tier1-only profile set must match the approved three-route decision")
+    tier2_rows = [
+        row for row in rows if isinstance(row, dict) and row.get("tier2_closure_eligibility") == "included"
+    ]
+    if len(tier2_rows) != TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT:
+        errors.append("Tier2 whole-aircraft population must equal 45 routes")
 
     candidates = [
         row
@@ -561,7 +688,7 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
         for row in candidates
         if row.get("formal_harness_state") == "resolved_canonical_whole_aircraft_harness"
     ]
-    if len(candidates) != 46 or len(graphical) != 41 or len(integrated) != 5:
+    if len(candidates) != CURRENT_MWORKS_ROUTE_COUNT or len(graphical) != 41 or len(integrated) != 5:
         errors.append("current-route split must remain 46 = 41 graphical cores + 5 full-profile whole-aircraft harnesses")
     for row in candidates:
         target = row.get("topology_review_target")
@@ -624,14 +751,17 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
                             f"{row.get('scheme_id')}: load prerequisite {index} {key} must bind its source controller type"
                         )
     expected_summary = {
-        "active_top_level_entry_count": 48,
-        "current_mworks_route_count": 46,
+        "active_top_level_entry_count": ACTIVE_ENTRY_COUNT,
+        "current_mworks_route_count": CURRENT_MWORKS_ROUTE_COUNT,
         "resolved_canonical_whole_aircraft_harness_count": 5,
         "missing_closed_loop_harness_count": 41,
         "planned_profile_no_model_count": 1,
         "pending_mworks_equivalent_core_count": 1,
         "semantic_family_count": 7,
-        "family_screening_candidate_count": 45,
+        "tier1_only_profile_count": len(TIER1_ONLY_SCHEME_IDS),
+        "tier2_whole_aircraft_route_count": TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT,
+        "tier2_current_mworks_route_count": TIER2_CURRENT_MWORKS_ROUTE_COUNT,
+        "family_screening_candidate_count": FAMILY_SCREENING_CANDIDATE_COUNT,
         "selected_family_winner_count": 0,
         "official_pid_baseline_count": 1,
         "px4ctrl_core_baseline_count": 1,
@@ -675,6 +805,7 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
                 and row.get("selection_eligibility") == "family_screening"
                 and row.get("formal_harness_state")
                 in {"missing_closed_loop_harness", "resolved_canonical_whole_aircraft_harness"}
+                and row.get("tier2_closure_eligibility") == "included"
             )
             if not isinstance(actual_ids, list) or actual_ids != expected_ids:
                 errors.append(f"{category}: measured family-selection pool does not match current eligible routes")
@@ -686,8 +817,8 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
             if pool.get("winner_selection_state") != "awaiting_all_current_source_phase1_records":
                 errors.append(f"{category}: winner selection state is invalid")
             pooled_ids.extend(str(item) for item in actual_ids)
-        if len(pooled_ids) != 45 or len(set(pooled_ids)) != 45:
-            errors.append("measured family-selection pools must contain 45 unique eligible routes")
+        if len(pooled_ids) != FAMILY_SCREENING_CANDIDATE_COUNT or len(set(pooled_ids)) != FAMILY_SCREENING_CANDIDATE_COUNT:
+            errors.append("measured family-selection pools must contain 43 unique eligible routes")
         if "official_pid" in pooled_ids:
             errors.append("Official PID must remain an A/B baseline outside the family-winner pool")
     baselines = measured.get("ab_baselines")
@@ -706,9 +837,12 @@ def validate_harness_map(value: dict[str, Any]) -> list[str]:
     else:
         for key, expected in {
             "semantic_family_count": 7,
-            "family_screening_candidate_count": 45,
+            "family_screening_candidate_count": FAMILY_SCREENING_CANDIDATE_COUNT,
             "selected_family_winner_count": 0,
-            "current_mworks_route_count": 46,
+            "current_mworks_route_count": CURRENT_MWORKS_ROUTE_COUNT,
+            "tier2_current_mworks_route_count": TIER2_CURRENT_MWORKS_ROUTE_COUNT,
+            "tier2_whole_aircraft_route_count": TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT,
+            "tier1_only_profile_count": len(TIER1_ONLY_SCHEME_IDS),
             "official_pid_baseline_count": 1,
             "px4ctrl_core_baseline_count": 1,
         }.items():

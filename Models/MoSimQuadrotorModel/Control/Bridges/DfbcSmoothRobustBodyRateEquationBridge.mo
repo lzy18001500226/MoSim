@@ -16,13 +16,17 @@ protected
   Real desired_body_rate[3];
 
 equation
-  for axis in 1:3 loop
+  for axis in 1:2 loop
     desired_body_rate[axis] = min(max(body_rate_from_acceleration[axis]
       * desired_acceleration_out[axis], -body_rate_limit[axis]),
       body_rate_limit[axis]);
     desired_body_rate_out[axis] = if enable >= 0.5 then
       desired_body_rate[axis] else 0;
   end for;
+  // The vertical acceleration channel produces collective thrust. It must not
+  // be projected into yaw rate when the formal trajectory holds yaw at zero.
+  desired_body_rate[3] = 0;
+  desired_body_rate_out[3] = 0;
 
   annotation(__MWORKS(version = "26.3.0"));
 end DfbcSmoothRobustBodyRateEquationBridge;

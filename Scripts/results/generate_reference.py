@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate reference trajectories matching the official QuadrotorModel examples."""
+"""Generate reference trajectories matching the embedded Plant baseline examples."""
 
 from __future__ import annotations
 
@@ -12,19 +12,19 @@ from pathlib import Path
 
 EXAMPLES = {
     "official_example1": {
-        "model_name": "QuadrotorModel.Examples.Example1",
+        "model_name": "MoSimQuadrotorModel.Vehicle.Examples.Example1",
         "description": "阶梯爬升运动",
         "stop_time": 50.0,
         "dt": 0.01,
     },
     "official_example2": {
-        "model_name": "QuadrotorModel.Examples.Example2",
+        "model_name": "MoSimQuadrotorModel.Vehicle.Examples.Example2",
         "description": "螺旋爬升运动",
         "stop_time": 50.0,
         "dt": 0.01,
     },
     "official_example3": {
-        "model_name": "QuadrotorModel.Examples.Example3",
+        "model_name": "MoSimQuadrotorModel.Vehicle.Examples.Example3",
         "description": "8字形运动",
         "stop_time": 120.0,
         "dt": 0.01,
@@ -110,7 +110,7 @@ def write_replay(path: Path, scene_id: str, rows: list[dict[str, float]]) -> Non
         "scene_id": scene_id,
         "model_name": meta["model_name"],
         "description": meta["description"],
-        "source": "QuadrotorModel.PathPlanning reference equations",
+        "source": "MoSimQuadrotorModel.Vehicle.PathPlanning reference equations",
         "frame_count": len(frames),
         "frames": frames,
     }

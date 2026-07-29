@@ -1,28 +1,40 @@
 from __future__ import annotations
 
 import math
+import json
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
 MODEL = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
 CORE_MODEL = ROOT / "Models" / "MoSimQuadrotorModel" / "Dynamics" / "RotorActuatorCore.mo"
-LEGACY_ALIAS = (
+VIRTUAL_PROFILE = ROOT / "Config" / "plant" / "sunray150_virtual_px4_classic_profile.json"
+PARAMETER_RECORD = (
     ROOT
     / "Models"
-    / "QuadrotorExperiments"
-    / "DynamicsUpgrade"
-    / "Sunray150RflyStyleRotorDynamics.mo"
+    / "MoSimQuadrotorModel"
+    / "Parameters"
+    / "Sunray150VirtualPx4Classic.mo"
+)
+RETIRED_ROOTS = (
+    ROOT / "Models" / "QuadrotorExperiments",
+    ROOT / "Models" / "QuadrotorControllerBlocks",
+    ROOT / "Models" / "MworksLive",
+    ROOT / "Models" / "MoSimQuadrotorModel_backup",
 )
 
 
 def test_dynamics_upgrade_keeps_parameter_provenance_labels() -> None:
-    block = CORE_MODEL.read_text(encoding="utf-8")
+    core = CORE_MODEL.read_text(encoding="utf-8")
+    record = PARAMETER_RECORD.read_text(encoding="utf-8")
+    profile = json.loads(VIRTUAL_PROFILE.read_text(encoding="utf-8"))
 
-    assert "source=SDF_migration" in block
-    assert "source=user-reviewed DAE screw-pair fit" in block
-    assert "PX4_ULog_sysid" not in block
-    assert "not ULog identified" in block
+    assert "Sunray150VirtualPx4Classic profile" in core
+    assert "Source-labeled virtual plant profile; not identified real-aircraft truth" in core
+    assert "Virtual simulation seed only; not real-aircraft system identification truth" in record
+    assert profile["provenance"]["motor_aerodynamic_seed"]["value_source"] == "PX4_Gazebo_default_seed"
+    assert profile["provenance"]["geometry"]["value_source"] == "user-reviewed DAE/Blender assembly"
+    assert profile["scope"]["not_real_aircraft_truth"] is True
 
 
 def test_dynamics_upgrade_contains_minimum_rfly_style_structure() -> None:
@@ -42,22 +54,20 @@ def test_dynamics_upgrade_contains_minimum_rfly_style_structure() -> None:
     assert "QuadrotorExperiments" not in text
 
 
-def test_top_level_package_is_canonical_and_legacy_alias_is_hidden() -> None:
+def test_top_level_package_is_canonical_and_retired_roots_are_absent() -> None:
     package = MODEL.read_text(encoding="utf-8")
-    legacy_alias = LEGACY_ALIAS.read_text(encoding="utf-8")
 
     assert "package MoSimQuadrotorModel" in package
     assert "QuadrotorExperiments" not in package
-    assert "model Sunray150RflyStyleRotorDynamics" in legacy_alias
-    assert "extends MoSimQuadrotorModel.Dynamics.RotorActuatorCore" in legacy_alias
-    assert "annotation(__MWORKS(hide=true));" in legacy_alias
+    assert all(not root.exists() for root in RETIRED_ROOTS)
 
 
 def test_hover_and_yaw_step_reference_math() -> None:
-    mass_kg = 1.0
-    gravity = 9.81
-    lift_coefficient = 0.000854858
-    moment_constant = 0.06
+    profile = json.loads(VIRTUAL_PROFILE.read_text(encoding="utf-8"))
+    mass_kg = profile["mass_accounting"]["total_takeoff_mass_kg"]
+    gravity = profile["gravity_mps2"]
+    lift_coefficient = profile["motor_model"]["mworks_visual_thrust_coefficient_n_per_rad_s2"]
+    moment_constant = profile["motor_model"]["moment_constant_ratio_m"]
     thrust_effectiveness = [1.0, 1.0, 1.0, 1.0]
     reaction_moment_effectiveness = [1.0, 1.0, 1.0, 1.0]
     yaw_delta_omega2 = 300.0

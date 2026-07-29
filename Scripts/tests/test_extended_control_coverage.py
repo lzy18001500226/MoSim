@@ -22,11 +22,24 @@ def test_coverage_report_tracks_every_required_algorithm() -> None:
     registry = json.loads((ROOT / "Config/control_platform/control_module_registry.json").read_text(encoding="utf-8"))
     report = checker_module().build_report(scope, registry)
     assert report["algorithm_count"] == 58
-    assert report["registered_count"] == 6
-    assert report["status_counts"] == {"accepted": 6, "unregistered": 52}
+    assert report["registered_count"] == 18
+    assert report["status_counts"] == {"accepted": 6, "blocked": 2, "implemented": 10, "unregistered": 40}
     assert report["selectable_count"] == 6
     assert report["complete"] is False
     assert len({item["algorithm_id"] for item in report["algorithms"]}) == 58
+    algorithms = {item["algorithm_id"]: item for item in report["algorithms"]}
+    for algorithm_id in (
+        "integral_smc",
+        "terminal_smc",
+        "nonsingular_terminal_smc",
+        "super_twisting_smc",
+        "adaptive_smc",
+        "fuzzy_smc",
+    ):
+        assert algorithms[algorithm_id]["status"] == "implemented"
+        assert algorithms[algorithm_id]["selectable"] is False
+    assert algorithms["neural_smc"]["status"] == "blocked"
+    assert algorithms["neural_smc"]["selectable"] is False
 
 
 def test_coverage_does_not_inherit_from_similar_baseline() -> None:

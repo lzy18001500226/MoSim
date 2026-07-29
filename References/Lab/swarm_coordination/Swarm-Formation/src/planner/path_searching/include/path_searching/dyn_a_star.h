@@ -90,6 +90,8 @@ private:
 	std::priority_queue<GridNodePtr, std::vector<GridNodePtr>, NodeComparator> openSet_;
 
 	int rounds_{0};
+	double search_timeout_s_{0.20};
+	bool planar_search_{false};
 
 public:
 	typedef std::shared_ptr<AStar> Ptr;
@@ -98,6 +100,8 @@ public:
 	~AStar();
 
 	void initGridMap(GridMap::Ptr occ_map, const Eigen::Vector3i pool_size);
+	void setSearchTimeout(const double timeout_s);
+	void setPlanarSearch(const bool planar_search);
 
 	bool AstarSearch(const double step_size, Eigen::Vector3d start_pt, Eigen::Vector3d end_pt, bool use_esdf_check);
 

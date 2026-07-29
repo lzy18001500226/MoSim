@@ -127,7 +127,7 @@ class FormalDynamicsSmokeResultAcceptanceTest(unittest.TestCase):
                         "postprocess_profile: diagnostics_smoke",
                         "model:",
                         "  live_load_strategy: minimal_dynamics_only",
-                        "  model_name: MoSimQuadrotorModel.Vehicle.Dynamics.RotorEffectivenessSmoke",
+                        "  model_name: MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.RotorEffectivenessSmoke",
                         "simulation:",
                         "  stop_time_s: 0.25",
                         "result:",

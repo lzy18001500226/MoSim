@@ -588,7 +588,7 @@ def build_report(source_dir: Path, output_dir: Path) -> dict[str, Any]:
         },
         "mission_timing": {
             "configured_execute_duration_s": (manifest.get("fuel") or {}).get("exploration_execute_s"),
-            "measured_execute_wall_duration_s": (metrics.get("exploration") or {}).get("duration_s"),
+            "measured_execute_wall_duration_s": (metrics.get("exploration") or {}).get("wall_duration_s"),
             "exploration_started_sim_t": (metrics.get("exploration") or {}).get("started_t"),
             "exploration_ended_sim_t": (metrics.get("exploration") or {}).get("ended_t"),
             "truth_exploration_phase_sim_duration_s": duration(truth_exec),

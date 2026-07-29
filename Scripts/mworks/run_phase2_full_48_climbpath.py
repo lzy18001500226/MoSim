@@ -35,6 +35,7 @@ CONTRACT_PATH = RESULT_ROOT / "G2_EXECUTION_CONTRACT.json"
 
 STOP_TIME_S = 50.0
 TERMINAL_ERROR_LIMIT_M = 5.0
+SIMULATION_TIMEOUT_S = 360.0
 SCHEMA = "mosim.phase2_full_48_climbpath.v1"
 MATRIX_SCHEMA = "mosim.phase2_full_48_climbpath_matrix.v1"
 STATUS_SCHEMA = "mosim.phase2_full_48_climbpath_status.v1"
@@ -460,6 +461,7 @@ def run_route(row: dict[str, Any], matrix_hash: str, *, rerun: bool, wrapper: st
             "runner_class": target_class,
             "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
             "target_time_s": [0.0, STOP_TIME_S],
+            "simulation_timeout_s": SIMULATION_TIMEOUT_S,
             "scenario_injection": "none",
             "terminal_position_error_limit_m": TERMINAL_ERROR_LIMIT_M,
             "matrix": {"path": relative(MATRIX_PATH), "sha256": matrix_hash},
@@ -561,6 +563,7 @@ def run_route(row: dict[str, Any], matrix_hash: str, *, rerun: bool, wrapper: st
             native_result_dir=native_dir,
             verify_result_var=RUNNER_VARIABLES["z"],
             verify_time_point="end",
+            timeout_s=SIMULATION_TIMEOUT_S,
         )
         write_json(run_dir / "logs" / "simulate_model_direct.json", simulation)
         if not simulation.get("ok"):

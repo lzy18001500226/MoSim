@@ -7,7 +7,7 @@ BACKEND="${1:-}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_backend_ensure}"
 
 case "${BACKEND}" in
-  legacy_px4ctrl|g9_family|g10_bde_family|pid_attitude_thrust|wave_a_attitude_thrust|linear_robust_attitude_thrust|classic_controller_attitude_thrust|sliding_mode_attitude_thrust|mpc_attitude_thrust|enhancement_attitude_thrust|learning_attitude_thrust|safety_supervisor)
+  legacy_px4ctrl|g9_family|g10_bde_family|pid_attitude_thrust|wave_a_attitude_thrust|linear_robust_attitude_thrust|classic_controller_attitude_thrust|sliding_mode_attitude_thrust|mpc_attitude_thrust|enhancement_attitude_thrust|learning_attitude_thrust|safety_supervisor|p10_l1_awff|p10_dfbc_family|p10_hinf_wrench)
     ;;
   *)
     echo "unsupported px4ctrl generated backend: ${BACKEND:-missing}" >&2
@@ -23,7 +23,12 @@ if [[ -f "${cache}" ]]; then
   current="$(sed -n 's/^MOSIM_PX4CTRL_GENERATED_BACKEND:[^=]*=//p' "${cache}" | tail -1)"
 fi
 
-definition="MOSIM_PX4CTRL_GENERATED_BACKEND_$(printf '%s' "${BACKEND}" | tr '[:lower:]' '[:upper:]')"
+case "${BACKEND}" in
+  # The legacy selector is intentionally named legacy_px4ctrl, while the
+  # CMake source exports the shorter LEGACY compile definition.
+  legacy_px4ctrl) definition="MOSIM_PX4CTRL_GENERATED_BACKEND_LEGACY" ;;
+  *) definition="MOSIM_PX4CTRL_GENERATED_BACKEND_$(printf '%s' "${BACKEND}" | tr '[:lower:]' '[:upper:]')" ;;
+esac
 fingerprint_file="${PX4CTRL_WS}/build/.mosim_${BACKEND}_source_fingerprint"
 fingerprint_inputs=(
   "${PROJECT_ROOT}/References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/CMakeLists.txt"
@@ -42,6 +47,21 @@ fi
 if [[ "${BACKEND}" == "wave_a_attitude_thrust" ]]; then
   fingerprint_inputs+=(
     "${PROJECT_ROOT}/Results/control_platform/g5_mworks_closeout_20260716/wave_a/codegen/MoSim_WaveA_CFunction_Sysblock"
+  )
+fi
+if [[ "${BACKEND}" == "p10_l1_awff" ]]; then
+  fingerprint_inputs+=(
+    "${PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/l1_awff_minimal/codegen/MoSim_P10_G10_BDE_CFunction_Sysblock"
+  )
+fi
+if [[ "${BACKEND}" == "p10_dfbc_family" ]]; then
+  fingerprint_inputs+=(
+    "${PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/dfbc_family/codegen/MoSim_P10_DFBC_Family_CFunction_Sysblock"
+  )
+fi
+if [[ "${BACKEND}" == "p10_hinf_wrench" ]]; then
+  fingerprint_inputs+=(
+    "${PROJECT_ROOT}/Results/control_platform/p10_mworks_gap_closeout_20260718/hinf_hover_wrench/codegen/MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock"
   )
 fi
 source_fingerprint="$({

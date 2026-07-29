@@ -1128,12 +1128,12 @@ const OFFLINE_PROFILES = Dict(
     function createComponents(app)
         app.UIFigure = TyAppDesigner.uifigure(Visible=false)
         app.UIFigure.Position = [30, 30, 1440, 720]
-        app.UIFigure.Name = "MoSim Model Studio 0.6 UI Review"
+        app.UIFigure.Name = "MoSim Studio"
         app.UIFigure.Color = [0.96, 0.97, 0.97]
 
         app.TitleLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.TitleLabel.Position = [24, 16, 520, 34]
-        app.TitleLabel.Text = "MoSim Model Studio"
+        app.TitleLabel.Text = "MoSim Studio"
         app.TitleLabel.FontSize = 24
         app.TitleLabel.FontWeight = "bold"
         app.TitleLabel.FontColor = [0.08, 0.16, 0.22]

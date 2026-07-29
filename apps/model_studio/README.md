@@ -1,13 +1,14 @@
-# MoSim Model Studio
+# MoSim Studio
 
-MoSim Model Studio is a lightweight native MWORKS.Syslab APP. Its source of
+MoSim Studio is a lightweight native MWORKS.Syslab APP. Its source of
 truth is the `TyAppDesigner` implementation in `src/app.jl`.
 
-The APP owns experiment Profile design, capability gating, offline model
-operations, and preparation for QGC handoff. QGC owns flight operations and the
-Orchestrator remains the only runtime command arbiter. The APP does not replace
-Sysplorer graphical modeling, the native MWORKS result viewer, or runtime flight
-control.
+The APP owns experiment Profile authoring, capability gating, offline model
+operations, and MWORKS model/result/code-project entry points. QGC selects a
+published compatible Profile, owns native flight operations, and provides the
+operator surface for discrete fault application and recovery. The APP does not
+replace Sysplorer graphical modeling, the native MWORKS result viewer, or
+runtime flight control.
 
 ## Current D4 proof
 
@@ -84,12 +85,16 @@ Run the source inside Syslab:
 include(raw"C:\Users\HP\Desktop\MoSim\apps\model_studio\src\app.jl")
 ```
 
-The earlier D4 native APP/Orchestrator gate passed on 2026-07-17. Its installable
-artifact remains historical evidence for the older wired baseline:
+The earlier D4 native APP/Orchestrator gate passed on 2026-07-17. Its
+`MoSim Model Studio` installable artifact remains historical evidence for the
+older wired baseline; it is not the current `MoSim Studio` installation:
 
 ```text
 apps/model_studio/dist/MoSim Model Studio.slappinstall
 ```
+
+The next `MoSim Studio.slappinstall` package may be produced only after a
+separately authorized Syslab packaging run.
 
 Machine-readable evidence is stored at:
 

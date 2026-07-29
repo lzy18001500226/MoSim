@@ -57,7 +57,7 @@
 | 3 | `MoSimQuadrotorModel.Experiment.Templates.Official.Example1HelicalFigure8TrailSysblockClosedLoop` | 起飞后螺旋 8 字，带原生轨迹留痕审看 | LinearMPC 风格外环 | 120 s | `Results\official\example1_helical_figure8\official_example1_helical_figure8_trail_sysblock\logs\sysplorer_example1_helical_figure8_trail_sysblock_full_20260514.jsonl` |
 | 4 | `MoSimQuadrotorModel.Guidance.Planning.OpenBlocksLinearMPCVehicle` | 单机 OpenBlocks 静态障碍场 | LinearMPC 风格外环，规划参考 | 80.1247 s | `Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_open_blocks_linear_mpc_sysblock_20260515.jsonl` |
 | 5 | `MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop` | 单机走廊门控障碍场 | LinearMPC 风格外环，规划参考 | 23 s | `Results\planning\corridor_gate_astar_awff\sunray150_planning_corridor_gate_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_corridor_gate_linear_mpc_sysblock_20260515.jsonl` |
-| 6 | `MoSimQuadrotorModel.Guidance.Formation.Scenarios.FormationTriangleFigure8LinearMPCSysblockClosedLoop` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | `Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
+| 6 | `MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | `Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
 | 7 | `MoSimQuadrotorModel.Guidance.Planning.ThreeUavOpenBlocksReconfigurableFormationLinearMPC` | 三机 OpenBlocks 可重构编队 | 三套 LinearMPC 风格外环，规划参考 | 304.8405 s | 本目录只确认该完整源码入口；长仿真先人工 Check Model |
 
 ## 3. 完整飞行入口总表
@@ -119,7 +119,7 @@
 | `MoSimQuadrotorModel.Guidance.Planning.OpenBlocksLinearMPC` | OpenBlocks 静态障碍场 | LinearMPC 风格外环，规划参考 | 80.1247 s | 历史 Sysplorer 日志：`Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_open_blocks_linear_mpc_sysblock_20260515.jsonl` |
 | `MoSimQuadrotorModel.Guidance.Planning.CorridorGateAWFF` | 走廊门控障碍场 | AWFF，规划参考 | 23 s | 完整源码入口；本目录未把它标为本轮已运行。 |
 | `MoSimQuadrotorModel.Guidance.Planning.CorridorGateLinearMPC` | 走廊门控障碍场 | LinearMPC 风格外环，规划参考 | 23 s | 历史 Sysplorer 日志：`Results\planning\corridor_gate_astar_awff\sunray150_planning_corridor_gate_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_corridor_gate_linear_mpc_sysblock_20260515.jsonl` |
-| `MoSimQuadrotorModel.Guidance.Formation.Scenarios.TriangleFigure8LinearMPC` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | 历史 Sysplorer 日志：`Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
+| `MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | 历史 Sysplorer 日志：`Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
 | `MoSimQuadrotorModel.Guidance.Planning.OpenBlocksThreeUavFormation` | 三机 OpenBlocks 可重构编队 | 三套 LinearMPC 风格外环，规划参考 | 304.8405 s | 完整源码入口；长仿真，先 Check Model，未在本轮重跑。 |
 
 `OpenBlocksLinearMPCVehicle` 是给三机场景复用的**带输入端口整机组件**，不是可直接

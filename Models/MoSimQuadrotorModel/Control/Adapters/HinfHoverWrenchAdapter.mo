@@ -6,20 +6,14 @@ model HinfHoverWrenchAdapter
 
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
   parameter Real sample_time_s = 0.01;
-  parameter Real hover_speed = profile.mworks_hover_visual_rotor_speed_rad_s;
-  parameter Real lift_coefficient = profile.mworks_visual_thrust_coefficient;
-  parameter Real hover_collective_thrust_n = 4 * lift_coefficient * hover_speed ^ 2;
-  parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
-  parameter Real max_rotor_speed_delta = 30;
-
-  MoSimQuadrotorModel.Control.Bridges.HinfHoverWrenchEquationBridge core;
+  MoSimQuadrotorModel.Control.Bridges.HinfHoverWrenchEquationBridge core(
+    profile = profile);
   Modelica.Blocks.Continuous.Derivative angular_rate_estimator[3](
     each k = 1,
     each T = 0.02,
     each initType = Modelica.Blocks.Types.Init.InitialOutput,
     each y_start = 0);
 
-  Real collective_speed_delta;
 equation
   connect(attitude_mea, angular_rate_estimator.u);
 
@@ -52,12 +46,9 @@ equation
   core.enable = 1;
   core.reset = if time < 1.5 * sample_time_s then 1 else 0;
 
-  // OfflineWrenchAllocator accepts a rotor-speed increment at body_force[3],
-  // so convert the graphical core's total physical thrust before that boundary.
-  collective_speed_delta = (core.wrench_force_n_out - hover_collective_thrust_n)
-    / collective_thrust_slope;
-  body_force = {0, 0, min(max(collective_speed_delta,
-    -max_rotor_speed_delta), max_rotor_speed_delta)};
+  // Preserve the CFunction's physical wrench. The shared allocator owns the
+  // force/torque-to-rotor-speed conversion at this boundary.
+  body_force = {0, 0, core.wrench_force_n_out};
   body_torque = {core.wrench_tau_x_nm_out, core.wrench_tau_y_nm_out,
     core.wrench_tau_z_nm_out};
 

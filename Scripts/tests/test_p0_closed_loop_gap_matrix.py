@@ -125,7 +125,9 @@ def test_p0_gap_matrix_keeps_closed_loop_blocked() -> None:
         "RFLY-MOSIM-MWORKS-ACTUATOR-TO-WRENCH-BRIDGE-RESUME-20260606-014.json"
     )
     mworks_bridge_details = matrix["gates"]["mworks_actuator_to_wrench_bridge"]["details"]
-    assert mworks_bridge_details["model_name"] == "QuadrotorExperiments.FactoryTraceIso28ActuatorToWrenchBridgeSmoke"
+    assert mworks_bridge_details["model_name"].endswith(
+        ".FactoryTraceIso28ActuatorToWrenchBridgeSmoke"
+    )
     assert mworks_bridge_details["check_model_status"] == "pass"
     assert mworks_bridge_details["simulate_status"] == "pass"
     assert mworks_bridge_details["get_var_times_count"] == 251
@@ -144,8 +146,8 @@ def test_p0_gap_matrix_keeps_closed_loop_blocked() -> None:
         "RFLY-MOSIM-MWORKS-WRENCH-TO-EXTERNAL-FRAME-BOUNDARY-20260606-015.json"
     )
     mworks_external_details = matrix["gates"]["mworks_external_frame_boundary"]["details"]
-    assert mworks_external_details["model_name"] == (
-        "QuadrotorExperiments.FactoryTraceIso29ExternalFrameWrenchBoundarySmoke"
+    assert mworks_external_details["model_name"].endswith(
+        ".FactoryTraceIso29ExternalFrameWrenchBoundarySmoke"
     )
     assert mworks_external_details["check_model_status"] == "pass"
     assert mworks_external_details["simulate_status"] == "pass"

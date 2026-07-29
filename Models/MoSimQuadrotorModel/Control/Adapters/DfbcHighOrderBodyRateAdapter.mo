@@ -11,6 +11,10 @@ model DfbcHighOrderBodyRateAdapter
   parameter Real normalized_thrust_scale = 0.03772949988018335;
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
   parameter Real max_collective_thrust_delta_n = 30 * collective_thrust_slope;
+  parameter Real attitude_to_rate_gain = 4
+    "Shared BODY_RATE_THRUST attitude-error-to-rate projection";
+  parameter Real max_body_rate_rad_s = 1.5
+    "Shared BODY_RATE_THRUST rate limit";
 
   MoSimQuadrotorModel.Control.Bridges.DfbcHighOrderBodyRateEquationBridge core(
     sample_time_s = sample_time_s);
@@ -40,7 +44,18 @@ equation
   core.body_rate_z = 0;
   core.dt = sample_time_s;
   core.enable = 1;
-  body_rate_ref = core.desired_body_rate_out;
+  // The graphical body's direct acceleration-to-rate outputs have no attitude
+  // feedback. Convert its checked acceleration-to-attitude result through the
+  // shared BODY_RATE_THRUST boundary so a persistent position error commands
+  // a bounded target attitude rather than an unbounded rotation.
+  body_rate_ref[1] = min(max(attitude_to_rate_gain * (
+    core.desired_roll_rad_out - attitude_mea[1]),
+    -max_body_rate_rad_s), max_body_rate_rad_s);
+  body_rate_ref[2] = min(max(attitude_to_rate_gain * (
+    core.desired_pitch_rad_out - attitude_mea[2]),
+    -max_body_rate_rad_s), max_body_rate_rad_s);
+  body_rate_ref[3] = min(max(-attitude_to_rate_gain * attitude_mea[3],
+    -max_body_rate_rad_s), max_body_rate_rad_s);
   desired_collective_thrust_n = core.normalized_thrust_out
     / normalized_thrust_scale;
   collective_thrust_delta = min(max(desired_collective_thrust_n

@@ -7,6 +7,7 @@
 #include "Engine/PostProcessVolume.h"
 #include "Engine/SkyLight.h"
 #include "Engine/World.h"
+#include "Dom/JsonObject.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/Pawn.h"
 #include "HAL/PlatformFileManager.h"
@@ -15,6 +16,8 @@
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
+#include "Serialization/JsonSerializer.h"
+#include "Serialization/JsonWriter.h"
 #include "MworksReviewCameraPawn.h"
 #include "QuadrotorMworksMapActor.h"
 #include "QuadrotorMworksPlaybackActor.h"
@@ -39,6 +42,10 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
         bSceneReviewOnly || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPlayback"));
     FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackActorCount="), PlaybackActorCount);
     FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackBaseUdpPort="), PlaybackBaseUdpPort);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimObservabilityRunId="), ObservabilityRunId);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimUeReceiverMetrics="), UeReceiverMetricsOutputPath);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimUeFrameMetrics="), UeFrameMetricsOutputPath);
+    FrameMetricsWindowStartSeconds = FPlatformTime::Seconds();
     bFactoryCalibrationFrameEnabled = FParse::Param(FCommandLine::Get(), TEXT("MoSimFactoryCalibrationFrame"));
     FParse::Value(FCommandLine::Get(), TEXT("MoSimFactoryCalibrationCsv="), FactoryCalibrationCsvPath);
     FParse::Value(FCommandLine::Get(), TEXT("MoSimFactoryCalibrationMarkerCsv="), FactoryCalibrationMarkerCsvPath);
@@ -154,6 +161,8 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
                 {
                     PlaybackActor->Receiver->StopReceiver();
                     PlaybackActor->Receiver->ListenPort = PlaybackBaseUdpPort + Index;
+                    PlaybackActor->Receiver->ObservabilityRunId = ObservabilityRunId;
+                    PlaybackActor->Receiver->MetricsOutputPath = Index == 0 ? UeReceiverMetricsOutputPath : FString();
                     PlaybackActor->Receiver->StartReceiver();
                 }
                 SpawnedPlaybackActors.Add(PlaybackActor);
@@ -181,6 +190,22 @@ void AMoSimSceneLibraryGameMode::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
+    if (!UeFrameMetricsOutputPath.IsEmpty() && DeltaSeconds > 0.0f)
+    {
+        FrameMetricsTotalSeconds += DeltaSeconds;
+        FrameMetricsMaxSeconds = FMath::Max(FrameMetricsMaxSeconds, static_cast<double>(DeltaSeconds));
+        ++FrameMetricsCount;
+        if (DeltaSeconds >= 0.05f)
+        {
+            ++FrameMetricsHitchCount;
+        }
+        const double WindowSeconds = FPlatformTime::Seconds() - FrameMetricsWindowStartSeconds;
+        if (WindowSeconds >= 5.0)
+        {
+            WriteFrameTimingMetrics(WindowSeconds);
+        }
+    }
+
     if (bSceneReviewModeActive)
     {
         EnforceSceneReviewCamera(GetWorld());
@@ -193,6 +218,44 @@ void AMoSimSceneLibraryGameMode::Tick(float DeltaSeconds)
     {
         DrawFactoryGazeboOverlay(GetWorld());
     }
+}
+
+void AMoSimSceneLibraryGameMode::WriteFrameTimingMetrics(double WindowSeconds)
+{
+    TSharedRef<FJsonObject> Metrics = MakeShared<FJsonObject>();
+    Metrics->SetStringField(TEXT("schema"), TEXT("mosim.unreal_frame_timing.v1"));
+    Metrics->SetStringField(TEXT("run_id"), ObservabilityRunId);
+    Metrics->SetNumberField(TEXT("window_s"), WindowSeconds);
+    Metrics->SetNumberField(TEXT("ue_fps"), FrameMetricsCount / FMath::Max(WindowSeconds, 0.001));
+    Metrics->SetNumberField(TEXT("ue_frame_ms_mean"), 1000.0 * FrameMetricsTotalSeconds / FMath::Max(1, FrameMetricsCount));
+    Metrics->SetNumberField(TEXT("ue_frame_ms_max"), 1000.0 * FrameMetricsMaxSeconds);
+    Metrics->SetNumberField(TEXT("hitch_count_50ms"), FrameMetricsHitchCount);
+    TArray<TSharedPtr<FJsonValue>> Unavailable;
+    Unavailable.Add(MakeShared<FJsonValueString>(TEXT("ue_game_ms")));
+    Unavailable.Add(MakeShared<FJsonValueString>(TEXT("ue_draw_ms")));
+    Unavailable.Add(MakeShared<FJsonValueString>(TEXT("ue_gpu_ms")));
+    Metrics->SetArrayField(TEXT("unavailable_metrics"), Unavailable);
+    Metrics->SetNumberField(TEXT("updated_at_unix"), FDateTime::UtcNow().ToUnixTimestamp());
+    FString Json;
+    const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Json);
+    FJsonSerializer::Serialize(Metrics, Writer);
+    const FString AbsolutePath = FPaths::ConvertRelativePathToFull(UeFrameMetricsOutputPath);
+    IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+    PlatformFile.CreateDirectoryTree(*FPaths::GetPath(AbsolutePath));
+    const FString TemporaryPath = AbsolutePath + TEXT(".tmp");
+    if (FFileHelper::SaveStringToFile(Json, *TemporaryPath))
+    {
+        if (PlatformFile.FileExists(*AbsolutePath))
+        {
+            PlatformFile.DeleteFile(*AbsolutePath);
+        }
+        PlatformFile.MoveFile(*AbsolutePath, *TemporaryPath);
+    }
+    FrameMetricsWindowStartSeconds = FPlatformTime::Seconds();
+    FrameMetricsTotalSeconds = 0.0;
+    FrameMetricsMaxSeconds = 0.0;
+    FrameMetricsCount = 0;
+    FrameMetricsHitchCount = 0;
 }
 
 void AMoSimSceneLibraryGameMode::LoadFactoryCalibrationFrame()

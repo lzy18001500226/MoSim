@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
-"""Relay Swarm-Formation PolyTraj broadcasts on one machine.
+"""Relay Swarm-Formation PolyTraj broadcasts on one ROS master.
 
-Upstream Swarm-Formation rejects received swarm trajectories when their
-start_time is more than about 0.25 s away from the receiver clock. The original
-project used UDP transport between machines; the MoSim SF-D3 gate runs all
-planners on one ROS master, so this relay refreshes start_time while preserving
-the trajectory payload and records diagnostics for the evidence bundle.
+The polynomial coefficients are relative to ``start_time``. Changing that
+timestamp without translating the polynomial changes the planned phase, so the
+same-master relay is deliberately transparent and only records delivery
+diagnostics. Receiver-side validity is checked against the original trajectory
+duration by the planner.
 """
 
 from __future__ import annotations
 
 import json
+import math
 import os
 import time
 from pathlib import Path
@@ -23,10 +24,15 @@ class SwarmFormationBroadcastRelay:
     def __init__(self) -> None:
         self.input_topic = rospy.get_param("~input_topic", "/broadcast_traj_from_planner")
         self.output_topic = rospy.get_param("~output_topic", "/broadcast_traj_to_planner")
-        self.future_s = float(rospy.get_param("~retime_future_s", 0.05))
+        self.future_s = float(rospy.get_param("~retime_future_s", 0.0))
+        if not math.isfinite(self.future_s) or not math.isclose(self.future_s, 0.0, abs_tol=1.0e-12):
+            raise ValueError(
+                "~retime_future_s must be exactly zero: PolyTraj coefficients are relative to start_time"
+            )
         self.diagnostics_path = Path(rospy.get_param("~diagnostics_path", "/tmp/mosim_swarm_formation_broadcast_relay.json"))
         self.write_period_s = float(rospy.get_param("~write_period_s", 1.0))
         self.count = 0
+        self.transparent_count = 0
         self.retime_count = 0
         self.per_drone: dict[str, int] = {}
         self.last_summary: dict = {}
@@ -51,11 +57,10 @@ class SwarmFormationBroadcastRelay:
     def on_polytraj(self, msg: PolyTraj) -> None:
         relayed = self.clone(msg)
         original_start = msg.start_time.to_sec()
-        relayed.start_time = rospy.Time.now() + rospy.Duration(self.future_s)
         self.pub.publish(relayed)
 
         self.count += 1
-        self.retime_count += 1
+        self.transparent_count += 1
         drone_key = str(int(msg.drone_id))
         self.per_drone[drone_key] = self.per_drone.get(drone_key, 0) + 1
         self.last_summary = {
@@ -65,7 +70,8 @@ class SwarmFormationBroadcastRelay:
             "duration_count": len(msg.duration),
             "duration_sum_s": float(sum(msg.duration)) if msg.duration else 0.0,
             "original_start_time_s": original_start,
-            "relayed_start_time_s": relayed.start_time.to_sec(),
+            "forwarded_start_time_s": relayed.start_time.to_sec(),
+            "start_time_delta_s": 0.0,
             "relay_wall_elapsed_s": time.time() - self.start_wall,
         }
         self.maybe_write()
@@ -79,10 +85,12 @@ class SwarmFormationBroadcastRelay:
     def write(self) -> None:
         data = {
             "schema": "mosim.sunray_ros1.swarm_formation_broadcast_relay.v1",
+            "mode": "transparent_single_ros_master",
             "input_topic": self.input_topic,
             "output_topic": self.output_topic,
             "retime_future_s": self.future_s,
             "count": self.count,
+            "transparent_count": self.transparent_count,
             "retime_count": self.retime_count,
             "per_drone": self.per_drone,
             "last_summary": self.last_summary,

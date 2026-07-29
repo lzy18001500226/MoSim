@@ -20,8 +20,9 @@ equation
     * desired_acceleration_x_out, -body_rate_limit[1]), body_rate_limit[1]);
   desired_body_rate[2] = min(max(body_rate_from_acceleration[2]
     * desired_acceleration_y_out, -body_rate_limit[2]), body_rate_limit[2]);
-  desired_body_rate[3] = min(max(body_rate_from_acceleration[3]
-    * desired_acceleration_z_out, -body_rate_limit[3]), body_rate_limit[3]);
+  // Vertical acceleration belongs to collective thrust, not yaw-rate demand.
+  // The formal trajectory keeps a fixed yaw reference, so retain zero yaw rate.
+  desired_body_rate[3] = 0;
   desired_body_rate_out = if enable >= 0.5 then desired_body_rate else {0, 0, 0};
 
   annotation(__MWORKS(version = "26.3.0"));

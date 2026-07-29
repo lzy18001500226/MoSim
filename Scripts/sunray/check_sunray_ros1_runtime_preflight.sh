@@ -131,6 +131,7 @@ fi
 check_dir "${PROJECT_ROOT}" "MoSim project root"
 check_dir "${PROJECT_ROOT}/References/Sunray" "repo-local Sunray source"
 check_dir "${FASTLIO_SRC}" "repo-local FAST-LIO source"
+check_file "${PROJECT_ROOT}/Config/gazebo/models/gps/gps.sdf" "project-local PX4 GPS model"
 check_dir "${SUNRAY_WS}" "Sunray runtime workspace"
 check_file "${SUNRAY_WS}/devel/setup.bash" "Sunray runtime devel setup"
 check_dir "${SUNRAY_WS}/simulation/sunray_simulator" "Sunray simulator package"

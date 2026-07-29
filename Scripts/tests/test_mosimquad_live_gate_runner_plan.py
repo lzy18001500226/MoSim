@@ -42,7 +42,7 @@ class MoSimQuadrotorLiveGateRunnerPlanTest(unittest.TestCase):
             self.assertEqual(len(plan["future_check_model_plan"]), 14)
             self.assertEqual(len(plan["future_simulate_model_plan"]), 7)
             self.assertIn(
-                "MoSimQuadrotorModel.Vehicle.Dynamics.RotorEffectivenessSmoke",
+                "MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.RotorEffectivenessSmoke",
                 [item["target"] for item in plan["future_simulate_model_plan"]],
             )
             self.assertIn("target_resolution_manifest", plan)
@@ -53,6 +53,15 @@ class MoSimQuadrotorLiveGateRunnerPlanTest(unittest.TestCase):
             self.assertEqual(resolution["dynamics_target_count"], 13)
             self.assertEqual(resolution["parameter_target_count"], 1)
             self.assertEqual(resolution["findings"], [])
+            self.assertEqual(
+                resolution["source_anchors"]["canonical_vehicle_package"],
+                "Models/MoSimQuadrotorModel/Vehicle/package.mo",
+            )
+            self.assertNotIn("formal_dynamics_package", resolution["source_anchors"])
+            self.assertEqual(
+                resolution["input_artifacts"][0],
+                "Results/control_platform/model_library_cleanup_20260728/formal_smoke_surface/formal_smoke_target_matrix.json",
+            )
 
             probes = json.loads((output_dir / "result_variable_probe_plan.json").read_text(encoding="utf-8"))
             self.assertEqual(probes["simulate_probe_count"], 7)

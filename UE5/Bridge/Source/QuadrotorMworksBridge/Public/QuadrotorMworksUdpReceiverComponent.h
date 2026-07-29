@@ -36,6 +36,12 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS UDP")
     double StreamTakeoverTimeoutSeconds = 1.0;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS UDP|Observability")
+    FString ObservabilityRunId;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS UDP|Observability")
+    FString MetricsOutputPath;
+
     UPROPERTY(BlueprintAssignable, Category = "MWORKS UDP")
     FQuadrotorMworksFrameReceived OnFrameReceived;
 
@@ -66,6 +72,7 @@ private:
     double ReceiveRateWindowStartSeconds = 0.0;
     int32 ReceivedFramesInWindow = 0;
     int32 SequenceGapsInWindow = 0;
+    int64 ReceivedPayloadBytesInWindow = 0;
     int32 LastReceivedSequence = TNumericLimits<int32>::Min();
     FString ActiveStreamId;
     double LastAcceptedFrameSeconds = 0.0;

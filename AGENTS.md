@@ -54,6 +54,11 @@ versioned profiles (14 MWORKS runs), retaining valid and invalid evidence alike.
 At that point the exception did not authorize G2, other-controller runs, gain
 tuning, code export, Gazebo/ROS runtime validation, G7, or R1.
 
+ The separately authorized `MoSim Studio + QGC
+ Factory 2D operation surface` task. It may perform source/UI/build work for
+ the native Studio identity, QGC Factory map, published-Profile selection,
+ discrete fault requests, rosbag replay, and independent UE pointer release;
+ it must not claim controller, planner, or runtime success from that work.
 
 On 2026-07-29 CST, the user separately authorized the ROS1/Gazebo runtime
 reproducibility closure. It is independent from the MWORKS G3 line: retain the
@@ -70,18 +75,22 @@ The six-candidate recovery record at
 `Results/control_platform/champion_candidate_recovery_20260727/` predates the
 shared reference-velocity/reference-acceleration repair. Its `ClimbPath`
 passes and RMSE are trace-back evidence only, not a valid ranking for the
-current source. The user-approved seven-scenario contract is now bound through
-the Plant and four shared Runner classes; the Official PID has a 0.01 s
-external hold harness. Static validation and native `CheckModel` passed for
-eight trajectories, four shared Runners, Official PID, and six champion Formal
-Runners. The static preflight evidence is
-`Results/control_platform/seven_scenario_preflight_20260727/`. The active
-evidence root is `Results/control_platform/seven_scenario_ab/`. All 14 scoped
-records now exist: six px4ctrl cases are valid; the px4ctrl motor-fault case and
-all seven Official PID cases are retained as invalid evidence. The 14-row
-matrix is `SCENARIO_RMSE_MATRIX.pending_syslab.json`; the raw-trace injection
-checks retain both passed and not-evaluable states. Commit, push, send the
-review email, and stop. Do not launch further MWORKS cases on this line.
+current source. The seven-scenario contract is bound through the Plant and four
+shared Runner classes. The three review-only profiles
+`pid_awff_linear_eso`, `smc_boundary_layer`, and `nmpc_outer` are Tier1-only;
+the Tier2 whole-aircraft population is 45 routes. Official PID retains its
+native continuous `RotorCommandRunner` boundary, while the other 44 Tier2
+routes use their 100 Hz discrete boundary. Its nominal 50 s `ClimbPath` passed
+with RMSE `0.1729701479 m` and terminal error `0.0065067004 m`. Six Official
+PID seven-scenario records are valid. The 50 s motor-efficiency-fault record is
+invalid: a native 0-16.6 s diagnostic verified the scheduled rotor-1 transition
+from 1.0 to 0.5 at 15 s, then observed error above 5 m at 16.44 s and
+35.2414 m at 16.6 s. Preserve this negative evidence at
+`Results/control_platform/seven_scenario_ab/official_pid/motor_efficiency_fault/`
+and do not alter the baseline, fault magnitude, or Plant to relabel it valid.
+The next action requires a user decision to accept this as the baseline's
+fault-case failure or authorize a distinct fault-tolerant controller/experiment
+scope.
 
 On 2026-07-29 CST, the user subsequently authorized G2: one nominal 50 s
 `ClimbPath` attempt for every one of the 48
@@ -92,10 +101,19 @@ routes have terminal records against frozen matrix
 `a9f85d8cb8b4b942b88056bf4eb336ba17a9c40b26fe1ae5d21ab12649599d80`.
 Seventeen passed the terminal-error gate and 31 failed: 10 terminal-error
 violations, four simulation-API failures, nine MCP timeouts, and eight
-dedicated Sysplorer-session startup failures. This is a result-screening
-record, not authorization to repair failures, enter G3, rerun any route, tune
-gains, export code, or start a new scenario. Commit the exact G2 evidence
-index, push, send the Chinese review email, and wait for the next instruction.
+dedicated Sysplorer-session startup failures. This is a frozen result-screening
+record. The user has subsequently authorized G3: repair the G2 failure set only
+where an interface, coordinate sign, equation-bridge, allocator, or
+execution-chain defect is evidenced, and rerun each repaired route against the
+same nominal 50 s `ClimbPath`. G3 records live only under
+`Results/control_platform/phase2_full_48_climbpath/g3_repair/` and must
+preserve G2 evidence unchanged. The acceptance target is 48/48 effective passes
+with a completed result and terminal position error below 5 m. G3 does not
+authorize seven-scenario work, gain-performance optimization, code export,
+Gazebo/ROS runtime validation, G7, or R1. When 48/48 is reached, commit the
+exact G3 sources and evidence index, push, send a Chinese before/after review
+email, and wait for the next instruction.
+
 `Docs/Workflows/mainline_operations_board.md` is the sole task authority and
 contains the exact scope, evidence, and stopping/handoff conditions. Update this
 cue whenever that board's current action or next executable gate changes; it is

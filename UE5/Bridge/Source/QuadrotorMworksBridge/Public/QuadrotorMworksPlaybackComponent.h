@@ -33,6 +33,10 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
     bool bInterpolateActorTransform = false;
 
+    // Display-only option for low real-time-factor sources. It never changes ROS/Gazebo state.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback")
+    bool bUseArrivalTimeForInterpolation = false;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Playback", meta = (ClampMin = "1.0"))
     float NominalControlRateHz = 70.0f;
 

@@ -13,6 +13,18 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[2]
 CODE_DIR = "Results/codegen_probe/AWFF_PID_Sysblock_Demo_api/AWFF_PID_Sysblock_Demo"
 MODEL_NAME = "AWFF_PID_Sysblock_Demo"
+AWFF_FULL_CONTROLLER_EXPORT_ROOT = (
+    ROOT / "Results" / "generated_mworks" / "AWFF_FullController_Sysblock_20260620_032747"
+)
+
+
+def awff_full_controller_code_dir() -> str:
+    """Resolve the recorded export without encoding its retired namespace."""
+
+    candidates = sorted(AWFF_FULL_CONTROLLER_EXPORT_ROOT.glob("*/AWFF_FullController_Sysblock"))
+    if len(candidates) != 1:
+        raise AssertionError(f"expected one AWFF full-controller export, found: {candidates}")
+    return candidates[0].relative_to(ROOT).as_posix()
 
 
 def run_sil_smoke(*extra: str) -> dict:
@@ -123,7 +135,7 @@ def test_multi_output_schema_reference_passes() -> None:
                 sys.executable,
                 str(ROOT / "Scripts" / "mworks" / "check_codegen_sil_equivalence.py"),
                 "--code-dir",
-                "Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FullController_Sysblock",
+                awff_full_controller_code_dir(),
                 "--model-name",
                 "AWFF_FullController_Sysblock",
                 "--runtime-schema-json",
@@ -170,7 +182,7 @@ def test_awff_full_controller_real_constant_reference_passes() -> None:
             sys.executable,
             str(ROOT / "Scripts" / "mworks" / "check_codegen_sil_equivalence.py"),
             "--code-dir",
-            "Results/generated_mworks/AWFF_FullController_Sysblock_20260620_032747/MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_FullController_Sysblock",
+            awff_full_controller_code_dir(),
             "--model-name",
             "AWFF_FullController_Sysblock",
             "--runtime-schema-json",

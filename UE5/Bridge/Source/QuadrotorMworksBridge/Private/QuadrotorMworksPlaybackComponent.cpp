@@ -1,6 +1,8 @@
 #include "QuadrotorMworksPlaybackComponent.h"
 
 #include "GameFramework/Actor.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "QuadrotorMworksUdpReceiverComponent.h"
 
 UQuadrotorMworksPlaybackComponent::UQuadrotorMworksPlaybackComponent()
@@ -11,6 +13,32 @@ UQuadrotorMworksPlaybackComponent::UQuadrotorMworksPlaybackComponent()
 void UQuadrotorMworksPlaybackComponent::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (FParse::Param(FCommandLine::Get(), TEXT("MoSimPlaybackInterpolate")))
+    {
+        bInterpolateActorTransform = true;
+    }
+    if (FParse::Param(FCommandLine::Get(), TEXT("MoSimPlaybackUseArrivalTiming")))
+    {
+        bUseArrivalTimeForInterpolation = true;
+    }
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackNominalRateHz="), NominalControlRateHz);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackMinimumDisplayRateHz="), MinimumDisplayRateHz);
+    FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackMaxInterpolationDurationS="), MaxInterpolationDurationSeconds);
+    NominalControlRateHz = FMath::Max(1.0f, NominalControlRateHz);
+    MinimumDisplayRateHz = FMath::Max(1.0f, MinimumDisplayRateHz);
+    MaxInterpolationDurationSeconds = FMath::Max(0.01f, MaxInterpolationDurationSeconds);
+
+    if (bInterpolateActorTransform)
+    {
+        UE_LOG(
+            LogTemp,
+            Display,
+            TEXT("MoSim playback interpolation enabled: nominal_rate_hz=%.2f arrival_timing=%s max_duration_s=%.3f"),
+            NominalControlRateHz,
+            bUseArrivalTimeForInterpolation ? TEXT("true") : TEXT("false"),
+            MaxInterpolationDurationSeconds);
+    }
 
     if (!Receiver && bAutoFindReceiverOnOwner)
     {
@@ -109,14 +137,18 @@ void UQuadrotorMworksPlaybackComponent::ApplyFrame(const FQuadrotorMworksFrame& 
             const float MinimumDurationSeconds = 1.0f / FMath::Max(1.0f, MinimumDisplayRateHz);
             float CandidateDurationSeconds = NominalDurationSeconds;
 
-            if (LastInterpolatedFrameTimeSeconds >= 0.0 && Frame.TimeSeconds > LastInterpolatedFrameTimeSeconds)
+            if (!bUseArrivalTimeForInterpolation
+                && LastInterpolatedFrameTimeSeconds >= 0.0
+                && Frame.TimeSeconds > LastInterpolatedFrameTimeSeconds)
             {
                 CandidateDurationSeconds = static_cast<float>(Frame.TimeSeconds - LastInterpolatedFrameTimeSeconds);
             }
             if (LastInterpolatedArrivalTimeSeconds >= 0.0 && CurrentArrivalTimeSeconds > LastInterpolatedArrivalTimeSeconds)
             {
                 const float ArrivalDurationSeconds = static_cast<float>(CurrentArrivalTimeSeconds - LastInterpolatedArrivalTimeSeconds);
-                CandidateDurationSeconds = FMath::Min(CandidateDurationSeconds, ArrivalDurationSeconds);
+                CandidateDurationSeconds = bUseArrivalTimeForInterpolation
+                    ? FMath::Max(NominalDurationSeconds, ArrivalDurationSeconds)
+                    : FMath::Min(CandidateDurationSeconds, ArrivalDurationSeconds);
             }
 
             InterpolationDurationSeconds = FMath::Clamp(

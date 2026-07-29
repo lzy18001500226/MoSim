@@ -12,6 +12,8 @@ public class MoSimSceneLibrary : ModuleRules
             "CoreUObject",
             "Engine",
             "InputCore",
+            "Json",
+            "Slate",
             "QuadrotorMworksBridge"
         });
     }

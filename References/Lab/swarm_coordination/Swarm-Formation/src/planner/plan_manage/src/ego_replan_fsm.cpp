@@ -2,8 +2,19 @@
 
 #include <plan_manage/ego_replan_fsm.h>
 
+#include <cmath>
+
 namespace ego_planner
 {
+  namespace
+  {
+    bool isLocalTrajectorySampleTimeValid(const LocalTrajData &info, const double sample_time)
+    {
+      return info.traj_id > 0 && std::isfinite(info.duration) && info.duration >= 0.0 &&
+             std::isfinite(sample_time) && sample_time >= 0.0 && sample_time <= info.duration;
+    }
+  } // namespace
+
   EGOReplanFSM::~EGOReplanFSM()
   {
     result_file_.close();
@@ -60,6 +71,7 @@ namespace ego_planner
     nh.param("global_goal/use_msg_z", swarm_center_use_msg_z_, false);
     nh.param("global_goal/center_z", swarm_center_z_, 0.5);
     nh.param("fsm/swarm_traj_time_tolerance_s", swarm_traj_time_tolerance_s_, 0.25);
+    nh.param("fsm/rigid_leader_follower_mode", rigid_leader_follower_mode_, false);
 
     /* initialize main modules */
     visualization_.reset(new PlanningVisualization(nh));
@@ -221,7 +233,7 @@ namespace ego_planner
       /* determine if need to replan */
       LocalTrajData *info = &planner_manager_->traj_.local_traj;
       double t_cur = ros::Time::now().toSec() - info->start_time;
-      t_cur = min(info->duration, t_cur);
+      t_cur = std::min(info->duration, std::max(0.0, t_cur));
 
       Eigen::Vector3d pos = info->traj.getPos(t_cur);
 
@@ -302,9 +314,8 @@ namespace ego_planner
     /* ---------- check trajectory ---------- */
     constexpr double time_step = 0.01;
     double t_cur = ros::Time::now().toSec() - info->start_time;
-    Eigen::Vector3d p_cur = info->traj.getPos(t_cur);
+    t_cur = std::min(info->duration, std::max(0.0, t_cur));
     const double CLEARANCE = 0.8 * planner_manager_->getSwarmClearance();
-    double t_cur_global = ros::Time::now().toSec();
     double t_2_3 = planner_manager_->ploy_traj_opt_->getCollisionCheckTimeEnd();
     double t_temp;
     bool occ = false;
@@ -323,6 +334,13 @@ namespace ego_planner
         break;
       }
 
+      // The rigid leader-follower bridge makes UAV1 the only trajectory
+      // producer. Map collision checks remain active, but peer polynomial
+      // comparisons would use trajectories that followers intentionally do
+      // not execute and can therefore fabricate a formation collision.
+      if (rigid_leader_follower_mode_)
+        continue;
+
       for (size_t id = 0; id < planner_manager_->traj_.swarm_traj.size(); id++)
       {
         if ((planner_manager_->traj_.swarm_traj.at(id).drone_id != (int)id) ||
@@ -331,13 +349,22 @@ namespace ego_planner
           continue;
         }
 
-        double t_X = t_cur_global - planner_manager_->traj_.swarm_traj.at(id).start_time;
-
-        if (t_X > planner_manager_->traj_.swarm_traj.at(id).duration)
+        // Compare both trajectories at the same global time. Sampling this
+        // vehicle at its current position against a peer's future path can
+        // create a false formation collision when both vehicles translate.
+        const double sample_global_time = info->start_time + t;
+        double peer_sample_time =
+            sample_global_time - planner_manager_->traj_.swarm_traj.at(id).start_time;
+        if (peer_sample_time > planner_manager_->traj_.swarm_traj.at(id).duration)
           continue;
 
-        Eigen::Vector3d swarm_pridicted = planner_manager_->traj_.swarm_traj.at(id).traj.getPos(t_X);
-        double dist = (p_cur - swarm_pridicted).norm();
+        // Before a received trajectory starts, its endpoint is the planned
+        // hold state at tau=0. This avoids extrapolating a polynomial backward.
+        peer_sample_time = std::max(0.0, peer_sample_time);
+        const Eigen::Vector3d own_predicted = info->traj.getPos(t);
+        const Eigen::Vector3d swarm_predicted =
+            planner_manager_->traj_.swarm_traj.at(id).traj.getPos(peer_sample_time);
+        double dist = (own_predicted - swarm_predicted).norm();
 
         if (dist < CLEARANCE)
         {
@@ -354,9 +381,8 @@ namespace ego_planner
     {
       /* Handle the collided case immediately */
       ROS_INFO("Try to replan a safe trajectory");
-      // Collision recovery must preserve the formation objective. The
-      // optimizer itself falls back until enough peer trajectories arrive.
-      if (planFromLocalTraj(true, true))
+      // Rigid mode preserves map avoidance but has no peer polynomial owner.
+      if (planFromLocalTraj(true, !rigid_leader_follower_mode_))
       {
         ROS_INFO("Plan success when detect collision.");
         changeFSMExecState(EXEC_TRAJ, "SAFETY");
@@ -457,6 +483,12 @@ namespace ego_planner
 
   void EGOReplanFSM::RecvBroadcastPolyTrajCallback(const traj_utils::PolyTrajConstPtr &msg)
   {
+    // In rigid leader-follower mode, UAV2/UAV3 execute the fixed-offset relay
+    // of UAV1's final command. No planner node consumes peer trajectories, so
+    // none may trigger an independent replan or emergency stop.
+    if (rigid_leader_follower_mode_)
+      return;
+
     if (msg->drone_id < 0)
     {
       ROS_ERROR("drone_id < 0 is not allowed in a swarm system!");
@@ -472,11 +504,26 @@ namespace ego_planner
       ROS_ERROR("WRONG trajectory parameters.");
       return;
     }
-    const double time_diff_s = (ros::Time::now() - msg->start_time).toSec();
-    if (std::abs(time_diff_s) > swarm_traj_time_tolerance_s_)
+    double declared_duration_s = 0.0;
+    for (const double duration_s : msg->duration)
     {
-      ROS_WARN("Time stamp diff: Local - Remote Agent %d = %fs",
-               msg->drone_id, time_diff_s);
+      if (!std::isfinite(duration_s) || duration_s <= 0.0)
+      {
+        ROS_ERROR("Invalid swarm trajectory duration from drone %d: %f", msg->drone_id, duration_s);
+        return;
+      }
+      declared_duration_s += duration_s;
+    }
+    const double age_s = (ros::Time::now() - msg->start_time).toSec();
+    if (!std::isfinite(age_s) || age_s < -swarm_traj_time_tolerance_s_)
+    {
+      ROS_WARN("Rejecting future swarm trajectory from drone %d: age=%fs", msg->drone_id, age_s);
+      return;
+    }
+    if (age_s > declared_duration_s + swarm_traj_time_tolerance_s_)
+    {
+      ROS_WARN("Rejecting expired swarm trajectory from drone %d: age=%fs duration=%fs",
+               msg->drone_id, age_s, declared_duration_s);
       return;
     }
 
@@ -648,6 +695,14 @@ namespace ego_planner
 
     int id = planner_manager_->pp_.drone_id;
 
+    if (rigid_leader_follower_mode_ && id != 0)
+    {
+      // Preserve the received center target for diagnostics only. Followers
+      // intentionally stay in WAIT_TARGET and never create a local trajectory.
+      ROS_INFO("Rigid leader-follower mode: drone %d accepts center target without planning", id);
+      return;
+    }
+
     Eigen::Vector3d relative_pos;
     relative_pos << swarm_relative_pts_[id][0],
                     swarm_relative_pts_[id][1],
@@ -755,7 +810,7 @@ namespace ego_planner
 
     for (int i = 0; i < trial_times; i++)
     {
-      if (callReboundReplan(true, false, true))
+      if (callReboundReplan(true, false, !rigid_leader_follower_mode_))
       {
         return true;
       }
@@ -769,9 +824,23 @@ namespace ego_planner
     LocalTrajData *info = &planner_manager_->traj_.local_traj;
     double t_cur = ros::Time::now().toSec() - info->start_time;
 
-    start_pt_ = info->traj.getPos(t_cur);
-    start_vel_ = info->traj.getVel(t_cur);
-    start_acc_ = info->traj.getAcc(t_cur);
+    if (isLocalTrajectorySampleTimeValid(*info, t_cur))
+    {
+      start_pt_ = info->traj.getPos(t_cur);
+      start_vel_ = info->traj.getVel(t_cur);
+      start_acc_ = info->traj.getAcc(t_cur);
+    }
+    else
+    {
+      // The trajectory server holds at its endpoint after expiry. Replanning from
+      // an extrapolated polynomial can create a fictitious point outside the map.
+      ROS_WARN_THROTTLE(1.0,
+                        "Local trajectory sample is outside its valid time window; "
+                        "replanning from current odometry");
+      start_pt_ = odom_pos_;
+      start_vel_ = odom_vel_;
+      start_acc_.setZero();
+    }
 
     bool success = callReboundReplan(flag_use_poly_init, false, use_formation);
 
@@ -791,16 +860,29 @@ namespace ego_planner
         local_target_pt_, local_target_vel_);
 
     Eigen::Vector3d desired_start_pt, desired_start_vel, desired_start_acc;
-    double desired_start_time;
+    const double now = ros::Time::now().toSec();
+    double desired_start_time = now;
     if (have_local_traj_ && use_formation)
     {
-      desired_start_time = ros::Time::now().toSec() + replan_trajectory_time_;
-      desired_start_pt =
-          planner_manager_->traj_.local_traj.traj.getPos(desired_start_time - planner_manager_->traj_.local_traj.start_time);
-      desired_start_vel =
-          planner_manager_->traj_.local_traj.traj.getVel(desired_start_time - planner_manager_->traj_.local_traj.start_time);
-      desired_start_acc =
-          planner_manager_->traj_.local_traj.traj.getAcc(desired_start_time - planner_manager_->traj_.local_traj.start_time);
+      const double future_start_time = now + replan_trajectory_time_;
+      const double future_sample_time =
+          future_start_time - planner_manager_->traj_.local_traj.start_time;
+      if (isLocalTrajectorySampleTimeValid(planner_manager_->traj_.local_traj, future_sample_time))
+      {
+        desired_start_time = future_start_time;
+        desired_start_pt = planner_manager_->traj_.local_traj.traj.getPos(future_sample_time);
+        desired_start_vel = planner_manager_->traj_.local_traj.traj.getVel(future_sample_time);
+        desired_start_acc = planner_manager_->traj_.local_traj.traj.getAcc(future_sample_time);
+      }
+      else
+      {
+        ROS_WARN_THROTTLE(1.0,
+                          "Formation replan start is outside the local trajectory window; "
+                          "using the current replan state");
+        desired_start_pt = start_pt_;
+        desired_start_vel = start_vel_;
+        desired_start_acc = start_acc_;
+      }
     }
     else
     {

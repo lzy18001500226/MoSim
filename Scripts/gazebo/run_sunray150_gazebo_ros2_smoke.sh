@@ -2474,7 +2474,7 @@ cat > "${RUN_MANIFEST}" <<JSON
     "replay_source": "gazebo_plant"
   },
   "mworks": {
-    "model_name": "MoSimQuadrotorModel.Dynamics",
+    "model_name": "MoSimQuadrotorModel.Vehicle.Dynamics",
     "check_model_status": "pass",
     "simulate_status": "smoke_only",
     "raw_csv": "",

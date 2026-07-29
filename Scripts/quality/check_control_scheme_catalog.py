@@ -33,6 +33,12 @@ MWORKS_PROFILE_COUNT = 47
 CURRENT_MWORKS_ROUTE_COUNT = 46
 CURRENT_GRAPHICAL_CORE_COUNT = 41
 CURRENT_FULL_PROFILE_COUNT = 5
+TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT = 45
+TIER1_ONLY_REASONS = {
+    "pid_awff_linear_eso": "Planned profile only: no matching MWORKS graphical core, Adapter, or FormalRunner exists.",
+    "smc_boundary_layer": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild.",
+    "nmpc_outer": "The current graphical model is a fixed-input probe with no public reference or measurement ports; its C reference core is px4ctrl_core.h and later inclusion requires a matching graphical-model rebuild.",
+}
 ARCHIVED_HISTORICAL_IDS = {"mu_synthesis", "neural_smc"}
 FAMILY_SPECS = {
     "pid_family": {"target_profile_count": 10, "current_route_count": 9},
@@ -133,6 +139,22 @@ def validate(catalog: dict[str, Any], matrix: dict[str, Any], registry: dict[str
     if not isinstance(summary, dict) or any(summary.get(key) != value for key, value in expected_summary.items()):
         add("CSC-COUNT-02", f"count_summary must equal {expected_summary}")
 
+    closure_policy = catalog.get("whole_aircraft_closure_policy")
+    if not isinstance(closure_policy, dict):
+        add("CSC-TIER-01", "whole_aircraft_closure_policy must be an object")
+    else:
+        tier2 = closure_policy.get("tier2")
+        if not isinstance(tier2, dict) or tier2.get("planned_route_count") != TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT:
+            add("CSC-TIER-02", "Tier2 whole-aircraft route count must equal 45")
+        only_profiles = closure_policy.get("tier1_only_profiles")
+        actual_tier1_only = {
+            str(item.get("scheme_id")): item.get("reason")
+            for item in only_profiles
+            if isinstance(item, dict)
+        } if isinstance(only_profiles, list) else {}
+        if actual_tier1_only != TIER1_ONLY_REASONS:
+            add("CSC-TIER-03", "Tier1-only profile reasons must match the approved three-route decision")
+
     families = catalog.get("families")
     if not isinstance(families, list):
         add("CSC-FAMILY-01", "families must be a list")
@@ -196,6 +218,13 @@ def validate(catalog: dict[str, Any], matrix: dict[str, Any], registry: dict[str
 
         if scheme_id in ARCHIVED_HISTORICAL_IDS:
             add("CSC-ARCHIVE-01", f"{scheme_id} is historical blocker evidence, not an active profile")
+        if scheme_id in TIER1_ONLY_REASONS:
+            if (
+                scheme.get("whole_aircraft_tier") != "tier1_only"
+                or scheme.get("tier2_closure_eligibility") != "excluded"
+                or scheme.get("tier2_exclusion_reason") != TIER1_ONLY_REASONS[scheme_id]
+            ):
+                add("CSC-TIER-04", f"{scheme_id} must remain explicitly Tier1-only")
         if entry_type == "mworks_control_profile":
             if category not in FAMILY_SPECS:
                 add("CSC-FAMILY-03", f"{scheme_id} has an unsupported MWORKS profile category: {category}")
@@ -235,6 +264,8 @@ def validate(catalog: dict[str, Any], matrix: dict[str, Any], registry: dict[str
             add("CSC-FAMILY-04", f"{category} must contain {spec['target_profile_count']} profiles")
     if current_routes != CURRENT_MWORKS_ROUTE_COUNT or full_profiles != CURRENT_FULL_PROFILE_COUNT or planned_profiles != 1:
         add("CSC-COUNT-04", "MWORKS split must remain 46 current routes = 41 graphical cores + 5 full profiles, plus one planned profile")
+    if len(schemes) - len(TIER1_ONLY_REASONS) != TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT:
+        add("CSC-TIER-05", "Tier2 population must be the 48-entry catalog minus exactly three Tier1-only profiles")
     if len(graphical_matrix_ids) != CURRENT_GRAPHICAL_CORE_COUNT or len(set(graphical_matrix_ids)) != len(graphical_matrix_ids):
         add("CSC-GRAPHICAL-03", "current graphical core bindings must contain 41 unique historical matrix IDs")
 

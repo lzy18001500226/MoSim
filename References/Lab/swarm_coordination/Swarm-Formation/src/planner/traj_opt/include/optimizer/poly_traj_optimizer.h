@@ -82,6 +82,8 @@ namespace ego_planner
     double swarm_clearance_;                 // safe distance between uav and uav
     double max_vel_, max_acc_;               // dynamic limits
     double min_traj_z_, max_traj_z_;         // optional flight-height bounds
+	  double astar_search_timeout_s_{0.20};   // wall-clock budget for a single A* initialization
+	  bool astar_planar_search_{false};       // optional XY-only A* initialization for fixed-height missions
     
     int    formation_type_;
     int    formation_size_;

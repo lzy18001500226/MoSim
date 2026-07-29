@@ -10,6 +10,31 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
+if ($PSVersionTable.PSEdition -eq 'Core') {
+    $windowsRoot = $env:SystemRoot
+    if (-not $windowsRoot) {
+        $windowsRoot = 'C:\Windows'
+    }
+    $legacyPowerShell = Join-Path $windowsRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    if (-not (Test-Path -LiteralPath $legacyPowerShell)) {
+        throw 'Native window capture requires Windows PowerShell when System.Drawing.Common cannot compile the capture helper.'
+    }
+
+    $forwarded = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', $PSCommandPath)
+    foreach ($entry in $PSBoundParameters.GetEnumerator()) {
+        if ($entry.Value -is [System.Management.Automation.SwitchParameter]) {
+            if ($entry.Value.IsPresent) {
+                $forwarded += "-$($entry.Key)"
+            }
+        } else {
+            $forwarded += "-$($entry.Key)"
+            $forwarded += [string]$entry.Value
+        }
+    }
+    & $legacyPowerShell @forwarded
+    exit $LASTEXITCODE
+}
+
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 Add-Type -AssemblyName System.Drawing
 
@@ -19,7 +44,6 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
-using System.Threading;
 
 public static class ForegroundWindowCapture {
   [DllImport("user32.dll")] public static extern bool SetProcessDPIAware();
@@ -36,6 +60,7 @@ public static class ForegroundWindowCapture {
   [DllImport("user32.dll")] public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
   [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd);
   [DllImport("user32.dll")] public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+  [DllImport("kernel32.dll")] public static extern void Sleep(uint dwMilliseconds);
 
   [StructLayout(LayoutKind.Sequential)]
   public struct RECT { public int Left; public int Top; public int Right; public int Bottom; }
@@ -85,11 +110,11 @@ public static class ForegroundWindowCapture {
     } else {
       ShowWindowAsync(hwnd, SW_RESTORE);
     }
-    Thread.Sleep(Math.Max(0, activateWaitMs));
+    Sleep((uint)Math.Max(0, activateWaitMs));
     SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
     bool foregroundOk = SetForegroundWindow(hwnd);
-    Thread.Sleep(Math.Max(0, captureSettleMs));
+    Sleep((uint)Math.Max(0, captureSettleMs));
 
     RECT rect;
     if (!GetWindowRect(hwnd, out rect)) return "GetWindowRect failed";
@@ -146,9 +171,10 @@ $callback = [ForegroundWindowCapture+EnumWindowsProc]{
 }
 [void][ForegroundWindowCapture]::EnumWindows($callback, [IntPtr]::Zero)
 
-$rows = $windowMatches |
-    Sort-Object pid, handle |
-    ForEach-Object {
+$rows = @(
+    $windowMatches |
+        Sort-Object pid, handle |
+        ForEach-Object {
         $safeTitle = $_.title -replace '[\\/:*?"<>|\[\]]', '_'
         $leaf = "$($_.pid)_$($_.handle_hex)_$safeTitle.png"
         $path = Join-Path $resolvedOut $leaf
@@ -182,7 +208,8 @@ $rows = $windowMatches |
             capture = $capture
             output_png = if (Test-Path $path) { $path } else { $null }
         }
-    }
+        }
+)
 
 $manifestPath = Join-Path $resolvedOut 'capture_manifest.json'
 $rows | ConvertTo-Json -Depth 6 | Set-Content -Encoding UTF8 -Path $manifestPath

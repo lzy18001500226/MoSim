@@ -212,8 +212,7 @@ def slider(
 
 def build_children() -> list[dict]:
     return [
-        label("title", "TitleLabel", "MoSim Model Studio", [24, 16, 520, 34], fontSize=24, fontWeight="bold", fontColor=[0.08, 0.16, 0.22]),
-        label("subtitle", "SubtitleLabel", "控制器配置、模型验证与 QGC 运行交接", [26, 50, 900, 22], fontColor=[0.35, 0.42, 0.47]),
+        label("title", "TitleLabel", "MoSim Studio", [24, 16, 520, 34], fontSize=24, fontWeight="bold", fontColor=[0.08, 0.16, 0.22], horizontalAlignment="left"),
         button("mode-offline", "OfflineModeButton", "离线建模验证", "OfflineModePressed", [24, 82, 190, 40], background=INACTIVE_COLOR),
         button("mode-live", "LiveModeButton", "实时联合仿真", "LiveModePressed", [218, 82, 190, 40], background=ACTIVE_COLOR, font_color=[1, 1, 1]),
         button("mode-deploy", "DeployModeButton", "生成代码部署", "DeployModePressed", [412, 82, 190, 40], background=INACTIVE_COLOR),
@@ -303,7 +302,7 @@ def build_project() -> dict:
             "callbackFcns": {},
             "type": "figure",
             "position": [30, 30, 1440, 900],
-            "name": "MoSim Model Studio 0.5 UI Review",
+            "name": "MoSim Studio",
             "color": [0.96, 0.97, 0.97],
             "tag": "",
             "children": build_children(),
@@ -312,7 +311,7 @@ def build_project() -> dict:
         },
         "info": {
             "type": "app",
-            "name": "MoSim Model Studio 0.5 UI Review",
+            "name": "MoSim Studio",
             "version": "0.6.0",
             "author": "MoSim",
             "description": "四工作台控制器配置、模型验证、QGC 交接与本地操作指引界面审核版。",

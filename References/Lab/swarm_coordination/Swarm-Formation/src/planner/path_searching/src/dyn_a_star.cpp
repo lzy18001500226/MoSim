@@ -1,7 +1,18 @@
 #include "path_searching/dyn_a_star.h"
 
+#include <cmath>
+
 using namespace std;
 using namespace Eigen;
+
+namespace
+{
+double collisionSampleSpacing(const double grid_resolution)
+{
+    // Search and simplification must query the same sub-voxel collision lattice.
+    return std::max(0.01, 0.5 * grid_resolution);
+}
+} // namespace
 
 AStar::~AStar()
 {
@@ -31,6 +42,23 @@ void AStar::initGridMap(GridMap::Ptr occ_map, const Eigen::Vector3i pool_size)
     }
 
     grid_map_ = occ_map;
+}
+
+void AStar::setSearchTimeout(const double timeout_s)
+{
+    if (std::isfinite(timeout_s) && timeout_s > 0.0)
+    {
+        search_timeout_s_ = timeout_s;
+    }
+    else
+    {
+        ROS_WARN("Ignoring invalid A star search timeout %.6f; retaining %.3fs", timeout_s, search_timeout_s_);
+    }
+}
+
+void AStar::setPlanarSearch(const bool planar_search)
+{
+    planar_search_ = planar_search;
 }
 
 double AStar::getDiagHeu(GridNodePtr node1, GridNodePtr node2)
@@ -146,6 +174,14 @@ bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_
         return false;
     }
 
+    if (planar_search_)
+    {
+        // The Factory formation gate fixes the flight band. Searching vertical
+        // neighbors only multiplies equivalent XY alternatives; the final
+        // trajectory still receives the true end state and height constraints.
+        end_idx(2) = start_idx(2);
+    }
+
     // if ( start_pt(0) > -1 && start_pt(0) < 0 )
     //     cout << "start_pt=" << start_pt.transpose() << " end_pt=" << end_pt.transpose() << endl;
 
@@ -193,7 +229,7 @@ bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_
 
         for (int dx = -1; dx <= 1; dx++)
             for (int dy = -1; dy <= 1; dy++)
-                for (int dz = -1; dz <= 1; dz++)
+                for (int dz = planar_search_ ? 0 : -1; dz <= (planar_search_ ? 0 : 1); dz++)
                 {
                     if (dx == 0 && dy == 0 && dz == 0)
                         continue;
@@ -232,7 +268,7 @@ bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_
                     const Vector3d neighbor_coord = Index2Coord(neighborPtr->index);
                     const int edge_samples = std::max(
                         1, static_cast<int>(ceil((neighbor_coord - current_coord).norm() /
-                                                 (0.5 * step_size_))));
+                                                 collisionSampleSpacing(step_size_))));
                     bool edge_blocked = false;
                     for (int sample = 1; sample <= edge_samples; ++sample)
                     {
@@ -269,9 +305,9 @@ bool AStar::AstarSearch(const double step_size, Vector3d start_pt, Vector3d end_
                     }
                 }
         const ros::WallTime time_2 = ros::WallTime::now();
-        if ((time_2 - time_1).toSec() > 0.2)
+        if ((time_2 - time_1).toSec() > search_timeout_s_)
         {
-            ROS_WARN("Failed in A star path searching !!! 0.2 seconds time limit exceeded.");
+            ROS_WARN("Failed in A star path searching !!! %.3f seconds time limit exceeded.", search_timeout_s_);
             return false;
         }
     }
@@ -327,13 +363,15 @@ vector<Vector3d> AStar::astarSearchAndGetSimplePath(const double step_size, Vect
     simple_path.push_back(cut_start);
     
     const ros::WallTime simplify_start = ros::WallTime::now();
+    const double collision_sample_spacing = collisionSampleSpacing(step_size_);
     bool finish = false;
     while (!finish) {
         bool advanced = false;
         for (int i = end_idx; i < size; i++){
             bool is_safe = true;
             Vector3d check_pt = path[i];
-            int check_num = std::max(1, static_cast<int>(ceil((check_pt - cut_start).norm() / 0.01)));
+            int check_num = std::max(
+                1, static_cast<int>(ceil((check_pt - cut_start).norm() / collision_sample_spacing)));
             // check collision
             for (int j=0; j<=check_num; j++){
                 double alpha = double(1.0 / check_num) * j;

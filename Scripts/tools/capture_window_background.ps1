@@ -171,9 +171,10 @@ $callback = [BackgroundWindowCapture+EnumWindowsProc]{
 }
 [void][BackgroundWindowCapture]::EnumWindows($callback, [IntPtr]::Zero)
 
-$rows = $windowMatches |
-    Sort-Object pid, handle |
-    ForEach-Object {
+$rows = @(
+    $windowMatches |
+        Sort-Object pid, handle |
+        ForEach-Object {
         $isHelperWindow =
             ($_.process -match '^(mw_browser_proxy|mw_crash_handler|mw_memory_monitor|sysplorer-acp-server|sysplorer_docsearch)$') -or
             ($_.class_name -match '^(IME|MSCTFIME UI|QtitanTitleBarGlowWindow|Chrome_SystemMessageWindow|Base_PowerMessageWindow|PyInstallerOnefileHiddenWindow)$') -or
@@ -261,7 +262,8 @@ $rows = $windowMatches |
             dpi_awareness = $dpiAwareness
             path = if ($shouldCapture) { $path } else { $null }
         }
-    }
+        }
+)
 
 $manifest = Join-Path $resolvedOut 'capture_manifest.json'
 $rowArray = @($rows)

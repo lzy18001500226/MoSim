@@ -87,7 +87,9 @@ param(
     [switch]$FuelCoverageExpansionLogCandidates,
     [double]$FuelPOcc = 0.80,
     [double]$FuelObstaclesInflationM = 0.35,
-    [string]$ControllerCoreProfile = "l1_awff",
+    [string]$ControllerCoreProfile = "original",
+    [ValidateRange(0.05, 0.95)]
+    [double]$Px4ctrlHoverPercentage = 0.456,
     [double]$FuelPlannerMaxVelMps = 2.0,
     [double]$FuelPlannerMaxAccMps2 = 1.5,
     [double]$FuelCmdSmoothMaxSpeedMps = 2.0,
@@ -144,6 +146,10 @@ param(
     [string]$FuelFastlioAlignmentZSource = "truth",
     [ValidateRange(1, 32)]
     [int]$Mid360PluginDownsample = 4,
+    [ValidateRange(0.05, 2.0)]
+    [double]$FastlioFilterSizeSurfM = 0.5,
+    [ValidateRange(0.05, 2.0)]
+    [double]$FastlioFilterSizeMapM = 0.5,
     [switch]$ProfileRuntimeProcesses,
     [ValidateRange(0.25, 10.0)]
     [double]$ProfileRuntimeSamplePeriodS = 1.0,
@@ -157,6 +163,12 @@ param(
     [double]$UnrealStateRateHz = 100.0,
     [ValidateRange(1, 240)]
     [int]$UnrealMaxFps = 30,
+    [ValidateRange(1.0, 60.0)]
+    [double]$UnrealPlaybackNominalRateHz = 5.0,
+    [ValidateRange(1.0, 240.0)]
+    [double]$UnrealPlaybackMinimumDisplayRateHz = 30.0,
+    [ValidateRange(0.05, 2.0)]
+    [double]$UnrealPlaybackMaxInterpolationDurationS = 0.5,
     [switch]$NoUnreal,
     [switch]$ReuseUnrealWindow,
     [switch]$DisableReviewAccumulation,
@@ -280,6 +292,8 @@ if ($EffectivePx4ctrlRelativeTakeoffHeight -le 0.0) {
 }
 
 New-Item -ItemType Directory -Force -Path $ResultDirWin | Out-Null
+$UnrealReceiverMetricsPath = Join-Path $ResultDirWin "observability\gazebo_ue_receiver.json"
+$UnrealFrameMetricsPath = Join-Path $ResultDirWin "observability\ue_frame_timing.json"
 
 function Start-UnrealLiveMirrorWindow {
     $ue = "D:\\Program Files\\Epic Games\\UE_5.5\\Engine\\Binaries\\Win64\\UnrealEditor.exe"
@@ -311,12 +325,20 @@ function Start-UnrealLiveMirrorWindow {
         "-MoSimReviewExposureBias=0.0",
         "-MoSimPlaybackActorCount=1",
         "-MoSimPlaybackBaseUdpPort=$UnrealUdpPort",
+        "-MoSimPlaybackInterpolate",
+        "-MoSimPlaybackUseArrivalTiming",
+        "-MoSimPlaybackNominalRateHz=$UnrealPlaybackNominalRateHz",
+        "-MoSimPlaybackMinimumDisplayRateHz=$UnrealPlaybackMinimumDisplayRateHz",
+        "-MoSimPlaybackMaxInterpolationDurationS=$UnrealPlaybackMaxInterpolationDurationS",
         "-MoSimFollowPlaybackCamera",
         "-MoSimFollowCameraBackCm=55",
         "-MoSimFollowCameraRightCm=-14",
         "-MoSimFollowCameraUpCm=28",
         "-MoSimFollowCameraLocationInterpSpeed=0",
         "-MoSimFollowCameraRotationInterpSpeed=0",
+        "-MoSimObservabilityRunId=$RunId",
+        "-MoSimUeReceiverMetrics=$UnrealReceiverMetricsPath",
+        "-MoSimUeFrameMetrics=$UnrealFrameMetricsPath",
         "-ExecCmds=`"t.MaxFPS $UnrealMaxFps`"",
         "-MoSimNoReviewCollision"
     )
@@ -332,12 +354,24 @@ function Start-UnrealLiveMirrorWindow {
         state_rate_hz = $UnrealStateRateHz
         max_render_fps = $UnrealMaxFps
         process_priority = "BelowNormal"
+        display_interpolation = [pscustomobject]@{
+            enabled = $true
+            timing_basis = "arrival_wall_clock"
+            nominal_input_rate_hz = $UnrealPlaybackNominalRateHz
+            minimum_display_rate_hz = $UnrealPlaybackMinimumDisplayRateHz
+            max_duration_s = $UnrealPlaybackMaxInterpolationDurationS
+            claim_boundary = "UE display smoothing only; Gazebo/MAVROS trajectories remain authoritative."
+        }
+        observability = [pscustomobject]@{
+            receiver_metrics_path = $UnrealReceiverMetricsPath
+            frame_metrics_path = $UnrealFrameMetricsPath
+        }
         pose_topic = $UnrealPoseTopic
         fuel_random_seed = $FuelRandomSeed
         camera = "follow_playback_fixed_offset"
         actual_trail = "disabled"
         planned_trail = "disabled"
-    } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $ResultDirWin "ue_live_mirror_launch.json") -Encoding UTF8
+    } | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath (Join-Path $ResultDirWin "ue_live_mirror_launch.json") -Encoding UTF8
 }
 
 if (-not $NoUnreal -and -not $ReuseUnrealWindow) {
@@ -350,6 +384,11 @@ $envParts = @(
     "PLANNER_VARIANT=fuel",
     "FUEL_RANDOM_SEED=$FuelRandomSeed",
     "PX4CTRL_CORE_PROFILE=$ControllerCoreProfile",
+    "PX4CTRL_HOVER_PERCENTAGE=$Px4ctrlHoverPercentage",
+    "MAVROS_STREAM_RATE_HZ=100",
+    "MAVROS_SET_STREAM_GROUPS=raw_sensors position extra1 extra2",
+    "MAVROS_SET_MESSAGE_INTERVALS=true",
+    "MAVROS_SET_MESSAGE_IDS=105:HIGHRES_IMU 30:ATTITUDE 31:ATTITUDE_QUATERNION 32:LOCAL_POSITION_NED",
     "GUI=false",
     "OPEN_RVIZ=$OpenRvizValue",
     "KEEP_ALIVE=$KeepAliveValue",
@@ -390,6 +429,8 @@ $envParts = @(
     "GOAL4_BODY_AXIS_HEAD_LENGTH_M=$BodyAxisHeadLengthM",
     "FUEL_SENSOR_POSE_SOURCE=$FuelSensorPoseSource",
     "FUEL_FASTLIO_ALIGNMENT_Z_SOURCE=$FuelFastlioAlignmentZSource",
+    "FASTLIO_FILTER_SIZE_SURF=$FastlioFilterSizeSurfM",
+    "FASTLIO_FILTER_SIZE_MAP=$FastlioFilterSizeMapM",
     "FUEL_FRAME_OFFSET_X=$StartX",
     "FUEL_FRAME_OFFSET_Y=$StartY",
     "FUEL_FRAME_OFFSET_Z=$FuelFrameOffsetZEffective",
@@ -576,6 +617,28 @@ if (-not [string]::IsNullOrWhiteSpace($FuelWorkspaceWsl)) {
     $envParts += "GOAL4_FUEL_WS=$FuelWorkspaceWsl"
 }
 
+function ConvertTo-BashEnvAssignment {
+    param([Parameter(Mandatory = $true)][string]$Assignment)
+
+    $separatorIndex = $Assignment.IndexOf("=")
+    if ($separatorIndex -le 0) {
+        throw "Invalid Bash environment assignment: $Assignment"
+    }
+
+    $name = $Assignment.Substring(0, $separatorIndex)
+    if ($name -notmatch '^[A-Za-z_][A-Za-z0-9_]*$') {
+        throw "Invalid Bash environment variable name: $name"
+    }
+
+    $singleQuote = [string][char]39
+    $doubleQuote = [string][char]34
+    $value = $Assignment.Substring($separatorIndex + 1)
+    $escapedValue = $value.Replace($singleQuote, $singleQuote + $doubleQuote + $singleQuote + $doubleQuote + $singleQuote)
+    return ($name + "=" + $singleQuote + $escapedValue + $singleQuote)
+}
+
+$bashEnvParts = @($envParts | ForEach-Object { ConvertTo-BashEnvAssignment $_ })
+
 $preflight = if ($SkipPreflight) {
     "echo skipped > '$ResultDirWsl/preflight_skipped.txt'"
 } else {
@@ -629,7 +692,7 @@ if [[ '$RecordRosbagValue' == 'true' ]]; then
 fi
 echo "starting run_px4ctrl_ego_single_gate.sh"
 set +e
-$($envParts -join " ") bash Scripts/sunray/run_px4ctrl_ego_single_gate.sh > '$ResultDirWsl/background_launcher.log' 2>&1
+$($bashEnvParts -join " ") bash Scripts/sunray/run_px4ctrl_ego_single_gate.sh > '$ResultDirWsl/background_launcher.log' 2>&1
 run_exit=$bashStatus
 echo `$run_exit > '$ResultDirWsl/background_exit_code.txt'
 if [[ -n "`$profile_pid" ]]; then

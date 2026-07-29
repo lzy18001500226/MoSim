@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   sensor_msgs
   std_msgs
+  pcl_conversions
   message_generation
 )
 
@@ -43,10 +44,11 @@ include_directories(
 catkin_package(
         INCLUDE_DIRS include
         LIBRARIES livox_laser_simulation
-        CATKIN_DEPENDS tf
+        CATKIN_DEPENDS message_runtime pcl_conversions roscpp sensor_msgs std_msgs tf
 )
 
 add_library(livox_laser_simulation SHARED src/livox_points_plugin.cpp src/livox_ode_multiray_shape.cpp)
+add_dependencies(livox_laser_simulation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(livox_laser_simulation ${catkin_LIBRARIES} RayPlugin)
 
 target_link_libraries(livox_laser_simulation libprotobuf.so.9)

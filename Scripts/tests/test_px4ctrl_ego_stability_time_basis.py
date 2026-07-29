@@ -21,6 +21,21 @@ class Px4ctrlEgoStabilityTimeBasisTests(unittest.TestCase):
         self.assertIn("[bool]$PublishHoverDuringTakeoff = $true", source)
         self.assertIn("DIFF_PUBLISH_HOVER_DURING_TAKEOFF=", source)
 
+    def test_factory_formation_wrapper_enables_absolute_hover_takeoff_handoff(self):
+        source = (
+            Path(__file__).resolve().parents[1]
+            / "sunray"
+            / "run_factory_l2_swarm_formation_obstacle_gate.ps1"
+        ).read_text(encoding="utf-8")
+        mission = (
+            Path(__file__).resolve().parents[1]
+            / "sunray"
+            / "px4ctrl_ego_swarm_mission_node.py"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn('"EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF=true"', source)
+        self.assertIn('"takeoff_hover_height_not_held"', mission)
+
     def test_factory_fuel_ue_review_is_resource_bounded(self):
         source = (
             Path(__file__).resolve().parents[1]

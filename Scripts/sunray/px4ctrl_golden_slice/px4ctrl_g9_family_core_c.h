@@ -15,7 +15,9 @@ enum MosimPx4ctrlG9ControllerId
     MOSIM_PX4CTRL_G9_NMPC_OUTER = 6,
     MOSIM_PX4CTRL_G10_L1_AWFF = 7,
     MOSIM_PX4CTRL_G10_SAFETY_FILTER = 8,
-    MOSIM_PX4CTRL_G10_FAULT_ALLOCATION = 9
+    MOSIM_PX4CTRL_G10_FAULT_ALLOCATION = 9,
+    MOSIM_PX4CTRL_P10_DFBC_HIGH_ORDER = 10,
+    MOSIM_PX4CTRL_P10_DFBC_SMOOTH_ROBUST = 11
 };
 
 typedef struct MosimPx4ctrlG9FamilyCVec3
@@ -52,6 +54,12 @@ typedef struct MosimPx4ctrlG9FamilyCParams
     double nmpc_control_weight[3];
     double nmpc_accel_limit[3];
     double nmpc_increment_limit[3];
+    double high_order_body_rate_limit[3];
+    double high_order_body_accel_limit[3];
+    double smooth_feedback_gain[3];
+    double smooth_feedback_bound[3];
+    double disturbance_observer_gain[3];
+    double disturbance_compensation_limit[3];
     double l1_model_decay;
     double l1_filter_T;
     double l1_gain[3];
@@ -230,6 +238,24 @@ void MosimPx4ctrlG9FamilyCStepScalar(
     double nmpc_increment_limit_x,
     double nmpc_increment_limit_y,
     double nmpc_increment_limit_z,
+    double high_order_body_rate_limit_x,
+    double high_order_body_rate_limit_y,
+    double high_order_body_rate_limit_z,
+    double high_order_body_accel_limit_x,
+    double high_order_body_accel_limit_y,
+    double high_order_body_accel_limit_z,
+    double smooth_feedback_gain_x,
+    double smooth_feedback_gain_y,
+    double smooth_feedback_gain_z,
+    double smooth_feedback_bound_x,
+    double smooth_feedback_bound_y,
+    double smooth_feedback_bound_z,
+    double disturbance_observer_gain_x,
+    double disturbance_observer_gain_y,
+    double disturbance_observer_gain_z,
+    double disturbance_compensation_limit_x,
+    double disturbance_compensation_limit_y,
+    double disturbance_compensation_limit_z,
     double l1_model_decay,
     double l1_filter_T,
     double l1_gain_x,

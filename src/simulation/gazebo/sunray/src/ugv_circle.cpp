@@ -1,7 +1,9 @@
 // ROS 头文件
 #include <ros/ros.h>
-#include <iostream>
-#include "ros_msg_utils.h"
+#include <cmath>
+#include <gazebo_msgs/ModelState.h>
+#include <nav_msgs/Odometry.h>
+#include <sunray_msgs/UAVState.h>
 
 using namespace std;
 sunray_msgs::UAVState uav_state;

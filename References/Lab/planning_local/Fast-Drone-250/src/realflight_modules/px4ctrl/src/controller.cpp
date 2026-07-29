@@ -41,6 +41,22 @@ extern "C" {
 #include "MoSim_P6_SafetySupervisor_CFunction_Sysblock_private.h"
 #define MOSIM_SAFETY_GB_IN function_sysblockGbIn
 #define MOSIM_SAFETY_GB_OUT cfunction_sysblockGbOut
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_L1_AWFF)
+#include "MoSim_P10_G10_BDE_CFunction_Sysblock_private.h"
+#define MOSIM_P10_BDE_GB_IN asysblockGbIn
+#define MOSIM_P10_BDE_GB_OUT n_sysblockGbOut
+#define sblock_stateisoGbIn MOSIM_P10_BDE_GB_IN
+#define ysblock_stateisoGbOut MOSIM_P10_BDE_GB_OUT
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY)
+#include "MoSim_P10_DFBC_Family_CFunction_Sysblock_private.h"
+#define MOSIM_P10_BDE_GB_IN tion_sysblockGbIn
+#define MOSIM_P10_BDE_GB_OUT ction_sysblockGbOut
+#define sblock_stateisoGbIn MOSIM_P10_BDE_GB_IN
+#define ysblock_stateisoGbOut MOSIM_P10_BDE_GB_OUT
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_HINF_WRENCH)
+#include "MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock_private.h"
+#define MOSIM_P10_HINF_GB_IN r_cfunction_sysblockGbIn
+#define MOSIM_P10_HINF_GB_OUT er_cfunction_sysblockGbOut
 #else
 #include "PX4CTRL_Core_CFunction_Sysblock_private.h"
 #endif
@@ -59,6 +75,25 @@ constexpr int kG9NmpcOuter = 6;
 constexpr int kG10L1Awff = 7;
 constexpr int kG10SafetyFilter = 8;
 constexpr int kG10FaultAllocation = 9;
+constexpr int kP10DfbcHighOrder = 10;
+constexpr int kP10DfbcSmoothRobust = 11;
+
+int p10_dfbc_controller_id_from_mode(const std::string &core_mode)
+{
+  if (core_mode == "dfbc_high_order_attitude" ||
+      core_mode == "dfbc_high_order_bodyrate") return kP10DfbcHighOrder;
+  return kP10DfbcSmoothRobust;
+}
+
+const char *p10_dfbc_controller_name_from_mode(const std::string &core_mode)
+{
+  if (core_mode == "dfbc_high_order_attitude") return "dfbc_high_order_attitude";
+  if (core_mode == "dfbc_high_order_bodyrate") return "dfbc_high_order_bodyrate";
+  if (core_mode == "dfbc_smooth_robust_bodyrate") return "dfbc_smooth_robust_bodyrate";
+  if (core_mode == "dfbc_dob_eso_disabled") return "dfbc_dob_eso_disabled";
+  if (core_mode == "dfbc_dob_eso") return "dfbc_dob_eso";
+  return "dfbc_smooth_robust_attitude";
+}
 
 constexpr int kPidCascade = 1;
 constexpr int kPidGainScheduled = 2;
@@ -404,16 +439,24 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   use_pid_indi_core_ = (core_mode == "pid_indi");
   use_nmpc_outer_core_ = (core_mode == "nmpc_outer");
   use_dfbc_high_order_core_ = (core_mode == "dfbc_high_order" ||
-                               core_mode == "dfbc_jerk_snap");
+                               core_mode == "dfbc_jerk_snap" ||
+                               core_mode == "dfbc_high_order_attitude" ||
+                               core_mode == "dfbc_high_order_bodyrate");
   use_dfbc_smooth_robust_core_ = (core_mode == "dfbc_smooth_robust" ||
                                   core_mode == "dfbc_smooth_robust_dob" ||
-                                  core_mode == "dfbc_wind_robust");
+                                  core_mode == "dfbc_wind_robust" ||
+                                  core_mode == "dfbc_smooth_robust_attitude" ||
+                                  core_mode == "dfbc_smooth_robust_bodyrate" ||
+                                  core_mode == "dfbc_dob_eso_disabled" ||
+                                  core_mode == "dfbc_dob_eso");
   use_dfbc_smooth_robust_dob_ = (core_mode == "dfbc_smooth_robust_dob" ||
-                                 core_mode == "dfbc_wind_robust");
+                                 core_mode == "dfbc_wind_robust" ||
+                                 core_mode == "dfbc_dob_eso");
   use_dfbc_smooth_robust_indi_core_ = (core_mode == "dfbc_smooth_robust_indi");
   use_l1_awff_core_ = (core_mode == "l1_awff" ||
                        core_mode == "l1_residual" ||
-                       core_mode == "awff_l1");
+                       core_mode == "awff_l1" ||
+                       core_mode == "l1_awff_minimal");
   use_safety_filter_core_ = (core_mode == "safety_filter");
   use_fault_allocation_core_ = (core_mode == "fault_allocation");
   generated_family_controller_id_ = g9_controller_id_from_mode(core_mode);
@@ -435,6 +478,12 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   generated_family_controller_id_ = learning_controller_id_from_mode(core_mode);
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_SAFETY_SUPERVISOR)
   generated_family_controller_id_ = safety_mode_id_from_mode(core_mode);
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_L1_AWFF)
+  generated_family_controller_id_ = kG10L1Awff;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY)
+  generated_family_controller_id_ = p10_dfbc_controller_id_from_mode(core_mode);
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_HINF_WRENCH)
+  generated_family_controller_id_ = 1;
 #endif
   ros::param::param<int>("~mosim_generated_family_controller_id",
                          generated_family_controller_id_,
@@ -459,6 +508,12 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   const int max_generated_family_controller_id = kLearningRlGainScheduler;
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_SAFETY_SUPERVISOR)
   const int max_generated_family_controller_id = 7;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_L1_AWFF)
+  const int max_generated_family_controller_id = kG10L1Awff;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY)
+  const int max_generated_family_controller_id = kP10DfbcSmoothRobust;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_HINF_WRENCH)
+  const int max_generated_family_controller_id = 1;
 #else
   const int max_generated_family_controller_id = kG9NmpcOuter;
 #endif
@@ -544,6 +599,18 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
                                core_mode == "emergency_stop" ||
                                core_mode == "return_and_land" ||
                                core_mode == "failsafe_state_machine";
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_L1_AWFF)
+  use_mosim_generated_core_ = use_mosim_generated_core_ || core_mode == "l1_awff_minimal";
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY)
+  use_mosim_generated_core_ = use_mosim_generated_core_ ||
+                               core_mode == "dfbc_high_order_attitude" ||
+                               core_mode == "dfbc_high_order_bodyrate" ||
+                               core_mode == "dfbc_smooth_robust_attitude" ||
+                               core_mode == "dfbc_smooth_robust_bodyrate" ||
+                               core_mode == "dfbc_dob_eso_disabled" ||
+                               core_mode == "dfbc_dob_eso";
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_HINF_WRENCH)
+  use_mosim_generated_core_ = use_mosim_generated_core_ || core_mode == "hinf_hover_wrench";
 #endif
   ros::param::param<double>("~smc/lambda_x", smc_lambda_[0], 2.0);
   ros::param::param<double>("~smc/lambda_y", smc_lambda_[1], 2.0);
@@ -741,6 +808,43 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
                     << " runtime_loaded_symbol=MoSim_P6_SafetySupervisor_CFunction_Sysblock::Step"
                     << " controller_id=" << generated_family_controller_id_
                     << " controller_name=" << safety_mode_name_from_id(generated_family_controller_id_));
+  }
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_L1_AWFF)
+  if (use_mosim_generated_core_)
+  {
+    ROS_INFO_STREAM("[mosim_generated_runtime] backend=mworks_generated_c"
+                    << " build_backend=p10_l1_awff"
+                    << " build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_P10_L1_AWFF"
+                    << " generated_model_name=MoSim_P10_G10_BDE_CFunction_Sysblock"
+                    << " generated_source_sha256=358ba0446938e83519d7f29e9800237495cfe074a4be2f8a134cad47e13c53a4"
+                    << " runtime_loaded_symbol=MoSim_P10_G10_BDE_CFunction_Sysblock::Step"
+                    << " controller_id=7 controller_name=l1_awff_minimal");
+  }
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY)
+  if (use_mosim_generated_core_)
+  {
+    ROS_INFO_STREAM("[mosim_generated_runtime] backend=mworks_generated_c"
+                    << " build_backend=p10_dfbc_family"
+                    << " build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY"
+                    << " generated_model_name=MoSim_P10_DFBC_Family_CFunction_Sysblock"
+                    << " generated_source_sha256=287f68f7e676f96ed59c996fab147cf82780f52b69037c99750930772e683fd2"
+                    << " runtime_loaded_symbol=MoSim_P10_DFBC_Family_CFunction_Sysblock::Step"
+                    << " controller_id=" << generated_family_controller_id_
+                    << " controller_name=" << p10_dfbc_controller_name_from_mode(core_mode)
+                    << " output_interface=" << (param_.use_bodyrate_ctrl ? "BODY_RATE_THRUST" : "ATTITUDE_THRUST")
+                    << " disturbance_observer=" << (use_dfbc_smooth_robust_dob_ ? "enabled" : "disabled"));
+  }
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_HINF_WRENCH)
+  if (use_mosim_generated_core_)
+  {
+    ROS_INFO_STREAM("[mosim_generated_runtime] backend=mworks_generated_c"
+                    << " build_backend=p10_hinf_wrench"
+                    << " build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_P10_HINF_WRENCH"
+                    << " generated_model_name=MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock"
+                    << " generated_source_sha256=1a1743d722d03678fc9d78da9fcb24d7da33fe7bc6b180c26b1f357480a7587b"
+                    << " runtime_loaded_symbol=MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock::Step"
+                    << " controller_id=1 controller_name=hinf_hover_wrench"
+                    << " adapter_contract=frozen_hover_quasi_static_wrench_to_attitude_thrust");
   }
 #endif
   ROS_INFO_STREAM("[px4ctrl] mosim_generated_core_mode=" << core_mode
@@ -2017,6 +2121,94 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
       << " test_event=" << (test_event ? "true" : "false")
       << " safe_thrust=" << u.thrust);
   return debug;
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_HINF_WRENCH)
+  const double effective_hover_percentage = param_.gra / thr2acc_;
+  const double full_collective_thrust_n = std::max(param_.mass * thr2acc_, 1.0e-6);
+  const Eigen::Vector3d kp(param_.gain.Kp0, param_.gain.Kp1, param_.gain.Kp2);
+  const Eigen::Vector3d kv(param_.gain.Kv0, param_.gain.Kv1, param_.gain.Kv2);
+  Eigen::Vector3d reference_acceleration = des.a;
+  reference_acceleration += kv.asDiagonal() * (des.v - odom.v);
+  reference_acceleration += kp.asDiagonal() * (des.p - odom.p);
+  reference_acceleration += Eigen::Vector3d(0.0, 0.0, param_.gra);
+  const double reference_yaw = des.yaw;
+  const double reference_roll =
+      (reference_acceleration(0) * std::sin(reference_yaw) -
+       reference_acceleration(1) * std::cos(reference_yaw)) / param_.gra;
+  const double reference_pitch =
+      (reference_acceleration(0) * std::cos(reference_yaw) +
+       reference_acceleration(1) * std::sin(reference_yaw)) / param_.gra;
+  const Eigen::Vector3d state_euler = odom.q.toRotationMatrix().eulerAngles(0, 1, 2);
+
+  MOSIM_P10_HINF_GB_IN.state_roll_in = state_euler(0);
+  MOSIM_P10_HINF_GB_IN.state_pitch_in = state_euler(1);
+  MOSIM_P10_HINF_GB_IN.state_yaw_in = state_euler(2);
+  MOSIM_P10_HINF_GB_IN.state_p_in = imu.w(0);
+  MOSIM_P10_HINF_GB_IN.state_q_in = imu.w(1);
+  MOSIM_P10_HINF_GB_IN.state_r_in = imu.w(2);
+  MOSIM_P10_HINF_GB_IN.state_u_in = odom.v(0);
+  MOSIM_P10_HINF_GB_IN.state_v_in = odom.v(1);
+  MOSIM_P10_HINF_GB_IN.state_w_in = odom.v(2);
+  MOSIM_P10_HINF_GB_IN.state_x_in = odom.p(0);
+  MOSIM_P10_HINF_GB_IN.state_y_in = odom.p(1);
+  MOSIM_P10_HINF_GB_IN.state_z_in = odom.p(2);
+  MOSIM_P10_HINF_GB_IN.reference_roll_in = reference_roll;
+  MOSIM_P10_HINF_GB_IN.reference_pitch_in = reference_pitch;
+  MOSIM_P10_HINF_GB_IN.reference_yaw_in = reference_yaw;
+  MOSIM_P10_HINF_GB_IN.reference_p_in = 0.0;
+  MOSIM_P10_HINF_GB_IN.reference_q_in = 0.0;
+  MOSIM_P10_HINF_GB_IN.reference_r_in = des.yaw_rate;
+  MOSIM_P10_HINF_GB_IN.reference_u_in = des.v(0);
+  MOSIM_P10_HINF_GB_IN.reference_v_in = des.v(1);
+  MOSIM_P10_HINF_GB_IN.reference_w_in = des.v(2);
+  MOSIM_P10_HINF_GB_IN.reference_x_in = des.p(0);
+  MOSIM_P10_HINF_GB_IN.reference_y_in = des.p(1);
+  MOSIM_P10_HINF_GB_IN.reference_z_in = des.p(2);
+  MOSIM_P10_HINF_GB_IN.enable_in = 1.0;
+  MOSIM_P10_HINF_GB_IN.reset_in = generated_core_reset_pending_ ? 1.0 : 0.0;
+  MOSIM_P10_HINF_GB_IN.mass_in = param_.mass;
+  MOSIM_P10_HINF_GB_IN.gravity_in = param_.gra;
+  MOSIM_P10_HINF_GB_IN.force_min_n_in = 0.0;
+  MOSIM_P10_HINF_GB_IN.force_max_n_in = full_collective_thrust_n;
+  MOSIM_P10_HINF_GB_IN.torque_limit_nm_in = 8.0;
+  MOSIM_P10_HINF_GB_IN.roll_stiffness_nm_per_rad_in = 30.0;
+  MOSIM_P10_HINF_GB_IN.pitch_stiffness_nm_per_rad_in = 30.0;
+  MOSIM_P10_HINF_GB_IN.yaw_stiffness_nm_per_rad_in = 40.0;
+  MOSIM_P10_HINF_GB_IN.hover_percentage_in = effective_hover_percentage;
+  MOSIM_P10_HINF_GB_IN.tilt_limit_rad_in = param_.max_angle > 0.0 ? param_.max_angle : 0.35;
+  MOSIM_P10_HINF_GB_IN.yaw_correction_limit_rad_in = 0.20;
+  MOSIM_P10_HINF_GB_IN.min_normalized_thrust_in = 0.0;
+  MOSIM_P10_HINF_GB_IN.max_normalized_thrust_in = 1.0;
+  Step();
+  generated_core_reset_pending_ = false;
+
+  const bool output_valid = MOSIM_P10_HINF_GB_OUT.status_code_out == 0.0 &&
+      MOSIM_P10_HINF_GB_OUT.source_command_variant_out == 3.0 &&
+      MOSIM_P10_HINF_GB_OUT.adapted_command_variant_out == 1.0 &&
+      std::isfinite(MOSIM_P10_HINF_GB_OUT.normalized_thrust_out) &&
+      std::isfinite(MOSIM_P10_HINF_GB_OUT.desired_attitude_w_out);
+  if (!output_valid)
+  {
+    ROS_ERROR_THROTTLE(1.0, "P10 H-infinity generated backend returned invalid output");
+    u.q = imu.q;
+    u.bodyrates = Eigen::Vector3d::Zero();
+    u.thrust = 0.0;
+  }
+  else
+  {
+    u.q = Eigen::Quaterniond(
+        MOSIM_P10_HINF_GB_OUT.desired_attitude_w_out,
+        MOSIM_P10_HINF_GB_OUT.desired_attitude_x_out,
+        MOSIM_P10_HINF_GB_OUT.desired_attitude_y_out,
+        MOSIM_P10_HINF_GB_OUT.desired_attitude_z_out).normalized();
+    u.bodyrates = bodyrateAttitudeFeedback(u.q, imu.q, Eigen::Vector3d::Zero());
+    u.thrust = clamp_double(MOSIM_P10_HINF_GB_OUT.normalized_thrust_out, 0.0, 1.0);
+  }
+  debug_msg_.des_v_x = des.v(0);
+  debug_msg_.des_v_y = des.v(1);
+  debug_msg_.des_v_z = des.v(2);
+  debug_msg_.des_a_x = des.a(0);
+  debug_msg_.des_a_y = des.a(1);
+  debug_msg_.des_a_z = des.a(2);
 #else
 #if !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_PID_ATTITUDE_THRUST) && \
     !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_WAVE_A_ATTITUDE_THRUST) && \
@@ -2469,7 +2661,9 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   debug_msg_.des_a_x = kGbOut.desired_acceleration_x_out;
   debug_msg_.des_a_y = kGbOut.desired_acceleration_y_out;
   debug_msg_.des_a_z = kGbOut.desired_acceleration_z_out;
-#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G10_BDE_FAMILY)
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G10_BDE_FAMILY) || \
+      defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_L1_AWFF) || \
+      defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY)
   sblock_stateisoGbIn.controller_id_in = static_cast<double>(generated_family_controller_id_);
   sblock_stateisoGbIn.dt_in = dt;
   sblock_stateisoGbIn.position_x_in = odom.p(0);
@@ -2514,7 +2708,8 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   sblock_stateisoGbIn.enable_in = 1.0;
   sblock_stateisoGbIn.reset_in = reset_this_cycle ? 1.0 : 0.0;
   sblock_stateisoGbIn.measurement_stamp_valid_in = odom.rcv_stamp.isZero() ? 0.0 : 1.0;
-  sblock_stateisoGbIn.enable_disturbance_observer_in = 0.0;
+  sblock_stateisoGbIn.enable_disturbance_observer_in =
+      use_dfbc_smooth_robust_dob_ ? 1.0 : 0.0;
   sblock_stateisoGbIn.kp_x_in = param_.gain.Kp0;
   sblock_stateisoGbIn.kp_y_in = param_.gain.Kp1;
   sblock_stateisoGbIn.kp_z_in = param_.gain.Kp2;
@@ -2562,6 +2757,26 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   sblock_stateisoGbIn.nmpc_increment_limit_x_in = nmpc_increment_limit_[0];
   sblock_stateisoGbIn.nmpc_increment_limit_y_in = nmpc_increment_limit_[1];
   sblock_stateisoGbIn.nmpc_increment_limit_z_in = nmpc_increment_limit_[2];
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY)
+  sblock_stateisoGbIn.high_order_body_rate_limit_x_in = high_order_body_rate_limit_[0];
+  sblock_stateisoGbIn.high_order_body_rate_limit_y_in = high_order_body_rate_limit_[1];
+  sblock_stateisoGbIn.high_order_body_rate_limit_z_in = high_order_body_rate_limit_[2];
+  sblock_stateisoGbIn.high_order_body_accel_limit_x_in = high_order_body_accel_limit_[0];
+  sblock_stateisoGbIn.high_order_body_accel_limit_y_in = high_order_body_accel_limit_[1];
+  sblock_stateisoGbIn.high_order_body_accel_limit_z_in = high_order_body_accel_limit_[2];
+  sblock_stateisoGbIn.smooth_feedback_gain_x_in = smooth_feedback_gain_[0];
+  sblock_stateisoGbIn.smooth_feedback_gain_y_in = smooth_feedback_gain_[1];
+  sblock_stateisoGbIn.smooth_feedback_gain_z_in = smooth_feedback_gain_[2];
+  sblock_stateisoGbIn.smooth_feedback_bound_x_in = smooth_feedback_bound_[0];
+  sblock_stateisoGbIn.smooth_feedback_bound_y_in = smooth_feedback_bound_[1];
+  sblock_stateisoGbIn.smooth_feedback_bound_z_in = smooth_feedback_bound_[2];
+  sblock_stateisoGbIn.disturbance_observer_gain_x_in = disturbance_observer_gain_[0];
+  sblock_stateisoGbIn.disturbance_observer_gain_y_in = disturbance_observer_gain_[1];
+  sblock_stateisoGbIn.disturbance_observer_gain_z_in = disturbance_observer_gain_[2];
+  sblock_stateisoGbIn.disturbance_compensation_limit_x_in = disturbance_compensation_limit_[0];
+  sblock_stateisoGbIn.disturbance_compensation_limit_y_in = disturbance_compensation_limit_[1];
+  sblock_stateisoGbIn.disturbance_compensation_limit_z_in = disturbance_compensation_limit_[2];
+#endif
   sblock_stateisoGbIn.l1_model_decay_in = l1_model_decay_;
   sblock_stateisoGbIn.l1_filter_T_in = l1_filter_T_;
   sblock_stateisoGbIn.l1_gain_x_in = l1_gain_[0];
@@ -2596,14 +2811,41 @@ LinearControl::calculateGeneratedCoreControl(const Desired_State_t &des,
   Step();
   generated_core_reset_pending_ = false;
 
-  u.q = Eigen::Quaterniond(
-      ysblock_stateisoGbOut.desired_attitude_w_out,
-      ysblock_stateisoGbOut.desired_attitude_x_out,
-      ysblock_stateisoGbOut.desired_attitude_y_out,
-      ysblock_stateisoGbOut.desired_attitude_z_out);
-  u.q.normalize();
-  u.bodyrates = Eigen::Vector3d::Zero();
-  u.thrust = ysblock_stateisoGbOut.normalized_thrust_out;
+  const bool p10_generated_output_valid =
+      ysblock_stateisoGbOut.status_code_out == 0.0 &&
+      std::isfinite(ysblock_stateisoGbOut.normalized_thrust_out) &&
+      std::isfinite(ysblock_stateisoGbOut.desired_attitude_w_out);
+  if (!p10_generated_output_valid)
+  {
+    ROS_ERROR_THROTTLE(1.0, "G10/P10 BDE generated backend returned invalid output");
+    u.q = imu.q;
+    u.bodyrates = Eigen::Vector3d::Zero();
+    u.thrust = 0.0;
+  }
+  else
+  {
+    u.q = Eigen::Quaterniond(
+        ysblock_stateisoGbOut.desired_attitude_w_out,
+        ysblock_stateisoGbOut.desired_attitude_x_out,
+        ysblock_stateisoGbOut.desired_attitude_y_out,
+        ysblock_stateisoGbOut.desired_attitude_z_out).normalized();
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_P10_DFBC_FAMILY)
+    if (param_.use_bodyrate_ctrl)
+    {
+      u.bodyrates = Eigen::Vector3d(
+          ysblock_stateisoGbOut.desired_body_rate_x_out,
+          ysblock_stateisoGbOut.desired_body_rate_y_out,
+          ysblock_stateisoGbOut.desired_body_rate_z_out);
+    }
+    else
+    {
+      u.bodyrates = bodyrateAttitudeFeedback(u.q, imu.q, Eigen::Vector3d::Zero());
+    }
+#else
+    u.bodyrates = bodyrateAttitudeFeedback(u.q, imu.q, Eigen::Vector3d::Zero());
+#endif
+    u.thrust = clamp_double(ysblock_stateisoGbOut.normalized_thrust_out, 0.0, 1.0);
+  }
 
   debug_msg_.des_v_x = des.v(0);
   debug_msg_.des_v_y = des.v(1);

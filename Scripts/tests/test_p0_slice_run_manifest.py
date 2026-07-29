@@ -410,7 +410,7 @@ def test_p0_slice_manifest_builder_keeps_smoke_boundary() -> None:
     trace_lookup = mworks["trace_lookup_diagnostic"]
     assert trace_lookup["status"] == "completed"
     assert trace_lookup["quality_status"] == "diagnostic_pass"
-    assert trace_lookup["model_name"] == "QuadrotorExperiments.TraceLookupStandaloneSmoke"
+    assert trace_lookup["model_name"].endswith(".TraceLookupStandaloneSmoke")
     assert trace_lookup["nonzero_reference_outputs"] is True
     assert trace_lookup["tolerance_pass"] is True
     assert trace_lookup["probe_json"].endswith("trace_lookup_standalone_probe.json")
@@ -429,7 +429,7 @@ def test_p0_slice_manifest_builder_keeps_smoke_boundary() -> None:
     factory_lite = mworks["factory_lite_trace_probe"]
     assert factory_lite["status"] == "completed"
     assert factory_lite["quality_status"] == "factory_lite_trace_probe_pass"
-    assert factory_lite["model_name"] == "QuadrotorExperiments.FactoryLiteTraceSmoke"
+    assert factory_lite["model_name"].endswith(".FactoryLiteTraceSmoke")
     assert factory_lite["check_model_status"] == "pass"
     assert factory_lite["simulate_status"] == "pass"
     assert factory_lite["get_var_times_count"] == 41

@@ -184,3 +184,75 @@ def test_racer_pair_opt_evidence_distinguishes_applied_ownership_change(tmp_path
     assert evidence["counts"]["applied_initiator"] == 1
     assert evidence["counts"]["rejected_empty"] == 1
     assert evidence["counts"]["rejected_larger_cost"] == 1
+
+
+def test_swarm_formation_operator_and_gate_share_full_route_watchdog() -> None:
+    for relative_path in (
+        "Scripts/sunray/start_factory_l2_swarm_formation_backend.ps1",
+        "Scripts/sunray/run_factory_l2_swarm_formation_obstacle_gate.ps1",
+    ):
+        source = (ROOT / relative_path).read_text(encoding="utf-8")
+        assert "[int]$TotalTimeoutS = 2400" in source
+
+
+def test_swarm_formation_candidate_collision_is_diagnostic_after_replan(tmp_path: Path) -> None:
+    log_path = tmp_path / "planner.log"
+    output_path = tmp_path / "audit.json"
+    log_path.write_text(
+        "[WARN] [1001.000000000, 12.000000000]: optimized trajectory collision: drone=0\n"
+        "[TRIG]: from EXEC_TRAJ to REPLAN_TRAJ\n"
+        "[FSM]: from REPLAN_TRAJ to EXEC_TRAJ\n",
+        encoding="utf-8",
+    )
+
+    result = run_audit(
+        "--log",
+        str(log_path),
+        "--output",
+        str(output_path),
+        "--planner-semantic-profile",
+        "swarm_formation",
+        "--missing-is-blocker",
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    audit = json.loads(output_path.read_text(encoding="utf-8"))
+    assert audit["status"] == "passed"
+    assert audit["semantic_blockers"] == []
+    assert audit["semantic_event_counts"] == {
+        "swarm_formation_optimized_trajectory_collision": 1
+    }
+
+
+def test_swarm_formation_emergency_stop_blocks_the_runtime_audit(tmp_path: Path) -> None:
+    log_path = tmp_path / "planner.log"
+    output_path = tmp_path / "audit.json"
+    log_path.write_text(
+        "\n".join(
+            [
+                "[ERROR] [1001.000000000, 12.000000000]: optimized trajectory collision: drone=0",
+                "[ERROR] [1001.100000000, 12.100000000]: Emergency stop!",
+                "[WARN] [1001.200000000, 12.200000000]: [SAFETY]: from EXEC_TRAJ to EMERGENCY_STOP",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    result = run_audit(
+        "--log",
+        str(log_path),
+        "--output",
+        str(output_path),
+        "--planner-semantic-profile",
+        "swarm_formation",
+        "--missing-is-blocker",
+    )
+
+    assert result.returncode == 1, result.stdout + result.stderr
+    audit = json.loads(output_path.read_text(encoding="utf-8"))
+    assert audit["status"] == "blocked"
+    assert audit["semantic_blockers"] == [
+        "planner_semantic_swarm_formation_emergency_stop",
+        "planner_semantic_swarm_formation_exec_traj_emergency_stop",
+    ]

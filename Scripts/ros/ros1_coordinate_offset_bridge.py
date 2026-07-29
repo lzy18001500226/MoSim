@@ -29,6 +29,16 @@ class CoordinateOffsetBridge:
         self.offset_z = float(rospy.get_param("~offset_z", 0.0))
         self.output_frame_id = rospy.get_param("~output_frame_id", "")
         self.output_child_frame_id = rospy.get_param("~output_child_frame_id", "")
+        self.latch_input_origin = bool(rospy.get_param("~latch_input_origin", False))
+        self.origin_latch_samples = max(1, int(rospy.get_param("~origin_latch_samples", 1)))
+        self.target_origin = (
+            float(rospy.get_param("~target_origin_x", 0.0)),
+            float(rospy.get_param("~target_origin_y", 0.0)),
+            float(rospy.get_param("~target_origin_z", 0.0)),
+        )
+        self.origin_sum = [0.0, 0.0, 0.0]
+        self.origin_sample_count = 0
+        self.latched_input_origin: tuple[float, float, float] | None = None
         self.rotate_odom_twist_body_to_world = bool(
             rospy.get_param("~rotate_odom_twist_body_to_world", False)
         )
@@ -61,8 +71,38 @@ class CoordinateOffsetBridge:
             rospy.Subscriber(self.input_topic, MarkerArray, self.on_marker_array, queue_size=20)
         else:
             raise ValueError("~message_type must be pose, odom, cloud, marker, or marker_array")
+        if self.latch_input_origin and self.message_type not in ("pose", "odom"):
+            raise ValueError("~latch_input_origin is supported only for pose or odom messages")
+
+    def observe_origin(self, x: float, y: float, z: float) -> bool:
+        if not self.latch_input_origin or self.latched_input_origin is not None:
+            return True
+        self.origin_sum[0] += x
+        self.origin_sum[1] += y
+        self.origin_sum[2] += z
+        self.origin_sample_count += 1
+        if self.origin_sample_count < self.origin_latch_samples:
+            return False
+        self.latched_input_origin = tuple(
+            value / self.origin_sample_count for value in self.origin_sum
+        )
+        rospy.loginfo(
+            "Latched input origin %s from %d samples; target origin %s",
+            self.latched_input_origin,
+            self.origin_sample_count,
+            self.target_origin,
+        )
+        return True
 
     def shifted(self, x: float, y: float, z: float) -> tuple[float, float, float]:
+        if self.latch_input_origin:
+            if self.latched_input_origin is None:
+                raise RuntimeError("input origin has not been latched")
+            return (
+                x - self.latched_input_origin[0] + self.target_origin[0],
+                y - self.latched_input_origin[1] + self.target_origin[1],
+                z - self.latched_input_origin[2] + self.target_origin[2],
+            )
         return (
             x + self.sign * self.offset_x,
             y + self.sign * self.offset_y,
@@ -114,6 +154,8 @@ class CoordinateOffsetBridge:
         }
 
     def on_pose(self, msg: PoseStamped) -> None:
+        if not self.observe_origin(msg.pose.position.x, msg.pose.position.y, msg.pose.position.z):
+            return
         out = copy.deepcopy(msg)
         out.pose.position.x, out.pose.position.y, out.pose.position.z = self.shifted(
             msg.pose.position.x, msg.pose.position.y, msg.pose.position.z
@@ -123,6 +165,10 @@ class CoordinateOffsetBridge:
         self.note([out.pose.position.x, out.pose.position.y, out.pose.position.z], None, self.header_diag(msg, out))
 
     def on_odom(self, msg: Odometry) -> None:
+        if not self.observe_origin(
+            msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z
+        ):
+            return
         out = copy.deepcopy(msg)
         out.pose.pose.position.x, out.pose.pose.position.y, out.pose.pose.position.z = self.shifted(
             msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z
@@ -236,6 +282,11 @@ class CoordinateOffsetBridge:
             "offset_xyz": [self.offset_x, self.offset_y, self.offset_z],
             "output_frame_id": self.output_frame_id,
             "output_child_frame_id": self.output_child_frame_id,
+            "latch_input_origin": self.latch_input_origin,
+            "origin_latch_samples": self.origin_latch_samples,
+            "origin_sample_count": self.origin_sample_count,
+            "latched_input_origin_xyz": self.latched_input_origin,
+            "target_origin_xyz": self.target_origin,
             "rotate_odom_twist_body_to_world": self.rotate_odom_twist_body_to_world,
             "count": self.count,
             "last_msg": self.last_msg,

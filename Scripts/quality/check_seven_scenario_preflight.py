@@ -249,12 +249,16 @@ def validate_preflight() -> dict[str, Any]:
             "sampled_position",
             "sampled_attitude",
         )
-    official_text = formal_runner_source(FORMAL_RUNNERS["official_pid"])
+    official_text = (
+        formal_runner_source(FORMAL_RUNNERS["official_pid"])
+        + "\n"
+        + source(runners_dir / "RotorCommandRunner.mo")
+    )
     check_contains(
         checks,
         "official_pid_native_continuous_baseline",
         official_text,
-        "extends MoSimQuadrotorModel.Experiment.Runners.Base.FormalRotorCommandRunnerBase(",
+        "extends MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner(",
         "MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter",
         "Interval = 0.01",
     )

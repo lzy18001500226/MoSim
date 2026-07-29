@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Shared static checks for canonical Vehicle source ownership."""
+"""Shared static checks for canonical Vehicle.Dynamics source ownership."""
 
 from __future__ import annotations
 
@@ -9,7 +9,8 @@ from typing import Any, Iterable
 
 
 ROOT = Path(__file__).resolve().parents[2]
-FORMAL_ROOT = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle"
+VEHICLE_ROOT = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle"
+FORMAL_ROOT = VEHICLE_ROOT / "Dynamics"
 RETIRED_ROOTS = (
     ROOT / "Models" / "QuadrotorExperiments",
     ROOT / "Models" / "QuadrotorControllerBlocks",
@@ -72,12 +73,12 @@ def validate_component(
     formal_text = read_text(formal_source) if formal_source.exists() else ""
 
     if not formal_source.is_file():
-        add_finding(findings, "canonical_source_missing", "canonical Vehicle source file is missing", formal_source)
+        add_finding(findings, "canonical_source_missing", "canonical Vehicle.Dynamics source file is missing", formal_source)
     if formal_name not in formal_order_entries:
-        add_finding(findings, "canonical_order_missing", "canonical Vehicle package.order omits the model", formal_order)
+        add_finding(findings, "canonical_order_missing", "canonical Vehicle.Dynamics package.order omits the model", formal_order)
     if f"model {formal_name}" in formal_package_text:
         add_finding(findings, "canonical_inline_duplicate", "canonical package.mo contains a duplicate inline model", formal_package)
-    if f"within MoSimQuadrotorModel.Vehicle;" not in formal_text:
+    if f"within MoSimQuadrotorModel.Vehicle.Dynamics;" not in formal_text:
         add_finding(findings, "canonical_namespace_missing", "canonical source has the wrong namespace", formal_source)
     if f"model {formal_name}" not in formal_text:
         add_finding(findings, "canonical_model_missing", "canonical source lacks the model declaration", formal_source)
@@ -117,7 +118,7 @@ def validate_component(
 
     canonical_owned = (
         formal_source.is_file()
-        and f"within MoSimQuadrotorModel.Vehicle;" in formal_text
+        and f"within MoSimQuadrotorModel.Vehicle.Dynamics;" in formal_text
         and f"model {formal_name}" in formal_text
         and "QuadrotorExperiments" not in formal_text
         and "Deprecated compatibility alias" not in formal_text
@@ -130,7 +131,7 @@ def validate_component(
         "static_only": True,
         "live_mworks_touched": False,
         "mworks_window_evidence_touched": False,
-        "formal_target": f"MoSimQuadrotorModel.Vehicle.{formal_name}",
+        "formal_target": f"MoSimQuadrotorModel.Vehicle.Dynamics.{formal_name}",
         "formal_source": rel(formal_source),
         "retired_predecessor": {
             "class_name": legacy_alias_name,

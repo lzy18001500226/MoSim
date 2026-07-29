@@ -22,8 +22,8 @@ def test_current_report_source_preserves_authority_rows() -> None:
     source = builder.build()
     assert source["controller_summary"]["counts"] == {
         "accepted": 27,
-        "executed_blocked": 25,
-        "not_run": 15,
+        "executed_blocked": 33,
+        "not_run": 7,
     }
     assert source["final_ab_summary"]["counts"] == {
         "accepted": 1,

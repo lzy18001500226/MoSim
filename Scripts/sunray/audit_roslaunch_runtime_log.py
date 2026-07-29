@@ -42,6 +42,27 @@ SEMANTIC_PROFILES: dict[str, list[tuple[str, re.Pattern[str], bool]]] = {
         ("racer_larger_cost_after_reallocation", re.compile(r"\bLarger cost after reallocation\b", re.IGNORECASE), False),
         ("racer_collision_replan", re.compile(r"\bReplan:\s+collision detected\b", re.IGNORECASE), False),
     ],
+    "swarm_formation": [
+        # The upstream planner emits this while rejecting a candidate optimized
+        # trajectory, then returns to REPLAN_TRAJ. Keep it as a diagnostic:
+        # completed-target, clearance, separation, and emergency-stop gates
+        # decide whether the recovered flight can be accepted.
+        (
+            "swarm_formation_optimized_trajectory_collision",
+            re.compile(r"\boptimized trajectory collision\b", re.IGNORECASE),
+            False,
+        ),
+        (
+            "swarm_formation_emergency_stop",
+            re.compile(r"\bEmergency stop!", re.IGNORECASE),
+            True,
+        ),
+        (
+            "swarm_formation_exec_traj_emergency_stop",
+            re.compile(r"\[SAFETY\]:\s*from\s+EXEC_TRAJ\s+to\s+EMERGENCY_STOP\b", re.IGNORECASE),
+            True,
+        ),
+    ],
 }
 
 RACER_PAIR_OPT_PATTERNS: list[tuple[str, re.Pattern[str]]] = [

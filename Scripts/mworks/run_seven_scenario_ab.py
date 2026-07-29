@@ -70,6 +70,22 @@ INJECTION_COLUMNS = (
 )
 
 
+def controller_execution_boundary(controller_id: str) -> dict[str, str]:
+    if controller_id == "official_pid":
+        return {
+            "boundary": "native_continuous_boundary",
+            "reference_path": "direct",
+            "measurement_path": "direct",
+            "command_path": "direct",
+        }
+    return {
+        "boundary": "unified_100hz_discrete_boundary",
+        "reference_path": "sampled_0.01s",
+        "measurement_path": "sampled_0.01s",
+        "command_path": "continuous_or_controller_declared",
+    }
+
+
 class MworksBatchSession:
     """One dedicated MCP/Sysplorer session for the active A/B batch.
 
@@ -775,6 +791,7 @@ def write_run_record(
         "scenario_id": case.scenario_id,
         "profile_id": case.profile["profile_id"],
         "source": "MWORKS_MCP",
+        "controller_execution_boundary": controller_execution_boundary(case.controller_id),
         "execution": {
             "solver_algorithm": "Dassl",
             "solver_tolerance": 0.0001,

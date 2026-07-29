@@ -19,18 +19,26 @@ add_executable(fastlio_odometry_to_px4_visual_odometry_node src/fastlio_odometry
 target_compile_features(fastlio_odometry_to_px4_visual_odometry_node PUBLIC cxx_std_17)
 ament_target_dependencies(fastlio_odometry_to_px4_visual_odometry_node rclcpp nav_msgs px4_msgs)
 
-if(NOT DEFINED MOSIM_POSITION_OUTER_CODE_DIR)
-  if(DEFINED ENV{MOSIM_PROJECT_ROOT})
-    set(MOSIM_POSITION_OUTER_CODE_DIR
-      "$ENV{MOSIM_PROJECT_ROOT}/Results/generated_mworks/AWFF_PositionOuterLoop_Sysblock_20260620_070500/MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_PositionOuterLoop_Sysblock"
-    )
-  else()
-    set(MOSIM_POSITION_OUTER_CODE_DIR
-      "${CMAKE_CURRENT_SOURCE_DIR}/../../../Results/generated_mworks/AWFF_PositionOuterLoop_Sysblock_20260620_070500/MoSimQuadrotorModel.Controllers.Sysblocks.AWFF_PositionOuterLoop_Sysblock"
-    )
-  endif()
+set(
+  MOSIM_POSITION_OUTER_CODE_DIR
+  ""
+  CACHE PATH
+  "Required MWORKS export directory containing AWFF_PositionOuterLoop_Sysblock.c"
+)
+if(NOT MOSIM_POSITION_OUTER_CODE_DIR)
+  message(
+    FATAL_ERROR
+    "MOSIM_POSITION_OUTER_CODE_DIR is required. Point it at the real MWORKS "
+    "code-generation export directory; no historical generated-code folder is implicit."
+  )
 endif()
-set(MOSIM_POSITION_OUTER_CODE_DIR "${MOSIM_POSITION_OUTER_CODE_DIR}" CACHE PATH "MWORKS generated AWFF position outer-loop C code directory")
+if(NOT EXISTS "${MOSIM_POSITION_OUTER_CODE_DIR}/AWFF_PositionOuterLoop_Sysblock.c")
+  message(
+    FATAL_ERROR
+    "MOSIM_POSITION_OUTER_CODE_DIR does not contain AWFF_PositionOuterLoop_Sysblock.c: "
+    "${MOSIM_POSITION_OUTER_CODE_DIR}"
+  )
+endif()
 
 add_executable(position_outer_loop_to_px4_attitude_node
   src/position_outer_loop_to_px4_attitude_node.cpp

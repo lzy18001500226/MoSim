@@ -12,13 +12,13 @@ equation
   core.x_error = position_ref[1] - position_mea[1];
   core.y_error = position_ref[2] - position_mea[2];
   core.z_error = position_ref[3] - position_mea[3];
-  core.z_ref_rate = 0;
+  core.z_ref_rate = velocity_ref[3];
   core.roll_mea = attitude_mea[1];
   core.pitch_mea = attitude_mea[2];
   core.yaw_mea = attitude_mea[3];
   core.yaw_ref = 0;
   rotor_command = {hover_speed + command_scale * core.y,
-    -hover_speed + command_scale * core.y1,
+    hover_speed - command_scale * core.y1,
     hover_speed + command_scale * core.y2,
-    -hover_speed + command_scale * core.y3};
+    hover_speed - command_scale * core.y3};
 end AWFFRotorAdapter;

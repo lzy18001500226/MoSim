@@ -54,7 +54,10 @@ TAXONOMY_DOCS = (
 ACTIVE_ENTRY_COUNT = 48
 MWORKS_PROFILE_COUNT = 47
 CURRENT_MWORKS_ROUTE_COUNT = 46
-FAMILY_SCREENING_CANDIDATE_COUNT = 45
+TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT = 45
+TIER2_CURRENT_MWORKS_ROUTE_COUNT = 44
+FAMILY_SCREENING_CANDIDATE_COUNT = 43
+TIER1_ONLY_SCHEME_IDS = {"pid_awff_linear_eso", "smc_boundary_layer", "nmpc_outer"}
 SEMANTIC_FAMILIES = {
     "pid_family",
     "linear_robust_state_feedback",
@@ -347,6 +350,26 @@ def validate(inputs: dict[str, Any]) -> list[dict[str, str]]:
     )
     if harness_state_counts != EXPECTED_HARNESS_STATES:
         add("CCEC-HARNESS-04", "formal harness map must retain the 41 + 5 + ESO + px4ctrl state split")
+    tier1_only_ids = {
+        str(row.get("scheme_id"))
+        for row in harness_rows
+        if isinstance(row, dict)
+        and row.get("whole_aircraft_tier") == "tier1_only"
+        and row.get("tier2_closure_eligibility") == "excluded"
+    }
+    tier2_rows = [
+        row for row in harness_rows
+        if isinstance(row, dict) and row.get("tier2_closure_eligibility") == "included"
+    ]
+    tier2_current_rows = [
+        row for row in tier2_rows
+        if row.get("formal_harness_state")
+        in {"missing_closed_loop_harness", "resolved_canonical_whole_aircraft_harness"}
+    ]
+    if tier1_only_ids != TIER1_ONLY_SCHEME_IDS:
+        add("CCEC-HARNESS-04A", "formal harness map must identify the three approved Tier1-only profiles")
+    if len(tier2_rows) != TIER2_WHOLE_AIRCRAFT_ROUTE_COUNT or len(tier2_current_rows) != TIER2_CURRENT_MWORKS_ROUTE_COUNT:
+        add("CCEC-HARNESS-04B", "formal harness Tier2 population must be 45 total and 44 current MWORKS routes")
     graphical_rows = [
         row for row in harness_rows if isinstance(row, dict) and row.get("formal_harness_state") == "missing_closed_loop_harness"
     ]

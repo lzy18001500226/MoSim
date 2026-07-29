@@ -58,30 +58,25 @@ Profile 和人工打开入口。
 
 ```text
 MoSimQuadrotorModel/
-  Baseline/                 官方 QuadrotorModel 基线适配与回归对比
   Parameters/               Sunray150 参数来源与识别边界
-  Dynamics/                 机体、执行器与动力学升级
-  System/                   系统架构和硬件抽象
-  Controllers/              基线、Sysblock、图形化 MIL 与集成控制链
-  ExperimentRunner/         离线整机组合、typed adapter、runner 和共享结果合同
-  Missions/                 官方任务场景
-  Robustness/               扰动、故障、安全与降级场景
-  Planning/                 规划与障碍场景
-  Formation/                多机编队场景
-  LiveIntegration/          MWORKS Live 受控实时桥接入口
-  SceneTrace/               场景留痕与诊断
-  Support/                  支持模型与参考夹具
+  Vehicle/                  机体、执行器、传感器、动力学与可视化装配
+  Control/                  基线、接口、分配器、适配器和图形化控制器实现
+  Experiment/               Runner、探针、正式测试壳、任务模板与鲁棒场景
+  Guidance/                 参考轨迹、规划、障碍场与编队参考
+  Deployment/               MWORKS Live 受控实时桥接入口
+  Visualization/            场景留痕、诊断和展示模型
+  Common/                   可复用的非业务通用模型
 ```
 
 推荐的离线打开链路是：
 
 ```text
 Model Studio / ExperimentProfile
-  -> MoSimQuadrotorModel.ExperimentRunner.Runners.*
+  -> MoSimQuadrotorModel.Experiment.Runners.*
   -> typed Adapter
-  -> MoSimQuadrotorModel.Controllers.*
-  -> 任务、鲁棒、规划或编队场景
-  -> shared plant / result contract
+  -> MoSimQuadrotorModel.Control.*
+  -> Experiment.* 或 Guidance.* 场景/参考
+  -> Vehicle shared plant / result contract
 ```
 
 `Models/` 下不保留控制器、实验或 Live 的第二个 Modelica 包根。自动恢复副本和

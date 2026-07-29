@@ -121,6 +121,10 @@ namespace ego_planner
     int i_end = floor(T_end/dt);
     double t = 0.0;
     const Eigen::Vector3d start_pos = traj.getPos(0.0);
+    const bool height_band_enabled = std::isfinite(min_traj_z_) && std::isfinite(max_traj_z_) &&
+                                     min_traj_z_ <= max_traj_z_;
+    const bool start_within_height_band = !height_band_enabled ||
+                                          (start_pos.z() >= min_traj_z_ && start_pos.z() <= max_traj_z_);
     collision_check_time_end_ = T_end;
 
     for (int i=0; i<i_end; i++){
@@ -128,6 +132,15 @@ namespace ego_planner
       if (!grid_map_->isInMap(pos)){
         ROS_WARN("optimized trajectory left map: drone=%d t=%.3f/%.3f pos=(%.3f, %.3f, %.3f)",
                  drone_id_, t, T_end, pos.x(), pos.y(), pos.z());
+        occ = true;
+        break;
+      }
+      const bool outside_height_band = height_band_enabled &&
+                                       (pos.z() < min_traj_z_ || pos.z() > max_traj_z_);
+      if (outside_height_band &&
+          (start_within_height_band || (pos - start_pos).norm() >= obs_clearance_)){
+        ROS_WARN("optimized trajectory height-band violation: drone=%d t=%.3f/%.3f z=%.3f band=[%.3f, %.3f]",
+                 drone_id_, t, T_end, pos.z(), min_traj_z_, max_traj_z_);
         occ = true;
         break;
       }
@@ -526,6 +539,14 @@ namespace ego_planner
       Eigen::Vector3d dist_grad;
       grid_map_->evaluateFirstGrad(p, dist_grad);
 
+      // A fixed-height mission obtains its feasible detour from the XY A* seed.
+      // Do not let the continuous ESDF term turn a local lateral detour into a
+      // vertical escape that conflicts with the configured flight-height band.
+      if (astar_planar_search_)
+      {
+        dist_grad.z() = 0.0;
+      }
+
       costp = wei_obs_ * pow(dist_err, 3);
       gradp = -wei_obs_ * 3.0 * pow(dist_err, 2) * dist_grad;
     }
@@ -557,9 +578,12 @@ namespace ego_planner
       return false;
     }
 
-    costp = wei_height_ * violation * violation * violation;
+    // A quadratic barrier retains meaningful corrective force close to the
+    // bound. The previous cubic term was too weak for a fixed-height mission
+    // when the ESDF term attempted a short vertical escape near a ceiling.
+    costp = wei_height_ * violation * violation;
     gradp.setZero();
-    gradp.z() = direction * 3.0 * wei_height_ * violation * violation;
+    gradp.z() = direction * 2.0 * wei_height_ * violation;
     return true;
   }
 
@@ -706,10 +730,14 @@ namespace ego_planner
     /* astar search and get the simple path*/
     simple_path = a_star_->astarSearchAndGetSimplePath(grid_map_->getResolution(), start_pos, end_pos);
 
-    if (simple_path.size() <= 2)
+    if (simple_path.size() < 2)
     {
       ROS_WARN("Rejecting A star initialization with %zu points before trajectory optimization", simple_path.size());
       return false;
+    }
+    if (simple_path.size() == 2)
+    {
+      ROS_INFO("A star returned a direct path; inserting a midpoint for minimum-jerk initialization");
     }
 
     /* generate minimum snap trajectory based on the simple_path waypoints*/
@@ -835,6 +863,8 @@ namespace ego_planner
     nh.param("optimization/planar_formation", planar_formation_, false);
     nh.param("optimization/max_vel", max_vel_, -1.0);
     nh.param("optimization/max_acc", max_acc_, -1.0);
+    nh.param("optimization/astar_search_timeout_s", astar_search_timeout_s_, 0.20);
+    nh.param("optimization/astar_planar_search", astar_planar_search_, false);
     nh.param("optimization/min_traj_z", min_traj_z_, -1.0e9);
     nh.param("optimization/max_traj_z", max_traj_z_, 1.0e9);
     if (min_traj_z_ > max_traj_z_)
@@ -862,6 +892,8 @@ namespace ego_planner
     ROS_INFO("A star pool derived from map: size=%d %d %d, resolution=%.3f",
              pool_size(0), pool_size(1), pool_size(2), resolution);
     a_star_->initGridMap(grid_map_, pool_size);
+	  a_star_->setSearchTimeout(astar_search_timeout_s_);
+	  a_star_->setPlanarSearch(astar_planar_search_);
   }
 
   void PolyTrajOptimizer::setControlPoints(const Eigen::MatrixXd &points)

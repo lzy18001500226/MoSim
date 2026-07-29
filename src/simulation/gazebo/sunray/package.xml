@@ -16,6 +16,9 @@
   <build_depend>std_msgs</build_depend>
   <build_depend>tf</build_depend>
   <build_depend>pcl_ros</build_depend>
+  <depend>gazebo_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>sunray_msgs</depend>
   
   <exec_depend>message_runtime</exec_depend>
   <exec_depend>laser_geometry</exec_depend>

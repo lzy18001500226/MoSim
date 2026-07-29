@@ -264,8 +264,21 @@ def build_route(
     model_path = project_file(model_file, scheme_id)
     state = str(harness_row["formal_harness_state"])
     role = str(current_row["current_model_role"])
+    tier1_only = harness_row.get("whole_aircraft_tier") == "tier1_only"
+    tier2_reason = harness_row.get("tier2_exclusion_reason")
 
-    if role == "full_profile_whole_aircraft_closed_loop":
+    if tier1_only:
+        graphical_surface = source_surface(model_path)
+        integration = {
+            "current_boundary": "INTERNAL_GRAPHICAL_PROBE_ONLY",
+            "target_contract": None,
+            "current_adapter_binding": None,
+            "adapter_candidates": [],
+            "core_migration_state": "tier1_only_graphical_probe_retained",
+            "adapter_migration_state": "not_permitted_until_matching_graphical_model_is_rebuilt",
+            "next_migration_gate": "rebuild_a_matching_graphical_model_with_public_reference_and_measurement_ports_before_any_tier2_adapter_or_runner_is_created",
+        }
+    elif role == "full_profile_whole_aircraft_closed_loop":
         integration = {
             "current_boundary": "WHOLE_AIRCRAFT_EMBEDDED",
             "target_contract": None,
@@ -305,7 +318,12 @@ def build_route(
     if not isinstance(topology, dict):
         raise MatrixError(f"{scheme_id}: topology review target is missing")
     canonical_harness = harness_row.get("canonical_closed_loop_harness")
-    if state == "resolved_canonical_whole_aircraft_harness":
+    if tier1_only:
+        current_scenario = {
+            "state": "tier1_graphical_review_only_not_permitted_for_tier2",
+            "reason": tier2_reason,
+        }
+    elif state == "resolved_canonical_whole_aircraft_harness":
         current_scenario = {
             "state": "whole_aircraft_harness_exists_but_requires_fresh_check_model_and_simulation",
             "canonical_closed_loop_harness": canonical_harness,
@@ -355,6 +373,9 @@ def build_route(
         "topology_review_target": topology,
         "formal_closure": {
             "state": state,
+            "whole_aircraft_tier": harness_row.get("whole_aircraft_tier"),
+            "tier2_closure_eligibility": harness_row.get("tier2_closure_eligibility"),
+            "tier2_exclusion_reason": tier2_reason,
             "minimum_whole_aircraft_closure_eligible": harness_row.get(
                 "minimum_whole_aircraft_closure_eligible"
             ),
@@ -364,7 +385,11 @@ def build_route(
         "scenarios": {
             "current": current_scenario,
             "next_minimum_closure": {
-                "state": "pending_shared_nominal_profile_after_adapter_binding",
+                "state": (
+                    "not_permitted_for_tier1_only_graphical_probe"
+                    if tier1_only
+                    else "pending_shared_nominal_profile_after_adapter_binding"
+                ),
                 "intended_scenario_id": "nominal_hover",
             },
             "champion_ab_matrix": {
@@ -398,15 +423,23 @@ def validate(value: dict[str, Any]) -> None:
         }
     ):
         raise MatrixError(f"unexpected current model role counts: {dict(role_counts)}")
+    tier1_only_rows = [
+        row for row in routes
+        if row["formal_closure"].get("whole_aircraft_tier") == "tier1_only"
+    ]
+    if {row["scheme_id"] for row in tier1_only_rows} != {"smc_boundary_layer", "nmpc_outer"}:
+        raise MatrixError("Tier1-only graphical routes must be SMC boundary layer and NMPC outer")
+    if any(row["integration"]["target_contract"] is not None for row in tier1_only_rows):
+        raise MatrixError("Tier1-only routes cannot retain a Tier2 adapter or Runner target")
     target_counts = Counter(
         row["integration"]["target_contract"]["boundary"]
         if isinstance(row["integration"]["target_contract"], dict)
         else row["integration"]["current_boundary"]
-        for row in routes
+        for row in routes if row not in tier1_only_rows
     )
     expected_targets = Counter(
         {
-            "ATTITUDE_THRUST": 37,
+            "ATTITUDE_THRUST": 35,
             "BODY_RATE_THRUST": 2,
             "WRENCH": 1,
             "ROTOR_COMMAND": 1,
@@ -474,9 +507,11 @@ def build_matrix() -> dict[str, Any]:
         "version": 2,
         "authority": "The deterministic current-source interface and dependency matrix for the 46 MWORKS candidates. It is the migration worklist, not simulation acceptance evidence.",
         "scope": {
-            "included": "46 current MWORKS review routes: 41 graphical controller cores and five named whole-aircraft profiles within the PID and optimization/predictive semantic families.",
+            "included": "46 current MWORKS review routes: 41 graphical controller cores and five named whole-aircraft profiles. Two graphical probes are Tier1-only and cannot enter a Tier2 whole-aircraft adapter or Runner route.",
             "excluded": [
                 "pid_awff_linear_eso: planned MWORKS profile without a model or review route",
+                "smc_boundary_layer: Tier1 fixed-input graphical probe without public reference or measurement ports",
+                "nmpc_outer: Tier1 fixed-input graphical probe without public reference or measurement ports",
                 "px4ctrl: engineering/deployment baseline with a MWORKS-equivalent core pending",
             ],
             "migration_order": [
@@ -514,6 +549,9 @@ def build_matrix() -> dict[str, Any]:
             ),
             "current_formal_closure_counts": dict(
                 sorted(Counter(row["formal_closure"]["state"] for row in routes).items())
+            ),
+            "whole_aircraft_tier_counts": dict(
+                sorted(Counter(row["formal_closure"]["whole_aircraft_tier"] for row in routes).items())
             ),
             "target_boundary_counts": dict(
                 sorted(

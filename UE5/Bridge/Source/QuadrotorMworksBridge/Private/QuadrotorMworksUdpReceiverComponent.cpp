@@ -6,6 +6,7 @@
 #include "Misc/FileHelper.h"
 #include "HAL/RunnableThread.h"
 #include "HAL/PlatformTime.h"
+#include "HAL/PlatformFileManager.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "Common/UdpSocketReceiver.h"
 #include "Json.h"
@@ -62,6 +63,7 @@ bool UQuadrotorMworksUdpReceiverComponent::StartReceiver()
     ReceiveRateWindowStartSeconds = 0.0;
     ReceivedFramesInWindow = 0;
     SequenceGapsInWindow = 0;
+    ReceivedPayloadBytesInWindow = 0;
     LastReceivedSequence = TNumericLimits<int32>::Min();
     ActiveStreamId.Reset();
     LastAcceptedFrameSeconds = 0.0;
@@ -176,6 +178,7 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
         ReceiveRateWindowStartSeconds = NowSeconds;
     }
     ++ReceivedFramesInWindow;
+    ReceivedPayloadBytesInWindow += Data->Num();
     if (LastReceivedSequence != TNumericLimits<int32>::Min() && Frame.Sequence > LastReceivedSequence + 1)
     {
         SequenceGapsInWindow += Frame.Sequence - LastReceivedSequence - 1;
@@ -184,6 +187,13 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
     const double RateElapsedSeconds = NowSeconds - ReceiveRateWindowStartSeconds;
     if (RateElapsedSeconds >= 5.0)
     {
+        const int32 ExpectedFrames = ReceivedFramesInWindow + SequenceGapsInWindow;
+        const double DropRate = ExpectedFrames > 0
+            ? static_cast<double>(SequenceGapsInWindow) / static_cast<double>(ExpectedFrames)
+            : 0.0;
+        const double PayloadBytesPerSecond = ReceivedPayloadBytesInWindow / RateElapsedSeconds;
+        const double WireBytesPerSecond =
+            (ReceivedPayloadBytesInWindow + static_cast<int64>(ReceivedFramesInWindow) * 28) / RateElapsedSeconds;
         UE_LOG(
             LogTemp,
             Display,
@@ -192,9 +202,46 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
             SequenceGapsInWindow,
             LastReceivedSequence,
             Data->Num());
+        if (!MetricsOutputPath.IsEmpty())
+        {
+            TSharedRef<FJsonObject> Metrics = MakeShared<FJsonObject>();
+            Metrics->SetStringField(TEXT("schema"), TEXT("mosim.gazebo_ue_receiver_metrics.v1"));
+            Metrics->SetStringField(TEXT("run_id"), !Frame.RunId.IsEmpty() ? Frame.RunId : ObservabilityRunId);
+            Metrics->SetStringField(TEXT("stream_id"), ActiveStreamId);
+            Metrics->SetStringField(TEXT("link_id"), TEXT("gazebo_ue_display"));
+            Metrics->SetStringField(TEXT("measurement_point"), TEXT("unreal_udp_receiver"));
+            Metrics->SetNumberField(TEXT("window_s"), RateElapsedSeconds);
+            Metrics->SetNumberField(TEXT("receive_rate_hz"), ReceivedFramesInWindow / RateElapsedSeconds);
+            Metrics->SetNumberField(TEXT("received_frames"), ReceivedFramesInWindow);
+            Metrics->SetNumberField(TEXT("sequence_gap_count"), SequenceGapsInWindow);
+            Metrics->SetNumberField(TEXT("receiver_drop_rate"), DropRate);
+            Metrics->SetNumberField(
+                TEXT("avg_payload_bytes"),
+                static_cast<double>(ReceivedPayloadBytesInWindow) / FMath::Max(1, ReceivedFramesInWindow));
+            Metrics->SetNumberField(TEXT("payload_bytes_per_s"), PayloadBytesPerSecond);
+            Metrics->SetNumberField(TEXT("estimated_ipv4_udp_wire_bytes_per_s"), WireBytesPerSecond);
+            Metrics->SetNumberField(TEXT("updated_at_unix"), FDateTime::UtcNow().ToUnixTimestamp());
+            Metrics->SetStringField(TEXT("claim_boundary"), TEXT("UE receiver-side rate and sequence loss only; one-way UDP does not provide RTT."));
+            FString Json;
+            const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Json);
+            FJsonSerializer::Serialize(Metrics, Writer);
+            const FString AbsolutePath = FPaths::ConvertRelativePathToFull(MetricsOutputPath);
+            IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+            PlatformFile.CreateDirectoryTree(*FPaths::GetPath(AbsolutePath));
+            const FString TemporaryPath = AbsolutePath + TEXT(".tmp");
+            if (FFileHelper::SaveStringToFile(Json, *TemporaryPath))
+            {
+                if (PlatformFile.FileExists(*AbsolutePath))
+                {
+                    PlatformFile.DeleteFile(*AbsolutePath);
+                }
+                PlatformFile.MoveFile(*AbsolutePath, *TemporaryPath);
+            }
+        }
         ReceiveRateWindowStartSeconds = NowSeconds;
         ReceivedFramesInWindow = 0;
         SequenceGapsInWindow = 0;
+        ReceivedPayloadBytesInWindow = 0;
     }
 
     if (!bLoggedFirstFrame)
@@ -275,6 +322,7 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
         Root->TryGetStringField(TEXT("map_id"), OutFrame.MapId);
         Root->TryGetStringField(TEXT("vehicle_id"), OutFrame.VehicleId);
         Root->TryGetStringField(TEXT("stream_id"), OutFrame.StreamId);
+        Root->TryGetStringField(TEXT("run_id"), OutFrame.RunId);
         OutFrame.CoordinatePolicy = TEXT("mworks_world_m_z_up");
         OutFrame.Sequence = static_cast<int32>(Root->GetIntegerField(TEXT("sequence")));
         OutFrame.TimeSeconds = Root->GetNumberField(TEXT("timestamp_ros_s"));
@@ -334,6 +382,7 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
     Root->TryGetStringField(TEXT("map_id"), OutFrame.MapId);
     Root->TryGetStringField(TEXT("coordinate_policy"), OutFrame.CoordinatePolicy);
     Root->TryGetStringField(TEXT("stream_id"), OutFrame.StreamId);
+    Root->TryGetStringField(TEXT("run_id"), OutFrame.RunId);
     OutFrame.Sequence = static_cast<int32>(Root->GetIntegerField(TEXT("seq")));
     OutFrame.TimeSeconds = Root->GetNumberField(TEXT("t"));
 

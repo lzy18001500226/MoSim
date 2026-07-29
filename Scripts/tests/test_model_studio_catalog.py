@@ -1,5 +1,10 @@
+from pathlib import Path
+
 from Scripts.ui.export_model_studio_catalog import build_catalog, render_tsv
 from apps.model_studio.tools.generate_slapp import build_project
+
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_catalog_is_registry_and_profile_driven() -> None:
@@ -29,6 +34,8 @@ def test_generated_app_exposes_four_workspaces_and_layered_control_chain() -> No
     assert children["LiveModeButton"]["text"] == "实时联合仿真"
     assert children["DeployModeButton"]["text"] == "生成代码部署"
     assert children["AssistantModeButton"]["text"] == "MoSim 助手"
+    assert children["TitleLabel"]["horizontalAlignment"] == "left"
+    assert "SubtitleLabel" not in children
     assert children["PositionDropDown"]["label"] == "位置 / 平动外环"
     assert children["AttitudeDropDown"]["label"] == "姿态 / 角速度内环"
     assert children["AttitudeDropDown"]["enable"] is False
@@ -61,6 +68,16 @@ def test_generated_app_is_ui_only_and_separates_offline_from_qgc_actions() -> No
     assert children["OpenModelButton"]["text"] == "打开模型"
     assert children["MilButton"]["text"] == "运行 MWORKS MIL"
     assert children["CodegenButton"]["text"] == "生成 C 代码"
+
+
+def test_mosim_studio_identity_is_consistent_in_source_and_review_package() -> None:
+    source = (ROOT / "apps" / "model_studio" / "src" / "app.jl").read_text(encoding="utf-8")
+    project = build_project()
+
+    assert 'app.UIFigure.Name = "MoSim Studio"' in source
+    assert 'app.TitleLabel.Text = "MoSim Studio"' in source
+    assert project["figure"]["name"] == "MoSim Studio"
+    assert project["info"]["name"] == "MoSim Studio"
 
 
 def test_generated_app_has_pending_and_applied_injection_surfaces() -> None:

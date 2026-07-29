@@ -63,6 +63,13 @@ def test_ground_station_reconciles_duplicate_managed_unreal_processes() -> None:
     assert "PreserveProcessIds" in ground
     assert "WaitForExit(5000)" in ground
     assert "stale_display_process_survived" in ground
+    assert "foreach ($record in $parsedRecords)" in ground
+
+
+def test_stop_script_flattens_display_process_json_records() -> None:
+    stopper = Path("Scripts/ui/stop_all_simulation.ps1").read_text(encoding="utf-8")
+
+    assert "foreach ($record in $parsedRecords)" in stopper
 
 
 def test_operator_cmd_entrypoints_are_explicit() -> None:

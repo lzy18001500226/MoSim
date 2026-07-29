@@ -24,13 +24,18 @@ owner_pid="$(read_lock_value "${LOCK_DIR}/owner_pid")"
 owner_boot_id="$(read_lock_value "${LOCK_DIR}/boot_id")"
 current_boot_id="$(</proc/sys/kernel/random/boot_id)"
 
-if [[ "${run_id}" != sunray_ros1_foundation_* ]]; then
-  echo "Refusing to stop run_id=${run_id:-unknown}: it is not a Sunray foundation run." >&2
-  exit 2
-fi
 if [[ "${owner_boot_id}" != "${current_boot_id}" || ! "${owner_pid}" =~ ^[0-9]+$ ]] || ! kill -0 "${owner_pid}" 2>/dev/null; then
   echo "Foundation lock is stale or its owner is already gone. It will be reclaimed by the next launch."
   exit 0
+fi
+
+# A caller may supply a descriptive RunId, so the identifier alone is not an
+# authority boundary. Only interrupt the actual no-flight foundation review
+# owner; all other managed Sunray runs retain their own stop routes.
+owner_args="$(ps -p "${owner_pid}" -o args= 2>/dev/null || true)"
+if [[ "${owner_args}" != *"run_sunray_ros1_foundation_gate.sh --review"* ]]; then
+  echo "Refusing to stop run_id=${run_id:-unknown}: owner pid ${owner_pid} is not a managed Sunray foundation review." >&2
+  exit 2
 fi
 
 echo "Stopping managed foundation run: ${run_id} (owner pid ${owner_pid})"

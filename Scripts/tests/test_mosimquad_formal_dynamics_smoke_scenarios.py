@@ -36,7 +36,7 @@ class FormalDynamicsSmokeScenarioTest(unittest.TestCase):
         self.assertEqual(summary["runner_support_status"], "minimal_dynamics_strategy_consumed")
 
         targets = {item["target"] for item in summary["bindings"]}
-        self.assertIn("MoSimQuadrotorModel.Vehicle.Dynamics.RotorEffectivenessSmoke", targets)
+        self.assertIn("MoSimQuadrotorModel.Vehicle.LegacyDiagnostics.RotorEffectivenessSmoke", targets)
         for binding in summary["bindings"]:
             self.assertEqual(binding["live_load_strategy"], "minimal_dynamics_only")
             command_text = " ".join(binding["dry_run_command"])

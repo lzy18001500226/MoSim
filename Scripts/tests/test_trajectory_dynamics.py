@@ -8,6 +8,7 @@ SUNRAY_DIR = Path(__file__).resolve().parents[1] / "sunray"
 sys.path.insert(0, str(SUNRAY_DIR))
 
 from trajectory_dynamics import (
+    body_to_world_vector,
     constrain_kinematic_step,
     enforce_position_z_bounds,
     inter_uav_braking_guard,
@@ -38,6 +39,13 @@ class TrajectoryDynamicsTests(unittest.TestCase):
         self.assertAlmostEqual(result["closing_speed_mps"], 2.0)
         self.assertGreater(result["trigger_distance_m"], 3.0)
 
+    def test_body_to_world_vector_rotates_a_yaw_ninety_velocity(self):
+        half = math.sqrt(0.5)
+        actual = body_to_world_vector((0.0, 0.0, half, half), (1.0, 0.0, 0.0))
+        self.assertAlmostEqual(actual[0], 0.0, places=9)
+        self.assertAlmostEqual(actual[1], 1.0, places=9)
+        self.assertAlmostEqual(actual[2], 0.0, places=9)
+
     def test_pair_guard_does_not_trigger_for_separating_pair(self):
         result = inter_uav_braking_guard(
             (0, 0, 1),
@@ -49,6 +57,65 @@ class TrajectoryDynamicsTests(unittest.TestCase):
             margin_m=0.2,
         )
         self.assertFalse(result["triggered"])
+        self.assertEqual(result["closing_speed_mps"], 0.0)
+
+    def test_pair_guard_does_not_trigger_for_stationary_pair_inside_predictive_margin(self):
+        result = inter_uav_braking_guard(
+            (0, 0, 1),
+            (0, 0, 0),
+            (1.18, 0, 1),
+            (0, 0, 0),
+            min_distance_m=1.0,
+            deceleration_mps2=1.2,
+            margin_m=0.2,
+        )
+        self.assertFalse(result["triggered"])
+        self.assertFalse(result["hard_distance_violation"])
+        self.assertFalse(result["predicted_braking_violation"])
+        self.assertEqual(result["closing_speed_mps"], 0.0)
+
+    def test_pair_guard_ignores_low_speed_odom_noise_inside_predictive_margin(self):
+        result = inter_uav_braking_guard(
+            (0, 0, 1),
+            (0.0065, 0, 0),
+            (1.18, 0, 1),
+            (0, 0, 0),
+            min_distance_m=1.0,
+            deceleration_mps2=1.2,
+            margin_m=0.2,
+            min_predictive_closing_speed_mps=0.05,
+        )
+        self.assertFalse(result["triggered"])
+        self.assertFalse(result["hard_distance_violation"])
+        self.assertFalse(result["predicted_braking_violation"])
+        self.assertAlmostEqual(result["closing_speed_mps"], 0.0065)
+
+    def test_pair_guard_triggers_for_meaningful_closing_speed_inside_predictive_margin(self):
+        result = inter_uav_braking_guard(
+            (0, 0, 1),
+            (0.10, 0, 0),
+            (1.18, 0, 1),
+            (0, 0, 0),
+            min_distance_m=1.0,
+            deceleration_mps2=1.2,
+            margin_m=0.2,
+            min_predictive_closing_speed_mps=0.05,
+        )
+        self.assertTrue(result["triggered"])
+        self.assertTrue(result["predicted_braking_violation"])
+
+    def test_pair_guard_triggers_inside_hard_distance_even_when_separating(self):
+        result = inter_uav_braking_guard(
+            (0, 0, 1),
+            (-1, 0, 0),
+            (0.8, 0, 1),
+            (1, 0, 0),
+            min_distance_m=1.0,
+            deceleration_mps2=1.2,
+            margin_m=0.0,
+        )
+        self.assertTrue(result["triggered"])
+        self.assertAlmostEqual(result["distance_m"], 0.8)
         self.assertEqual(result["closing_speed_mps"], 0.0)
 
     def test_direction_reversal_cannot_flip_velocity_in_one_step(self):

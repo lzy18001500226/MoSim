@@ -56,7 +56,7 @@ def main() -> int:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_DIR)
     parser.add_argument("--sysplorer-port", type=int, required=True)
     parser.add_argument("--processed-frames", type=int, required=True)
-    parser.add_argument("--model-name", default="MoSimQuadrotorModel.LiveIntegration.RT0RealtimeProbe")
+    parser.add_argument("--model-name", default="MoSimQuadrotorModel.Deployment.RT0RealtimeProbe")
     parser.add_argument("--frequency-profile", default="attitude_thrust_100hz_v1")
     parser.add_argument("--contract", type=Path, default=DEFAULT_CONTRACT)
     args = parser.parse_args()

@@ -22,6 +22,54 @@ from collections import deque
 from typing import Any
 
 
+IPV4_UDP_HEADER_BYTES = 28
+
+
+def atomic_json(path: Path, value: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(path)
+
+
+def transport_metrics(
+    *,
+    run_id: str,
+    stream_id: str,
+    host: str,
+    port: int,
+    elapsed_s: float,
+    sent_frames: int,
+    sent_payload_bytes: int,
+    send_error_count: int,
+    source_updates: int,
+    source_age_ms: float,
+) -> dict[str, Any]:
+    elapsed_s = max(elapsed_s, 1e-9)
+    wire_bytes = sent_payload_bytes + sent_frames * IPV4_UDP_HEADER_BYTES
+    return {
+        "schema": "mosim.gazebo_ue_sender_metrics.v1",
+        "run_id": run_id,
+        "stream_id": stream_id,
+        "link_id": "gazebo_ue_display",
+        "destination": f"{host}:{port}",
+        "measurement_point": "ros1_udp_sender",
+        "window_s": elapsed_s,
+        "source_update_rate_hz": source_updates / elapsed_s,
+        "send_rate_hz": sent_frames / elapsed_s,
+        "sent_frames": sent_frames,
+        "send_error_count": send_error_count,
+        "avg_payload_bytes": sent_payload_bytes / max(1, sent_frames),
+        "payload_bytes_per_s": sent_payload_bytes / elapsed_s,
+        "estimated_ipv4_udp_wire_bytes_per_s": wire_bytes / elapsed_s,
+        "source_pose_age_ms": source_age_ms,
+        "receiver_metrics_available": False,
+        "unavailable_metrics": ["receive_rate_hz", "receiver_drop_rate", "rtt_ms", "ue_fps"],
+        "claim_boundary": "Sender-side measurement only. One-way UDP cannot prove UE receive rate, receiver loss, RTT, or render FPS.",
+        "updated_at_unix": time.time(),
+    }
+
+
 class UdpPortLease:
     """Prevent two project bridge processes from sending to one UE UDP port."""
 
@@ -95,6 +143,7 @@ class Ros1ToUeStreamer:
         self.source_updates_since_report = 0
         self.armed: bool | None = None
         self.last_reported_motor_source = ""
+        self.send_error_count = 0
         self.actual_trail: deque[list[float]] = deque(maxlen=max(2, args.max_trail_points))
         self.cmd_trail: deque[list[float]] = deque(maxlen=max(2, args.max_cmd_points))
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -189,12 +238,12 @@ class Ros1ToUeStreamer:
             motors = list(self.latest_motors) if self.latest_motors is not None else None
             motor_age = time.monotonic() - self.latest_motors_monotonic
             armed = self.armed
+        if armed is False:
+            return [0.0] * 4, "mavros_disarmed"
         if motors is not None and motor_age <= self.args.motor_timeout_s:
             return motors, "gazebo_link_states"
         if armed is True:
             return [self.args.armed_visual_motor_command] * 4, "mavros_armed_visual_fallback"
-        if armed is False:
-            return [0.0] * 4, "mavros_disarmed_visual_fallback"
         return [], "unavailable"
 
     @staticmethod
@@ -220,6 +269,7 @@ class Ros1ToUeStreamer:
             "type": "frame",
             "scene_id": self.args.scene_id,
             "map_id": self.args.map_id,
+            "run_id": self.args.run_id,
             "stream_id": self.args.stream_id,
             "seq": self.sequence,
             "t": state["stamp"],
@@ -315,6 +365,7 @@ class Ros1ToUeStreamer:
         report_started = time.monotonic()
         report_frames = 0
         report_bytes = 0
+        report_send_errors = 0
         while not self.rospy.is_shutdown():
             frame = self.make_frame()
             if frame is None:
@@ -339,11 +390,14 @@ class Ros1ToUeStreamer:
                     len(data),
                 )
             try:
-                self.sock.sendto(data, (self.args.host, self.args.port))
+                sent_bytes = self.sock.sendto(data, (self.args.host, self.args.port))
             except OSError as exc:
+                self.send_error_count += 1
+                report_send_errors += 1
                 self.rospy.logerr_throttle(5.0, "MoSim UE UDP send failed without stopping streamer: %s", exc)
-            report_frames += 1
-            report_bytes += len(data)
+            else:
+                report_frames += 1
+                report_bytes += sent_bytes
             motor_source = str(frame["status"]["rotor_visual_source"])
             if motor_source != self.last_reported_motor_source:
                 self.rospy.loginfo(
@@ -357,18 +411,36 @@ class Ros1ToUeStreamer:
                 with self.lock:
                     source_updates = self.source_updates_since_report
                     self.source_updates_since_report = 0
+                    source_age_ms = max(0.0, (time.monotonic() - self.latest_state_monotonic) * 1000.0)
+                metrics = transport_metrics(
+                    run_id=self.args.run_id,
+                    stream_id=self.args.stream_id,
+                    host=self.args.host,
+                    port=self.args.port,
+                    elapsed_s=report_elapsed,
+                    sent_frames=report_frames,
+                    sent_payload_bytes=report_bytes,
+                    send_error_count=report_send_errors,
+                    source_updates=source_updates,
+                    source_age_ms=source_age_ms,
+                )
+                if self.args.metrics_output:
+                    atomic_json(Path(self.args.metrics_output), metrics)
                 self.rospy.loginfo(
-                    "MoSim UE live streamer wall_send_rate=%.1fHz target=%.1fHz source_pose_rate=%.1fHz avg_payload_bytes=%.0f rotor_source=%s motor_command=%s",
-                    report_frames / report_elapsed,
+                    "MoSim UE live streamer wall_send_rate=%.1fHz target=%.1fHz source_pose_rate=%.1fHz avg_payload_bytes=%.0f payload_kBps=%.1f wire_kBps=%.1f rotor_source=%s motor_command=%s",
+                    metrics["send_rate_hz"],
                     self.args.rate_hz,
-                    source_updates / report_elapsed,
-                    report_bytes / max(1, report_frames),
+                    metrics["source_update_rate_hz"],
+                    metrics["avg_payload_bytes"],
+                    metrics["payload_bytes_per_s"] / 1000.0,
+                    metrics["estimated_ipv4_udp_wire_bytes_per_s"] / 1000.0,
                     motor_source,
                     frame["uav"]["motor_command"],
                 )
                 report_started = time.monotonic()
                 report_frames = 0
                 report_bytes = 0
+                report_send_errors = 0
 
             next_send_monotonic += period_s
             remaining_s = next_send_monotonic - time.monotonic()
@@ -391,6 +463,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--rate-hz", type=float, default=100.0)
     parser.add_argument("--source-timeout-s", type=float, default=0.5)
     parser.add_argument("--stream-id", default="")
+    parser.add_argument("--run-id", default="")
+    parser.add_argument("--metrics-output", default="")
     parser.add_argument("--lease-dir", default="/tmp/mosim_ue_udp_bridge")
     parser.add_argument("--max-datagram-bytes", type=int, default=60000)
     parser.add_argument("--motor-timeout-s", type=float, default=0.5)

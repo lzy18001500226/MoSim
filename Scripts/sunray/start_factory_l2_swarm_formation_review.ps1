@@ -1,6 +1,6 @@
 param(
     [string]$RunId = ("factory_l2_swarm_formation_review_" + (Get-Date -Format "yyyyMMdd_HHmmss")),
-    [string]$AcceptedRunId = "factory_l2_swarm_formation_obstacle_runtime_r34_20260716",
+    [string]$AcceptedRunId = "factory_l2_swarm_formation_maporigin_r54_runtime_20260722",
     [int]$StartupTimeoutS = 300,
     [int]$AirborneTimeoutS = 300,
     [double]$AirborneMinZ = 0.8,
@@ -24,10 +24,11 @@ $GateScript = Join-Path $Root "Scripts\sunray\run_factory_l2_swarm_formation_obs
 $AcceptedResultDir = Join-Path $Root ("Results\sunray_ros1\" + $AcceptedRunId)
 $AcceptedBackendGate = Join-Path $AcceptedResultDir "EGO_SWARM_METRICS.json"
 $AcceptedFormationGate = Join-Path $AcceptedResultDir "SWARM_FORMATION_TRACKING_GATE.json"
+$AcceptedObstacleClearanceGate = Join-Path $AcceptedResultDir "SWARM_FORMATION_OBSTACLE_CLEARANCE_GATE.json"
 $UnrealEditor = "D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe"
 $UnrealProject = Join-Path $Root "UE5\MoSimSceneLibrary\MoSimSceneLibrary.uproject"
 
-foreach ($gatePath in @($AcceptedBackendGate, $AcceptedFormationGate)) {
+foreach ($gatePath in @($AcceptedBackendGate, $AcceptedFormationGate, $AcceptedObstacleClearanceGate)) {
     if (-not (Test-Path -LiteralPath $gatePath)) {
         throw "Swarm-Formation review is closed because accepted gate evidence is missing: $gatePath"
     }
@@ -74,6 +75,11 @@ while ([DateTime]::UtcNow -lt $deadline) {
 }
 if (-not $ready) {
     throw "Timed out after ${StartupTimeoutS}s waiting for all three Gazebo-truth UE review topics."
+}
+
+& wsl -d Ubuntu-20.04 -- bash -lc "source /opt/ros/noetic/setup.bash && rostopic list > '$ResultDirWsl/ros_topic_list.txt'"
+if ($LASTEXITCODE -ne 0) {
+    throw "Unable to save the ROS topic snapshot for the Swarm-Formation review."
 }
 
 if (-not $NoUnreal) {
@@ -160,6 +166,7 @@ cd '$RootWsl'
 source /opt/ros/noetic/setup.bash
 source '$RootWsl/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/setup.bash'
 source '$RootWsl/Results/sunray_ros1/workspaces/swarm_formation_ws_d1_20260701_173306/devel/setup.bash'
+export DISABLE_ROS1_EOL_WARNINGS=1
 $(if (-not $NoUnreal) { @"
 python3 -u Scripts/UE5/stream_ros1_state_to_ue_udp.py --odom-topic /uav1/sunray/gazebo_pose --position-cmd-topic /uav1/position_cmd --link-states-topic /gazebo/link_states --mavros-state-topic /uav1/mavros/state --host '$UnrealHost' --port $UnrealUdpBasePort --rate-hz $UnrealStateRateHz --vehicle-id uav1 --scene-id factory --map-id local_factoryenvironmentcollect --controller-profile px4ctrl --planner-profile swarm_formation > '$ResultDirWsl/ue_uav1_live_mirror.log' 2>&1 &
 echo `$! > '$ResultDirWsl/ue_uav1_live_mirror.pid'
@@ -171,18 +178,45 @@ echo `$! > '$ResultDirWsl/ue_uav3_live_mirror.pid'
 $(if (-not $NoRviz) { @"
 python3 Scripts/sunray/swarm_body_axes_marker_node.py \
   --uav-num 3 \
-  --marker-topic /mosim/goal5/body_axes \
+  --marker-topic /mosim/swarm_formation/body_axes \
   --axis-length-m 0.60 \
   --shaft-m 0.04 \
   --head-diameter-m 0.12 \
   --head-length-m 0.16 \
   > '$ResultDirWsl/swarm_body_axes_marker.log' 2>&1 &
 echo `$! > '$ResultDirWsl/swarm_body_axes_marker.pid'
-rviz -d '$RootWsl/Config/rviz/sunray_ros1_goal5_diff_swarm_pointcloud_review.rviz' \
+python3 Scripts/sunray/px4ctrl_pointcloud_review_node.py \
+  --node-name mosim_swarm_formation_uav1_pointcloud_review \
+  --result-dir '$ResultDirWsl' \
+  --input-topic /uav1/livox/lidar \
+  --odom-topic /uav1/sunray/gazebo_pose \
+  --output-topic /mosim/swarm_formation/uav1/livox_world_accumulated \
+  --frame-id world \
+  > '$ResultDirWsl/uav1_pointcloud_review.log' 2>&1 &
+echo `$! > '$ResultDirWsl/uav1_pointcloud_review.pid'
+python3 Scripts/sunray/px4ctrl_pointcloud_review_node.py \
+  --node-name mosim_swarm_formation_uav2_pointcloud_review \
+  --result-dir '$ResultDirWsl' \
+  --input-topic /uav2/livox/lidar \
+  --odom-topic /uav2/sunray/gazebo_pose \
+  --output-topic /mosim/swarm_formation/uav2/livox_world_accumulated \
+  --frame-id world \
+  > '$ResultDirWsl/uav2_pointcloud_review.log' 2>&1 &
+echo `$! > '$ResultDirWsl/uav2_pointcloud_review.pid'
+python3 Scripts/sunray/px4ctrl_pointcloud_review_node.py \
+  --node-name mosim_swarm_formation_uav3_pointcloud_review \
+  --result-dir '$ResultDirWsl' \
+  --input-topic /uav3/livox/lidar \
+  --odom-topic /uav3/sunray/gazebo_pose \
+  --output-topic /mosim/swarm_formation/uav3/livox_world_accumulated \
+  --frame-id world \
+  > '$ResultDirWsl/uav3_pointcloud_review.log' 2>&1 &
+echo `$! > '$ResultDirWsl/uav3_pointcloud_review.pid'
+rviz -d '$RootWsl/Config/rviz/sunray_ros1_swarm_formation_pointcloud_review.rviz' \
   > '$ResultDirWsl/rviz_swarm_formation_pointcloud_review.log' 2>&1 &
 echo `$! > '$ResultDirWsl/rviz_swarm_formation_pointcloud_review.pid'
 sleep 1
-rviz -d '$RootWsl/Config/rviz/sunray_ros1_goal5_diff_swarm_grid3d_review.rviz' \
+rviz -d '$RootWsl/Config/rviz/sunray_ros1_swarm_formation_grid3d_review.rviz' \
   > '$ResultDirWsl/rviz_swarm_formation_grid3d_review.log' 2>&1 &
 echo `$! > '$ResultDirWsl/rviz_swarm_formation_grid3d_review.pid'
 "@ })

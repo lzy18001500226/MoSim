@@ -128,8 +128,8 @@ PX4CTRL_ODOM_TOPIC="${PX4CTRL_ODOM_TOPIC:-/uav1/mavros/local_position/odom}"
 PX4CTRL_MISSION_EXTRA_ARGS="${PX4CTRL_MISSION_EXTRA_ARGS:-}"
 PX4CTRL_MANUAL_INPUT_FILE="${PX4CTRL_MANUAL_INPUT_FILE:-${PROJECT_ROOT}/Results/ui_platform/manual_control/manual_control.json}"
 PX4CTRL_MANUAL_RUN_ID="${PX4CTRL_MANUAL_RUN_ID:-${RUN_ID}}"
-PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS="${PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS:---initial-hover-s 20 --steady-hover-tail-s 8 --land-wait-s 25 --force-disarm-after-land --force-disarm-timeout-s 18 --command-x-bias-m -0.006 --command-y-bias-m -0.004 --command-z-bias-m 0.0 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 20 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
-PX4CTRL_TRAJECTORY_DEFAULT_ARGS="${PX4CTRL_TRAJECTORY_DEFAULT_ARGS:---force-disarm-after-land --force-disarm-timeout-s 18 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 20 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
+PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS="${PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS:---initial-hover-s 20 --steady-hover-tail-s 8 --land-wait-s 25 --force-disarm-after-land --force-disarm-timeout-s 18 --command-x-bias-m -0.006 --command-y-bias-m -0.004 --command-z-bias-m 0.0 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 60 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
+PX4CTRL_TRAJECTORY_DEFAULT_ARGS="${PX4CTRL_TRAJECTORY_DEFAULT_ARGS:---force-disarm-after-land --force-disarm-timeout-s 18 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 60 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
 PX4CTRL_SKIP_MISSION="${PX4CTRL_SKIP_MISSION:-false}"
 PX4CTRL_START_CONTROLLER="${PX4CTRL_START_CONTROLLER:-true}"
 PX4CTRL_SET_EKF_GLOBAL_ORIGIN="${PX4CTRL_SET_EKF_GLOBAL_ORIGIN:-false}"
@@ -143,6 +143,11 @@ PX4CTRL_PARAM_DUMP_TIMEOUT_S="${PX4CTRL_PARAM_DUMP_TIMEOUT_S:-45}"
 PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}"
 PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}"
 PX4CTRL_EXTRA_PARAM_OVERRIDES="${PX4CTRL_EXTRA_PARAM_OVERRIDES:-}"
+PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED:-true}"
+PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES:-CAL_GYRO0_XOFF=-0.001141657936386764,CAL_GYRO0_YOFF=-0.004853107035160065,CAL_GYRO0_ZOFF=-0.00022918041213415563,CAL_ACC0_XOFF=-0.19448795914649963,CAL_ACC0_YOFF=0.1512581706047058,CAL_ACC0_ZOFF=-0.0606503039598465}"
+PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=false
+PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT="EKF2_GPS_CTRL=0,EKF2_BARO_CTRL=0,EKF2_RNG_CTRL=0,EKF2_OF_CTRL=0,EKF2_EV_CTRL=15,EKF2_HGT_REF=3,EKF2_EV_DELAY=0,EKF2_EV_NOISE_MD=1,EKF2_EVP_NOISE=0.03,EKF2_EVA_NOISE=0.03"
+PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED=false
 FASTLIO_ALIGNED_ODOM_TOPIC="${FASTLIO_ALIGNED_ODOM_TOPIC:-/mosim/fastlio/odom_aligned}"
 FASTLIO_ALIGNED_PATH_TOPIC="${FASTLIO_ALIGNED_PATH_TOPIC:-/mosim/fastlio/odom_aligned_path}"
 FASTLIO_ALIGNMENT_Z_SOURCE_WAS_SET="${FASTLIO_ALIGNMENT_Z_SOURCE+x}"
@@ -178,16 +183,143 @@ FASTLIO_ODOM_INPUT_POSE_FRAME="${FASTLIO_ODOM_INPUT_POSE_FRAME:-livox}"
 FASTLIO_AXES_INPUT_POSE_FRAME="${FASTLIO_AXES_INPUT_POSE_FRAME:-${FASTLIO_ODOM_INPUT_POSE_FRAME}}"
 FASTLIO_MOUNT_XYZ="${FASTLIO_MOUNT_XYZ:--0.000005 0.032295 0.050167}"
 FASTLIO_MOUNT_RPY="${FASTLIO_MOUNT_RPY:-0 0 4.712389}"
+
+resolve_fastlio_px4_boot_contract() {
+  local resolved_boot_overrides
+  local calibration_overrides=""
+  if [[ "${VEHICLE}" == "sunray150_with_mid360" ]]; then
+    case "${PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED}" in
+      true)
+        calibration_overrides="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES}"
+        PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=true
+        ;;
+      false)
+        ;;
+      *)
+        echo "PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED must be true or false." >&2
+        exit 2
+        ;;
+    esac
+  fi
+  if ! resolved_boot_overrides="$(
+    python3 - \
+      "${PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT}" \
+      "${calibration_overrides}" \
+      "${PX4CTRL_BOOT_PARAM_OVERRIDES}" \
+      "${PX4CTRL_EXTRA_PARAM_OVERRIDES}" \
+      "${PX4CTRL_EKF2_EV_CTRL_OVERRIDE}" \
+      "${PX4CTRL_EKF2_HGT_REF_OVERRIDE}" <<'PY'
+import re
+import sys
+from collections import OrderedDict
+from decimal import Decimal, InvalidOperation
+
+required_raw, calibration_raw, boot_raw, postboot_raw, ev_ctrl_override, hgt_ref_override = sys.argv[1:]
+number = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?$")
+name_pattern = re.compile(r"[A-Z][A-Z0-9_]*$")
+
+
+def numeric_equal(left: str, right: str) -> bool:
+    try:
+        return Decimal(left) == Decimal(right)
+    except InvalidOperation as exc:
+        raise SystemExit(f"invalid numeric PX4 parameter value: {left!r} or {right!r}") from exc
+
+
+def parse_assignments(raw: str, source: str):
+    values = OrderedDict()
+    for item in raw.split(","):
+        item = item.strip()
+        if not item:
+            continue
+        if item.count("=") != 1:
+            raise SystemExit(f"invalid {source} PX4 parameter override: {item!r}")
+        name, value = (part.strip() for part in item.split("=", 1))
+        if not name_pattern.fullmatch(name):
+            raise SystemExit(f"invalid {source} PX4 parameter name: {name!r}")
+        if not number.fullmatch(value):
+            raise SystemExit(f"invalid {source} PX4 parameter value for {name}: {value!r}")
+        previous = values.get(name)
+        if previous is not None and not numeric_equal(previous, value):
+            raise SystemExit(
+                f"conflicting {source} PX4 parameter overrides for {name}: "
+                f"{previous!r} versus {value!r}"
+            )
+        values[name] = value
+    return values
+
+
+required = parse_assignments(required_raw, "FAST-LIO boot contract")
+calibration = parse_assignments(calibration_raw, "Sunray150 IMU calibration")
+boot = parse_assignments(boot_raw, "boot")
+postboot = parse_assignments(postboot_raw, "post-boot")
+direct = {
+    "EKF2_EV_CTRL": ev_ctrl_override,
+    "EKF2_HGT_REF": hgt_ref_override,
+}
+
+for name, expected in required.items():
+    for source, observed in (
+        ("PX4CTRL_BOOT_PARAM_OVERRIDES", boot.get(name)),
+        ("PX4CTRL_EXTRA_PARAM_OVERRIDES", postboot.get(name)),
+        (f"PX4CTRL_{name}_OVERRIDE", direct.get(name)),
+    ):
+        if observed and not numeric_equal(observed, expected):
+            raise SystemExit(
+                f"FAST-LIO EKF boot contract requires {name}={expected}; "
+                f"{source} requested {observed}"
+            )
+
+for name, expected in calibration.items():
+    for source, observed in (
+        ("PX4CTRL_BOOT_PARAM_OVERRIDES", boot.get(name)),
+        ("PX4CTRL_EXTRA_PARAM_OVERRIDES", postboot.get(name)),
+    ):
+        if observed and not numeric_equal(observed, expected):
+            raise SystemExit(
+                f"Sunray150 IMU calibration requires {name}={expected}; "
+                f"{source} requested {observed}"
+            )
+
+# PX4 applies several EKF choices only during estimator initialization. Emit the
+# required and calibration values first so the generated overlay is deterministic
+# and auditable.
+resolved = OrderedDict(required)
+for name, value in calibration.items():
+    if name not in resolved:
+        resolved[name] = value
+for name, value in boot.items():
+    if name not in resolved:
+        resolved[name] = value
+print(",".join(f"{name}={value}" for name, value in resolved.items()))
+PY
+  )"; then
+    echo "Unable to resolve the FAST-LIO PX4 boot parameter contract." >&2
+    exit 2
+  fi
+  PX4CTRL_BOOT_PARAM_OVERRIDES="${resolved_boot_overrides}"
+  PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED=true
+}
+
 if [[ "${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION}" == "true" ]]; then
   if [[ "${PX4CTRL_ODOM_SOURCE}" != "mavros_local" ]]; then
     echo "PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true requires PX4CTRL_ODOM_SOURCE=mavros_local; FAST-LIO must feed PX4 EKF, not px4ctrl directly." >&2
     exit 2
   fi
+  if [[ "${PX4_ROS1_GUARD_UXRCE_DDS}" != "true" ]]; then
+    echo "PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true requires PX4_ROS1_GUARD_UXRCE_DDS=true so the PX4 boot-time EKF contract can be applied." >&2
+    exit 2
+  fi
   REVIEW_START_FASTLIO=true
   PX4CTRL_START_EXTERNAL_FUSION=true
   if [[ -z "${FASTLIO_ALIGNMENT_Z_SOURCE_WAS_SET}" ]]; then
-    FASTLIO_ALIGNMENT_Z_SOURCE="truth"
+    FASTLIO_ALIGNMENT_Z_SOURCE="fastlio"
   fi
+  if [[ "${FASTLIO_ALIGNMENT_Z_SOURCE}" != "fastlio" ]]; then
+    echo "PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true requires FASTLIO_ALIGNMENT_Z_SOURCE=fastlio; Gazebo truth is evaluation-only." >&2
+    exit 2
+  fi
+  resolve_fastlio_px4_boot_contract
 fi
 if [[ "${PX4CTRL_ODOM_SOURCE}" == "fastlio" || "${PX4CTRL_ODOM_SOURCE}" == "fastlio_aligned" ]]; then
   REVIEW_START_FASTLIO=true
@@ -217,7 +349,7 @@ REVIEW_TRAJECTORY_RVIZ_CONFIG="${REVIEW_TRAJECTORY_RVIZ_CONFIG:-${PROJECT_ROOT}/
 REVIEW_CLOUD_RVIZ_CONFIG="${REVIEW_CLOUD_RVIZ_CONFIG:-${PROJECT_ROOT}/Config/rviz/sunray_ros1_fastlio_accumulated_map_review.rviz}"
 
 case "${PX4CTRL_CORE_PROFILE}" in
-  original|mworks_generated|generated_c|mworks_generated_c|official_pid|cascade_pid|gain_scheduled_pid|fuzzy_pid|neural_pid|anti_windup|feedforward_profile|lqr_baseline|lqi_baseline|so3_attitude|backstepping_baseline|lqg|feedback_linearization|passivity_based_control|adaptive_backstepping|pole_placement_luenberger|mrac|ndi|fopid|h2_state_feedback|integral_smc|terminal_smc|nonsingular_terminal_smc|super_twisting_smc|adaptive_smc|fuzzy_smc|linear_mpc|robust_mpc|adaptive_mpc|tube_mpc|explicit_gain_scheduled_mpc|ilqr|mppi|l1_adaptive|awff|complete_adrc|standardized_indi|parameter_scheduling|ilc|trained_neural_residual|rl_gain_scheduler|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|safety_filter|cbf|reference_governor|geofence|emergency_stop|return_and_land|failsafe_state_machine|fault_allocation)
+  original|mworks_generated|generated_c|mworks_generated_c|official_pid|cascade_pid|gain_scheduled_pid|fuzzy_pid|neural_pid|anti_windup|feedforward_profile|lqr_baseline|lqi_baseline|so3_attitude|backstepping_baseline|lqg|feedback_linearization|passivity_based_control|adaptive_backstepping|pole_placement_luenberger|mrac|ndi|fopid|h2_state_feedback|integral_smc|terminal_smc|nonsingular_terminal_smc|super_twisting_smc|adaptive_smc|fuzzy_smc|linear_mpc|robust_mpc|adaptive_mpc|tube_mpc|explicit_gain_scheduled_mpc|ilqr|mppi|l1_adaptive|awff|complete_adrc|standardized_indi|parameter_scheduling|ilc|trained_neural_residual|rl_gain_scheduler|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|l1_awff_minimal|hinf_hover_wrench|dfbc_high_order_attitude|dfbc_high_order_bodyrate|dfbc_smooth_robust_attitude|dfbc_smooth_robust_bodyrate|dfbc_dob_eso_disabled|dfbc_dob_eso|safety_filter|cbf|reference_governor|geofence|emergency_stop|return_and_land|failsafe_state_machine|fault_allocation)
     ;;
   *)
     echo "Unsupported PX4CTRL_CORE_PROFILE=${PX4CTRL_CORE_PROFILE}" >&2
@@ -438,6 +570,9 @@ PY
     echo "patched_mavlink=${overlay_mavlink}"
     echo "patched_airframe=${overlay_airframe}"
     echo "PX4CTRL_BOOT_PARAM_OVERRIDES=${PX4CTRL_BOOT_PARAM_OVERRIDES:-none}"
+    echo "PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED=${PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED}"
+    echo "PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=${PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED}"
+    echo "PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES=${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES:-none}"
     echo "gcs_remote_host=${gcs_remote_host}"
     grep -n "uxrce_dds_client start" "${overlay_rcs}" || true
     grep -n "continuing for MoSim ROS1/MAVROS gate" "${overlay_rcs}" || true
@@ -1709,6 +1844,11 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "start_external_fusion": "${PX4CTRL_START_EXTERNAL_FUSION}",
     "external_fusion_use_vision_pose": "${PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE}",
     "px4_boot_param_overrides": "$(printf '%s' "${PX4CTRL_BOOT_PARAM_OVERRIDES}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
+    "fastlio_ekf_boot_param_contract": "$(printf '%s' "${PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
+    "fastlio_ekf_boot_param_contract_applied": ${PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED},
+    "sunray150_imu_calibration_enabled": "${PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED}",
+    "sunray150_imu_calibration_applied": ${PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED},
+    "sunray150_imu_calibration_overrides": "$(printf '%s' "${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
     "gazebo_gps_sensor_mode": "${SUNRAY_GPS_SENSOR_MODE:-removed}",
     "odom_source": "${PX4CTRL_ODOM_SOURCE}",
     "state_source": "${MANIFEST_STATE_SOURCE}",

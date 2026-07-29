@@ -48,13 +48,13 @@ image as evidence.
 For MoSim's existing PowerShell helper, the parameter is `-OutDir`:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex "<title-regex>" -ProcessRegex "<process-regex>" -OutDir Results\window_capture\manual
+& Scripts\tools\capture_window_background.cmd -TitleRegex "<title-regex>" -ProcessRegex "<process-regex>" -OutDir Results\window_capture\manual
 ```
 
 For MoSim live simulation phase evidence, prefer:
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex "<title-regex>" -ProcessRegex "<process-regex>" -OutDir Results\mworks_background_capture\<request_id> -RestoreMinimized -MinimizeAfter
+& Scripts\tools\capture_window_background.cmd -TitleRegex "<title-regex>" -ProcessRegex "<process-regex>" -OutDir Results\mworks_background_capture\<request_id> -RestoreMinimized -MinimizeAfter
 ```
 
 Do not add `-Maximize` for ordinary phase evidence. Use `-Maximize` only when
@@ -85,13 +85,13 @@ confirm target window identity
 For MoSim's existing helper:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex "<title-regex>" -ProcessRegex "<process-regex>" -OutDir Results\window_capture\manual -RestoreMinimized -Maximize -MaximizeWaitMs 500 -MinimizeAfter
+& Scripts\tools\capture_window_background.cmd -TitleRegex "<title-regex>" -ProcessRegex "<process-regex>" -OutDir Results\window_capture\manual -RestoreMinimized -Maximize -MaximizeWaitMs 500 -MinimizeAfter
 ```
 
 For ordinary MoSim simulation phase evidence, do not maximize by default:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File Scripts\tools\capture_window_background.ps1 -TitleRegex "<title-regex>" -ProcessRegex "<process-regex>" -OutDir Results\window_capture\manual -RestoreMinimized -MinimizeAfter
+& Scripts\tools\capture_window_background.cmd -TitleRegex "<title-regex>" -ProcessRegex "<process-regex>" -OutDir Results\window_capture\manual -RestoreMinimized -MinimizeAfter
 ```
 
 Use `-Maximize` only for activation/login/license/authorization evidence or an

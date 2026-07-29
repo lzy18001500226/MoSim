@@ -30,8 +30,8 @@ def request(**overrides) -> dict:
 def test_validate_and_render_wrapper_keeps_explicit_boundary() -> None:
     profile = generator.validate_request(catalog(), request())
     source = generator.render_wrapper(profile)
-    assert "extends MoSimQuadrotorModel.ExperimentRunner.Runners.RotorCommandRunner" in source
-    assert "redeclare model Controller = MoSimQuadrotorModel.ExperimentRunner.Adapters.OfficialPIDRotorAdapter" in source
+    assert "extends MoSimQuadrotorModel.Experiment.Runners.RotorCommandRunner" in source
+    assert "redeclare model Controller = MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter" in source
     assert "rotor_effectiveness = {1, 1, 1, 1}" in source
 
 

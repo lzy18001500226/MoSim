@@ -11,7 +11,9 @@ partial model PartialWrenchController
   Modelica.Blocks.Interfaces.RealInput velocity_mea[3]
     "Runner-owned filtered translational velocity in m/s";
   Modelica.Blocks.Interfaces.RealInput attitude_mea[3];
-  Modelica.Blocks.Interfaces.RealOutput body_force[3];
-  Modelica.Blocks.Interfaces.RealOutput body_torque[3];
+  Modelica.Blocks.Interfaces.RealOutput body_force[3]
+    "Body force in N; body_force[3] is total collective thrust, not a speed increment";
+  Modelica.Blocks.Interfaces.RealOutput body_torque[3]
+    "Body torque in N.m";
   annotation(__MWORKS(version="26.3.0"));
 end PartialWrenchController;

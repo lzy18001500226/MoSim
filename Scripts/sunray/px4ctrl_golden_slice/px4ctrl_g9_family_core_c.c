@@ -481,6 +481,120 @@ static void c_fill_flatness_attitude_output(
         out->normalized_thrust * (params->mass * params->gravity / params->hover_percentage);
 }
 
+static MosimPx4ctrlG9FamilyCVec3 c_body_rate_from_jerk(
+    const MosimPx4ctrlG9FamilyCParams *params,
+    MosimPx4ctrlG9FamilyCVec3 desired_force,
+    MosimPx4ctrlG9FamilyCVec3 reference_jerk,
+    double reference_yaw_rate)
+{
+    const double thrust_n = c_safe_positive(c_norm(desired_force), params->mass * params->gravity);
+    const MosimPx4ctrlG9FamilyCVec3 b3c =
+        c_normalize_vec3(desired_force, c_vec3(0.0, 0.0, 1.0));
+    const MosimPx4ctrlG9FamilyCVec3 h_omega =
+        c_scale(c_cross(b3c, c_scale(reference_jerk, params->mass)), 1.0 / thrust_n);
+    return c_clamp_vec3(
+        c_vec3(-h_omega.y, h_omega.x, reference_yaw_rate * b3c.z),
+        params->high_order_body_rate_limit);
+}
+
+static MosimPx4ctrlG9FamilyCVec3 c_body_acceleration_from_snap(
+    const MosimPx4ctrlG9FamilyCParams *params,
+    MosimPx4ctrlG9FamilyCVec3 desired_force,
+    MosimPx4ctrlG9FamilyCVec3 reference_snap,
+    double reference_yaw_acceleration)
+{
+    const double thrust_n = c_safe_positive(c_norm(desired_force), params->mass * params->gravity);
+    const MosimPx4ctrlG9FamilyCVec3 b3c =
+        c_normalize_vec3(desired_force, c_vec3(0.0, 0.0, 1.0));
+    const MosimPx4ctrlG9FamilyCVec3 h_acc =
+        c_scale(c_cross(b3c, c_scale(reference_snap, params->mass)), 1.0 / thrust_n);
+    return c_clamp_vec3(
+        c_vec3(-h_acc.y, h_acc.x, reference_yaw_acceleration * b3c.z),
+        params->high_order_body_accel_limit);
+}
+
+static void c_dfbc_high_order_step(
+    const MosimPx4ctrlG9FamilyCParams *params,
+    const MosimPx4ctrlG9FamilyCState *state,
+    const MosimPx4ctrlG9FamilyCInput *input,
+    MosimPx4ctrlG9FamilyCOutput *out)
+{
+    MosimPx4ctrlG9FamilyCVec3 force;
+    out->position_error = c_subtract(input->reference_position, input->position);
+    out->velocity_error = c_subtract(input->reference_velocity, input->velocity);
+    force = c_vec3(
+        params->mass * (input->reference_acceleration.x + params->kp[0] * out->position_error.x + params->kv[0] * out->velocity_error.x),
+        params->mass * (input->reference_acceleration.y + params->kp[1] * out->position_error.y + params->kv[1] * out->velocity_error.y),
+        params->mass * (input->reference_acceleration.z + params->kp[2] * out->position_error.z + params->kv[2] * out->velocity_error.z + params->gravity));
+    c_fill_flatness_attitude_output(params, state, input, out, force, 1);
+    out->desired_body_rate = c_body_rate_from_jerk(
+        params, out->desired_force_n, input->reference_jerk, input->reference_yaw_rate);
+    out->desired_body_acceleration = c_body_acceleration_from_snap(
+        params, out->desired_force_n, input->reference_snap, input->reference_yaw_acceleration);
+}
+
+static MosimPx4ctrlG9FamilyCVec3 c_smooth_bounded_feedback(
+    const MosimPx4ctrlG9FamilyCParams *params,
+    const MosimPx4ctrlG9FamilyCOutput *out)
+{
+    return c_vec3(
+        params->smooth_feedback_bound[0] * tanh(
+            (params->kp[0] * out->position_error.x + params->kv[0] * out->velocity_error.x) /
+            c_safe_positive(params->smooth_feedback_bound[0], 1.0)),
+        params->smooth_feedback_bound[1] * tanh(
+            (params->kp[1] * out->position_error.y + params->kv[1] * out->velocity_error.y) /
+            c_safe_positive(params->smooth_feedback_bound[1], 1.0)),
+        params->smooth_feedback_bound[2] * tanh(
+            (params->kp[2] * out->position_error.z + params->kv[2] * out->velocity_error.z) /
+            c_safe_positive(params->smooth_feedback_bound[2], 1.0)));
+}
+
+static void c_dfbc_smooth_robust_step(
+    const MosimPx4ctrlG9FamilyCParams *params,
+    MosimPx4ctrlG9FamilyCState *state,
+    const MosimPx4ctrlG9FamilyCInput *input,
+    MosimPx4ctrlG9FamilyCOutput *out)
+{
+    MosimPx4ctrlG9FamilyCVec3 bounded_feedback;
+    MosimPx4ctrlG9FamilyCVec3 model_acceleration;
+    MosimPx4ctrlG9FamilyCVec3 compensated_acceleration;
+    MosimPx4ctrlG9FamilyCVec3 residual = c_vec3(0.0, 0.0, 0.0);
+    MosimPx4ctrlG9FamilyCVec3 force;
+    double measurement_dt = input->dt;
+    out->position_error = c_subtract(input->reference_position, input->position);
+    out->velocity_error = c_subtract(input->reference_velocity, input->velocity);
+    bounded_feedback = c_smooth_bounded_feedback(params, out);
+    model_acceleration = c_add(input->reference_acceleration, bounded_feedback);
+    if (input->enable_disturbance_observer &&
+        c_consume_new_measurement_sample(state, input, &measurement_dt))
+    {
+        const MosimPx4ctrlG9FamilyCVec3 measured_acceleration =
+            c_measured_acceleration_from_velocity(params, state, input, measurement_dt);
+        residual = c_subtract(measured_acceleration, state->previous_command_acceleration);
+        state->disturbance_estimate = c_clamp_vec3(
+            c_vec3(
+                (1.0 - params->disturbance_observer_gain[0]) * state->disturbance_estimate.x + params->disturbance_observer_gain[0] * residual.x,
+                (1.0 - params->disturbance_observer_gain[1]) * state->disturbance_estimate.y + params->disturbance_observer_gain[1] * residual.y,
+                (1.0 - params->disturbance_observer_gain[2]) * state->disturbance_estimate.z + params->disturbance_observer_gain[2] * residual.z),
+            params->disturbance_compensation_limit);
+    }
+    compensated_acceleration = input->enable_disturbance_observer
+        ? c_subtract(model_acceleration, state->disturbance_estimate)
+        : model_acceleration;
+    state->previous_command_acceleration = compensated_acceleration;
+    force = c_vec3(
+        params->mass * compensated_acceleration.x,
+        params->mass * compensated_acceleration.y,
+        params->mass * (compensated_acceleration.z + params->gravity));
+    c_fill_flatness_attitude_output(params, state, input, out, force, 1);
+    out->desired_body_rate = c_body_rate_from_jerk(
+        params, out->desired_force_n, input->reference_jerk, input->reference_yaw_rate);
+    out->desired_body_acceleration = c_body_acceleration_from_snap(
+        params, out->desired_force_n, input->reference_snap, input->reference_yaw_acceleration);
+    out->sliding_surface = residual;
+    out->disturbance_estimate = state->disturbance_estimate;
+}
+
 static void c_se3_or_dfbc_basic_step(
     const MosimPx4ctrlG9FamilyCParams *params,
     const MosimPx4ctrlG9FamilyCState *state,
@@ -855,6 +969,16 @@ void mosim_px4ctrl_g9_family_c_step(
         c_fault_allocation_step(params, state, input, output);
         return;
     }
+    if (input->controller_id == MOSIM_PX4CTRL_P10_DFBC_HIGH_ORDER)
+    {
+        c_dfbc_high_order_step(params, state, input, output);
+        return;
+    }
+    if (input->controller_id == MOSIM_PX4CTRL_P10_DFBC_SMOOTH_ROBUST)
+    {
+        c_dfbc_smooth_robust_step(params, state, input, output);
+        return;
+    }
     *output = c_disabled_output(input);
     output->status_code = 2;
 }
@@ -952,6 +1076,24 @@ void MosimPx4ctrlG9FamilyCStepScalar(
     double nmpc_increment_limit_x,
     double nmpc_increment_limit_y,
     double nmpc_increment_limit_z,
+    double high_order_body_rate_limit_x,
+    double high_order_body_rate_limit_y,
+    double high_order_body_rate_limit_z,
+    double high_order_body_accel_limit_x,
+    double high_order_body_accel_limit_y,
+    double high_order_body_accel_limit_z,
+    double smooth_feedback_gain_x,
+    double smooth_feedback_gain_y,
+    double smooth_feedback_gain_z,
+    double smooth_feedback_bound_x,
+    double smooth_feedback_bound_y,
+    double smooth_feedback_bound_z,
+    double disturbance_observer_gain_x,
+    double disturbance_observer_gain_y,
+    double disturbance_observer_gain_z,
+    double disturbance_compensation_limit_x,
+    double disturbance_compensation_limit_y,
+    double disturbance_compensation_limit_z,
     double l1_model_decay,
     double l1_filter_T,
     double l1_gain_x,
@@ -1015,8 +1157,8 @@ void MosimPx4ctrlG9FamilyCStepScalar(
     double *saturated,
     double *status_code)
 {
-    static MosimPx4ctrlG9FamilyCState states[10];
-    static int initialized[10] = {0};
+    static MosimPx4ctrlG9FamilyCState states[12];
+    static int initialized[12] = {0};
     MosimPx4ctrlG9FamilyCParams params;
     MosimPx4ctrlG9FamilyCInput input;
     MosimPx4ctrlG9FamilyCOutput output;
@@ -1068,6 +1210,24 @@ void MosimPx4ctrlG9FamilyCStepScalar(
     params.nmpc_increment_limit[0] = nmpc_increment_limit_x;
     params.nmpc_increment_limit[1] = nmpc_increment_limit_y;
     params.nmpc_increment_limit[2] = nmpc_increment_limit_z;
+    params.high_order_body_rate_limit[0] = high_order_body_rate_limit_x;
+    params.high_order_body_rate_limit[1] = high_order_body_rate_limit_y;
+    params.high_order_body_rate_limit[2] = high_order_body_rate_limit_z;
+    params.high_order_body_accel_limit[0] = high_order_body_accel_limit_x;
+    params.high_order_body_accel_limit[1] = high_order_body_accel_limit_y;
+    params.high_order_body_accel_limit[2] = high_order_body_accel_limit_z;
+    params.smooth_feedback_gain[0] = smooth_feedback_gain_x;
+    params.smooth_feedback_gain[1] = smooth_feedback_gain_y;
+    params.smooth_feedback_gain[2] = smooth_feedback_gain_z;
+    params.smooth_feedback_bound[0] = smooth_feedback_bound_x;
+    params.smooth_feedback_bound[1] = smooth_feedback_bound_y;
+    params.smooth_feedback_bound[2] = smooth_feedback_bound_z;
+    params.disturbance_observer_gain[0] = disturbance_observer_gain_x;
+    params.disturbance_observer_gain[1] = disturbance_observer_gain_y;
+    params.disturbance_observer_gain[2] = disturbance_observer_gain_z;
+    params.disturbance_compensation_limit[0] = disturbance_compensation_limit_x;
+    params.disturbance_compensation_limit[1] = disturbance_compensation_limit_y;
+    params.disturbance_compensation_limit[2] = disturbance_compensation_limit_z;
     params.l1_model_decay = l1_model_decay;
     params.l1_filter_T = l1_filter_T;
     params.l1_gain[0] = l1_gain_x;
@@ -1123,7 +1283,7 @@ void MosimPx4ctrlG9FamilyCStepScalar(
 
     {
         int state_index = input.controller_id;
-        if (state_index < 0 || state_index > 9)
+        if (state_index < 0 || state_index > 11)
         {
             state_index = 0;
         }

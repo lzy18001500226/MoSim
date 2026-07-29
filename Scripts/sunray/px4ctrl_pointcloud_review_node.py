@@ -119,6 +119,7 @@ class PointcloudReviewNode:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--node-name", default="mosim_px4ctrl_pointcloud_review")
     parser.add_argument("--result-dir", required=True)
     parser.add_argument("--input-topic", default="/uav1/livox/lidar")
     parser.add_argument("--odom-topic", default="/uav1/sunray/gazebo_pose")
@@ -133,8 +134,9 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
-    rospy.init_node("mosim_px4ctrl_pointcloud_review", anonymous=False)
-    PointcloudReviewNode(parse_args()).spin()
+    args = parse_args()
+    rospy.init_node(args.node_name, anonymous=False)
+    PointcloudReviewNode(args).spin()
     return 0
 
 

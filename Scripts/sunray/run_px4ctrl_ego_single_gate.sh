@@ -788,8 +788,8 @@ GOAL4_MAX_PATH_POINTS="${GOAL4_MAX_PATH_POINTS:-0}"
 GOAL4_PATH_PUBLISH_HZ="${GOAL4_PATH_PUBLISH_HZ:-20.0}"
 GOAL4_REVIEW_HOLD_PATH_PUBLISH_HZ="${GOAL4_REVIEW_HOLD_PATH_PUBLISH_HZ:-10.0}"
 GOAL4_CMD_PATH_SEGMENT_JUMP_M="${GOAL4_CMD_PATH_SEGMENT_JUMP_M:-0.0}"
-PX4CTRL_MASS="${PX4CTRL_MASS:-0.67}"
-PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.294}"
+PX4CTRL_MASS="${PX4CTRL_MASS:-1.0}"
+PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.37}"
 PX4CTRL_THRUST_ESTIMATE_ENABLE="${PX4CTRL_THRUST_ESTIMATE_ENABLE:-false}"
 PX4CTRL_KP_XY="${PX4CTRL_KP_XY:-11}"
 PX4CTRL_KP_Z="${PX4CTRL_KP_Z:-4}"
@@ -3154,6 +3154,8 @@ if [[ "${UE_LIVE_MIRROR}" == "true" ]]; then
   "udp_host": "${UE_LIVE_MIRROR_RESOLVED_HOST}",
   "udp_port": ${UE_LIVE_MIRROR_PORT},
   "rate_hz": ${UE_LIVE_MIRROR_RATE_HZ},
+  "run_id": "${RUN_ID}",
+  "sender_metrics_path": "${RESULT_DIR}/observability/gazebo_ue_sender.json",
   "evidence_boundary": "UE mirrors live controller state only; it does not publish commands or replace Gazebo/PX4/RViz/log evidence."
 }
 EOF
@@ -3163,6 +3165,8 @@ EOF
     --host "${UE_LIVE_MIRROR_RESOLVED_HOST}" \
     --port "${UE_LIVE_MIRROR_PORT}" \
     --rate-hz "${UE_LIVE_MIRROR_RATE_HZ}" \
+    --run-id "${RUN_ID}" \
+    --metrics-output "${RESULT_DIR}/observability/gazebo_ue_sender.json" \
     --vehicle-id uav1 \
     --scene-id factory \
     --map-id local_factoryenvironmentcollect \

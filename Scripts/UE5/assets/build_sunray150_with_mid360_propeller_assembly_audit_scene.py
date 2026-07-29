@@ -422,7 +422,7 @@ def main() -> None:
             "motor_parts": len(semantic_motors),
             "m2_8_screw_candidates": len(semantic_screws),
         },
-        "forbidden_sources": ["Models/MoSimQuadrotorModel/Plant/Resources/Visualization", "sensor_models/livox_mid360"],
+        "forbidden_sources": ["Models/MoSimQuadrotorModel/Vehicle/Resources/Visualization", "sensor_models/livox_mid360"],
         "rotors": manifest_rotors,
         "status": "audit_only_not_runtime_parameter_commit",
         "elapsed_sec": round(time.time() - start, 3),

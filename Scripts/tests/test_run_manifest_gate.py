@@ -43,7 +43,7 @@ def base_manifest(tmp_path: Path) -> dict:
             "replay_source": "MWORKS_MCP",
         },
         "mworks": {
-            "model_name": "MoSimQuadrotorModel.Missions.Official.Example",
+            "model_name": "MoSimQuadrotorModel.Experiment.Templates.Official.Example",
             "check_model_status": "pass",
             "simulate_status": "pass",
             "raw_csv": str(raw),

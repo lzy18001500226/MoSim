@@ -348,17 +348,33 @@ def simulate_modelingpy(
     verify_time_point: str = "end",
     interval: float | None = None,
     simulation_api: str = "simulate_model",
+    simulate_model_options: dict[str, Any] | None = None,
     simulate_ex_options: dict[str, Any] | None = None,
+    timeout_s: float = 360,
 ) -> dict[str, Any]:
     if len(target_time) != 2:
         raise ValueError(f"target_time must contain start and stop time, got: {target_time}")
     if simulation_api not in {"simulate_model", "simulate_model_ex"}:
         raise ValueError(f"Unsupported simulation_api: {simulation_api}")
+    if timeout_s <= 0:
+        raise ValueError(f"simulation timeout must be positive, got: {timeout_s}")
     start_time = float(target_time[0])
     stop_time = float(target_time[1])
     result_dir = windows_path(native_result_dir) if native_result_dir is not None else ""
     interval_arg = "None" if interval is None else repr(float(interval))
     if simulation_api == "simulate_model":
+        if simulate_model_options is not None and not isinstance(simulate_model_options, dict):
+            raise ValueError("simulate_model_options must be a dictionary when provided")
+        options = dict(simulate_model_options or {})
+        protected = {"startTime", "stopTime", "interval", "simMode", "path"}
+        conflicting = sorted(protected.intersection(options))
+        if conflicting:
+            raise ValueError(
+                "SimulateModel options must not override target-time or result-binding fields: "
+                + ", ".join(conflicting)
+            )
+        if any(not isinstance(key, str) for key in options):
+            raise ValueError("SimulateModel option keys must be strings")
         api_name = "ModelingPy.SimulateModel"
         simulation_call = f"""ModelingPy.SimulateModel(
         {model_name!r},
@@ -367,8 +383,11 @@ def simulate_modelingpy(
         interval={interval_arg},
         simMode=0,
         path={result_dir!r},
+        **{options!r},
     )"""
     else:
+        if simulate_model_options:
+            raise ValueError("simulate_model_options applies only to SimulateModel")
         options = {"startTime": start_time, "stopTime": stop_time}
         if interval is not None:
             options["interval"] = float(interval)
@@ -459,7 +478,7 @@ RUN_SCRIPT_RESULT = results
     run_result = client.call_tool(
         "call_code",
         {"mode": "run_script", "payload": {"python_source": script}},
-        timeout_s=360,
+        timeout_s=timeout_s,
     )
     nested = run_result.get("run_script_result") if isinstance(run_result.get("run_script_result"), dict) else {}
     simulate_ok = bool(nested.get("simulate"))
@@ -467,7 +486,9 @@ RUN_SCRIPT_RESULT = results
     return {
         "ok": bool(run_result.get("ok")) and (simulate_ok or readable),
         "api": api_name,
-        "simulation_options": simulate_ex_options if simulation_api == "simulate_model_ex" else None,
+        "simulation_options": (
+            simulate_model_options if simulation_api == "simulate_model" else simulate_ex_options
+        ),
         "data": simulate_ok,
         "simulate_api_reported_failure": not simulate_ok,
         "last_errors": nested.get("last_errors", []),

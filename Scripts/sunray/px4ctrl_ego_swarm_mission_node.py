@@ -24,7 +24,7 @@ from quadrotor_msgs.msg import PositionCommand, Px4ctrlDebug, TakeoffLand
 from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Bool, Header
 
-from trajectory_dynamics import inter_uav_braking_guard
+from trajectory_dynamics import body_to_world_vector, inter_uav_braking_guard
 
 
 def wall_sleep(duration_s: float) -> None:
@@ -82,6 +82,16 @@ class UavRuntime:
     home_odom_z: float | None = None
     home_truth_z: float | None = None
     state: State | None = None
+    state_sample_count: int = 0
+    connected_state_sample_count: int = 0
+    consecutive_connected_state_sample_count: int = 0
+    disconnected_state_sample_count: int = 0
+    first_connected_wall_elapsed_s: float | None = None
+    first_connected_sim_time_s: float | None = None
+    last_connected_wall_elapsed_s: float | None = None
+    last_connected_sim_time_s: float | None = None
+    stable_connected_wall_started_s: float | None = None
+    stable_connected_sim_started_s: float | None = None
     truth: dict | None = None
     odom: dict | None = None
     raw_position_cmd: dict | None = None
@@ -104,6 +114,7 @@ class UavRuntime:
     first_planner_position_cmd_t: float | None = None
     reached_t: float | None = None
     hover_cmd_publish_count: int = 0
+    hover_cmd_publish_by_phase: dict[str, int] = field(default_factory=dict)
     goal_publish_count: int = 0
     last_pre_takeoff_gate: dict | None = None
     pre_takeoff_gate_history: list[dict] = field(default_factory=list)
@@ -150,8 +161,29 @@ class EgoSwarmMission:
         self.landing_summary: dict | None = None
         self.command_quiesce_summaries: list[dict] = []
         self.takeoff_timing_summary: dict | None = None
+        self.execute_timing_summary: dict | None = None
         self.target_chains: dict[int, list[tuple[float, float, float]]] = {}
+        self.formation_center_chain: list[tuple[float, float, float]] = []
+        self.formation_center_chain_path = ""
+        self.last_formation_center_goal = (
+            args.formation_center_x,
+            args.formation_center_y,
+            args.formation_center_z,
+        )
         self.target_chain_report: dict | None = None
+        self.formation_target_recovery_events: list[dict] = []
+        self.formation_target_recovery_window: dict | None = None
+        self.formation_target_recovery_exhausted = False
+        # Direct hover owns the final topic only before planner takeover and
+        # after the adapter is quiesced for landing. Keeping this state in the
+        # mission node prevents a second final-command publisher during the
+        # leader safety-adapter interval.
+        self.cmd_adapters_enabled = False
+        self.leader_adapter_takeover_active = False
+        self.leader_adapter_takeover_transition_count = 0
+        self.leader_adapter_takeover_suppressed_hover_call_count = 0
+        self.direct_hover_publish_count_during_adapter_takeover = 0
+        self.command_adapter_state_transitions: list[dict] = []
         self.trigger_pub = rospy.Publisher("/traj_start_trigger", PoseStamped, queue_size=3)
         self.target_path_pub = rospy.Publisher("/mosim/goal5/target_path", RosPath, queue_size=1, latch=True)
         self.pre_takeoff_settle_summary: dict | None = None
@@ -216,6 +248,8 @@ class EgoSwarmMission:
         if args.swarm_traj_topic:
             rospy.Subscriber(args.swarm_traj_topic, AnyMsg, self.on_swarm_traj, queue_size=100)
         self.target_chains = self.load_target_chains()
+        self.formation_center_chain = self.load_formation_center_chain()
+        self.validate_target_chain_contract()
 
     def select_bspline_msg_class(self):
         if self.args.bspline_msg_package == "traj_utils":
@@ -256,6 +290,20 @@ class EgoSwarmMission:
     def start_xy_for(self, uid: int) -> tuple[float, float]:
         return (getattr(self.args, f"start{uid}_x"), getattr(self.args, f"start{uid}_y"))
 
+    @staticmethod
+    def load_waypoint_chain_file(path_text: str, label: str) -> list[tuple[float, float, float]]:
+        path = Path(path_text)
+        packet = json.loads(path.read_text(encoding="utf-8-sig"))
+        raw_waypoints = packet.get("waypoints")
+        if not isinstance(raw_waypoints, list):
+            raise ValueError(f"{label} has no waypoints list: {path}")
+        chain: list[tuple[float, float, float]] = []
+        for item in raw_waypoints:
+            if not isinstance(item, list) or len(item) < 3:
+                raise ValueError(f"invalid waypoint in {label} {path}: {item!r}")
+            chain.append((float(item[0]), float(item[1]), float(item[2])))
+        return chain
+
     def load_target_chains(self) -> dict[int, list[tuple[float, float, float]]]:
         chains: dict[int, list[tuple[float, float, float]]] = {}
         for uid in range(1, self.args.uav_num + 1):
@@ -263,7 +311,7 @@ class EgoSwarmMission:
             if not path_text:
                 continue
             path = Path(path_text)
-            packet = json.loads(path.read_text(encoding="utf-8"))
+            packet = json.loads(path.read_text(encoding="utf-8-sig"))
             raw_waypoints = packet.get("waypoints")
             if not isinstance(raw_waypoints, list):
                 raise ValueError(f"target chain file has no waypoints list: {path}")
@@ -280,6 +328,38 @@ class EgoSwarmMission:
             missing = [uid for uid in range(1, self.args.uav_num + 1) if uid not in chains]
             raise ValueError(f"target-chain mode requires every UAV to have a chain file; missing uav ids: {missing}")
         return chains
+    def load_formation_center_chain(self) -> list[tuple[float, float, float]]:
+        path_text = str(self.args.formation_center_chain_file or "").strip()
+        if not path_text:
+            return []
+        self.formation_center_chain_path = path_text
+        chain = self.load_waypoint_chain_file(path_text, "formation-center target chain")
+        if self.args.target_chain_max_goals > 0:
+            chain = chain[: self.args.target_chain_max_goals]
+        if not chain:
+            raise ValueError("formation-center target chain must contain at least one waypoint")
+        return chain
+
+    def validate_target_chain_contract(self) -> None:
+        if self.args.planner_target_mode != "formation_center":
+            return
+        if self.target_chains and not self.formation_center_chain:
+            raise ValueError(
+                "formation-center target-chain mode requires --formation-center-chain-file; "
+                "per-UAV goals must not be published sequentially to the shared center topic"
+            )
+        if self.formation_center_chain and not self.target_chains:
+            raise ValueError(
+                "formation-center target chain requires per-UAV target chains for synchronized target-hold gates"
+            )
+        if not self.formation_center_chain:
+            return
+        lengths = {len(chain) for chain in self.target_chains.values()}
+        if len(lengths) != 1 or lengths.pop() != len(self.formation_center_chain):
+            raise ValueError(
+                "formation-center and per-UAV target chains must have one equal-length round sequence"
+            )
+
 
     @staticmethod
     def yaw_from_quat(x: float, y: float, z: float, w: float) -> float:
@@ -293,15 +373,36 @@ class EgoSwarmMission:
 
     def on_state(self, uid: int, msg: State) -> None:
         uav = self.uavs[uid]
+        now_t = self.now()
+        now_wall = self.wall_elapsed()
         uav.state = msg
+        uav.state_sample_count += 1
+        if msg.connected:
+            uav.connected_state_sample_count += 1
+            uav.consecutive_connected_state_sample_count += 1
+            if uav.first_connected_wall_elapsed_s is None:
+                uav.first_connected_wall_elapsed_s = now_wall
+                uav.first_connected_sim_time_s = now_t
+            uav.last_connected_wall_elapsed_s = now_wall
+            uav.last_connected_sim_time_s = now_t
+            if uav.stable_connected_wall_started_s is None:
+                uav.stable_connected_wall_started_s = now_wall
+                uav.stable_connected_sim_started_s = now_t
+        else:
+            uav.disconnected_state_sample_count += 1
+            uav.consecutive_connected_state_sample_count = 0
+            uav.stable_connected_wall_started_s = None
+            uav.stable_connected_sim_started_s = None
         self.mission_status.update_vehicle(
             f"uav{uid}", connected=msg.connected, armed=msg.armed, mode=msg.mode
         )
         uav.state_rows.append(
             {
-                "t": self.now(),
-                "wall_elapsed_s": self.wall_elapsed(),
+                "t": now_t,
+                "wall_elapsed_s": now_wall,
                 "phase": self.phase,
+                "state_sample_index": uav.state_sample_count,
+                "consecutive_connected_state_sample_count": uav.consecutive_connected_state_sample_count,
                 "connected": bool(msg.connected),
                 "armed": bool(msg.armed),
                 "guided": bool(msg.guided),
@@ -349,7 +450,11 @@ class EgoSwarmMission:
         uav = self.uavs[uid]
         p = msg.pose.pose.position
         q = msg.pose.pose.orientation
-        v = msg.twist.twist.linear
+        body_velocity = msg.twist.twist.linear
+        world_velocity = body_to_world_vector(
+            (q.x, q.y, q.z, q.w),
+            (body_velocity.x, body_velocity.y, body_velocity.z),
+        )
         roll, pitch, yaw = self.rpy_from_quat(q.x, q.y, q.z, q.w)
         t = self.now()
         row = {
@@ -358,9 +463,9 @@ class EgoSwarmMission:
             "x": float(p.x),
             "y": float(p.y),
             "z": float(p.z),
-            "vx": float(v.x),
-            "vy": float(v.y),
-            "vz": float(v.z),
+            "vx": world_velocity[0],
+            "vy": world_velocity[1],
+            "vz": world_velocity[2],
             "roll": roll,
             "pitch": pitch,
             "yaw": yaw,
@@ -681,6 +786,47 @@ class EgoSwarmMission:
         ]
         return min(times) if times else None
 
+    def planner_takeover_ready(self) -> bool:
+        """Return whether the active command owner has reached planner takeover.
+
+        Leader-follower mode deliberately has one planner command producer:
+        UAV1. UAV2/UAV3 receive the executed UAV1 command through the fixed
+        offset relays, so waiting for their independent planner callbacks keeps
+        the direct hover publishers alive and creates competing final commands.
+        """
+        if self.args.leader_follower_commands:
+            return self.first_planner_trajectory_time(self.uavs[1]) is not None
+        return all(self.first_planner_takeover_time(uav) is not None for uav in self.uavs.values())
+
+    def raw_position_cmd_required(self, uid: int) -> bool:
+        """Return whether this vehicle must expose a planner-owned raw command.
+
+        The leader-follower transport has a single raw command owner (UAV1).
+        Followers are still required to expose final adapted commands, but
+        their raw topic is intentionally empty because they consume the
+        UAV1-offset relay rather than an independent planner output.
+        """
+        return not self.args.leader_follower_commands or uid == 1
+
+    def raw_position_cmd_semantics(self, uid: int) -> str:
+        if self.raw_position_cmd_required(uid):
+            return "planner_owned_raw_command_required"
+        return "leader_offset_relay_no_independent_raw_command_required"
+
+    def planner_trajectory_required(self, uid: int) -> bool:
+        """Return whether this vehicle owns an independent planner trajectory.
+
+        Rigid leader-follower execution has one live planner trajectory: UAV1.
+        UAV2/UAV3 still require live sensor/map inputs and final relay commands,
+        but they deliberately do not publish independent B-spline/polytraj data.
+        """
+        return not self.args.leader_follower_commands or uid == 1
+
+    def planner_trajectory_semantics(self, uid: int) -> str:
+        if self.planner_trajectory_required(uid):
+            return "independent_planner_trajectory_required"
+        return "leader_offset_relay_no_independent_planner_trajectory_required"
+
     def takeoff_hover_z(self, uav: UavRuntime) -> float:
         if uav.home_odom_z is None:
             return self.args.takeoff_height
@@ -822,12 +968,55 @@ class EgoSwarmMission:
         current_pose: bool = False,
         selected_uavs: list[UavRuntime] | None = None,
     ) -> None:
+        # In leader-follower mode UAV1's safety adapter is the sole final
+        # producer after planner takeover; UAV2/UAV3 relay that executed
+        # command. Publishing a mission hover here would race the adapter on
+        # /uav1/position_cmd and propagate the mixed stream to both followers.
+        if self.leader_adapter_takeover_active:
+            self.leader_adapter_takeover_suppressed_hover_call_count += 1
+            return
         uavs = selected_uavs if selected_uavs is not None else list(self.uavs.values())
+        # Before the first formation trajectory, each vehicle owns its takeoff
+        # hold. Afterwards the UAV1 final command is the sole source for the
+        # follower relays, including the pre-land hold after the adapter stops.
+        if (
+            self.args.leader_follower_commands
+            and self.first_planner_trajectory_time(self.uavs[1]) is not None
+        ):
+            uavs = [self.uavs[1]]
         for uav in uavs:
+            # Keep this guard adjacent to the only direct final-topic publish.
+            # It also makes the audit resilient if a future caller changes
+            # adapter state after the method-entry check above.
+            if self.leader_adapter_takeover_active:
+                self.leader_adapter_takeover_suppressed_hover_call_count += 1
+                continue
             uav.hover_cmd_pub.publish(self.make_hover_cmd(uav, current_pose=current_pose))
             uav.hover_cmd_publish_count += 1
+            uav.hover_cmd_publish_by_phase[self.phase] = uav.hover_cmd_publish_by_phase.get(self.phase, 0) + 1
 
     def set_cmd_adapters_enabled(self, enabled: bool, repeats: int = 3) -> None:
+        previous_enabled = self.cmd_adapters_enabled
+        previous_takeover = self.leader_adapter_takeover_active
+        self.cmd_adapters_enabled = bool(enabled)
+        self.leader_adapter_takeover_active = bool(
+            self.args.leader_follower_commands
+            and self.cmd_adapters_enabled
+            and self.first_planner_trajectory_time(self.uavs[1]) is not None
+        )
+        if self.leader_adapter_takeover_active and not previous_takeover:
+            self.leader_adapter_takeover_transition_count += 1
+        if previous_enabled != self.cmd_adapters_enabled or previous_takeover != self.leader_adapter_takeover_active:
+            self.command_adapter_state_transitions.append(
+                {
+                    "t": self.now(),
+                    "wall_elapsed_s": self.wall_elapsed(),
+                    "phase": self.phase,
+                    "enabled": self.cmd_adapters_enabled,
+                    "leader_adapter_takeover_active": self.leader_adapter_takeover_active,
+                    "leader_trajectory_seen": self.first_planner_trajectory_time(self.uavs[1]) is not None,
+                }
+            )
         msg = Bool(data=enabled)
         for _ in range(repeats):
             for uav in self.uavs.values():
@@ -888,6 +1077,8 @@ class EgoSwarmMission:
 
     def publish_manual_targets(self) -> None:
         if self.args.planner_target_mode == "formation_center":
+            if self.formation_center_chain:
+                self.last_formation_center_goal = self.formation_center_chain[0]
             self.publish_formation_center_goal()
             return
         self.publish_target_goals(list(self.uavs), reset_planner_markers=True)
@@ -932,18 +1123,19 @@ class EgoSwarmMission:
             if index + 1 < len(messages):
                 wall_sleep(self.args.goal_publish_stagger_s)
 
-    def publish_formation_center_goal(self) -> None:
-        for uav in self.uavs.values():
-            uav.pre_planner_trigger_snapshot = self.pre_planner_stability_snapshot(uav)
-            uav.first_bspline_t = None
-            uav.first_polytraj_t = None
-            uav.first_planner_position_cmd_t = None
+    def publish_formation_center_goal(self, reset_planner_markers: bool = True) -> None:
+        if reset_planner_markers:
+            for uav in self.uavs.values():
+                uav.pre_planner_trigger_snapshot = self.pre_planner_stability_snapshot(uav)
+                uav.first_bspline_t = None
+                uav.first_polytraj_t = None
+                uav.first_planner_position_cmd_t = None
 
         msg = PoseStamped()
         msg.header.frame_id = self.args.path_frame
-        msg.pose.position.x = self.args.formation_center_x
-        msg.pose.position.y = self.args.formation_center_y
-        msg.pose.position.z = self.args.formation_center_z
+        msg.pose.position.x = self.last_formation_center_goal[0]
+        msg.pose.position.y = self.last_formation_center_goal[1]
+        msg.pose.position.z = self.last_formation_center_goal[2]
         msg.pose.orientation.w = 1.0
 
         for _ in range(self.args.goal_publish_repeats):
@@ -973,8 +1165,47 @@ class EgoSwarmMission:
                 target_path.poses.append(ps)
         self.target_path_pub.publish(target_path)
 
+    def mavros_state_stability_snapshot(self, uav: UavRuntime) -> dict:
+        now_wall = self.wall_elapsed()
+        stable_wall_s = (
+            0.0
+            if uav.stable_connected_wall_started_s is None
+            else max(0.0, now_wall - uav.stable_connected_wall_started_s)
+        )
+        reasons: list[str] = []
+        if uav.state is None:
+            reasons.append("state_missing")
+        elif not uav.state.connected:
+            reasons.append("mavros_not_connected")
+        if uav.consecutive_connected_state_sample_count < self.args.mavros_ready_min_state_samples:
+            reasons.append(
+                f"connected_state_samples:{uav.consecutive_connected_state_sample_count}<{self.args.mavros_ready_min_state_samples}"
+            )
+        if stable_wall_s < self.args.mavros_ready_stable_wall_s:
+            reasons.append(f"connected_stable_wall_s:{stable_wall_s:.3f}<{self.args.mavros_ready_stable_wall_s:.3f}")
+        return {
+            "ready": not reasons,
+            "reasons": reasons,
+            "required_min_state_samples": self.args.mavros_ready_min_state_samples,
+            "required_stable_wall_s": self.args.mavros_ready_stable_wall_s,
+            "state_sample_count": uav.state_sample_count,
+            "connected_state_sample_count": uav.connected_state_sample_count,
+            "consecutive_connected_state_sample_count": uav.consecutive_connected_state_sample_count,
+            "disconnected_state_sample_count": uav.disconnected_state_sample_count,
+            "first_connected_wall_elapsed_s": uav.first_connected_wall_elapsed_s,
+            "first_connected_sim_time_s": uav.first_connected_sim_time_s,
+            "last_connected_wall_elapsed_s": uav.last_connected_wall_elapsed_s,
+            "last_connected_sim_time_s": uav.last_connected_sim_time_s,
+            "stable_connected_wall_started_s": uav.stable_connected_wall_started_s,
+            "stable_connected_sim_started_s": uav.stable_connected_sim_started_s,
+            "stable_wall_s": stable_wall_s,
+        }
+
     def all_ready(self) -> bool:
-        return all(uav.state and uav.state.connected and uav.odom and uav.truth for uav in self.uavs.values())
+        return all(
+            self.mavros_state_stability_snapshot(uav)["ready"] and uav.odom and uav.truth
+            for uav in self.uavs.values()
+        )
 
     def pre_takeoff_stability_snapshot(self, uav: UavRuntime) -> dict:
         now_t = self.now()
@@ -994,6 +1225,8 @@ class EgoSwarmMission:
                 "min_debug_count": self.args.pre_takeoff_min_debug_count,
             },
         }
+        mavros_stability = self.mavros_state_stability_snapshot(uav)
+        snapshot["mavros_state_stability"] = mavros_stability
         if uav.state is None:
             reasons.append("state_missing")
         else:
@@ -1009,6 +1242,8 @@ class EgoSwarmMission:
                 reasons.append("mavros_not_connected")
             if not uav.state.guided:
                 reasons.append("mavros_not_guided")
+        if not mavros_stability["ready"]:
+            reasons.extend(f"mavros_state_unstable:{reason}" for reason in mavros_stability["reasons"])
         if uav.odom is None:
             reasons.append("odom_missing")
         else:
@@ -1138,7 +1373,9 @@ class EgoSwarmMission:
             max_odom_z = status["max_odom_z_m"]
             if max_odom_z is None or abs(max_odom_z - status["target_z_m"]) >= self.args.takeoff_z_tol:
                 blockers.append(prefix + "takeoff_height_not_reached")
-        return blockers or ["takeoff_height_reached_but_not_stable"]
+        # All vehicles reached the height at least once, but none retained the
+        # current hover-height criterion through the stability dwell.
+        return blockers or ["takeoff_hover_height_not_held"]
 
     def reset_target_hold_metrics(self, uav: UavRuntime, chain_round_index: int | None = None) -> None:
         uav.reached_t = None
@@ -1204,6 +1441,7 @@ class EgoSwarmMission:
                     self.args.min_inter_uav_distance,
                     self.args.inter_uav_emergency_deceleration_mps2,
                     self.args.inter_uav_emergency_margin_m,
+                    self.args.inter_uav_emergency_min_closing_speed_mps,
                 )
                 if guard["triggered"]:
                     candidates.append(
@@ -1376,13 +1614,124 @@ class EgoSwarmMission:
             uav.target_hold_metrics["duration_s"] = 0.0
         return bool(uav.target_hold_metrics["reached"])
 
+    def formation_target_progress_snapshot(self) -> dict | None:
+        """Return one team-level target-progress snapshot for bounded goal recovery."""
+        per_uav_error_m: dict[str, float] = {}
+        per_uav_speed_mps: dict[str, float] = {}
+        for uid, uav in self.uavs.items():
+            metrics = uav.target_hold_metrics or {}
+            snapshot = metrics.get("last_execute_snapshot")
+            if not isinstance(snapshot, dict):
+                return None
+            try:
+                per_uav_error_m[str(uid)] = float(snapshot["error_xyz_m"])
+                per_uav_speed_mps[str(uid)] = float(snapshot["speed_mps"])
+            except (KeyError, TypeError, ValueError):
+                return None
+        if not per_uav_error_m:
+            return None
+        return {
+            "t": self.now(),
+            "wall_elapsed_s": self.wall_elapsed(),
+            "team_max_error_m": max(per_uav_error_m.values()),
+            "team_mean_error_m": sum(per_uav_error_m.values()) / len(per_uav_error_m),
+            "team_max_speed_mps": max(per_uav_speed_mps.values()),
+            "per_uav_error_m": per_uav_error_m,
+            "per_uav_speed_mps": per_uav_speed_mps,
+            "safety_blockers": self.execute_safety_blockers(),
+        }
+
+    def maybe_recover_formation_center_target(self) -> dict | None:
+        """Retry a stalled Swarm-Formation center goal without changing planner semantics."""
+        if (
+            self.args.planner_target_mode != "formation_center"
+            or self.args.formation_target_recovery_max_attempts <= 0
+        ):
+            return None
+
+        snapshot = self.formation_target_progress_snapshot()
+        if snapshot is None or snapshot["safety_blockers"]:
+            return None
+
+        current_error_m = float(snapshot["team_max_error_m"])
+        current_sim_t = float(snapshot["t"])
+        current_wall_t = float(snapshot["wall_elapsed_s"])
+        window = self.formation_target_recovery_window
+        if window is None:
+            self.formation_target_recovery_window = {
+                "started_t": current_sim_t,
+                "started_wall_elapsed_s": current_wall_t,
+                "best_team_max_error_m": current_error_m,
+                "best_snapshot": snapshot,
+            }
+            return None
+
+        best_error_m = float(window["best_team_max_error_m"])
+        if current_error_m <= best_error_m - self.args.formation_target_recovery_min_improvement_m:
+            self.formation_target_recovery_window = {
+                "started_t": current_sim_t,
+                "started_wall_elapsed_s": current_wall_t,
+                "best_team_max_error_m": current_error_m,
+                "best_snapshot": snapshot,
+            }
+            return None
+
+        sim_stall_s = max(0.0, current_sim_t - float(window["started_t"]))
+        wall_stall_s = max(0.0, current_wall_t - float(window["started_wall_elapsed_s"]))
+        stalled = (
+            sim_stall_s >= self.args.formation_target_recovery_stall_s
+            or wall_stall_s >= self.args.formation_target_recovery_wall_stall_s
+        )
+        if not stalled or current_error_m <= self.args.target_reached_radius:
+            return None
+
+        published_recovery_count = sum(
+            event.get("action") == "goal_republished"
+            for event in self.formation_target_recovery_events
+        )
+        event = {
+            "t": current_sim_t,
+            "wall_elapsed_s": current_wall_t,
+            "action": "goal_republished",
+            "attempt_index": published_recovery_count + 1,
+            "max_attempts": self.args.formation_target_recovery_max_attempts,
+            "sim_stall_s": sim_stall_s,
+            "wall_stall_s": wall_stall_s,
+            "current_snapshot": snapshot,
+            "window_best_team_max_error_m": best_error_m,
+            "minimum_improvement_m": self.args.formation_target_recovery_min_improvement_m,
+            "planner_markers_reset": False,
+        }
+        if published_recovery_count >= self.args.formation_target_recovery_max_attempts:
+            event["action"] = "exhausted"
+            self.formation_target_recovery_events.append(event)
+            self.formation_target_recovery_exhausted = True
+            return event
+
+        # The upstream planner uses one global formation-center goal. Preserve the
+        # original takeover timestamps so the retry cannot disguise a late first takeover.
+        self.publish_formation_center_goal(reset_planner_markers=False)
+        event["formation_center_goal_publish_count"] = self.formation_center_goal_publish_count
+        self.formation_target_recovery_events.append(event)
+        self.formation_target_recovery_window = {
+            "started_t": current_sim_t,
+            "started_wall_elapsed_s": current_wall_t,
+            "best_team_max_error_m": current_error_m,
+            "best_snapshot": snapshot,
+        }
+        return event
+
     def run_target_chains(self, rate: WallRate) -> tuple[bool, list[str]]:
+        formation_center_mode = self.args.planner_target_mode == "formation_center"
         round_count = max((len(chain) for chain in self.target_chains.values()), default=0)
         report: dict = {
             "schema": "mosim.sunray_ros1.goal5_swarm_target_chain_probe.v1",
             "status": "running",
             "round_count": round_count,
             "chain_lengths": {f"uav{uid}": len(chain) for uid, chain in self.target_chains.items()},
+            "formation_center_mode": formation_center_mode,
+            "formation_center_chain_length": len(self.formation_center_chain),
+            "formation_center_chain_file": self.formation_center_chain_path,
             "rounds": [],
             "claim_boundary": (
                 "Known-scene multi-UAV target-chain map-building support route. "
@@ -1403,30 +1752,54 @@ class EgoSwarmMission:
             if not active_uids:
                 continue
 
-            self.publish_target_goals(active_uids, reset_planner_markers=True)
-            start_wall = time.time()
-            last_goal_republish_wall = start_wall
+            if formation_center_mode:
+                self.last_formation_center_goal = self.formation_center_chain[round_index]
+                self.publish_formation_center_goal(reset_planner_markers=True)
+            else:
+                self.publish_target_goals(active_uids, reset_planner_markers=True)
+            round_start_sim = self.now()
+            round_start_wall = time.monotonic()
+            last_goal_republish_sim = round_start_sim
             goal_republish_count = 0
             round_item: dict = {
                 "round_index": round_index + 1,
                 "active_uavs": active_uids,
                 "targets": {f"uav{uid}": list(self.uavs[uid].target) for uid in active_uids},
+                "formation_center_goal": list(self.last_formation_center_goal) if formation_center_mode else None,
+                "goal_transport": "single_global_formation_center" if formation_center_mode else "per_uav_goal_topics",
                 "status": "running",
                 "blockers": [],
                 "goal_republish_period_s": self.args.target_chain_goal_republish_period_s,
+                "goal_republish_time_basis": "ros_simulation_time",
+                "time_basis": "ros_simulation_time_with_wall_hard_limit",
+                "simulation_timeout_s": self.args.target_chain_goal_timeout_s,
+                "wall_hard_timeout_s": self.args.target_chain_goal_wall_timeout_s,
             }
             report["rounds"].append(round_item)
             output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
-            while not rospy.is_shutdown() and time.time() - start_wall < self.args.target_chain_goal_timeout_s:
+            round_completed = False
+            timeout_reason = "ros_shutdown"
+            while not rospy.is_shutdown():
                 if self.safe_stop.requested():
                     return False, ["operator_safe_stop_requested"]
+                round_sim_elapsed_s = max(0.0, self.now() - round_start_sim)
+                round_wall_elapsed_s = max(0.0, time.monotonic() - round_start_wall)
+                if round_sim_elapsed_s >= self.args.target_chain_goal_timeout_s:
+                    timeout_reason = "simulation_time_timeout"
+                    break
+                if round_wall_elapsed_s >= self.args.target_chain_goal_wall_timeout_s:
+                    timeout_reason = "wall_time_hard_timeout"
+                    break
                 if (
                     self.args.target_chain_goal_republish_period_s > 0.0
-                    and time.time() - last_goal_republish_wall >= self.args.target_chain_goal_republish_period_s
+                    and self.now() - last_goal_republish_sim >= self.args.target_chain_goal_republish_period_s
                 ):
-                    self.publish_target_goals(active_uids, reset_planner_markers=False)
-                    last_goal_republish_wall = time.time()
+                    if formation_center_mode:
+                        self.publish_formation_center_goal(reset_planner_markers=False)
+                    else:
+                        self.publish_target_goals(active_uids, reset_planner_markers=False)
+                    last_goal_republish_sim = self.now()
                     goal_republish_count += 1
                     round_item["goal_republish_count"] = goal_republish_count
                 self.publish_paths()
@@ -1454,7 +1827,8 @@ class EgoSwarmMission:
                 reached = [self.update_target_hold(self.uavs[uid]) for uid in active_uids]
                 if all(reached):
                     round_item["status"] = "passed"
-                    round_item["duration_wall_s"] = time.time() - start_wall
+                    round_item["duration_simulation_s"] = max(0.0, self.now() - round_start_sim)
+                    round_item["duration_wall_s"] = max(0.0, time.monotonic() - round_start_wall)
                     round_item["end_snapshots"] = {
                         f"uav{uid}": self.uavs[uid].target_hold_metrics.get("end_snapshot")
                         if self.uavs[uid].target_hold_metrics
@@ -1466,24 +1840,29 @@ class EgoSwarmMission:
                         "running_partial",
                         [f"target_chain_round_{round_index + 1}_passed_pending_landing"],
                     )
+                    round_completed = True
                     break
                 rate.sleep()
-            else:
-                blockers = [f"target_chain_round_{round_index + 1}_timeout"]
-                round_item["status"] = "blocked"
-                round_item["duration_wall_s"] = time.time() - start_wall
-                round_item["blockers"] = blockers
-                round_item["last_snapshots"] = {
-                    f"uav{uid}": self.uavs[uid].target_hold_metrics.get("last_execute_snapshot")
-                    if self.uavs[uid].target_hold_metrics
-                    else None
-                    for uid in active_uids
-                }
-                report["status"] = "blocked"
-                report["blockers"] = blockers
-                output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
-                self.write_partial_outputs("blocked_partial", blockers)
-                return False, blockers
+            if round_completed:
+                continue
+
+            blockers = [f"target_chain_round_{round_index + 1}_timeout"]
+            round_item["status"] = "blocked"
+            round_item["timeout_reason"] = timeout_reason
+            round_item["duration_simulation_s"] = max(0.0, self.now() - round_start_sim)
+            round_item["duration_wall_s"] = max(0.0, time.monotonic() - round_start_wall)
+            round_item["blockers"] = blockers
+            round_item["last_snapshots"] = {
+                f"uav{uid}": self.uavs[uid].target_hold_metrics.get("last_execute_snapshot")
+                if self.uavs[uid].target_hold_metrics
+                else None
+                for uid in active_uids
+            }
+            report["status"] = "blocked"
+            report["blockers"] = blockers
+            output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+            self.write_partial_outputs("blocked_partial", blockers)
+            return False, blockers
 
         report["status"] = "passed"
         report["blockers"] = []
@@ -1595,24 +1974,30 @@ class EgoSwarmMission:
             self.publish_trigger()
         else:
             self.publish_manual_targets()
-        self.set_cmd_adapters_enabled(True)
+        # A leader-follower run has a single final-command path once the
+        # leader trajectory exists. Keep the adapter disabled while the
+        # vehicles hold their takeoff positions; otherwise direct hover, the
+        # adapter, and follower relays publish concurrently to final topics.
+        if not self.args.leader_follower_commands:
+            self.set_cmd_adapters_enabled(True)
         deadline = time.time() + self.args.ego_takeover_timeout_s
         while not rospy.is_shutdown() and time.time() < deadline:
             if self.safe_stop.requested():
                 return self.perform_safe_stop(rate)
-            self.publish_hover_cmds()
             self.publish_paths()
-            if all(self.first_planner_takeover_time(uav) is not None for uav in self.uavs.values()):
+            if self.planner_takeover_ready():
+                if self.args.leader_follower_commands:
+                    self.set_cmd_adapters_enabled(True)
                 break
+            self.publish_hover_cmds()
             rate.sleep()
-        if not all(self.first_planner_takeover_time(uav) is not None for uav in self.uavs.values()):
+        if not self.planner_takeover_ready():
             self.write_outputs("blocked", ["planner_takeover_timeout"])
             return 12
 
         self.phase = "ego_execute"
         for uav in self.uavs.values():
             self.reset_target_hold_metrics(uav)
-        execute_start = time.time()
         if self.args.mission_completion_mode == "exploration":
             self.exploration_started_t = self.now()
             emergency_event = None
@@ -1649,6 +2034,10 @@ class EgoSwarmMission:
             if not passed:
                 if self.safe_stop.requested():
                     return self.perform_safe_stop(rate)
+                if self.landing_summary is None:
+                    self.planner_command_quiesce("target_chain_failed")
+                    self.run_landing(rate)
+                self.phase = "done"
                 blockers = list(chain_blockers)
                 blockers.extend(b for b in self.acceptance_blockers() if b not in blockers)
                 self.write_outputs("blocked", blockers)
@@ -1665,9 +2054,20 @@ class EgoSwarmMission:
             self.write_outputs("passed", [])
             return 0
 
-        while not rospy.is_shutdown() and time.time() - execute_start < self.args.execute_timeout_s:
+        execute_start_sim = self.now()
+        execute_start_wall = time.monotonic()
+        execute_exit_reason = "ros_shutdown"
+        while not rospy.is_shutdown():
             if self.safe_stop.requested():
                 return self.perform_safe_stop(rate)
+            execute_sim_elapsed_s = max(0.0, self.now() - execute_start_sim)
+            execute_wall_elapsed_s = max(0.0, time.monotonic() - execute_start_wall)
+            if execute_sim_elapsed_s >= self.args.execute_timeout_s:
+                execute_exit_reason = "simulation_time_timeout"
+                break
+            if execute_wall_elapsed_s >= self.args.execute_wall_timeout_s:
+                execute_exit_reason = "wall_time_hard_timeout"
+                break
             self.publish_paths()
             emergency_event = self.inter_uav_emergency_snapshot()
             if emergency_event is not None:
@@ -1684,10 +2084,33 @@ class EgoSwarmMission:
                 if not self.update_target_hold(uav):
                     all_reached = False
             if all_reached:
+                execute_exit_reason = "all_targets_held"
+                break
+            recovery_event = self.maybe_recover_formation_center_target()
+            if recovery_event is not None and recovery_event.get("action") == "exhausted":
+                execute_exit_reason = "formation_target_recovery_exhausted"
                 break
             rate.sleep()
+        self.execute_timing_summary = {
+            "completed": execute_exit_reason == "all_targets_held",
+            "exit_reason": execute_exit_reason,
+            "time_basis": "ros_simulation_time_with_wall_hard_limit",
+            "simulation_timeout_s": self.args.execute_timeout_s,
+            "wall_hard_timeout_s": self.args.execute_wall_timeout_s,
+            "simulation_elapsed_s": max(0.0, self.now() - execute_start_sim),
+            "wall_elapsed_s": max(0.0, time.monotonic() - execute_start_wall),
+        }
         if not all(uav.target_hold_metrics and uav.target_hold_metrics.get("reached") for uav in self.uavs.values()):
             blockers = ["target_not_reached"]
+            if execute_exit_reason == "simulation_time_timeout":
+                blockers.append("execute_simulation_time_timeout")
+            elif execute_exit_reason == "wall_time_hard_timeout":
+                blockers.append("execute_wall_time_hard_timeout")
+            elif execute_exit_reason == "formation_target_recovery_exhausted":
+                self.planner_command_quiesce("formation_target_recovery_exhausted")
+                self.run_landing(rate)
+                self.phase = "done"
+                blockers.append("formation_target_recovery_exhausted")
             blockers.extend(b for b in self.acceptance_blockers() if b not in blockers)
             self.write_outputs("blocked", blockers)
             return 13
@@ -1709,6 +2132,11 @@ class EgoSwarmMission:
             blockers.append("inter_uav_emergency_hold")
         if self.min_inter_uav_distance < self.args.min_inter_uav_distance:
             blockers.append("inter_uav_distance_below_gate")
+        if self.args.leader_follower_commands:
+            if self.leader_adapter_takeover_transition_count < 1:
+                blockers.append("leader_adapter_takeover_missing")
+            if self.direct_hover_publish_count_during_adapter_takeover > 0:
+                blockers.append("direct_hover_during_leader_adapter_takeover")
         team_trajectory_freshness = self.exploration_team_trajectory_freshness_summary()
         if team_trajectory_freshness and not team_trajectory_freshness["passed"]:
             blockers.append("swarm_planner_trajectory_stale")
@@ -1741,16 +2169,20 @@ class EgoSwarmMission:
                 blockers.append(prefix + "trajectory_vis_count_below_gate")
             if uav.swarm_traj_count < self.args.min_swarm_traj_count:
                 blockers.append(prefix + "swarm_traj_count_below_gate")
-            if uav.bspline_count + uav.polytraj_count < self.args.min_planner_traj_count:
+            if (
+                self.planner_trajectory_required(uid)
+                and uav.bspline_count + uav.polytraj_count < self.args.min_planner_traj_count
+            ):
                 blockers.append(prefix + "planner_trajectory_count_below_gate")
-            if len(uav.raw_cmd_rows) < self.args.min_raw_position_cmd_count:
+            raw_cmd_required = self.raw_position_cmd_required(uid)
+            if raw_cmd_required and len(uav.raw_cmd_rows) < self.args.min_raw_position_cmd_count:
                 blockers.append(prefix + "raw_position_cmd_count_below_gate")
             if len(uav.cmd_rows) < self.args.min_position_cmd_count:
                 blockers.append(prefix + "position_cmd_count_below_gate")
             raw_execute_rows = self.rows_in_phases(uav.raw_cmd_rows, {"ego_execute"})
             cmd_execute_rows = self.rows_in_phases(uav.cmd_rows, {"ego_execute"})
             raw_z = self.z_range(raw_execute_rows)
-            if raw_z and raw_z["min_m"] < self.args.min_raw_planner_z_warn_m:
+            if raw_cmd_required and raw_z and raw_z["min_m"] < self.args.min_raw_planner_z_warn_m:
                 self.add_warning_once(uav, prefix + "raw_planner_position_cmd_z_below_gate")
                 if self.args.block_on_raw_planner_z_below_gate:
                     blockers.append(prefix + "raw_planner_position_cmd_z_below_gate")
@@ -1758,7 +2190,7 @@ class EgoSwarmMission:
             if adapted_z and adapted_z["min_m"] < self.args.min_adapted_cmd_z_m:
                 blockers.append(prefix + "adapted_position_cmd_z_below_gate")
             raw_continuity = self.command_continuity_summary(raw_execute_rows)
-            if raw_continuity and raw_continuity.get("violates_jump_gate"):
+            if raw_cmd_required and raw_continuity and raw_continuity.get("violates_jump_gate"):
                 self.add_warning_once(uav, prefix + "raw_position_cmd_discontinuous")
                 if self.args.block_on_raw_position_cmd_discontinuity:
                     blockers.append(prefix + "raw_position_cmd_discontinuous")
@@ -1956,6 +2388,16 @@ class EgoSwarmMission:
                 "takeoff_hover_z": self.takeoff_hover_z(uav),
                 "frame_alignment": self.frame_alignment_summary(uav),
                 "planner_command_audit": {
+                    "raw_position_cmd_required": self.raw_position_cmd_required(uid),
+                    "raw_position_cmd_semantics": self.raw_position_cmd_semantics(uid),
+                    "planner_trajectory_required": self.planner_trajectory_required(uid),
+                    "planner_trajectory_semantics": self.planner_trajectory_semantics(uid),
+                    "minimum_required_planner_trajectory_count": (
+                        self.args.min_planner_traj_count if self.planner_trajectory_required(uid) else 0
+                    ),
+                    "minimum_required_raw_position_cmd_count": (
+                        self.args.min_raw_position_cmd_count if self.raw_position_cmd_required(uid) else 0
+                    ),
                     "raw_xyz_range": self.xyz_range(uav.raw_cmd_rows),
                     "adapted_xyz_range": self.xyz_range(uav.cmd_rows),
                     "raw_continuity": self.command_continuity_summary(uav.raw_cmd_rows),
@@ -2006,6 +2448,7 @@ class EgoSwarmMission:
                     "trajectory_freshness": self.exploration_trajectory_freshness_summary(uav),
                 },
                 "hover_cmd_publish_count": uav.hover_cmd_publish_count,
+                "hover_cmd_publish_by_phase": uav.hover_cmd_publish_by_phase,
                 "goal_publish_count": uav.goal_publish_count,
                 "takeoff_cmd_publish_count": uav.takeoff_cmd_publish_count,
                 "land_cmd_publish_count": uav.land_cmd_publish_count,
@@ -2014,6 +2457,7 @@ class EgoSwarmMission:
                     "last_snapshot": uav.last_pre_takeoff_gate,
                     "history_tail": uav.pre_takeoff_gate_history[-20:],
                 },
+                "mavros_state_stability": self.mavros_state_stability_snapshot(uav),
                 "pre_planner_gate": {
                     "last_snapshot": uav.last_pre_planner_gate,
                     "trigger_snapshot": uav.pre_planner_trigger_snapshot,
@@ -2052,14 +2496,54 @@ class EgoSwarmMission:
             "formation_center_goal": {
                 "enabled": self.args.planner_target_mode == "formation_center",
                 "topic": next(iter(self.uavs.values())).goal_topic if self.uavs else "",
-                "x": self.args.formation_center_x,
-                "y": self.args.formation_center_y,
-                "z": self.args.formation_center_z,
+                "x": self.last_formation_center_goal[0],
+                "y": self.last_formation_center_goal[1],
+                "z": self.last_formation_center_goal[2],
+                "target_chain_file": self.formation_center_chain_path,
+                "target_chain_length": len(self.formation_center_chain),
+                "transport": "single_global_formation_center",
                 "publish_count": self.formation_center_goal_publish_count,
                 "semantics": (
                     "Swarm-Formation consumes one center goal and expands it "
                     "with global_goal/swarm_scale and relative_pos_i; per-UAV "
                     "targets in this metrics file are the expanded acceptance points."
+                ),
+            },
+            "leader_follower_command_ownership": {
+                "enabled": self.args.leader_follower_commands,
+                "policy": (
+                    "Before leader trajectory takeover, direct hover holds the vehicles. "
+                    "During leader safety-adapter takeover, direct hover publication is suppressed and "
+                    "UAV2/UAV3 receive the adapted UAV1 command through fixed-offset relays. "
+                    "After adapter quiesce, only UAV1 resumes direct hover for the pre-land hold."
+                ),
+                "adapter_enabled_at_output": self.cmd_adapters_enabled,
+                "adapter_takeover_active_at_output": self.leader_adapter_takeover_active,
+                "adapter_takeover_transition_count": self.leader_adapter_takeover_transition_count,
+                "adapter_takeover_suppressed_hover_call_count": self.leader_adapter_takeover_suppressed_hover_call_count,
+                "direct_hover_publish_count_during_adapter_takeover": self.direct_hover_publish_count_during_adapter_takeover,
+                "adapter_state_transitions": self.command_adapter_state_transitions,
+                "runtime_gate": (
+                    "Pass requires adapter_takeover_transition_count >= 1 and "
+                    "direct_hover_publish_count_during_adapter_takeover == 0 when leader_follower_commands is true."
+                ),
+            },
+            "formation_target_recovery": {
+                "enabled": (
+                    self.args.planner_target_mode == "formation_center"
+                    and self.args.formation_target_recovery_max_attempts > 0
+                ),
+                "mode_guard": "formation_center_only",
+                "max_attempts": self.args.formation_target_recovery_max_attempts,
+                "stall_simulation_s": self.args.formation_target_recovery_stall_s,
+                "stall_wall_s": self.args.formation_target_recovery_wall_stall_s,
+                "minimum_improvement_m": self.args.formation_target_recovery_min_improvement_m,
+                "exhausted": self.formation_target_recovery_exhausted,
+                "events": self.formation_target_recovery_events,
+                "window": self.formation_target_recovery_window,
+                "claim_boundary": (
+                    "This republish retries the unchanged upstream formation-center goal only. "
+                    "It does not alter A* limits, obstacle inflation, controller gains, or safety gates."
                 ),
             },
             "mission_completion_mode": self.args.mission_completion_mode,
@@ -2076,6 +2560,7 @@ class EgoSwarmMission:
             "target_chain": self.target_chain_report,
             "pre_takeoff_settle": self.pre_takeoff_settle_summary,
             "takeoff_timing": self.takeoff_timing_summary,
+            "target_execution_timing": self.execute_timing_summary,
             "min_inter_uav_distance_m": None if math.isinf(self.min_inter_uav_distance) else self.min_inter_uav_distance,
             "min_inter_uav_pair": self.min_inter_uav_pair,
             "inter_uav_emergency_hold": {
@@ -2084,6 +2569,7 @@ class EgoSwarmMission:
                 "min_distance_m": self.args.min_inter_uav_distance,
                 "deceleration_mps2": self.args.inter_uav_emergency_deceleration_mps2,
                 "margin_m": self.args.inter_uav_emergency_margin_m,
+                "min_predictive_closing_speed_mps": self.args.inter_uav_emergency_min_closing_speed_mps,
                 "odom_timeout_s": self.args.inter_uav_emergency_odom_timeout_s,
                 "trigger_count": len(self.inter_uav_emergency_events),
                 "events": self.inter_uav_emergency_events,
@@ -2149,10 +2635,16 @@ def parse_args() -> argparse.Namespace:
         parser.add_argument(f"--start{uid}-y", dest=f"start{uid}_y", type=float, default=sy)
     parser.add_argument("--path-frame", default="world")
     parser.add_argument("--planner-target-mode", choices=["goal", "trigger", "formation_center"], default="goal")
+    parser.add_argument(
+        "--leader-follower-commands",
+        action="store_true",
+        help="UAV1 is the sole planner command owner; followers execute its fixed-offset relay.",
+    )
     parser.add_argument("--goal-topic-template", default="/uav{uid}/move_base_simple/goal")
     parser.add_argument("--formation-center-x", type=float, default=2.0)
     parser.add_argument("--formation-center-y", type=float, default=0.0)
     parser.add_argument("--formation-center-z", type=float, default=1.0)
+    parser.add_argument("--formation-center-chain-file", default="")
     parser.add_argument("--raw-position-cmd-topic-template", default="/uav{uid}/planner_position_cmd_raw")
     parser.add_argument("--adapted-position-cmd-topic-template", default="/uav{uid}/position_cmd")
     parser.add_argument("--cmd-adapter-enable-topic-template", default="/uav{uid}/mosim/position_cmd_adapter_enable")
@@ -2167,19 +2659,36 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-raw-planner-z-warn-m", type=float, default=0.85)
     parser.add_argument("--min-adapted-cmd-z-m", type=float, default=0.85)
     parser.add_argument("--block-on-raw-planner-z-below-gate", action="store_true")
-    parser.add_argument("--block-on-raw-position-cmd-discontinuity", action="store_true", default=None)
+    parser.add_argument(
+        "--block-on-raw-position-cmd-discontinuity",
+        dest="block_on_raw_position_cmd_discontinuity",
+        action="store_true",
+        default=None,
+    )
+    parser.add_argument(
+        "--warn-on-raw-position-cmd-discontinuity",
+        dest="block_on_raw_position_cmd_discontinuity",
+        action="store_false",
+    )
     parser.add_argument("--max-position-cmd-jump-m", type=float, default=0.50)
     parser.add_argument("--max-position-cmd-speed-mps", type=float, default=3.0)
     parser.add_argument("--goal-publish-repeats", type=int, default=5)
     parser.add_argument("--goal-publish-period-s", type=float, default=0.1)
     parser.add_argument("--goal-publish-stagger-s", type=float, default=0.0)
+    parser.add_argument("--formation-target-recovery-max-attempts", type=int, default=0)
+    parser.add_argument("--formation-target-recovery-stall-s", type=float, default=8.0)
+    parser.add_argument("--formation-target-recovery-wall-stall-s", type=float, default=75.0)
+    parser.add_argument("--formation-target-recovery-min-improvement-m", type=float, default=0.25)
     parser.add_argument("--takeoff-height", type=float, default=1.0)
     parser.add_argument("--yaw", type=float, default=0.0)
     parser.add_argument("--ready-timeout-s", type=float, default=60.0)
+    parser.add_argument("--mavros-ready-min-state-samples", type=int, default=3)
+    parser.add_argument("--mavros-ready-stable-wall-s", type=float, default=6.0)
     parser.add_argument("--takeoff-timeout-s", type=float, default=45.0)
     parser.add_argument("--takeoff-wall-timeout-s", type=float, default=300.0)
     parser.add_argument("--ego-takeover-timeout-s", type=float, default=45.0)
     parser.add_argument("--execute-timeout-s", type=float, default=100.0)
+    parser.add_argument("--execute-wall-timeout-s", type=float, default=300.0)
     parser.add_argument("--land-timeout-s", type=float, default=30.0)
     parser.add_argument("--pre-land-hover-s", type=float, default=1.0)
     parser.add_argument("--pre-land-no-cmd-s", type=float, default=0.8)
@@ -2215,6 +2724,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--target-stable-skip-max-vz-mps", type=float, default=0.08)
     parser.add_argument("--target-chain-max-goals", type=int, default=0)
     parser.add_argument("--target-chain-goal-timeout-s", type=float, default=90.0)
+    parser.add_argument("--target-chain-goal-wall-timeout-s", type=float, default=300.0)
     parser.add_argument("--target-chain-goal-republish-period-s", type=float, default=3.0)
     parser.add_argument("--execute-min-truth-z-m", type=float, default=0.50)
     parser.add_argument("--execute-min-odom-z-m", type=float, default=0.50)
@@ -2228,6 +2738,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--inter-uav-emergency-hold-enabled", action="store_true")
     parser.add_argument("--inter-uav-emergency-deceleration-mps2", type=float, default=1.2)
     parser.add_argument("--inter-uav-emergency-margin-m", type=float, default=0.2)
+    parser.add_argument("--inter-uav-emergency-min-closing-speed-mps", type=float, default=0.05)
     parser.add_argument("--inter-uav-emergency-odom-timeout-s", type=float, default=0.3)
     parser.add_argument("--min-raw-lidar-count", type=int, default=5)
     parser.add_argument("--min-raw-lidar-points", type=int, default=1)

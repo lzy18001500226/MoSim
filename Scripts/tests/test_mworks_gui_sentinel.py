@@ -297,7 +297,7 @@ def test_mixed_education_and_demo_windows_block_all_mworks(tmp_path: Path) -> No
             },
             {
                 "hwnd": 211,
-                "title": "QuadrotorControllerBlocks - Sysplorer [演示版]",
+                "title": "MoSimQuadrotorModel - Sysplorer [演示版]",
                 "class_name": "Qt5152QWindowIcon",
                 "visible": True,
                 "children": [{"text": "Modelica package browser", "class_name": "Static"}],

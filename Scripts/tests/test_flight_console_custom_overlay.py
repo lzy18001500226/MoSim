@@ -106,6 +106,8 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "runId: mosimOperator.runId" in fly_layer
     assert "copySelectedLaunchCommand" in fly_layer
     assert "copyClearActiveRunCommand" in fly_layer
+    assert "清除运行清单命令" in bridge_source
+    assert "结束当前运行命令" not in bridge_source
     assert "copyStagedFaultCommand" in fly_layer
     assert "copyRestoreNormalCommand" in fly_layer
     assert "faultStateText" in fly_layer

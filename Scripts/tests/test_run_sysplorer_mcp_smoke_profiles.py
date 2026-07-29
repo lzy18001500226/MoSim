@@ -9,6 +9,8 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT_PATH = ROOT / "Scripts" / "mworks" / "run_sysplorer_mcp_smoke.py"
@@ -75,6 +77,161 @@ def test_diagnostics_profile_verifies_declared_variable_not_tracking_z() -> None
     assert module.choose_verify_result_var("standard_tracking", {"time": "time", "z": "custom.z"}) == "custom.z"
 
 
+def test_simulate_modelingpy_records_errors_before_partial_result_probes() -> None:
+    module = load_module()
+
+    class FakeClient:
+        def call_tool(self, name, arguments, timeout_s):
+            assert name == "call_code"
+            source = arguments["payload"]["python_source"]
+            assert '"GetLastErrors"' in source
+            assert source.index("GetLastErrors") < source.index("GetResultVariableInfo")
+            assert source.index("GetSimulationExitState") < source.index("GetResultVariableInfo")
+            assert source.index("GetSimulationState") < source.index("GetResultVariableInfo")
+            assert source.index("GetCurrentSimTime") < source.index("GetResultVariableInfo")
+            assert source.index("MessageText") < source.index("GetResultVariableInfo")
+            compile(source, "simulate_modelingpy.py", "exec")
+            return {
+                "ok": True,
+                "run_script_result": {
+                    "simulate": False,
+                    "last_errors": ["solver failed at t=0"],
+                    "post_simulation_diagnostics": {
+                        "GetSimulationExitState": {"ok": True, "data": "failed"},
+                        "GetCurrentSimTime": {"ok": True, "data": 0.0},
+                    },
+                    "has_readable_result": False,
+                },
+            }
+
+    result = module.simulate_modelingpy(
+        FakeClient(),
+        model_name="Example.FailingRunner",
+        target_time=[0.0, 0.2],
+        native_result_dir=None,
+        verify_result_var="position[3]",
+    )
+
+    assert result["simulate_api_reported_failure"] is True
+    assert result["last_errors"] == ["solver failed at t=0"]
+    assert result["post_simulation_diagnostics"]["GetSimulationExitState"]["data"] == "failed"
+
+
+def test_simulate_modelingpy_supports_bounded_simulate_model_ex_diagnostics() -> None:
+    module = load_module()
+
+    class FakeClient:
+        def call_tool(self, name, arguments, timeout_s):
+            assert name == "call_code"
+            source = arguments["payload"]["python_source"]
+            assert "ModelingPy.SimulateModelEx" in source
+            assert "'Algorithm': 'Euler'" in source
+            assert "'IntegratorStep': 0.01" in source
+            compile(source, "simulate_modelingpy_ex.py", "exec")
+            return {
+                "ok": True,
+                "run_script_result": {
+                    "simulate": True,
+                    "last_errors": [],
+                    "post_simulation_diagnostics": {},
+                    "has_readable_result": True,
+                    "result_probe_type": "Real",
+                    "get_var_value_at": 0.2,
+                },
+            }
+
+    result = module.simulate_modelingpy(
+        FakeClient(),
+        model_name="Example.EulerRunner",
+        target_time=[0.0, 0.2],
+        native_result_dir=None,
+        verify_result_var="position[3]",
+        simulation_api="simulate_model_ex",
+        simulate_ex_options={"Algorithm": "Euler", "IntegratorStep": 0.01},
+    )
+
+    assert result["api"] == "ModelingPy.SimulateModelEx"
+    assert result["simulation_options"] == {"Algorithm": "Euler", "IntegratorStep": 0.01}
+    assert result["data"] is True
+
+
+def test_simulate_modelingpy_supports_explicit_simulate_model_solver_profile() -> None:
+    module = load_module()
+    profile = {
+        "algo": "Rkfix4",
+        "integralStep": 0.002,
+        "storeDouble": True,
+        "storeEvent": False,
+        "isPieceWiseStep": True,
+        "pieceWiseStep": ((0.0, 0.002),),
+    }
+
+    class FakeClient:
+        def call_tool(self, name, arguments, timeout_s):
+            assert name == "call_code"
+            source = arguments["payload"]["python_source"]
+            assert "ModelingPy.SimulateModel(" in source
+            assert "'algo': 'Rkfix4'" in source
+            assert "'integralStep': 0.002" in source
+            assert "'storeEvent': False" in source
+            assert "'pieceWiseStep': ((0.0, 0.002),)" in source
+            compile(source, "simulate_modelingpy_fixed_step.py", "exec")
+            return {
+                "ok": True,
+                "run_script_result": {
+                    "simulate": True,
+                    "last_errors": [],
+                    "post_simulation_diagnostics": {},
+                    "has_readable_result": True,
+                    "result_probe_type": "Real",
+                    "get_var_value_at": 0.2,
+                },
+            }
+
+    result = module.simulate_modelingpy(
+        FakeClient(),
+        model_name="Example.FixedStepRunner",
+        target_time=[0.0, 0.2],
+        native_result_dir=None,
+        verify_result_var="position[3]",
+        interval=0.01,
+        simulate_model_options=profile,
+    )
+
+    assert result["api"] == "ModelingPy.SimulateModel"
+    assert result["simulation_options"] == profile
+    assert result["data"] is True
+
+
+def test_simulate_modelingpy_rejects_simulate_model_result_binding_override() -> None:
+    module = load_module()
+
+    with pytest.raises(ValueError, match="must not override target-time or result-binding"):
+        module.simulate_modelingpy(
+            object(),
+            model_name="Example.InvalidOverride",
+            target_time=[0.0, 0.2],
+            native_result_dir=None,
+            verify_result_var="position[3]",
+            simulate_model_options={"path": "C:/wrong"},
+        )
+
+
+def test_simulate_modelingpy_rejects_simulate_ex_time_override() -> None:
+    module = load_module()
+
+    with pytest.raises(ValueError, match="must not override target-time"):
+        module.simulate_modelingpy(
+            object(),
+            model_name="Example.InvalidOverride",
+            target_time=[0.0, 0.2],
+            native_result_dir=None,
+            verify_result_var="position[3]",
+            simulation_api="simulate_model_ex",
+            simulate_ex_options={"stopTime": 99.0},
+        )
+
+
 def test_mcp_client_uses_utf8_replacement_for_process_streams() -> None:
     module = load_module()
     captured: dict[str, object] = {}
@@ -132,6 +289,11 @@ def test_mcp_client_uses_utf8_replacement_for_process_streams() -> None:
 def main() -> int:
     test_diagnostics_smoke_metrics_do_not_require_tracking_columns()
     test_diagnostics_profile_verifies_declared_variable_not_tracking_z()
+    test_simulate_modelingpy_records_errors_before_partial_result_probes()
+    test_simulate_modelingpy_supports_bounded_simulate_model_ex_diagnostics()
+    test_simulate_modelingpy_supports_explicit_simulate_model_solver_profile()
+    test_simulate_modelingpy_rejects_simulate_model_result_binding_override()
+    test_simulate_modelingpy_rejects_simulate_ex_time_override()
     test_mcp_client_uses_utf8_replacement_for_process_streams()
     print("[OK] run_sysplorer_mcp_smoke profile regression")
     return 0

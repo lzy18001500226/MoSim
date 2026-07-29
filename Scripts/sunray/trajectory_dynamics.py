@@ -25,6 +25,7 @@ def inter_uav_braking_guard(
     min_distance_m: float,
     deceleration_mps2: float,
     margin_m: float,
+    min_predictive_closing_speed_mps: float = 0.05,
 ) -> dict[str, float | bool]:
     """Predict whether a closing UAV pair needs an immediate hold."""
     vectors = [
@@ -35,7 +36,12 @@ def inter_uav_braking_guard(
         raise ValueError("pair-guard vectors must contain exactly three values")
     if not all(math.isfinite(value) for values in vectors for value in values):
         raise ValueError("pair-guard vectors must contain finite values")
-    if min_distance_m < 0.0 or deceleration_mps2 <= 0.0 or margin_m < 0.0:
+    if (
+        min_distance_m < 0.0
+        or deceleration_mps2 <= 0.0
+        or margin_m < 0.0
+        or min_predictive_closing_speed_mps < 0.0
+    ):
         raise ValueError("pair-guard distances must be non-negative and deceleration positive")
 
     pa, va, pb, vb = vectors
@@ -51,13 +57,48 @@ def inter_uav_braking_guard(
         closing_speed_mps = max(0.0, -distance_rate_mps)
     braking_distance_m = closing_speed_mps * closing_speed_mps / (2.0 * deceleration_mps2)
     trigger_distance_m = min_distance_m + margin_m + braking_distance_m
+    # The buffer is predictive: it applies only for a meaningful closing rate.
+    # This prevents normal formation-spacing odometry noise from turning the
+    # buffer into a false emergency hold, while hard-distance violations remain
+    # unconditional.
+    hard_distance_violation = distance_m <= min_distance_m
+    predicted_braking_violation = (
+        closing_speed_mps >= min_predictive_closing_speed_mps
+        and distance_m <= trigger_distance_m
+    )
     return {
-        "triggered": distance_m <= trigger_distance_m,
+        "triggered": hard_distance_violation or predicted_braking_violation,
         "distance_m": distance_m,
         "closing_speed_mps": closing_speed_mps,
         "braking_distance_m": braking_distance_m,
         "trigger_distance_m": trigger_distance_m,
+        "min_predictive_closing_speed_mps": min_predictive_closing_speed_mps,
+        "hard_distance_violation": hard_distance_violation,
+        "predicted_braking_violation": predicted_braking_violation,
     }
+
+
+def body_to_world_vector(
+    quaternion_xyzw: Iterable[float], body_vector: Iterable[float]
+) -> tuple[float, float, float]:
+    """Rotate a body-frame vector into the pose's world frame."""
+    quaternion = tuple(float(value) for value in quaternion_xyzw)
+    vector = tuple(float(value) for value in body_vector)
+    if len(quaternion) != 4 or len(vector) != 3:
+        raise ValueError("quaternion must be xyzw and vector must contain three values")
+    if not all(math.isfinite(value) for value in (*quaternion, *vector)):
+        raise ValueError("quaternion and vector must be finite")
+    x, y, z, w = quaternion
+    norm = math.sqrt(x * x + y * y + z * z + w * w)
+    if norm <= 1e-9:
+        raise ValueError("quaternion norm must be positive")
+    x, y, z, w = (x / norm, y / norm, z / norm, w / norm)
+    vx, vy, vz = vector
+    return (
+        (1.0 - 2.0 * (y * y + z * z)) * vx + 2.0 * (x * y - z * w) * vy + 2.0 * (x * z + y * w) * vz,
+        2.0 * (x * y + z * w) * vx + (1.0 - 2.0 * (x * x + z * z)) * vy + 2.0 * (y * z - x * w) * vz,
+        2.0 * (x * z - y * w) * vx + 2.0 * (y * z + x * w) * vy + (1.0 - 2.0 * (x * x + y * y)) * vz,
+    )
 
 
 def constrain_kinematic_step(

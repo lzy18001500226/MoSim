@@ -43,6 +43,13 @@ def test_basic_gate_cleanup_is_bounded_before_force_kill() -> None:
     assert cleanup.count('wait "${pid}"') == 1
 
 
+def test_basic_gate_waits_for_estimator_attitude_to_settle_before_takeoff() -> None:
+    source = BASIC_GATE.read_text(encoding="utf-8")
+
+    assert source.count("--pre-takeoff-state-timeout-s 60") == 2
+    assert source.count("--pre-takeoff-max-abs-roll-pitch-deg 0.5") == 2
+
+
 def test_qgc_ground_standby_runs_until_managed_stop() -> None:
     runner = ORCHESTRATED_RUNTIME.read_text(encoding="utf-8")
     gate = BASIC_GATE.read_text(encoding="utf-8")
@@ -50,3 +57,27 @@ def test_qgc_ground_standby_runs_until_managed_stop() -> None:
     assert 'QGC_GROUND_STANDBY_HOLD_S:-until_stopped' in runner
     assert 'NO_FLIGHT_DIAGNOSTIC_HOLD_S}" == "until_stopped' in gate
     assert "Ground standby remains active until the managed stop command" in gate
+
+
+def test_fastlio_ekf_fusion_requires_a_boot_time_contract() -> None:
+    gate = BASIC_GATE.read_text(encoding="utf-8")
+
+    contract = (
+        "PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT=\"EKF2_GPS_CTRL=0,"
+        "EKF2_BARO_CTRL=0,EKF2_RNG_CTRL=0,EKF2_OF_CTRL=0,"
+        "EKF2_EV_CTRL=15,EKF2_HGT_REF=3,EKF2_EV_DELAY=0,"
+        "EKF2_EV_NOISE_MD=1,EKF2_EVP_NOISE=0.03,EKF2_EVA_NOISE=0.03\""
+    )
+    fusion_enable = gate.index('if [[ "${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION}" == "true" ]]; then')
+    resolve = gate.index("resolve_fastlio_px4_boot_contract", fusion_enable)
+    overlay = gate.index("prepare_px4_ros1_runtime_overlay")
+
+    assert contract in gate
+    assert fusion_enable < resolve < overlay
+    assert 'FASTLIO_ALIGNMENT_Z_SOURCE="fastlio"' in gate
+    assert "Gazebo truth is evaluation-only." in gate
+    assert "PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED" in gate
+    assert "PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED" in gate
+    assert "PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES" in gate
+    assert "Sunray150 IMU calibration requires" in gate
+    assert '"sunray150_imu_calibration_applied"' in gate

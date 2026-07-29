@@ -9,6 +9,10 @@ model Px4CtrlAttitudeThrustAdapter
     * profile.mworks_visual_thrust_coefficient
     * profile.mworks_hover_visual_rotor_speed_rad_s ^ 2;
 
+  // The reviewable original outer-loop diagram remains in
+  // PX4CTRL_Original_OuterLoop_Graphical_Sysblock. MWORKS compiler 3041
+  // prevents embedding its multi-operator topology in this Modelica composite,
+  // so this bridge is retained solely for whole-aircraft closure.
   MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock core;
 
   Real roll_mea;

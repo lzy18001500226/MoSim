@@ -301,6 +301,23 @@ def validate_profile(profile: dict[str, Any], findings: list[dict[str, str]]) ->
             + float(mass["ros1_gazebo_classic"]["inline_mid360"]["camera_sensor_model_mass_kg_each"])
             * int(mass["ros1_gazebo_classic"]["inline_mid360"]["camera_sensor_model_count"])
         ),
+        "ros1_nested_mid360_gps": (
+            float(mass["ros1_gazebo_classic"]["nested_mid360_gps"]["base_link_mass_kg"])
+            + float(mass["ros1_gazebo_classic"]["nested_mid360_gps"]["flight_imu_mass_kg"])
+            + rotor_count * rotor_mass
+            + float(mass["ros1_gazebo_classic"]["nested_mid360_gps"]["mid360_nested_model_mass_kg"])
+            + float(mass["ros1_gazebo_classic"]["nested_mid360_gps"]["gps_nested_model_mass_kg"])
+            + float(mass["ros1_gazebo_classic"]["nested_mid360_gps"]["camera_sensor_model_mass_kg_each"])
+            * int(mass["ros1_gazebo_classic"]["nested_mid360_gps"]["camera_sensor_model_count"])
+        ),
+        "ros1_inline_mid360_gps": (
+            float(mass["ros1_gazebo_classic"]["inline_mid360_gps"]["base_link_mass_kg"])
+            + float(mass["ros1_gazebo_classic"]["inline_mid360_gps"]["flight_imu_mass_kg"])
+            + rotor_count * rotor_mass
+            + float(mass["ros1_gazebo_classic"]["inline_mid360_gps"]["gps_inline_model_mass_kg"])
+            + float(mass["ros1_gazebo_classic"]["inline_mid360_gps"]["camera_sensor_model_mass_kg_each"])
+            * int(mass["ros1_gazebo_classic"]["inline_mid360_gps"]["camera_sensor_model_count"])
+        ),
         "gazebo_sim_assembled": float(mass["gazebo_sim_assembled_compatibility"]["base_link_mass_kg"])
         + rotor_count * rotor_mass,
         "gazebo_sim_assembled_motor_test": float(

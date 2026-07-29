@@ -35,7 +35,7 @@ for name in ["RUNTIME_STATUS.json", "RUN_MANIFEST.json"]:
         continue
     data = json.loads(path.read_text(encoding="utf-8"))
     data["controller_runtime"] = "mworks_awff_equation_behavior_wrapper"
-    data["source_model"] = "Models/MoSimQuadrotorModel/Controllers/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo"
+    data["source_model"] = "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerEquation_Sysblock.mo"
     data["claim_boundary"] = [
         "MWORKS AWFF equation behavior wrapper drives Gazebo ControllerOutput in the same run",
         "hover trim and bounded delta scale are calibrated for the accepted Gazebo sunray150_assembled plant",

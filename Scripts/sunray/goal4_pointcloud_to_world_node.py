@@ -16,6 +16,12 @@ from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Header
 from tf.transformations import euler_from_quaternion, euler_matrix, quaternion_matrix
 
+from peer_airframe_filter import (
+    PeerOdomSample,
+    match_peer_airframe,
+    select_fresh_peer_filter_centers,
+)
+
 
 class PointCloudToWorld:
     def __init__(self) -> None:
@@ -32,6 +38,11 @@ class PointCloudToWorld:
         self.min_sensor_range_m = float(rospy.get_param("~min_sensor_range_m", 0.25))
         self.max_sensor_range_m = float(rospy.get_param("~max_sensor_range_m", 8.0))
         self.self_filter_radius_m = float(rospy.get_param("~self_filter_radius_m", 0.35))
+        self.peer_odom_topics = self._get_string_list("~peer_odom_topics", [])
+        self.peer_filter_radius_xy_m = float(rospy.get_param("~peer_filter_radius_xy_m", 0.0))
+        self.peer_filter_z_min_m = float(rospy.get_param("~peer_filter_z_min_m", -0.30))
+        self.peer_filter_z_max_m = float(rospy.get_param("~peer_filter_z_max_m", 0.30))
+        self.peer_odom_max_age_s = float(rospy.get_param("~peer_odom_max_age_s", 0.50))
         self.min_world_z_m = float(rospy.get_param("~min_world_z_m", 0.50))
         self.max_world_z_m = float(rospy.get_param("~max_world_z_m", 2.20))
         self.min_publish_points = int(rospy.get_param("~min_publish_points", 10))
@@ -53,6 +64,7 @@ class PointCloudToWorld:
         self.lock = threading.Lock()
         self.latest_odom: Odometry | None = None
         self.odom_buffer: deque[Odometry] = deque(maxlen=self.odom_buffer_size)
+        self.peer_odom_by_topic: dict[str, Odometry] = {}
         self.received = 0
         self.published = 0
         self.rejected_no_odom = 0
@@ -61,10 +73,15 @@ class PointCloudToWorld:
         self.warning_odom_gate = 0
         self.warning_attitude_gate = 0
         self.rejected_sparse_output = 0
+        self.peer_filtered_total = 0
+        self.peer_stale_samples_total = 0
+        self.peer_filtered_by_topic = {topic: 0 for topic in self.peer_odom_topics}
         self.last_stats = {}
         self.last_log_wall = 0.0
         self.pub = rospy.Publisher(self.output_topic, PointCloud2, queue_size=2)
         rospy.Subscriber(self.odom_topic, Odometry, self.on_odom, queue_size=20)
+        for topic in self.peer_odom_topics:
+            rospy.Subscriber(topic, Odometry, self.on_peer_odom, callback_args=topic, queue_size=20)
         rospy.Subscriber(self.input_topic, PointCloud2, self.on_cloud, queue_size=2)
 
     @staticmethod
@@ -77,14 +94,39 @@ class PointCloudToWorld:
             raise ValueError(f"{name} must have {length} values, got {value!r}")
         return out
 
+    @staticmethod
+    def _get_string_list(name: str, default: list[str]) -> list[str]:
+        value = rospy.get_param(name, default)
+        if isinstance(value, str):
+            value = [part.strip() for part in value.replace(";", ",").split(",")]
+        if not isinstance(value, (list, tuple)):
+            raise ValueError(f"{name} must be a comma-separated string or list, got {value!r}")
+        return list(dict.fromkeys(str(part).strip() for part in value if str(part).strip()))
+
     def on_odom(self, msg: Odometry) -> None:
         with self.lock:
             self.latest_odom = msg
             self.odom_buffer.append(msg)
 
+    def on_peer_odom(self, msg: Odometry, topic: str) -> None:
+        with self.lock:
+            self.peer_odom_by_topic[topic] = msg
+
     def on_cloud(self, msg: PointCloud2) -> None:
         with self.lock:
             odom, odom_selection = self._select_odom_locked(msg.header.stamp.to_sec())
+            peer_samples = {
+                topic: PeerOdomSample(
+                    topic=topic,
+                    center_xyz=(
+                        float(peer.pose.pose.position.x),
+                        float(peer.pose.pose.position.y),
+                        float(peer.pose.pose.position.z),
+                    ),
+                    stamp_s=peer.header.stamp.to_sec(),
+                )
+                for topic, peer in self.peer_odom_by_topic.items()
+            }
         self.received += 1
         stats = {
             "wall_time": time.time(),
@@ -97,6 +139,13 @@ class PointCloudToWorld:
             "near_sensor": 0,
             "far_sensor": 0,
             "self_filtered": 0,
+            "peer_filtered": 0,
+            "peer_filtered_by_topic": {topic: 0 for topic in self.peer_odom_topics},
+            "peer_filter_centers": [],
+            "peer_filter_stale_topics": [],
+            "peer_filter_radius_xy_m": self.peer_filter_radius_xy_m,
+            "peer_filter_z_range_m": [self.peer_filter_z_min_m, self.peer_filter_z_max_m],
+            "peer_odom_max_age_s": self.peer_odom_max_age_s,
             "z_filtered": 0,
             "world_z_low_filtered": 0,
             "world_z_high_filtered": 0,
@@ -133,6 +182,21 @@ class PointCloudToWorld:
         effective_rotation_mode, mat = self._rotation_matrix(odom_rpy, quat)
         tx, ty, tz = float(p.x), float(p.y), float(p.z)
         cloud_stamp = msg.header.stamp.to_sec()
+        peer_filter_centers, stale_peer_topics = select_fresh_peer_filter_centers(
+            peer_samples,
+            self.peer_odom_topics,
+            cloud_stamp,
+            self.peer_odom_max_age_s,
+        )
+        stats["peer_filter_centers"] = [
+            {
+                "topic": center.topic,
+                "center_xyz": list(center.center_xyz),
+                "stamp_delta_s": center.stamp_delta_s,
+            }
+            for center in peer_filter_centers
+        ]
+        stats["peer_filter_stale_topics"] = stale_peer_topics
         odom_stamp = odom.header.stamp.to_sec()
         cloud_odom_dt_s = None
         skip_stale_gate = bool(odom_selection.get("skip_stale_gate", False))
@@ -245,9 +309,28 @@ class PointCloudToWorld:
                 stats["z_filtered"] += 1
                 stats["world_z_high_filtered"] += 1
                 continue
+            peer_topic = match_peer_airframe(
+                (wx, wy, wz),
+                peer_filter_centers,
+                self.peer_filter_radius_xy_m,
+                self.peer_filter_z_min_m,
+                self.peer_filter_z_max_m,
+            )
+            if peer_topic is not None:
+                stats["peer_filtered"] += 1
+                stats["peer_filtered_by_topic"][peer_topic] += 1
+                continue
             points.append((wx, wy, wz))
             if 0 < self.max_points <= len(points):
                 break
+
+        self.peer_filtered_total += int(stats["peer_filtered"])
+        self.peer_stale_samples_total += len(stale_peer_topics)
+        for topic, count in stats["peer_filtered_by_topic"].items():
+            self.peer_filtered_by_topic[topic] += int(count)
+        stats["peer_filtered_total"] = self.peer_filtered_total
+        stats["peer_stale_samples_total"] = self.peer_stale_samples_total
+        stats["peer_filtered_by_topic_total"] = dict(self.peer_filtered_by_topic)
 
         if len(points) < self.min_publish_points:
             self.rejected_sparse_output += 1
@@ -407,11 +490,13 @@ class PointCloudToWorld:
             return
         self.last_log_wall = now
         rospy.loginfo(
-            "Goal4 pointcloud stats: input=%d near=%d far=%d self=%d z=%d published=%d mount=%s/%s rotation=%s/%s reject=%s",
+            "Goal4 pointcloud stats: input=%d near=%d far=%d self=%d peer=%d stale_peer=%d z=%d published=%d mount=%s/%s rotation=%s/%s reject=%s",
             stats.get("input_points", 0),
             stats.get("near_sensor", 0),
             stats.get("far_sensor", 0),
             stats.get("self_filtered", 0),
+            stats.get("peer_filtered", 0),
+            len(stats.get("peer_filter_stale_topics", [])),
             stats.get("z_filtered", 0),
             stats.get("published_points", 0),
             self.mount_mode,
@@ -453,7 +538,7 @@ def main() -> None:
         node.odom_topic,
     )
     rospy.loginfo(
-        "Goal4 pointcloud filters: mount_mode=%s rotation_mode=%s odom_sync=%s output_stamp=%s mount_xyz=%s mount_rpy=%s range=[%.3f, %.3f] self_radius=%.3f z=[%.3f, %.3f] odom_z=[%.3f, %.3f] max_abs_roll_pitch=%.1f min_publish=%d",
+        "Goal4 pointcloud filters: mount_mode=%s rotation_mode=%s odom_sync=%s output_stamp=%s mount_xyz=%s mount_rpy=%s range=[%.3f, %.3f] self_radius=%.3f peer_topics=%s peer_radius_xy=%.3f peer_z=[%.3f, %.3f] peer_max_age=%.3f z=[%.3f, %.3f] odom_z=[%.3f, %.3f] max_abs_roll_pitch=%.1f min_publish=%d",
         node.mount_mode,
         node.rotation_mode,
         node.odom_sync_mode,
@@ -463,6 +548,11 @@ def main() -> None:
         node.min_sensor_range_m,
         node.max_sensor_range_m,
         node.self_filter_radius_m,
+        node.peer_odom_topics,
+        node.peer_filter_radius_xy_m,
+        node.peer_filter_z_min_m,
+        node.peer_filter_z_max_m,
+        node.peer_odom_max_age_s,
         node.min_world_z_m,
         node.max_world_z_m,
         node.min_odom_z_m,

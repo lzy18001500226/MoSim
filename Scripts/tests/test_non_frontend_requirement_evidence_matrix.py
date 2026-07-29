@@ -22,8 +22,8 @@ def test_current_authorities_and_claim_boundaries() -> None:
     matrix = builder.build_matrix()
     assert matrix["controller_matrix_counts"] == {
         "accepted": 27,
-        "executed_blocked": 25,
-        "not_run": 15,
+        "executed_blocked": 33,
+        "not_run": 7,
     }
     assert matrix["final_ab_counts"] == {
         "accepted": 1,

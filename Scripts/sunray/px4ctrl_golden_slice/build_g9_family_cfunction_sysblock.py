@@ -101,6 +101,24 @@ INPUTS = [
     "nmpc_increment_limit_x",
     "nmpc_increment_limit_y",
     "nmpc_increment_limit_z",
+    "high_order_body_rate_limit_x",
+    "high_order_body_rate_limit_y",
+    "high_order_body_rate_limit_z",
+    "high_order_body_accel_limit_x",
+    "high_order_body_accel_limit_y",
+    "high_order_body_accel_limit_z",
+    "smooth_feedback_gain_x",
+    "smooth_feedback_gain_y",
+    "smooth_feedback_gain_z",
+    "smooth_feedback_bound_x",
+    "smooth_feedback_bound_y",
+    "smooth_feedback_bound_z",
+    "disturbance_observer_gain_x",
+    "disturbance_observer_gain_y",
+    "disturbance_observer_gain_z",
+    "disturbance_compensation_limit_x",
+    "disturbance_compensation_limit_y",
+    "disturbance_compensation_limit_z",
     "l1_model_decay",
     "l1_filter_T",
     "l1_gain_x",
@@ -211,16 +229,20 @@ def port_labels(names: list[str]) -> str:
     return ",".join(f'label(text="{name}",instance="{name}")' for name in names)
 
 
-def inport_decl(name: str, index: int) -> str:
-    y = 250 - index * 7
+def port_y(index: int, count: int, span: float) -> float:
+    return span / 2.0 - index * span / max(count - 1, 1)
+
+
+def inport_decl(name: str, index: int, count: int, span: float) -> str:
+    y = port_y(index, count, span)
     return f'''  SysplorerEmbeddedCoder.Port.Inport {name}_in
-    annotation (Placement(transformation(origin={{-300,{y}}},extent={{{{-8,-8}},{{8,8}}}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));'''
+    annotation (Placement(transformation(origin={{-500,{y:.2f}}},extent={{{{-8,-8}},{{8,8}}}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));'''
 
 
-def outport_decl(name: str, index: int) -> str:
-    y = 160 - index * 9
+def outport_decl(name: str, index: int, count: int, span: float) -> str:
+    y = port_y(index, count, span)
     return f'''  SysplorerEmbeddedCoder.Port.Outport {name}_out
-    annotation (Placement(transformation(origin={{300,{y}}},extent={{{{-8,-8}},{{8,8}}}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));'''
+    annotation (Placement(transformation(origin={{500,{y:.2f}}},extent={{{{-8,-8}},{{8,8}}}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));'''
 
 
 def cfunction_port_decl(direction: str, name: str) -> str:
@@ -233,22 +255,35 @@ def function_arg_decl(direction: str, name: str) -> str:
     return f'''      {direction} SysplorerEmbeddedCoder.Types.Auto {name} annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)));'''
 
 
-def connect_line(src: str, dst: str, index: int) -> str:
-    y = 250 - index * 6
-    return f'''  connect({src}, {dst}) annotation(Line(origin={{0,0}},points={{{{-250,{y}}},{{-50,{y}}}}},color={{0,0,0}}));'''
+def connect_line(src: str, dst: str, index: int, count: int, span: float) -> str:
+    y = port_y(index, count, span)
+    return f'''  connect({src}, {dst}) annotation(Line(points={{{{-492,{y:.2f}}},{{-80,{y:.2f}}}}},color={{0,0,127}}));'''
 
 
-def output_connect_line(src: str, dst: str, index: int) -> str:
-    y = 160 - index * 7
-    return f'''  connect({src}, {dst}) annotation(Line(origin={{0,0}},points={{{{50,{y}}},{{250,{y}}}}},color={{0,0,0}}));'''
+def output_connect_line(src: str, dst: str, index: int, count: int, span: float) -> str:
+    y = port_y(index, count, span)
+    return f'''  connect({src}, {dst}) annotation(Line(points={{{{80,{y:.2f}}},{{492,{y:.2f}}}}},color={{0,0,127}}));'''
 
 
-def build_model(model_name: str, out_dir: Path, include_code: str, real_as_float: bool) -> str:
+def build_model(
+    model_name: str,
+    out_dir: Path,
+    include_code: str,
+    real_as_float: bool,
+    external_function: str = "MosimPx4ctrlG9FamilyCStepScalar",
+) -> str:
     input_ports = INPUTS
     output_ports = OUTPUTS
+    diagram_span = float(max(len(input_ports) - 1, len(output_ports) - 1, 25) * 24)
+    diagram_half_height = diagram_span / 2.0 + 60.0
+    block_half_height = diagram_span / 2.0
+    diagram_bottom = -diagram_half_height
+    block_bottom = -block_half_height
+    diagram_extent = "{{-620," + f"{diagram_bottom:.2f}" + "},{620," + f"{diagram_half_height:.2f}" + "}}"
+    block_extent = "{{-80," + f"{block_bottom:.2f}" + "},{80," + f"{block_half_height:.2f}" + "}}"
     all_c_ports = input_ports + output_ports
     external_call = (
-        "MosimPx4ctrlG9FamilyCStepScalar("
+        external_function + "("
         + ",".join(input_ports + output_ports)
         + ")"
     )
@@ -260,12 +295,12 @@ def build_model(model_name: str, out_dir: Path, include_code: str, real_as_float
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(modelType=Control,PortArrangement(Left({port_arrangement([name + "_in" for name in input_ports])}), Right({port_arrangement([name + "_out" for name in output_ports])})),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0",version="26.3.0",CodeGeneration(Config = {{"code_placement":{{"mode":"Compact"}},"code_replacement":{{"standard_c_library":"C99"}},"custom_code":{{"code":{{"function_declare":{{"head":"","item_head":"","item_tail":"","tail":""}},"function_define":{{"head":"","item_head":"","item_tail":"","tail":""}},"global_variable_declare":{{"head":"","item_head":"","item_tail":"","tail":""}},"global_variable_define":{{"head":"","item_head":"","item_tail":"","tail":""}},"include":{{"head":"","item_head":"","item_tail":"","tail":""}},"macro":{{"head":"","item_head":"","item_tail":"","tail":""}},"type":{{"head":"","item_head":"","item_tail":"","tail":""}}}},"code_protection":{{"integer_division_by_zero":false,"overflow":false}}}},"data_type":{{"real_as_float":{real_as_float_literal}}},"experiment":{{"task_and_sample":{{"muti_task_mode":false,"whether_to_use_prefix":false}}}},"hardware_platform":{{"largest_atomic_size":{{"floating_point":"{floating_point_bits}","integer":"32"}}}},"identifier":{{"max_length":32,"style":{{"function":"camelCase","local_variable":"camelCase","macro":"camelCase","mem_var":"camelCase","type":"camelCase"}}}},"interface":{{"function_name":{{"initialize":"Init","step":"Step"}}}},"is_expand":{{"is_expand":false}},"optimization":{{"array_loop_threshold":5,"logical_operator":"logical"}}}}, Sim_seting = {{"sim_seting":{{"output":"{modelica_escape(str(out_dir))}"}}}})),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(DoublePrecision={double_precision_literal},Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.03,StoreEventValue=0),Diagram(coordinateSystem(extent={{{{-340,-620}},{{340,280}}}},grid={{2,2}})));
+  annotation(__MWORKS(modelType=Control,PortArrangement(Left({port_arrangement([name + "_in" for name in input_ports])}), Right({port_arrangement([name + "_out" for name in output_ports])})),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0",version="26.3.0",CodeGeneration(Config = {{"code_placement":{{"mode":"Compact"}},"code_replacement":{{"standard_c_library":"C99"}},"custom_code":{{"code":{{"function_declare":{{"head":"","item_head":"","item_tail":"","tail":""}},"function_define":{{"head":"","item_head":"","item_tail":"","tail":""}},"global_variable_declare":{{"head":"","item_head":"","item_tail":"","tail":""}},"global_variable_define":{{"head":"","item_head":"","item_tail":"","tail":""}},"include":{{"head":"","item_head":"","item_tail":"","tail":""}},"macro":{{"head":"","item_head":"","item_tail":"","tail":""}},"type":{{"head":"","item_head":"","item_tail":"","tail":""}}}},"code_protection":{{"integer_division_by_zero":false,"overflow":false}}}},"data_type":{{"real_as_float":{real_as_float_literal}}},"experiment":{{"task_and_sample":{{"muti_task_mode":false,"whether_to_use_prefix":false}}}},"hardware_platform":{{"largest_atomic_size":{{"floating_point":"{floating_point_bits}","integer":"32"}}}},"identifier":{{"max_length":32,"style":{{"function":"camelCase","local_variable":"camelCase","macro":"camelCase","mem_var":"camelCase","type":"camelCase"}}}},"interface":{{"function_name":{{"initialize":"Init","step":"Step"}}}},"is_expand":{{"is_expand":false}},"optimization":{{"array_loop_threshold":5,"logical_operator":"logical"}}}}, Sim_seting = {{"sim_seting":{{"output":"{modelica_escape(str(out_dir))}"}}}})),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(DoublePrecision={double_precision_literal},Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.03,StoreEventValue=0),Diagram(coordinateSystem(extent={diagram_extent},grid={{2,2}})));
 
   CFunction cFunction
-    annotation (Placement(transformation(origin={{0,0}}, extent={{{{-28,-20}},{{28,20}}}})),__MWORKS(BlockSystem(SampleTime(group="D1")=0.01)));
-{chr(10).join(inport_decl(name, index) for index, name in enumerate(input_ports))}
-{chr(10).join(outport_decl(name, index) for index, name in enumerate(output_ports))}
+    annotation (Placement(transformation(origin={{0,0}}, extent={block_extent})),__MWORKS(BlockSystem(SampleTime(group="D1")=0.01)));
+{chr(10).join(inport_decl(name, index, len(input_ports), diagram_span) for index, name in enumerate(input_ports))}
+{chr(10).join(outport_decl(name, index, len(output_ports), diagram_span) for index, name in enumerate(output_ports))}
 
   model ModelWorkspace
     annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
@@ -290,8 +325,8 @@ def build_model(model_name: str, out_dir: Path, include_code: str, real_as_float
   end CFunction;
 
 equation
-{chr(10).join(connect_line(name + "_in", "cFunction." + name, index) for index, name in enumerate(input_ports))}
-{chr(10).join(output_connect_line("cFunction." + name, name + "_out", index) for index, name in enumerate(output_ports))}
+{chr(10).join(connect_line(name + "_in", "cFunction." + name, index, len(input_ports), diagram_span) for index, name in enumerate(input_ports))}
+{chr(10).join(output_connect_line("cFunction." + name, name + "_out", index, len(output_ports), diagram_span) for index, name in enumerate(output_ports))}
 end {model_name};
 '''
 
@@ -363,6 +398,8 @@ def main() -> int:
                 "7": "l1_awff",
                 "8": "safety_filter",
                 "9": "fault_allocation",
+                "10": "dfbc_high_order",
+                "11": "dfbc_smooth_robust",
             },
         },
         "claim_boundary": "Generated .mo source only. CheckModel and GenerateModelCode are separate gates.",

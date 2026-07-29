@@ -55,7 +55,7 @@ public:
     FVector MapActorLocation = FVector::ZeroVector;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer")
-    FVector PlaybackActorLocation = FVector(0.0, 0.0, 150.0);
+    FVector PlaybackActorLocation = FVector(0.0, 0.0, 20.0);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS Renderer")
     int32 PlaybackActorCount = 1;
@@ -107,6 +107,7 @@ private:
     void DrawFactoryCalibrationFrame(UWorld* World) const;
     void LoadFactoryGazeboOverlay();
     void DrawFactoryGazeboOverlay(UWorld* World) const;
+    void WriteFrameTimingMetrics(double WindowSeconds);
 
     UPROPERTY()
     ADirectionalLight* SpawnedReviewSunLight = nullptr;
@@ -133,4 +134,12 @@ private:
     FString FactoryGazeboOverlayCsvPath;
     float FactoryGazeboOverlayZOffsetCm = 20.0f;
     TArray<FMoSimFactoryOverlayPoint> FactoryGazeboOverlayPoints;
+    FString ObservabilityRunId;
+    FString UeReceiverMetricsOutputPath;
+    FString UeFrameMetricsOutputPath;
+    double FrameMetricsWindowStartSeconds = 0.0;
+    double FrameMetricsTotalSeconds = 0.0;
+    double FrameMetricsMaxSeconds = 0.0;
+    int32 FrameMetricsCount = 0;
+    int32 FrameMetricsHitchCount = 0;
 };

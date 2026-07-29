@@ -8,12 +8,21 @@
 
   <license>TODO</license>
 
-  <build_depend>message_generation</build_depend>
-  <exec_depend>message_runtime</exec_depend>
   <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>std_msgs</build_depend>
-  <build_export_depend>std_msgs</build_export_depend>
-  <exec_depend>std_msgs</exec_depend>
+  <depend>geographiclib</depend>
+  <depend>geometry_msgs</depend>
+  <depend>mavros_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>roscpp</depend>
+  <depend>rospy</depend>
+  <depend>sensor_msgs</depend>
+  <depend>std_msgs</depend>
+  <depend>std_srvs</depend>
+  <depend>sunray_msgs</depend>
+  <depend>tf</depend>
+  <depend>tf2_eigen</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>tf2_ros</depend>
   
   <export>
     <!-- Other tools can request additional information be placed here -->

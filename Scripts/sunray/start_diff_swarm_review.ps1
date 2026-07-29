@@ -100,4 +100,4 @@ Write-Host ("ProcessId: " + $proc.Id)
 Write-Host ("Result: " + $ResultDirWin)
 Write-Host ""
 Write-Host "This opens two RViz windows and keeps Gazebo/ROS/RViz alive for review."
-Write-Host "Use 关闭所有RViz窗口.cmd when you only need to close RViz windows."
+Write-Host "Use cmd/关闭所有RViz窗口.cmd when you only need to close RViz windows."
