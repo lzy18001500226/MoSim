@@ -1,0 +1,69 @@
+[submodule "Tools/simulation/gz"]
+	path = Tools/simulation/gz
+	url = https://gitee.com/yundrone/PX4-gazebo-models.git
+[submodule "boards/modalai/voxl2/libfc-sensor-api"]
+	path = boards/modalai/voxl2/libfc-sensor-api
+	url = https://gitlab.com/voxl-public/voxl-sdk/core-libs/libfc-sensor-api.git
+[submodule "platforms/nuttx/NuttX/apps"]
+	path = platforms/nuttx/NuttX/apps
+	url = https://gitee.com/yundrone/NuttX-apps.git
+[submodule "src/drivers/cyphal/legacy_data_types"]
+	path = src/drivers/cyphal/legacy_data_types
+	url = https://gitee.com/yundrone/px4_public_regulated_data_types.git
+[submodule "src/drivers/cyphal/libcanard"]
+	path = src/drivers/cyphal/libcanard
+	url = https://gitee.com/yundrone/libcanard.git
+[submodule "src/drivers/gps/devices"]
+	path = src/drivers/gps/devices
+	url = https://gitee.com/yundrone/PX4-GPSDrivers.git
+[submodule "src/lib/crypto/monocypher"]
+	path = src/lib/crypto/monocypher
+	url = https://gitee.com/yundrone/Monocypher.git
+[submodule "src/lib/heatshrink/heatshrink"]
+	path = src/lib/heatshrink/heatshrink
+	url = https://gitee.com/yundrone/heatshrink.git
+[submodule "src/modules/zenoh/zenoh-pico"]
+	path = src/modules/zenoh/zenoh-pico
+	url = https://gitee.com/yundrone/zenoh-pico.git
+[submodule "src/lib/cdrstream/cyclonedds"]
+	path = src/lib/cdrstream/cyclonedds
+	url = https://gitee.com/yundrone/cyclonedds.git
+[submodule "src/lib/cdrstream/rosidl"]
+	path = src/lib/cdrstream/rosidl
+	url = https://gitee.com/yundrone/rosidl.git
+[submodule "src/lib/crypto/libtomcrypt"]
+	path = src/lib/crypto/libtomcrypt
+	url = https://gitee.com/yundrone/libtomcrypt.git
+[submodule "platforms/nuttx/NuttX/nuttx"]
+	path = platforms/nuttx/NuttX/nuttx
+	url = https://gitee.com/yundrone/NuttX.git
+[submodule "src/lib/crypto/libtommath"]
+	path = src/lib/crypto/libtommath
+	url = https://gitee.com/yundrone/libtommath.git
+[submodule "src/drivers/cyphal/public_regulated_data_types"]
+	path = src/drivers/cyphal/public_regulated_data_types
+	url = https://gitee.com/yundrone/public_regulated_data_types.git
+[submodule "src/modules/mavlink/mavlink"]
+	path = src/modules/mavlink/mavlink
+	url = https://gitee.com/yundrone/mavlink.git
+[submodule "Tools/simulation/flightgear/flightgear_bridge"]
+	path = Tools/simulation/flightgear/flightgear_bridge
+	url = https://gitee.com/yundrone/PX4-FlightGear-Bridge.git
+[submodule "Tools/simulation/jmavsim/jMAVSim"]
+	path = Tools/simulation/jmavsim/jMAVSim
+	url = https://gitee.com/yundrone/jMAVSim.git
+[submodule "Tools/simulation/jsbsim/jsbsim_bridge"]
+	path = Tools/simulation/jsbsim/jsbsim_bridge
+	url = https://gitee.com/yundrone/px4-jsbsim-bridge.git
+[submodule "src/drivers/uavcan/libuavcan"]
+	path = src/drivers/uavcan/libuavcan
+	url = https://gitee.com/yundrone/libuavcan.git
+[submodule "src/lib/events/libevents"]
+	path = src/lib/events/libevents
+	url = https://gitee.com/yundrone/libevents.git
+[submodule "Tools/simulation/gazebo-classic/sitl_gazebo-classic"]
+	path = Tools/simulation/gazebo-classic/sitl_gazebo-classic
+	url = https://gitee.com/yundrone/PX4-SITL_gazebo-classic.git
+[submodule "src/modules/uxrce_dds_client/Micro-XRCE-DDS-Client"]
+	path = src/modules/uxrce_dds_client/Micro-XRCE-DDS-Client
+	url = https://gitee.com/yundrone/Micro-XRCE-DDS-Client.git
