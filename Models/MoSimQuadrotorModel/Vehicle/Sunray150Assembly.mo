@@ -45,6 +45,8 @@ model Sunray150Assembly
     fault_rotor_index = fault_rotor_index,
     fault_rotor_effectiveness = fault_rotor_effectiveness);
   MoSimQuadrotorModel.Vehicle.Sensors.Sensors sensors;
+  MoSimQuadrotorModel.Vehicle.Sunray150VisualShell visual_shell(profile = profile)
+    "Massless body and propeller visuals for native formal-runner animation";
   Modelica.Mechanics.MultiBody.Forces.WorldForce gust(
     resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.world,
     animation = false);
@@ -59,6 +61,8 @@ equation
 
   connect(gust.frame_b, physical.body.frame_a);
   connect(physical.body.frame_a, sensors.frame_a);
+  connect(physical.body.frame_a, visual_shell.frame_a);
+  connect(rotor_speed, visual_shell.rotor_speed);
 
   for i in 1:4 loop
     physical.wrapper.motor_command[i] = rotor_command[i];
