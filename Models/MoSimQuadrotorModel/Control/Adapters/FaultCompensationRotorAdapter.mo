@@ -16,7 +16,7 @@ equation
   core.yaw_mea = attitude_mea[3];
   core.yaw_ref = 0;
   rotor_command = {hover_speed + command_scale * core.y,
-    hover_speed - command_scale * core.y1,
+    -hover_speed + command_scale * core.y1,
     hover_speed + command_scale * core.y2,
-    hover_speed - command_scale * core.y3};
+    -hover_speed + command_scale * core.y3};
 end FaultCompensationRotorAdapter;

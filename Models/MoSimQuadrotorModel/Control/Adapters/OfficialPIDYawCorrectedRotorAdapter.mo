@@ -34,8 +34,7 @@ equation
   for i in 1:4 loop
     non_yaw_amplitude[i] = amplitude_command[i] - yaw_component;
     unclamped_rotor_command[i] = profile.mworks_spin_command_sign[i]
-      * (hover_speed + command_scale * non_yaw_amplitude[i])
-      - command_scale * yaw_component;
+      * (hover_speed + command_scale * (non_yaw_amplitude[i] + yaw_component));
     rotor_command[i] = min(max(unclamped_rotor_command[i], -maximum_rotor_speed), maximum_rotor_speed);
     command_limit_residual[i] = unclamped_rotor_command[i] - rotor_command[i];
   end for;
