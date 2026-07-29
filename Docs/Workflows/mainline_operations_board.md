@@ -198,10 +198,18 @@ Codex assistance. This does not supersede or broaden MWORKS G3.
   state, Gazebo truth agreement, PX4 ULog fields, and no-flight contract all
   passed after a 90.11 s observed capture. The shorter `_006` capture remains
   diagnostic trace-back only.
-- The current gate is single-aircraft takeoff-hover-land. It must retain the
-  locked virtual parameter contract and native Sunray/PX4/MAVROS/px4ctrl path,
-  record takeoff, steady-hover, landing, safety, and teardown evidence, and
-  leave an explicit `passed` or `blocked` result before FUEL/replay begins.
+- P3 has an explicit quality-blocked result at
+  `Results/sunray_ros1/p3_runtime_closeout_20260730/P3_RUNTIME_STATUS.json`.
+  Its functional subgate is complete: the project-local px4ctrl chain armed,
+  took off, hovered, landed, and disarmed, while the bounded rotor-1
+  efficiency `0.85` request was physically acknowledged by the Gazebo actuator
+  plugin without controller override. Both P3 captures exceed the frozen
+  hover/local-state quality thresholds, so this is not controller-performance
+  or fault-tolerance acceptance.
+- The current executable gate is P4: UE one-way display and rosbag replay.
+  It may proceed as a separate reproducibility/display evidence lane after the
+  explicit P3 blocker, but cannot rehabilitate the P3 quality result or be
+  cited as controller, planner, or runtime-performance success.
 - Each terminal subgate records a bounded result directory and triggers one
   concise Chinese email. Every successful path must later receive a cold-start,
   stop, recording, replay, and troubleshooting check plus a path-limited Git

@@ -66,10 +66,13 @@ current `Ubuntu-20.04 / ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS /
 px4ctrl / RViz` lane. Its no-flight GPS/EKF state-chain gate passed at
 `Results/sunray_ros1/sunray_ros1_gps_state_chain_20260729_007/` with a
 90.11 s actual capture, valid MAVROS/PX4/Gazebo evidence, and no arming or
-mission publication. The next executable gate is single-aircraft
-takeoff-hover-land, followed serially by FUEL/replay, three-aircraft formation
-baseline, and native Diff-Swarm. Do not treat this authorization as
-controller-performance, MWORKS deployment, QGC, or UE evidence.
+mission publication. P3 then completed its local-source functional lifecycle
+and bounded physical motor-efficiency acknowledgement, but its frozen
+hover/local-state quality gate remains blocked; see
+`Results/sunray_ros1/p3_runtime_closeout_20260730/P3_RUNTIME_STATUS.json`.
+The next executable gate is P4 UE one-way display and rosbag replay. It is
+display/reproducibility evidence only and cannot be presented as P3 controller
+performance, fault-tolerance, MWORKS deployment, QGC, or UE control evidence.
 
 The six-candidate recovery record at
 `Results/control_platform/champion_candidate_recovery_20260727/` predates the
