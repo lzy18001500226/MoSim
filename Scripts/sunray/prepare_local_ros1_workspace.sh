@@ -111,10 +111,14 @@ def collect(profile_id):
     visited.add(profile_id)
     profile = profiles[profile_id]
     links = []
+    build_packages = []
     if "extends" in profile:
-        links.extend(collect(profile["extends"])[0])
+        parent_links, parent_packages = collect(profile["extends"])
+        links.extend(parent_links)
+        build_packages.extend(parent_packages)
     links.extend(profile.get("links", []))
-    return links, profile.get("build_packages", [])
+    build_packages.extend(profile.get("build_packages", []))
+    return links, build_packages
 
 links, packages = collect(requested_profile)
 seen_paths = set()
@@ -125,7 +129,7 @@ for link in links:
         raise SystemExit(f"duplicate workspace link: {workspace_path}")
     seen_paths.add(workspace_path)
     print(f"LINK\t{workspace_path}\t{source_path}")
-for package in packages:
+for package in dict.fromkeys(packages):
     print(f"PACKAGE\t{package}")
 PY
 )
