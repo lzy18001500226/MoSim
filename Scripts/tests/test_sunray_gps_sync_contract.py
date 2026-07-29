@@ -11,10 +11,10 @@ ROOT = Path(__file__).resolve().parents[2]
 SYNC_PATH = ROOT / "Scripts" / "sunray" / "sync_assembled_model_into_sunray_ros1.py"
 SUNRAY_MODEL_ROOT = (
     ROOT
-    / "References"
-    / "Sunray"
+    / "src"
     / "simulation"
-    / "sunray_simulator"
+    / "gazebo"
+    / "sunray"
     / "models"
     / "drone_models"
     / "sunray150_with_mid360"

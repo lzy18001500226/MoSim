@@ -11,6 +11,13 @@ ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = ROOT / "Config" / "runtime" / "ros1_local_source_manifest.v1.json"
 SCRIPT_PATH = ROOT / "Scripts" / "sunray" / "prepare_local_ros1_workspace.sh"
 PX4_BUILD_SCRIPT_PATH = ROOT / "Scripts" / "sunray" / "build_local_px4_sitl.sh"
+RUNTIME_RESOLVER_PATH = ROOT / "Scripts" / "sunray" / "resolve_local_ros1_runtime.sh"
+RUNTIME_OVERLAY_SCRIPT_PATH = (
+    ROOT / "Scripts" / "sunray" / "prepare_local_ros1_runtime_overlay.sh"
+)
+BASIC_GATE_SCRIPT_PATH = ROOT / "Scripts" / "sunray" / "run_px4ctrl_basic_gate.sh"
+PREFLIGHT_SCRIPT_PATH = ROOT / "Scripts" / "sunray" / "check_sunray_ros1_runtime_preflight.sh"
+ORCHESTRATOR_RUNTIME_PATH = ROOT / "Scripts" / "ui" / "run_orchestrated_runtime.sh"
 
 
 class LocalRos1SourceWorkspaceContractTest(unittest.TestCase):
@@ -85,6 +92,67 @@ class LocalRos1SourceWorkspaceContractTest(unittest.TestCase):
         self.assertNotIn("References/", script)
         self.assertNotIn("/opt/mosim_work", script)
         self.assertNotIn("Results/", script)
+
+    def test_runtime_resolver_uses_only_src_and_build_roots(self) -> None:
+        script = RUNTIME_RESOLVER_PATH.read_text(encoding="utf-8")
+
+        self.assertIn("build/ros1/local_source_ws", script)
+        self.assertIn("build/ros1/runtime_overlays", script)
+        self.assertIn("src/flight_stack/px4/PX4-Autopilot", script)
+        self.assertIn("build/px4/px4_sitl_default", script)
+        self.assertIn("build/ros1/ftc_actuator_plugin_ws", script)
+        self.assertNotIn("References/", script)
+        self.assertNotIn("/opt/mosim_work", script)
+        self.assertNotIn("Results/", script)
+
+    def test_runtime_overlay_is_managed_and_only_materializes_src_inputs(self) -> None:
+        script = RUNTIME_OVERLAY_SCRIPT_PATH.read_text(encoding="utf-8")
+
+        self.assertIn("build/ros1/runtime_overlays", script)
+        self.assertIn("src/simulation/gazebo/sunray", script)
+        self.assertIn("src/flight_stack/mavros/sunray_uav_control", script)
+        self.assertIn("runtime_overlay_manifest.json", script)
+        self.assertIn("runtime overlay must remain below", script)
+        self.assertIn('"source_input_root": "src"', script)
+        self.assertNotIn("References/", script)
+        self.assertNotIn("/opt/mosim_work", script)
+        self.assertNotIn("Results/", script)
+
+    def test_single_aircraft_gate_uses_the_local_runtime_contract(self) -> None:
+        script = BASIC_GATE_SCRIPT_PATH.read_text(encoding="utf-8")
+
+        self.assertIn("resolve_local_ros1_runtime.sh", script)
+        self.assertIn("prepare_local_ros1_runtime_overlay.sh", script)
+        self.assertIn("--workspace \"${SUNRAY_WS}\"", script)
+        self.assertIn("${LOCAL_ROS1_WS}/devel/setup.bash", script)
+        self.assertIn("${PX4_BUILD_DIR}/bin/px4", script)
+        self.assertIn("src/control/runtime_adapters/px4ctrl", script)
+        self.assertNotIn("References/", script)
+        self.assertNotIn("/opt/mosim_work", script)
+        self.assertNotIn("px4ctrl_source_audit", script)
+        self.assertNotIn("sunray_livox_plugin_ws", script)
+
+    def test_preflight_uses_source_built_packages(self) -> None:
+        script = PREFLIGHT_SCRIPT_PATH.read_text(encoding="utf-8")
+
+        self.assertIn("resolve_local_ros1_runtime.sh", script)
+        self.assertIn("src/simulation/gazebo/sunray", script)
+        self.assertIn("src/flight_stack/mavros/sunray_uav_control", script)
+        self.assertIn("src/perception/fast_lio", script)
+        self.assertIn("${LOCAL_ROS1_WS}/devel/setup.bash", script)
+        self.assertIn("${PX4_BUILD_DIR}", script)
+        self.assertNotIn("References/", script)
+        self.assertNotIn("/opt/mosim_work", script)
+        self.assertNotIn("Results/", script)
+
+    def test_orchestrated_basic_runtime_reuses_the_local_sidecar_environment(self) -> None:
+        script = ORCHESTRATOR_RUNTIME_PATH.read_text(encoding="utf-8")
+        sidecar_block = script.split("start_sidecar()", 1)[1].split("wait_for_runtime_ready()", 1)[0]
+
+        self.assertIn("resolve_local_ros1_runtime.sh", script)
+        self.assertIn("${LOCAL_ROS1_WS}/devel/setup.bash", sidecar_block)
+        self.assertNotIn("px4ctrl_source_audit", sidecar_block)
+        self.assertNotIn("/opt/mosim_work", sidecar_block)
 
     def test_px4_snapshot_contains_the_required_classic_sitl_sources(self) -> None:
         px4 = ROOT / "src" / "flight_stack" / "px4" / "PX4-Autopilot"
