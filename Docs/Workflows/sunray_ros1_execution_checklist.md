@@ -71,8 +71,8 @@ Failure classification:
 |---|---|---|
 | `lsb_release -rs` is not `20.04`, `/opt/ros/noetic/setup.bash` is missing, or `/usr/share/gazebo/setup.sh` is missing | wrong distro/runtime entry | stop; relaunch through `wsl -d Ubuntu-20.04`; do not debug planner/controller/plugin parameters |
 | `gzserver --version` is unavailable or does not report Gazebo Classic | wrong Gazebo runtime | stop; this is not a Sunray ROS1 lane run |
-| `/opt/mosim_work/sunray_ws/Sunray` or PX4 SITL paths are missing | runtime workspace blocker | stop and repair the Sunray/PX4 workspace; do not substitute ROS2/x500 |
-| `/opt/mosim_work/sunray_ws/Sunray/simulation/gazebo_plugin/livox_laser_simulation` is missing but `References/Sunray/simulation/gazebo_plugin/livox_laser_simulation` exists | plugin source path drift | use the repo-local source and project-local `Results/sunray_ros1/workspaces/sunray_livox_plugin_ws` build route |
+| `src/simulation/gazebo/sunray`, `src/flight_stack/px4/PX4-Autopilot`, or the corresponding `build/` output is missing | local source/build blocker | stop and repair the project-local source or generated build workspace; do not substitute ROS2/x500 or an old WSL workspace |
+| `src/simulation/gazebo/plugins/sunray/livox_laser_simulation` exists but `build/ros1/local_source_ws/devel/lib/liblivox_laser_simulation.so` is missing | plugin build blocker | use the source-local `--build-livox` preflight route; do not use a prior `Results/` workspace |
 | `liblivox_laser_simulation.so` is missing | plugin overlay blocker | run the explicit `--build-livox` preflight or return a blocker |
 
 For a live Sunray/Gazebo/RViz run, verify the selected script and expected
