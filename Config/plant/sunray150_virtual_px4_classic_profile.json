@@ -58,12 +58,29 @@
         "camera_sensor_model_count": 2,
         "closure": "0.953 + 0.015 + 4 * 0.005 + 0.010 + 2 * 0.001 = 1.000 kg"
       },
+      "nested_mid360_gps": {
+        "base_link_mass_kg": 0.938,
+        "flight_imu_mass_kg": 0.015,
+        "mid360_nested_model_mass_kg": 0.01,
+        "gps_nested_model_mass_kg": 0.015,
+        "camera_sensor_model_mass_kg_each": 0.001,
+        "camera_sensor_model_count": 2,
+        "closure": "0.938 + 0.015 + 4 * 0.005 + 0.010 + 0.015 + 2 * 0.001 = 1.000 kg"
+      },
       "inline_mid360": {
         "base_link_mass_kg": 0.963,
         "flight_imu_mass_kg": 0.015,
         "camera_sensor_model_mass_kg_each": 0.001,
         "camera_sensor_model_count": 2,
         "closure": "0.963 + 0.015 + 4 * 0.005 + 2 * 0.001 = 1.000 kg"
+      },
+      "inline_mid360_gps": {
+        "base_link_mass_kg": 0.948,
+        "flight_imu_mass_kg": 0.015,
+        "gps_inline_model_mass_kg": 0.015,
+        "camera_sensor_model_mass_kg_each": 0.001,
+        "camera_sensor_model_count": 2,
+        "closure": "0.948 + 0.015 + 4 * 0.005 + 0.015 + 2 * 0.001 = 1.000 kg"
       }
     },
     "gazebo_sim_assembled_compatibility": {

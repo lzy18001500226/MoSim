@@ -25,11 +25,18 @@ mesh is not used.  The MID360 sensor source can be selected with
     Restore the original Sunray nested ``model://livox_mid360`` sensor model
     with a fixed joint, while keeping the default sensor shell mesh deleted.
     This is the current default for Sunray ROS1 MID360/FAST-LIO review.
+
+GPS can be selected with ``SUNRAY_GPS_SENSOR_MODE``.  ``nested`` restores the
+upstream PX4 Gazebo Classic ``model://gps`` / ``gps0_joint`` contract and is
+the only GPS mode admitted to the current PX4 EKF state-chain gate.  ``inline``
+is retained only for historical diagnostics; ``removed`` remains the default
+for paths that intentionally use external fusion instead of GPS.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -43,6 +50,7 @@ PROJECT_ROOT_DEFAULT = Path("/mnt/c/Users/HP/Desktop/MoSim")
 SUNRAY_WS_DEFAULT = Path("/tmp/mosim_sunray_build_20260620_114615/Sunray")
 LOCAL_PROJECT_ROOT = Path(__file__).resolve().parents[2]
 VIRTUAL_PROFILE_RELATIVE_PATH = Path("Config/plant/sunray150_virtual_px4_classic_profile.json")
+MAVROS_PLUGINLIST_RELATIVE_PATH = Path("Config/gazebo/mavros/px4_pluginlists.yaml")
 
 
 BODY_VISUAL = """      <visual name='base_link_assembled_visual'>
@@ -90,7 +98,7 @@ SUNRAY_MAVLINK_INTERFACE_MODE = os.environ.get("SUNRAY_MAVLINK_INTERFACE_MODE", 
 if SUNRAY_MAVLINK_INTERFACE_MODE not in {"enabled", "disabled"}:
     raise RuntimeError(f"unsupported SUNRAY_MAVLINK_INTERFACE_MODE={SUNRAY_MAVLINK_INTERFACE_MODE!r}")
 SUNRAY_GPS_SENSOR_MODE = os.environ.get("SUNRAY_GPS_SENSOR_MODE", "removed").strip().lower()
-if SUNRAY_GPS_SENSOR_MODE not in {"removed", "inline"}:
+if SUNRAY_GPS_SENSOR_MODE not in {"removed", "inline", "nested"}:
     raise RuntimeError(f"unsupported SUNRAY_GPS_SENSOR_MODE={SUNRAY_GPS_SENSOR_MODE!r}")
 
 
@@ -110,6 +118,17 @@ MID360_NESTED_INCLUDE = """    <include>
         </limit>
       </axis>
     </joint>""".format(assembled_mid360_include_pose=ASSEMBLED_MID360_INCLUDE_POSE)
+
+
+GPS_NESTED_INCLUDE = """<include>
+  <uri>model://gps</uri>
+  <pose>0.1 0 0 0 0 0</pose>
+  <name>gps0</name>
+</include>
+<joint name='gps0_joint' type='fixed'>
+  <child>gps0::link</child>
+  <parent>base_link</parent>
+</joint>"""
 
 
 MID360_INLINE_SENSORS = """      <sensor type="ray" name="laser_livox_{{{{mavlink_id}}}}">
@@ -183,55 +202,55 @@ MID360_INLINE_SENSORS = """      <sensor type="ray" name="laser_livox_{{{{mavlin
 )
 
 
-INLINE_GPS_SENSOR = """    <link name="gps_link_{{mavlink_id}}">
-      <pose>0.0 0 0 0 0 0</pose>
-      <inertial>
-        <pose>0 0 0 0 0 0</pose>
-        <mass>0.015</mass>
-        <inertia>
-          <ixx>1e-05</ixx>
-          <ixy>0</ixy>
-          <ixz>0</ixz>
-          <iyy>1e-05</iyy>
-          <iyz>0</iyz>
-          <izz>1e-05</izz>
-        </inertia>
-      </inertial>
-      <visual name="visual">
-        <geometry>
-          <cylinder>
-            <radius>0.01</radius>
-            <length>0.002</length>
-          </cylinder>
-        </geometry>
-        <material>
-          <script>
-            <name>Gazebo/Black</name>
-          </script>
-        </material>
-      </visual>
-      <sensor name="gps_sensor_{{mavlink_id}}" type="gps">
-        <pose>0 0 0 0 0 0</pose>
-        <update_rate>5.0</update_rate>
-        <always_on>true</always_on>
-        <visualize>false</visualize>
-        <plugin name="gps_plugin_{{mavlink_id}}" filename="libgazebo_gps_plugin.so">
-          <robotNamespace></robotNamespace>
-          <topic>gps</topic>
-          <gpsNoise>true</gpsNoise>
-          <gpsXYRandomWalk>2.0</gpsXYRandomWalk>
-          <gpsZRandomWalk>4.0</gpsZRandomWalk>
-          <gpsXYNoiseDensity>2.0e-4</gpsXYNoiseDensity>
-          <gpsZNoiseDensity>4.0e-4</gpsZNoiseDensity>
-          <gpsVXYNoiseDensity>0.2</gpsVXYNoiseDensity>
-          <gpsVZNoiseDensity>0.4</gpsVZNoiseDensity>
-        </plugin>
-      </sensor>
-    </link>
-    <joint name="gps_joint_{{mavlink_id}}" type="fixed">
-      <child>gps_link_{{mavlink_id}}</child>
-      <parent>base_link</parent>
-    </joint>"""
+INLINE_GPS_SENSOR = """<link name="gps{{mavlink_id}}">
+  <pose>0.0 0 0 0 0 0</pose>
+  <inertial>
+    <pose>0 0 0 0 0 0</pose>
+    <mass>0.015</mass>
+    <inertia>
+      <ixx>1e-05</ixx>
+      <ixy>0</ixy>
+      <ixz>0</ixz>
+      <iyy>1e-05</iyy>
+      <iyz>0</iyz>
+      <izz>1e-05</izz>
+    </inertia>
+  </inertial>
+  <visual name="visual">
+    <geometry>
+      <cylinder>
+        <radius>0.01</radius>
+        <length>0.002</length>
+      </cylinder>
+    </geometry>
+    <material>
+      <script>
+        <name>Gazebo/Black</name>
+      </script>
+    </material>
+  </visual>
+  <sensor name="gps_sensor_{{mavlink_id}}" type="gps">
+    <pose>0 0 0 0 0 0</pose>
+    <update_rate>5.0</update_rate>
+    <always_on>true</always_on>
+    <visualize>false</visualize>
+    <plugin name="gps_plugin_{{mavlink_id}}" filename="libgazebo_gps_plugin.so">
+      <robotNamespace></robotNamespace>
+      <topic>gps</topic>
+      <gpsNoise>true</gpsNoise>
+      <gpsXYRandomWalk>2.0</gpsXYRandomWalk>
+      <gpsZRandomWalk>4.0</gpsZRandomWalk>
+      <gpsXYNoiseDensity>2.0e-4</gpsXYNoiseDensity>
+      <gpsZNoiseDensity>4.0e-4</gpsZNoiseDensity>
+      <gpsVXYNoiseDensity>0.2</gpsVXYNoiseDensity>
+      <gpsVZNoiseDensity>0.4</gpsVZNoiseDensity>
+    </plugin>
+  </sensor>
+</link>
+<joint name="gps{{mavlink_id}}_joint" type="fixed">
+  <child>gps{{mavlink_id}}</child>
+  <parent>base_link</parent>
+</joint>"""
 
 
 def replace_one(pattern: str, repl: str, text: str, label: str) -> tuple[str, int]:
@@ -243,6 +262,24 @@ def replace_one(pattern: str, repl: str, text: str, label: str) -> tuple[str, in
 
 def replace_one_if_present(pattern: str, repl: str, text: str) -> tuple[str, int]:
     return re.subn(pattern, repl, text, count=1, flags=re.DOTALL)
+
+
+def insert_before_rosbag_plugin(text: str, block: str, label: str) -> tuple[str, int]:
+    """Insert an SDF block before rosbag while retaining the source indentation."""
+    pattern = (
+        r"(?m)^(?P<indent>[ \t]*)(?P<plugin><plugin name='rosbag' "
+        r"filename='libgazebo_multirotor_base_plugin\.so'>)"
+    )
+
+    def replacement(match: re.Match[str]) -> str:
+        indent = match.group("indent")
+        rendered = "\n".join(f"{indent}{line}" if line else "" for line in block.splitlines())
+        return f"{rendered}\n{indent}{match.group('plugin')}"
+
+    text2, count = re.subn(pattern, replacement, text, count=1)
+    if count != 1:
+        raise RuntimeError(f"expected exactly one replacement for {label}, got {count}")
+    return text2, count
 
 
 def format_scalar(value: object) -> str:
@@ -266,6 +303,13 @@ def format_link_pose(values: object) -> str:
     if isinstance(values, list) and len(values) == 3:
         return format_xyz_pose(values)
     return format_pose(values)
+
+
+def gps_mass_accounting_key(mid360_sensor_mode: str, gps_sensor_mode: str) -> str:
+    """Return the profile entry that exactly matches the generated sensor tree."""
+    if gps_sensor_mode == "removed":
+        return f"{mid360_sensor_mode}_mid360"
+    return f"{mid360_sensor_mode}_mid360_gps"
 
 
 def load_virtual_profile(project_root: Path) -> dict[str, Any]:
@@ -373,6 +417,7 @@ def patch_drone_model_text(
     text: str,
     profile: dict[str, Any] | None = None,
     mid360_sensor_mode: str | None = None,
+    gps_sensor_mode: str | None = None,
 ) -> tuple[str, dict[str, int]]:
     original = text
     replacements: dict[str, int] = {}
@@ -382,10 +427,16 @@ def patch_drone_model_text(
     sensor_mode = mid360_sensor_mode or SUNRAY_MID360_SENSOR_MODE
     if sensor_mode not in {"inline", "nested"}:
         raise RuntimeError(f"unsupported MID360 sensor mode {sensor_mode!r}")
+    gps_mode = gps_sensor_mode or SUNRAY_GPS_SENSOR_MODE
+    if gps_mode not in {"removed", "inline", "nested"}:
+        raise RuntimeError(f"unsupported GPS sensor mode {gps_mode!r}")
 
     mass_accounting = profile["mass_accounting"]
     ros1_accounting = mass_accounting["ros1_gazebo_classic"]
-    mode_accounting = ros1_accounting[f"{sensor_mode}_mid360"]
+    mass_accounting_key = gps_mass_accounting_key(sensor_mode, gps_mode)
+    if mass_accounting_key not in ros1_accounting:
+        raise RuntimeError(f"missing ROS1 mass-accounting mode {mass_accounting_key!r}")
+    mode_accounting = ros1_accounting[mass_accounting_key]
     inertia = profile["inertia"]["diagonal_kg_m2"]
     rotor = profile["rotor"]
     motor = profile["motor_model"]
@@ -509,27 +560,36 @@ def patch_drone_model_text(
     replacements["old_mid360_include_removed"] = count
 
     text, count = replace_one_if_present(
-        r"\s*<include>\s*<uri>model://gps</uri>\s*<pose>.*?</pose>\s*<name>gps</name>\s*</include>\s*"
-        r"<joint name='gps_joint' type='fixed'>.*?</joint>",
+        r"(?m)^[ \t]*<include>\s*<uri>model://gps</uri>\s*(?:<pose>.*?</pose>\s*)?"
+        r"(?:<name>gps(?:0)?</name>\s*)?</include>\s*"
+        r"<joint name=['\"]gps(?:0)?_joint['\"] type=['\"]fixed['\"]>.*?</joint>\r?\n?",
         "",
         text,
     )
-    replacements["external_gps_include_removed"] = count
+    replacements["nested_gps_include_removed"] = count
 
     text, count = replace_one_if_present(
-        r"\s*<link name=\"gps_link_(?:\{\{mavlink_id\}\}|\{\{\{\{mavlink_id\}\}\}\})\">.*?</link>\s*"
-        r"<joint name=\"gps_joint_(?:\{\{mavlink_id\}\}|\{\{\{\{mavlink_id\}\}\}\})\" type=\"fixed\">.*?</joint>",
+        r"(?m)^[ \t]*<link name=['\"](?:gps_link_|gps)[^'\"]+['\"]>.*?</link>\s*"
+        r"<joint name=['\"](?:gps_joint_[^'\"]+|gps[^'\"]+_joint)['\"] type=['\"]fixed['\"]>.*?</joint>\r?\n?",
         "",
         text,
     )
     replacements["inline_gps_sensor_removed"] = count
 
-    if SUNRAY_GPS_SENSOR_MODE == "inline":
-        text, count = replace_one(
-            r"(<plugin name='rosbag' filename='libgazebo_multirotor_base_plugin\.so'>)",
-            rf"{INLINE_GPS_SENSOR}\n\1",
-            text,
-            "inline per-instance gps sensor before PX4 plugins",
+    if "model://gps" in text:
+        raise RuntimeError("unrecognized nested GPS block remained after normalization")
+
+    if gps_mode == "nested":
+        text, count = insert_before_rosbag_plugin(
+            text, GPS_NESTED_INCLUDE, "nested PX4 Gazebo Classic GPS before PX4 plugins"
+        )
+    else:
+        count = 0
+    replacements["nested_gps_include_inserted"] = count
+
+    if gps_mode == "inline":
+        text, count = insert_before_rosbag_plugin(
+            text, INLINE_GPS_SENSOR, "inline per-instance GPS sensor before PX4 plugins"
         )
     else:
         count = 0
@@ -621,9 +681,10 @@ def patch_drone_model_file(
     model_path: Path,
     profile: dict[str, Any],
     mid360_sensor_mode: str,
+    gps_sensor_mode: str,
 ) -> dict[str, int]:
     text = model_path.read_text(encoding="utf-8")
-    patched, replacements = patch_drone_model_text(text, profile, mid360_sensor_mode)
+    patched, replacements = patch_drone_model_text(text, profile, mid360_sensor_mode, gps_sensor_mode)
     if patched == text:
         replacements["backup_written"] = 0
         return replacements
@@ -639,9 +700,10 @@ def patch_jinja(
     jinja_path: Path,
     profile: dict[str, Any],
     mid360_sensor_mode: str,
+    gps_sensor_mode: str,
 ) -> dict[str, int]:
     original = jinja_path.read_text(encoding="utf-8")
-    text, replacements = patch_drone_model_text(original, profile, mid360_sensor_mode)
+    text, replacements = patch_drone_model_text(original, profile, mid360_sensor_mode, gps_sensor_mode)
 
     if text == original:
         replacements["backup_written"] = 0
@@ -992,6 +1054,55 @@ def sync_runtime_plugins(project_root: Path, sunray_ws: Path) -> dict[str, objec
     }
 
 
+def mavros_pluginlist_home_position_state(text: str) -> dict[str, bool]:
+    """Return the effective home-position membership from a MAVROS plugin list."""
+    if "plugin_whitelist:" not in text:
+        raise RuntimeError("MAVROS plugin list has no plugin_whitelist section")
+    blacklist, whitelist = text.split("plugin_whitelist:", 1)
+    entry = re.compile(r"(?m)^\s*-\s*home_position\s*(?:#.*)?$")
+    return {
+        "blacklisted": bool(entry.search(blacklist)),
+        "whitelisted": bool(entry.search(whitelist)),
+    }
+
+
+def sync_mavros_pluginlist(project_root: Path, sunray_ws: Path) -> dict[str, object]:
+    """Install the project-owned MAVROS plugin surface into the runtime copy."""
+    source_path = project_root / MAVROS_PLUGINLIST_RELATIVE_PATH
+    target_path = sunray_ws / "simulation/sunray_simulator/config/px4_pluginlists.yaml"
+    if not source_path.is_file():
+        raise FileNotFoundError(source_path)
+    if not target_path.is_file():
+        raise FileNotFoundError(target_path)
+
+    source_text = source_path.read_text(encoding="utf-8")
+    home_position = mavros_pluginlist_home_position_state(source_text)
+    if home_position["blacklisted"] or not home_position["whitelisted"]:
+        raise RuntimeError(
+            "project MAVROS profile must whitelist home_position without blacklisting it"
+        )
+    copied = target_path.read_text(encoding="utf-8") != source_text
+    if copied:
+        backup_path = target_path.with_suffix(
+            target_path.suffix + f".bak_mosim_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        )
+        shutil.copy2(target_path, backup_path)
+        target_path.write_text(source_text, encoding="utf-8")
+
+    target_text = target_path.read_text(encoding="utf-8")
+    if target_text != source_text:
+        raise RuntimeError("MAVROS plugin-list target differs after sync")
+    return {
+        "source": str(source_path),
+        "target": str(target_path),
+        "copied": copied,
+        "source_sha256": hashlib.sha256(source_text.encode("utf-8")).hexdigest(),
+        "target_sha256": hashlib.sha256(target_text.encode("utf-8")).hexdigest(),
+        "home_position_blacklisted": home_position["blacklisted"],
+        "home_position_whitelisted": home_position["whitelisted"],
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--project-root", type=Path, default=PROJECT_ROOT_DEFAULT)
@@ -1008,6 +1119,7 @@ def main() -> int:
     planning_launch_path = args.sunray_ws / "simulation/sunray_simulator/launch_uav_demo/sunray_sim_uav_planning.launch"
     control_launch_path = args.sunray_ws / "General_Module/sunray_uav_control/launch/sunray_control_node.launch"
     planning_world_path = args.sunray_ws / "simulation/sunray_simulator/worlds/planning_test.world"
+    project_gps_sdf_path = args.project_root / "Config/gazebo/models/gps/gps.sdf"
 
     if not source_model.exists():
         raise FileNotFoundError(source_model)
@@ -1023,12 +1135,25 @@ def main() -> int:
         raise FileNotFoundError(control_launch_path)
     if not planning_world_path.exists():
         raise FileNotFoundError(planning_world_path)
+    if SUNRAY_GPS_SENSOR_MODE == "nested" and not project_gps_sdf_path.exists():
+        raise FileNotFoundError(project_gps_sdf_path)
 
     copied = sync_meshes(source_model, target_model)
     control_source_sync = sync_control_runtime_sources(args.project_root, args.sunray_ws)
     runtime_plugin_sync = sync_runtime_plugins(args.project_root, args.sunray_ws)
-    replacements = patch_jinja(jinja_path, profile, SUNRAY_MID360_SENSOR_MODE)
-    sdf_replacements = patch_drone_model_file(sdf_path, profile, SUNRAY_MID360_SENSOR_MODE)
+    mavros_pluginlist_sync = sync_mavros_pluginlist(args.project_root, args.sunray_ws)
+    replacements = patch_jinja(
+        jinja_path,
+        profile,
+        SUNRAY_MID360_SENSOR_MODE,
+        SUNRAY_GPS_SENSOR_MODE,
+    )
+    sdf_replacements = patch_drone_model_file(
+        sdf_path,
+        profile,
+        SUNRAY_MID360_SENSOR_MODE,
+        SUNRAY_GPS_SENSOR_MODE,
+    )
     sensor_replacements = delete_default_livox_sensor_shell(sensor_sdf_path)
     launch_replacements = patch_planning_launch_time_arg(planning_launch_path)
     control_launch_replacements = patch_control_launch_tunable_params(control_launch_path)
@@ -1054,6 +1179,7 @@ def main() -> int:
         "patched_planning_world": str(planning_world_path),
         "control_source_sync": control_source_sync,
         "runtime_plugin_sync": runtime_plugin_sync,
+        "mavros_pluginlist_sync": mavros_pluginlist_sync,
         "copied_count": len(copied),
         "copied_first": copied[:12],
         "replacements": replacements,
@@ -1074,12 +1200,17 @@ def main() -> int:
         "mavlink_enable_lockstep": SUNRAY_MAVLINK_ENABLE_LOCKSTEP,
         "mavlink_interface_mode": SUNRAY_MAVLINK_INTERFACE_MODE,
         "gps_sensor_mode": SUNRAY_GPS_SENSOR_MODE,
+        "gps_mass_accounting_mode": gps_mass_accounting_key(
+            SUNRAY_MID360_SENSOR_MODE,
+            SUNRAY_GPS_SENSOR_MODE,
+        ),
         "boundary": [
             "Keeps YunZong/Sunray Gazebo Classic PX4, MAVLink, motor, IMU, p3d, camera, and MID360 plugins; GPS is controlled separately by gps_sensor_mode and defaults to removed.",
             "Replaces only accepted MoSim assembled body visual, rotor propeller visuals, rotor collision omission, and base mass.",
             "Deletes the standalone YunZong livox_mid360 visual/collision mesh because the accepted MoSim assembled body already includes the MID360 visual.",
             f"MID360 sensor mode is {SUNRAY_MID360_SENSOR_MODE}; nested mode restores model://livox_mid360 with a fixed joint, inline mode is diagnostic-only.",
-            f"GPS sensor mode is {SUNRAY_GPS_SENSOR_MODE}; Goal5 default removes the external model://gps include because positioning is provided through Gazebo truth/external fusion rather than GPS.",
+            f"GPS sensor mode is {SUNRAY_GPS_SENSOR_MODE}; nested mode restores the upstream model://gps + gps0_joint transport contract and consumes the matching 1 kg mass-accounting entry.",
+            "Uses the project-owned MAVROS plugin profile, including home_position for the passive GPS/EKF state-chain gate.",
             f"Sets mavlink_interface enable_lockstep to {SUNRAY_MAVLINK_ENABLE_LOCKSTEP}; default true preserves Sunray baseline, false is a bounded Goal5 diagnostic for multi-UAV MID360 plugin loading.",
             f"Sets mavlink_interface mode to {SUNRAY_MAVLINK_INTERFACE_MODE}; disabled is a bounded diagnostic only and is not a PX4 closed-loop evidence mode.",
             f"Uses the reviewed MoSim assembly pose for the MID360 mount: {ASSEMBLED_MID360_INCLUDE_POSE}.",

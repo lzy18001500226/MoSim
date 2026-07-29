@@ -133,6 +133,34 @@ Current action:
    Gazebo/ROS work, or run another controller/scenario without a new user
    instruction.
 
+### User-Authorized ROS1/Gazebo Reproducibility Closure - Active Support Lane
+
+On 2026-07-29 CST, the user authorized a separate runtime closure whose goal
+is that a reviewer can obtain the project source, configure the documented
+Ubuntu-20.04 environment, and reproduce the declared Gazebo evidence without
+Codex assistance. This does not supersede or broaden MWORKS G3.
+
+- Preserve the declared `ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS /
+  px4ctrl / RViz` lane. Do not substitute ROS2, x500, fake clouds, Gazebo truth
+  as controller state, QGC, or UE for runtime evidence.
+- Execute serially: GPS/EKF boot-only state chain; single-aircraft
+  takeoff-hover-land; FUEL point cloud/grid/rosbag replay; three-aircraft
+  fixed-formation baseline; then native Diff-Swarm avoidance.
+- GPS/EKF boot-only passed at
+  `Results/sunray_ros1/sunray_ros1_gps_state_chain_20260729_007/`: the nested
+  project-local GPS model, frozen boot parameters, MAVROS global/home/local
+  state, Gazebo truth agreement, PX4 ULog fields, and no-flight contract all
+  passed after a 90.11 s observed capture. The shorter `_006` capture remains
+  diagnostic trace-back only.
+- The current gate is single-aircraft takeoff-hover-land. It must retain the
+  locked virtual parameter contract and native Sunray/PX4/MAVROS/px4ctrl path,
+  record takeoff, steady-hover, landing, safety, and teardown evidence, and
+  leave an explicit `passed` or `blocked` result before FUEL/replay begins.
+- Each terminal subgate records a bounded result directory and triggers one
+  concise Chinese email. Every successful path must later receive a cold-start,
+  stop, recording, replay, and troubleshooting check plus a path-limited Git
+  publication check.
+
 ### Historical Seven-Scenario Pre-Simulation Gate
 
 - Workflow: `Docs/Workflows/run_simulation.md`.

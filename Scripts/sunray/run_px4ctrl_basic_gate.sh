@@ -9,11 +9,13 @@ SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
 PX4_ROS1_GUARD_UXRCE_DDS="${PX4_ROS1_GUARD_UXRCE_DDS:-true}"
 PX4_ROS1_OVERLAY_PKG=""
 PX4_GCS_REMOTE_HOST="${PX4_GCS_REMOTE_HOST:-auto}"
+PX4CTRL_BOOT_PARAM_OVERRIDES="${PX4CTRL_BOOT_PARAM_OVERRIDES:-}"
 PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws}"
 LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
 MISSION="${1:-${MISSION:-takeoff_hover_land}}"
 RUN_ID="${RUN_ID:-sunray_ros1_px4ctrl_${MISSION}_$(date +%Y%m%d_%H%M%S)}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
+MOSIM_RUNTIME_ROS_HOME="${MOSIM_RUNTIME_ROS_HOME:-${RESULT_DIR}/ros_home}"
 GUI="${GUI:-false}"
 WORLD_FILE="${WORLD_FILE:-${SUNRAY_WS}/simulation/sunray_simulator/worlds/planning_test.world}"
 SUNRAY_GAZEBO_LAUNCH_FILE="${SUNRAY_GAZEBO_LAUNCH_FILE:-${SUNRAY_WS}/simulation/sunray_simulator/launch_uav_demo/sunray_sim_uav_planning.launch}"
@@ -43,8 +45,8 @@ TIME_TF_AUDIT_DURATION_S="${TIME_TF_AUDIT_DURATION_S:-75}"
 POST_MISSION_DIAGNOSTIC_GRACE_S="${POST_MISSION_DIAGNOSTIC_GRACE_S:-8}"
 ODOM_BRIDGE_READY_TIMEOUT_S="${ODOM_BRIDGE_READY_TIMEOUT_S:-20}"
 MAVROS_ODOM_BRIDGE_MODE="${MAVROS_ODOM_BRIDGE_MODE:-auto}"
-PX4CTRL_MASS="${PX4CTRL_MASS:-0.67}"
-PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.294}"
+PX4CTRL_MASS="${PX4CTRL_MASS:-1.0}"
+PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.37}"
 PX4CTRL_THRUST_ESTIMATE_ENABLE="${PX4CTRL_THRUST_ESTIMATE_ENABLE:-false}"
 PX4CTRL_KP_XY="${PX4CTRL_KP_XY:-11}"
 PX4CTRL_KP_Z="${PX4CTRL_KP_Z:-4}"
@@ -332,6 +334,7 @@ prepare_px4_ros1_runtime_overlay() {
   local overlay_etc="${overlay_build}/etc"
   local overlay_rcs="${overlay_etc}/init.d-posix/rcS"
   local overlay_mavlink="${overlay_etc}/init.d-posix/px4-rc.mavlink"
+  local overlay_airframe="${overlay_etc}/init.d-posix/airframes/10020_gazebo-classic_sunray"
   local gcs_remote_host="${PX4_GCS_REMOTE_HOST}"
 
   for path in "${original_px4_etc}" "${original_px4_bin}" "${original_package}"; do
@@ -345,6 +348,44 @@ prepare_px4_ros1_runtime_overlay() {
   cp "${original_package}" "${overlay_pkg}/package.xml"
   cp -a "${original_px4_etc}" "${overlay_etc}"
   ln -s "${original_px4_bin}" "${overlay_build}/bin"
+
+  if [[ -n "${PX4CTRL_BOOT_PARAM_OVERRIDES}" ]]; then
+    python3 - "${overlay_airframe}" "${PX4CTRL_BOOT_PARAM_OVERRIDES}" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+raw = sys.argv[2]
+if not path.is_file():
+    raise SystemExit(f"PX4 airframe file missing: {path}")
+
+assignments = []
+for item in raw.split(","):
+    item = item.strip()
+    if not item:
+        continue
+    if item.count("=") != 1:
+        raise SystemExit(f"invalid PX4 boot parameter override: {item!r}")
+    name, value = (part.strip() for part in item.split("=", 1))
+    if not re.fullmatch(r"[A-Z][A-Z0-9_]*", name):
+        raise SystemExit(f"invalid PX4 parameter name: {name!r}")
+    if not re.fullmatch(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?", value):
+        raise SystemExit(f"invalid PX4 parameter value for {name}: {value!r}")
+    assignments.append((name, value))
+
+if not assignments:
+    raise SystemExit("PX4CTRL_BOOT_PARAM_OVERRIDES is set but contains no assignments")
+
+text = path.read_text(encoding="utf-8")
+if "# MoSim boot-time runtime overrides" in text:
+    raise SystemExit(f"duplicate MoSim boot override block in {path}")
+block = "\n# MoSim boot-time runtime overrides\n" + "\n".join(
+    f"param set {name} {value}" for name, value in assignments
+) + "\n"
+path.write_text(text.rstrip() + "\n" + block, encoding="utf-8")
+PY
+  fi
 
   if [[ "${gcs_remote_host}" == "auto" ]]; then
     gcs_remote_host="$(ip route show default | awk 'NR == 1 {print $3}')"
@@ -395,11 +436,14 @@ PY
     echo "original_px4_etc=${original_px4_etc}"
     echo "patched_rcS=${overlay_rcs}"
     echo "patched_mavlink=${overlay_mavlink}"
+    echo "patched_airframe=${overlay_airframe}"
+    echo "PX4CTRL_BOOT_PARAM_OVERRIDES=${PX4CTRL_BOOT_PARAM_OVERRIDES:-none}"
     echo "gcs_remote_host=${gcs_remote_host}"
     grep -n "uxrce_dds_client start" "${overlay_rcs}" || true
     grep -n "continuing for MoSim ROS1/MAVROS gate" "${overlay_rcs}" || true
     tail -5 "${overlay_rcs}" || true
     grep -n "mavlink start -x -u \$udp_gcs_port_local" "${overlay_mavlink}" || true
+    grep -n "MoSim boot-time runtime overrides" -A 8 "${overlay_airframe}" || true
   } > "${RESULT_DIR}/px4_ros1_runtime_overlay.txt"
 }
 
@@ -448,6 +492,155 @@ PY
     export PYTHONPATH="${FASTLIO_WS}/devel/lib/python3/dist-packages:${PYTHONPATH:-}"
     export LD_LIBRARY_PATH="${FASTLIO_WS}/devel/lib:${LD_LIBRARY_PATH:-}"
   fi
+}
+
+capture_mavros_runtime_config_resolution() {
+  local project_config="${PROJECT_ROOT}/Config/gazebo/mavros/px4_pluginlists.yaml"
+  local expected_package="${SUNRAY_WS}/simulation/sunray_simulator"
+  local output_path="${RESULT_DIR}/mavros_runtime_config_resolution.json"
+  local resolved_package
+
+  resolved_package="$(rospack find sunray_simulator)" || return 1
+  python3 - "${project_config}" "${expected_package}" "${resolved_package}" "${output_path}" <<'PY'
+import hashlib
+import json
+import pathlib
+import re
+import sys
+
+project_path = pathlib.Path(sys.argv[1]).resolve()
+expected_package = pathlib.Path(sys.argv[2]).resolve()
+resolved_package = pathlib.Path(sys.argv[3]).resolve()
+output_path = pathlib.Path(sys.argv[4])
+resolved_config = resolved_package / "config" / "px4_pluginlists.yaml"
+entry = re.compile(r"(?m)^\s*-\s*home_position\s*(?:#.*)?$")
+
+payload = {
+    "schema": "mosim.sunray_ros1.mavros_plugin_resolution.v1",
+    "project_config": str(project_path),
+    "expected_sunray_simulator_package": str(expected_package),
+    "resolved_sunray_simulator_package": str(resolved_package),
+    "resolved_config": str(resolved_config),
+}
+blockers = []
+for key, path in (("project", project_path), ("resolved", resolved_config)):
+    if not path.is_file():
+        blockers.append(f"missing_{key}_pluginlist")
+        continue
+    text = path.read_text(encoding="utf-8")
+    if "plugin_whitelist:" not in text:
+        blockers.append(f"missing_{key}_plugin_whitelist")
+        continue
+    blacklist, whitelist = text.split("plugin_whitelist:", 1)
+    payload[f"{key}_sha256"] = hashlib.sha256(text.encode("utf-8")).hexdigest()
+    payload[f"{key}_home_position_blacklisted"] = bool(entry.search(blacklist))
+    payload[f"{key}_home_position_whitelisted"] = bool(entry.search(whitelist))
+    if payload[f"{key}_home_position_blacklisted"]:
+        blockers.append(f"{key}_home_position_blacklisted")
+    if not payload[f"{key}_home_position_whitelisted"]:
+        blockers.append(f"{key}_home_position_not_whitelisted")
+
+if resolved_package != expected_package:
+    blockers.append("sunray_simulator_package_path_mismatch")
+if payload.get("project_sha256") != payload.get("resolved_sha256"):
+    blockers.append("resolved_pluginlist_hash_mismatch")
+payload["status"] = "passed" if not blockers else "blocked"
+payload["blockers"] = blockers
+output_path.write_text(json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+print(json.dumps(payload, ensure_ascii=True))
+raise SystemExit(0 if not blockers else 18)
+PY
+}
+
+capture_mavros_plugin_params_before_node() {
+  local output_path="${RESULT_DIR}/mavros_plugin_params_before_node.txt"
+  local deadline=$((SECONDS + 7))
+
+  while (( SECONDS < deadline )); do
+    if rosparam get /uav1/mavros/plugin_whitelist >/dev/null 2>&1; then
+      {
+        echo "# MAVROS plugin parameters captured after roslaunch parameter load"
+        echo "# and before the delayed MAVROS node is expected to initialize."
+        echo "## plugin_blacklist"
+        rosparam get /uav1/mavros/plugin_blacklist
+        echo "## plugin_whitelist"
+        rosparam get /uav1/mavros/plugin_whitelist
+      } > "${output_path}" 2>&1
+      return 0
+    fi
+    sleep 0.2
+  done
+
+  echo "MAVROS plugin parameters were unavailable before delayed node start" > "${output_path}"
+  return 1
+}
+
+apply_project_mavros_plugin_profile_before_node() {
+  local profile_path="${PROJECT_ROOT}/Config/gazebo/mavros/px4_pluginlists.yaml"
+  local output_path="${RESULT_DIR}/mavros_plugin_profile_apply.txt"
+  local deadline=$((SECONDS + 7))
+  local blacklist
+  local whitelist
+
+  if [[ ! -f "${profile_path}" ]]; then
+    echo "Project MAVROS plugin profile is missing: ${profile_path}" > "${output_path}"
+    return 1
+  fi
+
+  while (( SECONDS < deadline )); do
+    if rosparam get /uav1/mavros/plugin_whitelist >/dev/null 2>&1; then
+      if rosnode list 2>/dev/null | grep -Fxq "/uav1/mavros"; then
+        echo "MAVROS node was already running before plugin-profile application" > "${output_path}"
+        return 1
+      fi
+      {
+        echo "# Explicit project MAVROS plugin-profile application before MAVROS startup"
+        echo "profile_path=${profile_path}"
+        echo "profile_sha256=$(sha256sum "${profile_path}" | awk '{print $1}')"
+        echo "## before/plugin_blacklist"
+        rosparam get /uav1/mavros/plugin_blacklist
+        echo "## before/plugin_whitelist"
+        rosparam get /uav1/mavros/plugin_whitelist
+      } > "${output_path}" 2>&1
+
+      if ! rosparam load "${profile_path}" /uav1/mavros >> "${output_path}" 2>&1; then
+        echo "status=blocked rosparam_load_failed" >> "${output_path}"
+        return 1
+      fi
+
+      blacklist="$(rosparam get /uav1/mavros/plugin_blacklist)" || {
+        echo "status=blocked missing_plugin_blacklist_after_apply" >> "${output_path}"
+        return 1
+      }
+      whitelist="$(rosparam get /uav1/mavros/plugin_whitelist)" || {
+        echo "status=blocked missing_plugin_whitelist_after_apply" >> "${output_path}"
+        return 1
+      }
+      {
+        echo "## after/plugin_blacklist"
+        printf '%s\n' "${blacklist}"
+        echo "## after/plugin_whitelist"
+        printf '%s\n' "${whitelist}"
+      } >> "${output_path}"
+
+      if grep -Eq '^[[:space:]]*-[[:space:]]*home_position([[:space:]]|$)' <<< "${blacklist}" || \
+        ! grep -Eq '^[[:space:]]*-[[:space:]]*home_position([[:space:]]|$)' <<< "${whitelist}"; then
+        echo "status=blocked home_position_profile_contract_failed" >> "${output_path}"
+        return 1
+      fi
+      if rosnode list 2>/dev/null | grep -Fxq "/uav1/mavros"; then
+        echo "status=blocked mavros_started_during_plugin_profile_apply" >> "${output_path}"
+        return 1
+      fi
+
+      echo "status=passed" >> "${output_path}"
+      return 0
+    fi
+    sleep 0.2
+  done
+
+  echo "MAVROS plugin parameters were unavailable before project-profile application" > "${output_path}"
+  return 1
 }
 
 FASTLIO_STACK_STARTED=false
@@ -674,6 +867,8 @@ pkill -f "rosmaster" >/dev/null 2>&1 || true
 pkill -f "rosout" >/dev/null 2>&1 || true
 sleep 3
 
+mkdir -p "${MOSIM_RUNTIME_ROS_HOME}"
+export ROS_HOME="${MOSIM_RUNTIME_ROS_HOME}"
 prepare_px4_ros1_runtime_overlay
 source_env
 export SUNRAY_MID360_PLUGIN_DOWNSAMPLE
@@ -683,6 +878,7 @@ export SUNRAY_MID360_GOAL5_CSV_STRIDE
 {
   echo "ROS_ENV_SNAPSHOT"
   echo "SUNRAY_GAZEBO_LAUNCH_FILE=${SUNRAY_GAZEBO_LAUNCH_FILE}"
+  echo "ROS_HOME=${ROS_HOME}"
   echo "LIVOX_PLUGIN_WS=${LIVOX_PLUGIN_WS}"
   echo "SUNRAY_STRIP_PX4_MODEL_PATH=${SUNRAY_STRIP_PX4_MODEL_PATH}"
   echo "SUNRAY_MID360_PLUGIN_DOWNSAMPLE=${SUNRAY_MID360_PLUGIN_DOWNSAMPLE}"
@@ -707,6 +903,12 @@ python3 "${PROJECT_ROOT}/Scripts/sunray/sync_assembled_model_into_sunray_ros1.py
   --manifest "${RESULT_DIR}/assembled_model_sync.json" \
   > "${RESULT_DIR}/assembled_model_sync.log" 2>&1
 
+if ! capture_mavros_runtime_config_resolution \
+  > "${RESULT_DIR}/mavros_runtime_config_resolution.log" 2>&1; then
+  echo "MAVROS plugin-list resolution failed; see ${RESULT_DIR}/mavros_runtime_config_resolution.json" >&2
+  exit 6
+fi
+
 rm -f /tmp/px4-sock-0 /tmp/px4-sock-1 2>/dev/null || true
 
 if [[ "${SUNRAY_GAZEBO_LAUNCH_FILE}" == *"factory_l2_sunray_px4_gazebo.launch" || "${SUNRAY_GAZEBO_LAUNCH_FILE}" == *"goal5_swarm_px4_gazebo.launch" ]]; then
@@ -725,6 +927,16 @@ fi
 PIDS+=("$!")
 echo "${PIDS[-1]}" > "${RESULT_DIR}/sunray_gazebo.pid"
 
+if ! apply_project_mavros_plugin_profile_before_node; then
+  echo "Project MAVROS plugin profile could not be applied before MAVROS startup; see ${RESULT_DIR}/mavros_plugin_profile_apply.txt" >&2
+  exit 6
+fi
+
+if ! capture_mavros_plugin_params_before_node; then
+  echo "MAVROS plugin parameters were not present before node initialization; see ${RESULT_DIR}/mavros_plugin_params_before_node.txt" >&2
+  exit 6
+fi
+
 if ! timeout "${MAVROS_READY_TIMEOUT_S}s" python3 - <<'PY' > "${RESULT_DIR}/mavros_state_first.txt" 2>&1
 import sys
 import rospy
@@ -736,7 +948,6 @@ def cb(msg):
     global connected_msg
     if msg.connected:
         connected_msg = msg
-        rospy.signal_shutdown("connected")
 
 rospy.init_node("mosim_wait_mavros_connected", anonymous=True)
 rospy.Subscriber("/uav1/mavros/state", State, cb, queue_size=5)
@@ -963,7 +1174,7 @@ wanted = """
 SYS_AUTOSTART SYS_AUTOCONFIG
 CAL_ACC0_ID CAL_ACC0_PRIO CAL_ACC0_ROT CAL_ACC0_XOFF CAL_ACC0_YOFF CAL_ACC0_ZOFF
 CAL_GYRO0_ID CAL_GYRO0_PRIO CAL_GYRO0_ROT CAL_GYRO0_XOFF CAL_GYRO0_YOFF CAL_GYRO0_ZOFF
-EKF2_IMU_CTRL EKF2_ACC_NOISE EKF2_ACC_B_NOISE EKF2_GYR_NOISE EKF2_GYR_B_NOISE EKF2_GYR_B_LIM
+EKF2_IMU_CTRL EKF2_GPS_CTRL EKF2_ACC_NOISE EKF2_ACC_B_NOISE EKF2_GYR_NOISE EKF2_GYR_B_NOISE EKF2_GYR_B_LIM
 EKF2_HGT_REF EKF2_AID_MASK EKF2_EV_CTRL EKF2_EV_POS_X EKF2_EV_POS_Y EKF2_EV_POS_Z
 EKF2_EV_DELAY EKF2_EV_NOISE EKF2_EV_NOISE_MD EKF2_EVP_NOISE EKF2_EVV_NOISE EKF2_EVA_NOISE EKF2_REQ_EPH EKF2_REQ_EPV
 MPC_THR_HOVER MPC_XY_P MPC_Z_P MPC_XY_VEL_P_ACC MPC_XY_VEL_I_ACC MPC_Z_VEL_P_ACC MPC_Z_VEL_I_ACC
@@ -1394,7 +1605,10 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "livox_plugin_ws": "${LIVOX_PLUGIN_WS}",
     "livox_plugin_filename": "${SUNRAY_LIVOX_PLUGIN_FILENAME}",
     "mid360_plugin_downsample": "${SUNRAY_MID360_PLUGIN_DOWNSAMPLE}",
-    "mid360_csv_stride": "${SUNRAY_MID360_GOAL5_CSV_STRIDE}"
+    "mid360_csv_stride": "${SUNRAY_MID360_GOAL5_CSV_STRIDE}",
+    "mavros_runtime_config_resolution": "${RESULT_DIR}/mavros_runtime_config_resolution.json",
+    "mavros_plugin_profile_apply": "${RESULT_DIR}/mavros_plugin_profile_apply.txt",
+    "mavros_plugin_params_before_node": "${RESULT_DIR}/mavros_plugin_params_before_node.txt"
   },
   "px4ctrl": {
     "controller_started": ${PX4CTRL_START_CONTROLLER},
@@ -1494,6 +1708,8 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     },
     "start_external_fusion": "${PX4CTRL_START_EXTERNAL_FUSION}",
     "external_fusion_use_vision_pose": "${PX4CTRL_EXTERNAL_FUSION_USE_VISION_POSE}",
+    "px4_boot_param_overrides": "$(printf '%s' "${PX4CTRL_BOOT_PARAM_OVERRIDES}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
+    "gazebo_gps_sensor_mode": "${SUNRAY_GPS_SENSOR_MODE:-removed}",
     "odom_source": "${PX4CTRL_ODOM_SOURCE}",
     "state_source": "${MANIFEST_STATE_SOURCE}",
     "odom_topic": "${PX4CTRL_ODOM_TOPIC}",

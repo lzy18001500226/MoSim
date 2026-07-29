@@ -55,6 +55,17 @@ At that point the exception did not authorize G2, other-controller runs, gain
 tuning, code export, Gazebo/ROS runtime validation, G7, or R1.
 
 
+On 2026-07-29 CST, the user separately authorized the ROS1/Gazebo runtime
+reproducibility closure. It is independent from the MWORKS G3 line: retain the
+current `Ubuntu-20.04 / ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS /
+px4ctrl / RViz` lane. Its no-flight GPS/EKF state-chain gate passed at
+`Results/sunray_ros1/sunray_ros1_gps_state_chain_20260729_007/` with a
+90.11 s actual capture, valid MAVROS/PX4/Gazebo evidence, and no arming or
+mission publication. The next executable gate is single-aircraft
+takeoff-hover-land, followed serially by FUEL/replay, three-aircraft formation
+baseline, and native Diff-Swarm. Do not treat this authorization as
+controller-performance, MWORKS deployment, QGC, or UE evidence.
+
 The six-candidate recovery record at
 `Results/control_platform/champion_candidate_recovery_20260727/` predates the
 shared reference-velocity/reference-acceleration repair. Its `ClimbPath`
