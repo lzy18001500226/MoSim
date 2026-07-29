@@ -1,0 +1,165 @@
+#!/bin/sh
+#
+# @name Sunray-150
+#
+# @type Quadrotor x
+# @class Copter
+#
+# @maintainer Yundrone <sunray2023@126.com>
+#
+
+. ${R}etc/init.d/rc.mc_defaults
+
+# EKF2 parameters
+
+# 10000us=10ms，EKF的预测周期
+param set-default EKF2_PREDICT_US 10000
+
+# 禁用GPS辅助
+param set-default EKF2_GPS_CTRL 0
+
+# 外部定位辅助：水平位置、高度位置、YAW
+param set-default EKF2_EV_CTRL 11
+# 外部定位延迟相对于飞控IMU的延迟，单位：ms
+param set-default EKF2_EV_DELAY 5
+# If set to 1 the observation noise is set from the parameters directly,
+param set-default EKF2_EV_NOISE_MD 1
+param set-default EKF2_EVP_NOISE 0.05
+param set-default EKF2_EVV_NOISE 0.05
+param set-default EKF2_EVA_NOISE 0.05
+# ？ 默认值
+param set-default EKF2_EVP_GATE 5
+param set-default EKF2_EVV_GATE 5
+# vision偏置
+param set-default EKF2_EV_POS_X 0.0
+param set-default EKF2_EV_POS_Y 0.0
+param set-default EKF2_EV_POS_Z 0.0
+
+# 高度来源:vision_pose
+param set-default EKF2_HGT_REF 3
+
+## 高度测距？？？？，默认就是1
+param set-default EKF2_RNG_CTRL 1
+# 单位：毫秒
+param set-default EKF2_RNG_DELAY 5
+
+# 高度来源的最大可信高度
+param set-default EKF2_RNG_A_HMAX 8
+param set-default EKF2_RNG_A_VMAX 2
+param set-default EKF2_RNG_POS_X 0.055
+param set-default EKF2_RNG_POS_Y -0.01
+param set-default EKF2_RNG_POS_Z 0.065
+
+# 抗风估计？ 默认就是0
+param set-default EKF2_DRAG_CTRL 0
+# IMU在机体系的位置，单位：m
+param set-default EKF2_IMU_POS_X 0.02
+# 高度测距仪的最小值？ 有待研究
+param set-default EKF2_MIN_RNG 0.03
+# 光流加入辅助 默认为0
+param set-default EKF2_OF_CTRL 0
+# 光流的偏置位置，单位：m
+param set-default EKF2_OF_POS_X 0.0
+param set-default EKF2_OF_POS_Y 0.0
+param set-default EKF2_OF_POS_Z 0.0
+
+# Vehicle attitude PID tuning
+param set-default MC_PITCHRATE_K 0.45
+param set-default MC_PITCHRATE_P 0.11
+param set-default MC_PITCHRATE_I 0.2
+param set-default MC_PITCHRATE_D 0.003
+param set-default MC_ROLLRATE_K 0.45
+param set-default MC_ROLLRATE_P 0.11
+param set-default MC_ROLLRATE_I 0.2
+param set-default MC_ROLLRATE_D 0.003
+
+param set-default MC_YAWRATE_K 1.2
+param set-default MC_YAWRATE_P 0.3
+param set-default MC_YAWRATE_I 0.1
+param set-default MC_YAWRATE_D 0.0
+param set-default MC_YAWRATE_MAX 360
+
+## PWM TODO
+param set-default PWM_MAIN_FUNC1 101
+param set-default PWM_MAIN_FUNC2 104
+param set-default PWM_MAIN_FUNC3 103
+param set-default PWM_MAIN_FUNC4 102
+
+# Position Control Tuning
+## PX4位置控制模式的摇杆映射，3代表映射为平滑速度，默认为4（加速度）
+param set-default MPC_POS_MODE 3
+
+## 位置控制限制参数
+param set-default MPC_XY_VEL_MAX 1
+param set-default MPC_Z_VEL_MAX_UP 0.5
+param set-default MPC_Z_VEL_MAX_DN 0.5
+param set-default MPC_TILTMAX_AIR 20
+param set-default MPC_Z_VEL_MAX_DN 0.5
+param set-default MPC_TILTMAX_LND 5
+param set-default MPC_THR_MIN 0.1
+param set-default MPC_THR_MAX 1.0
+
+## 位置控制参数
+## 使能Hover thrust estimator ？？？
+param set-default MPC_USE_HTE 1
+
+# Power Parameters ？？？
+param set-default BAT1_N_CELLS 4
+param set-default BAT1_V_CHARGED 4.2
+param set-default BAT_V_EMPTY 3.2
+## 这两个参数需要和sunray150电池绑定确认
+param set-default BAT1_A_PER_V 36.364
+param set-default BAT1_V_DIV 10
+
+# Circuit breakers
+param set-default CBRK_IO_SAFETY 22027
+param set-default CBRK_SUPPLY_CHK 894281
+param set-default CBRK_USB_CHK 197848
+
+# Commander params
+## 机载电脑断连触发时间
+param set-default COM_OBC_LOSS_T 5.0
+
+## Time-out to wait when offboard connection is lost before triggering offboard lost action
+param set-default COM_OF_LOSS_T 1.0
+## offboard loss failsafe mode：4降落
+param set-default COM_OBL_RC_ACT 4
+
+## 遥控器失联
+## RC loss failsafe mode：3降落
+param set-default COM_RC_LOSS_T 0.5
+param set-default NAV_RCL_ACT 3
+
+## Enable RC stick override of auto and/or offboard modes
+param set-default COM_RC_OVERRIDE 1
+##If COM_RC_OVERRIDE is enabled and the joystick input is moved more than this threshold the autopilot the pilot takes over control.
+param set-default COM_RC_STICK_OV 10
+
+## 推力曲线，这个改了，有啥作用？？？
+param set-default THR_MDL_FAC 0.3
+
+# RC通道
+## 通道5
+param set-default RC_MAP_ARM_SW 5
+param set-default RC_MAP_KILL_SW 8
+# param set-default RC_MAP_OFFB_SW 10
+param set-default RC_MAP_FLTMODE 6
+## 自稳
+param set-default COM_FLTMODE1 8
+## 定高
+param set-default COM_FLTMODE4 1
+## 定点
+param set-default COM_FLTMODE6 2
+
+# Square quadrotor X PX4 numbering
+param set-default CA_ROTOR_COUNT 4
+param set-default CA_ROTOR0_PX 1
+param set-default CA_ROTOR0_PY 1
+param set-default CA_ROTOR1_PX -1
+param set-default CA_ROTOR1_PY -1
+param set-default CA_ROTOR2_PX 1
+param set-default CA_ROTOR2_PY -1
+param set-default CA_ROTOR2_KM -0.05
+param set-default CA_ROTOR3_PX -1
+param set-default CA_ROTOR3_PY 1
+param set-default CA_ROTOR3_KM -0.05
