@@ -22,7 +22,7 @@ Current review work uses:
 
 ```text
 Ubuntu-20.04 / ROS1 Noetic
--> References/Sunray
+-> project-owned src/ trees + generated local build overlays
 -> reviewed assembled Sunray150 + MID360 model
 -> Gazebo Classic
 -> RViz for trajectory/path and real MID360 PointCloud2 review
@@ -31,13 +31,24 @@ Ubuntu-20.04 / ROS1 Noetic
 Current source roots:
 
 ```text
-References/Sunray
-References/Lab/localization_slam/FAST_LIO
-References/Lab/planning_local/ego-planner*
+src/simulation/gazebo/sunray
+src/simulation/gazebo/plugins/sunray/livox_laser_simulation
+src/flight_stack/mavros/sunray_uav_control
+src/perception/fast_lio
+src/control/runtime_adapters/px4ctrl
+src/flight_stack/px4/PX4-Autopilot
 Scripts/sunray/
 Config/rviz/sunray_ros1_*.rviz
 Results/sunray_ros1/
+build/ros1/local_source_ws/                  # generated Catkin products only
+build/ros1/runtime_overlays/<run_id>/        # generated mutable launch/SDF copy
+build/px4/px4_sitl_default/                  # generated PX4 SITL products only
 ```
+
+The active P1-P6 runtime entrypoints must never consume `References/`, an old
+`/opt/mosim_work` workspace, or a prior `Results/` workspace as a source input.
+`References/` paths remaining in historical sections of this document are
+trace-back material only; they are not an alternative runtime source root.
 
 ### 1.1 Virtual Parameter Contract
 
@@ -87,11 +98,10 @@ Forbidden for current P0 live runtime:
 If a live run fails before Gazebo Classic, MAVROS, or RViz evidence appears,
 classify the blocker from the preflight first. Missing Noetic/Gazebo Classic is
 a wrong-runtime-entry failure, not a controller, planner, Livox, or RViz
-configuration failure. Missing Livox plugin source under `/opt` is not a reason
-to download or rewrite the plugin when the repo-local source exists at
-`References/Sunray/simulation/gazebo_plugin/livox_laser_simulation`; use the
-project-local overlay
-`Results/sunray_ros1/workspaces/sunray_livox_plugin_ws`.
+configuration failure. Missing Livox plugin source is not a reason to download
+or rewrite the plugin when the project-owned source exists at
+`src/simulation/gazebo/plugins/sunray/livox_laser_simulation`; build it into
+`build/ros1/local_source_ws` through the source-local workspace entrypoint.
 
 ## 2. Stop Rules
 
@@ -1036,9 +1046,9 @@ explicit Windows/WSL entry command using wsl -d Ubuntu-20.04
 SUNRAY_ROS1_PREFLIGHT=PASS from Scripts/sunray/check_sunray_ros1_runtime_preflight.sh
 ROS_DISTRO=noetic
 Gazebo Classic version from gzserver --version
-Sunray source path under References/Sunray
-FAST-LIO source path under References/Lab/localization_slam/FAST_LIO when FAST-LIO is in scope
-Livox plugin overlay path under Results/sunray_ros1/workspaces when MID360/Livox is in scope
+Sunray source paths under src/simulation/gazebo/sunray and src/flight_stack/mavros/sunray_uav_control
+FAST-LIO source path under src/perception/fast_lio when FAST-LIO is in scope
+Livox plugin source under src/simulation/gazebo/plugins/sunray/livox_laser_simulation and generated output under build/ros1/local_source_ws when MID360/Livox is in scope
 Gazebo Classic launch path
 result directory under Results/sunray_ros1/
 ```
