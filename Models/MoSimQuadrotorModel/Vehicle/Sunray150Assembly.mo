@@ -75,7 +75,14 @@ equation
   position = sensors.PosMea;
   attitude = sensors.AngleMea;
 
-  annotation(Icon(graphics = {Text(extent = {{-92, 20}, {92, -20}}, textString = "Sunray150整机/动画")}),
+  annotation(
+    Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
+      Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {160, 80, 0},
+        fillColor = {255, 250, 240}, fillPattern = FillPattern.Solid),
+      Bitmap(origin = {0, 12}, extent = {{-94, -60}, {94, 60}},
+        fileName = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Images/Sunray150-Side.png"),
+      Text(origin = {0, -76}, extent = {{-92, 14}, {92, -14}},
+        textString = "Sunray150", textColor = {160, 80, 0})}),
     Diagram(coordinateSystem(extent = {{-200, -120}, {200, 120}})),
     __MWORKS(version="26.3.0"));
 end Sunray150Assembly;
