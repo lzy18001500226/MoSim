@@ -571,6 +571,7 @@ static void fopid_step(
     const MosimClassicInput *input,
     MosimClassicOutput *output)
 {
+    static const double fopid_acceleration_limit[3] = {4.0, 4.0, 2.5};
     int axis;
     int index;
     for (axis = 0; axis < 3; ++axis) {
@@ -590,9 +591,16 @@ static void fopid_step(
             params->fopid_mu, input->dt);
         output->fractional_integral[axis] = integral;
         output->fractional_derivative[axis] = derivative;
-        output->desired_acceleration[axis] = input->reference_acceleration[axis] +
+        const double unconstrained_acceleration = input->reference_acceleration[axis] +
             params->fopid_kp[axis] * state->fopid_error_history[axis][0] +
             params->fopid_ki[axis] * integral + params->fopid_kd[axis] * derivative;
+        output->desired_acceleration[axis] = clamp_value(
+            unconstrained_acceleration,
+            -fopid_acceleration_limit[axis],
+            fopid_acceleration_limit[axis]);
+        if (output->desired_acceleration[axis] != unconstrained_acceleration) {
+            output->saturated = 1;
+        }
     }
 }
 
