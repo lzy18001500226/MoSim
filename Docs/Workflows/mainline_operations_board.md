@@ -206,10 +206,21 @@ Codex assistance. This does not supersede or broaden MWORKS G3.
   plugin without controller override. Both P3 captures exceed the frozen
   hover/local-state quality thresholds, so this is not controller-performance
   or fault-tolerance acceptance.
-- The current executable gate is P4: UE one-way display and rosbag replay.
-  It may proceed as a separate reproducibility/display evidence lane after the
-  explicit P3 blocker, but cannot rehabilitate the P3 quality result or be
-  cited as controller, planner, or runtime-performance success.
+- P4 Factory FUEL historical display replay completed at
+  `Results/sunray_ros1/sunray_ros1_p4_factory_fuel_replay_20260730_0945/`.
+  The exact source bag, Gazebo-world truth display stream, isolated RViz topic
+  replay, Factory 2D operator-map replay, and one-way UE receiver are bound by
+  `P4_DISPLAY_REPLAY_STATUS.json`. Its final state is
+  `completed_with_rviz_window_capture_limitation`: WSLg RAIL prevented a
+  pixel-level RViz background capture, while the recorded point cloud,
+  occupancy, and truth-path subscriptions all completed. P4 remains historical
+  display/reproducibility evidence and cannot rehabilitate the P3 quality
+  blocker or be cited as a live FUEL, PX4, MAVROS, controller, planner, fault,
+  QGC-command, or UE-control success.
+- The current executable gate is P5: run the project-local, single-aircraft
+  native Diff baseline through its smallest bounded source/build/preflight
+  check, then decide whether a live trajectory gate is safe to open. Do not
+  start P6 fixed formation or Diff-Swarm until the P5 terminal record exists.
 - Each terminal subgate records a bounded result directory and triggers one
   concise Chinese email. Every successful path must later receive a cold-start,
   stop, recording, replay, and troubleshooting check plus a path-limited Git
