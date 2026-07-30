@@ -82,7 +82,7 @@ equation
     Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
       Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {160, 80, 0},
         fillColor = {255, 250, 240}, fillPattern = FillPattern.Solid),
-      Bitmap(origin = {0, 12}, extent = {{-94, -60}, {94, 60}},
+      Bitmap(origin = {0, 12}, extent = {{-94, -53.529}, {94, 53.529}},
         fileName = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Images/Sunray150-Side.png"),
       Text(origin = {0, -76}, extent = {{-92, 14}, {92, -14}},
         textString = "Sunray150", textColor = {160, 80, 0})}),
