@@ -42,7 +42,7 @@ def test_model_studio_has_four_workspaces_and_compact_header() -> None:
     assert "控制器配置、模型验证与QGC运行交接" not in source
 
 
-def test_model_workspace_uses_eight_explicit_single_uav_tasks() -> None:
+def test_model_workspace_separates_tasks_from_independent_scene_parameters() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     for task_id in (
         "climb_path_50s",
@@ -50,19 +50,30 @@ def test_model_workspace_uses_eight_explicit_single_uav_tasks() -> None:
         "step_response",
         "figure8",
         "spiral",
+        "single_uav_autonomous_avoidance",
+        "three_uav_figure8",
+        "three_uav_autonomous_avoidance",
+        "multi_uav_route_unavailable",
+    ):
+        assert f'id="{task_id}"' in source
+    for legacy_injection_task in (
         "wind_disturbance",
         "parameter_mismatch",
         "motor_efficiency_fault",
     ):
-        assert f'id="{task_id}"' in source
+        assert f'(id="{legacy_injection_task}"' not in source
 
     model = section(source, "function configure_model_workspace(app)", "function configure_live_workspace(app)")
     assert '"验证任务与控制器"' in model
     assert '"场景参数"' in model
     assert "app.configure_model_task_controls()" in model
+    assert "app.VehicleCountDropDown" in model
+    assert "app.MapDropDown" in model
     assert "app.TaskDropDown" in model
+    assert "app.TargetUavDropDown" in model
+    assert "app.FaultStartTimeField" in model
     assert "app.ParameterMismatchSlider" in model
-    assert "电机 1 效率（15 s 后）" in model
+    assert "电机 1 效率（工况后）" in model
     assert "app.ApplyInjectionButton.Text = \"写入配置\"" in model
     assert "app.RestoreInjectionButton.Text = \"重置\"" in model
     assert "app.OpenModelButton.Text = \"打开仿真模型\"" in model
@@ -75,13 +86,19 @@ def test_model_workspace_removes_legacy_preset_and_formation_fields() -> None:
     model = section(source, "function configure_model_workspace(app)", "function configure_live_workspace(app)")
     for removed in (
         "ProfileDropDown",
-        "VehicleCountDropDown",
-        "MapDropDown",
         "MissionDropDown",
         "FormationDropDown",
-        "TargetUavDropDown",
+        "FaultDropDown",
     ):
         assert removed not in model
+    for retained in (
+        "VehicleCountDropDown",
+        "MapDropDown",
+        "TaskDropDown",
+        "TargetUavDropDown",
+        "FaultStartTimeField",
+    ):
+        assert retained in model
     assert "app.configure_composition_controls()" not in model
 
 
@@ -89,13 +106,14 @@ def test_model_dropdowns_use_native_labels_without_overlay_fields() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     model_controls = section(source, "function configure_model_task_controls(app)", "function is_three_uav_mission(app, mission)")
     labels = {
+        "VehicleCountDropDown": "UAV 数量",
+        "MapDropDown": "地图",
         "TaskDropDown": "验证任务",
         "ControllerFamilyDropDown": "控制器家族",
         "PositionDropDown": "控制器实例",
         "AttitudeDropDown": "姿态内环",
         "AugmentationDropDown": "增强层",
         "SafetyDropDown": "安全层",
-        "FaultDropDown": "故障容错层",
         "OutputDropDown": "输出边界",
     }
     for control, label in labels.items():
@@ -103,6 +121,9 @@ def test_model_dropdowns_use_native_labels_without_overlay_fields() -> None:
     assert 'Label = ""' not in model_controls
     assert "configure_model_field_label" not in source
     assert "TaskLabel::Any" not in source
+    assert 'const VEHICLE_COUNT_OPTIONS = string.(1:9)' in source
+    assert "function VehicleCountChanged(app, event)" in source
+    assert "function sync_fault_target_options(app, vehicle_count)" in source
 
 
 def test_hidden_workspace_controls_are_parked_outside_the_active_layout() -> None:
@@ -121,9 +142,9 @@ def test_model_workspace_hides_status_summary_blocks() -> None:
     assert "InjectionValuesLabel" not in model
     assert "ProfileSummaryLabel" not in model_summary
     assert "InjectionValuesLabel" not in model_summary
-    assert "app.ApplyInjectionButton.Position = [494, 536, 160, 36]" in model
-    assert "app.OpenModelButton.Position = [664, 536, 200, 36]" in model
-    assert "app.RestoreInjectionButton.Position = [874, 536, 60, 36]" in model
+    assert "app.ApplyInjectionButton.Position = [494, 570, 180, 36]" in model
+    assert "app.OpenModelButton.Position = [684, 570, 190, 36]" in model
+    assert "app.RestoreInjectionButton.Position = [884, 570, 50, 36]" in model
 
 
 def test_model_tasks_are_frozen_before_opening_mworks() -> None:
@@ -131,6 +152,10 @@ def test_model_tasks_are_frozen_before_opening_mworks() -> None:
     assert 'const MODEL_TASK_CONFIG_WRITER = joinpath(PROJECT_ROOT, "Scripts", "ui", "model_studio_task_config.py")' in source
     assert '"--task-id", task.id' in source
     assert '"--controller-id", controller.id' in source
+    assert '"--vehicle-count", app.VehicleCountDropDown.Value' in source
+    assert '"--map-id", app.model_map_id()' in source
+    assert '"--fault-target-uav", string(app.selected_fault_target_index())' in source
+    assert '"--fault-start-s", string(app.FaultStartTimeField.Value)' in source
     assert '"--gust-force-x-n", string(app.WindSlider.Value)' in source
     assert '"--mass-inertia-scale", string(app.ParameterMismatchSlider.Value)' in source
     assert "app.TaskConfigDirty = false" in source
@@ -140,13 +165,15 @@ def test_model_tasks_are_frozen_before_opening_mworks() -> None:
     assert "在线建模验证不从 Studio 启动仿真" in source
 
 
-def test_model_task_scope_is_explicitly_limited_to_registered_formal_runners() -> None:
+def test_model_task_scope_uses_registered_single_and_three_uav_routes() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
-    assert 'const MODEL_FORMAL_CONTROLLER_IDS = Set(["official_pid", "px4ctrl"])' in source
     assert "app.model_task_controller_supported()" in source
-    assert "当前验证任务只登记 official_pid 与 px4ctrl" in source
+    assert "当前数量、任务与控制器组合没有已登记的 MWORKS 模型入口" in source
+    assert "当前数量无已登记模型入口" in source
     assert "ROTOR_COMMAND / OfficialPidFormalRunner" in source
     assert "ATTITUDE_THRUST / Px4CtrlFormalRunner" in source
+    assert "ROTOR_COMMAND / Px4CtrlThreeUavFigure8Runner" in source
+    assert "ROTOR_COMMAND / 已登记多机规划模型" in source
 
 
 def test_live_workspace_retains_its_separate_runtime_controls() -> None:
@@ -192,6 +219,14 @@ def test_open_model_entry_loads_frozen_harness_without_simulation() -> None:
     assert "ModelingPy.StartSysplorer" in worker
     assert "ModelingPy.CheckModel" in worker
     assert "SimulateModel" not in worker
+
+
+def test_open_model_window_preserves_a_maximized_mworks_window() -> None:
+    script = OPEN_MODEL_SCRIPT.read_text(encoding="utf-8")
+    assert "SW_RESTORE = 9" in script
+    assert "if user32.IsIconic(hwnd):" in script
+    assert "user32.ShowWindow(hwnd, SW_RESTORE)" in script
+    assert "user32.ShowWindow(hwnd, 9)" not in script
 
 
 def test_codegen_model_resolver_uses_current_graphical_model_map() -> None:
