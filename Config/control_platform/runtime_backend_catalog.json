@@ -1,6 +1,6 @@
 {
   "schema": "mosim.runtime_backend_catalog.v2",
-  "version": 4,
+  "version": 5,
   "claim_boundary": "Only project-owned, reviewed runtime wrappers may appear here. QGC renders a copyable foreground terminal command from operator_invocation; it does not launch, supervise, or accept runtime execution.",
   "runtime_profiles": [
     {
@@ -15,6 +15,8 @@
       "operator_invocation": {
         "schema": "mosim.operator_invocation.v1",
         "shell_environment": {
+          "FASTLIO_FILTER_SIZE_MAP": "0.5",
+          "FASTLIO_FILTER_SIZE_SURF": "0.5",
           "GUI": "false",
           "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
           "MAVROS_READY_TIMEOUT_S": "180",
@@ -75,6 +77,100 @@
         "arguments": ["figure8"]
       },
       "result_gate": "runtime/RUN_MANIFEST.json",
+      "operator_contract": {
+        "flight_authority": "mission_adapter",
+        "takeoff_owner": "mission_adapter",
+        "mission_adapter_source": "Scripts/sunray/px4ctrl_basic_mission_node.py",
+        "terminal_ack": "mission_status_channel_v1",
+        "safe_stop": "safe_stop_channel_v1"
+      },
+      "status": "source_ready_live_gate_pending"
+    },
+    {
+      "runtime_profile_id": "sunray_ros1_factory_l2_px4ctrl_fastlio_fault_demo_v1",
+      "experiment_profile_ids": ["px4ctrl_fastlio_motor_efficiency_fault_recovery_v1"],
+      "controller_ids": ["px4ctrl"],
+      "vehicle_counts": [1],
+      "launcher": "wsl_project_script",
+      "wsl_distribution": "Ubuntu-20.04",
+      "operation_id": "factory_l2_px4ctrl_fastlio_fault_recovery",
+      "project_script": "Scripts/sunray/run_px4ctrl_fastlio_fault_demo_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false",
+          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "MOTOR_EFFICIENCY_AIRBORNE_TIMEOUT_S": "90",
+          "MOTOR_EFFICIENCY_DURATION_S": "4",
+          "MOTOR_EFFICIENCY_EFFECTIVENESS": "0.85",
+          "MOTOR_EFFICIENCY_MINIMUM_ALTITUDE_M": "0.95",
+          "MOTOR_EFFICIENCY_RESET_HOLD_S": "2",
+          "MISSION_START_TIMEOUT_S": "180",
+          "MOSIM_UE_STATE_STREAM": "true",
+          "MOSIM_UE_STATE_STREAM_RATE_HZ": "100",
+          "PX4CTRL_PATH_FRAME": "world",
+          "RECORD_ROSBAG": "true",
+          "REVIEW_OPEN_RVIZ": "true",
+          "REVIEW_PRESTART_HOLD_S": "5",
+          "REVIEW_START_CLOUD_NODE": "true",
+          "REVIEW_START_OCCUPANCY_NODE": "true",
+          "SUNRAY_GAZEBO_LAUNCH_FILE": "Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
+          "SUNRAY_UAV_INIT_X": "-10.575025",
+          "SUNRAY_UAV_INIT_Y": "-19.36313",
+          "SUNRAY_UAV_INIT_Z": "0.2",
+          "SUNRAY_UAV_INIT_YAW": "0",
+          "TOTAL_TIMEOUT_S": "540",
+          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+        },
+        "arguments": ["--factory-l2-fault-demo"]
+      },
+      "result_gate": "DEMO_STATUS.json",
+      "operator_contract": {
+        "flight_authority": "mission_adapter",
+        "takeoff_owner": "mission_adapter",
+        "mission_adapter_source": "Scripts/sunray/px4ctrl_basic_mission_node.py",
+        "fault_owner": "Scripts/sunray/apply_motor_efficiency_fault.py",
+        "terminal_ack": "mission_status_channel_v1",
+        "safe_stop": "safe_stop_channel_v1"
+      },
+      "status": "source_ready_live_gate_pending"
+    },
+    {
+      "runtime_profile_id": "sunray_ros1_factory_l2_px4ctrl_fastlio_takeoff_hover_land_v1",
+      "experiment_profile_ids": ["px4ctrl_fastlio_factory_takeoff_hover_land_v1"],
+      "controller_ids": ["px4ctrl"],
+      "vehicle_counts": [1],
+      "launcher": "wsl_project_script",
+      "wsl_distribution": "Ubuntu-20.04",
+      "operation_id": "factory_l2_px4ctrl_fastlio_takeoff_hover_land",
+      "project_script": "Scripts/sunray/run_px4ctrl_fastlio_operator_live_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false",
+          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "MAVROS_READY_TIMEOUT_S": "180",
+          "FASTLIO_FILTER_SIZE_SURF": "0.5",
+          "FASTLIO_FILTER_SIZE_MAP": "0.5",
+          "MOSIM_UE_STATE_STREAM": "true",
+          "MOSIM_UE_STATE_STREAM_RATE_HZ": "100",
+          "PX4CTRL_PATH_FRAME": "world",
+          "RECORD_ROSBAG": "true",
+          "REVIEW_OPEN_RVIZ": "true",
+          "REVIEW_PRESTART_HOLD_S": "15",
+          "REVIEW_START_CLOUD_NODE": "true",
+          "REVIEW_START_OCCUPANCY_NODE": "true",
+          "SUNRAY_GAZEBO_LAUNCH_FILE": "Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
+          "SUNRAY_UAV_INIT_X": "-10.575025",
+          "SUNRAY_UAV_INIT_Y": "-19.36313",
+          "SUNRAY_UAV_INIT_Z": "0.2",
+          "SUNRAY_UAV_INIT_YAW": "0",
+          "TOTAL_TIMEOUT_S": "540",
+          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+        },
+        "arguments": ["takeoff_hover_land"]
+      },
+      "result_gate": "DEMO_STATUS.json",
       "operator_contract": {
         "flight_authority": "mission_adapter",
         "takeoff_owner": "mission_adapter",
