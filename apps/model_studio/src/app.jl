@@ -10,6 +10,7 @@ const ACTIVE_COLOR = [0.08, 0.36, 0.43]
 const INACTIVE_COLOR = [0.88, 0.91, 0.92]
 const SECTION_COLOR = [0.12, 0.25, 0.32]
 const READY_COLOR = [0.86, 0.95, 0.89]
+const IMPLEMENTED_COLOR = [0.86, 0.92, 0.98]
 const WAIT_COLOR = [0.98, 0.93, 0.80]
 const MUTED_COLOR = [0.93, 0.94, 0.94]
 const CONSOLE_COLOR = [0.07, 0.10, 0.12]
@@ -37,23 +38,72 @@ const LIVE_PROFILE_OPTIONS = [
 const SINGLE_UAV_MISSION_OPTIONS = ["起飞-悬停-降落", "爬升", "八字轨迹", "螺旋轨迹"]
 const THREE_UAV_MISSION_OPTIONS = ["三机三角编队 8 字"]
 const MODEL_MISSION_OPTIONS = vcat(SINGLE_UAV_MISSION_OPTIONS, THREE_UAV_MISSION_OPTIONS)
-const MODEL_POSITION_OPTIONS = [
-    "official_pid [已认证]", "improved_pid [已认证]", "linear_mpc [已认证]",
-    "fault_compensation [已认证]", "px4ctrl [待接入]", "cascade_pid [待接入]",
-    "gain_scheduled_pid [待接入]", "fuzzy_pid [待接入]", "neural_pid [待接入]",
-    "trained_neural_residual [待接入]", "rl_gain_scheduler [待接入]", "lqr_baseline [待接入]",
-    "lqi_baseline [待接入]", "lqg [待接入]", "mu_synthesis [待接入]",
-    "feedback_linearization [待接入]", "passivity_based_control [待接入]",
-    "adaptive_backstepping [待接入]", "pole_placement_luenberger [待接入]",
-    "mrac [待接入]", "ndi [待接入]", "fopid [待接入]", "h2_state_feedback [待接入]",
-    "backstepping_baseline [待接入]", "se3_basic [待接入]", "dfbc_basic [待接入]",
-    "smc_boundary_layer [待接入]", "integral_smc [待接入]", "terminal_smc [待接入]",
-    "nonsingular_terminal_smc [待接入]", "super_twisting_smc [待接入]",
-    "adaptive_smc [待接入]", "fuzzy_smc [待接入]", "neural_smc [待接入]",
-    "hinf_hover_wrench [待接入]", "nmpc_outer [待接入]",
-    "dfbc_high_order_attitude [待接入]", "dfbc_high_order_bodyrate [待接入]",
-    "dfbc_smooth_robust_attitude [待接入]", "dfbc_smooth_robust_bodyrate [待接入]",
+const CONTROLLER_FAMILIES = [
+    "PID 族", "线性鲁棒族", "非线性自适应族", "滑模族",
+    "预测控制族", "几何/平坦族", "学习增强族", "工程基线",
 ]
+const CONTROLLER_CATALOG = [
+    (id="official_pid", family="PID 族", display="official_pid [已认证]", status="已认证", openable=true),
+    (id="cascade_pid", family="PID 族", display="cascade_pid [已实现]", status="已实现", openable=true),
+    (id="gain_scheduled_pid", family="PID 族", display="gain_scheduled_pid [已实现]", status="已实现", openable=true),
+    (id="fuzzy_pid", family="PID 族", display="fuzzy_pid [已实现]", status="已实现", openable=true),
+    (id="neural_pid", family="PID 族", display="neural_pid [已实现]", status="已实现", openable=true),
+    (id="fopid", family="PID 族", display="fopid [已实现]", status="已实现", openable=true),
+    (id="fixed_awff_pid", family="PID 族", display="fixed_awff_pid [已实现]", status="已实现", openable=true),
+    (id="fixed_awff_l1_residual", family="PID 族", display="fixed_awff_l1_residual [已实现]", status="已实现", openable=true),
+    (id="fixed_awff_l1_indi", family="PID 族", display="fixed_awff_l1_indi [已实现]", status="已实现", openable=true),
+    (id="pid_awff_linear_eso", family="PID 族", display="pid_awff_linear_eso [待接入]", status="待接入", openable=false),
+
+    (id="lqr_baseline", family="线性鲁棒族", display="lqr_baseline [已实现]", status="已实现", openable=true),
+    (id="lqi_baseline", family="线性鲁棒族", display="lqi_baseline [已实现]", status="已实现", openable=true),
+    (id="lqg", family="线性鲁棒族", display="lqg [已实现]", status="已实现", openable=true),
+    (id="h2_state_feedback", family="线性鲁棒族", display="h2_state_feedback [已实现]", status="已实现", openable=true),
+    (id="hinf_hover_wrench", family="线性鲁棒族", display="hinf_hover_wrench [已实现]", status="已实现", openable=true),
+    (id="pole_placement_luenberger", family="线性鲁棒族", display="pole_placement_luenberger [已实现]", status="已实现", openable=true),
+
+    (id="backstepping_baseline", family="非线性自适应族", display="backstepping_baseline [已实现]", status="已实现", openable=true),
+    (id="adaptive_backstepping", family="非线性自适应族", display="adaptive_backstepping [已实现]", status="已实现", openable=true),
+    (id="feedback_linearization", family="非线性自适应族", display="feedback_linearization [已实现]", status="已实现", openable=true),
+    (id="mrac", family="非线性自适应族", display="mrac [已实现]", status="已实现", openable=true),
+    (id="ndi", family="非线性自适应族", display="ndi [已实现]", status="已实现", openable=true),
+    (id="passivity_based_control", family="非线性自适应族", display="passivity_based_control [已实现]", status="已实现", openable=true),
+
+    (id="integral_smc", family="滑模族", display="integral_smc [已实现]", status="已实现", openable=true),
+    (id="terminal_smc", family="滑模族", display="terminal_smc [已实现]", status="已实现", openable=true),
+    (id="nonsingular_terminal_smc", family="滑模族", display="nonsingular_terminal_smc [已实现]", status="已实现", openable=true),
+    (id="super_twisting_smc", family="滑模族", display="super_twisting_smc [已实现]", status="已实现", openable=true),
+    (id="adaptive_smc", family="滑模族", display="adaptive_smc [已实现]", status="已实现", openable=true),
+    (id="fuzzy_smc", family="滑模族", display="fuzzy_smc [已实现]", status="已实现", openable=true),
+    (id="smc_boundary_layer", family="滑模族", display="smc_boundary_layer [已实现]", status="已实现", openable=true),
+
+    (id="linear_mpc", family="预测控制族", display="linear_mpc [已实现]", status="已实现", openable=true),
+    (id="robust_mpc", family="预测控制族", display="robust_mpc [已实现]", status="已实现", openable=true),
+    (id="adaptive_mpc", family="预测控制族", display="adaptive_mpc [已实现]", status="已实现", openable=true),
+    (id="tube_mpc", family="预测控制族", display="tube_mpc [已实现]", status="已实现", openable=true),
+    (id="explicit_gain_scheduled_mpc", family="预测控制族", display="explicit_gain_scheduled_mpc [已实现]", status="已实现", openable=true),
+    (id="ilqr", family="预测控制族", display="ilqr [已实现]", status="已实现", openable=true),
+    (id="mppi", family="预测控制族", display="mppi [已实现]", status="已实现", openable=true),
+    (id="nmpc_outer", family="预测控制族", display="nmpc_outer [已实现]", status="已实现", openable=true),
+    (id="fixed_linear_mpc_l1_indi", family="预测控制族", display="fixed_linear_mpc_l1_indi [已实现]", status="已实现", openable=true),
+    (id="fixed_qp_nmpc_l1_indi_cbf", family="预测控制族", display="fixed_qp_nmpc_l1_indi_cbf [已实现]", status="已实现", openable=true),
+
+    (id="se3_basic", family="几何/平坦族", display="se3_basic [已实现]", status="已实现", openable=true),
+    (id="dfbc_basic", family="几何/平坦族", display="dfbc_basic [已实现]", status="已实现", openable=true),
+    (id="dfbc_high_order_attitude", family="几何/平坦族", display="dfbc_high_order_attitude [已实现]", status="已实现", openable=true),
+    (id="dfbc_high_order_bodyrate", family="几何/平坦族", display="dfbc_high_order_bodyrate [已实现]", status="已实现", openable=true),
+    (id="dfbc_smooth_robust_attitude", family="几何/平坦族", display="dfbc_smooth_robust_attitude [已实现]", status="已实现", openable=true),
+    (id="dfbc_smooth_robust_bodyrate", family="几何/平坦族", display="dfbc_smooth_robust_bodyrate [已实现]", status="已实现", openable=true),
+
+    (id="trained_neural_residual", family="学习增强族", display="trained_neural_residual [已实现]", status="已实现", openable=true),
+    (id="rl_gain_scheduler", family="学习增强族", display="rl_gain_scheduler [已实现]", status="已实现", openable=true),
+    (id="px4ctrl", family="工程基线", display="px4ctrl [已实现]", status="已实现", openable=true),
+]
+const LEGACY_PROFILE_CONTROLLERS = [
+    (id="improved_pid", family="PID 族", display="improved_pid [已认证]", status="已认证", openable=false),
+    (id="linear_mpc", family="预测控制族", display="linear_mpc [已认证]", status="已认证", openable=true),
+    (id="fault_compensation", family="PID 族", display="fault_compensation [已认证]", status="已认证", openable=false),
+]
+const LIVE_BASELINE_CONTROLLER = "official_pid [已认证]"
 const MODEL_ATTITUDE_OPTIONS = ["模型内部姿态/角速度环 [已认证]", "so3_attitude [待接入]", "px4_attitude_rate_inner [在线专用]"]
 const MODEL_AUGMENTATION_OPTIONS = [
     "无", "pid_indi [已认证]", "awff [已认证]", "l1_adaptive [已认证]",
@@ -131,6 +181,7 @@ const OFFLINE_PROFILES = Dict(
     VehicleCountDropDown::Any = nothing
     MapDropDown::Any = nothing
     MissionDropDown::Any = nothing
+    ControllerFamilyDropDown::Any = nothing
     PositionDropDown::Any = nothing
     AttitudeDropDown::Any = nothing
     AugmentationDropDown::Any = nothing
@@ -216,7 +267,7 @@ const OFFLINE_PROFILES = Dict(
 
     function assistant_operational_mode_label(app)
         return app.LastOperationalMode == "model" ? "在线建模验证" :
-            (app.LastOperationalMode == "live" ? "实时联合仿真" : "生成代码部署")
+            (app.LastOperationalMode == "live" ? "实时联合仿真" : "代码生成")
     end
 
     function refresh_assistant_context(app)
@@ -374,7 +425,7 @@ const OFFLINE_PROFILES = Dict(
     function workspace_controls(app)
         return (
             app.ProfileDropDown, app.VehicleCountDropDown, app.MapDropDown,
-            app.MissionDropDown, app.PositionDropDown,
+            app.MissionDropDown, app.ControllerFamilyDropDown, app.PositionDropDown,
             app.AttitudeDropDown, app.AugmentationDropDown, app.SafetyDropDown,
             app.FaultDropDown, app.FormationDropDown, app.OutputDropDown,
             app.ProfileSummaryLabel, app.CapabilityLabel,
@@ -403,6 +454,51 @@ const OFFLINE_PROFILES = Dict(
             app.AssistantQgcGuideButton, app.AssistantResultGuideButton,
             app.AssistantClearButton, app.AssistantStatusLabel,
         )
+    end
+
+    function controller_entries(app)
+        return vcat(CONTROLLER_CATALOG, LEGACY_PROFILE_CONTROLLERS)
+    end
+
+    function selected_controller_entry(app)
+        return app.controller_entry(app.PositionDropDown.Value)
+    end
+
+    function controller_entry(app, display)
+        for entry in app.controller_entries()
+            entry.display == display && return entry
+        end
+        return nothing
+    end
+
+    function controller_options_for_family(app, family; include_legacy=false)
+        entries = [entry for entry in CONTROLLER_CATALOG if entry.family == family]
+        if include_legacy
+            append!(entries, [entry for entry in LEGACY_PROFILE_CONTROLLERS if entry.family == family])
+        end
+        return [entry.display for entry in entries]
+    end
+
+    function controller_status_color(app, entry)
+        entry === nothing && return MUTED_COLOR
+        return entry.status == "已认证" ? READY_COLOR :
+            (entry.status == "已实现" ? IMPLEMENTED_COLOR : MUTED_COLOR)
+    end
+
+    function selected_controller_id(app)
+        entry = app.selected_controller_entry()
+        return entry === nothing ? "" : entry.id
+    end
+
+    function sync_controller_selection(app, desired=LIVE_BASELINE_CONTROLLER)
+        entry = app.controller_entry(desired)
+        family = entry === nothing ? CONTROLLER_FAMILIES[1] : entry.family
+        include_legacy = any(item -> item.display == desired, LEGACY_PROFILE_CONTROLLERS)
+        app.ControllerFamilyDropDown.Items = CONTROLLER_FAMILIES
+        app.ControllerFamilyDropDown.Value = family
+        items = app.controller_options_for_family(family; include_legacy=include_legacy)
+        app.PositionDropDown.Items = items
+        app.PositionDropDown.Value = desired in items ? desired : items[1]
     end
 
     function is_three_uav_mission(app, mission)
@@ -453,9 +549,11 @@ const OFFLINE_PROFILES = Dict(
         app.set_dropdown_position(app.MissionDropDown, [24, 284, 440, 32])
         app.MissionDropDown.Items = MODEL_MISSION_OPTIONS
         app.MissionDropDown.Value = MODEL_MISSION_OPTIONS[1]
-        app.set_dropdown_position(app.PositionDropDown, [24, 330, 440, 32])
-        app.PositionDropDown.Items = MODEL_POSITION_OPTIONS
-        app.PositionDropDown.Value = MODEL_POSITION_OPTIONS[1]
+        app.set_dropdown_position(app.ControllerFamilyDropDown, [24, 330, 170, 32])
+        app.ControllerFamilyDropDown.Label = "控制器家族"
+        app.set_dropdown_position(app.PositionDropDown, [204, 330, 260, 32])
+        app.PositionDropDown.Label = "控制器实例"
+        app.sync_controller_selection(LIVE_BASELINE_CONTROLLER)
         app.set_dropdown_position(app.AttitudeDropDown, [24, 376, 440, 32])
         app.AttitudeDropDown.Items = MODEL_ATTITUDE_OPTIONS
         app.AttitudeDropDown.Value = live ? "px4_attitude_rate_inner [在线专用]" : MODEL_ATTITUDE_OPTIONS[1]
@@ -477,7 +575,7 @@ const OFFLINE_PROFILES = Dict(
             "ATTITUDE_THRUST / mavros_attitude_thrust [平台已验证]" : MODEL_OUTPUT_OPTIONS[1]
 
         for control in (app.VehicleCountDropDown, app.MapDropDown, app.MissionDropDown,
-            app.PositionDropDown, app.AttitudeDropDown, app.AugmentationDropDown,
+            app.ControllerFamilyDropDown, app.PositionDropDown, app.AttitudeDropDown, app.AugmentationDropDown,
             app.SafetyDropDown, app.FaultDropDown, app.OutputDropDown)
             control.Enable = true
         end
@@ -487,7 +585,7 @@ const OFFLINE_PROFILES = Dict(
     function live_combination_compatible(app)
         return app.VehicleCountDropDown.Value == "1" &&
             app.FormationDropDown.Value == "无" &&
-            app.PositionDropDown.Value == MODEL_POSITION_OPTIONS[1] &&
+            app.PositionDropDown.Value == LIVE_BASELINE_CONTROLLER &&
             app.AttitudeDropDown.Value == "px4_attitude_rate_inner [在线专用]" &&
             app.OutputDropDown.Value == "ATTITUDE_THRUST / mavros_attitude_thrust [平台已验证]"
     end
@@ -507,7 +605,7 @@ const OFFLINE_PROFILES = Dict(
         app.MapDropDown.Value = MAP_OPTIONS[1]
         app.sync_vehicle_controls()
         app.MissionDropDown.Value = item.mission
-        app.PositionDropDown.Value = item.controller
+        app.sync_controller_selection(item.controller)
         app.AttitudeDropDown.Value = item.attitude
         app.AugmentationDropDown.Value = item.augmentation
         app.SafetyDropDown.Value = item.safety
@@ -541,6 +639,8 @@ const OFFLINE_PROFILES = Dict(
             return
         elseif app.CurrentMode == "model"
             item = app.selected_model_profile()
+            controller = app.selected_controller_entry()
+            controller_status = controller === nothing ? "待接入" : controller.status
             certified = item !== nothing && item.available && app.preset_matches_selection(item)
             unavailable = occursin("[待接入]", app.PositionDropDown.Value) ||
                 occursin("[待接入]", app.AttitudeDropDown.Value) ||
@@ -557,22 +657,29 @@ const OFFLINE_PROFILES = Dict(
             app.ValidateButton.Enable = true
             state = incompatible ? "结构不兼容" : (unavailable ? "接口待接入" : (executable ? "可直接运行" : "可配置，需保存并验证"))
             gate_mark = executable ? "✓" : (incompatible ? "✕" : "◆")
-            app.ChainLabel.Text = gate_mark * " 组合  " * state *
-                "  |  模型 ✓  接口 " * (unavailable ? "◆" : "✓") *
-                "  参数 ✓  执行 " * (executable ? "✓" : "✕")
-            app.ChainLabel.BackgroundColor = MUTED_COLOR
+            app.ChainLabel.Text = "控制器  " * app.PositionDropDown.Value * "\n" *
+                "家族  " * app.ControllerFamilyDropDown.Value * "  |  状态  " * controller_status * "\n" *
+                gate_mark * " 组合  " * state * "  |  模型 ✓  接口 " *
+                (unavailable ? "◆" : "✓") * "  参数 ✓  执行 " * (executable ? "✓" : "✕")
+            app.ChainLabel.BackgroundColor = app.controller_status_color(controller)
             app.ProfileSummaryLabel.Text =
+                "控制器  " * app.PositionDropDown.Value * "  |  " * controller_status * "\n" *
                 "外环  " * app.PositionDropDown.Value * "  |  内环  " * app.AttitudeDropDown.Value * "\n" *
                 "增强  " * app.AugmentationDropDown.Value * "  |  安全  " * app.SafetyDropDown.Value
+            app.ProfileSummaryLabel.BackgroundColor = app.controller_status_color(controller)
             app.CapabilityLabel.Text = item === nothing ?
                 "◆ 自定义 Profile 未验证  |  执行保持禁用" :
                 "● " * item.profile * "  |  Result.msr / 动画证据已登记"
             app.CapabilityLabel.BackgroundColor = MUTED_COLOR
             return
         elseif app.CurrentMode == "deploy"
-            app.ProfileSummaryLabel.Text = "配置来源  " * app.ProfileDropDown.Value * "\n" *
-                "生成目标  " * app.DeployTargetDropDown.Value * "\n" *
-                "构建类型  " * app.BuildModeDropDown.Value
+            controller = app.selected_controller_entry()
+            controller_status = controller === nothing ? "待接入" : controller.status
+            app.ProfileSummaryLabel.Text = "控制器家族  " * app.ControllerFamilyDropDown.Value * "\n" *
+                "控制器实例  " * app.PositionDropDown.Value * "\n" *
+                "状态  " * controller_status
+            app.ProfileSummaryLabel.BackgroundColor = app.controller_status_color(controller)
+            app.CodegenButton.Enable = controller !== nothing && controller.openable
             return
         end
         app.ProfileSummaryLabel.Text = "运行Profile  " * app.ProfileDropDown.Value *
@@ -590,7 +697,7 @@ const OFFLINE_PROFILES = Dict(
         app.set_visible(app.workspace_controls(), false)
         model_controls = (
             app.ProfileDropDown, app.VehicleCountDropDown, app.MapDropDown,
-            app.MissionDropDown, app.PositionDropDown,
+            app.MissionDropDown, app.ControllerFamilyDropDown, app.PositionDropDown,
             app.AttitudeDropDown, app.AugmentationDropDown, app.SafetyDropDown,
             app.FaultDropDown, app.FormationDropDown, app.OutputDropDown,
             app.TargetUavDropDown, app.WindSlider,
@@ -631,7 +738,7 @@ const OFFLINE_PROFILES = Dict(
         app.set_visible(app.workspace_controls(), false)
         live_controls = (
             app.ProfileDropDown, app.VehicleCountDropDown, app.MapDropDown,
-            app.MissionDropDown, app.PositionDropDown, app.AttitudeDropDown,
+            app.MissionDropDown, app.ControllerFamilyDropDown, app.PositionDropDown, app.AttitudeDropDown,
             app.AugmentationDropDown, app.SafetyDropDown, app.FaultDropDown,
             app.FormationDropDown, app.OutputDropDown, app.TargetHostField,
             app.Rt1PortField, app.RosMasterField, app.LocalIpField,
@@ -670,41 +777,36 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function configure_deploy_workspace(app)
-        app.set_top_status("生成代码部署  |  门禁通过  |  构建 Release  |  产物已登记"; state="正常")
-        app.configure_section(app.ConfigSectionLabel, "生成配置与操作", [24, 144, 560, 34])
+        app.set_top_status("MWORKS 代码生成  |  由用户在原生 MWORKS 中执行"; state="待命")
+        app.configure_section(app.ConfigSectionLabel, "代码生成模型", [24, 144, 560, 34])
+        app.configure_section(app.InjectionSectionLabel, "操作日志", [614, 144, 802, 34])
         app.configure_console_workspace(left=614, width=802)
         app.ConfigSectionLabel.Visible = true
         app.ChainSectionLabel.Visible = false
         app.InjectionSectionLabel.Visible = true
         app.set_visible(app.workspace_controls(), false)
         deploy_controls = (
-            app.ProfileDropDown, app.DeployTargetDropDown,
-            app.BuildModeDropDown, app.OutputDropDown,
+            app.ControllerFamilyDropDown, app.PositionDropDown,
+            app.OutputDropDown, app.ProfileSummaryLabel,
         )
         app.set_visible(deploy_controls, true)
-        app.set_dropdown_position(app.ProfileDropDown, [24, 192, 560, 32])
-        app.ProfileDropDown.Label = "已验证 Profile"
-        app.ProfileDropDown.Items = ["Official PID generated-C [已通过]", "PID-INDI generated-C [已通过]", "Linear MPC generated-C [已通过]", "实验控制器 [门禁未通过]"]
-        app.ProfileDropDown.Value = "Official PID generated-C [已通过]"
-        app.set_dropdown_position(app.DeployTargetDropDown, [24, 246, 560, 32])
-        app.set_dropdown_position(app.BuildModeDropDown, [24, 300, 560, 32])
-        app.set_dropdown_position(app.OutputDropDown, [24, 354, 560, 32])
-        app.OutputDropDown.Items = ["ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"]
-        app.OutputDropDown.Value = "ATTITUDE_THRUST"
+        desired = app.selected_controller_entry() === nothing ? LIVE_BASELINE_CONTROLLER : app.PositionDropDown.Value
+        app.set_dropdown_position(app.ControllerFamilyDropDown, [24, 192, 270, 32])
+        app.ControllerFamilyDropDown.Label = "控制器家族"
+        app.set_dropdown_position(app.PositionDropDown, [314, 192, 270, 32])
+        app.PositionDropDown.Label = "控制器实例"
+        app.sync_controller_selection(desired)
+        app.set_dropdown_position(app.OutputDropDown, [24, 246, 560, 32])
+        app.OutputDropDown.Label = "模型输出接口"
+        app.OutputDropDown.Items = ["由已打开的 MWORKS 模型确定"]
+        app.OutputDropDown.Value = app.OutputDropDown.Items[1]
+        app.OutputDropDown.Enable = false
+        app.ProfileSummaryLabel.Position = [24, 292, 560, 80]
 
         app.set_visible(app.action_buttons(), false)
-        app.set_visible((app.ValidateButton, app.CodegenButton,
-            app.ResultButton, app.QgcButton), true)
-        app.ValidateButton.Position = [24, 420, 270, 44]
-        app.ValidateButton.Text = "检查生成门禁"
-        app.CodegenButton.Position = [314, 420, 270, 44]
-        app.CodegenButton.Text = "生成 C 代码"
-        app.ResultButton.Position = [24, 480, 270, 44]
-        app.ResultButton.Text = "打开产物目录"
-        app.QgcButton.Position = [314, 480, 270, 44]
-        app.QgcButton.Text = "交接至 QGC"
-        app.CodegenButton.Enable = true
-        app.QgcButton.Enable = true
+        app.set_visible((app.CodegenButton,), true)
+        app.CodegenButton.Position = [24, 390, 560, 44]
+        app.CodegenButton.Text = "打开 MWORKS 代码生成模型"
     end
 
     function configure_assistant_workspace(app)
@@ -757,7 +859,7 @@ const OFFLINE_PROFILES = Dict(
             app.LastOperationalMode = mode
             app.configure_deploy_workspace()
             app.set_connection_controls(false)
-            app.append_console("切换至生成代码部署工作台")
+            app.append_console("切换至 MWORKS 代码生成工作台")
         else
             app.configure_assistant_workspace()
             app.set_connection_controls(false)
@@ -780,6 +882,13 @@ const OFFLINE_PROFILES = Dict(
 
     function AssistantModePressed(app, event)
         app.set_mode("assistant")
+    end
+
+    function FamilyChanged(app, event)
+        family = app.ControllerFamilyDropDown.Value
+        app.PositionDropDown.Items = app.controller_options_for_family(family)
+        app.PositionDropDown.Value = app.PositionDropDown.Items[1]
+        app.SelectionChanged(event)
     end
 
     function SelectionChanged(app, event)
@@ -1020,32 +1129,57 @@ const OFFLINE_PROFILES = Dict(
             app.ReviewAction("请求安全停止")
         end
     end
-    function OpenModelPressed(app, event)
+    function open_mworks_model(app, mode)
         if !isfile(OPEN_MODEL_SCRIPT)
             app.append_console("打开模型入口不存在：" * OPEN_MODEL_SCRIPT; level="错误")
             return
         end
-        mode = app.CurrentMode == "live" ? "live" : "model"
+        controller = app.selected_controller_entry()
+        if controller === nothing
+            app.append_console("当前控制器没有可解析的 MWORKS 模型入口"; level="错误")
+            return
+        end
+        if mode == "codegen" && !controller.openable
+            app.append_console("当前控制器尚无可打开的 MWORKS 代码生成模型"; level="阻断")
+            return
+        end
         profile_id = haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value) ?
             OFFLINE_PROFILES[app.ProfileDropDown.Value].profile : ""
         vehicle_count = app.VehicleCountDropDown.Value
         output_variant = app.OutputDropDown.Value
-        app.append_console(mode == "live" ? "正在打开联合仿真模型" : "正在打开当前仿真模型"; level="运行")
+        opening_text = mode == "codegen" ? "正在打开 MWORKS 代码生成模型" :
+            (mode == "live" ? "正在打开联合仿真模型" : "正在打开当前仿真模型")
+        app.append_console(opening_text; level="运行")
         @async begin
             try
-                run_process_in_directory([
+                command_args = [
                     "python", OPEN_MODEL_SCRIPT,
                     "--mode", mode,
-                    "--profile-id", profile_id,
-                    "--vehicle-count", vehicle_count,
-                    "--output-variant", output_variant,
-                ], PROJECT_ROOT)
-                app.append_console(mode == "live" ? "联合仿真模型已打开；请在 MWORKS 中自行点击仿真" :
-                    "仿真模型已打开；请在 MWORKS 中自行点击仿真"; level="通过")
+                    "--controller-id", controller.id,
+                ]
+                if mode != "codegen"
+                    append!(command_args, [
+                        "--profile-id", profile_id,
+                        "--vehicle-count", vehicle_count,
+                        "--output-variant", output_variant,
+                    ])
+                end
+                run_process_in_directory(command_args, PROJECT_ROOT)
+                if mode == "codegen"
+                    app.append_console("代码生成模型已打开；请在 MWORKS 的“代码生成”页签中自行点击“代码生成”"; level="通过")
+                elseif mode == "live"
+                    app.append_console("联合仿真模型已打开；请在 MWORKS 中自行点击仿真"; level="通过")
+                else
+                    app.append_console("仿真模型已打开；请在 MWORKS 中自行点击仿真"; level="通过")
+                end
             catch error
                 app.append_console("打开模型失败：" * sprint(showerror, error); level="错误")
             end
         end
+    end
+
+    function OpenModelPressed(app, event)
+        app.open_mworks_model(app.CurrentMode == "live" ? "live" : "model")
     end
     function MilPressed(app, event)
         if app.OfflineBatchRunning
@@ -1063,7 +1197,9 @@ const OFFLINE_PROFILES = Dict(
             app.ReviewAction("运行 MWORKS MIL")
         end
     end
-    function CodegenPressed(app, event); app.ReviewAction("生成 C 代码"); end
+    function CodegenPressed(app, event)
+        app.open_mworks_model("codegen")
+    end
     function ResultPressed(app, event)
         if app.CurrentMode == "model" && !isempty(app.LastOfflineBatchManifest)
             if !isfile(OFFLINE_ANIMATION_RESUMER)
@@ -1144,7 +1280,7 @@ const OFFLINE_PROFILES = Dict(
         app.LiveModeButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.LiveModeButton, "实时联合仿真", "LiveModePressed", [218, 82, 190, 40])
         app.DeployModeButton = TyAppDesigner.uibutton(app.UIFigure)
-        app.configure_action(app.DeployModeButton, "生成代码部署", "DeployModePressed", [412, 82, 190, 40])
+        app.configure_action(app.DeployModeButton, "代码生成", "DeployModePressed", [412, 82, 190, 40])
         app.AssistantModeButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.AssistantModeButton, "MoSim 助手", "AssistantModePressed", [606, 82, 190, 40])
 
@@ -1170,8 +1306,11 @@ const OFFLINE_PROFILES = Dict(
         app.configure_dropdown(app.MapDropDown, "地图", [254, 238, 210, 32], MAP_OPTIONS, MAP_OPTIONS[1])
         app.MissionDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.MissionDropDown, "任务轨迹", [24, 240, 420, 32], ["起飞-悬停-降落"], "起飞-悬停-降落")
+        app.ControllerFamilyDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.ControllerFamilyDropDown, "控制器家族", [24, 288, 170, 32], CONTROLLER_FAMILIES, CONTROLLER_FAMILIES[1])
+        app.ControllerFamilyDropDown.ValueChangedFcn = "FamilyChanged"
         app.PositionDropDown = TyAppDesigner.uidropdown(app.UIFigure)
-        app.configure_dropdown(app.PositionDropDown, "位置 / 平动外环", [24, 288, 420, 32], ["PX4CTRL 官方位置外环 PID"], "PX4CTRL 官方位置外环 PID")
+        app.configure_dropdown(app.PositionDropDown, "控制器实例", [204, 288, 260, 32], [LIVE_BASELINE_CONTROLLER], LIVE_BASELINE_CONTROLLER)
         app.AttitudeDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.AttitudeDropDown, "姿态 / 角速度内环", [24, 336, 420, 32], ["PX4 内置姿态/角速度环 [锁定]"], "PX4 内置姿态/角速度环 [锁定]")
         app.AugmentationDropDown = TyAppDesigner.uidropdown(app.UIFigure)
@@ -1308,7 +1447,7 @@ const OFFLINE_PROFILES = Dict(
         app.MilButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.MilButton, "运行 MWORKS MIL", "MilPressed", [936, 754, 150, 38])
         app.CodegenButton = TyAppDesigner.uibutton(app.UIFigure)
-        app.configure_action(app.CodegenButton, "生成 C 代码", "CodegenPressed", [1098, 754, 140, 38])
+        app.configure_action(app.CodegenButton, "打开 MWORKS 代码生成模型", "CodegenPressed", [1098, 754, 140, 38])
         app.ResultButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.ResultButton, "打开结果", "ResultPressed", [1250, 754, 166, 38])
 

@@ -15,7 +15,7 @@ runtime flight control.
 The current source UI baseline includes:
 
 - four workspaces: offline model validation, MWORKS Live, generated-C
-  deployment, and the local-context `MoSim 助手`;
+  model entry, and the local-context `MoSim 助手`;
 - `MoSim 助手` reads the current Profile/control-chain selections and provides
   local MWORKS, QGC, fault, and result-viewing guidance only; it does not start
   MWORKS, export code, or send flight/runtime commands;
@@ -126,6 +126,12 @@ selected model into the existing MWORKS session. The `实时联合仿真` worksp
 uses the same two actions, with `打开联合仿真模型` loading the MWORKS Live
 model. Neither workspace starts, stops, or opens a result; after the model is
 open, run the simulation from MWORKS itself.
+
+The `代码生成` workspace uses the same manual boundary. It filters the active
+controller catalog by family, opens the selected MWORKS graphical model, and
+does not call `GenerateModelCode`, compile generated files, or open a result.
+After the model is visible, use MWORKS's native `代码生成` ribbon action and
+inspect the generated artifacts there.
 
 The model-opening path is `Scripts/ui/open_model_studio_model.py`. It starts a
 dedicated Sysplorer session through the official

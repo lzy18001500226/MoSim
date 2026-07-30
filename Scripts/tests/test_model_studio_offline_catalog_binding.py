@@ -1,12 +1,18 @@
 from __future__ import annotations
 
+import importlib.util
 import json
+import re
 from pathlib import Path
+
+import pytest
 
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "Config" / "control_platform" / "offline_composition_catalog.json"
 APP_SOURCE = ROOT / "apps" / "model_studio" / "src" / "app.jl"
+CURRENT_MODEL_ENTRY_MAP = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
+OPEN_MODEL_SCRIPT = ROOT / "Scripts" / "ui" / "open_model_studio_model.py"
 
 
 def test_model_studio_contains_every_offline_profile_authority() -> None:
@@ -47,7 +53,7 @@ def test_model_studio_has_three_distinct_review_workspaces() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert '"在线建模验证"' in source
     assert '"实时联合仿真"' in source
-    assert '"生成代码部署"' in source
+    assert '"代码生成"' in source
     assert "function configure_model_workspace(app)" in source
     assert "function configure_live_workspace(app)" in source
     assert "function configure_deploy_workspace(app)" in source
@@ -58,7 +64,7 @@ def test_model_studio_safe_button_callbacks_are_bound() -> None:
     expected_callbacks = {
         '"在线建模验证"': '"OfflineModePressed"',
         '"实时联合仿真"': '"LiveModePressed"',
-        '"生成代码部署"': '"DeployModePressed"',
+        '"代码生成"': '"DeployModePressed"',
         '"清空"': '"ClearConsolePressed"',
         '"应用故障"': '"ApplyInjectionPressed"',
         '"恢复正常"': '"RestoreInjectionPressed"',
@@ -82,7 +88,9 @@ def test_model_studio_safe_button_callbacks_are_bound() -> None:
 def test_model_studio_external_action_buttons_fail_closed() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert 'app.ReviewAction("进入 QGC")' in source
-    assert 'app.ReviewAction("生成 C 代码")' in source
+    assert 'app.ReviewAction("生成 C 代码")' not in source
+    assert 'app.open_mworks_model("codegen")' in source
+    assert '"--controller-id", controller.id' in source
     assert "OFFLINE_ANIMATION_RESUMER" in source
     assert '"--keep-session-open"' in source
     assert '"请先完成一次仿真，再打开当前结果"' in source
@@ -95,6 +103,7 @@ def test_model_workspace_exposes_each_algorithm_layer() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     for component in (
         "MissionDropDown",
+        "ControllerFamilyDropDown",
         "PositionDropDown",
         "AttitudeDropDown",
         "AugmentationDropDown",
@@ -235,7 +244,29 @@ def test_model_studio_header_is_compact_and_left_aligned() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert 'app.TitleLabel.HorizontalAlignment = "left"' in source
     assert "SubtitleLabel" not in source
+    assert "控制器配置、模型验证与QGC运行交接" not in source
     assert "控制器配置、模型验证与 QGC 运行交接" not in source
+
+
+def test_model_studio_controller_selector_matches_active_catalog() -> None:
+    catalog = json.loads(
+        (ROOT / "Config" / "control_platform" / "control_scheme_catalog.json").read_text(
+            encoding="utf-8-sig"
+        )
+    )
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    selector = source.split("const CONTROLLER_CATALOG = [", 1)[1].split(
+        "]\nconst LEGACY_PROFILE_CONTROLLERS", 1
+    )[0]
+    active_ids = [scheme["scheme_id"] for scheme in catalog["schemes"]]
+    assert len(active_ids) == 48
+    assert len(re.findall(r'\(id="([^"]+)"', selector)) == 48
+    assert all(f'id="{scheme_id}"' in selector for scheme_id in active_ids)
+    assert "mu_synthesis" not in selector
+    assert "neural_smc" not in selector
+    assert "FamilyChanged" in source
+    assert "IMPLEMENTED_COLOR" in source
+    assert "app.controller_options_for_family(family)" in source
 
 
 def test_model_studio_starts_offline_batch_with_base_process_api() -> None:
@@ -291,6 +322,7 @@ def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert 'const OPEN_MODEL_SCRIPT = joinpath(PROJECT_ROOT, "Scripts", "ui", "open_model_studio_model.py")' in source
     assert '"--mode", mode' in source
+    assert '"--controller-id", controller.id' in source
     assert '"--output-variant", output_variant' in source
     assert 'success(process) || error(' in source
     assert "请在 MWORKS 中自行点击仿真" in source
@@ -306,6 +338,13 @@ def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
     assert 'result["worker_process_id"] = worker.pid' in script_text
     assert "user32.SetForegroundWindow(hwnd)" in script_text
     assert 'RUNNER_MODELS' in script_text
+    assert 'choices=("model", "live", "codegen")' in script_text
+    assert 'parser.add_argument("--controller-id", default="")' in script_text
+    assert "resolve_controller_model" in script_text
+    assert "PX4CTRL_CODEGEN_MODEL_FILE" in script_text
+    assert 'args.mode == "codegen"' in script_text
+    assert '"controller_id": args.controller_id' in script_text
+    assert "GenerateModelCode" not in script_text
     assert "SimulateModel" not in script_text
     assert 'ModelingPy.StartSysplorer(start_mode="-gui", processPath=args.mworks_exe)' in worker_text
     assert "ModelingPy.OpenModelFile" in worker_text
@@ -317,6 +356,35 @@ def test_model_studio_open_model_is_a_separate_non_simulation_entry() -> None:
     assert "SimulateModel" not in worker_text
 
 
+def test_codegen_model_resolver_uses_current_graphical_model_map() -> None:
+    spec = importlib.util.spec_from_file_location("open_model_studio_model", OPEN_MODEL_SCRIPT)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    model_map = json.loads(CURRENT_MODEL_ENTRY_MAP.read_text(encoding="utf-8-sig"))
+    rows = {row["scheme_id"]: row for row in model_map["schemes"]}
+    resolved_ids = [
+        scheme_id
+        for scheme_id, row in rows.items()
+        if row.get("mapping_state") == "resolved_current_model"
+    ]
+    assert len(resolved_ids) == 46
+    for scheme_id in resolved_ids:
+        model_file, model_class = module.resolve_controller_model(scheme_id)
+        assert model_file == ROOT / rows[scheme_id]["current_model_file"]
+        assert model_file.is_file()
+        assert model_class == rows[scheme_id]["current_model_class"]
+
+    model_file, model_class = module.resolve_controller_model("px4ctrl")
+    assert model_file == module.PX4CTRL_CODEGEN_MODEL_FILE
+    assert model_file.is_file()
+    assert model_class == module.PX4CTRL_CODEGEN_MODEL_NAME
+
+    with pytest.raises(ValueError, match="controller_not_openable"):
+        module.resolve_controller_model("pid_awff_linear_eso")
+
+
 def test_deploy_workspace_uses_two_columns_and_wide_console() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     deploy = source.split("function configure_deploy_workspace(app)", 1)[1].split(
@@ -324,7 +392,10 @@ def test_deploy_workspace_uses_two_columns_and_wide_console() -> None:
     )[0]
     assert "app.configure_console_workspace(left=614, width=802)" in deploy
     assert "app.ChainSectionLabel.Visible = false" in deploy
-    assert 'app.configure_section(app.ConfigSectionLabel, "生成配置与操作", [24, 144, 560, 34])' in deploy
+    assert 'app.configure_section(app.ConfigSectionLabel, "代码生成模型", [24, 144, 560, 34])' in deploy
+    assert 'app.configure_section(app.InjectionSectionLabel, "操作日志", [614, 144, 802, 34])' in deploy
+    assert 'app.CodegenButton.Text = "打开 MWORKS 代码生成模型"' in deploy
+    assert 'app.set_visible((app.CodegenButton,), true)' in deploy
 
 
 def test_model_studio_window_height_tracks_lowest_controls() -> None:

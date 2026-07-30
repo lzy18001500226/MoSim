@@ -3,8 +3,10 @@
 
 The selected class is loaded with its project package dependencies and opened
 in a dedicated Sysplorer session. Offline models are checked before success is
-reported. This entry point never simulates the model, opens a result, starts a
-flight task, or changes the solver lifecycle.
+reported. Code-generation mode only opens the selected graphical model for the
+user's native MWORKS action. This entry point never simulates the model,
+generates code, opens a result, starts a flight task, or changes the solver
+lifecycle.
 """
 
 from __future__ import annotations
@@ -22,11 +24,14 @@ import psutil
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "Config" / "control_platform" / "offline_composition_catalog.json"
+CURRENT_MODEL_ENTRY_MAP = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
 LOG = ROOT / "Results" / "ui_platform" / "model_studio_open_model" / "latest.json"
 THREE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Formation" / "FormationTriangleFigure8LinearMPCSysblockClosedLoop.mo"
 THREE_MODEL_NAME = "MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC"
 LIVE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
 LIVE_MODEL_NAME = "MoSimQuadrotorModel.Deployment.RT1OfficialPidShadow50Hz"
+PX4CTRL_CODEGEN_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Implementations" / "Sysblocks" / "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo"
+PX4CTRL_CODEGEN_MODEL_NAME = "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock"
 MODEL_DECLARATION = re.compile(r"\bmodel\s+([A-Za-z_]\w*)")
 DEFAULT_MWORKS_EXE = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\Bin64\mworks.exe")
 DEFAULT_MWORKS_PYTHON = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\External\python64\python.exe")
@@ -68,6 +73,20 @@ def resolve_offline_model(profile_id: str, vehicle_count: int, output_variant: s
     certification = json.loads(record.read_text(encoding="utf-8-sig"))
     model_file = ROOT / str(certification["artifacts"]["model_source"])
     return model_file, model_name_from_file(model_file)
+
+
+def resolve_controller_model(controller_id: str) -> tuple[Path, str]:
+    if controller_id == "px4ctrl":
+        return PX4CTRL_CODEGEN_MODEL_FILE, PX4CTRL_CODEGEN_MODEL_NAME
+    entry_map = json.loads(CURRENT_MODEL_ENTRY_MAP.read_text(encoding="utf-8-sig"))
+    entry = next(
+        (item for item in entry_map.get("schemes", []) if item.get("scheme_id") == controller_id),
+        None,
+    )
+    if entry is None or entry.get("mapping_state") != "resolved_current_model":
+        raise ValueError("controller_not_openable")
+    model_file = ROOT / str(entry["current_model_file"])
+    return model_file, str(entry["current_model_class"])
 
 
 def resolve_mworks_executable() -> Path:
@@ -135,7 +154,8 @@ def visible_model_window(model_name: str, timeout_s: float = 15.0) -> tuple[int,
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=("model", "live"), required=True)
+    parser.add_argument("--mode", choices=("model", "live", "codegen"), required=True)
+    parser.add_argument("--controller-id", default="")
     parser.add_argument("--profile-id", default="")
     parser.add_argument("--vehicle-count", type=int, default=1)
     parser.add_argument("--output-variant", default="ROTOR_COMMAND")
@@ -143,8 +163,14 @@ def main() -> int:
     if args.mode == "live":
         model_file = LIVE_MODEL_FILE.with_name("RT1OfficialPidShadow50Hz.mo")
         model_name = LIVE_MODEL_NAME
+    elif args.mode == "codegen":
+        if not args.controller_id:
+            parser.error("--controller-id is required for codegen mode")
+        model_file, model_name = resolve_controller_model(args.controller_id)
     else:
-        model_file, model_name = resolve_offline_model(args.profile_id, args.vehicle_count, args.output_variant)
+        model_file, model_name = resolve_offline_model(
+            args.profile_id, args.vehicle_count, args.output_variant
+        )
     if not model_file.is_file():
         raise FileNotFoundError(f"model_file_not_found: {model_file}")
 
@@ -152,6 +178,7 @@ def main() -> int:
     result = {
         "schema": "mosim.model_studio.open_model_result.v1",
         "mode": args.mode,
+        "controller_id": args.controller_id,
         "profile_id": args.profile_id,
         "model_file": model_file.relative_to(ROOT).as_posix(),
         "model_name": model_name,
