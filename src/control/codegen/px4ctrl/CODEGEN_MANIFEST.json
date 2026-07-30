@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.px4ctrl_codegen_export.v1",
+  "generated_graphical_model": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
+  "generated_c_hashes": {
+    "types": "d669d41172ed6cedd941d610a917e37b1d9a915b9b136028cc2f50b38fb5b1b3",
+    "runtime": "146110591d7f45049bea28f68f90d23a013905a42a4e2dbe7bec6dd4674c9fab",
+    "header": "054ea1907fb89446f95e8165b0dfe00d7f559e9eab0c65d713cd0bbcf7fe3015",
+    "private": "eefb1a0a95921de2af63f2693cfe7ca585fe7b417d1b2c5f8e49cef4d6ab8455",
+    "source": "d755e236bdcc9045faa25e4e3055ed7ac3791452960c0d30a41bc0dcada0fb39",
+    "data": "390a49ad2c5cf87b056bedacfa5846f89234574d8b82bdffdb81e9c090589bf3"
+  },
+  "exported_files": {
+    "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.c": "a3f4aba1137dd454a7370f40b1365ad86c47c8c19f5908538c81f92a6b7c0e76",
+    "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.h": "1c6d653c34d3944bbfad9b13f7402f87b2fdc3fb39babc296695f70c1144431d",
+    "PX4CTRL_Original_OuterLoop_Graphical_Sysblock_private.h": "524aed0f17df18f0138a316b6e40082174a47ff4f81a25c75162569cec018105",
+    "PX4CTRL_Original_OuterLoop_Graphical_Sysblock_extern_include.h": "8c110d510f8987c6d1bf38b2f666480b71b05ffff02c43865f0d3b656cab4ef7",
+    "PX4CTRL_Original_OuterLoop_Graphical_Sysblock_data.c": "35c0decb43b805672a3180788126941d6a2a54a8278a7ed0bef33680091ff5a9",
+    "mwb_types.h": "dcc27f1c9a0814ef28249ed2f324b7932752de19fd83c6c12e1a99bf4a8956f7",
+    "mwb_runtime.h": "358b7d94db58078ab46ab5e6f3aede079477ce6c27aa3f1cf6a6f508effba2bb",
+    "mwb_main.c": "35d04659afeacebb6bb9ec7dc6506f3e9bb5682151d430e7521c51dae097e24a",
+    "px4ctrl_graphical_generated_shared.c": "6ea91051b22b4202e89195f584020d87100e8f9526daee70e726368067fa9ca7"
+  },
+  "export_normalization": "LF line endings and trailing horizontal whitespace removed after MWORKS code generation; executable tokens are unchanged.",
+  "cfunction_interface": {
+    "inputs": [
+      "ref_px",
+      "px",
+      "ref_vx",
+      "vx",
+      "ref_ax",
+      "ref_py",
+      "py",
+      "ref_vy",
+      "vy",
+      "ref_ay",
+      "ref_pz",
+      "pz",
+      "ref_vz",
+      "vz",
+      "ref_az",
+      "yaw_mea",
+      "ref_yaw"
+    ],
+    "outputs": [
+      "desired_acc_x",
+      "desired_acc_y",
+      "desired_acc_z",
+      "roll_cmd",
+      "pitch_cmd",
+      "yaw_cmd",
+      "collective_thrust_n",
+      "normalized_thrust"
+    ],
+    "sample_time_s": 0.01
+  },
+  "shared_library_evidence": {
+    "platform": "WSL Linux",
+    "artifact": "Results/control_platform/px4ctrl_codegen_sil_v1/native/libpx4ctrl_graphical_generated.so",
+    "sha256": "aa6681db20928dbcfdff1a25d3c8c8b712c3fe6221188569117ac120f47aae8c",
+    "exported_symbol": "0000000000001450 T MosimPx4ctrlGeneratedGraphStepScalar",
+    "symbol_check_returncode": 0,
+    "ldd": "linux-vdso.so.1 (0x00007cdec6a1b000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007cdec6901000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007cdec6600000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007cdec6a1d000)",
+    "ldd_returncode": 0,
+    "pass": true
+  },
+  "sil_result": "Results/control_platform/px4ctrl_codegen_sil_v1/logs/CLOSED_LOOP_SIL_RESULT.json",
+  "claim_boundary": "This source set passed MWORKS graphical-to-C SIL only. Gazebo/PX4 integration is a separate runtime gate."
+}
