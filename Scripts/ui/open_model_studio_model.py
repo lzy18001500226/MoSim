@@ -40,6 +40,7 @@ DEFAULT_MWORKS_PYTHON = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\External\
 WORKER = ROOT / "Scripts" / "ui" / "open_model_studio_model_worker.py"
 WORKER_RESULT = LOG.with_name("latest.worker.json")
 TASK_CONFIG_SCHEMA = "mosim.model_studio.task_config.v1"
+SW_RESTORE = 9
 BASE_MODEL_FILES = [
     ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo",
 ]
@@ -182,7 +183,8 @@ def visible_model_window(model_name: str, timeout_s: float = 15.0) -> tuple[int,
         user32.EnumWindows(callback_type(collect), 0)
         if windows:
             hwnd, pid, title = windows[0]
-            user32.ShowWindow(hwnd, 9)  # SW_RESTORE
+            if user32.IsIconic(hwnd):
+                user32.ShowWindow(hwnd, SW_RESTORE)
             user32.BringWindowToTop(hwnd)
             user32.SetForegroundWindow(hwnd)
             return pid, title

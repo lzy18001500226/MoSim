@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -145,6 +146,112 @@ def test_baseline_is_a_separate_climbpath_handoff(tmp_path: Path) -> None:
     assert payload["configuration_kind"] == "climb_path_baseline"
     assert payload["profile"]["duration_s"] == 50.0
     assert payload["profile"]["trajectory_class"].endswith(".ClimbPath")
+
+
+def test_formal_task_accepts_composed_wind_mismatch_and_motor_fault(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_composed")
+    payload = write_config(
+        writer,
+        tmp_path,
+        task_id="figure8",
+        controller_id="px4ctrl",
+        gust_force_x_n=0.25,
+        mass_inertia_scale=1.2,
+        motor_effectiveness=[1.0, 0.5, 1.0, 1.0],
+        fault_start_s=17.0,
+    )
+    runner = payload["profile"]["runner_parameter_overrides"]
+    assert payload["configuration_kind"] == "task_parameter_variant"
+    assert runner["gust_force"] == [0.25, 0.0, 0.0]
+    assert runner["gust_start_s"] == 17.0
+    assert runner["gust_duration_s"] == 33.0
+    assert runner["mass_scale"] == 1.2
+    assert runner["inertia_scale"] == [1.2, 1.2, 1.2]
+    assert runner["fault_start_s"] == 17.0
+    assert runner["fault_rotor_index"] == 2
+    assert runner["fault_rotor_effectiveness"] == 0.5
+
+
+def test_single_uav_autonomous_avoidance_uses_the_registered_px4ctrl_route(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_single_avoidance")
+    payload = write_config(
+        writer,
+        tmp_path,
+        task_id="single_uav_autonomous_avoidance",
+        controller_id="px4ctrl",
+        gust_force_x_n=0.25,
+        mass_inertia_scale=1.1,
+        motor_effectiveness=[1.0, 1.0, 0.6, 1.0],
+        vehicle_count=1,
+        map_id="openblocks",
+        fault_target_uav=1,
+        fault_start_s=20.0,
+    )
+    assert payload["configuration_kind"] == "single_uav_planning_route"
+    assert payload["runner_class"] == writer.SPECIAL_ROUTES["single_uav_autonomous_avoidance"]["base_model"]
+    assert payload["selection"] == {
+        "vehicle_count": 1,
+        "map_id": "openblocks",
+        "fault_target_uav": 1,
+    }
+    harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
+    assert "extends MoSimQuadrotorModel.Guidance.Planning.OpenBlocksPx4Ctrl(" in harness
+    assert "gust_start_s = 20" in harness
+    gust_duration = re.search(r"gust_duration_s = ([0-9.eE+-]+)", harness)
+    assert gust_duration is not None
+    assert float(gust_duration.group(1)) == pytest.approx(80.1247340259 - 20.0)
+    assert "fault_rotor_index = 3" in harness
+
+
+def test_three_uav_figure8_targets_the_selected_plant(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_three_figure8")
+    payload = write_config(
+        writer,
+        tmp_path,
+        task_id="three_uav_figure8",
+        controller_id="px4ctrl",
+        gust_force_x_n=0.25,
+        mass_inertia_scale=1.2,
+        motor_effectiveness=[0.5, 1.0, 1.0, 1.0],
+        vehicle_count=3,
+        map_id="blank",
+        fault_target_uav=2,
+        fault_start_s=15.0,
+    )
+    assert payload["configuration_kind"] == "three_uav_formation_route"
+    assert payload["selection"]["fault_target_uav"] == 2
+    harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
+    assert "extends MoSimQuadrotorModel.Experiment.Runners.Formation.Px4CtrlThreeUavFigure8Runner(" in harness
+    assert "plant_2(" in harness
+    assert "gust_force = {0.25, 0, 0}" in harness
+    assert "fault_rotor_effectiveness = 0.5" in harness
+
+
+def test_multi_uav_route_rejects_wrong_count_and_unsupported_injection(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_multi_reject")
+    with pytest.raises(ValueError, match="task_vehicle_count_not_supported"):
+        write_config(
+            writer,
+            tmp_path,
+            task_id="three_uav_figure8",
+            controller_id="px4ctrl",
+            gust_force_x_n=0.0,
+            mass_inertia_scale=1.0,
+            motor_effectiveness=[1.0, 1.0, 1.0, 1.0],
+            vehicle_count=2,
+        )
+    with pytest.raises(ValueError, match="task_route_does_not_support_injection"):
+        write_config(
+            writer,
+            tmp_path,
+            task_id="three_uav_autonomous_avoidance",
+            controller_id="linear_mpc",
+            gust_force_x_n=0.25,
+            mass_inertia_scale=1.0,
+            motor_effectiveness=[1.0, 1.0, 1.0, 1.0],
+            vehicle_count=3,
+            map_id="openblocks",
+        )
 
 
 def test_open_model_resolves_a_hash_bound_project_harness(tmp_path: Path) -> None:

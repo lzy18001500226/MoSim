@@ -33,6 +33,7 @@ end
 const CUSTOM_PROFILE_LABEL = "自定义组合"
 const VEHICLE_COUNT_OPTIONS = string.(1:9)
 const MAP_OPTIONS = ["空白地图", "Factory 避障地图"]
+const MODEL_MAP_OPTIONS = ["空白地图", "OpenBlocks 避障地图"]
 const LIVE_PROFILE_OPTIONS = [
     "official_pid_attitude_thrust_v1 [候选]",
     "official_pid + awff_v1 [候选]",
@@ -136,17 +137,17 @@ const MODEL_OUTPUT_OPTIONS = [
     "WRENCH [平台已验证]",
 ]
 const MODEL_TASKS = [
-    (id="climb_path_50s", label="基准：ClimbPath 50 s", duration_s=50.0),
-    (id="hover", label="悬停保持", duration_s=35.0),
-    (id="step_response", label="阶跃响应", duration_s=45.0),
-    (id="figure8", label="8 字轨迹", duration_s=50.0),
-    (id="spiral", label="螺旋上升", duration_s=50.0),
-    (id="wind_disturbance", label="风扰", duration_s=50.0),
-    (id="parameter_mismatch", label="参数失配", duration_s=50.0),
-    (id="motor_efficiency_fault", label="电机效率故障", duration_s=50.0),
+    (id="climb_path_50s", label="基准：ClimbPath 50 s", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
+    (id="hover", label="悬停保持", duration_s=35.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
+    (id="step_response", label="阶跃响应", duration_s=45.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
+    (id="figure8", label="8 字轨迹", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
+    (id="spiral", label="螺旋上升", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
+    (id="single_uav_autonomous_avoidance", label="单机自主避障", duration_s=80.0, vehicle_count=1, map_id="openblocks", controller_ids=["px4ctrl"], injection_supported=true),
+    (id="three_uav_figure8", label="三机三角编队 8 字", duration_s=50.0, vehicle_count=3, map_id="blank", controller_ids=["px4ctrl"], injection_supported=true),
+    (id="three_uav_autonomous_avoidance", label="三机自主避障", duration_s=360.0, vehicle_count=3, map_id="openblocks", controller_ids=["linear_mpc"], injection_supported=false),
+    (id="multi_uav_route_unavailable", label="多机任务（当前无已登记模型入口）", duration_s=0.0, vehicle_count=0, map_id="blank", controller_ids=String[], injection_supported=false),
 ]
-const MODEL_TASK_LABELS = [task.label for task in MODEL_TASKS]
-const MODEL_FORMAL_CONTROLLER_IDS = Set(["official_pid", "px4ctrl"])
+const MODEL_TASK_LABELS = [task.label for task in MODEL_TASKS if task.vehicle_count == 1]
 
 const OFFLINE_PROFILE_ORDER = [
     "Official PID 爬升 [已认证]",
@@ -222,6 +223,7 @@ const OFFLINE_PROFILES = Dict(
     BuildModeDropDown::Any = nothing
 
     TargetUavDropDown::Any = nothing
+    FaultStartTimeField::Any = nothing
     WindSlider::Any = nothing
     ParameterMismatchSlider::Any = nothing
     Motor1Slider::Any = nothing
@@ -460,6 +462,7 @@ const OFFLINE_PROFILES = Dict(
             app.TestConnectionButton, app.ConnectionStatusLabel,
             app.DeployTargetDropDown, app.BuildModeDropDown, app.ChainLabel,
             app.ContractLabel, app.TimingLabel, app.TargetUavDropDown,
+            app.FaultStartTimeField,
             app.WindSlider, app.ParameterMismatchSlider, app.Motor1Slider,
             app.Motor2Slider, app.Motor3Slider, app.Motor4Slider,
             app.InjectionValuesLabel, app.ApplyInjectionButton,
@@ -534,6 +537,27 @@ const OFFLINE_PROFILES = Dict(
         return MODEL_TASKS[1]
     end
 
+    function selected_model_vehicle_count(app)
+        return parse(Int, app.VehicleCountDropDown.Value)
+    end
+
+    function model_tasks_for_vehicle_count(app, vehicle_count)
+        tasks = [task for task in MODEL_TASKS if task.vehicle_count == vehicle_count]
+        return isempty(tasks) ? [MODEL_TASKS[end]] : tasks
+    end
+
+    function model_map_label(app, map_id)
+        return map_id == "openblocks" ? MODEL_MAP_OPTIONS[2] : MODEL_MAP_OPTIONS[1]
+    end
+
+    function model_map_id(app)
+        return app.MapDropDown.Value == MODEL_MAP_OPTIONS[2] ? "openblocks" : "blank"
+    end
+
+    function selected_fault_target_index(app)
+        return parse(Int, replace(app.TargetUavDropDown.Value, "UAV " => ""))
+    end
+
     function selected_motor_effectiveness(app)
         return [
             app.Motor1Slider.Value,
@@ -543,20 +567,32 @@ const OFFLINE_PROFILES = Dict(
         ]
     end
 
+    function model_task_controller_entries(app, task=app.selected_model_task())
+        return [entry for entry in CONTROLLER_CATALOG if entry.id in task.controller_ids]
+    end
+
     function model_task_controller_supported(app)
+        task = app.selected_model_task()
         controller = app.selected_controller_entry()
-        return controller !== nothing && controller.id in MODEL_FORMAL_CONTROLLER_IDS
+        return task.vehicle_count == app.selected_model_vehicle_count() &&
+            controller !== nothing && controller.id in task.controller_ids
     end
 
     function model_task_output_boundary(app)
+        task = app.selected_model_task()
         controller = app.selected_controller_entry()
-        controller === nothing && return "由正式 FormalRunner 决定"
+        task.vehicle_count == 0 && return "当前数量无已登记模型入口"
+        controller === nothing && return "由当前任务模型决定"
         if controller.id == "official_pid"
             return "ROTOR_COMMAND / OfficialPidFormalRunner"
         elseif controller.id == "px4ctrl"
-            return "ATTITUDE_THRUST / Px4CtrlFormalRunner"
+            return task.vehicle_count == 3 ?
+                "ROTOR_COMMAND / Px4CtrlThreeUavFigure8Runner" :
+                "ATTITUDE_THRUST / Px4CtrlFormalRunner"
+        elseif controller.id == "linear_mpc"
+            return "ROTOR_COMMAND / 已登记多机规划模型"
         end
-        return "由正式 FormalRunner 决定（未登记）"
+        return "当前任务未登记输出边界"
     end
 
     function configure_model_fixed_layers(app)
@@ -572,34 +608,65 @@ const OFFLINE_PROFILES = Dict(
         app.SafetyDropDown.Value = app.SafetyDropDown.Items[1]
         app.SafetyDropDown.Enable = false
 
-        app.FaultDropDown.Items = ["由验证任务决定"]
-        app.FaultDropDown.Value = app.FaultDropDown.Items[1]
-        app.FaultDropDown.Enable = false
-
         output = app.model_task_output_boundary()
         app.OutputDropDown.Items = [output]
         app.OutputDropDown.Value = output
         app.OutputDropDown.Enable = false
     end
 
+    function configure_model_controller_selection(app)
+        task = app.selected_model_task()
+        entries = app.model_task_controller_entries(task)
+        if isempty(entries)
+            app.ControllerFamilyDropDown.Items = ["未登记"]
+            app.ControllerFamilyDropDown.Value = app.ControllerFamilyDropDown.Items[1]
+            app.ControllerFamilyDropDown.Enable = false
+            app.PositionDropDown.Items = ["当前数量无已登记模型入口"]
+            app.PositionDropDown.Value = app.PositionDropDown.Items[1]
+            app.PositionDropDown.Enable = false
+            return
+        end
+
+        families = unique([entry.family for entry in entries])
+        current_family = app.ControllerFamilyDropDown.Value
+        selected_family = current_family in families ? current_family : families[1]
+        app.ControllerFamilyDropDown.Items = families
+        app.ControllerFamilyDropDown.Value = selected_family
+        app.ControllerFamilyDropDown.Enable = true
+
+        family_entries = [entry for entry in entries if entry.family == selected_family]
+        items = [entry.display for entry in family_entries]
+        current_display = app.PositionDropDown.Value
+        app.PositionDropDown.Items = items
+        app.PositionDropDown.Value = current_display in items ? current_display : items[1]
+        app.PositionDropDown.Enable = true
+    end
+
+    function sync_fault_target_options(app, vehicle_count)
+        target_items = ["UAV " * string(index) for index in 1:vehicle_count]
+        current_target = app.TargetUavDropDown.Value
+        app.TargetUavDropDown.Items = target_items
+        app.TargetUavDropDown.Value = current_target in target_items ? current_target : target_items[1]
+    end
+
     function update_model_task_control_enablement(app)
         task = app.selected_model_task()
-        wind_enabled = task.id == "wind_disturbance"
-        mismatch_enabled = task.id == "parameter_mismatch"
-        motor_enabled = task.id == "motor_efficiency_fault"
-        app.WindSlider.Enable = wind_enabled
-        app.ParameterMismatchSlider.Enable = mismatch_enabled
-        app.Motor1Slider.Enable = motor_enabled
-        app.Motor2Slider.Enable = motor_enabled
-        app.Motor3Slider.Enable = motor_enabled
-        app.Motor4Slider.Enable = motor_enabled
+        enabled = task.injection_supported
+        app.TargetUavDropDown.Enable = enabled
+        app.FaultStartTimeField.Enable = enabled
+        app.WindSlider.Enable = enabled
+        app.ParameterMismatchSlider.Enable = enabled
+        app.Motor1Slider.Enable = enabled
+        app.Motor2Slider.Enable = enabled
+        app.Motor3Slider.Enable = enabled
+        app.Motor4Slider.Enable = enabled
     end
 
     function apply_model_task_defaults(app)
-        task = app.selected_model_task()
-        app.WindSlider.Value = task.id == "wind_disturbance" ? 0.25 : 0.0
-        app.ParameterMismatchSlider.Value = task.id == "parameter_mismatch" ? 1.2 : 1.0
-        app.Motor1Slider.Value = task.id == "motor_efficiency_fault" ? 0.5 : 1.0
+        app.WindSlider.Value = 0.0
+        app.ParameterMismatchSlider.Value = 1.0
+        app.FaultStartTimeField.Value = 15.0
+        app.Motor1Slider.Value = 1.0
         app.Motor2Slider.Value = 1.0
         app.Motor3Slider.Value = 1.0
         app.Motor4Slider.Value = 1.0
@@ -609,39 +676,48 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function configure_model_task_controls(app)
+        previous_vehicle = app.VehicleCountDropDown.Value
         previous_task = app.TaskDropDown.Value
-        app.TaskDropDown.Items = MODEL_TASK_LABELS
-        app.TaskDropDown.Value = previous_task in MODEL_TASK_LABELS ? previous_task : MODEL_TASK_LABELS[1]
+        app.VehicleCountDropDown.Items = VEHICLE_COUNT_OPTIONS
+        app.VehicleCountDropDown.Value = previous_vehicle in VEHICLE_COUNT_OPTIONS ? previous_vehicle : "1"
+        app.VehicleCountDropDown.Label = "UAV 数量"
+        app.VehicleCountDropDown.Position = [24, 192, 210, 32]
+        app.VehicleCountDropDown.Enable = true
+
+        vehicle_count = app.selected_model_vehicle_count()
+        tasks = app.model_tasks_for_vehicle_count(vehicle_count)
+        task_labels = [task.label for task in tasks]
+        app.TaskDropDown.Items = task_labels
+        app.TaskDropDown.Value = previous_task in task_labels ? previous_task : task_labels[1]
         app.TaskDropDown.Label = "验证任务"
-        app.TaskDropDown.Position = [24, 192, 440, 32]
+        app.TaskDropDown.Position = [24, 234, 440, 32]
         app.TaskDropDown.Enable = true
 
-        desired = app.selected_controller_entry() === nothing ? LIVE_BASELINE_CONTROLLER : app.PositionDropDown.Value
-        app.sync_controller_selection(desired)
+        task = app.selected_model_task()
+        app.MapDropDown.Items = [app.model_map_label(task.map_id)]
+        app.MapDropDown.Value = app.MapDropDown.Items[1]
+        app.MapDropDown.Label = "地图"
+        app.MapDropDown.Position = [254, 192, 210, 32]
+        app.MapDropDown.Enable = false
+        app.sync_fault_target_options(vehicle_count)
+
+        app.configure_model_controller_selection()
         app.ControllerFamilyDropDown.Label = "控制器家族"
-        app.ControllerFamilyDropDown.Position = [24, 234, 440, 32]
-        app.ControllerFamilyDropDown.Enable = true
+        app.ControllerFamilyDropDown.Position = [24, 276, 440, 32]
         app.PositionDropDown.Label = "控制器实例"
-        app.PositionDropDown.Position = [24, 276, 440, 32]
-        app.PositionDropDown.Enable = true
+        app.PositionDropDown.Position = [24, 318, 440, 32]
 
         for (control, label, y) in (
-            (app.AttitudeDropDown, "姿态内环", 318),
-            (app.AugmentationDropDown, "增强层", 360),
-            (app.SafetyDropDown, "安全层", 402),
-            (app.FaultDropDown, "故障容错层", 444),
+            (app.AttitudeDropDown, "姿态内环", 360),
+            (app.AugmentationDropDown, "增强层", 402),
+            (app.SafetyDropDown, "安全层", 444),
             (app.OutputDropDown, "输出边界", 486),
         )
             control.Label = label
             control.Position = [24, y, 440, 32]
         end
         app.configure_model_fixed_layers()
-
-        if !(previous_task in MODEL_TASK_LABELS)
-            app.apply_model_task_defaults()
-        else
-            app.update_model_task_control_enablement()
-        end
+        app.update_model_task_control_enablement()
     end
 
     function is_three_uav_mission(app, mission)
@@ -658,10 +734,7 @@ const OFFLINE_PROFILES = Dict(
 
     function sync_vehicle_controls(app)
         vehicle_count = parse(Int, app.VehicleCountDropDown.Value)
-        target_items = ["UAV " * string(index) for index in 1:vehicle_count]
-        current_target = app.TargetUavDropDown.Value
-        app.TargetUavDropDown.Items = target_items
-        app.TargetUavDropDown.Value = current_target in target_items ? current_target : target_items[1]
+        app.sync_fault_target_options(vehicle_count)
 
         mission_items = app.mission_options_for_vehicle_count(vehicle_count)
         current_mission = app.MissionDropDown.Value
@@ -809,10 +882,10 @@ const OFFLINE_PROFILES = Dict(
         app.InjectionSectionLabel.Visible = true
         app.set_visible(app.workspace_controls(), false)
         model_controls = (
-            app.TaskDropDown,
+            app.VehicleCountDropDown, app.MapDropDown, app.TaskDropDown,
             app.ControllerFamilyDropDown, app.PositionDropDown, app.AttitudeDropDown,
-            app.AugmentationDropDown, app.SafetyDropDown, app.FaultDropDown,
-            app.OutputDropDown, app.WindSlider,
+            app.AugmentationDropDown, app.SafetyDropDown, app.OutputDropDown,
+            app.TargetUavDropDown, app.FaultStartTimeField, app.WindSlider,
             app.ParameterMismatchSlider,
             app.Motor1Slider, app.Motor2Slider, app.Motor3Slider,
             app.Motor4Slider,
@@ -822,21 +895,27 @@ const OFFLINE_PROFILES = Dict(
         app.configure_model_task_controls()
         app.apply_model_task_defaults()
 
-        app.WindSlider.Position = [494, 192, 440, 46]
+        app.TargetUavDropDown.Position = [494, 192, 210, 32]
+        app.TargetUavDropDown.Label = "故障目标"
+        app.FaultStartTimeField.Position = [724, 192, 210, 32]
+        app.FaultStartTimeField.Label = "工况开始时刻（s）"
+        app.FaultStartTimeField.Limits = [0.0, 1000.0]
+
+        app.WindSlider.Position = [494, 234, 440, 46]
         app.WindSlider.Label = "外力扰动（+X，N）"
         app.WindSlider.Limits = [0.0, 0.5]
         app.WindSlider.MajorTicks = [0.0, 0.1, 0.25, 0.5]
         app.WindSlider.MajorTickLabels = ["0", "0.10", "0.25", "0.50"]
-        app.ParameterMismatchSlider.Position = [494, 248, 440, 46]
+        app.ParameterMismatchSlider.Position = [494, 290, 440, 46]
         app.ParameterMismatchSlider.Label = "参数失配（质量/惯量倍率）"
         app.ParameterMismatchSlider.Limits = [1.0, 1.4]
         app.ParameterMismatchSlider.MajorTicks = [1.0, 1.1, 1.2, 1.3, 1.4]
         app.ParameterMismatchSlider.MajorTickLabels = ["1.00", "1.10", "1.20", "1.30", "1.40"]
         for (control, label, y) in (
-            (app.Motor1Slider, "电机 1 效率（15 s 后）", 304),
-            (app.Motor2Slider, "电机 2 效率（15 s 后）", 360),
-            (app.Motor3Slider, "电机 3 效率（15 s 后）", 416),
-            (app.Motor4Slider, "电机 4 效率（15 s 后）", 472),
+            (app.Motor1Slider, "电机 1 效率（工况后）", 346),
+            (app.Motor2Slider, "电机 2 效率（工况后）", 402),
+            (app.Motor3Slider, "电机 3 效率（工况后）", 458),
+            (app.Motor4Slider, "电机 4 效率（工况后）", 514),
         )
             control.Position = [494, y, 440, 46]
             control.Label = label
@@ -844,14 +923,14 @@ const OFFLINE_PROFILES = Dict(
             control.MajorTicks = [0.0, 0.5, 1.0]
             control.MajorTickLabels = ["0", "50%", "100%"]
         end
-        app.ApplyInjectionButton.Position = [494, 536, 160, 36]
+        app.ApplyInjectionButton.Position = [494, 570, 180, 36]
         app.ApplyInjectionButton.Text = "写入配置"
-        app.RestoreInjectionButton.Position = [874, 536, 60, 36]
+        app.RestoreInjectionButton.Position = [884, 570, 50, 36]
         app.RestoreInjectionButton.Text = "重置"
 
         app.set_visible(app.action_buttons(), false)
         app.set_visible((app.OpenModelButton,), true)
-        app.OpenModelButton.Position = [664, 536, 200, 36]
+        app.OpenModelButton.Position = [684, 570, 190, 36]
         app.OpenModelButton.Text = "打开仿真模型"
     end
 
@@ -1013,17 +1092,35 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function FamilyChanged(app, event)
-        family = app.ControllerFamilyDropDown.Value
-        app.PositionDropDown.Items = app.controller_options_for_family(family)
-        app.PositionDropDown.Value = app.PositionDropDown.Items[1]
+        if app.CurrentMode == "model"
+            app.configure_model_controller_selection()
+        else
+            family = app.ControllerFamilyDropDown.Value
+            app.PositionDropDown.Items = app.controller_options_for_family(family)
+            app.PositionDropDown.Value = app.PositionDropDown.Items[1]
+        end
         app.SelectionChanged(event)
     end
 
     function TaskChanged(app, event)
-        app.apply_model_task_defaults()
+        app.configure_model_task_controls()
+        app.TaskConfigPath = ""
+        app.TaskConfigDirty = true
         app.configure_model_fixed_layers()
         app.refresh_summary()
-        app.append_console("验证任务已切换；已恢复该任务的标准场景参数")
+        app.append_console("验证任务已切换；场景参数保持当前组合")
+    end
+
+    function VehicleCountChanged(app, event)
+        if app.CurrentMode == "model"
+            app.configure_model_task_controls()
+            app.TaskConfigPath = ""
+            app.TaskConfigDirty = true
+            app.refresh_summary()
+            app.append_console("UAV 数量已切换；已更新可用任务与故障目标")
+        else
+            app.SelectionChanged(event)
+        end
     end
 
     function SelectionChanged(app, event)
@@ -1136,7 +1233,7 @@ const OFFLINE_PROFILES = Dict(
             return
         end
         if !app.model_task_controller_supported()
-            app.append_console("当前验证任务只登记 official_pid 与 px4ctrl；未写入配置"; level="阻断")
+            app.append_console("当前数量、任务与控制器组合没有已登记的 MWORKS 模型入口；未写入配置"; level="阻断")
             return
         end
         if !isfile(MODEL_TASK_CONFIG_WRITER)
@@ -1155,6 +1252,10 @@ const OFFLINE_PROFILES = Dict(
                     "python", MODEL_TASK_CONFIG_WRITER,
                     "--task-id", task.id,
                     "--controller-id", controller.id,
+                    "--vehicle-count", app.VehicleCountDropDown.Value,
+                    "--map-id", app.model_map_id(),
+                    "--fault-target-uav", string(app.selected_fault_target_index()),
+                    "--fault-start-s", string(app.FaultStartTimeField.Value),
                     "--gust-force-x-n", string(app.WindSlider.Value),
                     "--mass-inertia-scale", string(app.ParameterMismatchSlider.Value),
                     "--motor-effectiveness", motors,
@@ -1342,7 +1443,7 @@ const OFFLINE_PROFILES = Dict(
         end
         if mode == "model"
             if !app.model_task_controller_supported()
-                app.append_console("当前验证任务只登记 official_pid 与 px4ctrl；未打开模型"; level="阻断")
+                app.append_console("当前数量、任务与控制器组合没有已登记的 MWORKS 模型入口；未打开模型"; level="阻断")
                 return
             end
             if app.TaskConfigDirty || isempty(app.TaskConfigPath) || !isfile(app.TaskConfigPath)
@@ -1507,6 +1608,7 @@ const OFFLINE_PROFILES = Dict(
         app.ProfileDropDown.ValueChangedFcn = "PresetChanged"
         app.VehicleCountDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.VehicleCountDropDown, "UAV 数量", [24, 238, 210, 32], VEHICLE_COUNT_OPTIONS, "1")
+        app.VehicleCountDropDown.ValueChangedFcn = "VehicleCountChanged"
         app.MapDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.MapDropDown, "地图", [254, 238, 210, 32], MAP_OPTIONS, MAP_OPTIONS[1])
         app.MissionDropDown = TyAppDesigner.uidropdown(app.UIFigure)
@@ -1586,6 +1688,13 @@ const OFFLINE_PROFILES = Dict(
 
         app.TargetUavDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.TargetUavDropDown, "故障目标", [494, 192, 440, 32], ["UAV 1"], "UAV 1")
+        app.TargetUavDropDown.ValueChangedFcn = "InjectionChanged"
+        app.FaultStartTimeField = TyAppDesigner.uinumericeditfield(app.UIFigure)
+        app.FaultStartTimeField.Position = [724, 192, 210, 32]
+        app.FaultStartTimeField.Label = "工况开始时刻（s）"
+        app.FaultStartTimeField.Value = 15.0
+        app.FaultStartTimeField.Limits = [0.0, 1000.0]
+        app.FaultStartTimeField.ValueChangedFcn = "InjectionChanged"
 
         app.ChainLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.ChainLabel.Position = [468, 346, 470, 100]
