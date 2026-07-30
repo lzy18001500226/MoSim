@@ -3,6 +3,7 @@ module MoSimModelStudio
 using ObjectOriented
 using TyAppDesigner
 using Dates
+using TOML
 include(joinpath(@__DIR__, "live_cosim_backend.jl"))
 using .LiveCosimBackend
 
@@ -22,6 +23,30 @@ const OFFLINE_ANIMATION_RESUMER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "r
 const OFFLINE_BATCH_INDEX = joinpath(PROJECT_ROOT, "Results", "control_platform", "offline_batches", "BATCH_INDEX.json")
 const OPEN_MODEL_SCRIPT = joinpath(PROJECT_ROOT, "Scripts", "ui", "open_model_studio_model.py")
 const MODEL_TASK_CONFIG_WRITER = joinpath(PROJECT_ROOT, "Scripts", "ui", "model_studio_task_config.py")
+const MODEL_TASK_ROUTE_CATALOG = joinpath(PROJECT_ROOT, "Config", "control_platform", "model_studio_task_routes_v1.toml")
+
+function load_model_task_routes()
+    isfile(MODEL_TASK_ROUTE_CATALOG) || error("模型任务路由表不存在：" * MODEL_TASK_ROUTE_CATALOG)
+    document = TOML.parsefile(MODEL_TASK_ROUTE_CATALOG)
+    get(document, "schema", "") == "mosim.model_studio_task_routes.v1" ||
+        error("模型任务路由表 schema 不匹配")
+    formal_task_ids = Set(String.(get(document, "formal_task_ids", String[])))
+    isempty(formal_task_ids) && error("模型任务路由表未声明基础任务")
+    routes = Dict{String, NamedTuple}()
+    for row in get(document, "route", Any[])
+        controller_id = String(row["controller_id"])
+        haskey(routes, controller_id) && error("模型任务路由表存在重复控制器：" * controller_id)
+        routes[controller_id] = (
+            available=Bool(get(row, "available", false)),
+            runner_class=String(get(row, "runner_class", "")),
+            boundary=String(get(row, "boundary", "")),
+            reason=String(get(row, "reason", "")),
+        )
+    end
+    return formal_task_ids, routes
+end
+
+const MODEL_FORMAL_TASK_IDS, MODEL_TASK_ROUTES = load_model_task_routes()
 
 function run_process_in_directory(command_args, directory)
     command = Cmd(Cmd(command_args); dir=directory)
@@ -572,8 +597,20 @@ const OFFLINE_PROFILES = Dict(
     function model_task_controller_supported(app)
         task = app.selected_model_task()
         controller = app.selected_controller_entry()
-        return task.vehicle_count == app.selected_model_vehicle_count() &&
-            controller !== nothing && controller.id in task.controller_ids
+        task.vehicle_count == app.selected_model_vehicle_count() || return false
+        controller === nothing && return false
+        if task.id in MODEL_FORMAL_TASK_IDS
+            route = get(MODEL_TASK_ROUTES, controller.id, nothing)
+            return route !== nothing && route.available
+        end
+        return controller.id in task.controller_ids
+    end
+
+    function model_task_route_boundary(controller_id)
+        route = get(MODEL_TASK_ROUTES, controller_id, nothing)
+        route === nothing && return nothing
+        route.available || return nothing
+        return route.boundary * " / " * last(split(route.runner_class, "."))
     end
 
     function model_task_output_boundary(app)
@@ -581,6 +618,13 @@ const OFFLINE_PROFILES = Dict(
         controller = app.selected_controller_entry()
         task.vehicle_count == 0 && return "当前数量无已登记模型入口"
         controller === nothing && return "由当前任务模型决定"
+        if task.id in MODEL_FORMAL_TASK_IDS
+            boundary = app.model_task_route_boundary(controller.id)
+            boundary !== nothing && return boundary
+            route = get(MODEL_TASK_ROUTES, controller.id, nothing)
+            reason = route === nothing ? "未登记控制器任务路由" : route.reason
+            return "当前控制器不可写入：" * reason
+        end
         if controller.id == "official_pid"
             return "ROTOR_COMMAND / OfficialPidFormalRunner"
         elseif controller.id == "px4ctrl"
@@ -607,6 +651,27 @@ const OFFLINE_PROFILES = Dict(
         app.SafetyDropDown.Enable = false
 
         output = app.model_task_output_boundary()
+        app.OutputDropDown.Items = [output]
+        app.OutputDropDown.Value = output
+        app.OutputDropDown.Enable = false
+    end
+
+    function configure_deploy_controller_layers(app)
+        app.AttitudeDropDown.Items = ["模型内部姿态/角速度环 [已认证]"]
+        app.AttitudeDropDown.Value = app.AttitudeDropDown.Items[1]
+        app.AttitudeDropDown.Enable = false
+
+        app.AugmentationDropDown.Items = ["无"]
+        app.AugmentationDropDown.Value = app.AugmentationDropDown.Items[1]
+        app.AugmentationDropDown.Enable = false
+
+        app.SafetyDropDown.Items = ["basic_limiter [已认证]"]
+        app.SafetyDropDown.Value = app.SafetyDropDown.Items[1]
+        app.SafetyDropDown.Enable = false
+
+        controller = app.selected_controller_entry()
+        output = controller === nothing ? "由已打开的 MWORKS 模型确定" :
+            something(app.model_task_route_boundary(controller.id), "由已打开的 MWORKS 模型确定")
         app.OutputDropDown.Items = [output]
         app.OutputDropDown.Value = output
         app.OutputDropDown.Enable = false
@@ -958,11 +1023,7 @@ const OFFLINE_PROFILES = Dict(
             return
         elseif app.CurrentMode == "deploy"
             controller = app.selected_controller_entry()
-            controller_status = controller === nothing ? "待接入" : controller.status
-            app.ProfileSummaryLabel.Text = "控制器家族  " * app.ControllerFamilyDropDown.Value * "\n" *
-                "控制器实例  " * app.PositionDropDown.Value * "\n" *
-                "状态  " * controller_status
-            app.ProfileSummaryLabel.BackgroundColor = app.controller_status_color(controller)
+            app.configure_deploy_controller_layers()
             app.CodegenButton.Enable = controller !== nothing && controller.openable
             return
         end
@@ -1063,7 +1124,7 @@ const OFFLINE_PROFILES = Dict(
 
     function configure_deploy_workspace(app)
         app.set_top_status("MWORKS 代码生成  |  由用户在原生 MWORKS 中执行"; state="待命")
-        app.configure_section(app.ConfigSectionLabel, "代码生成模型", [24, 144, 560, 34])
+        app.configure_section(app.ConfigSectionLabel, "代码生成控制器", [24, 144, 560, 34])
         app.configure_section(app.InjectionSectionLabel, "操作日志", [614, 144, 802, 34])
         app.configure_console_workspace(left=614, width=802)
         app.ConfigSectionLabel.Visible = true
@@ -1072,7 +1133,8 @@ const OFFLINE_PROFILES = Dict(
         app.set_visible(app.workspace_controls(), false)
         deploy_controls = (
             app.ControllerFamilyDropDown, app.PositionDropDown,
-            app.OutputDropDown, app.ProfileSummaryLabel,
+            app.AttitudeDropDown, app.AugmentationDropDown,
+            app.SafetyDropDown, app.OutputDropDown,
         )
         app.set_visible(deploy_controls, true)
         desired = app.selected_controller_entry() === nothing ? LIVE_BASELINE_CONTROLLER : app.PositionDropDown.Value
@@ -1081,16 +1143,20 @@ const OFFLINE_PROFILES = Dict(
         app.set_dropdown_position(app.PositionDropDown, [314, 192, 270, 32])
         app.PositionDropDown.Label = "控制器实例"
         app.sync_controller_selection(desired)
-        app.set_dropdown_position(app.OutputDropDown, [24, 246, 560, 32])
-        app.OutputDropDown.Label = "模型输出接口"
-        app.OutputDropDown.Items = ["由已打开的 MWORKS 模型确定"]
-        app.OutputDropDown.Value = app.OutputDropDown.Items[1]
-        app.OutputDropDown.Enable = false
-        app.ProfileSummaryLabel.Position = [24, 292, 560, 80]
+        for (control, label, y) in (
+            (app.AttitudeDropDown, "姿态内环", 246),
+            (app.AugmentationDropDown, "增强层", 288),
+            (app.SafetyDropDown, "安全层", 330),
+            (app.OutputDropDown, "输出边界", 372),
+        )
+            app.set_dropdown_position(control, [24, y, 560, 32])
+            control.Label = label
+        end
+        app.configure_deploy_controller_layers()
 
         app.set_visible(app.action_buttons(), false)
         app.set_visible((app.CodegenButton,), true)
-        app.CodegenButton.Position = [24, 390, 560, 44]
+        app.CodegenButton.Position = [24, 426, 560, 44]
         app.CodegenButton.Text = "打开 MWORKS 代码生成模型"
     end
 
@@ -1229,6 +1295,10 @@ const OFFLINE_PROFILES = Dict(
             else
                 app.append_console("联合仿真控制器组合已修改；等待连接测试")
             end
+        elseif app.CurrentMode == "deploy"
+            app.configure_deploy_controller_layers()
+            app.refresh_summary()
+            app.append_console("代码生成控制器已切换；请在 MWORKS 中自行执行代码生成")
         else
             app.sync_vehicle_controls()
             app.refresh_summary()

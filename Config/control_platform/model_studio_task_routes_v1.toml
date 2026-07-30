@@ -1,0 +1,343 @@
+schema = "mosim.model_studio_task_routes.v1"
+version = 1
+scope = "Manual MWORKS task handoff routes for Model Studio. Availability means a named whole-aircraft FormalRunner and declared output boundary exist. It is not simulation, performance, seven-scenario evidence, code-generation, or runtime acceptance."
+formal_task_ids = ["climb_path_50s", "hover", "step_response", "figure8", "spiral"]
+
+[[route]]
+controller_id = "official_pid"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo"
+boundary = "ROTOR_COMMAND"
+
+[[route]]
+controller_id = "cascade_pid"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.CascadePidFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/CascadePidFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "gain_scheduled_pid"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.GainScheduledPidFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/GainScheduledPidFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "fuzzy_pid"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzyPidFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzyPidFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "neural_pid"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.NeuralPidFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NeuralPidFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "fopid"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FopidFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FopidFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "fixed_awff_pid"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.AwffFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AwffFormalRunner.mo"
+boundary = "ROTOR_COMMAND"
+runner_alias = "awff"
+
+[[route]]
+controller_id = "fixed_awff_l1_residual"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.L1FormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/L1FormalRunner.mo"
+boundary = "ROTOR_COMMAND"
+runner_alias = "l_1"
+
+[[route]]
+controller_id = "fixed_awff_l1_indi"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.IndiFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IndiFormalRunner.mo"
+boundary = "ROTOR_COMMAND"
+runner_alias = "indi"
+
+[[route]]
+controller_id = "pid_awff_linear_eso"
+available = false
+reason = "未登记图形控制核心、Adapter 或 FormalRunner"
+
+[[route]]
+controller_id = "lqr_baseline"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqrBaselineFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "lqi_baseline"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LqiFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqiFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+runner_alias = "lqi"
+
+[[route]]
+controller_id = "lqg"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LqgFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqgFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "h2_state_feedback"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.H2StateFeedbackFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/H2StateFeedbackFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+runner_alias = "h_2_state_feedback"
+
+[[route]]
+controller_id = "hinf_hover_wrench"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.HinfHoverWrenchFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/HinfHoverWrenchFormalRunner.mo"
+boundary = "WRENCH"
+
+[[route]]
+controller_id = "pole_placement_luenberger"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.PolePlacementLuenbergerFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PolePlacementLuenbergerFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "backstepping_baseline"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.BacksteppingBaselineFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/BacksteppingBaselineFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "adaptive_backstepping"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveBacksteppingFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveBacksteppingFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "feedback_linearization"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FeedbackLinearizationFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FeedbackLinearizationFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "mrac"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.MracFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MracFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "ndi"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.NdiFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NdiFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "passivity_based_control"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.PassivityBasedControlFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PassivityBasedControlFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "integral_smc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.IntegralSmcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IntegralSmcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "terminal_smc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.TerminalSmcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TerminalSmcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "nonsingular_terminal_smc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.NonsingularTerminalSmcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NonsingularTerminalSmcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "super_twisting_smc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/SuperTwistingSmcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "adaptive_smc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveSmcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveSmcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "fuzzy_smc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzySmcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzySmcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "smc_boundary_layer"
+available = false
+reason = "当前图形模型为固定输入探针，未公开参考与测量接口"
+
+[[route]]
+controller_id = "linear_mpc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "robust_mpc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.RobustMpcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RobustMpcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "adaptive_mpc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveMpcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveMpcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "tube_mpc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.TubeMpcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TubeMpcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "explicit_gain_scheduled_mpc"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.ExplicitGainScheduledMpcFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/ExplicitGainScheduledMpcFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "ilqr"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.IlqrFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IlqrFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "mppi"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.MppiFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MppiFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "nmpc_outer"
+available = false
+reason = "当前图形模型为固定输入探针，未公开参考与测量接口"
+
+[[route]]
+controller_id = "fixed_linear_mpc_l1_indi"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcRotorFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcRotorFormalRunner.mo"
+boundary = "ROTOR_COMMAND"
+runner_alias = "linear_mpc_rotor"
+
+[[route]]
+controller_id = "fixed_qp_nmpc_l1_indi_cbf"
+available = false
+reason = "未登记可复用的全机 FormalRunner"
+
+[[route]]
+controller_id = "se3_basic"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.Se3BasicFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Se3BasicFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+runner_alias = "se_3_basic"
+
+[[route]]
+controller_id = "dfbc_basic"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcBasicFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcBasicFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "dfbc_high_order_attitude"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+runner_alias = "dfbc_high_order"
+
+[[route]]
+controller_id = "dfbc_high_order_bodyrate"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderBodyRateFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderBodyRateFormalRunner.mo"
+boundary = "BODY_RATE_THRUST"
+runner_alias = "dfbc_high_order_body_rate"
+
+[[route]]
+controller_id = "dfbc_smooth_robust_attitude"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcSmoothRobustFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcSmoothRobustFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+runner_alias = "dfbc_smooth_robust"
+
+[[route]]
+controller_id = "dfbc_smooth_robust_bodyrate"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcSmoothRobustBodyRateFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcSmoothRobustBodyRateFormalRunner.mo"
+boundary = "BODY_RATE_THRUST"
+runner_alias = "dfbc_smooth_robust_body_rate"
+
+[[route]]
+controller_id = "trained_neural_residual"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.TrainedNeuralResidualFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TrainedNeuralResidualFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "rl_gain_scheduler"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.RlGainSchedulerFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RlGainSchedulerFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
+
+[[route]]
+controller_id = "px4ctrl"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
