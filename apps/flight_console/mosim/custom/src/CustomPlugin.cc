@@ -2,6 +2,7 @@
 
 #include <QtCore/QApplicationStatic>
 #include <QtCore/QFile>
+#include <QtGui/QGuiApplication>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 
@@ -14,6 +15,8 @@ CustomPlugin::CustomPlugin(QObject *parent)
     , _operatorBridge(new MoSimOperatorBridge(this))
 {
     _showAdvancedUI = false;
+    // Keep the CMake-safe executable name while presenting the operator-facing name.
+    QGuiApplication::setApplicationDisplayName(QStringLiteral("MoSim Ground Control"));
 }
 
 CustomPlugin::~CustomPlugin()

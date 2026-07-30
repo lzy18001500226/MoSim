@@ -52,6 +52,15 @@ Item {
     property real   _layoutMargin:          ScreenTools.defaultFontPixelWidth * 0.75
     property bool   _layoutSpacing:         ScreenTools.defaultFontPixelWidth
     property bool   _showSingleVehicleUI:   true
+    readonly property bool _cameraControlsVisible: photoVideoControlLoader.status === Loader.Ready
+                                                  && photoVideoControlLoader.item !== null
+                                                  && photoVideoControlLoader.item.visible
+    readonly property real _cameraControlsLeftInset: _cameraControlsVisible
+                                                     ? photoVideoControlLoader.width + photoVideoControlLoader.anchors.leftMargin
+                                                     : 0
+    readonly property real _cameraControlsBottomInset: _cameraControlsVisible
+                                                       ? photoVideoControlLoader.height + photoVideoControlLoader.anchors.bottomMargin
+                                                       : 0
 
     property bool utmspActTrigger
 
@@ -59,14 +68,18 @@ Item {
         id:                     _totalToolInsets
         leftEdgeTopInset:       toolStrip.leftEdgeTopInset
         leftEdgeCenterInset:    toolStrip.leftEdgeCenterInset
-        leftEdgeBottomInset:    virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.leftEdgeBottomInset : parentToolInsets.leftEdgeBottomInset
+        leftEdgeBottomInset:    Math.max(parentToolInsets.leftEdgeBottomInset,
+                                         virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.leftEdgeBottomInset : 0,
+                                         _cameraControlsLeftInset)
         rightEdgeTopInset:      topRightPanel.rightEdgeTopInset
         rightEdgeCenterInset:   topRightPanel.rightEdgeCenterInset
         rightEdgeBottomInset:   bottomRightRowLayout.rightEdgeBottomInset
         topEdgeLeftInset:       toolStrip.topEdgeLeftInset
         topEdgeCenterInset:     mapScale.topEdgeCenterInset
         topEdgeRightInset:      topRightPanel.topEdgeRightInset
-        bottomEdgeLeftInset:    virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.bottomEdgeLeftInset : parentToolInsets.bottomEdgeLeftInset
+        bottomEdgeLeftInset:    Math.max(parentToolInsets.bottomEdgeLeftInset,
+                                         virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.bottomEdgeLeftInset : 0,
+                                         _cameraControlsBottomInset)
         bottomEdgeCenterInset:  bottomRightRowLayout.bottomEdgeCenterInset
         bottomEdgeRightInset:   virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.bottomEdgeRightInset : bottomRightRowLayout.bottomEdgeRightInset
     }
@@ -91,7 +104,9 @@ Item {
         anchors.bottom:     bottomRightRowLayout.top
         anchors.right:      parent.right
         spacing:            _layoutSpacing
-        visible:           !topRightPanel.visible
+        // The vendor layout contains the camera record/settings control. MoSim
+        // presents that control at the lower-left edge instead of duplicating it here.
+        visible:           false
 
         property real topEdgeRightInset:    childrenRect.height + _layoutMargin
         property real rightEdgeTopInset:    width + _layoutMargin
@@ -168,6 +183,31 @@ Item {
                 virtualJoystickMultiTouch.item.uiRealX = itemX
             } else {
                 virtualJoystickMultiTouch.item.calibration = false
+            }
+        }
+    }
+
+    // Preserve QGC's native video record, timer, and camera settings behavior,
+    // but keep the controls out of the task panel's primary scan path.
+    Loader {
+        id:                         photoVideoControlLoader
+        anchors.left:               parent.left
+        anchors.bottom:             parent.bottom
+        anchors.leftMargin:         _layoutMargin + parentToolInsets.leftEdgeBottomInset
+        anchors.bottomMargin:       _layoutMargin + Math.max(
+                                        parentToolInsets.bottomEdgeLeftInset,
+                                        virtualJoystickMultiTouch.visible
+                                        ? virtualJoystickMultiTouch.height + virtualJoystickMultiTouch.anchors.bottomMargin
+                                        : 0)
+        z:                          QGroundControl.zOrderWidgets
+        active:                     _activeVehicle !== null && _showSingleVehicleUI
+        visible:                    _cameraControlsVisible
+        sourceComponent:            _activeVehicle && _showSingleVehicleUI ? photoVideoControlComponent : undefined
+
+        Component {
+            id: photoVideoControlComponent
+
+            PhotoVideoControl {
             }
         }
     }
