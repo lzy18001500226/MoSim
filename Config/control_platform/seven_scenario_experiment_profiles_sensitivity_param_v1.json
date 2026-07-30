@@ -1,0 +1,146 @@
+{
+  "schema": "mosim.seven_scenario_experiment_profiles.v2",
+  "version": 2,
+  "status": "sensitivity_long_duration_execution_authorized",
+  "authority": {
+    "injection_contract": "Config/control_platform/seven_scenario_injection_contract_v2.json",
+    "model_root": "Models/MoSimQuadrotorModel/package.mo",
+    "result_root_template": "Results/control_platform/sensitivity_param_v1/<controller_id>/<profile_id>/"
+  },
+  "lineage": {
+    "base_profile_document": "Config/control_platform/seven_scenario_experiment_profiles_v2.json",
+    "scope": "Persistent parameter-mismatch critical-threshold scan only.",
+    "plant_change_policy": "Uses existing mass_scale and inertia_scale Runner parameters without modifying the Plant or controller nominal profile."
+  },
+  "common_execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "controller_execution_semantics": "Each FormalRunner retains its declared controller boundary; result_interval_s is the exported result and metric cadence only.",
+    "profile_hash_rule": "SHA-256 of this UTF-8 LF JSON document is copied into every sensitivity run config and record.",
+    "contract_hash_rule": "SHA-256 of the paired v2 injection contract is copied into every sensitivity run config and record."
+  },
+  "formal_runner_binding": {
+    "style": "parameterized_existing_runner",
+    "rule": "Each run binds an existing formal Runner, redeclares the selected trajectory, and applies only this Profile's runner_parameter_overrides. No controller-by-scenario Runner class is created.",
+    "allowed_runner_classes": [
+      "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner"
+    ],
+    "official_pid_boundary": {
+      "execution_mode": "native_continuous_closed_loop",
+      "reference_path": "direct",
+      "measurement_path": "direct",
+      "command_path": "direct",
+      "result_interval_s": 0.01
+    },
+    "px4ctrl_boundary": {
+      "execution_mode": "formal_100hz_discrete_boundary",
+      "reference_path": "sampled_0.01s",
+      "measurement_path": "sampled_0.01s",
+      "command_path": "controller_declared",
+      "result_interval_s": 0.01
+    }
+  },
+  "sensitivity_experiment": {
+    "scenario_family": "parameter_mismatch",
+    "analysis_goal": "Determine the largest synchronized physical mass and inertia scale that meets the 50 s tracking gate while controller parameters remain nominal.",
+    "disturbance_window_s": [0.0, 50.0],
+    "short_duration_experiments": "not_applicable",
+    "success_gate": {
+      "required_stop_time_s": 50.0,
+      "terminal_position_error_m_lt": 5.0,
+      "maximum_position_error_m_lt": 10.0
+    }
+  },
+  "profiles": [
+    {
+      "profile_id": "sensitivity_parameter_scale_110_v1",
+      "scenario_id": "parameter_mismatch",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "radius_m": 1.5,
+        "angular_rate_rad_s": 0.3,
+        "climb_rate_m_s": 0.15
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.1,
+        "inertia_scale": [1.1, 1.1, 1.1],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      }
+    },
+    {
+      "profile_id": "sensitivity_parameter_scale_120_v1",
+      "scenario_id": "parameter_mismatch",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "radius_m": 1.5,
+        "angular_rate_rad_s": 0.3,
+        "climb_rate_m_s": 0.15
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.2,
+        "inertia_scale": [1.2, 1.2, 1.2],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      }
+    },
+    {
+      "profile_id": "sensitivity_parameter_scale_130_v1",
+      "scenario_id": "parameter_mismatch",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "radius_m": 1.5,
+        "angular_rate_rad_s": 0.3,
+        "climb_rate_m_s": 0.15
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.3,
+        "inertia_scale": [1.3, 1.3, 1.3],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      }
+    },
+    {
+      "profile_id": "sensitivity_parameter_scale_140_v1",
+      "scenario_id": "parameter_mismatch",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "radius_m": 1.5,
+        "angular_rate_rad_s": 0.3,
+        "climb_rate_m_s": 0.15
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.0, 0.0, 0.0],
+        "gust_start_s": 0.0,
+        "gust_duration_s": 0.0,
+        "mass_scale": 1.4,
+        "inertia_scale": [1.4, 1.4, 1.4],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      }
+    }
+  ]
+}
