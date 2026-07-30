@@ -73,7 +73,7 @@ def test_model_workspace_separates_tasks_from_independent_scene_parameters() -> 
     assert "app.TargetUavDropDown" in model
     assert "app.FaultStartTimeField" in model
     assert "app.ParameterMismatchSlider" in model
-    assert "电机 1 效率（工况后）" in model
+    assert "app.configure_scene_parameter_controls()" in model
     assert "app.ApplyInjectionButton.Text = \"写入配置\"" in model
     assert "app.RestoreInjectionButton.Text = \"重置\"" in model
     assert "app.OpenModelButton.Text = \"打开仿真模型\"" in model
@@ -186,23 +186,70 @@ def test_model_task_scope_uses_registered_single_and_three_uav_routes() -> None:
     assert "ROTOR_COMMAND / 已登记多机规划模型" in source
 
 
-def test_live_workspace_retains_its_separate_runtime_controls() -> None:
+def test_live_workspace_uses_the_same_task_and_scene_configuration_shape() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     live = section(source, "function configure_live_workspace(app)", "function configure_deploy_workspace(app)")
+    assert '"联合仿真任务与控制器"' in live
+    assert '"场景参数"' in live
+    assert "app.configure_live_task_controls(reset_controller=true)" in live
+    assert "app.configure_scene_parameter_controls()" in live
     for expected in (
+        "VehicleCountDropDown",
+        "MapDropDown",
+        "TaskDropDown",
+        "ControllerFamilyDropDown",
+        "PositionDropDown",
         "TargetHostField",
         "Rt1PortField",
         "RosMasterField",
         "LocalIpField",
         "TargetUavDropDown",
+        "FaultStartTimeField",
         "WindSlider",
+        "ParameterMismatchSlider",
         "Motor1Slider",
-        "ApplyInjectionButton",
         "RestoreInjectionButton",
-        'app.ApplyInjectionButton.Text = "应用故障"',
+        'app.ValidateButton.Text = "写入配置"',
+        'app.RestoreInjectionButton.Text = "重置"',
         'app.OpenModelButton.Text = "打开联合仿真模型"',
+        'app.TargetRateDropDown.Value = "50"',
     ):
         assert expected in live
+    for removed in (
+        "ProfileDropDown",
+        "MissionDropDown",
+        "FaultDropDown",
+        "FormationDropDown",
+        "ApplyInjectionButton",
+    ):
+        assert removed not in live
+
+
+def test_scene_parameter_layout_is_shared_by_model_and_live_workspaces() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    scene = section(source, "function configure_scene_parameter_controls(app)", "function is_three_uav_mission(app, mission)")
+    for expected in (
+        'app.WindSlider.Label = "外力扰动（+X，N）"',
+        'app.ParameterMismatchSlider.Label = "参数失配（质量/惯量倍率）"',
+        'app.FaultStartTimeField.Label = "工况开始时刻（s）"',
+        '"电机 1 效率（工况后）"',
+        '"电机 4 效率（工况后）"',
+        "[494, 570, 180, 36]",
+        "[684, 570, 190, 36]",
+        "[884, 570, 50, 36]",
+    ):
+        assert expected in source
+    assert "app.configure_scene_parameter_controls()" in source
+    assert "WindSlider" in scene
+
+
+def test_live_scene_configuration_remains_local_until_the_runtime_backend_adds_an_injection_contract() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    apply_injection = section(source, "function ApplyInjectionPressed(app, event)", "function RestoreInjectionPressed(app, event)")
+    validate = section(source, "function ValidatePressed(app, event)", "function PublishPressed(app, event)")
+    assert 'if app.CurrentMode != "model"' in apply_injection
+    assert "联合仿真配置已写入本地界面；未发送实时链路" in validate
+    assert "LiveCosimBackend.request" not in apply_injection
 
 
 def test_deploy_workspace_remains_manual_mworks_codegen_only() -> None:
