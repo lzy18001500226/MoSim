@@ -1,0 +1,37 @@
+{
+  "experiment_profile": {
+    "id": "px4ctrl_fastlio_motor_efficiency_fault_recovery_v1",
+    "version": 1,
+    "description": "Factory L2 source-local px4ctrl lifecycle with one bounded physical rotor-1 efficiency fault and commanded nominal recovery",
+    "operator_map_id": "factory_l2",
+    "goal": "单机起飞、悬停、故障、恢复、降落",
+    "vehicle_count": 1,
+    "scenario_profile": "factory_l2_takeoff_hover_fault_recovery_v1",
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "fastlio_px4_ekf_fused_v1",
+    "height_source_profile": "fastlio_height_v1",
+    "truth_profile": "gazebo_truth_display_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "takeoff_hover_land_v1",
+    "planner_profile": "none",
+    "controller_profile": "px4ctrl_attitude_thrust_v1",
+    "controller_backend": "px4ctrl_original_fastlio_runtime_v1",
+    "augmentation_profile": "none",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "physical_gazebo_rotor1_efficiency_0_85_recovery_v1",
+    "disturbance_profile": "none",
+    "display_profile": "factory_l2_qgc_rviz_independent_ue_v1",
+    "evaluation_profile": "functional_lifecycle_and_fault_ack_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_px4ctrl_runtime_export_v1",
+    "evidence_profile": "standard_run_packet_v1",
+    "forbidden_claims": [
+      "fault-tolerant control performance",
+      "controller robustness superiority",
+      "Gazebo truth as px4ctrl control input",
+      "UE as control-loop authority"
+    ]
+  }
+}
