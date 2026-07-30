@@ -88,9 +88,39 @@ def test_wind_and_fault_windows_have_frozen_boundaries() -> None:
     assert math.isclose(fault_metrics["post_fault_peak_error_m"], 2.0, rel_tol=1e-12)
 
 
+def test_profile_context_controls_v2_disturbance_and_fault_windows() -> None:
+    metrics_module = load_metrics_module()
+    wind_data = base_data(end_s=50)
+    wind_data["x"] = [0.0 if time_s < 15.0 else 3.0 for time_s in wind_data["time"]]
+    wind_metrics = metrics_module.compute_metrics(
+        wind_data,
+        ROOT / "wind_v2.csv",
+        "wind_disturbance",
+        "fixture",
+        {"gust_start_s": 15.0, "gust_duration_s": 35.0},
+    )
+    assert math.isclose(wind_metrics["disturbance_window_start_s"], 15.0, rel_tol=1e-12)
+    assert math.isclose(wind_metrics["disturbance_window_end_s"], 50.0, rel_tol=1e-12)
+    assert math.isclose(wind_metrics["disturbance_window_rmse_m"], 3.0, rel_tol=1e-12)
+
+    fault_data = base_data(end_s=50)
+    fault_data["x"] = [0.0 if time_s < 20.0 else 4.0 for time_s in fault_data["time"]]
+    fault_metrics = metrics_module.compute_metrics(
+        fault_data,
+        ROOT / "fault_v2.csv",
+        "motor_efficiency_fault",
+        "fixture",
+        {"fault_start_s": 20.0},
+    )
+    assert math.isclose(fault_metrics["fault_start_s"], 20.0, rel_tol=1e-12)
+    assert math.isclose(fault_metrics["pre_fault_rmse_m"], 0.0, abs_tol=1e-12)
+    assert math.isclose(fault_metrics["post_fault_rmse_m"], 4.0, rel_tol=1e-12)
+
+
 def main() -> int:
     test_step_response_metrics_use_signed_axes_and_persistent_band()
     test_wind_and_fault_windows_have_frozen_boundaries()
+    test_profile_context_controls_v2_disturbance_and_fault_windows()
     print("[OK] seven-scenario metrics")
     return 0
 

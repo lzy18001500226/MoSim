@@ -3,7 +3,7 @@
 # Syslab/Julia metrics for the formal quadrotor result CSV contract.
 #
 # Usage:
-#   julia Scripts/results/calc_metrics.jl <raw_csv> <metrics_json> [scene_id] [controller_id]
+#   julia Scripts/results/calc_metrics.jl <raw_csv> <metrics_json> [scene_id] [controller_id] [metric_context]
 #   julia Scripts/results/calc_metrics.jl --self-test
 #
 # This file intentionally uses Base Julia only so it can run in a clean
@@ -18,6 +18,21 @@ const STEP_RESPONSE_EVALUATION_END_S = 45.0
 const STEP_RESPONSE_SETTLING_FRACTION = 0.05
 const STEP_RESPONSE_STEADY_STATE_START_S = 40.0
 const MOTOR_FAULT_TIME_S = 15.0
+
+function parse_metric_context(raw::AbstractString)
+    context = Dict{String, Float64}()
+    isempty(strip(raw)) && return context
+    for assignment in split(raw, ",")
+        parts = split(assignment, "="; limit = 2)
+        length(parts) == 2 || error("Invalid metric context entry: $assignment")
+        key = strip(parts[1])
+        isempty(key) && error("Metric context key must not be empty")
+        value = parse(Float64, strip(parts[2]))
+        isfinite(value) || error("Metric context values must be finite")
+        context[key] = value
+    end
+    return context
+end
 
 function read_csv(path::AbstractString)
     lines = readlines(path)
@@ -149,7 +164,13 @@ function compute_step_response_metrics(time, x, y, x_ref, y_ref, position_error)
     )
 end
 
-function compute_metrics(columns::Dict{String, Vector{Float64}}; raw_file::AbstractString = "", scene_id::AbstractString = "", controller_id::AbstractString = "unknown")
+function compute_metrics(
+    columns::Dict{String, Vector{Float64}};
+    raw_file::AbstractString = "",
+    scene_id::AbstractString = "",
+    controller_id::AbstractString = "unknown",
+    metric_context::Dict{String, Float64} = Dict{String, Float64}(),
+)
     time = columns["time"]
     isempty(time) && error("Metrics input has no data rows: $raw_file")
     x = columns["x"]
@@ -213,17 +234,21 @@ function compute_metrics(columns::Dict{String, Vector{Float64}}; raw_file::Abstr
         merge!(metrics, compute_step_response_metrics(time, x, y, x_ref, y_ref, ep))
     end
     if scene_id == "wind_disturbance"
-        metrics["disturbance_window_start_s"] = 0.0
-        metrics["disturbance_window_end_s"] = 50.0
-        metrics["disturbance_window_rmse_m"] = rmse(windowed(time, ep, 0.0, 50.0))
+        disturbance_start_s = get(metric_context, "gust_start_s", 0.0)
+        disturbance_duration_s = get(metric_context, "gust_duration_s", 50.0)
+        disturbance_end_s = min(disturbance_start_s + disturbance_duration_s, maximum(time))
+        metrics["disturbance_window_start_s"] = disturbance_start_s
+        metrics["disturbance_window_end_s"] = disturbance_end_s
+        metrics["disturbance_window_rmse_m"] = rmse(windowed(time, ep, disturbance_start_s, disturbance_end_s))
     end
     if scene_id == "motor_efficiency_fault"
+        fault_start_s = get(metric_context, "fault_start_s", MOTOR_FAULT_TIME_S)
         pre_fault = [
             error for (current_time, error) in zip(time, ep)
-            if current_time < MOTOR_FAULT_TIME_S - 1e-9 && isfinite(error)
+            if current_time < fault_start_s - 1e-9 && isfinite(error)
         ]
-        post_fault = windowed(time, ep, MOTOR_FAULT_TIME_S, maximum(time))
-        metrics["fault_start_s"] = MOTOR_FAULT_TIME_S
+        post_fault = windowed(time, ep, fault_start_s, maximum(time))
+        metrics["fault_start_s"] = fault_start_s
         metrics["pre_fault_rmse_m"] = rmse(pre_fault)
         metrics["post_fault_rmse_m"] = rmse(post_fault)
         metrics["post_fault_peak_error_m"] = max_or_nan(post_fault)
@@ -311,7 +336,8 @@ function main(args = ARGS)
         return self_test()
     end
     if length(args) < 2
-        println(stderr, "Usage: julia Scripts/results/calc_metrics.jl <raw_csv> <metrics_json> [scene_id] [controller_id]")
+        println(stderr, "Usage: julia Scripts/results/calc_metrics.jl <raw_csv> <metrics_json> [scene_id] [controller_id] [metric_context]")
+        println(stderr, "       metric_context format: gust_start_s=15,gust_duration_s=35")
         println(stderr, "       julia Scripts/results/calc_metrics.jl --self-test")
         return 2
     end
@@ -319,8 +345,15 @@ function main(args = ARGS)
     metrics_json = args[2]
     scene_id = length(args) >= 3 ? args[3] : splitext(basename(raw_csv))[1]
     controller_id = length(args) >= 4 ? args[4] : "unknown"
+    metric_context = length(args) >= 5 ? parse_metric_context(args[5]) : Dict{String, Float64}()
     _, columns = read_csv(raw_csv)
-    metrics = compute_metrics(columns; raw_file = raw_csv, scene_id = scene_id, controller_id = controller_id)
+    metrics = compute_metrics(
+        columns;
+        raw_file = raw_csv,
+        scene_id = scene_id,
+        controller_id = controller_id,
+        metric_context = metric_context,
+    )
     write_json(metrics_json, metrics)
     write_metrics_csv(replace(metrics_json, r"\.json$" => ".csv"), metrics)
     println("Metrics written: $metrics_json")

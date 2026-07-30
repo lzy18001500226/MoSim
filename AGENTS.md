@@ -105,15 +105,21 @@ the Tier2 whole-aircraft population is 45 routes. Official PID retains its
 native continuous `RotorCommandRunner` boundary, while the other 44 Tier2
 routes use their 100 Hz discrete boundary. Its nominal 50 s `ClimbPath` passed
 with RMSE `0.1729701479 m` and terminal error `0.0065067004 m`. Six Official
-PID seven-scenario records are valid. The 50 s motor-efficiency-fault record is
-invalid: a native 0-16.6 s diagnostic verified the scheduled rotor-1 transition
-from 1.0 to 0.5 at 15 s, then observed error above 5 m at 16.44 s and
-35.2414 m at 16.6 s. Preserve this negative evidence at
+PID v1 seven-scenario records are valid. The v1 50 s motor-efficiency-fault
+record is invalid; preserve this historical negative evidence at
 `Results/control_platform/seven_scenario_ab/official_pid/motor_efficiency_fault/`
 and do not alter the baseline, fault magnitude, or Plant to relabel it valid.
-The next action requires a user decision to accept this as the baseline's
-fault-case failure or authorize a distinct fault-tolerant controller/experiment
-scope.
+On 2026-07-30 CST, the user then authorized and completed a separate frozen
+two-controller seven-scenario v2 MWORKS A/B set. Its contract and Profiles are
+`Config/control_platform/seven_scenario_injection_contract_v2.json` and
+`Config/control_platform/seven_scenario_experiment_profiles_v2.json`; its
+14 records are under `Results/control_platform/seven_scenario_ab_v2/`. Twelve
+records are valid. The PX4CTRL and Official PID 50 percent rotor-1 Figure8
+fault records are retained invalid negative evidence: PX4CTRL exceeds the 5 m
+gate at 17.06 s, while the Official PID primary 50 s run exceeds the 120 s MCP
+bound and its separate 16.6 s diagnostic verifies the fault and unbounded
+response. The v2 task is awaiting user review; do not resume G3 or start other
+controller/scenario work without a new user instruction.
 
 On 2026-07-29 CST, the user subsequently authorized G2: one nominal 50 s
 `ClimbPath` attempt for every one of the 48
