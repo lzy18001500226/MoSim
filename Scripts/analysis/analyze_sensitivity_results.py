@@ -55,6 +55,8 @@ def record_value(record: dict[str, Any]) -> tuple[float, str, str]:
 
 
 def assessment_status(record: dict[str, Any], numerical: dict[str, Any]) -> str:
+    if record.get("execution_classification") == "failed_execution_solver_stall":
+        return "failed_execution_solver_stall"
     if record.get("status") == "passed":
         return "passed"
     artifacts = record.get("artifacts") if isinstance(record.get("artifacts"), dict) else {}
@@ -137,30 +139,51 @@ def summarize(records: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list
         nonmonotonic = any(item["status"] == "passed" for item in group[first_nonpass:])
         last_pass = contiguous_passes[-1] if contiguous_passes else None
         first_nonpassing = group[first_nonpass] if first_nonpass < len(group) else None
+        execution_blocked = bool(first_nonpassing and first_nonpassing["status"] == "failed_execution_solver_stall")
         incomplete = bool(first_nonpassing and first_nonpassing["status"].startswith("incomplete_"))
-        if incomplete:
+        if first_nonpass == len(group):
+            threshold_status = "no_failure_observed_in_tested_range"
+            first_fail = None
+            if scenario == "motor_efficiency_fault":
+                threshold_description = (
+                    f"全部测试的持续效率损失点均通过至 {last_pass['disturbance_value']:.0f}% "
+                    f"(eta={1.0-last_pass['disturbance_value']/100.0:.2f})，未观察到失败边界"
+                )
+            elif scenario == "wind_disturbance":
+                threshold_description = (
+                    f"全部测试的 +X 风扰点均通过至 {last_pass['disturbance_value']:.1f} N，未观察到失败边界"
+                )
+            else:
+                threshold_description = (
+                    f"全部测试的同步质量/惯量倍率均通过至 {last_pass['disturbance_value']:.1f}x，未观察到失败边界"
+                )
+        elif execution_blocked:
+            threshold_status = "execution_blocked"
+            threshold_description = "所需仿真在产出完成数值结果前停滞，无法分类"
+            first_fail = None
+        elif incomplete:
             threshold_status = "incomplete"
-            threshold_description = "not classifiable because the first required disturbance sample has no completed result"
+            threshold_description = "首个所需扰动点没有完成结果，无法分类"
             first_fail = None
         elif scenario == "motor_efficiency_fault":
             threshold_status = "observed_grid_boundary"
             first_fail = first_nonpassing
             threshold_description = (
-                f"sustained loss <= {last_pass['disturbance_value']:.0f}% (eta={1.0-last_pass['disturbance_value']/100.0:.2f})"
-                if last_pass else "no sampled sustained-loss level passed"
+                f"持续效率损失 <= {last_pass['disturbance_value']:.0f}% (eta={1.0-last_pass['disturbance_value']/100.0:.2f})"
+                if last_pass else "没有通过的持续效率损失采样点"
             )
         elif scenario == "wind_disturbance":
             threshold_status = "observed_grid_boundary"
             first_fail = first_nonpassing
             threshold_description = (
-                f"+X force <= {last_pass['disturbance_value']:.1f} N" if last_pass else "no sampled +X force level passed"
+                f"+X 风扰 <= {last_pass['disturbance_value']:.1f} N" if last_pass else "没有通过的 +X 风扰采样点"
             )
         else:
             threshold_status = "observed_grid_boundary"
             first_fail = first_nonpassing
             threshold_description = (
-                f"synchronized mass/inertia scale <= {last_pass['disturbance_value']:.1f}x"
-                if last_pass else "no sampled parameter scale passed"
+                f"同步质量/惯量倍率 <= {last_pass['disturbance_value']:.1f}x"
+                if last_pass else "没有通过的同步质量/惯量倍率采样点"
             )
         thresholds.append({
             "controller_id": controller,
@@ -168,6 +191,7 @@ def summarize(records: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], list
             "sample_count": len(group),
             "passed_sample_count": sum(item["status"] == "passed" for item in group),
             "failed_sample_count": sum(item["status"] == "failed" for item in group),
+            "execution_blocked_sample_count": sum(item["status"] == "failed_execution_solver_stall" for item in group),
             "incomplete_sample_count": sum(item["status"].startswith("incomplete_") for item in group),
             "threshold_status": threshold_status,
             "contiguous_from_low_disturbance": not nonmonotonic,
@@ -183,11 +207,20 @@ def coverage_summary(rows: list[dict[str, Any]]) -> dict[str, Any]:
     observed = sorted({str(row["scenario_id"]) for row in rows})
     missing = [scenario for scenario in SCENARIO_TITLES if scenario not in observed]
     incomplete = [row for row in rows if str(row["status"]).startswith("incomplete_")]
+    execution_blocked = [row for row in rows if row["status"] == "failed_execution_solver_stall"]
     return {
+        "record_count": len(rows),
+        "passed_record_count": sum(row["status"] == "passed" for row in rows),
+        "physical_gate_failure_count": sum(row["status"] == "failed" for row in rows),
         "observed_scenarios": observed,
         "missing_scenarios": missing,
         "incomplete_record_count": len(incomplete),
-        "status": "complete" if not missing and not incomplete else "partial_or_incomplete",
+        "execution_blocked_record_count": len(execution_blocked),
+        "status": (
+            "complete" if not missing and not incomplete and not execution_blocked else
+            "completed_with_execution_blocked_records" if not missing and not incomplete else
+            "partial_or_incomplete"
+        ),
     }
 
 
@@ -211,8 +244,13 @@ def markdown_report(rows: list[dict[str, Any]], thresholds: list[dict[str, Any]]
         lines.extend([
             "## 当前执行状态",
             "",
-            "本报告是部分结果：未完成运行被标为 `incomplete_timeout` 或 `incomplete_execution`，不被当作控制器物理失效或临界阈值样本。缺失场景不能导出阈值。",
-            "当前报告只覆盖已作为输入提供的证据根目录；要形成完整结论，三个场景均需完成且不含未完成运行。",
+            "本报告已完成三个场景的记录覆盖，但含执行阻塞：`incomplete_timeout`、`incomplete_execution` 和 `failed_execution_solver_stall` 不被当作控制器物理失效或临界阈值样本。缺失场景不能导出阈值。",
+            (
+                f"本次输入包含 {coverage['record_count']} 条记录：{coverage['passed_record_count']} 条通过门槛、"
+                f"{coverage['physical_gate_failure_count']} 条完成但未通过物理门槛、"
+                f"{coverage['execution_blocked_record_count']} 条执行阻塞。"
+            ),
+            "三个场景均有记录；执行阻塞记录不能用于推导物理鲁棒性临界值。",
             "",
         ])
     for scenario in ("motor_efficiency_fault", "wind_disturbance", "parameter_mismatch"):
@@ -236,14 +274,20 @@ def markdown_report(rows: list[dict[str, Any]], thresholds: list[dict[str, Any]]
         lines.extend(["", "观测临界值："])
         for controller in sorted({row["controller_id"] for row in scenario_rows}):
             threshold = threshold_by_key[(scenario, controller)]
-            if threshold["threshold_status"] == "incomplete":
+            if threshold["threshold_status"] in {"incomplete", "execution_blocked"}:
                 lines.append(f"- `{controller}`: {threshold['critical_threshold_description']}.")
+                continue
+            if threshold["threshold_status"] == "no_failure_observed_in_tested_range":
+                lines.append(
+                    f"- `{controller}`: {threshold['critical_threshold_description']}；"
+                    "这只是已测范围的下界，需更高强度扫描才能定位临界值。"
+                )
                 continue
             boundary = threshold["critical_threshold_description"]
             if threshold["first_failing_sample"]:
-                boundary += f"; next sampled failure: {threshold['first_failing_sample']['disturbance_label']}"
+                boundary += f"；下一采样失败点：{threshold['first_failing_sample']['disturbance_label']}"
             if not threshold["contiguous_from_low_disturbance"]:
-                boundary += "; sampled pass/fail order is nonmonotonic, so no monotonic threshold claim is made"
+                boundary += "；采样通过/失败顺序非单调，因此不作单一单调阈值声明"
             lines.append(f"- `{controller}`: {boundary}.")
         lines.append("")
     lines.extend([

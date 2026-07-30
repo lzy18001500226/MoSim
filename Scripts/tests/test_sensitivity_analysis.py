@@ -77,6 +77,44 @@ class SensitivityAnalysisTests(unittest.TestCase):
         self.assertEqual(threshold_by_controller["px4ctrl"]["threshold_status"], "observed_grid_boundary")
         self.assertIn("15%", threshold_by_controller["px4ctrl"]["critical_threshold_description"])
 
+    def test_explicit_solver_stall_is_execution_blocked_not_a_physical_threshold(self) -> None:
+        record = motor_record(
+            controller="official_pid",
+            efficiency=0.85,
+            status="failed",
+            raw=None,
+            terminal=None,
+            reasons=["failed_execution_solver_stall"],
+        )
+        record["execution_classification"] = "failed_execution_solver_stall"
+
+        rows, thresholds = self.analyzer.summarize([record])
+
+        self.assertEqual(rows[0]["status"], "failed_execution_solver_stall")
+        self.assertEqual(thresholds[0]["threshold_status"], "execution_blocked")
+        self.assertEqual(thresholds[0]["execution_blocked_sample_count"], 1)
+
+    def test_all_passing_grid_is_a_lower_bound_not_a_critical_threshold(self) -> None:
+        records = [
+            {
+                "controller_id": "px4ctrl",
+                "scenario_id": "wind_disturbance",
+                "profile_id": f"wind_{force}",
+                "status": "passed",
+                "failure_reasons": [],
+                "profile": {"runner_parameter_overrides": {"gust_force": [force, 0.0, 0.0]}},
+                "numerical_closure": {"terminal_time_s": 50.0},
+                "artifacts": {"raw_csv": "Results/raw.csv", "metrics_json": None},
+            }
+            for force in (0.2, 0.8)
+        ]
+
+        _, thresholds = self.analyzer.summarize(records)
+
+        self.assertEqual(thresholds[0]["threshold_status"], "no_failure_observed_in_tested_range")
+        self.assertIsNone(thresholds[0]["first_failing_sample"])
+        self.assertIn("未观察到失败边界", thresholds[0]["critical_threshold_description"])
+
 
 if __name__ == "__main__":
     unittest.main()
