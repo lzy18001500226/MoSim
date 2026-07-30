@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560">
+<rect width="100%" height="100%" fill="white"/>
+<text x="490.0" y="30" text-anchor="middle" font-family="Times New Roman" font-size="20">ClimbPath Control Energy Comparison</text>
+<line x1="90.0" y1="445.0" x2="940.0" y2="445.0" stroke="#222"/>
+<line x1="90.0" y1="55.0" x2="90.0" y2="445.0" stroke="#222"/>
+<line x1="90.0" y1="445.0" x2="940.0" y2="445.0" stroke="#dddddd"/>
+<text x="80.0" y="449.0" text-anchor="end" font-family="Times New Roman" font-size="12">0.0</text>
+<line x1="90.0" y1="367.0" x2="940.0" y2="367.0" stroke="#dddddd"/>
+<text x="80.0" y="371.0" text-anchor="end" font-family="Times New Roman" font-size="12">274758.462</text>
+<line x1="90.0" y1="289.0" x2="940.0" y2="289.0" stroke="#dddddd"/>
+<text x="80.0" y="293.0" text-anchor="end" font-family="Times New Roman" font-size="12">549516.924</text>
+<line x1="90.0" y1="211.0" x2="940.0" y2="211.0" stroke="#dddddd"/>
+<text x="80.0" y="215.0" text-anchor="end" font-family="Times New Roman" font-size="12">824275.387</text>
+<line x1="90.0" y1="133.0" x2="940.0" y2="133.0" stroke="#dddddd"/>
+<text x="80.0" y="137.0" text-anchor="end" font-family="Times New Roman" font-size="12">1.099033849e6</text>
+<line x1="90.0" y1="55.0" x2="940.0" y2="55.0" stroke="#dddddd"/>
+<text x="80.0" y="59.0" text-anchor="end" font-family="Times New Roman" font-size="12">1.373792311e6</text>
+<rect x="119.75" y="105.86956521739131" width="110.5" height="339.1304347826087" fill="#1f77b4"/>
+<text x="175.0" y="98.86956521739131" text-anchor="middle" font-family="Times New Roman" font-size="12">1.1946020095e6</text>
+<text x="175.0" y="465.0" text-anchor="end" transform="rotate(-35 175.0 465.0)" font-family="Times New Roman" font-size="12">adaptive_smc</text>
+<rect x="289.75" y="122.68543553781916" width="110.5" height="322.31456446218084" fill="#d62728"/>
+<text x="345.0" y="115.68543553781916" text-anchor="middle" font-family="Times New Roman" font-size="12">1.1353673599e6</text>
+<text x="345.0" y="465.0" text-anchor="end" transform="rotate(-35 345.0 465.0)" font-family="Times New Roman" font-size="12">fuzzy_smc</text>
+<rect x="459.75" y="168.28337083233384" width="110.5" height="276.71662916766616" fill="#2ca02c"/>
+<text x="515.0" y="161.28337083233384" text-anchor="middle" font-family="Times New Roman" font-size="12">974746.6088</text>
+<text x="515.0" y="465.0" text-anchor="end" transform="rotate(-35 515.0 465.0)" font-family="Times New Roman" font-size="12">integral_smc</text>
+<rect x="629.75" y="176.4839924381642" width="110.5" height="268.5160075618358" fill="#9467bd"/>
+<text x="685.0" y="169.4839924381642" text-anchor="middle" font-family="Times New Roman" font-size="12">945859.5552</text>
+<text x="685.0" y="465.0" text-anchor="end" transform="rotate(-35 685.0 465.0)" font-family="Times New Roman" font-size="12">nonsingular_terminal_smc</text>
+<rect x="799.75" y="173.49786378218323" width="110.5" height="271.50213621781677" fill="#ff7f0e"/>
+<text x="855.0" y="166.49786378218323" text-anchor="middle" font-family="Times New Roman" font-size="12">956378.326</text>
+<text x="855.0" y="465.0" text-anchor="end" transform="rotate(-35 855.0 465.0)" font-family="Times New Roman" font-size="12">terminal_smc</text>
+<text x="20" y="280.0" transform="rotate(-90 20 280.0)" text-anchor="middle" font-family="Times New Roman" font-size="14">Control Energy</text>
+</svg>

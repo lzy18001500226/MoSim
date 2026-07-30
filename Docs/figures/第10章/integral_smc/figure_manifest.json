@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:53.986264Z",
+  "controller_id": "integral_smc",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/integral_smc/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/integral_smc/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 2.0516091179139857,
+    "terminal_position_error_m": 1.6605705226404683,
+    "control_energy": 974746.6088400864,
+    "max_position_error_m": 5.376422613439683,
+    "duration_s": 50.0
+  }
+}

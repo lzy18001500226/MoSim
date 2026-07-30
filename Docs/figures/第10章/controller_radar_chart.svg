@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+<style>
+text { font-family: "Times New Roman"; fill: #1f2937; }
+.title { font-size: 18pt; font-weight: 700; }
+.family { font-size: 13pt; font-weight: 700; }
+.axis { font-size: 10pt; }
+.note { font-size: 9pt; fill: #4b5563; }
+</style>
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="800.0" y="32" text-anchor="middle" class="title">G3 Accepted Controller Family Performance Radar</text>
+<rect x="8.0" y="60.0" width="384.0" height="558.0" fill="#ffffff" stroke="#d1d5db"/>
+<text x="200.0" y="88.0" text-anchor="middle" class="family">PID族</text>
+<polygon points="200.00,292.00 238.04,319.64 223.51,364.36 176.49,364.36 161.96,319.64" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="200.00,252.00 276.08,307.28 247.02,396.72 152.98,396.72 123.92,307.28" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="200.00,212.00 314.13,294.92 270.53,429.08 129.47,429.08 85.87,294.92" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="200.00,172.00 352.17,282.56 294.05,461.44 105.95,461.44 47.83,282.56" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<line x1="200.00" y1="332.00" x2="200.00" y2="172.00" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="200.00" y="142.00" text-anchor="middle" class="axis">Position RMSE</text>
+<line x1="200.00" y1="332.00" x2="352.17" y2="282.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="384.50" y="276.05" text-anchor="middle" class="axis">Terminal Error</text>
+<line x1="200.00" y1="332.00" x2="294.05" y2="461.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="314.03" y="492.95" text-anchor="middle" class="axis">Control Energy</text>
+<line x1="200.00" y1="332.00" x2="105.95" y2="461.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="85.97" y="492.95" text-anchor="middle" class="axis">Max Error</text>
+<line x1="200.00" y1="332.00" x2="47.83" y2="282.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="15.50" y="276.05" text-anchor="middle" class="axis">Compute Efficiency</text>
+<polygon points="200.00,192.49 351.25,282.86 200.00,332.00 114.28,449.99 47.83,282.56" fill="#1f77b4" fill-opacity="0.30" stroke="#1f77b4" stroke-width="2.0"/>
+<text x="200.0" y="588.0" text-anchor="middle" class="note">n=2; median RMSE=0.2561 m</text>
+<text x="200.0" y="606.0" text-anchor="middle" class="note">Scores: higher is better; compute efficiency is a fixed 1.0 placeholder.</text>
+<rect x="408.0" y="60.0" width="384.0" height="558.0" fill="#ffffff" stroke="#d1d5db"/>
+<text x="600.0" y="88.0" text-anchor="middle" class="family">线性/鲁棒族</text>
+<polygon points="600.00,292.00 638.04,319.64 623.51,364.36 576.49,364.36 561.96,319.64" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="600.00,252.00 676.08,307.28 647.02,396.72 552.98,396.72 523.92,307.28" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="600.00,212.00 714.13,294.92 670.53,429.08 529.47,429.08 485.87,294.92" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="600.00,172.00 752.17,282.56 694.05,461.44 505.95,461.44 447.83,282.56" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<line x1="600.00" y1="332.00" x2="600.00" y2="172.00" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="600.00" y="142.00" text-anchor="middle" class="axis">Position RMSE</text>
+<line x1="600.00" y1="332.00" x2="752.17" y2="282.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="784.50" y="276.05" text-anchor="middle" class="axis">Terminal Error</text>
+<line x1="600.00" y1="332.00" x2="694.05" y2="461.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="714.03" y="492.95" text-anchor="middle" class="axis">Control Energy</text>
+<line x1="600.00" y1="332.00" x2="505.95" y2="461.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="485.97" y="492.95" text-anchor="middle" class="axis">Max Error</text>
+<line x1="600.00" y1="332.00" x2="447.83" y2="282.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="415.50" y="276.05" text-anchor="middle" class="axis">Compute Efficiency</text>
+<polygon points="600.00,188.66 752.07,282.59 600.25,332.35 512.54,452.38 447.83,282.56" fill="#d62728" fill-opacity="0.30" stroke="#d62728" stroke-width="2.0"/>
+<text x="600.0" y="588.0" text-anchor="middle" class="note">n=4; median RMSE=0.2083 m</text>
+<text x="600.0" y="606.0" text-anchor="middle" class="note">Scores: higher is better; compute efficiency is a fixed 1.0 placeholder.</text>
+<rect x="808.0" y="60.0" width="384.0" height="558.0" fill="#ffffff" stroke="#d1d5db"/>
+<text x="1000.0" y="88.0" text-anchor="middle" class="family">非线性/自适应族</text>
+<polygon points="1000.00,292.00 1038.04,319.64 1023.51,364.36 976.49,364.36 961.96,319.64" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1000.00,252.00 1076.08,307.28 1047.02,396.72 952.98,396.72 923.92,307.28" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1000.00,212.00 1114.13,294.92 1070.53,429.08 929.47,429.08 885.87,294.92" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1000.00,172.00 1152.17,282.56 1094.05,461.44 905.95,461.44 847.83,282.56" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<line x1="1000.00" y1="332.00" x2="1000.00" y2="172.00" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1000.00" y="142.00" text-anchor="middle" class="axis">Position RMSE</text>
+<line x1="1000.00" y1="332.00" x2="1152.17" y2="282.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1184.50" y="276.05" text-anchor="middle" class="axis">Terminal Error</text>
+<line x1="1000.00" y1="332.00" x2="1094.05" y2="461.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1114.03" y="492.95" text-anchor="middle" class="axis">Control Energy</text>
+<line x1="1000.00" y1="332.00" x2="905.95" y2="461.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="885.97" y="492.95" text-anchor="middle" class="axis">Max Error</text>
+<line x1="1000.00" y1="332.00" x2="847.83" y2="282.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="815.50" y="276.05" text-anchor="middle" class="axis">Compute Efficiency</text>
+<polygon points="1000.00,332.00 1085.33,304.28 1000.18,332.25 932.07,425.50 847.83,282.56" fill="#2ca02c" fill-opacity="0.30" stroke="#2ca02c" stroke-width="2.0"/>
+<text x="1000.0" y="588.0" text-anchor="middle" class="note">n=5; median RMSE=2.1621 m</text>
+<text x="1000.0" y="606.0" text-anchor="middle" class="note">Scores: higher is better; compute efficiency is a fixed 1.0 placeholder.</text>
+<rect x="1208.0" y="60.0" width="384.0" height="558.0" fill="#ffffff" stroke="#d1d5db"/>
+<text x="1400.0" y="88.0" text-anchor="middle" class="family">滑模族</text>
+<polygon points="1400.00,292.00 1438.04,319.64 1423.51,364.36 1376.49,364.36 1361.96,319.64" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1400.00,252.00 1476.08,307.28 1447.02,396.72 1352.98,396.72 1323.92,307.28" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1400.00,212.00 1514.13,294.92 1470.53,429.08 1329.47,429.08 1285.87,294.92" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1400.00,172.00 1552.17,282.56 1494.05,461.44 1305.95,461.44 1247.83,282.56" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<line x1="1400.00" y1="332.00" x2="1400.00" y2="172.00" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1400.00" y="142.00" text-anchor="middle" class="axis">Position RMSE</text>
+<line x1="1400.00" y1="332.00" x2="1552.17" y2="282.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1584.50" y="276.05" text-anchor="middle" class="axis">Terminal Error</text>
+<line x1="1400.00" y1="332.00" x2="1494.05" y2="461.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1514.03" y="492.95" text-anchor="middle" class="axis">Control Energy</text>
+<line x1="1400.00" y1="332.00" x2="1305.95" y2="461.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1285.97" y="492.95" text-anchor="middle" class="axis">Max Error</text>
+<line x1="1400.00" y1="332.00" x2="1247.83" y2="282.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1215.50" y="276.05" text-anchor="middle" class="axis">Compute Efficiency</text>
+<polygon points="1400.00,332.00 1469.63,309.38 1400.00,332.00 1337.42,418.13 1247.83,282.56" fill="#9467bd" fill-opacity="0.30" stroke="#9467bd" stroke-width="2.0"/>
+<text x="1400.0" y="588.0" text-anchor="middle" class="note">n=5; median RMSE=2.0516 m</text>
+<text x="1400.0" y="606.0" text-anchor="middle" class="note">Scores: higher is better; compute efficiency is a fixed 1.0 placeholder.</text>
+<rect x="8.0" y="634.0" width="384.0" height="558.0" fill="#ffffff" stroke="#d1d5db"/>
+<text x="200.0" y="662.0" text-anchor="middle" class="family">优化/预测族</text>
+<polygon points="200.00,866.00 238.04,893.64 223.51,938.36 176.49,938.36 161.96,893.64" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="200.00,826.00 276.08,881.28 247.02,970.72 152.98,970.72 123.92,881.28" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="200.00,786.00 314.13,868.92 270.53,1003.08 129.47,1003.08 85.87,868.92" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="200.00,746.00 352.17,856.56 294.05,1035.44 105.95,1035.44 47.83,856.56" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<line x1="200.00" y1="906.00" x2="200.00" y2="746.00" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="200.00" y="716.00" text-anchor="middle" class="axis">Position RMSE</text>
+<line x1="200.00" y1="906.00" x2="352.17" y2="856.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="384.50" y="850.05" text-anchor="middle" class="axis">Terminal Error</text>
+<line x1="200.00" y1="906.00" x2="294.05" y2="1035.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="314.03" y="1066.95" text-anchor="middle" class="axis">Control Energy</text>
+<line x1="200.00" y1="906.00" x2="105.95" y2="1035.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="85.97" y="1066.95" text-anchor="middle" class="axis">Max Error</text>
+<line x1="200.00" y1="906.00" x2="47.83" y2="856.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="15.50" y="850.05" text-anchor="middle" class="axis">Compute Efficiency</text>
+<polygon points="200.00,762.40 352.04,856.60 200.12,906.17 114.37,1023.85 47.83,856.56" fill="#ff7f0e" fill-opacity="0.30" stroke="#ff7f0e" stroke-width="2.0"/>
+<text x="200.0" y="1162.0" text-anchor="middle" class="note">n=5; median RMSE=0.2050 m</text>
+<text x="200.0" y="1180.0" text-anchor="middle" class="note">Scores: higher is better; compute efficiency is a fixed 1.0 placeholder.</text>
+<rect x="408.0" y="634.0" width="384.0" height="558.0" fill="#ffffff" stroke="#d1d5db"/>
+<text x="600.0" y="662.0" text-anchor="middle" class="family">几何/微分平坦族</text>
+<polygon points="600.00,866.00 638.04,893.64 623.51,938.36 576.49,938.36 561.96,893.64" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="600.00,826.00 676.08,881.28 647.02,970.72 552.98,970.72 523.92,881.28" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="600.00,786.00 714.13,868.92 670.53,1003.08 529.47,1003.08 485.87,868.92" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="600.00,746.00 752.17,856.56 694.05,1035.44 505.95,1035.44 447.83,856.56" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<line x1="600.00" y1="906.00" x2="600.00" y2="746.00" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="600.00" y="716.00" text-anchor="middle" class="axis">Position RMSE</text>
+<line x1="600.00" y1="906.00" x2="752.17" y2="856.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="784.50" y="850.05" text-anchor="middle" class="axis">Terminal Error</text>
+<line x1="600.00" y1="906.00" x2="694.05" y2="1035.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="714.03" y="1066.95" text-anchor="middle" class="axis">Control Energy</text>
+<line x1="600.00" y1="906.00" x2="505.95" y2="1035.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="485.97" y="1066.95" text-anchor="middle" class="axis">Max Error</text>
+<line x1="600.00" y1="906.00" x2="447.83" y2="856.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="415.50" y="850.05" text-anchor="middle" class="axis">Compute Efficiency</text>
+<polygon points="600.00,774.61 752.00,856.61 600.20,906.28 514.13,1024.19 447.83,856.56" fill="#17becf" fill-opacity="0.30" stroke="#17becf" stroke-width="2.0"/>
+<text x="600.0" y="1162.0" text-anchor="middle" class="note">n=6; median RMSE=0.3576 m</text>
+<text x="600.0" y="1180.0" text-anchor="middle" class="note">Scores: higher is better; compute efficiency is a fixed 1.0 placeholder.</text>
+<rect x="808.0" y="634.0" width="384.0" height="558.0" fill="#ffffff" stroke="#d1d5db"/>
+<text x="1000.0" y="662.0" text-anchor="middle" class="family">学习增强族</text>
+<polygon points="1000.00,866.00 1038.04,893.64 1023.51,938.36 976.49,938.36 961.96,893.64" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1000.00,826.00 1076.08,881.28 1047.02,970.72 952.98,970.72 923.92,881.28" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1000.00,786.00 1114.13,868.92 1070.53,1003.08 929.47,1003.08 885.87,868.92" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1000.00,746.00 1152.17,856.56 1094.05,1035.44 905.95,1035.44 847.83,856.56" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<line x1="1000.00" y1="906.00" x2="1000.00" y2="746.00" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1000.00" y="716.00" text-anchor="middle" class="axis">Position RMSE</text>
+<line x1="1000.00" y1="906.00" x2="1152.17" y2="856.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1184.50" y="850.05" text-anchor="middle" class="axis">Terminal Error</text>
+<line x1="1000.00" y1="906.00" x2="1094.05" y2="1035.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1114.03" y="1066.95" text-anchor="middle" class="axis">Control Energy</text>
+<line x1="1000.00" y1="906.00" x2="905.95" y2="1035.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="885.97" y="1066.95" text-anchor="middle" class="axis">Max Error</text>
+<line x1="1000.00" y1="906.00" x2="847.83" y2="856.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="815.50" y="850.05" text-anchor="middle" class="axis">Compute Efficiency</text>
+<polygon points="1000.00,906.00 1000.00,906.00 1000.00,906.00 1000.00,906.00 1000.00,906.00" fill="none" stroke="#9ca3af" stroke-width="2.0" stroke-dasharray="6,4"/>
+<text x="1000.0" y="1162.0" text-anchor="middle" class="note">No accepted controller in this family</text>
+<text x="1000.0" y="1180.0" text-anchor="middle" class="note">Scores: higher is better; compute efficiency is a fixed 1.0 placeholder.</text>
+<rect x="1208.0" y="634.0" width="384.0" height="558.0" fill="#ffffff" stroke="#d1d5db"/>
+<text x="1400.0" y="662.0" text-anchor="middle" class="family">工程基线</text>
+<polygon points="1400.00,866.00 1438.04,893.64 1423.51,938.36 1376.49,938.36 1361.96,893.64" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1400.00,826.00 1476.08,881.28 1447.02,970.72 1352.98,970.72 1323.92,881.28" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1400.00,786.00 1514.13,868.92 1470.53,1003.08 1329.47,1003.08 1285.87,868.92" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<polygon points="1400.00,746.00 1552.17,856.56 1494.05,1035.44 1305.95,1035.44 1247.83,856.56" fill="none" stroke="#d1d5db" stroke-width="0.8"/>
+<line x1="1400.00" y1="906.00" x2="1400.00" y2="746.00" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1400.00" y="716.00" text-anchor="middle" class="axis">Position RMSE</text>
+<line x1="1400.00" y1="906.00" x2="1552.17" y2="856.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1584.50" y="850.05" text-anchor="middle" class="axis">Terminal Error</text>
+<line x1="1400.00" y1="906.00" x2="1494.05" y2="1035.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1514.03" y="1066.95" text-anchor="middle" class="axis">Control Energy</text>
+<line x1="1400.00" y1="906.00" x2="1305.95" y2="1035.44" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1285.97" y="1066.95" text-anchor="middle" class="axis">Max Error</text>
+<line x1="1400.00" y1="906.00" x2="1247.83" y2="856.56" stroke="#9ca3af" stroke-width="0.8"/>
+<text x="1215.50" y="850.05" text-anchor="middle" class="axis">Compute Efficiency</text>
+<polygon points="1400.00,768.14 1552.09,856.58 1400.55,906.76 1314.15,1024.16 1247.83,856.56" fill="#8c564b" fill-opacity="0.30" stroke="#8c564b" stroke-width="2.0"/>
+<text x="1400.0" y="1162.0" text-anchor="middle" class="note">n=1; median RMSE=0.2767 m</text>
+<text x="1400.0" y="1180.0" text-anchor="middle" class="note">Scores: higher is better; compute efficiency is a fixed 1.0 placeholder.</text>
+<text x="20" y="1184" class="note">Metrics use the median of accepted controllers per family. Energy is normalized against Official PID; no runtime or deployment claim is implied.</text>
+</svg>

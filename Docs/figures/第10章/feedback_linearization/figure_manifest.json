@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:52.444627Z",
+  "controller_id": "feedback_linearization",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/feedback_linearization/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/feedback_linearization/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 2.162091102107092,
+    "terminal_position_error_m": 2.196260919695625,
+    "control_energy": 837202.5968545658,
+    "max_position_error_m": 2.8689926757002984,
+    "duration_s": 50.0
+  }
+}
