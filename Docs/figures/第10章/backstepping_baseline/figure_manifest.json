@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:52.203084Z",
+  "controller_id": "backstepping_baseline",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/backstepping_baseline/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/backstepping_baseline/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 1.8004411559773,
+    "terminal_position_error_m": 1.852120705583879,
+    "control_energy": 835910.9756271419,
+    "max_position_error_m": 2.3150926936372174,
+    "duration_s": 50.0
+  }
+}

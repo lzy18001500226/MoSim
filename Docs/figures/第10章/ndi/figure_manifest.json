@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:52.685655Z",
+  "controller_id": "ndi",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/ndi/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/ndi/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 0.10351048768735834,
+    "terminal_position_error_m": 0.0009085564467018949,
+    "control_energy": 837612.0910858306,
+    "max_position_error_m": 0.4913269107740967,
+    "duration_s": 50.0
+  }
+}

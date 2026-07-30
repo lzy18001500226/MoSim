@@ -1,0 +1,34 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:50.719773Z",
+  "controller_id": "official_pid",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/official_pid/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/official_pid/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    },
+    {
+      "file": "altitude_z.svg",
+      "type": "altitude_z"
+    },
+    {
+      "file": "position_error.svg",
+      "type": "position_error"
+    },
+    {
+      "file": "control_input.svg",
+      "type": "control_input"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 0.17297014794091128,
+    "terminal_position_error_m": 0.00650670038117275,
+    "control_energy": 838825.6055603315,
+    "max_position_error_m": 0.6952109407091154,
+    "duration_s": 50.0
+  }
+}

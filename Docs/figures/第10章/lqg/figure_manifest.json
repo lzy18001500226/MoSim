@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:51.408502Z",
+  "controller_id": "lqg",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/lqg/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/lqg/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 0.2427607354330561,
+    "terminal_position_error_m": 0.0035707744599062347,
+    "control_energy": 839718.7447919312,
+    "max_position_error_m": 0.8384184967358284,
+    "duration_s": 50.0
+  }
+}

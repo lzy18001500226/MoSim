@@ -33,12 +33,13 @@ function parse_compare_args(args)
     length(args) == 1 && args[1] == "--self-test" && return Dict("self_test" => true)
     climb = Pair{String, String}[]
     step = Pair{String, String}[]
+    climbpath = Pair{String, String}[]
     output_dir = ""
     index = 1
     while index <= length(args)
         option = args[index]
-        if option == "--climb" || option == "--step"
-            target = option == "--climb" ? climb : step
+        if option == "--climb" || option == "--step" || option == "--climbpath"
+            target = option == "--climb" ? climb : option == "--step" ? step : climbpath
             index += 1
             start_count = length(target)
             while index <= length(args) && !startswith(args[index], "--")
@@ -57,10 +58,18 @@ function parse_compare_args(args)
             error("Unknown option: $option")
         end
     end
-    isempty(climb) && error("At least one --climb CSV is required")
-    isempty(step) && error("At least one --step CSV is required")
+    legacy_requested = !isempty(climb) || !isempty(step)
+    legacy_requested && (isempty(climb) || isempty(step)) && error("--climb and --step must be provided together")
+    isempty(climbpath) && !legacy_requested && error("Provide --climbpath or the legacy --climb plus --step inputs")
+    !isempty(climbpath) && legacy_requested && error("Use either --climbpath or the legacy --climb plus --step inputs, not both")
     isempty(output_dir) && error("--output-dir is required")
-    return Dict("self_test" => false, "climb" => climb, "step" => step, "output_dir" => output_dir)
+    return Dict(
+        "self_test" => false,
+        "climb" => climb,
+        "step" => step,
+        "climbpath" => climbpath,
+        "output_dir" => output_dir,
+    )
 end
 
 function load_series(controller_id::String, path::String, scene_id::String)
@@ -110,14 +119,14 @@ function write_climb_rmse_bar(path::String, climb_rows)
     open(path, "w") do io
         println(io, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" height=\"$height\" viewBox=\"0 0 $width $height\">")
         println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
-        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"20\">ClimbPath Position RMSE Comparison</text>")
+        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"20\">ClimbPath Position RMSE Comparison</text>")
         println(io, "<line x1=\"$left\" y1=\"$(height - bottom)\" x2=\"$(width - right)\" y2=\"$(height - bottom)\" stroke=\"#222\"/>")
         println(io, "<line x1=\"$left\" y1=\"$top\" x2=\"$left\" y2=\"$(height - bottom)\" stroke=\"#222\"/>")
         for tick in 0:5
             value = y_max * tick / 5
             y = scaled(value, 0.0, y_max, height - bottom, top)
             println(io, "<line x1=\"$left\" y1=\"$y\" x2=\"$(width - right)\" y2=\"$y\" stroke=\"#dddddd\"/>")
-            println(io, "<text x=\"$(left - 10)\" y=\"$(y + 4)\" text-anchor=\"end\" font-family=\"Arial\" font-size=\"12\">$(round(value; digits = 3))</text>")
+            println(io, "<text x=\"$(left - 10)\" y=\"$(y + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"12\">$(round(value; digits = 3))</text>")
         end
         for (index, (label, value)) in enumerate(zip(labels, values))
             center_x = left + (index - 0.5) * plot_width / length(labels)
@@ -126,10 +135,128 @@ function write_climb_rmse_bar(path::String, climb_rows)
             color = COLORS[mod1(index, length(COLORS))]
             println(io, "<rect x=\"$(center_x - bar_width / 2)\" y=\"$y\" width=\"$bar_width\" height=\"$bar_height\" fill=\"$color\"/>")
             rendered = isfinite(value) ? string(round(value; digits = 4)) : "n/a"
-            println(io, "<text x=\"$center_x\" y=\"$(y - 7)\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"12\">$rendered</text>")
-            println(io, "<text x=\"$center_x\" y=\"$(height - bottom + 20)\" text-anchor=\"end\" transform=\"rotate(-35 $center_x $(height - bottom + 20))\" font-family=\"Arial\" font-size=\"12\">$(svg_escape(label))</text>")
+            println(io, "<text x=\"$center_x\" y=\"$(y - 7)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"12\">$rendered</text>")
+            println(io, "<text x=\"$center_x\" y=\"$(height - bottom + 20)\" text-anchor=\"end\" transform=\"rotate(-35 $center_x $(height - bottom + 20))\" font-family=\"Times New Roman\" font-size=\"12\">$(svg_escape(label))</text>")
         end
-        println(io, "<text x=\"20\" y=\"$(height / 2)\" transform=\"rotate(-90 20 $(height / 2))\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"14\">Position RMSE (m)</text>")
+        println(io, "<text x=\"20\" y=\"$(height / 2)\" transform=\"rotate(-90 20 $(height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"14\">Position RMSE (m)</text>")
+        println(io, "</svg>")
+    end
+end
+
+function metric_value(row, key::String)
+    value = get(row["metrics"], key, NaN)
+    return value isa Number ? Float64(value) : NaN
+end
+
+function write_metric_bar(path::String, rows, metric_key::String, title::String, y_label::String)
+    width, height = 980, 560
+    left, right, top, bottom = 90.0, 40.0, 55.0, 115.0
+    labels = [row["controller_id"] for row in rows]
+    values = [metric_value(row, metric_key) for row in rows]
+    valid_values = [value for value in values if isfinite(value)]
+    maximum_value = isempty(valid_values) ? 1.0 : maximum(valid_values)
+    y_max = maximum_value <= 0 ? 1.0 : maximum_value * 1.15
+    plot_width = width - left - right
+    plot_height = height - top - bottom
+    bar_width = 0.65 * plot_width / max(1, length(labels))
+
+    mkpath(dirname(path))
+    open(path, "w") do io
+        println(io, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" height=\"$height\" viewBox=\"0 0 $width $height\">")
+        println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
+        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"20\">$(svg_escape(title))</text>")
+        println(io, "<line x1=\"$left\" y1=\"$(height - bottom)\" x2=\"$(width - right)\" y2=\"$(height - bottom)\" stroke=\"#222\"/>")
+        println(io, "<line x1=\"$left\" y1=\"$top\" x2=\"$left\" y2=\"$(height - bottom)\" stroke=\"#222\"/>")
+        for tick in 0:5
+            value = y_max * tick / 5
+            y = scaled(value, 0.0, y_max, height - bottom, top)
+            println(io, "<line x1=\"$left\" y1=\"$y\" x2=\"$(width - right)\" y2=\"$y\" stroke=\"#dddddd\"/>")
+            println(io, "<text x=\"$(left - 10)\" y=\"$(y + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"12\">$(round(value; digits = 3))</text>")
+        end
+        for (index, (label, value)) in enumerate(zip(labels, values))
+            center_x = left + (index - 0.5) * plot_width / length(labels)
+            bar_height = isfinite(value) ? value / y_max * plot_height : 0.0
+            y = height - bottom - bar_height
+            color = COLORS[mod1(index, length(COLORS))]
+            println(io, "<rect x=\"$(center_x - bar_width / 2)\" y=\"$y\" width=\"$bar_width\" height=\"$bar_height\" fill=\"$color\"/>")
+            rendered = isfinite(value) ? string(round(value; digits = 4)) : "n/a"
+            println(io, "<text x=\"$center_x\" y=\"$(y - 7)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"12\">$rendered</text>")
+            println(io, "<text x=\"$center_x\" y=\"$(height - bottom + 20)\" text-anchor=\"end\" transform=\"rotate(-35 $center_x $(height - bottom + 20))\" font-family=\"Times New Roman\" font-size=\"12\">$(svg_escape(label))</text>")
+        end
+        println(io, "<text x=\"20\" y=\"$(height / 2)\" transform=\"rotate(-90 20 $(height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"14\">$(svg_escape(y_label))</text>")
+        println(io, "</svg>")
+    end
+end
+
+function write_control_energy_bar(path::String, rows)
+    write_metric_bar(path, rows, "control_energy", "ClimbPath Control Energy Comparison", "Control Energy")
+end
+
+function write_terminal_error_bar(path::String, rows)
+    write_metric_bar(path, rows, "terminal_position_error_m", "ClimbPath Terminal Error Comparison", "Terminal Error (m)")
+end
+
+function write_climbpath_trajectory_overlay(path::String, rows)
+    width, height = 1080, 720
+    left, right, top, bottom = 90.0, 45.0, 60.0, 115.0
+    isempty(rows) && error("At least one ClimbPath row is required")
+    all_x = Float64[]
+    all_y = Float64[]
+    for row in rows
+        columns = row["columns"]
+        append!(all_x, [value for value in columns["x"] if isfinite(value)])
+        append!(all_y, [value for value in columns["y"] if isfinite(value)])
+        append!(all_x, [value for value in columns["x_ref"] if isfinite(value)])
+        append!(all_y, [value for value in columns["y_ref"] if isfinite(value)])
+    end
+    x_min, x_max = minimum(all_x), maximum(all_x)
+    y_min, y_max = minimum(all_y), maximum(all_y)
+    x_min == x_max && (x_max = x_min + 1.0)
+    y_min == y_max && (y_max = y_min + 1.0)
+    x_pad, y_pad = 0.08 * (x_max - x_min), 0.08 * (y_max - y_min)
+    x_min, x_max = x_min - x_pad, x_max + x_pad
+    y_min, y_max = y_min - y_pad, y_max + y_pad
+    plot_width, plot_height = width - left - right, height - top - bottom
+    ref_columns = rows[1]["columns"]
+
+    mkpath(dirname(path))
+    open(path, "w") do io
+        println(io, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" height=\"$height\" viewBox=\"0 0 $width $height\">")
+        println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
+        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"20\">ClimbPath Trajectory Overlay (XY)</text>")
+        println(io, "<rect x=\"$left\" y=\"$top\" width=\"$plot_width\" height=\"$plot_height\" fill=\"none\" stroke=\"#222\"/>")
+        for tick in 0:5
+            x_value = x_min + (x_max - x_min) * tick / 5
+            x_pixel = scaled(x_value, x_min, x_max, left, left + plot_width)
+            y_value = y_min + (y_max - y_min) * tick / 5
+            y_pixel = scaled(y_value, y_min, y_max, top + plot_height, top)
+            println(io, "<line x1=\"$x_pixel\" y1=\"$top\" x2=\"$x_pixel\" y2=\"$(top + plot_height)\" stroke=\"#eeeeee\"/>")
+            println(io, "<line x1=\"$left\" y1=\"$y_pixel\" x2=\"$(left + plot_width)\" y2=\"$y_pixel\" stroke=\"#eeeeee\"/>")
+            println(io, "<text x=\"$x_pixel\" y=\"$(top + plot_height + 24)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"12\">$(round(x_value; digits = 2))</text>")
+            println(io, "<text x=\"$(left - 8)\" y=\"$(y_pixel + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"12\">$(round(y_value; digits = 2))</text>")
+        end
+        reference = polyline_points(ref_columns["x_ref"], ref_columns["y_ref"], x_min, x_max, y_min, y_max, left, top, plot_width, plot_height)
+        println(io, "<polyline points=\"$reference\" fill=\"none\" stroke=\"#222222\" stroke-width=\"1.5\" stroke-dasharray=\"6,4\"/>")
+        for (index, row) in enumerate(rows)
+            columns = row["columns"]
+            points = polyline_points(columns["x"], columns["y"], x_min, x_max, y_min, y_max, left, top, plot_width, plot_height)
+            println(io, "<polyline points=\"$points\" fill=\"none\" stroke=\"$(COLORS[mod1(index, length(COLORS))])\" stroke-width=\"2.0\"/>")
+        end
+        println(io, "<text x=\"$(left + plot_width / 2)\" y=\"$(height - 20)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"14\">X Position (m)</text>")
+        println(io, "<text x=\"22\" y=\"$(top + plot_height / 2)\" transform=\"rotate(-90 22 $(top + plot_height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"14\">Y Position (m)</text>")
+        legend_y = height - 62
+        println(io, "<line x1=\"$left\" y1=\"$legend_y\" x2=\"$(left + 24)\" y2=\"$legend_y\" stroke=\"#222222\" stroke-width=\"1.5\" stroke-dasharray=\"6,4\"/>")
+        println(io, "<text x=\"$(left + 30)\" y=\"$(legend_y + 4)\" font-family=\"Times New Roman\" font-size=\"12\">reference</text>")
+        for (index, row) in enumerate(rows)
+            column = mod(index - 1, 5)
+            legend_row = div(index - 1, 5)
+            x = left + 125 * (column + 1)
+            y = legend_y + 22 * legend_row
+            color = COLORS[mod1(index, length(COLORS))]
+            controller_label = svg_escape(row["controller_id"])
+            println(io, "<line x1=\"$x\" y1=\"$y\" x2=\"$(x + 24)\" y2=\"$y\" stroke=\"$color\" stroke-width=\"2.0\"/>")
+            println(io, "<text x=\"$(x + 30)\" y=\"$(y + 4)\" font-family=\"Times New Roman\" font-size=\"12\">$controller_label</text>")
+        end
         println(io, "</svg>")
     end
 end
@@ -158,14 +285,14 @@ function write_step_response_overlay(path::String, step_rows)
     open(path, "w") do io
         println(io, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" height=\"$height\" viewBox=\"0 0 $width $height\">")
         println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
-        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"20\">Step Response Overlay (XY)</text>")
+        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"20\">Step Response Overlay (XY)</text>")
         for (panel_index, (y0, y_label, response_key, reference_key, y_min, y_max)) in enumerate(y_panels)
             println(io, "<rect x=\"$left\" y=\"$y0\" width=\"$plot_width\" height=\"$panel_height\" fill=\"none\" stroke=\"#222\"/>")
             for tick in 0:4
                 y_value = y_min + (y_max - y_min) * tick / 4
                 y_pixel = scaled(y_value, y_min, y_max, y0 + panel_height, y0)
                 println(io, "<line x1=\"$left\" y1=\"$y_pixel\" x2=\"$(width - right)\" y2=\"$y_pixel\" stroke=\"#eeeeee\"/>")
-                println(io, "<text x=\"$(left - 8)\" y=\"$(y_pixel + 4)\" text-anchor=\"end\" font-family=\"Arial\" font-size=\"11\">$(round(y_value; digits = 2))</text>")
+                println(io, "<text x=\"$(left - 8)\" y=\"$(y_pixel + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"11\">$(round(y_value; digits = 2))</text>")
             end
             reference_points = polyline_points(ref_columns["time"], ref_columns[reference_key], x_min, x_max, y_min, y_max, left, y0, plot_width, panel_height)
             println(io, "<polyline points=\"$reference_points\" fill=\"none\" stroke=\"#111111\" stroke-width=\"2\" stroke-dasharray=\"6,4\"/>")
@@ -175,20 +302,20 @@ function write_step_response_overlay(path::String, step_rows)
                 color = COLORS[mod1(index, length(COLORS))]
                 println(io, "<polyline points=\"$points\" fill=\"none\" stroke=\"$color\" stroke-width=\"2\"/>")
             end
-            println(io, "<text x=\"20\" y=\"$(y0 + panel_height / 2)\" transform=\"rotate(-90 20 $(y0 + panel_height / 2))\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"13\">$y_label</text>")
+            println(io, "<text x=\"20\" y=\"$(y0 + panel_height / 2)\" transform=\"rotate(-90 20 $(y0 + panel_height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"13\">$y_label</text>")
             if panel_index == length(y_panels)
-                println(io, "<text x=\"$(left + plot_width / 2)\" y=\"$(height - 25)\" text-anchor=\"middle\" font-family=\"Arial\" font-size=\"13\">Time (s)</text>")
+                println(io, "<text x=\"$(left + plot_width / 2)\" y=\"$(height - 25)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"13\">Time (s)</text>")
             end
         end
         legend_x, legend_y = left, height - 50
         println(io, "<line x1=\"$legend_x\" y1=\"$legend_y\" x2=\"$(legend_x + 24)\" y2=\"$legend_y\" stroke=\"#111111\" stroke-width=\"2\" stroke-dasharray=\"6,4\"/>")
-        println(io, "<text x=\"$(legend_x + 30)\" y=\"$(legend_y + 4)\" font-family=\"Arial\" font-size=\"12\">reference</text>")
+        println(io, "<text x=\"$(legend_x + 30)\" y=\"$(legend_y + 4)\" font-family=\"Times New Roman\" font-size=\"12\">reference</text>")
         for (index, row) in enumerate(step_rows)
             x = legend_x + 110 * index
             color = COLORS[mod1(index, length(COLORS))]
             controller_label = svg_escape(row["controller_id"])
             println(io, "<line x1=\"$x\" y1=\"$legend_y\" x2=\"$(x + 24)\" y2=\"$legend_y\" stroke=\"$color\" stroke-width=\"2\"/>")
-            println(io, "<text x=\"$(x + 30)\" y=\"$(legend_y + 4)\" font-family=\"Arial\" font-size=\"12\">$controller_label</text>")
+            println(io, "<text x=\"$(x + 30)\" y=\"$(legend_y + 4)\" font-family=\"Times New Roman\" font-size=\"12\">$controller_label</text>")
         end
         println(io, "</svg>")
     end
@@ -217,6 +344,22 @@ function write_comparison_table(path::String, climb_rows, step_rows)
     end
 end
 
+function write_climbpath_comparison_table(path::String, rows)
+    open(path, "w") do io
+        println(io, "controller_id,climbpath_position_rmse_m,control_energy,terminal_position_error_m")
+        for row in rows
+            controller_id = row["controller_id"]
+            values = [
+                metric_value(row, "position_rmse_m"),
+                metric_value(row, "control_energy"),
+                metric_value(row, "terminal_position_error_m"),
+            ]
+            rendered = [isfinite(value) ? string(value) : "" for value in values]
+            println(io, "$controller_id,$(join(rendered, ','))")
+        end
+    end
+end
+
 function write_manifest(path::String, climb_rows, step_rows, output_dir::String)
     manifest = Dict{String, Any}(
         "schema" => "mosim.syslab_controller_comparison.v1",
@@ -227,6 +370,21 @@ function write_manifest(path::String, climb_rows, step_rows, output_dir::String)
         "climb_rmse_figure" => joinpath(output_dir, "figures", "climbpath_rmse_bar.svg"),
         "step_overlay_figure" => joinpath(output_dir, "figures", "step_response_overlay.svg"),
         "summary_table" => joinpath(output_dir, "controller_comparison_metrics.csv"),
+    )
+    write_json(path, manifest)
+end
+
+function write_climbpath_manifest(path::String, rows, output_dir::String)
+    manifest = Dict{String, Any}(
+        "schema" => "mosim.syslab_controller_comparison.v2",
+        "status" => "generated_from_csv",
+        "climbpath_controller_count" => length(rows),
+        "output_dir" => output_dir,
+        "climb_rmse_figure" => joinpath(output_dir, "figures", "climbpath_rmse_bar.svg"),
+        "trajectory_overlay_figure" => joinpath(output_dir, "figures", "climbpath_trajectory_overlay.svg"),
+        "control_energy_figure" => joinpath(output_dir, "figures", "control_energy_bar.svg"),
+        "terminal_error_figure" => joinpath(output_dir, "figures", "terminal_error_bar.svg"),
+        "summary_table" => joinpath(output_dir, "controller_comparison.csv"),
     )
     write_json(path, manifest)
 end
@@ -247,6 +405,19 @@ function run_comparison(climb_pairs, step_pairs, output_dir::String)
     )
 end
 
+function run_climbpath_comparison(climbpath_pairs, output_dir::String)
+    rows = [load_series(String(pair.first), String(pair.second), "climb_path") for pair in climbpath_pairs]
+    figures_dir = joinpath(output_dir, "figures")
+    mkpath(figures_dir)
+    write_climb_rmse_bar(joinpath(figures_dir, "climbpath_rmse_bar.svg"), rows)
+    write_climbpath_trajectory_overlay(joinpath(figures_dir, "climbpath_trajectory_overlay.svg"), rows)
+    write_control_energy_bar(joinpath(figures_dir, "control_energy_bar.svg"), rows)
+    write_terminal_error_bar(joinpath(figures_dir, "terminal_error_bar.svg"), rows)
+    write_climbpath_comparison_table(joinpath(output_dir, "controller_comparison.csv"), rows)
+    write_climbpath_manifest(joinpath(output_dir, "COMPARE_CONTROLLERS_MANIFEST.json"), rows, output_dir)
+    return Dict("climbpath_rows" => rows, "output_dir" => output_dir)
+end
+
 function compare_self_test()
     root = joinpath(pwd(), ".tmp", "compare_controllers_jl_self_test")
     isdir(root) && rm(root; recursive = true, force = true)
@@ -256,11 +427,19 @@ function compare_self_test()
         write_self_test_csv(raw)
         output_dir = joinpath(root, "comparison")
         run_comparison(["official_pid" => raw, "cascade_pid" => raw], ["official_pid" => raw, "cascade_pid" => raw], output_dir)
+        climbpath_output_dir = joinpath(root, "climbpath_comparison")
+        run_climbpath_comparison(["official_pid" => raw, "cascade_pid" => raw], climbpath_output_dir)
         for artifact in (
             joinpath(output_dir, "controller_comparison_metrics.csv"),
             joinpath(output_dir, "COMPARE_CONTROLLERS_MANIFEST.json"),
             joinpath(output_dir, "figures", "climbpath_rmse_bar.svg"),
             joinpath(output_dir, "figures", "step_response_overlay.svg"),
+            joinpath(climbpath_output_dir, "controller_comparison.csv"),
+            joinpath(climbpath_output_dir, "COMPARE_CONTROLLERS_MANIFEST.json"),
+            joinpath(climbpath_output_dir, "figures", "climbpath_rmse_bar.svg"),
+            joinpath(climbpath_output_dir, "figures", "climbpath_trajectory_overlay.svg"),
+            joinpath(climbpath_output_dir, "figures", "control_energy_bar.svg"),
+            joinpath(climbpath_output_dir, "figures", "terminal_error_bar.svg"),
         )
             isfile(artifact) || error("self-test did not create: $artifact")
         end
@@ -275,7 +454,11 @@ function compare_main(args = ARGS)
     options = parse_compare_args(args)
     options["self_test"] && return compare_self_test()
     output_dir = options["output_dir"]
-    run_comparison(options["climb"], options["step"], output_dir)
+    if !isempty(options["climbpath"])
+        run_climbpath_comparison(options["climbpath"], output_dir)
+    else
+        run_comparison(options["climb"], options["step"], output_dir)
+    end
     println("Syslab comparison written: $output_dir")
     return 0
 end
