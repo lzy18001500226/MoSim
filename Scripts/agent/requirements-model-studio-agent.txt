@@ -1,0 +1,4 @@
+# Optional. The agent automatically falls back to Python's standard-library
+# HTTP server if these are not installed.
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
