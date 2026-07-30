@@ -85,34 +85,37 @@ def test_model_workspace_removes_legacy_preset_and_formation_fields() -> None:
     assert "app.configure_composition_controls()" not in model
 
 
-def test_model_dropdowns_have_full_field_hit_targets() -> None:
+def test_model_dropdowns_use_native_labels_without_overlay_fields() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
-    controls = (
-        "TaskDropDown",
-        "ControllerFamilyDropDown",
-        "PositionDropDown",
-        "AttitudeDropDown",
-        "AugmentationDropDown",
-        "SafetyDropDown",
-        "FaultDropDown",
-        "OutputDropDown",
-    )
     model_controls = section(source, "function configure_model_task_controls(app)", "function is_three_uav_mission(app, mission)")
-    for control in controls[:3]:
-        assert f"app.{control}.Label = \"\"" in model_controls
-    assert "for (control, y) in" in model_controls
-    assert 'control.Label = ""' in model_controls
-    for label in (
-        "TaskLabel",
-        "ControllerFamilyLabel",
-        "ControllerInstanceLabel",
-        "AttitudeLabel",
-        "AugmentationLabel",
-        "SafetyLabel",
-        "FaultLabel",
-        "OutputLabel",
-    ):
-        assert f"app.{label}" in model_controls
+    labels = {
+        "TaskDropDown": "验证任务",
+        "ControllerFamilyDropDown": "控制器家族",
+        "PositionDropDown": "控制器实例",
+        "AttitudeDropDown": "姿态内环",
+        "AugmentationDropDown": "增强层",
+        "SafetyDropDown": "安全层",
+        "FaultDropDown": "故障容错层",
+        "OutputDropDown": "输出边界",
+    }
+    for control, label in labels.items():
+        assert f'app.{control}.Label = "{label}"' in model_controls or f'(app.{control}, "{label}"' in model_controls
+    assert 'Label = ""' not in model_controls
+    assert "configure_model_field_label" not in source
+    assert "TaskLabel::Any" not in source
+
+
+def test_model_workspace_hides_status_summary_blocks() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    model = section(source, "function configure_model_workspace(app)", "function configure_live_workspace(app)")
+    model_summary = section(source, 'elseif app.CurrentMode == "model"', 'elseif app.CurrentMode == "deploy"')
+    assert "ProfileSummaryLabel" not in model
+    assert "InjectionValuesLabel" not in model
+    assert "ProfileSummaryLabel" not in model_summary
+    assert "InjectionValuesLabel" not in model_summary
+    assert "app.ApplyInjectionButton.Position = [494, 536, 160, 36]" in model
+    assert "app.OpenModelButton.Position = [664, 536, 200, 36]" in model
+    assert "app.RestoreInjectionButton.Position = [874, 536, 60, 36]" in model
 
 
 def test_model_tasks_are_frozen_before_opening_mworks() -> None:
