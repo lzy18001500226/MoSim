@@ -500,6 +500,27 @@ Factory FUEL exploration review:
   both RViz windows are immediately reviewable. A visual pass does not
   override a controller, takeoff, hover, localization, planner-freshness, or
   flight-safety blocker.
+  P4 historical display replay is a separate, offline evidence route. It
+  must consume the recorded Gazebo `world` truth topic
+  `/uav1/sunray/gazebo_pose`; MAVROS local odometry remains an audit source,
+  not a display-truth substitution. Prepare one bounded replay bundle, then
+  run its consumers against the same `run_id`:
+
+  ```powershell
+  wsl -d Ubuntu-20.04 --exec bash -lc 'source /opt/ros/noetic/setup.bash; cd /mnt/c/Users/HP/Desktop/MoSim && python3 Scripts/sunray/prepare_factory_fuel_replay_bundle.py --run-id <run_id>'
+  wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/run_factory_fuel_replay_review.sh --run-dir Results/sunray_ros1/<run_id> --master-port 11320 --hold-s 20'
+  wsl -d Ubuntu-20.04 --exec bash -lc 'source /opt/ros/noetic/setup.bash; cd /mnt/c/Users/HP/Desktop/MoSim && python3 Scripts/ui/replay_rosbag_operator_map.py --run-dir Results/sunray_ros1/<run_id> --bag Results/sunray_ros1/<run_id>/factory_fuel_review_clip.bag --odom-topic uav1=/uav1/sunray/gazebo_pose --expected-path-topic /mosim/goal4/position_cmd_path --future-marker-topic /mosim/fuel/planning_vis/trajectory_world --coordinate-evidence Results/sunray_ros1/<run_id>/OPERATOR_MAP_COORDINATE_EVIDENCE.json'
+  python Scripts/sunray/check_factory_fuel_replay_review.py --run-dir Results/sunray_ros1/<run_id>
+  ```
+
+  The UE consumer must first generate `ue_render/` with
+  `Scripts/UE5/generate_factory_ue_render_replay.py --state-source truth` and
+  stream only its `ue_render_frame.jsonl` through the one-way UE UDP bridge.
+  The final checker requires `RVIZ_REPLAY_STATUS.json`,
+  `OPERATOR_MAP_REPLAY_STATUS.json`, and UE receiver/frame metrics to agree
+  on the same run. It intentionally reports a WSLg RAIL screenshot limitation
+  separately from topic-replay success and never upgrades this path to live
+  FUEL, PX4, MAVROS, controller, or QGC-command acceptance.
 
 Diff-Planner interactive goal review:
   update goals from RViz `2D Nav Goal` only, which publishes

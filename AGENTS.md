@@ -70,9 +70,14 @@ mission publication. P3 then completed its local-source functional lifecycle
 and bounded physical motor-efficiency acknowledgement, but its frozen
 hover/local-state quality gate remains blocked; see
 `Results/sunray_ros1/p3_runtime_closeout_20260730/P3_RUNTIME_STATUS.json`.
-The next executable gate is P4 UE one-way display and rosbag replay. It is
+P4 completed its historical Factory FUEL display replay at
+`Results/sunray_ros1/sunray_ros1_p4_factory_fuel_replay_20260730_0945/`:
+the bounded rosbag reached isolated RViz topic probes, the Factory 2D
+operator-map replay, and the one-way UE receiver under one `run_id`. Its
+result is explicitly `completed_with_rviz_window_capture_limitation`; it is
 display/reproducibility evidence only and cannot be presented as P3 controller
-performance, fault-tolerance, MWORKS deployment, QGC, or UE control evidence.
+performance, fault-tolerance, MWORKS deployment, QGC command, or UE control
+evidence. The next executable gate is P5 single-aircraft native Diff baseline.
 
 The six-candidate recovery record at
 `Results/control_platform/champion_candidate_recovery_20260727/` predates the
