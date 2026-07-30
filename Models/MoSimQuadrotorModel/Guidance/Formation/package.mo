@@ -1,6 +1,6 @@
 within MoSimQuadrotorModel.Guidance;
 package Formation
-  "MWORKS formation prototypes; px4ctrl swarm runtime remains a separate deployment profile"
+  "Formation references and historical LinearMPC prototype; the formal PX4CTRL three-UAV runner is under Experiment.Runners.Formation"
 
   extends Modelica.Icons.Package;
 

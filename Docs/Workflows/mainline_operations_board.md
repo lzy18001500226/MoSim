@@ -55,13 +55,26 @@ precedence over historical runtime status below.
 
 ## 1. Current Action
 
-### Current Coordinating Scope: MWORKS G3, Then MoSim Studio APP
+### MWORKS PX4CTRL Three-UAV Figure-8 - Completed, Awaiting Next Instruction
 
-This thread's executable work is limited to the MWORKS controller/model/evidence
-line described below. After that line reaches user review, the next owned line
-is MoSim Studio APP work. The ROS1/Gazebo paragraphs below are retained as
-runtime evidence and a handoff index only; they are not executable work for
-this thread.
+The bounded direct user task of 2026-07-30 CST is complete. The nominal
+three-UAV PX4CTRL virtual-structure triangle used three current
+`Sunray150Assembly` instances, three `Px4CtrlAttitudeThrustAdapter` instances,
+and three `OfflineAttitudeRateAllocator` instances; it did not reuse the
+historical LinearMPC/QuadChassis prototype as PX4CTRL evidence. Native
+`CheckModel` passed, and staged 5 s/10 s/50 s MWORKS simulations completed.
+The 50 s record has 5001 finite samples; each UAV has position RMSE about
+`0.081432 m`, terminal position error about `0.041230 m`, and the minimum
+inter-UAV distance is `2.078461 m`. The user accepted the native MWORKS
+three-aircraft figure-eight replay. Raw CSV, native `Result.msr`, metrics,
+screenshot, `RUN_CONFIG.json`, and `RUN_RECORD.json` are under
+`Results/control_platform/px4ctrl_three_uav_figure8_v1/`.
+
+This is only nominal MWORKS virtual-structure closure. It does not claim
+obstacle avoidance, distributed swarm planning, inter-UAV collision avoidance,
+or Gazebo/PX4/ROS/QGC/APP runtime validation. Stop here and await a new user
+instruction; do not infer multi-UAV seven-scenario, avoidance, Gazebo/QGC,
+APP, G3 repair, gain tuning, export, or runtime work from this completed gate.
 
 ### px4ctrl Graphical Completion - Completed
 
@@ -212,25 +225,24 @@ Ubuntu-20.04 environment, and reproduce the declared Gazebo evidence without
 Codex assistance. This does not supersede or broaden MWORKS G3.
 
 - Preserve the declared `ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS /
-  px4ctrl / RViz` lane. Do not substitute ROS2, x500, fake clouds, Gazebo truth
-  as controller state, QGC, or UE for runtime evidence.
-- Execute serially: GPS/EKF boot-only state chain; single-aircraft
+  px4ctrl / RViz` lane. Do not substitute ROS2, x500, fake clouds, direct
+  Gazebo-truth controller feedback, QGC, or UE for runtime evidence.
+- Execute serially: source-local FAST-LIO/external-vision single-aircraft
   takeoff-hover-land; FUEL point cloud/grid/rosbag replay; three-aircraft
-  fixed-formation baseline; then native Diff-Swarm avoidance.
+  fixed-formation baseline; then native Diff-Swarm avoidance. The nested
+  GPS/EKF boot-only gate is a separate no-flight compatibility diagnostic.
 - GPS/EKF boot-only passed at
   `Results/sunray_ros1/sunray_ros1_gps_state_chain_20260729_007/`: the nested
   project-local GPS model, frozen boot parameters, MAVROS global/home/local
   state, Gazebo truth agreement, PX4 ULog fields, and no-flight contract all
   passed after a 90.11 s observed capture. The shorter `_006` capture remains
   diagnostic trace-back only.
-- P3 has an explicit quality-blocked result at
-  `Results/sunray_ros1/p3_runtime_closeout_20260730/P3_RUNTIME_STATUS.json`.
-  Its functional subgate is complete: the project-local px4ctrl chain armed,
-  took off, hovered, landed, and disarmed, while the bounded rotor-1
-  efficiency `0.85` request was physically acknowledged by the Gazebo actuator
-  plugin without controller override. Both P3 captures exceed the frozen
-  hover/local-state quality thresholds, so this is not controller-performance
-  or fault-tolerance acceptance.
+- The prior P3 record at
+  `Results/sunray_ros1/p3_runtime_closeout_20260730/P3_RUNTIME_STATUS.json`
+  used the nested GPS/barometer estimator branch. Keep it as a diagnostic
+  lifecycle and actuator-ack trace only; it is not an accepted hover, state
+  quality, controller-performance, or fault-tolerance result. The source-local
+  FAST-LIO/external-vision rerun is the current P3 gate.
 - P4 Factory FUEL historical display replay completed at
   `Results/sunray_ros1/sunray_ros1_p4_factory_fuel_replay_20260730_0945/`.
   The exact source bag, Gazebo-world truth display stream, isolated RViz topic
@@ -242,10 +254,9 @@ Codex assistance. This does not supersede or broaden MWORKS G3.
   display/reproducibility evidence and cannot rehabilitate the P3 quality
   blocker or be cited as a live FUEL, PX4, MAVROS, controller, planner, fault,
   QGC-command, or UE-control success.
-- The current executable gate is P5: run the project-local, single-aircraft
-  native Diff baseline through its smallest bounded source/build/preflight
-  check, then decide whether a live trajectory gate is safe to open. Do not
-  start P6 fixed formation or Diff-Swarm until the P5 terminal record exists.
+- The current executable gate is the source-local P3 FAST-LIO/external-vision
+  takeoff-hover-land rerun. Do not start P5 native Diff, P6 fixed formation,
+  or Diff-Swarm until that terminal record passes the state-quality contract.
 - Each terminal subgate records a bounded result directory and triggers one
   concise Chinese email. Every successful path must later receive a cold-start,
   stop, recording, replay, and troubleshooting check plus a path-limited Git

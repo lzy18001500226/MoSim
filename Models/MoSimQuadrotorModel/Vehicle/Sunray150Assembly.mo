@@ -3,6 +3,8 @@ model Sunray150Assembly
   "Canonical Sunray150 physical assembly shared by every offline Runner"
 
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
+  parameter Real initial_position_m[3](each unit = "m") = {0, 0, 0}
+    "World-frame body position at t = 0; defaults preserve every single-aircraft Runner";
   parameter Real initial_rotor_speed[4] = {
     profile.mworks_hover_visual_rotor_speed_rad_s,
     -profile.mworks_hover_visual_rotor_speed_rad_s,
@@ -43,7 +45,8 @@ model Sunray150Assembly
     inertia_scale = inertia_scale,
     fault_start_s = fault_start_s,
     fault_rotor_index = fault_rotor_index,
-    fault_rotor_effectiveness = fault_rotor_effectiveness);
+    fault_rotor_effectiveness = fault_rotor_effectiveness,
+    body(r_0(start = initial_position_m)));
   MoSimQuadrotorModel.Vehicle.Sensors.Sensors sensors;
   MoSimQuadrotorModel.Vehicle.Sunray150VisualShell visual_shell(profile = profile)
     "Massless body and propeller visuals for native formal-runner animation";
