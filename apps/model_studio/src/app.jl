@@ -43,7 +43,7 @@ const THREE_UAV_MISSION_OPTIONS = ["三机三角编队 8 字"]
 const MODEL_MISSION_OPTIONS = vcat(SINGLE_UAV_MISSION_OPTIONS, THREE_UAV_MISSION_OPTIONS)
 const CONTROLLER_FAMILIES = [
     "PID 族", "线性鲁棒族", "非线性自适应族", "滑模族",
-    "预测控制族", "几何/平坦族", "学习增强族", "工程基线",
+    "预测控制族", "几何/平坦族", "学习增强族", "自研控制器",
 ]
 const CONTROLLER_CATALOG = [
     (id="official_pid", family="PID 族", display="official_pid [已认证]", status="已认证", openable=true),
@@ -99,7 +99,7 @@ const CONTROLLER_CATALOG = [
 
     (id="trained_neural_residual", family="学习增强族", display="trained_neural_residual [已实现]", status="已实现", openable=true),
     (id="rl_gain_scheduler", family="学习增强族", display="rl_gain_scheduler [已实现]", status="已实现", openable=true),
-    (id="px4ctrl", family="工程基线", display="px4ctrl [已实现]", status="已实现", openable=true),
+    (id="px4ctrl", family="自研控制器", display="px4ctrl [已实现]", status="已实现", openable=true),
 ]
 const LEGACY_PROFILE_CONTROLLERS = [
     (id="improved_pid", family="PID 族", display="improved_pid [已认证]", status="已认证", openable=false),
@@ -567,10 +567,6 @@ const OFFLINE_PROFILES = Dict(
         ]
     end
 
-    function model_task_controller_entries(app, task=app.selected_model_task())
-        return [entry for entry in CONTROLLER_CATALOG if entry.id in task.controller_ids]
-    end
-
     function model_task_controller_supported(app)
         task = app.selected_model_task()
         controller = app.selected_controller_entry()
@@ -615,27 +611,13 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function configure_model_controller_selection(app)
-        task = app.selected_model_task()
-        entries = app.model_task_controller_entries(task)
-        if isempty(entries)
-            app.ControllerFamilyDropDown.Items = ["未登记"]
-            app.ControllerFamilyDropDown.Value = app.ControllerFamilyDropDown.Items[1]
-            app.ControllerFamilyDropDown.Enable = false
-            app.PositionDropDown.Items = ["当前数量无已登记模型入口"]
-            app.PositionDropDown.Value = app.PositionDropDown.Items[1]
-            app.PositionDropDown.Enable = false
-            return
-        end
-
-        families = unique([entry.family for entry in entries])
         current_family = app.ControllerFamilyDropDown.Value
-        selected_family = current_family in families ? current_family : families[1]
-        app.ControllerFamilyDropDown.Items = families
+        selected_family = current_family in CONTROLLER_FAMILIES ? current_family : CONTROLLER_FAMILIES[1]
+        app.ControllerFamilyDropDown.Items = CONTROLLER_FAMILIES
         app.ControllerFamilyDropDown.Value = selected_family
         app.ControllerFamilyDropDown.Enable = true
 
-        family_entries = [entry for entry in entries if entry.family == selected_family]
-        items = [entry.display for entry in family_entries]
+        items = app.controller_options_for_family(selected_family)
         current_display = app.PositionDropDown.Value
         app.PositionDropDown.Items = items
         app.PositionDropDown.Value = current_display in items ? current_display : items[1]

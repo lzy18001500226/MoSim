@@ -126,6 +126,16 @@ def test_model_dropdowns_use_native_labels_without_overlay_fields() -> None:
     assert "function sync_fault_target_options(app, vehicle_count)" in source
 
 
+def test_model_controller_selector_keeps_the_full_catalog_visible() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    selector = section(source, "function configure_model_controller_selection(app)", "function sync_fault_target_options(app, vehicle_count)")
+    assert "app.ControllerFamilyDropDown.Items = CONTROLLER_FAMILIES" in selector
+    assert "items = app.controller_options_for_family(selected_family)" in selector
+    assert "model_task_controller_entries" not in source
+    assert '"工程基线"' not in source
+    assert '"自研控制器"' in source
+
+
 def test_hidden_workspace_controls_are_parked_outside_the_active_layout() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     visibility_helper = section(source, "function set_visible(app, controls, visible)", "function configure_console_workspace(app;")
