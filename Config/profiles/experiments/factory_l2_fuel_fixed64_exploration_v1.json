@@ -2,7 +2,10 @@
   "experiment_profile": {
     "id": "factory_l2_fuel_fixed64_exploration_v1",
     "version": 1,
-    "description": "Accepted Factory L2 fixed-64 single-UAV FUEL autonomous exploration profile",
+    "profile_status": "blocked",
+    "blocked_reason": "Historical Factory FUEL evidence is retained, but its active planner adapter still resolves from References/Sunray/General_Module/sunray_planner_utils. It must not enter active source-local preflight until the FUEL and planner-adapter source-local build and launch contract are explicitly migrated and reproduced.",
+    "blocked_evidence": "Results/sunray_ros1/factory_l2_fuel_frame_unified_selector_r83_300s_20260714_060951",
+    "description": "Historical Factory L2 fixed-64 single-UAV FUEL autonomous exploration profile",
     "operator_map_id": "factory_l2",
     "goal": "FUEL fixed-64",
     "scenario_profile": "factory_l2_fuel_fixed64_exploration_v1",

@@ -13,8 +13,8 @@
       "role": "simulation",
       "canonical_relpath": "src/simulation/gazebo/sunray",
       "legacy_relpath": "References/Sunray/simulation/sunray_simulator",
-      "active_relpath": "References/Sunray/simulation/sunray_simulator",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/simulation/gazebo/sunray",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Config/profiles/runtime_bindings.json#sunray_gazebo.launch",
         "Scripts/sunray/check_sunray_ros1_runtime_preflight.sh"
@@ -24,19 +24,19 @@
       "role": "simulation",
       "canonical_relpath": "src/simulation/gazebo/plugins/sunray",
       "legacy_relpath": "References/Sunray/simulation/gazebo_plugin",
-      "active_relpath": "References/Sunray/simulation/gazebo_plugin",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/simulation/gazebo/plugins/sunray",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Scripts/sunray/check_sunray_ros1_runtime_preflight.sh",
-        "Scripts/sunray/setup_sunray_livox_gazebo_plugin.sh"
+        "Scripts/sunray/prepare_local_ros1_runtime_overlay.sh"
       ]
     },
     "sunray_uav_control": {
       "role": "flight_stack",
       "canonical_relpath": "src/flight_stack/mavros/sunray_uav_control",
       "legacy_relpath": "References/Sunray/General_Module/sunray_uav_control",
-      "active_relpath": "References/Sunray/General_Module/sunray_uav_control",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/flight_stack/mavros/sunray_uav_control",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Config/profiles/runtime_bindings.json#mavros_command_adapter.launch",
         "Scripts/sunray/sync_assembled_model_into_sunray_ros1.py"
@@ -49,19 +49,18 @@
       "active_relpath": "References/Sunray/General_Module/sunray_planner_utils",
       "migration_state": "copied_pending_activation",
       "entrypoints": [
-        "Config/profiles/runtime_bindings.json#planner_adapter.launch",
-        "Config/profiles/runtime_bindings.json#rviz_review.launch"
+        "Config/profiles/runtime_bindings.json#planner_adapter.launch"
       ]
     },
     "sunray_common": {
       "role": "common_utility",
       "canonical_relpath": "src/common/utilities/ros1/sunray_common",
       "legacy_relpath": "References/Sunray/General_Module/sunray_common",
-      "active_relpath": "References/Sunray/General_Module/sunray_common",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/common/utilities/ros1/sunray_common",
+      "migration_state": "canonical_active",
       "entrypoints": [
-        "References/Sunray/General_Module/sunray_uav_control/CMakeLists.txt",
-        "References/Sunray/General_Module/sunray_planner_utils/CMakeLists.txt"
+        "Config/runtime/ros1_local_source_manifest.v1.json#foundation",
+        "Scripts/sunray/prepare_local_ros1_workspace.sh"
       ]
     },
     "sunray_tutorial": {
@@ -81,8 +80,8 @@
       "role": "control_runtime_adapter",
       "canonical_relpath": "src/control/runtime_adapters/px4ctrl",
       "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
-      "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/control/runtime_adapters/px4ctrl",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Config/profiles/runtime_bindings.json#controller_host.launch",
         "Scripts/sunray/run_px4ctrl_basic_gate.sh"
@@ -92,42 +91,51 @@
       "role": "integration",
       "canonical_relpath": "src/integration/ros1_launch/quadrotor_msgs",
       "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs",
-      "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/integration/ros1_launch/quadrotor_msgs",
+      "migration_state": "canonical_active",
       "entrypoints": [
-        "Scripts/sunray/setup_goal4_diff_planner_overlay.sh",
-        "Scripts/sunray/setup_goal4_egov2_overlay.sh"
+        "Config/runtime/ros1_local_source_manifest.v1.json#controller"
       ]
     },
     "uav_utils": {
       "role": "common_utility",
       "canonical_relpath": "src/common/utilities/ros1/uav_utils",
       "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/uav_utils",
-      "active_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/uav_utils",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/common/utilities/ros1/uav_utils",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "src/control/runtime_adapters/px4ctrl"
+      ]
+    },
+    "cmake_utils": {
+      "role": "common_utility",
+      "canonical_relpath": "src/common/utilities/ros1/cmake_utils",
+      "legacy_relpath": "References/Lab/planning_local/Fast-Drone-250/src/utils/cmake_utils",
+      "active_relpath": "src/common/utilities/ros1/cmake_utils",
+      "migration_state": "canonical_active",
+      "entrypoints": [
+        "Config/runtime/ros1_local_source_manifest.v1.json#controller"
       ]
     },
     "fast_lio": {
       "role": "perception",
       "canonical_relpath": "src/perception/fast_lio",
       "legacy_relpath": "References/Lab/localization_slam/FAST_LIO",
-      "active_relpath": "References/Lab/localization_slam/FAST_LIO",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/perception/fast_lio",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Config/profiles/runtime_bindings.json#fastlio_review_or_ekf_bridge.launch",
-        "Scripts/sunray/run_mid360_fastlio_10hz_gate.sh"
+        "Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh"
       ]
     },
     "livox_ros_driver_compat": {
       "role": "perception",
       "canonical_relpath": "src/perception/livox_ros_driver_compat",
       "legacy_relpath": "References/Lab/localization_slam/livox_ros_driver_compat",
-      "active_relpath": "References/Lab/localization_slam/livox_ros_driver_compat",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/perception/livox_ros_driver_compat",
+      "migration_state": "canonical_active",
       "entrypoints": [
-        "Scripts/sunray/run_mid360_fastlio_10hz_gate.sh"
+        "Config/runtime/ros1_local_source_manifest.v1.json#foundation"
       ]
     },
     "fuel": {

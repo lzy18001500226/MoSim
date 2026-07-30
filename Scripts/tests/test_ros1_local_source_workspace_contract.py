@@ -9,6 +9,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = ROOT / "Config" / "runtime" / "ros1_local_source_manifest.v1.json"
+PATH_REGISTRY_PATH = ROOT / "Config" / "project_paths.json"
+RUNTIME_BINDINGS_PATH = ROOT / "Config" / "profiles" / "runtime_bindings.json"
 SCRIPT_PATH = ROOT / "Scripts" / "sunray" / "prepare_local_ros1_workspace.sh"
 PX4_BUILD_SCRIPT_PATH = ROOT / "Scripts" / "sunray" / "build_local_px4_sitl.sh"
 RUNTIME_RESOLVER_PATH = ROOT / "Scripts" / "sunray" / "resolve_local_ros1_runtime.sh"
@@ -34,6 +36,44 @@ class LocalRos1SourceWorkspaceContractTest(unittest.TestCase):
             source_path = component["source_path"]
             self.assertTrue(source_path.startswith("src/"), component)
             self.assertTrue((ROOT / source_path).is_dir(), source_path)
+
+    def test_formal_runtime_components_are_canonical_active(self) -> None:
+        registry = json.loads(PATH_REGISTRY_PATH.read_text(encoding="utf-8"))
+        components = registry["components"]
+        formal_ids = {
+            "sunray_common",
+            "sunray_gazebo",
+            "sunray_gazebo_plugins",
+            "livox_ros_driver_compat",
+            "sunray_uav_control",
+            "fast_lio",
+            "cmake_utils",
+            "uav_utils",
+            "quadrotor_msgs",
+            "px4ctrl",
+        }
+
+        for component_id in formal_ids:
+            component = components[component_id]
+            self.assertEqual(component["migration_state"], "canonical_active", component_id)
+            self.assertEqual(
+                component["active_relpath"], component["canonical_relpath"], component_id
+            )
+
+    def test_formal_runtime_bindings_do_not_reintroduce_references(self) -> None:
+        bindings = json.loads(RUNTIME_BINDINGS_PATH.read_text(encoding="utf-8"))["template_bindings"]
+        formal_keys = {
+            "sunray_gazebo.launch",
+            "mavros_px4.launch",
+            "fastlio_review_or_ekf_bridge.launch",
+            "controller_host.launch",
+            "mavros_command_adapter.launch",
+            "rviz_review.launch",
+        }
+
+        for binding_id in formal_keys:
+            for path in bindings[binding_id]["required_paths"]:
+                self.assertTrue(path.startswith("src/") or path.startswith("Scripts/"), path)
 
     def test_profiles_resolve_to_existing_src_directories(self) -> None:
         profiles = self.manifest["profiles"]

@@ -6,25 +6,25 @@
     "sunray_gazebo.launch": {
       "purpose": "Sunray150 Gazebo Classic plant startup",
       "required_paths": [
-        "References/Sunray/simulation/sunray_simulator/launch_uav_demo/sunray_sim_1uav.launch"
+        "src/simulation/gazebo/sunray/launch_uav_demo/sunray_sim_1uav.launch"
       ]
     },
     "mavros_px4.launch": {
       "purpose": "PX4 SITL MAVROS bridge startup",
       "required_paths": [
-        "References/Sunray/simulation/sunray_simulator/launch_basic/sunray_mavros_sim.launch"
+        "src/simulation/gazebo/sunray/launch_basic/sunray_mavros_sim.launch"
       ]
     },
     "fastlio_review_or_ekf_bridge.launch": {
       "purpose": "FAST-LIO review or PX4 EKF bridge branch",
       "required_paths": [
-        "References/Lab/localization_slam/FAST_LIO/launch/mapping_mosim_sunray_pointcloud2.launch",
-        "References/Lab/localization_slam/FAST_LIO/config/mosim_sunray_pointcloud2.yaml",
-        "References/Lab/localization_slam/FAST_LIO/rviz_cfg/loam_livox.rviz"
+        "src/perception/fast_lio/launch/mapping_mosim_sunray_pointcloud2.launch",
+        "src/perception/fast_lio/config/mosim_sunray_pointcloud2.yaml",
+        "src/perception/fast_lio/rviz_cfg/loam_livox.rviz"
       ]
     },
     "planner_adapter.launch": {
-      "purpose": "Planner adapter branch placeholder",
+      "purpose": "Deferred legacy planner adapter reference; not a source-local runtime entry",
       "required_paths": [
         "References/Sunray/General_Module/sunray_planner_utils/launch/positionCmd2sunray.launch"
       ]
@@ -39,22 +39,21 @@
     "controller_host.launch": {
       "purpose": "px4ctrl controller wrapper and current Sunray gate runner",
       "required_paths": [
-        "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl",
+        "src/control/runtime_adapters/px4ctrl",
         "Scripts/sunray/run_px4ctrl_basic_gate.sh"
       ]
     },
     "mavros_command_adapter.launch": {
       "purpose": "MAVROS ATTITUDE_THRUST command adapter path",
       "required_paths": [
-        "References/Sunray/General_Module/sunray_uav_control/uav_control/UAVControl.cpp",
-        "References/Sunray/General_Module/sunray_uav_control/launch/sunray_control_node.launch"
+        "src/flight_stack/mavros/sunray_uav_control/uav_control/UAVControl.cpp",
+        "src/flight_stack/mavros/sunray_uav_control/launch/sunray_control_node.launch"
       ]
     },
     "rviz_review.launch": {
-      "purpose": "RViz/Gazebo review surface",
+      "purpose": "Source-local RViz review surface",
       "required_paths": [
-        "References/Sunray/General_Module/sunray_planner_utils/launch/rviz_sunray.launch",
-        "References/Sunray/General_Module/sunray_planner_utils/config/sunray.rviz"
+        "src/perception/fast_lio/rviz_cfg/loam_livox.rviz"
       ]
     }
   }

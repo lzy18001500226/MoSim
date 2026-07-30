@@ -5,7 +5,6 @@
       "description": "Legacy alias for px4ctrl PX4/MAVROS fused reference and state exports. Prefer px4_mavros_fused_reference_state_csv_v1 in new profiles.",
       "compatible_experiment_ids": [
         "px4ctrl_ground_standby_v1",
-        "px4ctrl_takeoff_hover_land_v1",
         "px4ctrl_figure8_baseline_v1",
         "px4ctrl_spiral_baseline_v1",
         "px4ctrl_step_baseline_v1",
@@ -72,7 +71,6 @@
       "description": "CSV pair contract for PX4/MAVROS fused controller-state baseline runs.",
       "compatible_experiment_ids": [
         "px4ctrl_ground_standby_v1",
-        "px4ctrl_takeoff_hover_land_v1",
         "px4ctrl_figure8_baseline_v1",
         "cascade_pid_figure8_generated_c_v1",
         "px4ctrl_spiral_baseline_v1",
@@ -219,16 +217,18 @@
       }
     },
     "fastlio_xy_yaw_gazebo_z_reference_state_csv_v1": {
-      "description": "CSV pair contract for hybrid FAST-LIO XY/Yaw plus Gazebo rangefinder-surrogate Z runs.",
+      "description": "CSV pair contract for hybrid FAST-LIO XY/Yaw plus Gazebo truth-aligned Z runs.",
       "compatible_experiment_ids": [
-        "fastlio_hybrid_z_figure8_v1"
+        "fastlio_hybrid_z_figure8_v1",
+        "px4ctrl_takeoff_hover_land_v1"
       ],
       "state_source_profile": "fastlio_xy_yaw_gazebo_z_v1",
       "height_source_profile": "hybrid_gazebo_z_surrogate_v1",
       "leaderboard_group": "hybrid_z_surrogate",
       "control_state_tracking": true,
       "localization_eval_profile": null,
-      "z_source": "gazebo_rangefinder_surrogate",
+      "z_source": "gazebo_truth_aligned_z",
+      "z_source_boundary": "Gazebo truth feeds only the simulation alignment adapter; px4ctrl consumes MAVROS local odometry after PX4 EKF fusion.",
       "reference": {
         "time": "stamp",
         "x": "ref_x",

@@ -411,7 +411,7 @@ runtime binding、日志导出语义、tracking语义和关键源码可追溯。
 | 条件 | 必须标注 | 禁止声明 |
 | --- | --- | --- |
 | Gazebo truth debug state进入控制器 | `state_group=B`、`debug_only=true` | 正式定位控制结果 |
-| Gazebo Z作为定高替身 | `height_source=gazebo_rangefinder_surrogate` | 纯FAST-LIO全状态定位 |
+| Gazebo truth Z进入对齐适配器 | `height_source=hybrid_gazebo_z_surrogate_v1`、`z_source=gazebo_truth_aligned_z`、禁止直接输入px4ctrl | 纯FAST-LIO全状态定位或真实激光定高已验证 |
 | FAST-LIO直接输出进入评价器 | `state_group=C`、`control_input_allowed=false` | FAST-LIO闭环入控 |
 | FAST-LIO经PX4 EKF融合 | `state_group=D`、EKF参数和外部观测profile | 与PX4融合基线混表 |
 | UE truth用于显示 | `display_only=true` 或 `control_input_allowed=false` | 规划器偷读全局地图 |

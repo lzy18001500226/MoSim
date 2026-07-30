@@ -2,7 +2,7 @@
   "experiment_profile": {
     "id": "fastlio_hybrid_z_figure8_v1",
     "version": 1,
-    "description": "Figure-eight branch using FAST-LIO XY/Yaw with Gazebo rangefinder surrogate Z as an explicitly separated Hybrid-Z state source",
+    "description": "Figure-eight branch using FAST-LIO XY/Yaw with Gazebo truth-aligned Z as an explicitly separated Hybrid-Z state source",
     "goal": "Goal 2",
     "scenario_profile": "sunray150_obstacle_figure8_v1",
     "plant_profile": "sunray150_gazebo_v1",

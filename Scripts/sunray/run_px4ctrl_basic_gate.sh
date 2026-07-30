@@ -146,6 +146,7 @@ PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES="${PX4CTRL_SUNRAY150_IMU_CALIBRATION
 PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=false
 PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT="EKF2_GPS_CTRL=0,EKF2_BARO_CTRL=0,EKF2_RNG_CTRL=0,EKF2_OF_CTRL=0,EKF2_EV_CTRL=15,EKF2_HGT_REF=3,EKF2_EV_DELAY=0,EKF2_EV_NOISE_MD=1,EKF2_EVP_NOISE=0.03,EKF2_EVA_NOISE=0.03"
 PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED=false
+GAZEBO_TRUTH_ALIGNMENT_INPUT_ENABLED=false
 FASTLIO_ALIGNED_ODOM_TOPIC="${FASTLIO_ALIGNED_ODOM_TOPIC:-/mosim/fastlio/odom_aligned}"
 FASTLIO_ALIGNED_PATH_TOPIC="${FASTLIO_ALIGNED_PATH_TOPIC:-/mosim/fastlio/odom_aligned_path}"
 FASTLIO_ALIGNMENT_Z_SOURCE_WAS_SET="${FASTLIO_ALIGNMENT_Z_SOURCE+x}"
@@ -340,10 +341,20 @@ if [[ "${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION}" == "true" ]]; then
   if [[ -z "${FASTLIO_ALIGNMENT_Z_SOURCE_WAS_SET}" ]]; then
     FASTLIO_ALIGNMENT_Z_SOURCE="fastlio"
   fi
-  if [[ "${FASTLIO_ALIGNMENT_Z_SOURCE}" != "fastlio" ]]; then
-    echo "PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true requires FASTLIO_ALIGNMENT_Z_SOURCE=fastlio; Gazebo truth is evaluation-only." >&2
-    exit 2
-  fi
+  case "${FASTLIO_ALIGNMENT_Z_SOURCE}" in
+    fastlio)
+      ;;
+    truth|truth_delta)
+      # In the simulator the accepted localization surrogate keeps FAST-LIO
+      # for horizontal pose while using Gazebo truth only for the aligned
+      # altitude channel. px4ctrl still consumes MAVROS/PX4 local odometry.
+      GAZEBO_TRUTH_ALIGNMENT_INPUT_ENABLED=true
+      ;;
+    *)
+      echo "PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true requires FASTLIO_ALIGNMENT_Z_SOURCE=fastlio, truth, or truth_delta." >&2
+      exit 2
+      ;;
+  esac
   resolve_fastlio_px4_boot_contract
 fi
 if [[ "${PX4CTRL_ODOM_SOURCE}" == "fastlio" || "${PX4CTRL_ODOM_SOURCE}" == "fastlio_aligned" ]]; then
@@ -1897,7 +1908,10 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "external_fusion_position_topic_effective": "${EXTERNAL_FUSION_POSITION_TOPIC_EFFECTIVE:-none}",
     "fastlio_control_input_allowed": ${MANIFEST_FASTLIO_CONTROL_INPUT_ALLOWED},
     "px4_ekf_external_vision": ${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION},
-    "gazebo_truth_control_input_allowed": false
+    "gazebo_truth_alignment_input_enabled": ${GAZEBO_TRUTH_ALIGNMENT_INPUT_ENABLED},
+    "gazebo_truth_direct_px4ctrl_input_allowed": false,
+    "gazebo_truth_control_input_allowed": false,
+    "gazebo_truth_control_input_policy": "Gazebo truth may only support the simulation alignment adapter; px4ctrl always receives MAVROS local odometry."
   }
 }
 EOF

@@ -2,7 +2,10 @@
   "experiment_profile": {
     "id": "factory_l2_three_uav_swarm_formation_v1",
     "version": 1,
-    "description": "Accepted Factory L2 three-UAV Swarm-Formation obstacle-crossing profile",
+    "profile_status": "blocked",
+    "blocked_reason": "Historical fixed-formation evidence is retained, but the source-local formation runtime contract has no formation_controller binding or complete metric definitions. It must not enter active source-local preflight until the three-UAV runtime migration is explicitly reopened.",
+    "blocked_evidence": "Results/sunray_ros1/factory_l2_swarm_formation_obstacle_runtime_r34_20260716",
+    "description": "Historical Factory L2 three-UAV Swarm-Formation obstacle-crossing profile",
     "operator_map_id": "factory_l2",
     "goal": "D7",
     "scenario_profile": "factory_l2_three_uav_obstacle_crossing_v1",

@@ -291,11 +291,12 @@ Gazebo/Sunray truth
 
 ### 5.2 Z高度策略
 
-当前可以使用 Gazebo Z 作为下视定高传感器替身，但必须显式标注：
+当前仿真可以让 Gazebo truth Z 进入 FAST-LIO 对齐适配器，但不能把它写成已经验证的下视定高传感器。必须显式标注：
 
 ```text
-z_source = gazebo_rangefinder_surrogate
-truth_control_input_allowed = true_for_rangefinder_surrogate_only
+z_source = gazebo_truth_aligned_z
+truth_alignment_input_allowed = true
+truth_direct_px4ctrl_input_allowed = false
 ```
 
 后续应替换为更接近真机的仿真测距链路：
@@ -307,7 +308,7 @@ Gazebo ray / range sensor
   -> PX4 EKF height aiding 或控制状态源
 ```
 
-禁止把 Gazebo truth Z 静默混进 FAST-LIO 定位结果后宣称“全FAST-LIO定位”。
+禁止把 Gazebo truth Z 静默混进 FAST-LIO 定位结果后宣称“全FAST-LIO定位”，也禁止让它绕过 PX4/MAVROS 直接进入 px4ctrl。
 
 ### 5.3 摄像头与多机展示
 

@@ -120,20 +120,37 @@ first error surface. The stop entry deliberately refuses to terminate a
 non-foundation managed run. It is not a substitute for FAST-LIO, controller,
 planner, or formation gates.
 
-Before the first flight mission after a fresh GPS/SDF change, run the dedicated
-GPS/EKF boot-only gate. It starts no controller, external-fusion node, arming,
-or mission publisher, and it must leave an explicit state-chain result before
-the takeoff-hover-land gate is allowed:
+The dedicated GPS/EKF boot-only gate is an optional nested-GPS compatibility
+diagnostic. It starts no controller, external-fusion node, arming, or mission
+publisher. It is not a prerequisite for, and must not configure, the formal
+FAST-LIO external-vision flight baseline:
 
 ```powershell
 wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/run_sunray_gps_state_chain_gate.sh'
 ```
 
-Read `GPS_STATE_CHAIN_STATUS.json` first. A pass requires the project-local
-nested GPS model, `EKF2_GPS_CTRL=7`, MAVROS global/home/local observations,
-Gazebo-local passive agreement, and a matching PX4 ULog analysis. A missing
-ULog or partial state observation is a blocker, not a reason to continue to
-flight.
+Read `GPS_STATE_CHAIN_STATUS.json` only when validating the nested GPS model.
+A pass requires `EKF2_GPS_CTRL=7`, MAVROS global/home/local observations,
+Gazebo-local passive agreement, and a matching PX4 ULog analysis. It does not
+authorize flight and does not replace the formal localization state chain.
+
+For the source-local single-aircraft flight baseline, use the explicit
+FAST-LIO entry instead. It freezes `SUNRAY_GPS_SENSOR_MODE=removed`,
+`EKF2_GPS_CTRL=0`, `EKF2_BARO_CTRL=0`, `EKF2_EV_CTRL=15`,
+`EKF2_HGT_REF=3`, and the recorded Gazebo runtime
+`PX4CTRL_HOVER_PERCENTAGE=0.456`; FAST-LIO odometry is aligned with Gazebo
+truth for the simulated altitude channel, then enters PX4 external vision.
+`px4ctrl` still reads only `/uav1/mavros/local_position/odom`.
+
+```powershell
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh'
+```
+
+Classify this gate from `PX4CTRL_BASIC_MISSION_METRICS.json`, not from an
+empty mission stdout file. A completed arm/takeoff/hover/land/disarm lifecycle
+only proves the runnable chain. If the frozen 2 cm hover threshold is exceeded,
+record the result as a tracking-quality blocker and stop before any gain or
+architecture change unless that next scope is explicitly authorized.
 
 Before MAVROS starts, the base runner writes
 `mavros_runtime_config_resolution.json`. It must resolve

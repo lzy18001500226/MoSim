@@ -1403,7 +1403,7 @@ class Px4ctrlBasicMission:
                 "hover_hold_command_mode": self.args.hover_hold_command_mode,
                 "reference_frame_source": self.args.reference_frame_source,
                 "gate_metric_window": f"step_settled_after_{self.args.step_settling_exclusion_s:g}s",
-                "truth_for_evaluation_only": self.args.metric_truth_source,
+                "truth_metric_reference": self.args.metric_truth_source,
                 "thresholds": {
                     "max_step_primary_rmse_m": self.args.max_trajectory_xyz_rmse_m,
                     "max_step_primary_p95_m": self.args.max_trajectory_xyz_p95_m,
@@ -1636,8 +1636,14 @@ class Px4ctrlBasicMission:
                 if final_z_rel > self.args.max_final_z_rel_m:
                     blockers.append(f"final_z_rel_above_max:{final_z_rel}")
 
-        alignment = self.truth_local_alignment_metrics_for(self.sunray_truth_rows, self.local_rows)
-        delta_error = self.truth_local_delta_error_metrics(self.sunray_truth_rows, self.local_rows)
+        # The estimator may still be converging before takeoff. The formal
+        # localization gate must compare the same steady-hover interval as the
+        # hover metric; retain the full run only as a diagnostic.
+        gate_truth_rows = [r for r in self.sunray_truth_rows if r.get("phase") == "hover_before"]
+        gate_local_rows = [r for r in self.local_rows if r.get("phase") == "hover_before"]
+        alignment = self.truth_local_alignment_metrics_for(gate_truth_rows, gate_local_rows)
+        delta_error = self.truth_local_delta_error_metrics(gate_truth_rows, gate_local_rows)
+        full_delta_error = self.truth_local_delta_error_metrics(self.sunray_truth_rows, self.local_rows)
         if self.args.require_truth_local_alignment:
             matched = int(delta_error.get("matched_samples", 0) or 0)
             if matched < self.args.min_alignment_samples:
@@ -1662,7 +1668,7 @@ class Px4ctrlBasicMission:
             "hover_hold_command_mode": self.args.hover_hold_command_mode,
             "reference_frame_source": self.args.reference_frame_source,
             "gate_metric_window": f"steady_hover_last_{self.args.steady_hover_tail_s:g}s",
-            "truth_for_evaluation_only": self.args.metric_truth_source,
+            "truth_metric_reference": self.args.metric_truth_source,
             "thresholds": {
                 "max_hover_xy_rmse_m": self.args.max_hover_xy_rmse_m,
                 "max_hover_xy_max_m": self.args.max_hover_xy_max_m,
@@ -1674,6 +1680,7 @@ class Px4ctrlBasicMission:
             },
             "alignment_preview": alignment,
             "delta_error_preview": delta_error,
+            "full_delta_error_preview_diagnostic_only": full_delta_error,
         }
 
     def goal2_gate(
@@ -1755,7 +1762,7 @@ class Px4ctrlBasicMission:
             "hover_hold_command_mode": self.args.hover_hold_command_mode,
             "reference_frame_source": self.args.reference_frame_source,
             "gate_metric_window": f"trajectory_phase_{self.args.mission}",
-            "truth_for_evaluation_only": self.args.metric_truth_source,
+            "truth_metric_reference": self.args.metric_truth_source,
             "thresholds": {
                 "max_trajectory_xyz_rmse_m": self.args.max_trajectory_xyz_rmse_m,
                 "max_trajectory_xyz_p95_m": self.args.max_trajectory_xyz_p95_m,
@@ -1824,7 +1831,7 @@ class Px4ctrlBasicMission:
             "hover_hold_command_mode": self.args.hover_hold_command_mode,
             "reference_frame_source": self.args.reference_frame_source,
             "gate_metric_window": f"trajectory_phase_{self.args.mission}",
-            "truth_for_evaluation_only": self.args.metric_truth_source,
+            "truth_metric_reference": self.args.metric_truth_source,
             "thresholds": {
                 "min_trajectory_samples": self.args.min_trajectory_samples,
                 "max_final_z_rel_m": self.args.max_final_z_rel_m,
