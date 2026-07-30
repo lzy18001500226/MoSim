@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import ctypes
+import hashlib
 import json
 import os
 import re
@@ -33,10 +34,12 @@ LIVE_MODEL_NAME = "MoSimQuadrotorModel.Deployment.RT1OfficialPidShadow50Hz"
 PX4CTRL_CODEGEN_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Implementations" / "Sysblocks" / "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo"
 PX4CTRL_CODEGEN_MODEL_NAME = "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock"
 MODEL_DECLARATION = re.compile(r"\bmodel\s+([A-Za-z_]\w*)")
+MODEL_NAME = re.compile(r"[A-Za-z_]\w*")
 DEFAULT_MWORKS_EXE = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\Bin64\mworks.exe")
 DEFAULT_MWORKS_PYTHON = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\External\python64\python.exe")
 WORKER = ROOT / "Scripts" / "ui" / "open_model_studio_model_worker.py"
 WORKER_RESULT = LOG.with_name("latest.worker.json")
+TASK_CONFIG_SCHEMA = "mosim.model_studio.task_config.v1"
 BASE_MODEL_FILES = [
     ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo",
 ]
@@ -87,6 +90,41 @@ def resolve_controller_model(controller_id: str) -> tuple[Path, str]:
         raise ValueError("controller_not_openable")
     model_file = ROOT / str(entry["current_model_file"])
     return model_file, str(entry["current_model_class"])
+
+
+def sha256_path(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def resolve_task_config(task_config_path: Path) -> tuple[Path, str, dict[str, object]]:
+    resolved_config = task_config_path.resolve()
+    if not resolved_config.is_file():
+        raise FileNotFoundError(f"task_config_not_found: {resolved_config}")
+    document = json.loads(resolved_config.read_text(encoding="utf-8-sig"))
+    if not isinstance(document, dict) or document.get("schema") != TASK_CONFIG_SCHEMA:
+        raise ValueError("invalid_task_config_schema")
+    raw_harness = document.get("harness_file")
+    model_name = document.get("model_name")
+    if not isinstance(raw_harness, str) or not raw_harness:
+        raise ValueError("task_config_harness_file_missing")
+    if not isinstance(model_name, str) or not MODEL_NAME.fullmatch(model_name):
+        raise ValueError("task_config_model_name_invalid")
+    candidate = Path(raw_harness)
+    harness_file = candidate.resolve() if candidate.is_absolute() else (ROOT / candidate).resolve()
+    try:
+        harness_file.relative_to(ROOT.resolve())
+    except ValueError as exc:
+        raise ValueError("task_config_harness_outside_project_root") from exc
+    if not harness_file.is_file():
+        raise FileNotFoundError(f"task_config_harness_not_found: {harness_file}")
+    expected_hash = document.get("harness_sha256")
+    if isinstance(expected_hash, str) and expected_hash and sha256_path(harness_file) != expected_hash:
+        raise ValueError("task_config_harness_hash_mismatch")
+    return harness_file, model_name, document
 
 
 def resolve_mworks_executable() -> Path:
@@ -159,7 +197,11 @@ def main() -> int:
     parser.add_argument("--profile-id", default="")
     parser.add_argument("--vehicle-count", type=int, default=1)
     parser.add_argument("--output-variant", default="ROTOR_COMMAND")
+    parser.add_argument("--task-config", type=Path)
     args = parser.parse_args()
+    if args.task_config is not None and args.mode != "model":
+        parser.error("--task-config is only valid for model mode")
+    task_config: dict[str, object] | None = None
     if args.mode == "live":
         model_file = LIVE_MODEL_FILE.with_name("RT1OfficialPidShadow50Hz.mo")
         model_name = LIVE_MODEL_NAME
@@ -167,6 +209,11 @@ def main() -> int:
         if not args.controller_id:
             parser.error("--controller-id is required for codegen mode")
         model_file, model_name = resolve_controller_model(args.controller_id)
+    elif args.task_config is not None:
+        model_file, model_name, task_config = resolve_task_config(args.task_config)
+        configured_controller = task_config.get("controller_id")
+        if args.controller_id and configured_controller != args.controller_id:
+            raise ValueError("task_config_controller_mismatch")
     else:
         model_file, model_name = resolve_offline_model(
             args.profile_id, args.vehicle_count, args.output_variant
@@ -185,6 +232,10 @@ def main() -> int:
         "opened": False,
         "created_at": time.time(),
     }
+    if task_config is not None:
+        result["task_config"] = str(args.task_config.resolve())
+        result["task_id"] = task_config.get("task_id")
+        result["configuration_kind"] = task_config.get("configuration_kind")
     try:
         executable = resolve_mworks_executable()
         python_executable = resolve_mworks_python()

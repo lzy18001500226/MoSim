@@ -19,11 +19,15 @@ The current source UI baseline includes:
 - `MoSim 助手` reads the current Profile/control-chain selections and provides
   local MWORKS, QGC, fault, and result-viewing guidance only; it does not start
   MWORKS, export code, or send flight/runtime commands;
-- layered mission, position-loop, attitude-loop, augmentation, safety, and
-  output-boundary controls;
-- a locked PX4 attitude/rate inner loop for `ATTITUDE_THRUST v1`;
-- fixed-direction wind and four independent motor-effectiveness sliders;
-- separate requested and applied injection values;
+- an eight-task single-UAV model-validation selector: one `ClimbPath 50 s`
+  baseline plus hover, step, Figure8, spiral, wind, parameter mismatch, and
+  motor-efficiency-fault tasks;
+- dynamic controller-family and controller-instance selection, with fixed
+  FormalRunner interface layers shown as read-only on the model page;
+- a fixed +X external-force slider, synchronized mass/all-inertia mismatch
+  slider, and four motor-effectiveness sliders whose model-task fault starts
+  at 15 s;
+- a real frozen task-configuration handoff rather than a log-only apply action;
 - separate offline MWORKS actions and QGC flight handoff actions;
 - editable MWORKS/ROS target host, RT1 UDP port, ROS Master URI and local advertised IP;
 - a real ROS Master plus RT1 request-response connection preflight;
@@ -33,9 +37,11 @@ The current source UI baseline includes:
 - no synthetic response plot, direct arm/takeoff action, or runtime command in
   the UI-review build.
 
-## Offline profile binding
+## Legacy offline profile binding
 
-The offline selector now mirrors the current accepted evidence catalog:
+The older offline Profile selector remains source/history for the legacy batch
+workflow. It is not exposed as a quick preset on the current single-UAV model
+validation page:
 
 - 8 single-UAV Certified Profiles;
 - 1 three-UAV Certified Profile;
@@ -120,12 +126,19 @@ Gazebo/PX4/MAVROS runtime, QGC handoff, fault application, or flight performance
 
 ## Current workspace actions
 
-The `在线建模验证` workspace has two primary actions: `应用配置` records the
-current layer selection without starting a solver, and `打开仿真模型` loads the
-selected model into the existing MWORKS session. The `实时联合仿真` workspace
-uses the same two actions, with `打开联合仿真模型` loading the MWORKS Live
-model. Neither workspace starts, stops, or opens a result; after the model is
-open, run the simulation from MWORKS itself.
+The `在线建模验证` workspace has three explicit actions. `写入配置` freezes the
+selected task, controller, and permitted scenario values to
+`Results/ui_platform/model_studio_task_handoffs/latest.json`, and writes a
+hash-bound temporary Modelica harness beside it. `打开仿真模型` opens exactly
+that frozen harness and runs native `CheckModel`; it does not start a solver.
+`重置` restores the selected task's standard values. The formal seven-scenario
+route is limited to `official_pid` and `px4ctrl`, because those are the only
+two registered FormalRunners in the v2 contract. A nonstandard slider value is
+recorded as a task parameter variant, not as existing formal evidence.
+
+The `实时联合仿真` workspace retains its separate controls and opens its own
+MWORKS Live model. Neither workspace starts, stops, or opens a result; after
+the model is open, run the simulation from MWORKS itself.
 
 The `代码生成` workspace uses the same manual boundary. It filters the active
 controller catalog by family, opens the selected MWORKS graphical model, and
