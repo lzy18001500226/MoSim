@@ -126,6 +126,47 @@ class SensitivityProfileBatchTests(unittest.TestCase):
 
             self.assertEqual(self.runner.infer_check_model_status(log_path, model_name), "passed")
 
+    def test_window_capture_command_is_bound_to_the_batch_mworks_pid(self) -> None:
+        command = self.runner.build_capture_command(
+            Path("Results/control_platform/sensitivity_wind_v1/preflight"),
+            maximize=True,
+            mworks_pid=4242,
+        )
+
+        self.assertIn("-ProcessId", command)
+        self.assertEqual(command[command.index("-ProcessId") + 1], "4242")
+        self.assertIn("-MinimizeAfter", command)
+
+    def test_result_window_selection_requires_the_current_runner_title(self) -> None:
+        capture = {
+            "exit_code": 0,
+            "manifest": "Results/example/capture_manifest.json",
+            "command": ["powershell.exe"],
+            "captured_windows": [
+                {
+                    "title": "OtherRunner - 结果查看器",
+                    "path": "Results/example/other.png",
+                    "helper_window": False,
+                },
+                {
+                    "title": "CurrentRunner - Sysplorer [教育版]",
+                    "path": "Results/example/main.png",
+                    "helper_window": False,
+                },
+                {
+                    "title": "CurrentRunner - 结果查看器",
+                    "path": "Results/example/result.png",
+                    "helper_window": False,
+                },
+            ],
+        }
+
+        selected = self.runner.select_result_window(capture, model_name="CurrentRunner")
+
+        self.assertEqual(selected["capture_kind"], "model_bound_result_window")
+        self.assertEqual(selected["selected_result_window"]["path"], "Results/example/result.png")
+        self.assertEqual(len(selected["captured_windows"]), 3)
+
 
 if __name__ == "__main__":
     unittest.main()

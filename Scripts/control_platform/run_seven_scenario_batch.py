@@ -16,6 +16,7 @@ import importlib.util
 import io
 import json
 import math
+import re
 import shutil
 import subprocess
 import sys
@@ -388,6 +389,66 @@ def process_snapshot() -> dict[str, Any]:
     }
 
 
+def mworks_process_ids(snapshot: dict[str, Any]) -> set[int]:
+    return {
+        int(row["Id"])
+        for row in snapshot.get("processes", [])
+        if isinstance(row, dict)
+        and str(row.get("ProcessName") or "").casefold() == "mworks"
+        and isinstance(row.get("Id"), int)
+    }
+
+
+def mworks_pid_for_port(port: Any) -> int | None:
+    if not isinstance(port, int) or port <= 0:
+        return None
+    command = (
+        "$connection = Get-NetTCPConnection -LocalPort "
+        f"{port} -State Listen -ErrorAction SilentlyContinue | Select-Object -First 1; "
+        "if ($connection) { $connection.OwningProcess }"
+    )
+    completed = subprocess.run(
+        ["powershell.exe", "-NoProfile", "-Command", command],
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        timeout=15,
+        check=False,
+    )
+    try:
+        return int(completed.stdout.strip())
+    except ValueError:
+        return None
+
+
+def classify_session_binding(
+    *,
+    mworks_pid: int | None,
+    before_mworks_pids: set[int],
+    allowed_existing_mworks_pids: set[int],
+) -> dict[str, Any]:
+    if not isinstance(mworks_pid, int) or mworks_pid <= 0:
+        return {
+            "blocked": True,
+            "blocker_kind": "gui_or_sentinel_unavailable",
+            "observation": "The batch MCP health response did not resolve a dedicated MWORKS process ID; no window capture or model call will be attempted against an ambiguous session.",
+        }
+    if mworks_pid in before_mworks_pids and mworks_pid not in allowed_existing_mworks_pids:
+        return {
+            "blocked": True,
+            "blocker_kind": "ambiguous_existing_mworks_session",
+            "observation": f"The batch MCP client resolved pre-existing MWORKS PID {mworks_pid}, which was not explicitly authorized for this batch.",
+        }
+    return {
+        "blocked": False,
+        "ownership": "explicitly_authorized_existing_session" if mworks_pid in before_mworks_pids else "batch_started_dedicated_session",
+        "mworks_pid": mworks_pid,
+        "observation": f"The batch MCP client is bound to MWORKS PID {mworks_pid} without selecting an unapproved pre-existing session.",
+    }
+
+
 def run_sentinel(output_path: Path) -> dict[str, Any]:
     completed = subprocess.run(
         [sys.executable, str(SENTINEL_SCRIPT), "--output", str(output_path)],
@@ -415,17 +476,23 @@ def run_sentinel(output_path: Path) -> dict[str, Any]:
     }
 
 
-def capture_mworks_window(output_dir: Path, *, maximize: bool) -> dict[str, Any]:
+def build_capture_command(output_dir: Path, *, maximize: bool, mworks_pid: int) -> list[str]:
     command = [
         "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(CAPTURE_SCRIPT),
         "-TitleRegex", "Sysplorer|MWORKS",
         "-ProcessRegex", "^(mworks|sysplorer)$",
+        "-ProcessId", str(mworks_pid),
         "-OutDir", str(output_dir),
         "-RestoreMinimized",
         "-MinimizeAfter",
     ]
     if maximize:
         command.extend(["-Maximize", "-MaximizeWaitMs", "500"])
+    return command
+
+
+def capture_mworks_window(output_dir: Path, *, maximize: bool, mworks_pid: int) -> dict[str, Any]:
+    command = build_capture_command(output_dir, maximize=maximize, mworks_pid=mworks_pid)
     completed = subprocess.run(
         command,
         cwd=ROOT,
@@ -451,6 +518,57 @@ def capture_mworks_window(output_dir: Path, *, maximize: bool) -> dict[str, Any]
         "manifest": project_relative(manifest_path) if manifest_path.is_file() else None,
         "captured_windows": rows,
     }
+
+
+def select_result_window(capture: dict[str, Any], *, model_name: str) -> dict[str, Any]:
+    """Bind result-window evidence to the runner and MWORKS process used for one case."""
+    captured_windows = [
+        row for row in capture.get("captured_windows", [])
+        if isinstance(row, dict)
+        and bool(row.get("path"))
+        and not bool(row.get("helper_window"))
+    ]
+    matching_model = [
+        row for row in captured_windows
+        if model_name.casefold() in str(row.get("title") or "").casefold()
+    ]
+    result_candidates = [
+        row for row in matching_model
+        if re.search(r"plot|result|curve|chart|曲线|结果", str(row.get("title") or ""), re.IGNORECASE)
+    ]
+    selected = result_candidates[0] if result_candidates else (
+        matching_model[0] if matching_model else None
+    )
+    return {
+        "schema": "mosim.native_result_window_capture.v1",
+        "captured_at": utc_now(),
+        "capture_exit_code": capture.get("exit_code"),
+        "capture_manifest": capture.get("manifest"),
+        "capture_command": capture.get("command"),
+        "captured_windows": captured_windows,
+        "selected_result_window": selected,
+        "valid_native_result_window_capture": selected is not None,
+        "capture_kind": (
+            "model_bound_result_window" if result_candidates else
+            "model_bound_main_window_fallback" if selected else
+            "missing"
+        ),
+        "selection_observation": (
+            f"Selected a PID-bound result-window candidate for {model_name}."
+            if result_candidates else
+            f"Only a PID-bound model window was available for {model_name}; visual curve review remains required."
+            if selected else
+            f"No PID-bound window title matched {model_name}."
+        ),
+        "visual_curve_review_required": bool(selected and not result_candidates),
+    }
+
+
+def capture_result_window(case: SensitivityCase, *, mworks_pid: int) -> dict[str, Any]:
+    capture = capture_mworks_window(case.output_dir / "screenshots", maximize=False, mworks_pid=mworks_pid)
+    output = select_result_window(capture, model_name=case.model_name)
+    write_json(case.output_dir / "logs" / "screenshot_manifest.json", output)
+    return output
 
 
 def capture_titles(capture: dict[str, Any]) -> list[str]:
@@ -527,6 +645,10 @@ class SensitivityBatchSession:
         wrapper = self.module.resolve_wrapper(None)
         self.client = self.module.JsonlMcpClient(self.module.wrapper_command(wrapper), self.session_log)
         self.health = self.module.initialize_mcp_client(self.client)
+        startup = self.health.get("sysplorer_startup") if isinstance(self.health.get("sysplorer_startup"), dict) else {}
+        port = startup.get("dedicated_sysplorer_port")
+        self.dedicated_sysplorer_port = port if isinstance(port, int) and port > 0 else None
+        self.mworks_pid = mworks_pid_for_port(self.dedicated_sysplorer_port)
         self.last_run: dict[str, Any] = {}
         self.closed = False
 
@@ -623,6 +745,7 @@ def run_case(
     contract_path: Path,
     contract_hash: str,
     session: SensitivityBatchSession | None,
+    mworks_pid: int | None,
     dry_run: bool,
     overwrite: bool,
     timeout_s: float,
@@ -663,6 +786,8 @@ def run_case(
     try:
         if session is None:
             raise RuntimeError("Live MWORKS session is unavailable")
+        if not isinstance(mworks_pid, int) or mworks_pid <= 0:
+            raise RuntimeError("Live MWORKS session does not have a resolved PID-bound capture target")
         process = session.run(command)
         session_result = dict(session.last_run)
         LEGACY.save_process_output(case.output_dir, process)
@@ -683,7 +808,7 @@ def run_case(
         python_metrics = case.output_dir / "metrics" / "metrics.python.json"
         if python_metrics.is_file():
             shutil.copyfile(python_metrics, case.output_dir / "metrics" / "METRICS.json")
-        screenshot = LEGACY.capture_result_window(case)
+        screenshot = capture_result_window(case, mworks_pid=mworks_pid)
         if process.returncode != 0:
             error = session.last_run.get("error") or "MWORKS runner returned a nonzero exit code"
         elif not raw.is_file():
@@ -1035,6 +1160,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--overwrite", action="store_true", help="Replace only exact existing profile/controller evidence leaves.")
     parser.add_argument("--reconcile-existing", action="store_true", help="Reclassify existing raw-result records without invoking MWORKS.")
     parser.add_argument("--case-timeout-s", type=float, default=DEFAULT_TIMEOUT_S, help="MCP wait bound only; it does not modify solver settings.")
+    parser.add_argument(
+        "--allow-existing-mworks-pid",
+        action="append",
+        type=int,
+        default=[],
+        help="Explicitly authorize one pre-existing MWORKS PID for this batch; otherwise the MCP client must start its own session.",
+    )
     parser.add_argument("--shutdown-session", action="store_true", help="Explicitly close the MWORKS session at batch end; default leaves it reusable.")
     return parser.parse_args(argv)
 
@@ -1076,6 +1208,7 @@ def main(argv: list[str] | None = None) -> int:
                 contract_path=contract_path,
                 contract_hash=contract_hash,
                 session=None,
+                mworks_pid=None,
                 dry_run=True,
                 overwrite=args.overwrite,
                 timeout_s=args.case_timeout_s,
@@ -1085,6 +1218,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     before_start = process_snapshot()
+    before_mworks_pids = mworks_process_ids(before_start)
     write_json(result_root / "process_snapshot_before_session.json", before_start)
     session: SensitivityBatchSession | None = None
     try:
@@ -1092,8 +1226,34 @@ def main(argv: list[str] | None = None) -> int:
         after_start = process_snapshot()
         write_json(result_root / "process_snapshot_after_session_start.json", after_start)
         sentinel = run_sentinel(result_root / "preflight" / "gui_sentinel_after_start.json")
-        capture = capture_mworks_window(result_root / "preflight" / "background_capture_after_start", maximize=True)
-        classification = classify_window_evidence(sentinel, capture)
+        session_binding = classify_session_binding(
+            mworks_pid=session.mworks_pid,
+            before_mworks_pids=before_mworks_pids,
+            allowed_existing_mworks_pids=set(args.allow_existing_mworks_pid),
+        )
+        if session_binding["blocked"]:
+            capture = {
+                "command": [],
+                "exit_code": 1,
+                "stdout": "",
+                "stderr": session_binding["observation"],
+                "manifest": None,
+                "captured_windows": [],
+            }
+            classification = {
+                "blocked": True,
+                "blocker_kind": session_binding["blocker_kind"],
+                "license_state": "unknown_blocked",
+                "observation": session_binding["observation"],
+                "titles": [],
+            }
+        else:
+            capture = capture_mworks_window(
+                result_root / "preflight" / "background_capture_after_start",
+                maximize=True,
+                mworks_pid=session.mworks_pid,
+            )
+            classification = classify_window_evidence(sentinel, capture)
         preflight = {
             "schema": "mosim.sensitivity_mworks_preflight.v1",
             "recorded_at": utc_now(),
@@ -1109,6 +1269,10 @@ def main(argv: list[str] | None = None) -> int:
             "mworks_window_evidence_touched": True,
             "mworks_window_policy": "one_user_authorized_new_session_then_reuse_for_serial_sensitivity_batch",
             "session_health": session.health,
+            "session_binding": {
+                **session_binding,
+                "dedicated_sysplorer_port": session.dedicated_sysplorer_port,
+            },
             "classification": classification,
         }
         write_json(result_root / "MWORKS_PREFLIGHT.json", preflight)
@@ -1130,12 +1294,17 @@ def main(argv: list[str] | None = None) -> int:
                 contract_path=contract_path,
                 contract_hash=contract_hash,
                 session=session,
+                mworks_pid=session.mworks_pid,
                 dry_run=False,
                 overwrite=args.overwrite,
                 timeout_s=args.case_timeout_s,
                 license_state=classification["license_state"],
             )
-            post_case_capture = capture_mworks_window(case.output_dir / "screenshots" / "post_case", maximize=False)
+            post_case_capture = capture_mworks_window(
+                case.output_dir / "screenshots" / "post_case",
+                maximize=False,
+                mworks_pid=session.mworks_pid,
+            )
             write_json(case.output_dir / "logs" / "post_case_window_capture.json", post_case_capture)
             if has_gui_blocker(post_case_capture):
                 write_json(result_root / "BATCH_STOPPED_GUI_BLOCKER.json", {

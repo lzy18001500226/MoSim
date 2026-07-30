@@ -1,6 +1,7 @@
 param(
     [string]$TitleRegex = 'Sysplorer|MWORKS|Quadrotor|AWFF',
     [string]$ProcessRegex = '^(mworks|mw_browser_proxy|mw_crash_handler|syslab|sysplorer)',
+    [int[]]$ProcessId = @(),
     [string]$OutDir = 'Results/mworks_background_capture/manual',
     [switch]$IncludeHelperWindows,
     [switch]$MaximizeAllMatches,
@@ -155,7 +156,8 @@ $callback = [BackgroundWindowCapture+EnumWindowsProc]{
     } catch {
         $processName = ''
     }
-    if (($title -match $TitleRegex) -and ($processName -match $ProcessRegex)) {
+    $matchesProcessId = ($ProcessId.Count -eq 0) -or ($ProcessId -contains [int]$windowPid)
+    if (($title -match $TitleRegex) -and ($processName -match $ProcessRegex) -and $matchesProcessId) {
         $windowMatches.Add([PSCustomObject]@{
             pid = [int64]$windowPid
             process = $processName
