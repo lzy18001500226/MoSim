@@ -1,69 +1,39 @@
-# MoSim 正式文档入口
+# MoSim 报告与手册入口
 
-本目录最终只服务两份交付物：
+本目录的当前证据收敛文本为：
 
-1. 《四旋翼无人机位姿控制系统技术报告》
-2. 《MoSim 软件说明书》
+1. `仿真分析报告_正文骨架.md`：四旋翼位姿控制与仿真分析报告；
+2. `用户手册_正文骨架.md`：MoSim Studio 与 MWORKS 手动工作流；
+3. `公式与推导.md`：活动运行链公式、源码映射和理论候选附录。
 
-控制器审计、图表清单、公式源和生成脚本是两份交付物的支撑材料，不是第三份
-报告，也不能替代任何一份正文。
+三份文本统一使用
+`Docs/Design/报告手册交付证据总账_P0_20260731.md` 的数字、路径和边界。报告
+正文引用原始 `Results/`、`Config/` 和 `Models/`；Studio、QGC、RViz、UE 的显示
+或窗口状态不是控制闭环成功判据。
 
-## 当前写作门槛
+## 归档与交付
 
-在重写 Word 正文前，先以 `审计/控制器证据审计.md` 为准完成控制器图片复核：
-
-- 模型图必须打开到实际内部控制律子模型，不能使用只有接口端口的包装器。
-- 走线、反馈方向、关键增益/积分/观测/约束模块和输出分配必须可读；静态 PNG
-  不能自动视为布局合格。
-- 结果图必须绑定路线、场景和可追溯运行标识：正式整机运行使用 Run ID，固定输入
-  MIL 截图使用批次清单、模型路径和截图哈希；固定输入响应、界面截图和数值摘要不能
-  单独写成闭环性能通过。
-- 当前目录按七个控制器家族组织，共48个活动条目：47 个 MWORKS Control Profile 与 `px4ctrl` 工程/部署
-  基线。`pid_awff_linear_eso` 尚未实现，不得以相邻控制器、理论公式或替代截图补齐。
-  `px4ctrl` 已完成可审查的 MWORKS 图形化外环和方程桥整机闭环：`ClimbPath` 50 s 的
-  `Px4CtrlFormalRunner` 记录有 5001 个有限样本、位置 RMSE `0.276705 m`、终端位置误差
-  `0.002734 m`，原始证据在
-  `Results/control_platform/px4ctrl_graphical_completion_20260728/`。该记录仅证明 MWORKS
-  方程桥闭环可运行，不能替代生成代码、SIL、Gazebo/PX4、MAVROS 或 ROS 运行时证据。
-
-审计脚本：
-
-```powershell
-python Scripts/quality/audit_report_controller_assets.py
-```
-
-它会检查报告副本是否成对存在、字节级重复、纵向长图、模型源码/数值结果/MSR
-覆盖，并生成 `审计/控制器证据审计.md`。它不启动 MWORKS，不会把“有文件”误判为
-“走线合格”。
-
-## 正式交付结构
+本批次改写前的三份正文已归档到 `Docs/Cache/`：
 
 ```text
-Docs/报告/
-  README.md                         # 本入口
-  技术报告/                         # 正式技术报告母稿、图表和证据映射
-  软件说明书/                       # 正式软件说明书母稿、复现步骤
-  图/                               # 报告副本；权威原始证据仍在 Results/
-  审计/                             # 可复跑的报告资产审计，不对外单独提交
-  公式与推导.md                     # 理论与变量说明源
+仿真分析报告_正文骨架_archived_20260731.md
+公式与推导_archived_20260731.md
+用户手册_正文骨架_archived_20260731.md
 ```
 
-现有 `仿真分析报告_正文骨架.md`、`用户手册_正文骨架.md`、两份临时 `.docx` 和
-`build_word_reports.py` 均为初稿/辅助材料，不能直接作为最终报告。后续应以经过审计
-的图表、权威 `Results/` 证据和人工复核结论重建正文；不要将历史缩略截图批量插入
-文中。
+根目录的 `RELEASE_CHECKLIST.md` 提供环境核对、44 条 Studio 手动入口索引、
+关键哈希、代码生成构建命令、复现步骤和已知限制。
 
-## 证据来源与口径
+现有 `.docx` 与 `build_word_reports.py` 是历史辅助材料，尚未由本批次 Markdown
+重新导出；它们不得被当作比当前 Markdown 更新的权威正文。需要导出 Word 时，
+应以这三份 Markdown、证据总账和发布清单为源重新审校，不能回填旧计划数字或
+无原始路径的图表。
 
-- 控制器路线上限、源码、截图和数值证据：
-  `Results/control_platform/controller_document_evidence_20260720/CONTROLLER_DOCUMENT_EVIDENCE_INVENTORY.md`
-- 当前 48 项控制器目录、G1 结构验证状态和下一步门限：
-  `Docs/Workflows/mainline_operations_board.md`
-- 历史 67 条控制器矩阵仅用于追溯，不能补写为当前源代码下的闭环结果：
-  `Results/control_platform/classic_controller_closeout_20260717/CLASSIC_CONTROLLER_FINAL_MATRIX.json`
-- 安全、故障容错、三机编队和学习增强专项证据：
-  `Results/control_platform/non_frontend_evidence_index_20260718/`
+## 证据边界
 
-正文只引用与本段结论同层的证据。MWORKS 图形图用于结构说明；结果曲线和指标用于
-仿真结论；Gazebo/PX4/MAVROS/RViz 用于运行层结论；QGC、UE、Model Studio 只作为
-操作或显示证据，不能替代控制闭环证据。
+1. 48 为控制器目录条目，46 为有 MWORKS 控制模块，44 为 Studio 可手动打开的
+   FormalRunner 路由，28/48 为 G3 有效通过。这些数字不可互换。
+2. 七场景为 14 条总记录，其中 12 条有效、2 条无效负样本；灵敏度 24 条为
+   17 通过、3 物理门限失败、4 执行阻塞。
+3. px4ctrl 的图形模型到 C、构建和 MWORKS 50 s SIL 已有证据；生成 C 接入
+   Gazebo/PX4 运行时仍须独立验证。

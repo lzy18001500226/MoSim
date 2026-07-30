@@ -80,9 +80,24 @@ at 16.44 s, reaching `13.101713 m` at 16.6 s. That diagnostic is supplementary
 only and does not relabel the incomplete 50 s primary record as valid.
 
 The v1 ClimbPath disturbance/fault records remain intact and are not merged
-into this v2 matrix. Do not start G3, other-controller experiments, gain
-tuning, export, Gazebo/ROS/QGC, APP, or report work from this completed gate.
-Wait for user review.
+into this v2 matrix. This completed gate by itself does not authorize new
+controller experiments, gain tuning, or Gazebo/ROS/QGC runtime action. The
+later direct P0 report/manual/codegen-delivery authorization is tracked below
+and is document/build work only; it does not alter this frozen matrix.
+
+### P0 Report / Manual / Delivery Evidence Convergence - In Progress
+
+Direct user authorization on 2026-07-31 CST permits only the evidence-driven
+rewrite of `Docs/报告/` and the named documentation locations, plus the
+px4ctrl C delivery material under `src/control/codegen/px4ctrl/` and root
+`RELEASE_CHECKLIST.md`. The source of truth is
+`Docs/Design/报告手册交付证据总账_P0_20260731.md`.
+
+This task does not modify `Models/`, `Config/`, or existing `Results/`, does
+not start simulations, and does not exercise the separately owned
+Gazebo/PX4/ROS/QGC runtime lane. It must preserve negative evidence, verify
+paths/hashes/builds, and publish only task-owned documentation and C delivery
+files.
 
 ### MWORKS PX4CTRL Three-UAV Figure-8 - Completed, Awaiting Next Instruction
 
@@ -194,11 +209,16 @@ proves that this is not an MCP timeout or an injection error. This is retained
 as historical v1 negative evidence, not the current task selector; use the
 v2 entry above for the active review packet.
 
-### G3 ClimbPath Failure Repair - Deferred Pending v2 Review
+### G3 ClimbPath Effective State - Frozen for P0 Documentation
 
-The direct v2 A/B task supersedes G3 execution temporarily. Preserve its
-existing repair records and do not resume G3 until the user explicitly directs
-the next MWORKS controller-evidence action.
+The direct P0 documentation task does not resume G3 execution. Preserve the
+existing repair records and use
+`Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json`
+as the current result authority: G2 has 17/48 frozen passes; G3 has 28/48
+effective passes and 20/48 effective failures. The 20 failures are nine
+terminal-position-error violations, eight simulation timeouts, two simulation
+API failures, and one CheckModel failure. The detailed controller lists remain
+in that JSON and in the P0 evidence ledger.
 
 All 48 public
 `Runners.Formal.*` entries received one nominal 50 s `ClimbPath` attempt with
@@ -219,12 +239,10 @@ coordinate signs, equation-bridge equations, or allocation units; do not tune
 for performance. Each source change requires native `CheckModel` and the same
 single-route 50 s `ClimbPath` replay before the next repair.
 
-Acceptance is 48/48 effective routes with a completed 50 s result and terminal
-`position_error_norm < 5 m`. G3 does not authorize seven-scenario runs,
-gain-performance optimization, code export, Gazebo/ROS work, G7, or R1. On
-completion, update the G3 aggregate index, commit and push only task-owned
-sources/scripts/evidence indexes, send one Chinese before/after review email,
-and wait for review.
+The historical G3 target remains 48/48 effective routes with a completed 50 s
+result and terminal `position_error_norm < 5 m`. It is not an acceptance claim
+for the present 28/48 state. No G3 rerun, gain-performance optimization, or
+Gazebo/ROS work is authorized by the P0 documentation task.
 
 ### User-Authorized Operator Surface - Separate Support Lane
 
@@ -401,13 +419,12 @@ current completion.
 
 ## 3. Next Engineering Selection
 
-G3 is active against the frozen 48-route denominator. The completed G1-0
-reconciliation remains the authority for those 48 entries; do not infer an
-additional runnable route from a historical `adapter_missing` row or the
-planned ESO profile. Read
+The active bounded action is P0 report/manual/codegen-delivery evidence
+convergence. It uses the frozen 48-route denominator and
 `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json`
-for the current effective pass/fail count; G2 records remain trace-back
-evidence only.
+for current effective state. Do not infer an additional runnable route from a
+historical `adapter_missing` row or the planned ESO profile. G2 remains
+trace-back evidence; no live rerun is part of P0.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant
 topic workflow and declare the evidence path under `Results/`.
@@ -437,10 +454,10 @@ For the later G0-G3 controller line:
   of less than 5 m. A completed solver call with a divergent signal is a fail.
 - The old P0b and pre-repair six-candidate RMSE values are trace-back evidence,
   not current-source ranking data.
-- G3 may repair and rerun only the G2 failure set under its separate evidence
-  root. Do not enter broader seven-scenario A/B, ESO ablation, code export,
-  ROS1 runtime validation, G7, or R1 until G3 is complete and the user supplies
-  a new instruction.
+- A future G3 repair may rerun only the G2 failure set under its separate
+  evidence root after a new direct user instruction. The current P0 task
+  permits documentation and px4ctrl C build verification only; it does not
+  permit broader experiment or runtime work.
 
 ## 5. Board Update Rule
 

@@ -1,0 +1,124 @@
+{
+  "schema": "mosim.px4ctrl_codegen_delivery.v1",
+  "modelica_source": {
+    "class_name": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
+    "path": "../../../../Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
+    "sha256": "86dc0be78490e87ed7bf487406b49531330ee5379d042cf0e44c8a4b718307d6"
+  },
+  "generation": {
+    "generator": "MWORKS ModelingPy.GenerateModelCode",
+    "generated_at_local": "2026-07-30 15:17:24",
+    "language": "C99",
+    "sample_time_s": 0.01,
+    "precision": "double",
+    "source_record": "../../../../Results/control_platform/px4ctrl_codegen_sil_v1/generate_model_code_result.json"
+  },
+  "generated_files": [
+    {
+      "path": "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.c",
+      "sha256": "a3f4aba1137dd454a7370f40b1365ad86c47c8c19f5908538c81f92a6b7c0e76"
+    },
+    {
+      "path": "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.h",
+      "sha256": "1c6d653c34d3944bbfad9b13f7402f87b2fdc3fb39babc296695f70c1144431d"
+    },
+    {
+      "path": "PX4CTRL_Original_OuterLoop_Graphical_Sysblock_private.h",
+      "sha256": "524aed0f17df18f0138a316b6e40082174a47ff4f81a25c75162569cec018105"
+    },
+    {
+      "path": "PX4CTRL_Original_OuterLoop_Graphical_Sysblock_extern_include.h",
+      "sha256": "8c110d510f8987c6d1bf38b2f666480b71b05ffff02c43865f0d3b656cab4ef7"
+    },
+    {
+      "path": "PX4CTRL_Original_OuterLoop_Graphical_Sysblock_data.c",
+      "sha256": "35c0decb43b805672a3180788126941d6a2a54a8278a7ed0bef33680091ff5a9"
+    },
+    {
+      "path": "mwb_types.h",
+      "sha256": "dcc27f1c9a0814ef28249ed2f324b7932752de19fd83c6c12e1a99bf4a8956f7"
+    },
+    {
+      "path": "mwb_runtime.h",
+      "sha256": "358b7d94db58078ab46ab5e6f3aede079477ce6c27aa3f1cf6a6f508effba2bb"
+    },
+    {
+      "path": "mwb_main.c",
+      "sha256": "35d04659afeacebb6bb9ec7dc6506f3e9bb5682151d430e7521c51dae097e24a"
+    },
+    {
+      "path": "px4ctrl_graphical_generated_shared.c",
+      "sha256": "6ea91051b22b4202e89195f584020d87100e8f9526daee70e726368067fa9ca7"
+    }
+  ],
+  "delivery_files": [
+    {
+      "path": "px4ctrl_graphical_generated_shared.h",
+      "sha256": "e322cf3e7e70ae4a6a75e9c989c16b61788379302d056c7d96a89541ac9386ea"
+    },
+    {
+      "path": "CMakeLists.txt",
+      "sha256": "dc1cce8083e5d63725b42b120191088763464a89be1d7b787e044220670cf2c5"
+    },
+    {
+      "path": "test_px4ctrl_c.c",
+      "sha256": "7f13e6107f0be3e52bdf81616986e4630a7aac875b88453b6034f898550277dc"
+    },
+    {
+      "path": "README.md",
+      "sha256": "cf90dc259a4f4452138fd023383ba1d34d41976d5b6080c4e8758223fdb30321"
+    },
+    {
+      "path": "hash_check.ps1",
+      "sha256": "b38cbec001d35da5c1354e4c81afa6b256c36031d6ef0ce8179bbddb876aff03"
+    },
+    {
+      "path": "hash_check.sh",
+      "sha256": "5311e24291d64eead3f81aabe5700578c9f35a8cd90f904a82eee598c6ab793f"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "abe4d5e70017e3bab218749103ef8491d56675fe71bf34d6f70b93282108a280"
+    }
+  ],
+  "binary_evidence": [
+    {
+      "platform": "WSL Linux",
+      "path": "../../../../Results/control_platform/px4ctrl_codegen_sil_v1/native/libpx4ctrl_graphical_generated.so",
+      "sha256": "aa6681db20928dbcfdff1a25d3c8c8b712c3fe6221188569117ac120f47aae8c",
+      "exported_symbol": "MosimPx4ctrlGeneratedGraphStepScalar",
+      "claim": "Historical WSL Linux build evidence only; target platforms must rebuild."
+    }
+  ],
+  "verification": {
+    "manifest_created_utc": "2026-07-30T18:50:49Z",
+    "source_build": {
+      "platform": "Ubuntu 20.04 WSL",
+      "compiler": "gcc (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0",
+      "cmake": "cmake version 3.16.3",
+      "result": "static library, shared library, CTest fixed-vector test, nm symbol lookup, and ldd all passed"
+    },
+    "ephemeral_rebuild": {
+      "path": "build-wsl/libpx4ctrl_graphical_generated.so",
+      "sha256": "ced0512ee343ba723bbf92a27469964907efa1519e3571256388dc8014803eb8",
+      "status": "verified during this delivery build; build directory is intentionally ignored"
+    },
+    "windows_dll": {
+      "status": "not built on this host because no native Windows C compiler is installed; no DLL hash is claimed"
+    }
+  },
+  "c_abi": {
+    "entry": "MosimPx4ctrlGeneratedGraphStepScalar",
+    "input_count": 17,
+    "output_count": 8,
+    "initialization": "Init() is called exactly once on the first process-local wrapper invocation"
+  },
+  "sil_evidence": {
+    "path": "../../../../Results/control_platform/px4ctrl_codegen_sil_v1/logs/CLOSED_LOOP_SIL_RESULT.json",
+    "position_rmse_difference_m": 1.1481051588325626e-13,
+    "attitude_max_abs_difference_rad": 3.2070318622956506e-12,
+    "rotor_max_abs_difference_rad_s": 7.354117315117037e-11,
+    "verdict": "passed",
+    "boundary": "MWORKS-only whole-aircraft SIL; Gazebo/PX4 runtime deployment is not established by this record."
+  }
+}
