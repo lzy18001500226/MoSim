@@ -30,6 +30,25 @@ truth.
 roadmap remains valid future work and must not be collapsed into the current
 competition milestone.
 
+### 2.1 User-Assigned Work Ownership
+
+The current user assignment is intentionally split across conversations:
+
+```text
+This coordinating thread:
+  MWORKS controller/model/evidence work
+  -> later MoSim Studio APP work
+
+Separate QGC/Gazebo conversation:
+  QGC, ROS1/Gazebo/PX4/MAVROS runtime, Factory maps, sensors, and live runs
+```
+
+Do not infer ownership from a technology's authority boundary. A MWORKS/APP
+thread may read a completed runtime record for a factual handoff, but must not
+start, modify, diagnose, or extend the QGC/Gazebo line unless the user explicitly
+reassigns it. A direct user scope assignment overrides an older broad
+"current runtime lane" statement.
+
 ## 3. Current Structure Rules
 
 - The atomic Modelica-root migration is complete: load only

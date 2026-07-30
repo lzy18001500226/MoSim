@@ -9,6 +9,20 @@ domain-specific workflows in the linked documents below.
 
 ## Current Task
 
+> User-assigned thread boundary, 2026-07-30 CST:
+>
+> - This coordinating thread owns MWORKS controller/model/evidence work and,
+>   after that line is reviewed, MoSim Studio APP work.
+> - A separate user-owned conversation owns QGC and the ROS1/Gazebo/PX4 runtime
+>   line, including Factory maps, runtime scripts, sensor/EKF configuration, and
+>   all live Gazebo/ROS actions.
+> - This thread may read completed runtime evidence only to prepare a factual
+>   handoff. It must not start, modify, diagnose, or extend that runtime line
+>   unless the user explicitly reassigns it.
+> - A direct user scope assignment overrides a broad historical "active support
+>   lane" statement below. Before acting, name the owner layer and stop when it
+>   belongs to the other conversation.
+
 Fast entry cue, 2026-07-28 CST: G0 of the user-authorized 48-controller
 MWORKS closed-loop line passed. `Px4CtrlFormalRunner` completed `ClimbPath`
 for 50 s with a native `CheckModel` diagnostic of 0 errors and 0 warnings;
@@ -61,7 +75,8 @@ tuning, code export, Gazebo/ROS runtime validation, G7, or R1.
  it must not claim controller, planner, or runtime success from that work.
 
 On 2026-07-29 CST, the user separately authorized the ROS1/Gazebo runtime
-reproducibility closure. It is independent from the MWORKS G3 line: retain the
+reproducibility closure. It is independent from the MWORKS G3 line and is owned
+by the separate QGC/Gazebo conversation: retain the
 current `Ubuntu-20.04 / ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS /
 px4ctrl / RViz` lane. Its no-flight GPS/EKF state-chain gate passed at
 `Results/sunray_ros1/sunray_ros1_gps_state_chain_20260729_007/` with a
@@ -77,7 +92,7 @@ operator-map replay, and the one-way UE receiver under one `run_id`. Its
 result is explicitly `completed_with_rviz_window_capture_limitation`; it is
 display/reproducibility evidence only and cannot be presented as P3 controller
 performance, fault-tolerance, MWORKS deployment, QGC command, or UE control
-evidence. The next executable gate is P5 single-aircraft native Diff baseline.
+evidence. Its next executable gate is P5 single-aircraft native Diff baseline.
 
 The six-candidate recovery record at
 `Results/control_platform/champion_candidate_recovery_20260727/` predates the

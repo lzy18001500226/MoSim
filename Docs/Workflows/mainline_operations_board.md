@@ -36,7 +36,32 @@ execution contract is `Docs/Workflows/g6_controller_experiment_execution.md`;
 `Docs/Workflows/controller_evidence_closeout.md` defines the G1-G7 completion
 contract. Neither creates another task line or gate meaning.
 
+### User-Assigned Thread Boundary (2026-07-30 CST)
+
+```text
+This coordinating thread:
+  MWORKS controller/model/evidence work
+  -> later MoSim Studio APP work
+
+Separate QGC/Gazebo conversation:
+  QGC and ROS1/Gazebo/PX4/MAVROS runtime work
+```
+
+The separate conversation owns live runtime execution, Factory-map work,
+runtime scripts, PX4/EKF/sensor configuration, and QGC operations. This thread
+may prepare a factual handoff from completed `Results/sunray_ros1/` evidence,
+but must not run, change, or diagnose that lane. Direct user ownership takes
+precedence over historical runtime status below.
+
 ## 1. Current Action
+
+### Current Coordinating Scope: MWORKS G3, Then MoSim Studio APP
+
+This thread's executable work is limited to the MWORKS controller/model/evidence
+line described below. After that line reaches user review, the next owned line
+is MoSim Studio APP work. The ROS1/Gazebo paragraphs below are retained as
+runtime evidence and a handoff index only; they are not executable work for
+this thread.
 
 ### px4ctrl Graphical Completion - Completed
 
