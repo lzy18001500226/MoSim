@@ -105,6 +105,14 @@ def test_model_dropdowns_use_native_labels_without_overlay_fields() -> None:
     assert "TaskLabel::Any" not in source
 
 
+def test_hidden_workspace_controls_are_parked_outside_the_active_layout() -> None:
+    source = APP_SOURCE.read_text(encoding="utf-8")
+    visibility_helper = section(source, "function set_visible(app, controls, visible)", "function configure_console_workspace(app;")
+    assert "const HIDDEN_CONTROL_POSITION = [-2048, -2048, 1, 1]" in source
+    assert "control.Visible = false" in visibility_helper
+    assert "control.Position = HIDDEN_CONTROL_POSITION" in visibility_helper
+
+
 def test_model_workspace_hides_status_summary_blocks() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     model = section(source, "function configure_model_workspace(app)", "function configure_live_workspace(app)")
