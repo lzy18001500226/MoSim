@@ -1,0 +1,217 @@
+{
+  "schema": "mosim.seven_scenario_injection_contract.v2",
+  "version": 2,
+  "status": "px4ctrl_and_official_pid_v2_execution_authorized",
+  "claim_boundary": "This versioned MWORKS contract defines the main two-controller v2 A/B evidence set only. It does not change the Plant, controller gains, controller boundary semantics, code generation, Gazebo/ROS/QGC runtime, or APP behavior.",
+  "lineage": {
+    "supersedes_for_main_ab_comparison": "Config/control_platform/seven_scenario_injection_contract.json",
+    "v1_evidence_policy": "Retain Results/control_platform/seven_scenario_ab as historical ClimbPath disturbance/fault screening evidence. Do not overwrite it or merge it into the v2 primary matrix.",
+    "climbpath_policy": "The all-controller ClimbPath 50 s minimum-closure screen remains a separate resource-constrained admission gate and is not one of the seven v2 detailed scenarios."
+  },
+  "authority": {
+    "model_root": "Models/MoSimQuadrotorModel/package.mo",
+    "trajectory_namespace": "MoSimQuadrotorModel.Guidance.Trajectories",
+    "plant": "MoSimQuadrotorModel.Vehicle.Sunray150Assembly",
+    "profile_document": "Config/control_platform/seven_scenario_experiment_profiles_v2.json",
+    "result_root": "Results/control_platform/seven_scenario_ab_v2/"
+  },
+  "common_execution": {
+    "solver": "Dassl",
+    "tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "reference_signals": [
+      "position_ref[3]",
+      "velocity_ref[3]",
+      "acceleration_ref[3]"
+    ],
+    "measurement_signals": [
+      "position_mea[3]",
+      "velocity_mea[3]",
+      "attitude_mea[3]"
+    ],
+    "sampling_boundary": {
+      "official_pid": "native continuous reference, measurement, and rotor-command loop; Interval=0.01 standardizes result sampling only.",
+      "px4ctrl": "declared 100 Hz formal Runner boundary; Interval=0.01 is its external sample cadence.",
+      "comparison_rule": "The evidence records each controller's declared execution boundary. No artificial common command-side zero-order hold is introduced."
+    },
+    "yaw_policy": {
+      "mode": "fixed_zero",
+      "applies_to": "all seven scenarios including Figure8",
+      "reason": "The current shared controller contract has no yaw-reference port; v2 evaluates translational tracking under the same fixed-yaw contract."
+    }
+  },
+  "runner_binding_policy": {
+    "style": "parameterized_existing_runner_plus_ephemeral_evidence_harness",
+    "authorized_runner_classes": [
+      "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner"
+    ],
+    "rule": "Each record binds an existing formal Runner to one Profile-selected trajectory and runner parameter set. The generated harness contains no controller logic and is saved with the evidence leaf.",
+    "required_runner_parameters": [
+      "gust_force[3]",
+      "gust_start_s",
+      "gust_duration_s",
+      "mass_scale",
+      "inertia_scale[3]",
+      "rotor_effectiveness[4]",
+      "fault_start_s",
+      "fault_rotor_index",
+      "fault_rotor_effectiveness"
+    ],
+    "plant_rules": {
+      "wind": "Apply a world-frame external force in N through Sunray150Assembly.gust. This is not a wind-speed surrogate.",
+      "parameter_mismatch": "Apply mass_scale and inertia_scale to the physical body only; the controller profile remains nominal.",
+      "motor_fault": "The selected rotor changes from effectiveness 1.0 to the Profile value at fault_start_s. Both thrust and reaction moment use the scheduled effectiveness."
+    }
+  },
+  "scenarios": [
+    {
+      "scenario_id": "hover",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.HoverHold",
+      "duration_s": 35.0,
+      "plant_injection": "nominal",
+      "required_metrics": [
+        "position_rmse_m",
+        "tail_rmse_m",
+        "terminal_position_error_m",
+        "max_position_error_m"
+      ]
+    },
+    {
+      "scenario_id": "step_response",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.StepResponse",
+      "duration_s": 45.0,
+      "plant_injection": "nominal",
+      "step_metric_contract": {
+        "axes": [
+          "x",
+          "y"
+        ],
+        "step_time_s": 15.0,
+        "step_m": [
+          1.0,
+          -1.0
+        ],
+        "settling_band_fraction": 0.05,
+        "steady_state_window_s": [
+          40.0,
+          45.0
+        ]
+      },
+      "required_metrics": [
+        "overshoot_percent_x",
+        "overshoot_percent_y",
+        "settling_time_s",
+        "steady_state_error_m",
+        "position_rmse_m"
+      ]
+    },
+    {
+      "scenario_id": "figure8",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50.0,
+      "plant_injection": "nominal",
+      "required_metrics": [
+        "position_rmse_m",
+        "xy_rmse_m",
+        "max_position_error_m",
+        "terminal_position_error_m"
+      ]
+    },
+    {
+      "scenario_id": "spiral",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
+      "duration_s": 50.0,
+      "plant_injection": "nominal",
+      "required_metrics": [
+        "position_rmse_m",
+        "xy_rmse_m",
+        "z_rmse_m",
+        "max_position_error_m"
+      ]
+    },
+    {
+      "scenario_id": "wind_disturbance",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50.0,
+      "plant_injection": {
+        "type": "world_frame_external_force",
+        "gust_force_N": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "start_s": 15.0,
+        "duration_s": 35.0,
+        "metric_window_s": [
+          15.0,
+          50.0
+        ],
+        "semantic": "Figure-eight tracking under a 0.25 N +X force from 15 s through 50 s."
+      },
+      "required_metrics": [
+        "position_rmse_m",
+        "disturbance_window_rmse_m",
+        "max_position_error_m",
+        "terminal_position_error_m"
+      ]
+    },
+    {
+      "scenario_id": "parameter_mismatch",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent",
+      "duration_s": 50.0,
+      "plant_injection": {
+        "type": "physical_plant_parameter_scale",
+        "mass_scale": 1.2,
+        "inertia_scale": [
+          1.2,
+          1.2,
+          1.2
+        ],
+        "controller_parameter_scale": 1.0,
+        "semantic": "Spiral tracking with physical mass and all principal inertias increased by 20 percent while the controller remains nominal."
+      },
+      "required_metrics": [
+        "position_rmse_m",
+        "xy_rmse_m",
+        "z_rmse_m",
+        "max_position_error_m",
+        "control_energy"
+      ]
+    },
+    {
+      "scenario_id": "motor_efficiency_fault",
+      "trajectory": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50.0,
+      "plant_injection": {
+        "type": "time_varying_rotor_effectiveness",
+        "fault_rotor_index": 1,
+        "nominal_effectiveness": 1.0,
+        "fault_effectiveness": 0.5,
+        "fault_start_s": 15.0,
+        "applies_to": [
+          "thrust_effectiveness",
+          "reaction_moment_effectiveness"
+        ],
+        "semantic": "Figure-eight tracking with rotor 1 switching from 1.0 to 0.5 at 15 s; the other three rotors remain at 1.0."
+      },
+      "required_metrics": [
+        "pre_fault_rmse_m",
+        "post_fault_rmse_m",
+        "post_fault_peak_error_m",
+        "terminal_position_error_m",
+        "control_energy"
+      ]
+    }
+  ],
+  "run_validity_gate": {
+    "required": [
+      "CheckModel passes for the bound Runner and Profile-selected trajectory.",
+      "Simulation reaches the declared stop time.",
+      "Core tracking signals are finite.",
+      "Maximum position error is below 5 m.",
+      "Raw CSV, Python metrics, native Result.msr, native result-window capture, MCP log, RUN_CONFIG, RUN_RECORD, Profile hash, and contract hash are retained."
+    ],
+    "negative_evidence_rule": "A divergent or incomplete run remains recorded as invalid evidence. It must not be deleted, rerun over, or relabeled as a pass."
+  }
+}

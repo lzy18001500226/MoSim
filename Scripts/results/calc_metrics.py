@@ -29,6 +29,24 @@ STEP_RESPONSE_STEADY_STATE_START_S = 40.0
 MOTOR_FAULT_TIME_S = 15.0
 
 
+def parse_metrics_context(raw: str) -> dict[str, float]:
+    try:
+        value = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"--metrics-context-json must be a JSON object: {exc}") from exc
+    if not isinstance(value, dict):
+        raise ValueError("--metrics-context-json must be a JSON object")
+    context: dict[str, float] = {}
+    for key, item in value.items():
+        if not isinstance(key, str) or not isinstance(item, (int, float)) or isinstance(item, bool):
+            raise ValueError("--metrics-context-json values must be finite numeric scalars")
+        numeric = float(item)
+        if not math.isfinite(numeric):
+            raise ValueError("--metrics-context-json values must be finite numeric scalars")
+        context[key] = numeric
+    return context
+
+
 def read_csv(path: Path) -> dict[str, list[float]]:
     with path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
@@ -408,7 +426,14 @@ def to_csv_value(value: object) -> object:
     return value
 
 
-def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str, controller_id: str) -> dict[str, object]:
+def compute_metrics(
+    data: dict[str, list[float]],
+    raw_file: Path,
+    scene_id: str,
+    controller_id: str,
+    metrics_context: dict[str, float] | None = None,
+) -> dict[str, object]:
+    context = metrics_context or {}
     time = data["time"]
     if not time:
         raise ValueError(f"Metrics input has no data rows: {raw_file}")
@@ -527,6 +552,7 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         else math.nan,
         "nan_count": nan_count,
         "valid": len(time) > 10 and nan_count == 0,
+        "scenario_metric_context": context,
     }
     if scene_id == "step_response":
         metrics.update(
@@ -551,22 +577,28 @@ def compute_metrics(data: dict[str, list[float]], raw_file: Path, scene_id: str,
         )
 
     if scene_id == "wind_disturbance":
-        metrics["disturbance_window_rmse_m"] = rmse(windowed(time, ep, 0.0, 50.0))
-        metrics["disturbance_window_start_s"] = 0.0
-        metrics["disturbance_window_end_s"] = 50.0
+        disturbance_start_s = context.get("gust_start_s", 0.0)
+        disturbance_duration_s = context.get("gust_duration_s", 50.0)
+        disturbance_end_s = min(disturbance_start_s + disturbance_duration_s, max(time))
+        metrics["disturbance_window_rmse_m"] = rmse(
+            windowed(time, ep, disturbance_start_s, disturbance_end_s)
+        )
+        metrics["disturbance_window_start_s"] = disturbance_start_s
+        metrics["disturbance_window_end_s"] = disturbance_end_s
     else:
         metrics["disturbance_window_rmse_m"] = math.nan
 
     if scene_id == "motor_efficiency_fault":
+        fault_start_s = context.get("fault_start_s", MOTOR_FAULT_TIME_S)
         pre_fault_error = [
             error
             for current_time, error in zip(time, ep)
-            if current_time < MOTOR_FAULT_TIME_S - 1e-9 and math.isfinite(error)
+            if current_time < fault_start_s - 1e-9 and math.isfinite(error)
         ]
-        post_fault_error = windowed(time, ep, MOTOR_FAULT_TIME_S, max(time))
+        post_fault_error = windowed(time, ep, fault_start_s, max(time))
         metrics.update(
             {
-                "fault_start_s": MOTOR_FAULT_TIME_S,
+                "fault_start_s": fault_start_s,
                 "pre_fault_rmse_m": rmse(pre_fault_error),
                 "post_fault_rmse_m": rmse(post_fault_error),
                 "post_fault_peak_error_m": max_or_nan(post_fault_error),
@@ -604,6 +636,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("metrics_json", type=Path)
     parser.add_argument("scene_id", nargs="?", default=None)
     parser.add_argument("controller_id", nargs="?", default="unknown")
+    parser.add_argument(
+        "--metrics-context-json",
+        default="{}",
+        help="Optional JSON object with profile-driven metric windows such as gust_start_s.",
+    )
     return parser.parse_args()
 
 
@@ -611,7 +648,13 @@ def main() -> int:
     args = parse_args()
     scene_id = args.scene_id or args.raw_csv.stem
     data = read_csv(args.raw_csv)
-    metrics = compute_metrics(data, args.raw_csv, scene_id, args.controller_id)
+    metrics = compute_metrics(
+        data,
+        args.raw_csv,
+        scene_id,
+        args.controller_id,
+        parse_metrics_context(args.metrics_context_json),
+    )
     write_outputs(metrics, args.metrics_json)
     print(f"Metrics written: {args.metrics_json}")
     print(f"Metrics CSV: {args.metrics_json.with_suffix('.csv')}")

@@ -28,7 +28,7 @@ RESULTS_SCRIPT_DIR = Path(__file__).resolve().parents[1] / "results"
 if str(RESULTS_SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(RESULTS_SCRIPT_DIR))
 
-from calc_metrics import compute_metrics
+from calc_metrics import compute_metrics, parse_metrics_context
 
 
 def default_wrapper_candidates() -> list[str]:
@@ -520,12 +520,19 @@ def write_metrics(
     controller_id: str,
     evidence_level: str,
     metrics_profile: str = "standard_tracking",
+    metrics_context: dict[str, float] | None = None,
 ) -> None:
     if metrics_profile == "standard_tracking":
         from calc_metrics import read_csv as read_project_csv
 
         data = read_project_csv(raw_csv)
-        metrics = compute_metrics(data, raw_csv, scene_id, controller_id)
+        metrics = compute_metrics(
+            data,
+            raw_csv,
+            scene_id,
+            controller_id,
+            metrics_context,
+        )
     elif metrics_profile == "diagnostics_smoke":
         data = read_numeric_csv(raw_csv)
         time_values = data.get("time", [])
@@ -604,6 +611,7 @@ def export_existing_native_result(
         args.controller_id,
         args.evidence_level,
         args.metrics_profile,
+        args.metrics_context,
     )
     if active_log_output != final_log_output:
         active_log_output.replace(final_log_output)
@@ -659,6 +667,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--simulation-timeout-s",
+        type=float,
+        default=360.0,
+        help="Maximum wall-clock time for one native SimulateModel MCP call.",
+    )
+    parser.add_argument(
         "--simulation-api",
         choices=("simulate_model", "simulate_model_ex"),
         default="simulate_model",
@@ -694,6 +708,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--scene-id", default="official_example1_pid_baseline")
     parser.add_argument("--controller-id", default="pid_baseline")
     parser.add_argument("--evidence-level", default="real_sysplorer_mcp_full_baseline")
+    parser.add_argument(
+        "--metrics-context-json",
+        default="{}",
+        help="Optional JSON object for Profile-driven metric windows.",
+    )
     parser.add_argument(
         "--variable-profile",
         choices=sorted(VARIABLE_PROFILES),
@@ -1102,6 +1121,8 @@ def run_mcp_simulation(
     target_time = parse_target_time(args.target_time)
     if args.simulation_interval is not None and args.simulation_interval <= 0:
         raise ValueError("--simulation-interval must be greater than zero when provided")
+    if args.simulation_timeout_s <= 0:
+        raise ValueError("--simulation-timeout-s must be greater than zero")
     if args.simulation_api == "simulate_model_ex" and args.simulation_interval is not None:
         raise ValueError(
             "--simulation-interval applies only to SimulateModel; use --simulate-ex-options-json for SimulateModelEx"
@@ -1200,6 +1221,7 @@ def run_mcp_simulation(
                 verify_time_point="end",
                 simulation_api=args.simulation_api,
                 simulate_ex_options=args.simulate_ex_options,
+                timeout_s=args.simulation_timeout_s,
             )
         elif gui_result_viewer and not separate_gui_review:
             sim_result = simulate_modelingpy(
@@ -1210,6 +1232,7 @@ def run_mcp_simulation(
                 verify_result_var=verify_result_var,
                 verify_time_point="end",
                 interval=args.simulation_interval,
+                timeout_s=args.simulation_timeout_s,
             )
         elif args.simulation_interval is not None:
             sim_result = simulate_modelingpy(
@@ -1220,6 +1243,7 @@ def run_mcp_simulation(
                 verify_result_var=verify_result_var,
                 verify_time_point="end",
                 interval=args.simulation_interval,
+                timeout_s=args.simulation_timeout_s,
             )
         else:
             sim_result = client.call_tool(
@@ -1231,7 +1255,7 @@ def run_mcp_simulation(
                     "verify_result_var": verify_result_var,
                     "verify_time_point": "end",
                 },
-                timeout_s=360,
+                timeout_s=args.simulation_timeout_s,
             )
         if not sim_result.get("ok"):
             raise RuntimeError(f"Simulation failed: {sim_result}")
@@ -1258,6 +1282,7 @@ def run_mcp_simulation(
             args.controller_id,
             args.evidence_level,
             args.metrics_profile,
+            args.metrics_context,
         )
         gui_result: dict[str, Any] | None = None
         if gui_open:
@@ -1271,6 +1296,7 @@ def run_mcp_simulation(
                     verify_result_var=verify_result_var,
                     verify_time_point="end",
                     interval=args.gui_review_interval,
+                    timeout_s=args.simulation_timeout_s,
                 )
                 if not gui_sim_result.get("ok"):
                     raise RuntimeError(f"GUI review simulation failed: {gui_sim_result}")
@@ -1326,6 +1352,7 @@ def run_mcp_simulation(
 def main() -> int:
     args = parse_args()
     args.simulate_ex_options = parse_simulate_ex_options(args.simulate_ex_options_json)
+    args.metrics_context = parse_metrics_context(args.metrics_context_json)
     if args.metrics_csv is None:
         args.metrics_csv = args.metrics_json.with_suffix(".csv")
     wrapper = resolve_wrapper(args.wrapper)

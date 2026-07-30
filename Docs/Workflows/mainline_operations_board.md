@@ -14,12 +14,12 @@ profiles `pid_awff_linear_eso`, `smc_boundary_layer`, and `nmpc_outer` are
 Tier1-only; the Tier2 whole-aircraft population is 45 routes. Official PID has
 returned to its native continuous `RotorCommandRunner` boundary; its nominal
 50 s `ClimbPath` passed with RMSE `0.1729701479 m` and terminal error
-`0.0065067004 m`. Six Official PID seven-scenario records are valid. The
-motor-efficiency-fault 50 s record remains invalid: a bounded native diagnostic
-verified the configured injection and showed error above 5 m at 16.44 s and
-35.2414 m at 16.6 s. Its evidence is
-`Results/control_platform/seven_scenario_ab/official_pid/motor_efficiency_fault/`.
-Do not change the baseline, fault magnitude, or Plant to mask this failure.
+`0.0065067004 m`. The earlier v1 seven-scenario evidence remains historical
+trace-back only. The current two-controller v2 A/B set is isolated at
+`Results/control_platform/seven_scenario_ab_v2/`: 12 of 14 records are valid,
+while both 50 percent rotor-1 fault cases remain preserved invalid negative
+evidence. Do not change the baseline, fault magnitude, or Plant to mask either
+failure.
 
 Catalog vocabulary: 48 active entries consist of 47 MWORKS Control Profiles
 (46 existing routes plus planned `pid_awff_linear_eso`) and the `px4ctrl`
@@ -54,6 +54,35 @@ but must not run, change, or diagnose that lane. Direct user ownership takes
 precedence over historical runtime status below.
 
 ## 1. Current Action
+
+### Seven-Scenario v2 Official PID / PX4CTRL A/B - Completed, Awaiting Review
+
+The direct user-authorized v2 evidence task is complete. The frozen contract
+is `Config/control_platform/seven_scenario_injection_contract_v2.json`; the
+seven Profile definitions are
+`Config/control_platform/seven_scenario_experiment_profiles_v2.json`. The
+v2 set deliberately keeps `ClimbPath` as the separate all-controller
+minimum-closure screen and uses `Figure8` for wind and motor-fault tracking,
+and `SpiralAscent` for the 20 percent physical mass/inertia mismatch.
+
+The 14-row matrix is
+`Results/control_platform/seven_scenario_ab_v2/SCENARIO_RMSE_MATRIX.pending_syslab.json`.
+Twelve records are valid and contain the bound Profile/contract hashes,
+`RUN_CONFIG.json`, `RUN_RECORD.json`, raw CSV, metrics, native `Result.msr`,
+and native result-window capture. The direct injection checks pass for both
+wind records, both parameter-mismatch records, and the PX4CTRL motor-fault
+record. The PX4CTRL fault run reaches only 17.06 s before exceeding the 5 m
+validity gate (`15.659533 m` terminal error), so it is retained as invalid
+negative evidence. The Official PID primary fault run does not return inside
+the 120 s MCP bound; its separate 0-16.6 s native diagnostic verifies the
+configured rotor-1 1.0-to-0.5 transition at 15 s and records error above 5 m
+at 16.44 s, reaching `13.101713 m` at 16.6 s. That diagnostic is supplementary
+only and does not relabel the incomplete 50 s primary record as valid.
+
+The v1 ClimbPath disturbance/fault records remain intact and are not merged
+into this v2 matrix. Do not start G3, other-controller experiments, gain
+tuning, export, Gazebo/ROS/QGC, APP, or report work from this completed gate.
+Wait for user review.
 
 ### MWORKS PX4CTRL Three-UAV Figure-8 - Completed, Awaiting Next Instruction
 
@@ -154,20 +183,22 @@ controller-performance claim.
 
 Current action:
 
-### Official PID Native-Continuous Motor-Fault Review Decision Required
+### Historical v1 Official PID Native-Continuous Motor-Fault Record - Retained
 
-The native-continuous Official PID is nominally valid and has six valid
+The native-continuous Official PID is nominally valid and has six valid v1
 seven-scenario records. The configured 50 percent rotor-1 loss at 15 s is
 correctly wired, but the unchanged baseline becomes unbounded after the fault;
 the 50 s solver call cannot produce a valid full trace. The bounded diagnostic
 at `Results/control_platform/seven_scenario_ab/official_pid/motor_efficiency_fault/diagnostic_stop_16_6/`
-proves that this is not an MCP timeout or an injection error. The next
-executable action needs an explicit decision: retain it as a truthful failed
-baseline case, or authorize a different fault-tolerant controller/allocator or
-fault specification. Do not continue G3 or seven-scenario reruns on this line
-until that decision is made.
+proves that this is not an MCP timeout or an injection error. This is retained
+as historical v1 negative evidence, not the current task selector; use the
+v2 entry above for the active review packet.
 
-### G3 ClimbPath Failure Repair - In Progress
+### G3 ClimbPath Failure Repair - Deferred Pending v2 Review
+
+The direct v2 A/B task supersedes G3 execution temporarily. Preserve its
+existing repair records and do not resume G3 until the user explicitly directs
+the next MWORKS controller-evidence action.
 
 All 48 public
 `Runners.Formal.*` entries received one nominal 50 s `ClimbPath` attempt with
