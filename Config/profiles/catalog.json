@@ -41,7 +41,7 @@
     "mid360_imu_height_camera_v1": {
       "lidar": "mid360",
       "imu": "px4_and_livox_sources_declared",
-      "height": "gazebo_rangefinder_surrogate_allowed",
+      "height": "gazebo_truth_alignment_z_allowed",
       "camera": "optional"
     }
   },
@@ -79,7 +79,7 @@
       "allowed_for_control": true,
       "debug_only": false,
       "requires_hybrid_height": true,
-      "frame_semantics": "hybrid_fastlio_xy_yaw_gazebo_z"
+      "frame_semantics": "hybrid_fastlio_xy_yaw_gazebo_truth_z"
     }
   },
   "height_source_profiles": {
@@ -93,12 +93,16 @@
     },
     "hybrid_gazebo_z_surrogate_v1": {
       "height_group": "hybrid_z",
-      "surrogate": true
+      "surrogate": true,
+      "source_semantics": "gazebo_truth_aligned_z",
+      "direct_controller_input_allowed": false
     }
   },
   "truth_profiles": {
     "gazebo_truth_eval_only_v1": {
       "control_input_allowed": false,
+      "alignment_input_allowed": true,
+      "direct_controller_input_allowed": false,
       "truth_backend": "gazebo"
     }
   },
@@ -2225,7 +2229,7 @@
       ]
     },
     "sunray_fastlio_hybrid_z_runtime_export_v1": {
-      "description": "Post-run export contract for Sunray ROS1 px4ctrl runs using FAST-LIO XY/Yaw and Gazebo rangefinder-surrogate Z.",
+      "description": "Post-run export contract for Sunray ROS1 px4ctrl runs using FAST-LIO XY/Yaw and Gazebo truth-aligned Z.",
       "runtime_profile": "sunray_ros1_gazebo_classic_v1",
       "runtime_log_profile": "fastlio_hybrid_z_runtime_log_export_v1",
       "tracking_source_profile": "fastlio_xy_yaw_gazebo_z_reference_state_csv_v1",
@@ -2250,10 +2254,10 @@
           ]
         },
         "state_csv": {
-          "role": "fastlio_xy_yaw_gazebo_z_state",
+          "role": "fastlio_xy_yaw_gazebo_truth_z_state",
           "destination": "raw/state.csv",
           "producer": "ros_topic_export",
-          "command_template": "export hybrid FAST-LIO XY/Yaw plus Gazebo Z state stream to <state.csv>",
+          "command_template": "export hybrid FAST-LIO XY/Yaw plus Gazebo truth-aligned Z state stream to <state.csv>",
           "required_columns": [
             "stamp",
             "x",
@@ -2286,7 +2290,7 @@
         "UAV body axes are visible at the aircraft center",
         "trajectory line is visible and belongs to the same run_id",
         "FAST-LIO map or point cloud layer is nonempty",
-        "Z state source is explicitly the Gazebo rangefinder surrogate"
+        "Gazebo truth-aligned Z is documented as an alignment-adapter input, not a direct px4ctrl state topic"
       ]
     }
   },

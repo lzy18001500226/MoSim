@@ -144,6 +144,12 @@ def build_rejection(profile: dict[str, Any], errors: list[dict[str, str]]) -> di
     if not errors:
         return None
     first = errors[0]
+    if first["code"] == "C-HYBRID-01":
+        safe_alternative_profile = "fastlio_xy_yaw_gazebo_z_v1"
+    elif first["code"] in {"C-STATE-01", "C-TRUTH-01"}:
+        safe_alternative_profile = "px4_mavros_fused_v1"
+    else:
+        safe_alternative_profile = None
     return {
         "planned_run_id": f"<run_id_for_{profile.get('id', 'unknown_experiment')}>",
         "experiment_profile_id": profile.get("id"),
@@ -151,9 +157,7 @@ def build_rejection(profile: dict[str, Any], errors: list[dict[str, str]]) -> di
         "rejected_profile": rejection_target(first["code"], profile),
         "reason_code": first["code"],
         "human_reason": first["message"],
-        "safe_alternative_profile": "px4_mavros_fused_v1"
-        if first["code"] in {"C-STATE-01", "C-TRUTH-01", "C-HYBRID-01"}
-        else None,
+        "safe_alternative_profile": safe_alternative_profile,
         "control_started": False,
     }
 
@@ -759,8 +763,8 @@ def validate_experiment(
             if evaluation.get("leaderboard_group") == "fastlio_eval_only" and tracking_source.get("control_state_tracking") is not False:
                 add_error(errors, "C-TRACK-07", "FAST-LIO eval-only experiment must use non-control-state tracking semantics")
 
-            if state_source.get("group") == "E" and tracking_source.get("z_source") != "gazebo_rangefinder_surrogate":
-                add_error(errors, "C-TRACK-08", "hybrid-Z experiment must use a tracking source with gazebo_rangefinder_surrogate z_source")
+            if state_source.get("group") == "E" and tracking_source.get("z_source") != "gazebo_truth_aligned_z":
+                add_error(errors, "C-TRACK-08", "hybrid-Z experiment must use a tracking source with gazebo_truth_aligned_z z_source")
 
     if scenario.get("vehicle_count", 1) > 1 and not runtime.get("multi_uav_namespace_isolation"):
         add_error(errors, "C-SWARM-01", "multi-UAV scenario requires namespace/log isolation in runtime_profile")

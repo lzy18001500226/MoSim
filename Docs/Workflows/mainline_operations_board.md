@@ -242,7 +242,15 @@ Codex assistance. This does not supersede or broaden MWORKS G3.
   used the nested GPS/barometer estimator branch. Keep it as a diagnostic
   lifecycle and actuator-ack trace only; it is not an accepted hover, state
   quality, controller-performance, or fault-tolerance result. The source-local
-  FAST-LIO/external-vision rerun is the current P3 gate.
+  FAST-LIO/external-vision rerun at
+  `Results/sunray_ros1/sunray_ros1_fastlio_hover_source_local_20260730_004/`
+  has now reproduced the state chain and full arm/takeoff/hover/land/disarm
+  lifecycle from `src/`: GPS and barometer are disabled, PX4 accepts external
+  vision, and px4ctrl consumes MAVROS local odometry. Its truth/local
+  consistency gate passes in the steady-hover window, but the frozen XY hover
+  tracking gate is still blocked at 0.03465 m RMSE and 0.05859 m peak against
+  0.02 m and 0.05 m limits. This is a tracking-quality blocker, not a source
+  migration or GPS/barometer-state failure.
 - P4 Factory FUEL historical display replay completed at
   `Results/sunray_ros1/sunray_ros1_p4_factory_fuel_replay_20260730_0945/`.
   The exact source bag, Gazebo-world truth display stream, isolated RViz topic
@@ -254,9 +262,10 @@ Codex assistance. This does not supersede or broaden MWORKS G3.
   display/reproducibility evidence and cannot rehabilitate the P3 quality
   blocker or be cited as a live FUEL, PX4, MAVROS, controller, planner, fault,
   QGC-command, or UE-control success.
-- The current executable gate is the source-local P3 FAST-LIO/external-vision
-  takeoff-hover-land rerun. Do not start P5 native Diff, P6 fixed formation,
-  or Diff-Swarm until that terminal record passes the state-quality contract.
+- The current executable gate is bounded attribution of the source-local P3
+  horizontal hover tracking error. Do not start P5 native Diff, P6 fixed
+  formation, or Diff-Swarm until the P3 terminal record passes its frozen
+  hover-quality contract or the user explicitly accepts the blocked baseline.
 - Each terminal subgate records a bounded result directory and triggers one
   concise Chinese email. Every successful path must later receive a cold-start,
   stop, recording, replay, and troubleshooting check plus a path-limited Git

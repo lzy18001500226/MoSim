@@ -42,13 +42,17 @@ Sysplorer/MWORKS，而不是把 ROS/Gazebo 代码等同于 MWORKS 证据：
 | 机体模型 | `References/Sunray/simulation/sunray_simulator/models/drone_models` | Sunray150/300 SDF、STL、传感器安装位 | 已采用 `sunray150_with_mid360`；大网格文件不要直接迁入 Git |
 | 风扰/传感器插件 | `References/Sunray/simulation/gazebo_plugin` | wind_zone、Livox、Realsense 插件 | 只抽取参数和模型假设，Sysplorer 内重建扰动模型 |
 
-## 本地 Lab 源码索引
+## 本地源码与参考索引
 
-> 当前 FAST-LIO/EGO/规划源码优先从 `References/Lab/` 读取。不要因为运行线程缺上下文就重新从 GitHub 下载同名仓库；只有当本地目录缺关键源码或依赖时，才记录缺口并请求补源。
+> 当前正式 ROS1 单机运行只从 `src/` 读取：Sunray、Livox 兼容包、
+> FAST-LIO、px4ctrl 及其依赖均已迁入并由
+> `Config/runtime/ros1_local_source_manifest.v1.json` 约束。`References/Lab/`
+> 保留为上游追溯、规划器和未迁移任务的参考库，不能作为正式单机运行
+> 的替代源。不要因缺少上下文重新从 GitHub 下载同名仓库。
 
 | 本地目录 | 当前用途 | 备注 |
 |---|---|---|
-| `References/Lab/localization_slam/FAST_LIO` | ROS1 FAST-LIO 主候选源码；`launch/mapping_mid360.launch` 和 `config/mid360.yaml` 是 Mid360 入口 | 当前 Sunray ROS1/Gazebo Classic 链路应优先用这里，不用 `Results/external_downloads/fast_lio_main.zip` |
+| `src/perception/fast_lio` | ROS1 FAST-LIO 正式运行源码；`launch/mapping_mosim_sunray_livox_custom.launch` 是当前 MID360 入口 | 当前 Sunray ROS1/Gazebo Classic 链路必须用这里，不用 `Results/external_downloads/fast_lio_main.zip` 或 `References/Lab/localization_slam/FAST_LIO` |
 | `References/Lab/localization_slam/livox_ros_driver2` | Livox ROS2 驱动参考 | ROS1 `FAST_LIO` 若需要 `livox_ros_driver/CustomMsg`，先核对本地是否已有 ROS1 驱动或生成头；不要直接混用 ROS2 包名 |
 | `References/Lab/localization_slam/FASTLIO2_ROS2` | ROS2 FAST-LIO2 参考实现 | 只在 ROS2/Humble 路线恢复时评估，不替代当前 ROS1 Sunray 链路 |
 | `References/Lab/localization_slam/FAST-LIVO2` | FAST-LIVO2 / Livox 相关头文件和视觉-惯导参考 | 可用于核对 Livox 消息/头文件，但不是当前最小 FAST-LIO 闭环入口 |
@@ -61,7 +65,14 @@ Sysplorer/MWORKS，而不是把 ROS/Gazebo 代码等同于 MWORKS 证据：
 | `References/Lab/localization_slam/Point-LIO-point-lio-with-grid-map` | Point-LIO + grid map 参考 | 点云定位/栅格地图对照 |
 | `References/Lab/planning_local/far_planner-melodic-noetic`、`References/Lab/planning_local/faster`、`References/Lab/Diffusion-Planner`、`References/Lab/planning_local/Fast-Racing` | 其他规划/竞速/学习参考 | 调研和未来平台扩展，不作为当前最小闭环默认入口 |
 
-当前运行选择：Sunray ROS1 / Gazebo Classic 负责仿真和传感器，PX4/MAVROS/px4ctrl 是 Sunray 当前闭环的一部分，`References/Lab/localization_slam/FAST_LIO` 负责 FAST-LIO 源码候选，Sunray/EGO 现有 launch 和 `References/Lab/planning_local/ego-planner*` 负责 EGO 行为对照。不得把历史 ROS2/PX4/x500 路线、外部下载 FAST-LIO、或脱离 Sunray 当前机体/传感器的 PX4 默认模型当成等价替代。`Results/external_downloads/` 下的 zip 只能作为历史下载缓存，不是首选源码。
+当前运行选择：`src/simulation/gazebo/sunray` 负责仿真和传感器，
+`src/flight_stack/mavros/sunray_uav_control`、
+`src/control/runtime_adapters/px4ctrl`、`src/perception/fast_lio` 和本地 PX4
+快照共同构成当前单机闭环。Sunray/EGO 现有 launch 和
+`References/Lab/planning_local/ego-planner*` 仍只负责后续规划行为对照。
+不得把历史 ROS2/PX4/x500 路线、外部下载 FAST-LIO、保留的 References
+源码或脱离 Sunray 当前机体/传感器的 PX4 默认模型当成等价替代。
+`Results/external_downloads/` 下的 zip 只能作为历史下载缓存。
 
 ## 已采用机体源
 

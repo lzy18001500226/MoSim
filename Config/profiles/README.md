@@ -248,7 +248,7 @@ and does not create `tracking.csv`, `metrics.json`, or `review.md`.
 Run the full offline gate for a completed run packet:
 
 ```powershell
-python Scripts/quality/run_experiment_gate.py Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json --run-id <run_id> --reference-csv <reference.csv> --state-csv <state.csv> --runtime-log-profile px4ctrl_runtime_log_export_v1 --tracking-source-profile px4_mavros_fused_reference_state_csv_v1 --review-file <review.md> --screenshot <rviz.png> --log <ros.log>
+python Scripts/quality/run_experiment_gate.py Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json --run-id <run_id> --reference-csv <reference.csv> --state-csv <state.csv> --runtime-log-profile fastlio_hybrid_z_runtime_log_export_v1 --tracking-source-profile fastlio_xy_yaw_gazebo_z_reference_state_csv_v1 --review-file <review.md> --screenshot <rviz.png> --log <ros.log>
 ```
 
 Use `--prepare-only` when only the formal pre-run packet should be created.
@@ -297,8 +297,13 @@ fastlio_px4_ekf_fused_reference_state_csv_v1
   -> FAST-LIO odometry after PX4 EKF fusion, exported through MAVROS local state
 
 fastlio_xy_yaw_gazebo_z_reference_state_csv_v1
-  -> FAST-LIO XY/Yaw plus explicit Gazebo rangefinder-surrogate Z
+  -> FAST-LIO XY/Yaw plus explicit Gazebo truth-aligned Z through the simulation alignment adapter
 ```
+
+`px4ctrl_takeoff_hover_land_v1` is bound only to the Hybrid-Z runtime export
+and tracking-source profiles above. Do not substitute the legacy
+`px4_mavros_fused_*` export contracts for this profile: they describe a
+different GPS/rangefinder-era state contract.
 
 `prepare_experiment_run.py` writes the selected RuntimeExportProfile into
 `preflight.json`, `RUN_MANIFEST.json`, `operator_checklist.md`, and
@@ -309,7 +314,7 @@ For real ROS/Sunray exports where reference and state/truth are separate CSV
 files, prefer a registered TrackingSourceProfile:
 
 ```powershell
-python Scripts/quality/run_experiment_gate.py Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json --run-id <run_id> --reference-csv <reference.csv> --state-csv <state.csv> --runtime-log-profile px4ctrl_runtime_log_export_v1 --tracking-source-profile px4_mavros_fused_reference_state_csv_v1 --review-file <review.md> --screenshot <rviz.png> --log <ros.log>
+python Scripts/quality/run_experiment_gate.py Config/profiles/experiments/px4ctrl_takeoff_hover_land_v1.json --run-id <run_id> --reference-csv <reference.csv> --state-csv <state.csv> --runtime-log-profile fastlio_hybrid_z_runtime_log_export_v1 --tracking-source-profile fastlio_xy_yaw_gazebo_z_reference_state_csv_v1 --review-file <review.md> --screenshot <rviz.png> --log <ros.log>
 ```
 
 Use explicit column arguments only for one-off diagnostics or when defining a
@@ -324,7 +329,7 @@ python Scripts/quality/normalize_tracking_csv.py raw_tracking.csv --out Results/
 Build standard `tracking.csv` from separate reference and state/truth logs:
 
 ```powershell
-python Scripts/quality/build_tracking_csv.py --reference-csv reference.csv --state-csv state.csv --out Results/runs/<run_id>/tracking.csv --tracking-source-profile px4_mavros_fused_reference_state_csv_v1
+python Scripts/quality/build_tracking_csv.py --reference-csv reference.csv --state-csv state.csv --out Results/runs/<run_id>/tracking.csv --tracking-source-profile fastlio_xy_yaw_gazebo_z_reference_state_csv_v1
 ```
 
 After a real runtime finishes and exports artifacts, export them through the
@@ -334,7 +339,7 @@ standard destinations, and required CSV columns before delegating collection to
 the RuntimeLogProfile layer:
 
 ```powershell
-python Scripts/quality/export_runtime_sources.py Results/runs/<run_id> --runtime-export-profile sunray_px4ctrl_runtime_export_v1 --artifact reference_csv=<reference.csv> --artifact state_csv=<state.csv> --artifact rviz_screenshot=<rviz.png> --artifact ros_log=<ros.log> --review-file <review.md> --build-tracking
+python Scripts/quality/export_runtime_sources.py Results/runs/<run_id> --runtime-export-profile sunray_fastlio_hybrid_z_runtime_export_v1 --artifact reference_csv=<reference.csv> --artifact state_csv=<state.csv> --artifact rviz_screenshot=<rviz.png> --artifact ros_log=<ros.log> --review-file <review.md> --build-tracking
 ```
 
 For FAST-LIO eval-only packets, the runtime export must additionally provide

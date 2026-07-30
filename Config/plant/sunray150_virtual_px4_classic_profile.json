@@ -142,8 +142,8 @@
     "mworks_controller_hover_percentage": 0.37,
     "px4ctrl_hov_percent": 0.37,
     "px4ctrl_thrust_estimate_enable": false,
-    "px4ctrl_runtime_config": "References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/config/ctrl_param_fpv.yaml",
-    "source": "existing virtual control calibration",
-    "boundary": "The MWORKS controller thrust-map percentage and px4ctrl hov_percent share the current 0.37 virtual calibration. Do not derive either value from mass, motor coefficient, or visual rotor-speed normalization. The nominal ROS1 px4ctrl configuration disables online thrust estimation so the virtual mapping is reproducible; a short, recorded hover recalibration may explicitly reopen it."
+    "px4ctrl_runtime_config": "src/control/runtime_adapters/px4ctrl/config/ctrl_param_fpv.yaml",
+    "source": "MWORKS/base-adapter virtual calibration with a separately frozen Gazebo runtime hover map",
+    "boundary": "The 0.37 MWORKS/base-adapter value remains unchanged and must not be derived from mass, motor coefficient, or visual rotor-speed normalization. The source-local ROS1/Gazebo FAST-LIO flight entry freezes px4ctrl hover_percentage=0.456 in Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh, based on a recorded hover lifecycle. It does not alter the MWORKS calibration. Online thrust estimation remains disabled."
   }
 }

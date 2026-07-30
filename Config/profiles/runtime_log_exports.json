@@ -5,7 +5,6 @@
       "description": "Runtime artifact collection contract for px4ctrl single-UAV baseline runs.",
       "compatible_experiment_ids": [
         "px4ctrl_ground_standby_v1",
-        "px4ctrl_takeoff_hover_land_v1",
         "px4ctrl_figure8_baseline_v1",
         "cascade_pid_figure8_generated_c_v1",
         "px4ctrl_spiral_baseline_v1",
@@ -155,9 +154,10 @@
       }
     },
     "fastlio_hybrid_z_runtime_log_export_v1": {
-      "description": "Runtime artifact collection contract for FAST-LIO XY/Yaw plus Gazebo Z surrogate runs.",
+      "description": "Runtime artifact collection contract for FAST-LIO XY/Yaw plus Gazebo truth-aligned Z runs.",
       "compatible_experiment_ids": [
-        "fastlio_hybrid_z_figure8_v1"
+        "fastlio_hybrid_z_figure8_v1",
+        "px4ctrl_takeoff_hover_land_v1"
       ],
       "tracking_source_profile": "fastlio_xy_yaw_gazebo_z_reference_state_csv_v1",
       "tracking_reference_slot": "reference_csv",

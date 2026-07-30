@@ -50,21 +50,29 @@ The active P1-P6 runtime entrypoints must never consume `References/`, an old
 `References/` paths remaining in historical sections of this document are
 trace-back material only; they are not an alternative runtime source root.
 
+The retained Factory FUEL and fixed-formation profiles are historical replay
+records, not active source-local runtime entries. Their planner/formation
+adapters remain explicitly blocked until their `src/` build and launch
+contracts are migrated and reproduced.
+
 ### 1.1 Virtual Parameter Contract
 
 The active virtual plant contract is
 `Config/plant/sunray150_virtual_px4_classic_profile.json`: total takeoff mass
 is `1.000 kg`, gravity is `9.80665 m/s^2`, geometry is the user-reviewed
 Blender assembly, and unknown motor dynamics use the pinned PX4 Gazebo Classic
-seed. `0.37` is the current controller thrust-map calibration, not the
-rotor-speed normalized hover command. `Scripts/sunray/sync_assembled_model_into_sunray_ros1.py`
+seed. `0.37` remains the MWORKS/base-adapter calibration; it is not the frozen
+Gazebo hover command. `Scripts/sunray/sync_assembled_model_into_sunray_ros1.py`
 is the only supported ROS1 SDF synchronization path for this contract.
 
-The ROS1 px4ctrl launch directly loads
-`References/Lab/planning_local/Fast-Drone-250/src/realflight_modules/px4ctrl/config/ctrl_param_fpv.yaml`.
-Its nominal profile values are `mass=1.0 kg`, `gra=9.80665 m/s^2`,
-`hover_percentage=0.37`, and `estimate_enable=false`. Do not enable online
-thrust estimation except inside a separately recorded short-hover
+The local px4ctrl source is
+`src/control/runtime_adapters/px4ctrl/config/ctrl_param_fpv.yaml`. Its base
+profile values are `mass=1.0 kg`, `gra=9.80665 m/s^2`,
+`hover_percentage=0.37`, and `estimate_enable=false`. The formal source-local
+FAST-LIO/Gazebo entry freezes `hover_percentage=0.456` in
+`Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh`; this is a recorded runtime
+thrust-map value and does not modify the MWORKS calibration. Do not enable
+online thrust estimation except inside a separately recorded short-hover
 recalibration gate.
 
 All `.67 kg` ROS1/PX4 runs and their metrics predate this 2026-07-25 virtual
@@ -78,9 +86,9 @@ retain older compatibility seeds and are excluded from this current ROS1/PX4
 Classic contract. They cannot be used to override or evaluate this lane.
 
 Do not use the old Ubuntu-22.04 / ROS2 Humble / PX4 `x500_mid360` experiment
-route for this lane. Do not use `Results/external_downloads/fast_lio_main.zip`
-or a fresh online clone as the first source when `References/Lab/localization_slam/FAST_LIO`
-exists.
+route for this lane. Do not use `Results/external_downloads/fast_lio_main.zip`,
+a fresh online clone, or the retained `References/Lab/localization_slam/FAST_LIO`
+copy as the formal runtime source when `src/perception/fast_lio` exists.
 
 Runtime entry decision, frozen after the 2026-06-27 WSL-distro incident:
 
@@ -124,7 +132,7 @@ x500_mid360
 px4_mid360_obstacle_light
 Ubuntu-22.04 / ROS2 Humble as the active review route
 ROS2/PX4 FAST-LIO external-vision route
-downloaded FAST-LIO replacing References/Lab/localization_slam/FAST_LIO
+downloaded FAST-LIO replacing src/perception/fast_lio
 fake/static point cloud
 empty PointCloud2 topic
 headless numeric pass as Gazebo GUI/RViz visual acceptance
@@ -278,9 +286,9 @@ Controller-only missions such as takeoff-hover-land, figure-8, and spiral:
     /Odometry                     -> current FAST-LIO pose marker
     /mosim/fastlio/uav_path       -> FAST-LIO/control-state center path
 
-FAST-LIO direct localization mode:
+FAST-LIO external-vision Hybrid-Z mode:
   runner:
-    Scripts/sunray/run_px4ctrl_basic_gate.sh
+    Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh
   environment:
     PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true
     PX4CTRL_ODOM_SOURCE=mavros_local
@@ -288,11 +296,15 @@ FAST-LIO direct localization mode:
     /uav1/mavros/local_position/odom after PX4 EKF fusion
   external odometry source sent to PX4:
     /mosim/fastlio/odom_aligned
+  simulation alignment:
+    FAST-LIO supplies horizontal pose; Gazebo truth is used only by the
+    alignment adapter for the simulated altitude channel. It is never a direct
+    px4ctrl state topic.
   sensor source:
     /uav1/livox/lidar
     /uav1/livox/imu
   FAST-LIO launch:
-    References/Lab/localization_slam/FAST_LIO/launch/mapping_mosim_sunray_livox_custom.launch
+    src/perception/fast_lio/launch/mapping_mosim_sunray_livox_custom.launch
     through Scripts/sunray/pointcloud2_to_livox_custom_msg.py
   fallback:
     mapping_mosim_sunray_pointcloud2.launch is smoke/diagnostic fallback
@@ -332,17 +344,17 @@ FAST-LIO direct localization mode:
     adaptation was observed to move the normalized thrust away from a
     reproducible hover mapping. Keep this as run provenance only: the active
     nominal profile is the Section 1.1 mapping of `hover_percentage=0.37`.
-  current 20Hz retained command trim:
+  formal source-local hover command trim:
     --command-x-bias-m -0.006
-    --command-y-bias-m 0.012
-    --command-z-bias-m -0.042
-    --trajectory-time-lead-s 0.18
-    Treat this as a Sunray/Gazebo/EKF baseline trim, not as part of the
-    px4ctrl algorithm core or a MWORKS controller port.
+    --command-y-bias-m -0.004
+    --command-z-bias-m 0.0
+    These values are frozen only in the formal takeoff-hover-land wrapper;
+    they are not px4ctrl algorithm parameters or a MWORKS controller port.
   boundary:
-    Gazebo/Sunray truth remains evaluation-only and must not be fed into the
-    controller in this mode. Raw FAST-LIO `/Odometry` is not a safe controller
-    input because its `camera_init -> body` pose is the MID360/Livox body, not
+    Gazebo/Sunray truth must never be a direct px4ctrl state topic. In the
+    formal Hybrid-Z simulation it may enter only the FAST-LIO alignment adapter
+    for the altitude channel before PX4 external-vision fusion. Raw FAST-LIO
+    `/Odometry` is not a safe controller input because its `camera_init -> body` pose is the MID360/Livox body, not
     the UAV flight-control `base_link`. It must first pass through
     `Scripts/sunray/fastlio_odom_alignment_adapter.py`, which applies the
     accepted `base_link -> livox_mid360::base_link` mount transform and initial
@@ -602,7 +614,7 @@ accumulated map. In the local FAST-LIO source, `/cloud_registered` is the
 current undistorted scan transformed to `camera_init`. The live accumulated
 review map is `/Laser_map`, enabled through `publish/map_pub_en` and throttled
 through `publish/map_pub_period` in
-`References/Lab/localization_slam/FAST_LIO/launch/mapping_mosim_sunray_livox_custom.launch`.
+`src/perception/fast_lio/launch/mapping_mosim_sunray_livox_custom.launch`.
 
 Current MID360 model rule, 2026-06-22:
 
@@ -1449,12 +1461,28 @@ Current Gazebo/Sunray native mission runs:
     -> FAST-LIO /cloud_registered, /Odometry, /path
 
 Current status:
-  FAST-LIO is a localization/review chain only unless a run explicitly launches
-  external_fusion with position_topic:=/mosim/fastlio/odom_aligned, proves PX4
-  receives/fuses the vision pose, and proves /uav1/sunray/px4_state follows
-  FAST-LIO-backed state.
-  Do not report FAST-LIO-controlled flight, MID360-localized control, or
-  radar-IMU controller feedback from the current default mission scripts.
+  The generic `run_px4ctrl_basic_gate.sh` is a configurable low-level runner,
+  not a formal localization baseline. The formal entry is
+  `run_px4ctrl_fastlio_hover_gate.sh`. Its source-local same-run result at
+  `Results/sunray_ros1/sunray_ros1_fastlio_hover_source_local_20260730_004/`
+  proves source-local external_fusion, PX4 EKF, MAVROS local odometry, and the
+  arm/takeoff/hover/land/disarm lifecycle under the no-direct-truth-control
+  contract. The formal localization consistency metric uses the same
+  `hover_before` interval as the hover error; its XYZ RMSE is 0.0082 m,
+  0.0079 m, and 0.0111 m respectively. Startup convergence remains
+  diagnostic-only evidence.
+
+  The overall run is still `blocked`, but only by the frozen horizontal hover
+  tracking gate: 0.03465 m XY RMSE and 0.05859 m XY peak exceed the 0.02 m and
+  0.05 m limits. Altitude tracking and the truth/local consistency gate pass.
+  This is a controller/plant tracking-quality blocker, not a GPS/barometer or
+  source-local build failure; do not report it as a controller-performance
+  pass or silently tune it away.
+
+  The 31 remaining experiment profiles that still refer to the legacy
+  `px4_mavros_fused_v1` / rangefinder state contracts are historical or
+  unverified templates. They are not alternative current baselines and require
+  an explicit per-profile migration plus source-local rerun before use.
 ```
 
 External fusion integration gate before claiming radar-localized control:

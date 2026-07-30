@@ -109,7 +109,7 @@
       }
     },
     "hybrid_z_tracking_metrics_v1": {
-      "description": "Hybrid-Z FAST-LIO XY/Yaw plus height surrogate threshold profile.",
+      "description": "Hybrid-Z FAST-LIO XY/Yaw plus Gazebo truth-aligned altitude threshold profile.",
       "thresholds": {
         "rmse": {"max": 0.05, "unit": "m", "severity": "limit"},
         "max_error": {"max": 0.10, "unit": "m", "severity": "limit"},

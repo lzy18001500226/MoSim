@@ -255,14 +255,15 @@ FAST-LIO aligned pose quaternion
 
 ## 5. 高度与速度策略
 
-当前阶段允许保留 Gazebo Z 作为仿真中的“激光定高替身”进入控制状态源。这个
-策略不是任意使用真值作弊，而是对齐真机 Sunray150/云纵机型可挂载定高激光雷达
-的工程事实：真机高度可以由独立下视测距传感器约束，不一定完全依赖FAST-LIO高度。
+当前仿真不把 Gazebo Z 伪装成已经实现的激光测距链。正式 Hybrid-Z 仅允许 Gazebo
+真值 Z 进入 FAST-LIO 对齐适配器，作为仿真中的高度对齐输入；`px4ctrl` 仍只读取
+PX4 EKF 输出的 MAVROS 本地里程计。真实下视测距传感器是后续可替换的硬件接口，
+不属于本条仿真结果。
 
 但必须显式标注：
 
 ```text
-z_source = gazebo_rangefinder_surrogate
+z_source = gazebo_truth_aligned_z
 ```
 
 不能把该结果说成 FAST-LIO全状态定位。
@@ -276,7 +277,7 @@ x, y, yaw:
   FAST-LIO aligned odom
 
 z position:
-  Gazebo Z作为定高激光雷达替身
+  Gazebo truth Z enters only the FAST-LIO alignment adapter
 
 z velocity:
   优先使用 MAVROS local velocity 或 aligned odom中经过验证的vz
@@ -286,7 +287,7 @@ roll, pitch:
 ```
 
 Factory FUEL审核入口必须显式设置
-`FUEL_FASTLIO_ALIGNMENT_Z_SOURCE=truth`（对应本文件的Gazebo/定高替身Z），
+`FUEL_FASTLIO_ALIGNMENT_Z_SOURCE=truth`（对应本文件的Gazebo truth-aligned Z），
 并在 `RUN_MANIFEST.json` 记录该值。禁止在FZ-1名义下静默使用
 `z_source=fastlio`；否则规划器会把FAST-LIO的未收口高度漂移当作飞行高度，
 可能落出 `box_min_z` 并出现 `clusters=0`/停滞。FZ-1仍然必须单独标注为
@@ -297,15 +298,15 @@ Hybrid-Z，不能与全FAST-LIO XYZ结果混榜。
 ```text
 验证FAST-LIO水平定位、yaw和坐标系转换
 降低规则柱体环境下高度退化对第一阶段闭环的干扰
-对齐真机可使用下视定高激光雷达的工程条件
+为后续替换真实下视定高传感器保留接口
 ```
 
 限制：
 
 ```text
 不能宣称为FAST-LIO全状态定位
-不能宣称已经验证真实定高激光雷达驱动和PX4 range aid
-必须在结果manifest中写明Gazebo Z作为rangefinder surrogate参与状态源
+不能宣称已经验证真实定高激光雷达驱动或 PX4 range aid
+必须在结果manifest中写明 Gazebo truth Z 只作为对齐适配器输入，不能直接喂给 px4ctrl
 ```
 
 ### 5.2 Profile FZ-2：全FAST-LIO XYZ/Yaw
@@ -553,7 +554,7 @@ MAVLink ODOMETRY 都不是 Sunray 原控制器，也不是 px4ctrl 的替代品�
 而“定位输入源”指进入PX4 EKF之前的观测，例如：
 
 ```text
-Gazebo pose / Gazebo rangefinder surrogate
+Gazebo truth-aligned Z input (alignment adapter only)
 FAST-LIO aligned odom
 vision_pose
 MAVLink ODOMETRY
