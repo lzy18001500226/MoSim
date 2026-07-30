@@ -6,6 +6,8 @@ using Dates
 using TOML
 include(joinpath(@__DIR__, "live_cosim_backend.jl"))
 using .LiveCosimBackend
+include(joinpath(@__DIR__, "agent_integration.jl"))
+using .AgentIntegration
 
 const ACTIVE_COLOR = [0.08, 0.36, 0.43]
 const INACTIVE_COLOR = [0.88, 0.91, 0.92]
@@ -299,6 +301,7 @@ const OFFLINE_PROFILES = Dict(
     TaskConfigDirty::Bool = true
     ConsoleLines::Any = nothing
     AssistantLines::Any = nothing
+    AssistantRequestInFlight::Bool = false
     ConsoleExpanded::Bool = true
 
     function append_console(app, message; level="信息")
@@ -327,18 +330,43 @@ const OFFLINE_PROFILES = Dict(
             "控制链\n" *
             "外环  " * app.PositionDropDown.Value * "\n" *
             "增强  " * app.AugmentationDropDown.Value * "\n" *
-            "输出  " * app.OutputDropDown.Value
+            "输出  " * app.OutputDropDown.Value * "\n\n" *
+            "边界\n" *
+            "只读分析与操作建议；不启动模型、不写配置、不发送运行时命令。"
     end
 
     function append_assistant(app, author, message)
         timestamp = Dates.format(Dates.now(), "HH:MM")
         normalized = string(message)
         push!(app.AssistantLines, author * "  " * timestamp * "\n" * normalized)
-        length(app.AssistantLines) > 8 && deleteat!(app.AssistantLines, 1:length(app.AssistantLines)-8)
+        length(app.AssistantLines) > 3 && deleteat!(app.AssistantLines, 1:length(app.AssistantLines)-3)
         app.AssistantChatLabel.Text = join(app.AssistantLines, "\n\n")
     end
 
-    function assistant_reply(app, prompt)
+    function assistant_context_text(app)
+        task_label = app.LastOperationalMode in ("model", "live") ?
+            app.TaskDropDown.Value : app.MissionDropDown.Value
+        return join([
+            "工作区：" * app.assistant_operational_mode_label(),
+            "任务：" * task_label,
+            "UAV 数量：" * app.VehicleCountDropDown.Value,
+            "控制器家族：" * app.ControllerFamilyDropDown.Value,
+            "控制器实例：" * app.PositionDropDown.Value,
+            "姿态内环：" * app.AttitudeDropDown.Value,
+            "增强层：" * app.AugmentationDropDown.Value,
+            "安全层：" * app.SafetyDropDown.Value,
+            "输出边界：" * app.OutputDropDown.Value,
+        ], "\n")
+    end
+
+    function set_assistant_status(app, text; state="待命")
+        title = state == "运行" ? "正在分析" : (state == "阻断" ? "服务不可用" : "助手状态")
+        app.AssistantStatusLabel.Text = title * "\n\n" * text * "\n\n" *
+            "权限：只读分析与操作建议\n" *
+            "执行：由用户在 MWORKS/QGC 原生界面确认"
+    end
+
+    function local_assistant_reply(app, prompt)
         normalized = lowercase(strip(prompt))
         if occursin("控制", normalized) || occursin("controller", normalized)
             return "当前外环为“" * app.PositionDropDown.Value * "”。控制器选择决定输出合同；增强层只允许叠加与该合同兼容的模块。"
@@ -354,41 +382,91 @@ const OFFLINE_PROFILES = Dict(
         return "我已读取当前配置。可以继续询问控制链、MWORKS 模型、QGC 操作、故障注入或结果查看。"
     end
 
-    function AssistantSendPressed(app, event)
-        prompt = strip(app.AssistantInputField.Value)
-        if isempty(prompt)
+    function trim_assistant_answer(answer, limit=700)
+        text = strip(string(answer))
+        return length(text) <= limit ? text : first(text, limit) * "\n\n[回答已截断，请缩小问题范围。]"
+    end
+
+    function request_assistant_response(app, prompt; show_user=true)
+        if app.AssistantRequestInFlight
+            app.append_assistant("MoSim 助手", "上一条问题仍在分析，请等待其完成。")
+            return
+        end
+        question = strip(prompt)
+        if isempty(question)
             app.append_assistant("MoSim 助手", "请先输入问题。")
             return
         end
-        app.append_assistant("你", prompt)
+        show_user && app.append_assistant("你", question)
+        app.AssistantRequestInFlight = true
+        app.AssistantSendButton.Enable = false
+        app.AssistantExplainButton.Enable = false
+        app.AssistantMworksGuideButton.Enable = false
+        app.AssistantQgcGuideButton.Enable = false
+        app.AssistantResultGuideButton.Enable = false
+        app.AssistantClearButton.Enable = false
+        app.set_assistant_status("正在连接本机 Agent 服务，并仅按需读取当前配置和项目证据。"; state="运行")
+        context_text = app.assistant_context_text()
+        @async begin
+            try
+                result = AgentIntegration.query_mworks_agent(app.Appfile, question, context_text)
+                if result.ok
+                    tools_text = isempty(result.tools) ? "本次未调用项目工具。" :
+                        "本次只读工具：" * join(result.tools, "、")
+                    app.append_assistant("MoSim AI", app.trim_assistant_answer(result.answer) * "\n\n" * tools_text)
+                    request_text = isempty(result.request_id) ? "在线回答已完成。" :
+                        "在线回答已完成；请求编号 " * result.request_id
+                    app.set_assistant_status(request_text; state="正常")
+                elseif result.error_code == "model_not_configured"
+                    fallback = app.local_assistant_reply(question)
+                    app.append_assistant("MoSim 助手", fallback * "\n\n模型服务未配置；设置 MOSIM_OPENAI_API_KEY 后可启用项目只读检索。")
+                    app.set_assistant_status("当前使用本地指引。未检测到 MOSIM_OPENAI_API_KEY。"; state="待命")
+                else
+                    app.append_assistant("MoSim 助手", app.trim_assistant_answer(result.answer) * "\n\n" * app.local_assistant_reply(question))
+                    app.set_assistant_status("在线模型暂不可用，已回退到本地指引。"; state="阻断")
+                end
+            catch error
+                app.append_assistant("MoSim 助手", "助手调用异常：" * sprint(showerror, error))
+                app.set_assistant_status("助手调用异常，未执行任何模型或运行时操作。"; state="阻断")
+            finally
+                app.AssistantRequestInFlight = false
+                app.AssistantSendButton.Enable = true
+                app.AssistantExplainButton.Enable = true
+                app.AssistantMworksGuideButton.Enable = true
+                app.AssistantQgcGuideButton.Enable = true
+                app.AssistantResultGuideButton.Enable = true
+                app.AssistantClearButton.Enable = true
+            end
+        end
+    end
+
+    function AssistantSendPressed(app, event)
+        prompt = strip(app.AssistantInputField.Value)
         app.AssistantInputField.Value = ""
-        app.append_assistant("MoSim 助手", app.assistant_reply(prompt))
+        app.request_assistant_response(prompt)
     end
 
     function AssistantExplainPressed(app, event)
-        app.append_assistant("MoSim 助手",
-            "当前控制链：任务参考 -> " * app.PositionDropDown.Value * " -> " *
-            app.AttitudeDropDown.Value * " -> " * app.OutputDropDown.Value * "。")
+        app.request_assistant_response("请解释当前 Studio 配置的控制链、输出边界和证据边界。"; show_user=false)
     end
 
     function AssistantMworksGuidePressed(app, event)
-        app.append_assistant("MoSim 助手",
-            "MWORKS 操作顺序：确认配置 -> 打开模型 -> 在 MWORKS 中运行 -> 将 Result.msr 放入默认结果目录 -> 在原生结果查看器分析。")
+        app.request_assistant_response("根据当前配置，给出 MWORKS 的手动操作步骤。不要启动模型或仿真。"; show_user=false)
     end
 
     function AssistantQgcGuidePressed(app, event)
-        app.append_assistant("MoSim 助手",
-            "QGC 操作顺序：选择已发布 Profile -> 连接飞行端 -> 解锁 -> 起飞悬停 -> 执行任务 -> 降落或安全停止。")
+        app.request_assistant_response("说明当前配置与 QGC/Gazebo/PX4 运行时线的边界，以及用户需要人工确认的步骤。"; show_user=false)
     end
 
     function AssistantResultGuidePressed(app, event)
-        app.append_assistant("MoSim 助手",
-            "结果入口只定位当前 Profile 的默认目录和 Result.msr；曲线、动画和回放继续由 MWORKS 原生结果查看器完成。")
+        app.request_assistant_response("说明当前配置需要保留哪些 MWORKS 结果和证据，以及如何在原生结果查看器中人工查看。"; show_user=false)
     end
 
     function AssistantClearPressed(app, event)
         empty!(app.AssistantLines)
+        app.AssistantRequestInFlight = false
         app.append_assistant("MoSim 助手", "已清空对话。我已保留当前实验配置上下文。")
+        app.set_assistant_status("等待问题。首次发送会按需启动本机只读 Agent 服务。"; state="待命")
     end
 
     function set_top_status(app, text; state="待命")
@@ -1161,9 +1239,9 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function configure_assistant_workspace(app)
-        app.set_top_status("MoSim 助手  |  当前配置上下文已读取  |  不直接控制仿真或飞行端"; state="正常")
+        app.set_top_status("MoSim AI 助手  |  当前配置上下文已读取  |  只读分析，不直接控制仿真或飞行端"; state="正常")
         app.configure_section(app.ConfigSectionLabel, "当前配置", [24, 144, 320, 34])
-        app.configure_section(app.ChainSectionLabel, "MoSim 助手", [364, 144, 692, 34])
+        app.configure_section(app.ChainSectionLabel, "MoSim AI 助手", [364, 144, 692, 34])
         app.configure_section(app.InjectionSectionLabel, "快捷问题", [1076, 144, 340, 34])
         app.ConfigSectionLabel.Visible = true
         app.ChainSectionLabel.Visible = true
@@ -1187,7 +1265,10 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantStatusLabel.Position = [1076, 418, 340, 242]
 
         app.refresh_assistant_context()
-        isempty(app.AssistantLines) && app.append_assistant("MoSim 助手", "你好，我已读取当前实验配置。")
+        if isempty(app.AssistantLines)
+            app.append_assistant("MoSim 助手", "你好，我已读取当前实验配置。发送问题后将按需启动本机只读 Agent 服务。")
+            app.set_assistant_status("等待问题。模型密钥只从进程环境变量读取，不会写入项目文件。"; state="待命")
+        end
     end
 
     function set_mode(app, mode)
@@ -1980,7 +2061,7 @@ const OFFLINE_PROFILES = Dict(
 
         app.AssistantStatusLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.AssistantStatusLabel.Position = [1076, 418, 340, 242]
-        app.AssistantStatusLabel.Text = "助手状态\n\n本地上下文模式\n已读取当前实验配置\n\n运行控制：未接管\n模型、QGC 与结果查看仍由各自页面和原生工具负责"
+        app.AssistantStatusLabel.Text = "助手状态\n\n等待问题\n首次发送时按需启动本机只读服务\n\n模型、QGC 与结果查看仍由各自页面和原生工具负责"
         app.AssistantStatusLabel.VerticalAlignment = "top"
         app.AssistantStatusLabel.WordWrap = true
         app.AssistantStatusLabel.BackgroundColor = MUTED_COLOR
@@ -2002,6 +2083,7 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function delete(app)
+        AgentIntegration.stop_agent_service()
         TyAppDesigner.delete(app, app.UIFigure)
     end
 end
