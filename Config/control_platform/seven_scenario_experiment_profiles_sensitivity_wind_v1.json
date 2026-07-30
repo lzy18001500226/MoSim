@@ -1,0 +1,154 @@
+{
+  "schema": "mosim.seven_scenario_experiment_profiles.v2",
+  "version": 2,
+  "status": "sensitivity_long_duration_execution_authorized",
+  "authority": {
+    "injection_contract": "Config/control_platform/seven_scenario_injection_contract_v2.json",
+    "model_root": "Models/MoSimQuadrotorModel/package.mo",
+    "result_root_template": "Results/control_platform/sensitivity_wind_v1/<controller_id>/<profile_id>/"
+  },
+  "lineage": {
+    "base_profile_document": "Config/control_platform/seven_scenario_experiment_profiles_v2.json",
+    "scope": "Long-duration critical-threshold scan only. Short-duration recovery experiments are intentionally excluded.",
+    "plant_change_policy": "Uses the existing gust_force, gust_start_s, and gust_duration_s boundary without modifying the Plant."
+  },
+  "common_execution": {
+    "solver_algorithm": "Dassl",
+    "solver_tolerance": 0.0001,
+    "result_interval_s": 0.01,
+    "controller_execution_semantics": "Each FormalRunner retains its declared controller boundary; result_interval_s is the exported result and metric cadence only.",
+    "profile_hash_rule": "SHA-256 of this UTF-8 LF JSON document is copied into every sensitivity run config and record.",
+    "contract_hash_rule": "SHA-256 of the paired v2 injection contract is copied into every sensitivity run config and record."
+  },
+  "formal_runner_binding": {
+    "style": "parameterized_existing_runner",
+    "rule": "Each run binds an existing formal Runner, redeclares the selected trajectory, and applies only this Profile's runner_parameter_overrides. No controller-by-scenario Runner class is created.",
+    "allowed_runner_classes": [
+      "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+      "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner"
+    ],
+    "official_pid_boundary": {
+      "execution_mode": "native_continuous_closed_loop",
+      "reference_path": "direct",
+      "measurement_path": "direct",
+      "command_path": "direct",
+      "result_interval_s": 0.01
+    },
+    "px4ctrl_boundary": {
+      "execution_mode": "formal_100hz_discrete_boundary",
+      "reference_path": "sampled_0.01s",
+      "measurement_path": "sampled_0.01s",
+      "command_path": "controller_declared",
+      "result_interval_s": 0.01
+    }
+  },
+  "sensitivity_experiment": {
+    "scenario_family": "wind_disturbance",
+    "analysis_goal": "Determine the largest sustained +X world-frame force that meets the 50 s tracking gate.",
+    "disturbance_window_s": [15.0, 50.0],
+    "short_duration_experiments": "excluded",
+    "success_gate": {
+      "required_stop_time_s": 50.0,
+      "terminal_position_error_m_lt": 5.0,
+      "maximum_position_error_m_lt": 10.0
+    }
+  },
+  "profiles": [
+    {
+      "profile_id": "sensitivity_wind_x_020N_v1",
+      "scenario_id": "wind_disturbance",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "x_amplitude_m": 2.0,
+        "y_amplitude_m": 1.0,
+        "angular_rate_rad_s": 0.35
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.2, 0.0, 0.0],
+        "gust_start_s": 15.0,
+        "gust_duration_s": 35.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      }
+    },
+    {
+      "profile_id": "sensitivity_wind_x_040N_v1",
+      "scenario_id": "wind_disturbance",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "x_amplitude_m": 2.0,
+        "y_amplitude_m": 1.0,
+        "angular_rate_rad_s": 0.35
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.4, 0.0, 0.0],
+        "gust_start_s": 15.0,
+        "gust_duration_s": 35.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      }
+    },
+    {
+      "profile_id": "sensitivity_wind_x_060N_v1",
+      "scenario_id": "wind_disturbance",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "x_amplitude_m": 2.0,
+        "y_amplitude_m": 1.0,
+        "angular_rate_rad_s": 0.35
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.6, 0.0, 0.0],
+        "gust_start_s": 15.0,
+        "gust_duration_s": 35.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      }
+    },
+    {
+      "profile_id": "sensitivity_wind_x_080N_v1",
+      "scenario_id": "wind_disturbance",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.Figure8",
+      "duration_s": 50.0,
+      "trajectory_parameter_overrides": {
+        "altitude_m": 2.0,
+        "takeoff_duration_s": 5.0,
+        "x_amplitude_m": 2.0,
+        "y_amplitude_m": 1.0,
+        "angular_rate_rad_s": 0.35
+      },
+      "runner_parameter_overrides": {
+        "gust_force": [0.8, 0.0, 0.0],
+        "gust_start_s": 15.0,
+        "gust_duration_s": 35.0,
+        "mass_scale": 1.0,
+        "inertia_scale": [1.0, 1.0, 1.0],
+        "rotor_effectiveness": [1.0, 1.0, 1.0, 1.0],
+        "fault_start_s": 1000000000.0,
+        "fault_rotor_index": 1,
+        "fault_rotor_effectiveness": 1.0
+      }
+    }
+  ]
+}
