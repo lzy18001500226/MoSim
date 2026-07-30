@@ -20,6 +20,7 @@ const OFFLINE_BATCH_RUNNER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "run_of
 const OFFLINE_ANIMATION_RESUMER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "resume_offline_profile_animation.py")
 const OFFLINE_BATCH_INDEX = joinpath(PROJECT_ROOT, "Results", "control_platform", "offline_batches", "BATCH_INDEX.json")
 const OPEN_MODEL_SCRIPT = joinpath(PROJECT_ROOT, "Scripts", "ui", "open_model_studio_model.py")
+const MODEL_TASK_CONFIG_WRITER = joinpath(PROJECT_ROOT, "Scripts", "ui", "model_studio_task_config.py")
 
 function run_process_in_directory(command_args, directory)
     command = Cmd(Cmd(command_args); dir=directory)
@@ -133,6 +134,18 @@ const MODEL_OUTPUT_OPTIONS = [
     "BODY_RATE_THRUST / mavros_bodyrate_thrust [平台已验证]",
     "WRENCH [平台已验证]",
 ]
+const MODEL_TASKS = [
+    (id="climb_path_50s", label="基准：ClimbPath 50 s", duration_s=50.0),
+    (id="hover", label="悬停保持", duration_s=35.0),
+    (id="step_response", label="阶跃响应", duration_s=45.0),
+    (id="figure8", label="8 字轨迹", duration_s=50.0),
+    (id="spiral", label="螺旋上升", duration_s=50.0),
+    (id="wind_disturbance", label="风扰", duration_s=50.0),
+    (id="parameter_mismatch", label="参数失配", duration_s=50.0),
+    (id="motor_efficiency_fault", label="电机效率故障", duration_s=50.0),
+]
+const MODEL_TASK_LABELS = [task.label for task in MODEL_TASKS]
+const MODEL_FORMAL_CONTROLLER_IDS = Set(["official_pid", "px4ctrl"])
 
 const OFFLINE_PROFILE_ORDER = [
     "Official PID 爬升 [已认证]",
@@ -177,6 +190,16 @@ const OFFLINE_PROFILES = Dict(
     ChainSectionLabel::Any = nothing
     InjectionSectionLabel::Any = nothing
 
+    TaskLabel::Any = nothing
+    ControllerFamilyLabel::Any = nothing
+    ControllerInstanceLabel::Any = nothing
+    AttitudeLabel::Any = nothing
+    AugmentationLabel::Any = nothing
+    SafetyLabel::Any = nothing
+    FaultLabel::Any = nothing
+    OutputLabel::Any = nothing
+
+    TaskDropDown::Any = nothing
     ProfileDropDown::Any = nothing
     VehicleCountDropDown::Any = nothing
     MapDropDown::Any = nothing
@@ -208,6 +231,7 @@ const OFFLINE_PROFILES = Dict(
 
     TargetUavDropDown::Any = nothing
     WindSlider::Any = nothing
+    ParameterMismatchSlider::Any = nothing
     Motor1Slider::Any = nothing
     Motor2Slider::Any = nothing
     Motor3Slider::Any = nothing
@@ -252,6 +276,8 @@ const OFFLINE_PROFILES = Dict(
     LastOfflineProfile::String = ""
     CurrentOfflineBatchId::String = ""
     OfflineBatchRunning::Bool = false
+    TaskConfigPath::String = ""
+    TaskConfigDirty::Bool = true
     ConsoleLines::Any = nothing
     AssistantLines::Any = nothing
     ConsoleExpanded::Bool = true
@@ -424,6 +450,9 @@ const OFFLINE_PROFILES = Dict(
 
     function workspace_controls(app)
         return (
+            app.TaskLabel, app.ControllerFamilyLabel, app.ControllerInstanceLabel,
+            app.AttitudeLabel, app.AugmentationLabel, app.SafetyLabel,
+            app.FaultLabel, app.OutputLabel, app.TaskDropDown,
             app.ProfileDropDown, app.VehicleCountDropDown, app.MapDropDown,
             app.MissionDropDown, app.ControllerFamilyDropDown, app.PositionDropDown,
             app.AttitudeDropDown, app.AugmentationDropDown, app.SafetyDropDown,
@@ -434,7 +463,7 @@ const OFFLINE_PROFILES = Dict(
             app.TestConnectionButton, app.ConnectionStatusLabel,
             app.DeployTargetDropDown, app.BuildModeDropDown, app.ChainLabel,
             app.ContractLabel, app.TimingLabel, app.TargetUavDropDown,
-            app.WindSlider, app.Motor1Slider,
+            app.WindSlider, app.ParameterMismatchSlider, app.Motor1Slider,
             app.Motor2Slider, app.Motor3Slider, app.Motor4Slider,
             app.InjectionValuesLabel, app.ApplyInjectionButton,
             app.RestoreInjectionButton, app.ManifestLabel,
@@ -499,6 +528,159 @@ const OFFLINE_PROFILES = Dict(
         items = app.controller_options_for_family(family; include_legacy=include_legacy)
         app.PositionDropDown.Items = items
         app.PositionDropDown.Value = desired in items ? desired : items[1]
+    end
+
+    function selected_model_task(app)
+        for task in MODEL_TASKS
+            task.label == app.TaskDropDown.Value && return task
+        end
+        return MODEL_TASKS[1]
+    end
+
+    function selected_motor_effectiveness(app)
+        return [
+            app.Motor1Slider.Value,
+            app.Motor2Slider.Value,
+            app.Motor3Slider.Value,
+            app.Motor4Slider.Value,
+        ]
+    end
+
+    function model_task_controller_supported(app)
+        controller = app.selected_controller_entry()
+        return controller !== nothing && controller.id in MODEL_FORMAL_CONTROLLER_IDS
+    end
+
+    function model_task_output_boundary(app)
+        controller = app.selected_controller_entry()
+        controller === nothing && return "由正式 FormalRunner 决定"
+        if controller.id == "official_pid"
+            return "ROTOR_COMMAND / OfficialPidFormalRunner"
+        elseif controller.id == "px4ctrl"
+            return "ATTITUDE_THRUST / Px4CtrlFormalRunner"
+        end
+        return "由正式 FormalRunner 决定（未登记）"
+    end
+
+    function configure_model_field_label(app, label, text, y)
+        label.Position = [24, y, 90, 32]
+        label.Text = text
+        label.HorizontalAlignment = "left"
+        label.VerticalAlignment = "center"
+        label.FontColor = [0.08, 0.16, 0.22]
+    end
+
+    function configure_model_fixed_layers(app)
+        app.AttitudeDropDown.Items = ["模型内部姿态/角速度环 [已认证]"]
+        app.AttitudeDropDown.Value = app.AttitudeDropDown.Items[1]
+        app.AttitudeDropDown.Enable = false
+
+        app.AugmentationDropDown.Items = ["无"]
+        app.AugmentationDropDown.Value = app.AugmentationDropDown.Items[1]
+        app.AugmentationDropDown.Enable = false
+
+        app.SafetyDropDown.Items = ["basic_limiter [已认证]"]
+        app.SafetyDropDown.Value = app.SafetyDropDown.Items[1]
+        app.SafetyDropDown.Enable = false
+
+        app.FaultDropDown.Items = ["由验证任务决定"]
+        app.FaultDropDown.Value = app.FaultDropDown.Items[1]
+        app.FaultDropDown.Enable = false
+
+        output = app.model_task_output_boundary()
+        app.OutputDropDown.Items = [output]
+        app.OutputDropDown.Value = output
+        app.OutputDropDown.Enable = false
+    end
+
+    function update_model_task_control_enablement(app)
+        task = app.selected_model_task()
+        wind_enabled = task.id == "wind_disturbance"
+        mismatch_enabled = task.id == "parameter_mismatch"
+        motor_enabled = task.id == "motor_efficiency_fault"
+        app.WindSlider.Enable = wind_enabled
+        app.ParameterMismatchSlider.Enable = mismatch_enabled
+        app.Motor1Slider.Enable = motor_enabled
+        app.Motor2Slider.Enable = motor_enabled
+        app.Motor3Slider.Enable = motor_enabled
+        app.Motor4Slider.Enable = motor_enabled
+    end
+
+    function apply_model_task_defaults(app)
+        task = app.selected_model_task()
+        app.WindSlider.Value = task.id == "wind_disturbance" ? 0.25 : 0.0
+        app.ParameterMismatchSlider.Value = task.id == "parameter_mismatch" ? 1.2 : 1.0
+        app.Motor1Slider.Value = task.id == "motor_efficiency_fault" ? 0.5 : 1.0
+        app.Motor2Slider.Value = 1.0
+        app.Motor3Slider.Value = 1.0
+        app.Motor4Slider.Value = 1.0
+        app.TaskConfigPath = ""
+        app.TaskConfigDirty = true
+        app.update_model_task_control_enablement()
+    end
+
+    function model_task_parameter_summary(app)
+        task = app.selected_model_task()
+        wind = string(round(app.WindSlider.Value; digits=2)) * " N（+X）"
+        mismatch = string(round(app.ParameterMismatchSlider.Value; digits=2)) * " x"
+        motors = join(string.(round.(app.selected_motor_effectiveness(); digits=2)), " / ")
+        injection = task.id == "wind_disturbance" ? "外力 " * wind * "，15 s 至 50 s" :
+            (task.id == "parameter_mismatch" ? "质量与三轴惯量同步 " * mismatch :
+            (task.id == "motor_efficiency_fault" ? "电机效率 " * motors * "，15 s 后生效" : "标称 Plant 参数"))
+        frozen = app.TaskConfigDirty || isempty(app.TaskConfigPath) ? "待写入配置" :
+            "已冻结：" * basename(app.TaskConfigPath)
+        return "任务  " * task.label * "  |  " * string(Int(task.duration_s)) * " s\n" *
+            injection * "\n" * frozen
+    end
+
+    function configure_model_task_controls(app)
+        previous_task = app.TaskDropDown.Value
+        app.TaskDropDown.Items = MODEL_TASK_LABELS
+        app.TaskDropDown.Value = previous_task in MODEL_TASK_LABELS ? previous_task : MODEL_TASK_LABELS[1]
+        app.TaskDropDown.Label = ""
+        app.TaskDropDown.Position = [120, 192, 344, 32]
+        app.TaskDropDown.Enable = true
+
+        desired = app.selected_controller_entry() === nothing ? LIVE_BASELINE_CONTROLLER : app.PositionDropDown.Value
+        app.sync_controller_selection(desired)
+        app.ControllerFamilyDropDown.Label = ""
+        app.ControllerFamilyDropDown.Position = [120, 234, 344, 32]
+        app.ControllerFamilyDropDown.Enable = true
+        app.PositionDropDown.Label = ""
+        app.PositionDropDown.Position = [120, 276, 344, 32]
+        app.PositionDropDown.Enable = true
+
+        for (label, text, y) in (
+            (app.TaskLabel, "验证任务", 192),
+            (app.ControllerFamilyLabel, "控制器家族", 234),
+            (app.ControllerInstanceLabel, "控制器实例", 276),
+            (app.AttitudeLabel, "姿态内环", 318),
+            (app.AugmentationLabel, "增强层", 360),
+            (app.SafetyLabel, "安全层", 402),
+            (app.FaultLabel, "故障容错层", 444),
+            (app.OutputLabel, "输出边界", 486),
+        )
+            app.configure_model_field_label(label, text, y)
+        end
+
+        for (control, y) in (
+            (app.AttitudeDropDown, 318),
+            (app.AugmentationDropDown, 360),
+            (app.SafetyDropDown, 402),
+            (app.FaultDropDown, 444),
+            (app.OutputDropDown, 486),
+        )
+            control.Label = ""
+            control.Position = [120, y, 344, 32]
+        end
+        app.configure_model_fixed_layers()
+
+        app.ProfileSummaryLabel.Position = [24, 532, 440, 102]
+        if !(previous_task in MODEL_TASK_LABELS)
+            app.apply_model_task_defaults()
+        else
+            app.update_model_task_control_enablement()
+        end
     end
 
     function is_three_uav_mission(app, mission)
@@ -638,39 +820,21 @@ const OFFLINE_PROFILES = Dict(
             app.refresh_assistant_context()
             return
         elseif app.CurrentMode == "model"
-            item = app.selected_model_profile()
             controller = app.selected_controller_entry()
             controller_status = controller === nothing ? "待接入" : controller.status
-            certified = item !== nothing && item.available && app.preset_matches_selection(item)
-            unavailable = occursin("[待接入]", app.PositionDropDown.Value) ||
-                occursin("[待接入]", app.AttitudeDropDown.Value) ||
-                occursin("[待接入]", app.AugmentationDropDown.Value) ||
-                occursin("[待接入]", app.SafetyDropDown.Value) ||
-                occursin("[待接入]", app.FaultDropDown.Value) ||
-                occursin("[待接入]", app.FormationDropDown.Value)
-            incompatible = occursin("[不可执行]", app.AugmentationDropDown.Value) ||
-                (app.FormationDropDown.Value != "无" && app.VehicleCountDropDown.Value == "1") ||
-                (app.is_three_uav_mission(app.MissionDropDown.Value) && app.VehicleCountDropDown.Value != "3")
-            executable = certified && !unavailable && !incompatible
-            app.MilButton.Enable = executable
-            app.CodegenButton.Enable = executable && !occursin("Custom", app.ProfileDropDown.Value)
-            app.ValidateButton.Enable = true
-            state = incompatible ? "结构不兼容" : (unavailable ? "接口待接入" : (executable ? "可直接运行" : "可配置，需保存并验证"))
-            gate_mark = executable ? "✓" : (incompatible ? "✕" : "◆")
-            app.ChainLabel.Text = "控制器  " * app.PositionDropDown.Value * "\n" *
-                "家族  " * app.ControllerFamilyDropDown.Value * "  |  状态  " * controller_status * "\n" *
-                gate_mark * " 组合  " * state * "  |  模型 ✓  接口 " *
-                (unavailable ? "◆" : "✓") * "  参数 ✓  执行 " * (executable ? "✓" : "✕")
-            app.ChainLabel.BackgroundColor = app.controller_status_color(controller)
+            task = app.selected_model_task()
+            supported = app.model_task_controller_supported()
+            state = supported ?
+                (app.TaskConfigDirty || isempty(app.TaskConfigPath) ? "待写入 MWORKS 配置" : "配置已冻结，可打开模型") :
+                "当前七场景合同仅登记 official_pid 与 px4ctrl"
             app.ProfileSummaryLabel.Text =
+                "任务  " * task.label * "  |  " * string(Int(task.duration_s)) * " s\n" *
                 "控制器  " * app.PositionDropDown.Value * "  |  " * controller_status * "\n" *
-                "外环  " * app.PositionDropDown.Value * "  |  内环  " * app.AttitudeDropDown.Value * "\n" *
-                "增强  " * app.AugmentationDropDown.Value * "  |  安全  " * app.SafetyDropDown.Value
+                state
             app.ProfileSummaryLabel.BackgroundColor = app.controller_status_color(controller)
-            app.CapabilityLabel.Text = item === nothing ?
-                "◆ 自定义 Profile 未验证  |  执行保持禁用" :
-                "● " * item.profile * "  |  Result.msr / 动画证据已登记"
-            app.CapabilityLabel.BackgroundColor = MUTED_COLOR
+            app.InjectionValuesLabel.Text = app.model_task_parameter_summary()
+            app.ApplyInjectionButton.Enable = supported
+            app.OpenModelButton.Enable = supported && !app.TaskConfigDirty && isfile(app.TaskConfigPath)
             return
         elseif app.CurrentMode == "deploy"
             controller = app.selected_controller_entry()
@@ -688,42 +852,60 @@ const OFFLINE_PROFILES = Dict(
 
     function configure_model_workspace(app)
         app.set_top_status("在线建模验证  |  未运行  |  Result.msr --"; state="正常")
-        app.configure_section(app.ConfigSectionLabel, "控制器组合", [24, 144, 440, 34])
-        app.configure_section(app.ChainSectionLabel, "风扰与故障", [494, 144, 440, 34])
+        app.configure_section(app.ConfigSectionLabel, "验证任务与控制器", [24, 144, 440, 34])
+        app.configure_section(app.ChainSectionLabel, "场景参数", [494, 144, 440, 34])
         app.configure_console_workspace()
         app.ConfigSectionLabel.Visible = true
         app.ChainSectionLabel.Visible = true
         app.InjectionSectionLabel.Visible = true
         app.set_visible(app.workspace_controls(), false)
         model_controls = (
-            app.ProfileDropDown, app.VehicleCountDropDown, app.MapDropDown,
-            app.MissionDropDown, app.ControllerFamilyDropDown, app.PositionDropDown,
-            app.AttitudeDropDown, app.AugmentationDropDown, app.SafetyDropDown,
-            app.FaultDropDown, app.FormationDropDown, app.OutputDropDown,
-            app.TargetUavDropDown, app.WindSlider,
+            app.TaskLabel, app.ControllerFamilyLabel, app.ControllerInstanceLabel,
+            app.AttitudeLabel, app.AugmentationLabel, app.SafetyLabel,
+            app.FaultLabel, app.OutputLabel, app.TaskDropDown,
+            app.ControllerFamilyDropDown, app.PositionDropDown, app.AttitudeDropDown,
+            app.AugmentationDropDown, app.SafetyDropDown, app.FaultDropDown,
+            app.OutputDropDown, app.ProfileSummaryLabel, app.WindSlider,
+            app.ParameterMismatchSlider,
             app.Motor1Slider, app.Motor2Slider, app.Motor3Slider,
             app.Motor4Slider,
-            app.ApplyInjectionButton, app.RestoreInjectionButton,
+            app.InjectionValuesLabel, app.ApplyInjectionButton, app.RestoreInjectionButton,
         )
         app.set_visible(model_controls, true)
-        app.configure_composition_controls()
+        app.configure_model_task_controls()
+        app.apply_model_task_defaults()
 
-        app.set_dropdown_position(app.TargetUavDropDown, [494, 192, 440, 32])
-        app.WindSlider.Position = [494, 240, 440, 52]
-        app.Motor1Slider.Position = [494, 298, 440, 52]
-        app.Motor2Slider.Position = [494, 356, 440, 52]
-        app.Motor3Slider.Position = [494, 414, 440, 52]
-        app.Motor4Slider.Position = [494, 472, 440, 52]
-        app.ApplyInjectionButton.Position = [494, 540, 210, 36]
-        app.ApplyInjectionButton.Text = "写入仿真场景"
-        app.RestoreInjectionButton.Position = [724, 540, 210, 36]
-        app.RestoreInjectionButton.Text = "恢复默认"
+        app.WindSlider.Position = [494, 192, 440, 46]
+        app.WindSlider.Label = "外力扰动（+X，N）"
+        app.WindSlider.Limits = [0.0, 0.5]
+        app.WindSlider.MajorTicks = [0.0, 0.1, 0.25, 0.5]
+        app.WindSlider.MajorTickLabels = ["0", "0.10", "0.25", "0.50"]
+        app.ParameterMismatchSlider.Position = [494, 248, 440, 46]
+        app.ParameterMismatchSlider.Label = "参数失配（质量/惯量倍率）"
+        app.ParameterMismatchSlider.Limits = [1.0, 1.4]
+        app.ParameterMismatchSlider.MajorTicks = [1.0, 1.1, 1.2, 1.3, 1.4]
+        app.ParameterMismatchSlider.MajorTickLabels = ["1.00", "1.10", "1.20", "1.30", "1.40"]
+        for (control, label, y) in (
+            (app.Motor1Slider, "电机 1 效率（15 s 后）", 304),
+            (app.Motor2Slider, "电机 2 效率（15 s 后）", 360),
+            (app.Motor3Slider, "电机 3 效率（15 s 后）", 416),
+            (app.Motor4Slider, "电机 4 效率（15 s 后）", 472),
+        )
+            control.Position = [494, y, 440, 46]
+            control.Label = label
+            control.Limits = [0.0, 1.0]
+            control.MajorTicks = [0.0, 0.5, 1.0]
+            control.MajorTickLabels = ["0", "50%", "100%"]
+        end
+        app.InjectionValuesLabel.Position = [494, 530, 440, 48]
+        app.ApplyInjectionButton.Position = [494, 594, 160, 36]
+        app.ApplyInjectionButton.Text = "写入配置"
+        app.RestoreInjectionButton.Position = [874, 594, 60, 36]
+        app.RestoreInjectionButton.Text = "重置"
 
         app.set_visible(app.action_buttons(), false)
-        app.set_visible((app.ValidateButton, app.OpenModelButton), true)
-        app.ValidateButton.Position = [494, 600, 210, 38]
-        app.ValidateButton.Text = "应用配置"
-        app.OpenModelButton.Position = [724, 600, 210, 38]
+        app.set_visible((app.OpenModelButton,), true)
+        app.OpenModelButton.Position = [664, 594, 200, 36]
         app.OpenModelButton.Text = "打开仿真模型"
     end
 
@@ -891,15 +1073,30 @@ const OFFLINE_PROFILES = Dict(
         app.SelectionChanged(event)
     end
 
-    function SelectionChanged(app, event)
-        app.sync_vehicle_controls()
+    function TaskChanged(app, event)
+        app.apply_model_task_defaults()
+        app.configure_model_fixed_layers()
         app.refresh_summary()
+        app.append_console("验证任务已切换；已恢复该任务的标准场景参数")
+    end
+
+    function SelectionChanged(app, event)
+        if app.CurrentMode == "model"
+            app.configure_model_fixed_layers()
+            app.TaskConfigPath = ""
+            app.TaskConfigDirty = true
+            app.refresh_summary()
+            app.append_console("控制器已修改；请重新写入 MWORKS 配置")
+        else
+            app.sync_vehicle_controls()
+            app.refresh_summary()
+        end
         if app.CurrentMode == "live"
             app.ConnectionChanged(nothing)
             if !app.live_combination_compatible()
                 app.append_console("当前组合超出单机 ATTITUDE_THRUST 实时合同；可保存但不可准备运行"; level="阻断")
             end
-        else
+        elseif app.CurrentMode != "model"
             app.append_console("配置已修改；兼容性已自动检查")
         end
     end
@@ -966,6 +1163,13 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function InjectionChanged(app, event)
+        if app.CurrentMode == "model"
+            app.TaskConfigPath = ""
+            app.TaskConfigDirty = true
+            app.refresh_summary()
+            app.append_console("场景参数已修改；请重新写入 MWORKS 配置")
+            return
+        end
         app.InjectionValuesLabel.Text =
             "待应用  风速 " * string(round(app.WindSlider.Value; digits=1)) * " m/s  |  " *
             "电机效率 " * join(string.(round.([
@@ -981,13 +1185,62 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function ApplyInjectionPressed(app, event)
-        app.append_console(app.CurrentMode == "model" ?
-            "仿真场景参数已写入当前配置" :
-            "故障应用请求未发送；等待实时后端接入"; level=app.CurrentMode == "model" ? "通过" : "待办")
+        if app.CurrentMode != "model"
+            app.append_console("故障应用请求未发送；等待实时后端接入"; level="待办")
+            return
+        end
+        if !app.model_task_controller_supported()
+            app.append_console("当前验证任务只登记 official_pid 与 px4ctrl；未写入配置"; level="阻断")
+            return
+        end
+        if !isfile(MODEL_TASK_CONFIG_WRITER)
+            app.append_console("任务配置写入器不存在：" * MODEL_TASK_CONFIG_WRITER; level="错误")
+            return
+        end
+        task = app.selected_model_task()
+        controller = app.selected_controller_entry()
+        motors = join(string.(app.selected_motor_effectiveness()), ",")
+        app.ApplyInjectionButton.Enable = false
+        app.OpenModelButton.Enable = false
+        app.append_console("正在冻结 " * task.label * " 的 MWORKS 配置"; level="运行")
+        @async begin
+            try
+                command_args = [
+                    "python", MODEL_TASK_CONFIG_WRITER,
+                    "--task-id", task.id,
+                    "--controller-id", controller.id,
+                    "--gust-force-x-n", string(app.WindSlider.Value),
+                    "--mass-inertia-scale", string(app.ParameterMismatchSlider.Value),
+                    "--motor-effectiveness", motors,
+                ]
+                run_process_in_directory(command_args, PROJECT_ROOT)
+                config_path = joinpath(PROJECT_ROOT, "Results", "ui_platform", "model_studio_task_handoffs", "latest.json")
+                isfile(config_path) || error("task_config_not_created: " * config_path)
+                app.TaskConfigPath = config_path
+                app.TaskConfigDirty = false
+                app.refresh_summary()
+                app.set_top_status("在线建模验证  |  配置已冻结  |  等待用户在 MWORKS 中仿真"; state="正常")
+                app.append_console("配置已冻结：" * config_path * "；未启动仿真"; level="通过")
+            catch error
+                app.TaskConfigPath = ""
+                app.TaskConfigDirty = true
+                app.refresh_summary()
+                app.append_console("写入配置失败：" * sprint(showerror, error); level="错误")
+            finally
+                app.ApplyInjectionButton.Enable = app.model_task_controller_supported()
+            end
+        end
     end
 
     function RestoreInjectionPressed(app, event)
+        if app.CurrentMode == "model"
+            app.apply_model_task_defaults()
+            app.refresh_summary()
+            app.append_console("验证任务已恢复标准参数；请重新写入配置")
+            return
+        end
         app.WindSlider.Value = 0.0
+        app.ParameterMismatchSlider.Value = 1.0
         app.Motor1Slider.Value = 1.0
         app.Motor2Slider.Value = 1.0
         app.Motor3Slider.Value = 1.0
@@ -1094,9 +1347,7 @@ const OFFLINE_PROFILES = Dict(
 
     function ValidatePressed(app, event)
         if app.CurrentMode == "model"
-            app.refresh_summary()
-            app.append_console("在线建模配置已应用；未启动仿真", level="通过")
-            app.set_top_status("在线建模验证  |  配置已应用  |  尚未运行仿真"; state="正常")
+            app.ApplyInjectionPressed(event)
         elseif app.CurrentMode == "live"
             app.refresh_summary()
             app.append_console("联合仿真配置已应用；未启动实时链路", level="通过")
@@ -1143,10 +1394,16 @@ const OFFLINE_PROFILES = Dict(
             app.append_console("当前控制器尚无可打开的 MWORKS 代码生成模型"; level="阻断")
             return
         end
-        profile_id = haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value) ?
-            OFFLINE_PROFILES[app.ProfileDropDown.Value].profile : ""
-        vehicle_count = app.VehicleCountDropDown.Value
-        output_variant = app.OutputDropDown.Value
+        if mode == "model"
+            if !app.model_task_controller_supported()
+                app.append_console("当前验证任务只登记 official_pid 与 px4ctrl；未打开模型"; level="阻断")
+                return
+            end
+            if app.TaskConfigDirty || isempty(app.TaskConfigPath) || !isfile(app.TaskConfigPath)
+                app.append_console("请先写入配置，再打开对应的 MWORKS 仿真模型"; level="阻断")
+                return
+            end
+        end
         opening_text = mode == "codegen" ? "正在打开 MWORKS 代码生成模型" :
             (mode == "live" ? "正在打开联合仿真模型" : "正在打开当前仿真模型")
         app.append_console(opening_text; level="运行")
@@ -1157,11 +1414,15 @@ const OFFLINE_PROFILES = Dict(
                     "--mode", mode,
                     "--controller-id", controller.id,
                 ]
-                if mode != "codegen"
+                if mode == "model"
+                    append!(command_args, ["--task-config", app.TaskConfigPath])
+                elseif mode != "codegen"
+                    profile_id = haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value) ?
+                        OFFLINE_PROFILES[app.ProfileDropDown.Value].profile : ""
                     append!(command_args, [
                         "--profile-id", profile_id,
-                        "--vehicle-count", vehicle_count,
-                        "--output-variant", output_variant,
+                        "--vehicle-count", app.VehicleCountDropDown.Value,
+                        "--output-variant", app.OutputDropDown.Value,
                     ])
                 end
                 run_process_in_directory(command_args, PROJECT_ROOT)
@@ -1186,13 +1447,8 @@ const OFFLINE_PROFILES = Dict(
             app.request_offline_cancel()
             return
         end
-        if app.CurrentMode == "model" && haskey(OFFLINE_PROFILES, app.ProfileDropDown.Value)
-            item = OFFLINE_PROFILES[app.ProfileDropDown.Value]
-            if item.available && app.preset_matches_selection(item)
-                app.run_offline_batch(item.profile)
-            else
-                app.append_console("Profile 与当前 UAV 数量、任务或控制链不一致；未启动仿真"; level="阻断")
-            end
+        if app.CurrentMode == "model"
+            app.append_console("在线建模验证不从 Studio 启动仿真；请在已打开的 MWORKS 模型中自行点击仿真"; level="提示")
         else
             app.ReviewAction("运行 MWORKS MIL")
         end
@@ -1297,6 +1553,18 @@ const OFFLINE_PROFILES = Dict(
         app.InjectionSectionLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.configure_section(app.InjectionSectionLabel, "故障注入与运行状态", [962, 144, 454, 34])
 
+        app.TaskLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.ControllerFamilyLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.ControllerInstanceLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.AttitudeLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.AugmentationLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.SafetyLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.FaultLabel = TyAppDesigner.uilabel(app.UIFigure)
+        app.OutputLabel = TyAppDesigner.uilabel(app.UIFigure)
+
+        app.TaskDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.configure_dropdown(app.TaskDropDown, "验证任务", [24, 192, 420, 32], MODEL_TASK_LABELS, MODEL_TASK_LABELS[1])
+        app.TaskDropDown.ValueChangedFcn = "TaskChanged"
         app.ProfileDropDown = TyAppDesigner.uidropdown(app.UIFigure)
         app.configure_dropdown(app.ProfileDropDown, "实验 Profile", [24, 192, 420, 32], ["正在加载..."], "正在加载...")
         app.ProfileDropDown.ValueChangedFcn = "PresetChanged"
@@ -1405,6 +1673,8 @@ const OFFLINE_PROFILES = Dict(
 
         app.WindSlider = TyAppDesigner.uislider(app.UIFigure)
         app.configure_slider(app.WindSlider, "风速待应用值（m/s，方向固定）", [962, 194, 454, 52], 0.0, [0.0, 20.0], [0.0, 5.0, 10.0, 15.0, 20.0], ["0", "5", "10", "15", "20"])
+        app.ParameterMismatchSlider = TyAppDesigner.uislider(app.UIFigure)
+        app.configure_slider(app.ParameterMismatchSlider, "参数失配（质量/惯量倍率）", [962, 224, 454, 52], 1.0, [1.0, 1.4], [1.0, 1.1, 1.2, 1.3, 1.4], ["1.00", "1.10", "1.20", "1.30", "1.40"])
         app.Motor1Slider = TyAppDesigner.uislider(app.UIFigure)
         app.configure_slider(app.Motor1Slider, "电机 1 效率", [962, 254, 454, 52], 1.0, [0.0, 1.0], [0.0, 0.5, 1.0], ["0", "50%", "100%"])
         app.Motor2Slider = TyAppDesigner.uislider(app.UIFigure)
