@@ -15,6 +15,7 @@ const WAIT_COLOR = [0.98, 0.93, 0.80]
 const MUTED_COLOR = [0.93, 0.94, 0.94]
 const CONSOLE_COLOR = [0.07, 0.10, 0.12]
 const CONSOLE_TEXT_COLOR = [0.82, 0.91, 0.86]
+const HIDDEN_CONTROL_POSITION = [-2048, -2048, 1, 1]
 const PROJECT_ROOT = normpath(joinpath(@__DIR__, "..", "..", ".."))
 const OFFLINE_BATCH_RUNNER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "run_offline_profile_batch.py")
 const OFFLINE_ANIMATION_RESUMER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "resume_offline_profile_animation.py")
@@ -426,7 +427,14 @@ const OFFLINE_PROFILES = Dict(
 
     function set_visible(app, controls, visible)
         for control in controls
-            control.Visible = visible
+            if visible
+                control.Visible = true
+            else
+                # TyAppDesigner hidden controls can still receive mouse input.
+                # Park them outside the figure before another workspace reuses the area.
+                control.Visible = false
+                control.Position = HIDDEN_CONTROL_POSITION
+            end
         end
     end
 
