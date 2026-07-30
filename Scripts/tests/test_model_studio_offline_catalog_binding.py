@@ -178,6 +178,9 @@ def test_model_tasks_are_frozen_before_opening_mworks() -> None:
 def test_model_task_scope_uses_registered_single_and_three_uav_routes() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     assert "app.model_task_controller_supported()" in source
+    assert "MODEL_FORMAL_TASK_IDS" in source
+    assert "MODEL_TASK_ROUTES" in source
+    assert "当前控制器不可写入" in source
     assert "当前数量、任务与控制器组合没有已登记的 MWORKS 模型入口" in source
     assert "当前数量无已登记模型入口" in source
     assert "ROTOR_COMMAND / OfficialPidFormalRunner" in source
@@ -256,6 +259,15 @@ def test_deploy_workspace_remains_manual_mworks_codegen_only() -> None:
     source = APP_SOURCE.read_text(encoding="utf-8")
     deploy = section(source, "function configure_deploy_workspace(app)", "function set_mode(app, mode)")
     assert 'app.CodegenButton.Text = "打开 MWORKS 代码生成模型"' in deploy
+    assert "configure_deploy_controller_layers" in deploy
+    assert "ProfileSummaryLabel" not in deploy
+    for controller_layer in (
+        "AttitudeDropDown",
+        "AugmentationDropDown",
+        "SafetyDropDown",
+        "OutputDropDown",
+    ):
+        assert controller_layer in deploy
     assert "WindSlider" not in deploy
     assert "ApplyInjectionButton" not in deploy
     assert 'app.open_mworks_model("codegen")' in source

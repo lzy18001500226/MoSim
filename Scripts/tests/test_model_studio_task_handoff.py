@@ -120,16 +120,49 @@ def test_task_writer_rejects_out_of_contract_parameter_combinations(tmp_path: Pa
             mass_inertia_scale=1.0,
             motor_effectiveness=[0.5, 0.7, 1.0, 1.0],
         )
-    with pytest.raises(ValueError, match="formal_task_controller_must_be_official_pid_or_px4ctrl"):
+    with pytest.raises(ValueError, match="formal_task_controller_has_no_registered_runner"):
         write_config(
             writer,
             tmp_path,
             task_id="hover",
-            controller_id="linear_mpc",
+            controller_id="smc_boundary_layer",
             gust_force_x_n=0.0,
             mass_inertia_scale=1.0,
             motor_effectiveness=[1.0, 1.0, 1.0, 1.0],
         )
+
+
+def test_registered_formal_route_writes_a_manual_task_for_any_controller(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_generic_formal")
+    payload = write_config(
+        writer,
+        tmp_path,
+        task_id="figure8",
+        controller_id="linear_mpc",
+        gust_force_x_n=0.25,
+        mass_inertia_scale=1.2,
+        motor_effectiveness=[1.0, 0.5, 1.0, 1.0],
+        fault_start_s=17.0,
+    )
+    assert payload["configuration_kind"] == "manual_formal_task"
+    assert payload["runner_class"] == writer.FORMAL_CONTROLLER_ROUTES["linear_mpc"]["runner_class"]
+    assert payload["task_route"]["boundary"] == "ATTITUDE_THRUST"
+    assert payload["task_route_source"].endswith("model_studio_task_routes_v1.toml")
+    harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
+    assert "extends MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner(" in harness
+    assert "redeclare model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.Figure8(" in harness
+    assert "gust_force = {0.25, 0, 0}" in harness
+    assert "fault_rotor_index = 2" in harness
+
+
+def test_manual_route_catalog_covers_the_controller_catalog_without_evidence_gating() -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_route_catalog")
+    assert len(writer.FORMAL_CONTROLLER_ROUTES) == 48
+    assert len(writer.FORMAL_CONTROLLER_IDS) == 44
+    for controller_id in ("adaptive_backstepping", "fixed_awff_pid", "fixed_linear_mpc_l1_indi", "px4ctrl"):
+        assert controller_id in writer.FORMAL_CONTROLLER_IDS
+    for controller_id in ("pid_awff_linear_eso", "smc_boundary_layer", "nmpc_outer", "fixed_qp_nmpc_l1_indi_cbf"):
+        assert controller_id not in writer.FORMAL_CONTROLLER_IDS
 
 
 def test_baseline_is_a_separate_climbpath_handoff(tmp_path: Path) -> None:

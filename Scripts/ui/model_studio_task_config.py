@@ -16,6 +16,7 @@ import importlib.util
 import json
 import math
 import sys
+import tomllib
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -25,8 +26,10 @@ ROOT = Path(__file__).resolve().parents[2]
 PROFILE_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_experiment_profiles_v2.json"
 CONTRACT_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_injection_contract_v2.json"
 DRIVER_PATH = ROOT / "Scripts" / "mworks" / "run_seven_scenario_ab.py"
+TASK_ROUTE_PATH = ROOT / "Config" / "control_platform" / "model_studio_task_routes_v1.toml"
 DEFAULT_OUTPUT = ROOT / "Results" / "ui_platform" / "model_studio_task_handoffs" / "latest.json"
 TASK_CONFIG_SCHEMA = "mosim.model_studio.task_config.v1"
+TASK_ROUTE_SCHEMA = "mosim.model_studio_task_routes.v1"
 FORMAL_TASK_IDS = (
     "climb_path_50s",
     "hover",
@@ -45,7 +48,7 @@ SPECIAL_TASK_IDS = (
     "three_uav_autonomous_avoidance",
 )
 TASK_ORDER = FORMAL_TASK_IDS + LEGACY_INJECTION_TASK_IDS + SPECIAL_TASK_IDS
-FORMAL_CONTROLLER_IDS = frozenset({"official_pid", "px4ctrl"})
+V2_EVIDENCE_CONTROLLER_IDS = frozenset({"official_pid", "px4ctrl"})
 MAP_IDS = frozenset({"blank", "openblocks"})
 EPSILON = 1e-9
 DEFAULT_INJECTION_START_S = 15.0
@@ -120,6 +123,51 @@ def project_path_text(path: Path) -> str:
         return str(resolved)
 
 
+def load_manual_formal_routes() -> dict[str, dict[str, Any]]:
+    with TASK_ROUTE_PATH.open("rb") as handle:
+        document = tomllib.load(handle)
+    if document.get("schema") != TASK_ROUTE_SCHEMA:
+        raise ValueError("invalid_model_studio_task_route_schema")
+    configured_task_ids = tuple(str(item) for item in document.get("formal_task_ids", []))
+    if configured_task_ids != FORMAL_TASK_IDS:
+        raise ValueError("model_studio_task_route_formal_task_ids_mismatch")
+    rows = document.get("route", [])
+    if not isinstance(rows, list):
+        raise ValueError("model_studio_task_routes_must_be_a_list")
+    routes: dict[str, dict[str, Any]] = {}
+    for raw_route in rows:
+        if not isinstance(raw_route, dict):
+            raise ValueError("model_studio_task_route_must_be_an_object")
+        controller_id = raw_route.get("controller_id")
+        if not isinstance(controller_id, str) or not controller_id:
+            raise ValueError("model_studio_task_route_controller_id_missing")
+        if controller_id in routes:
+            raise ValueError(f"model_studio_task_route_duplicate_controller: {controller_id}")
+        available = raw_route.get("available")
+        if not isinstance(available, bool):
+            raise ValueError(f"model_studio_task_route_available_invalid: {controller_id}")
+        route = dict(raw_route)
+        if available:
+            for field in ("runner_class", "runner_file", "boundary"):
+                if not isinstance(route.get(field), str) or not route[field]:
+                    raise ValueError(f"model_studio_task_route_{field}_missing: {controller_id}")
+            runner_file = ROOT / str(route["runner_file"])
+            if not runner_file.is_file():
+                raise ValueError(f"model_studio_task_route_runner_file_missing: {controller_id}")
+        elif not isinstance(route.get("reason"), str) or not route["reason"]:
+            raise ValueError(f"model_studio_task_route_reason_missing: {controller_id}")
+        routes[controller_id] = route
+    return routes
+
+
+FORMAL_CONTROLLER_ROUTES = load_manual_formal_routes()
+FORMAL_CONTROLLER_IDS = frozenset(
+    controller_id
+    for controller_id, route in FORMAL_CONTROLLER_ROUTES.items()
+    if bool(route["available"])
+)
+
+
 def load_driver() -> Any:
     spec = importlib.util.spec_from_file_location("model_studio_seven_scenario_driver", DRIVER_PATH)
     if spec is None or spec.loader is None:
@@ -185,7 +233,7 @@ def validate_selection(
     vehicle_count: int,
     map_id: str,
     fault_target_uav: int,
-) -> dict[str, Any] | None:
+) -> tuple[str, dict[str, Any]]:
     if not 1 <= vehicle_count <= 9:
         raise ValueError("vehicle_count_must_be_within_1_and_9")
     if map_id not in MAP_IDS:
@@ -198,9 +246,10 @@ def validate_selection(
             raise ValueError("formal_task_requires_single_uav")
         if map_id != "blank":
             raise ValueError("formal_task_requires_blank_map")
-        if controller_id not in FORMAL_CONTROLLER_IDS:
-            raise ValueError("formal_task_controller_must_be_official_pid_or_px4ctrl")
-        return None
+        route = FORMAL_CONTROLLER_ROUTES.get(controller_id)
+        if route is None or not bool(route["available"]):
+            raise ValueError("formal_task_controller_has_no_registered_runner")
+        return "formal", copy.deepcopy(route)
 
     route = SPECIAL_ROUTES.get(task_id)
     if route is None:
@@ -211,7 +260,7 @@ def validate_selection(
         raise ValueError("task_map_not_supported")
     if controller_id not in route["controller_ids"]:
         raise ValueError("task_controller_not_supported")
-    return route
+    return "special", copy.deepcopy(route)
 
 
 def normalized_injection(
@@ -297,8 +346,64 @@ def rendered_formal_harness(driver: Any, controller_id: str, task_id: str, profi
     return rendered
 
 
+def modelica_number(value: Any) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if isinstance(value, int):
+        return str(value)
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError(f"non_finite_modelica_value: {value!r}")
+        return format(value, ".17g")
+    raise TypeError(f"unsupported_modelica_scalar: {value!r}")
+
+
+def modelica_value(value: Any) -> str:
+    if isinstance(value, list):
+        return "{" + ", ".join(modelica_value(item) for item in value) + "}"
+    return modelica_number(value)
+
+
+def profile_trajectory_modification(profile: dict[str, Any]) -> str:
+    trajectory_class = str(profile["trajectory_class"])
+    parameters = profile.get("trajectory_parameter_overrides", {})
+    if not isinstance(parameters, dict):
+        raise ValueError(f"trajectory_parameter_overrides_invalid: {profile['scenario_id']}")
+    if not parameters:
+        return trajectory_class
+    modifications = ", ".join(
+        f"{key} = {modelica_value(value)}" for key, value in parameters.items()
+    )
+    return f"{trajectory_class}({modifications})"
+
+
+def rendered_generic_formal_harness(
+    *,
+    task_id: str,
+    route: dict[str, Any],
+    profile: dict[str, Any],
+    name: str,
+) -> str:
+    runner_parameters = profile.get("runner_parameter_overrides", {})
+    if not isinstance(runner_parameters, dict):
+        raise ValueError(f"runner_parameter_overrides_invalid: {task_id}")
+    runner_modifications = [
+        f"redeclare model Trajectory = {profile_trajectory_modification(profile)}",
+    ]
+    runner_modifications.extend(
+        f"{key} = {modelica_value(value)}" for key, value in runner_parameters.items()
+    )
+    modification_text = ",\n    ".join(runner_modifications)
+    return f'''within ;
+model {name}
+  "Manual Model Studio task for {task_id}; no simulation evidence is recorded"
+  extends {route["runner_class"]}(
+    {modification_text});
+end {name};
+'''
+
+
 def injection_modifications(
-    driver: Any,
     injection: dict[str, Any],
     duration_s: float,
 ) -> list[str]:
@@ -307,15 +412,15 @@ def injection_modifications(
     fault_start_s = float(injection["fault_start_s"])
     gust_duration_s = max(0.0, duration_s - fault_start_s) if gust_force_x_n > EPSILON else 0.0
     return [
-        f"gust_force = {driver.modelica_value([gust_force_x_n, 0.0, 0.0])}",
-        f"gust_start_s = {driver.modelica_value(fault_start_s if gust_force_x_n > EPSILON else 0.0)}",
-        f"gust_duration_s = {driver.modelica_value(gust_duration_s)}",
-        f"mass_scale = {driver.modelica_value(mass_inertia_scale)}",
-        f"inertia_scale = {driver.modelica_value([mass_inertia_scale, mass_inertia_scale, mass_inertia_scale])}",
+        f"gust_force = {modelica_value([gust_force_x_n, 0.0, 0.0])}",
+        f"gust_start_s = {modelica_value(fault_start_s if gust_force_x_n > EPSILON else 0.0)}",
+        f"gust_duration_s = {modelica_value(gust_duration_s)}",
+        f"mass_scale = {modelica_value(mass_inertia_scale)}",
+        f"inertia_scale = {modelica_value([mass_inertia_scale, mass_inertia_scale, mass_inertia_scale])}",
         "rotor_effectiveness = {1, 1, 1, 1}",
-        f"fault_start_s = {driver.modelica_value(float(injection['fault_start_s']) if float(injection['fault_rotor_effectiveness']) < 1.0 - EPSILON else 1_000_000_000.0)}",
-        f"fault_rotor_index = {driver.modelica_value(int(injection['fault_rotor_index']))}",
-        f"fault_rotor_effectiveness = {driver.modelica_value(float(injection['fault_rotor_effectiveness']))}",
+        f"fault_start_s = {modelica_value(float(injection['fault_start_s']) if float(injection['fault_rotor_effectiveness']) < 1.0 - EPSILON else 1_000_000_000.0)}",
+        f"fault_rotor_index = {modelica_value(int(injection['fault_rotor_index']))}",
+        f"fault_rotor_effectiveness = {modelica_value(float(injection['fault_rotor_effectiveness']))}",
     ]
 
 
@@ -337,7 +442,7 @@ model {name}
 end {name};
 '''
 
-    modifications = injection_modifications(driver, injection, float(route["duration_s"]))
+    modifications = injection_modifications(injection, float(route["duration_s"]))
     if task_id == "three_uav_figure8":
         modifier_text = ",\n      ".join(modifications)
         extends_text = f"{base_model}(\n    plant_{fault_target_uav}(\n      {modifier_text}))"
@@ -374,14 +479,14 @@ def write_task_config(
     if task_id not in TASK_ORDER:
         raise ValueError(f"unknown_task_id: {task_id}")
 
-    route = validate_selection(task_id, controller_id, vehicle_count, map_id, fault_target_uav)
+    route_kind, route = validate_selection(task_id, controller_id, vehicle_count, map_id, fault_target_uav)
     driver = load_driver()
     profile: dict[str, Any] | None = None
     source_profile: dict[str, Any] | None = None
     profile_hash: str | None = None
     contract_hash: str | None = None
-    duration_s = float(route["duration_s"]) if route is not None else 50.0
-    if route is None:
+    duration_s = float(route["duration_s"]) if route_kind == "special" else 50.0
+    if route_kind == "formal":
         profile, profile_hash, contract_hash = selected_profile(driver, task_id)
         source_profile = copy.deepcopy(profile)
         duration_s = float(profile["duration_s"])
@@ -393,7 +498,7 @@ def write_task_config(
         fault_start_s=fault_start_s,
         duration_s=duration_s,
     )
-    if route is not None and not route["injection_supported"] and not injection_is_nominal(
+    if route_kind == "special" and not route["injection_supported"] and not injection_is_nominal(
         float(injection["gust_force_x_n"]),
         float(injection["mass_inertia_scale"]),
         list(injection["motor_effectiveness"]),
@@ -405,15 +510,24 @@ def write_task_config(
         "map_id": map_id,
         "fault_target_uav": fault_target_uav,
     }
-    if profile is not None:
+    if route_kind == "formal":
         apply_independent_parameters(profile, injection)
     name = model_name(driver, controller_id, task_id, selection, profile, route)
     resolved_output = output.resolve()
     harness_path = resolved_output.parent / "harness" / name / f"{name}.mo"
-    if profile is not None:
-        harness_text = rendered_formal_harness(driver, controller_id, task_id, profile, name)
-        runner_class = driver.CONTROLLERS[controller_id]["runner_class"]
-        kind = configuration_kind(task_id, profile, source_profile or profile)
+    if route_kind == "formal":
+        if controller_id in V2_EVIDENCE_CONTROLLER_IDS:
+            harness_text = rendered_formal_harness(driver, controller_id, task_id, profile, name)
+            kind = configuration_kind(task_id, profile, source_profile or profile)
+        else:
+            harness_text = rendered_generic_formal_harness(
+                task_id=task_id,
+                route=route,
+                profile=profile,
+                name=name,
+            )
+            kind = "manual_formal_task"
+        runner_class = str(route["runner_class"])
     else:
         harness_text = rendered_special_harness(
             driver,
@@ -445,7 +559,13 @@ def write_task_config(
         "profile_source_sha256": profile_hash,
         "contract_source": project_path_text(CONTRACT_PATH) if contract_hash is not None else None,
         "contract_source_sha256": contract_hash,
-        "claim_boundary": "Frozen configuration and generated harness only; no MWORKS simulation has been started.",
+        "task_route_source": project_path_text(TASK_ROUTE_PATH) if route_kind == "formal" else None,
+        "task_route_source_sha256": sha256_path(TASK_ROUTE_PATH) if route_kind == "formal" else None,
+        "task_route": {
+            "boundary": route["boundary"],
+            "runner_alias": route.get("runner_alias"),
+        } if route_kind == "formal" else None,
+        "claim_boundary": "Manual MWORKS configuration and generated harness only; no MWORKS simulation has been started and no evidence verdict is recorded.",
     }
     resolved_output.parent.mkdir(parents=True, exist_ok=True)
     resolved_output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
