@@ -1,7 +1,16 @@
+/*
+ * MWORKS exports generic Init/Step symbols.  The ROS adapter still links its
+ * dormant legacy CFunction implementation for compatibility with existing
+ * non-graphical profiles, so give this graphical instance private symbols.
+ */
+#define Init MosimPx4ctrlGraphicalGeneratedInit
+#define Step MosimPx4ctrlGraphicalGeneratedStep
 #include "mwb_types.h"
 #include "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.h"
 #include "PX4CTRL_Original_OuterLoop_Graphical_Sysblock_private.h"
 #include "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.c"
+#undef Step
+#undef Init
 
 #if defined(_WIN32)
 #define MOSIM_PX4CTRL_EXPORT __declspec(dllexport)
@@ -38,7 +47,7 @@ MOSIM_PX4CTRL_EXPORT void MosimPx4ctrlGeneratedGraphStepScalar(
 {
   static int mosim_px4ctrl_generated_initialized = 0;
   if (!mosim_px4ctrl_generated_initialized) {
-    Init();
+    MosimPx4ctrlGraphicalGeneratedInit();
     mosim_px4ctrl_generated_initialized = 1;
   }
   graphical_sysblockGbIn.ref_px = ref_px;
@@ -58,7 +67,7 @@ MOSIM_PX4CTRL_EXPORT void MosimPx4ctrlGeneratedGraphStepScalar(
   graphical_sysblockGbIn.ref_az = ref_az;
   graphical_sysblockGbIn.yaw_mea = yaw_mea;
   graphical_sysblockGbIn.ref_yaw = ref_yaw;
-  Step();
+  MosimPx4ctrlGraphicalGeneratedStep();
   *desired_acc_x = agraphical_sysblockGbOut.desired_acc_x;
   *desired_acc_y = agraphical_sysblockGbOut.desired_acc_y;
   *desired_acc_z = agraphical_sysblockGbOut.desired_acc_z;
