@@ -3,7 +3,8 @@
 
 set -u
 
-PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-$(cd "${SCRIPT_DIR}/../.." && pwd)}"
 source "${PROJECT_ROOT}/Scripts/sunray/resolve_local_ros1_runtime.sh"
 FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/src/perception/fast_lio}"
 LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${LOCAL_ROS1_WS}}"
@@ -86,7 +87,7 @@ fi
 if [[ "${UBUNTU_RELEASE}" == "20.04" ]]; then
   pass "Ubuntu release: ${UBUNTU_RELEASE}"
 else
-  blocker "wrong Ubuntu release '${UBUNTU_RELEASE:-unknown}'. Current P0 must run in Ubuntu-20.04. From Windows use: wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/check_sunray_ros1_runtime_preflight.sh'"
+  blocker "wrong Ubuntu release '${UBUNTU_RELEASE:-unknown}'. Current C99 baseline must run in Ubuntu-20.04. From Windows use Scripts/cmd/00_准备C99单机环境.cmd."
 fi
 
 if [[ -n "${WSL_DISTRO_NAME:-}" && "${WSL_DISTRO_NAME}" != "Ubuntu-20.04" ]]; then

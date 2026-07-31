@@ -3,6 +3,9 @@
 `Scripts/cmd/` is the only Windows double-click entry directory. Every C99
 entry keeps its terminal visible: terminal output and the newly created
 `Results/sunray_ros1/<run_id>/` directory are the first error surfaces.
+The four C99 entries resolve the repository from their own location and map it
+to `Ubuntu-20.04` with `wslpath`; do not edit a personal absolute path into
+these files.
 
 ## Current C99 Baseline
 

@@ -3,7 +3,8 @@
 
 set -eo pipefail
 
-PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-$(cd "${SCRIPT_DIR}/../.." && pwd)}"
 PX4_ROS1_GUARD_UXRCE_DDS="${PX4_ROS1_GUARD_UXRCE_DDS:-true}"
 PX4_ROS1_OVERLAY_PKG=""
 PX4_GCS_REMOTE_HOST="${PX4_GCS_REMOTE_HOST:-auto}"
