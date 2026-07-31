@@ -204,7 +204,7 @@ julia Scripts/syslab/compare_controllers.jl \
 ```bash
 python Scripts/syslab/generate_status_matrix.py \
   --status-json Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json \
-  --output Docs/figures/第10章/controller_status_matrix.svg
+  --output Docs/报告/figures/第10章/controller_status_matrix.svg
 ```
 
 **输出**：28行×1列的状态表格，每行包含：
@@ -250,7 +250,7 @@ CONTROLLER_FAMILY = {
 ```bash
 python Scripts/syslab/generate_heatmap.py \
   --metrics-dir Results/control_platform/phase2_full_48_climbpath \
-  --output Docs/figures/第10章/rmse_heatmap.svg
+  --output Docs/报告/figures/第10章/rmse_heatmap.svg
 ```
 
 **输出**：28行（控制器）×1列（ClimbPath50s场景）的热力图
@@ -276,7 +276,7 @@ python Scripts/syslab/generate_heatmap.py \
 ```bash
 python Scripts/syslab/generate_radar_chart.py \
   --metrics-dir Results/control_platform/phase2_full_48_climbpath \
-  --output Docs/figures/第10章/controller_radar_chart.svg
+  --output Docs/报告/figures/第10章/controller_radar_chart.svg
 ```
 
 **输出**：每个控制器族一个雷达图子图（2×4布局，共8个族）
@@ -311,7 +311,7 @@ python Scripts/syslab/generate_radar_chart.py \
 ```bash
 python Scripts/syslab/generate_all_chapter10_figures.py \
   --batch-dir Results/control_platform/phase2_full_48_climbpath \
-  --output-dir Docs/figures/第10章 \
+  --output-dir Docs/报告/figures/第10章 \
   --focus-controllers official_pid,px4ctrl \
   --compare-groups pid_family,modern_control
 ```
@@ -351,7 +351,7 @@ generate_summary_report()
 
 **输出结构**：
 ```
-Docs/figures/第10章/
+Docs/报告/figures/第10章/
 ├── official_pid/                      # 完整4子图
 │   ├── trajectory_xy.svg
 │   ├── altitude_z.svg
@@ -433,7 +433,7 @@ julia Scripts/syslab/compare_controllers.jl \
 
 ### 6.2 集成测试
 - [ ] 运行`generate_all_chapter10_figures.py`完整流程无报错
-- [ ] `Docs/figures/第10章/`下生成28个控制器目录
+- [ ] `Docs/报告/figures/第10章/`下生成28个控制器目录
 - [ ] 状态矩阵/热力图/雷达图SVG存在且可视化正确
 
 ### 6.3 报告引用测试
