@@ -10,14 +10,16 @@ before the later reference-velocity/reference-acceleration contract repair.
 Phase 1 completed its user-approved frozen 46-route matrix on 2026-07-27 CST.
 The pre-P0a matrix and the six-candidate recovery both remain historical
 trace-back only after the forward-reference repair. The current report-run
-audit counts 48 completed nominal run-evidence entries: the 46 existing MWORKS
-profiles, the independent `px4ctrl` baseline, and the completed
-`pid_awff_linear_eso` 50 s record. The PID-AWFF-LINEAR-ESO terminal error is
-`3412.359226529184 m`, so it is retained as negative performance evidence and
-not a pass.
-`smc_boundary_layer` and `nmpc_outer` remain Tier1/Experimental and outside the
-frozen G2/G3 denominator, but their isolated whole-aircraft FormalRunner runs
-are valid evidence with separate pass/fail labels. The earlier v1
+audit retains a fixed 48-entry catalog denominator. Its current status
+reconciliation is
+`Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`:
+28 passes, 16 completed failures, and four entries without a FormalRunner
+record. It incorporates the post-freeze records for `pid_awff_linear_eso`
+(50 s completed but failed the 5 m gate at `3412.359226529184 m`),
+`smc_boundary_layer` (50 s completed but failed at `15.029940929898276 m`),
+and `nmpc_outer` (50 s passed at `0.142974149482056 m`). Those three records
+are not extra controllers and do not change the denominator. The historical
+G3 execution matrix remains separately preserved. The earlier v1
 seven-scenario evidence remains historical trace-back only. The current
 two-controller v2 A/B set is isolated at
 `Results/control_platform/seven_scenario_ab_v2/`: 12 of 14 records are valid,
@@ -221,16 +223,24 @@ proves that this is not an MCP timeout or an injection error. This is retained
 as historical v1 negative evidence, not the current task selector; use the
 v2 entry above for the active review packet.
 
-### G3 ClimbPath Effective State - Frozen for P0 Documentation
+### G3 ClimbPath Status - Historical Execution and Current Catalog Reconciliation
 
 The direct P0 documentation task does not resume G3 execution. Preserve the
-existing repair records and use
-`Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json`
-as the current result authority: G2 has 17/48 frozen passes; G3 has 28/48
+existing repair records. The immutable historical execution authority is
+`Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json`:
+G2 has 17/48 frozen passes; the historical G3 runner namespace has 28/48
 effective passes and 20/48 effective failures. The 20 failures are nine
 terminal-position-error violations, eight simulation timeouts, two simulation
-API failures, and one CheckModel failure. The detailed controller lists remain
-in that JSON and in the P0 evidence ledger.
+API failures, and one CheckModel failure.
+
+For the active fixed catalog terminology, use
+`Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`.
+It maps 33 exact historical identities plus eight aliases, accounts for the
+three post-freeze FormalRunner records, and leaves four catalog entries as
+`not_run` because no FormalRunner exists. Its current result is 28/48 passes,
+16/48 completed failures, and 4/48 not-run entries; `completed=false`. The
+seven historical G3-only execution rows remain preserved in the artifact but
+are not silently substituted for catalog entries.
 
 All 48 public
 `Runners.Formal.*` entries received one nominal 50 s `ClimbPath` attempt with
@@ -432,9 +442,10 @@ current completion.
 ## 3. Next Engineering Selection
 
 The active bounded action is P0 report/manual/codegen-delivery evidence
-convergence. It uses the frozen 48-route denominator and
-`Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json`
-for current effective state. Do not infer an additional runnable route from a
+convergence. It uses the fixed 48-route denominator and
+`Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`
+for current catalog state, with `G3_STATUS.json` retained as the immutable
+historical execution record. Do not infer an additional runnable route from a
 historical `adapter_missing` row or the planned ESO profile. G2 remains
 trace-back evidence; no live rerun is part of P0.
 
