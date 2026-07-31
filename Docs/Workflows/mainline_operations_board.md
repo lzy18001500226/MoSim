@@ -10,9 +10,11 @@ before the later reference-velocity/reference-acceleration contract repair.
 Phase 1 completed its user-approved frozen 46-route matrix on 2026-07-27 CST.
 The pre-P0a matrix and the six-candidate recovery both remain historical
 trace-back only after the forward-reference repair. The current report-run
-audit counts 47 completed nominal run-evidence entries: the 46 existing MWORKS
-profiles plus the independent `px4ctrl` baseline. `pid_awff_linear_eso` is
-currently in progress and is excluded until its terminal record is available.
+audit counts 48 completed nominal run-evidence entries: the 46 existing MWORKS
+profiles, the independent `px4ctrl` baseline, and the completed
+`pid_awff_linear_eso` 50 s record. The PID-AWFF-LINEAR-ESO terminal error is
+`3412.359226529184 m`, so it is retained as negative performance evidence and
+not a pass.
 `smc_boundary_layer` and `nmpc_outer` remain Tier1/Experimental and outside the
 frozen G2/G3 denominator, but their isolated whole-aircraft FormalRunner runs
 are valid evidence with separate pass/fail labels. The earlier v1
@@ -30,11 +32,13 @@ to the PID or optimization/predictive family; `mu_synthesis` and `neural_smc`
 remain historical 67-route trace-back records only. This vocabulary changes no
 historical result or current runtime state.
 
-For report screenshots, do not use the catalog denominator as a screenshot
-completion claim. The 47-entry run-evidence audit is at
+For report screenshots, do not use the catalog denominator as a whole-aircraft
+simulation completion claim. The 48-entry run-evidence audit is at
 `Docs/报告/审计/控制器原生截图归位/FORMAL_RUN_SCREENSHOT_COVERAGE_20260731.md`.
 It distinguishes source result captures, whole-aircraft FormalRunner records,
-and report-directory assets.
+and report-directory assets; all 48 report structure images are now present,
+while current-source-bound per-controller result-image materialization remains
+separate work.
 
 ## 0. Task Authority and Evidence Snapshot
 

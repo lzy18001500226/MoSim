@@ -100,10 +100,11 @@ shared reference-velocity/reference-acceleration repair. Its `ClimbPath`
 passes and RMSE are trace-back evidence only, not a valid ranking for the
  current source. The seven-scenario contract is bound through the Plant and four
  shared Runner classes. The report-run audit now separates the 48-entry catalog
- from the completed nominal evidence population: 46 existing MWORKS profiles
- plus the independent `px4ctrl` MWORKS baseline have run evidence (47 total);
- `pid_awff_linear_eso` is in progress and is excluded until its terminal record
- closes. The `smc_boundary_layer` and `nmpc_outer` routes remain Tier1/Experimental
+ from the completed nominal evidence population: 46 existing MWORKS profiles,
+ the independent `px4ctrl` MWORKS baseline, and the completed
+ `pid_awff_linear_eso` 50 s record (48 total). The PID-AWFF-LINEAR-ESO run is
+ retained as negative performance evidence because its terminal position error
+ is `3412.359226529184 m`, not as a pass. The `smc_boundary_layer` and `nmpc_outer` routes remain Tier1/Experimental
  rather than part of the frozen G2/G3 denominator, but each now has an isolated
  whole-aircraft FormalRunner record. The G6 screenshot population for the 46
  existing profiles remains mixed: the audit labels its 46 result captures as
