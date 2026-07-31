@@ -1,9 +1,19 @@
 [CmdletBinding()]
 param(
-  [string]$ManifestPath = (Join-Path $PSScriptRoot 'codegen_manifest.json')
+  [string]$ManifestPath = ''
 )
 
 $ErrorActionPreference = 'Stop'
+$ScriptRootPath = $PSScriptRoot
+if ([string]::IsNullOrWhiteSpace($ScriptRootPath)) {
+  $ScriptRootPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+}
+if ([string]::IsNullOrWhiteSpace($ScriptRootPath)) {
+  throw 'Cannot resolve the px4ctrl code-generation script directory.'
+}
+if ([string]::IsNullOrWhiteSpace($ManifestPath)) {
+  $ManifestPath = Join-Path $ScriptRootPath 'codegen_manifest.json'
+}
 
 function Test-ManifestEntry {
   param(
@@ -11,7 +21,7 @@ function Test-ManifestEntry {
     [Parameter(Mandatory = $true)][string]$Section
   )
 
-  $path = Join-Path $PSScriptRoot $Entry.path
+  $path = Join-Path $ScriptRootPath $Entry.path
   if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
     Write-Error "$Section missing: $($Entry.path)"
     return $false

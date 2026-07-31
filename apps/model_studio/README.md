@@ -19,9 +19,10 @@ The current source UI baseline includes:
 - `MoSim 助手` reads the current Profile/control-chain selections and provides
   local MWORKS, QGC, fault, and result-viewing guidance only; it does not start
   MWORKS, export code, or send flight/runtime commands;
-- an eight-task single-UAV model-validation selector: one `ClimbPath 50 s`
-  baseline plus hover, step, Figure8, spiral, wind, parameter mismatch, and
-  motor-efficiency-fault tasks;
+- a model-validation task selector with nominal ClimbPath, hover, step,
+  Figure8, spiral, and registered multi-UAV routes; wind, parameter mismatch,
+  and motor-effectiveness are independent scene parameters rather than a
+  second controller catalog;
 - dynamic controller-family and controller-instance selection, with fixed
   FormalRunner interface layers shown as read-only on the model page;
 - a fixed +X external-force slider, synchronized mass/all-inertia mismatch
@@ -88,7 +89,7 @@ sufficient unless the change specifically affects interactive UI behavior.
 Run the source inside Syslab:
 
 ```julia
-include(raw"C:\Users\HP\Desktop\MoSim\apps\model_studio\src\app.jl")
+include(joinpath(ENV["MOSIM_ROOT"], "apps", "model_studio", "src", "app.jl"))
 ```
 
 The earlier D4 native APP/Orchestrator gate passed on 2026-07-17. Its
@@ -131,10 +132,12 @@ selected task, controller, and permitted scenario values to
 `Results/ui_platform/model_studio_task_handoffs/latest.json`, and writes a
 hash-bound temporary Modelica harness beside it. `打开仿真模型` opens exactly
 that frozen harness and runs native `CheckModel`; it does not start a solver.
-`重置` restores the selected task's standard values. The formal seven-scenario
-route is limited to `official_pid` and `px4ctrl`, because those are the only
-two registered FormalRunners in the v2 contract. A nonstandard slider value is
-recorded as a task parameter variant, not as existing formal evidence.
+`重置` restores the selected task's standard values. The frozen seven-scenario
+evidence set contains only `official_pid` and `px4ctrl`. This is an
+evidence-scope boundary, not a prohibition on a user manually opening another
+`available=true` FormalRunner with a compatible task/configuration. A
+user-created slider or scenario combination is recorded as a task parameter
+variant, not as pre-existing formal evidence.
 
 The `实时联合仿真` workspace retains its separate controls and opens its own
 MWORKS Live model. Neither workspace starts, stops, or opens a result; after

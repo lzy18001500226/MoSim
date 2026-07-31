@@ -122,3 +122,55 @@ legacy sources or historical results.
 This document organizes packaging inputs only. It does not assert that a
 controller passed, that a live MWORKS model is accepted, or that any
 ROS/Gazebo/PX4/QGC/UE runtime route is complete.
+
+## Follow-up Archive Execution
+
+> Executed on 2026-07-31 after a direct user-authorized dependency audit.
+> This section records only external archival of untracked local data. No
+> tracked configuration, Modelica model, active evidence record, or
+> owner-locked runtime/UI path was moved or rewritten.
+
+### Completed external archives
+
+| Archive ID | External destination | Verified content | Source result |
+|---|---|---:|---|
+| `20260731_local_unreferenced_cache_phase1` | `C:\Users\HP\Desktop\MoSim_Archive\20260731_local_unreferenced_cache_phase1\` | 16,753 files; 2,621,010,763 bytes | All five source roots were SHA-256 verified, removed, and replaced by `ARCHIVED_EXTERNALLY.md` tombstones. |
+| `20260731_historical_mworks_unreferenced_phase2` | `C:\Users\HP\Desktop\MoSim_Archive\20260731_historical_mworks_unreferenced_phase2\` | 345 files; 254,350,491 bytes | Fourteen of fifteen historical, untracked MWORKS-result roots were SHA-256 verified, removed, and tombstoned. |
+
+The phase-1 manifest SHA-256 is
+`8c130c5e8af1db3629e40f78a6d4e3350de2e712a314f9d32c0b15e29f1c29e6`.
+The phase-2 manifest SHA-256 after recovery finalization is
+`435cf3bf33ac7effd3bae4d8429af17ee6dd6d512f571f6ace38a4ff7dd5bd29`.
+Both archives retain repository-relative file paths, `ARCHIVE_MANIFEST.json`,
+`SHA256SUMS.txt`, and `ARCHIVE_README.md`.
+
+### Retained blockers
+
+| Path | Decision | Reason |
+|---|---|---|
+| `Results/research/` | Retain in working tree and external archive. | Its embedded legacy `.git/objects/pack` object rejected deletion with Windows access-denied. Its verified external copy exists, but the source root is deliberately left intact until a separate filesystem-repair cleanup is approved. |
+| `Results/_quarantine/` and the five historical control-platform roots containing broken reparse points | Retain in working tree. | The dependency scan found inaccessible Windows reparse points. Do not delete or move them with ordinary cleanup tooling; handle only through a dedicated, path-by-path repair task. |
+
+### Config decision after dependency scan
+
+No `Config/` tree was moved. `Config/controllers/`,
+`Config/scenarios/robustness/`, `Config/legacy/`, and `Config/protocol/` still
+have direct project script, source, or document references; moving any of them
+would make the packaged project incomplete. The current source release must
+therefore retain the `keep_in_source_release` paths in this audit and preserve
+the listed compatibility configuration until a future reference-rewrite task.
+
+### Clean-package readiness
+
+The current working tree cannot be released by packaging the entire Git tree.
+The static audit observed 327,607 tracked files and 29,009,905,286 bytes:
+`References/` alone accounts for 24,737,305,041 bytes, while tracked
+`Results/`, `UE5/`, and `Config/` account for 958,823,818, 773,885,530, and
+324,222,431 bytes respectively. A release needs an explicit B1 source-package
+allowlist and a separate hash-bound B2 evidence package; do not use a bare
+`git archive` or a whole-directory zip as the delivery artifact.
+
+The audit also found 115 tracked-but-missing report figures, all below
+`Docs/figures/第10章/`. They do not block loading the model package or Studio,
+but they do block a claim that the report-figure bundle is complete. Resolve
+that separate report-worktree state before publishing a final delivery archive.
