@@ -1,0 +1,27 @@
+{
+  "controller_id": "lqr_baseline",
+  "sampling_note": "本控制器采样间隔 0.01 s（5001 点），区别于其余 25 条的 0.002 s（25001 点）。该差异为控制器原生输出特征，原因未在运行配置中记录；仿真时长同为 50 s。",
+  "figures": [
+    "trajectory_xy.png",
+    "trajectory_3d.png",
+    "altitude_z.png",
+    "position_error.png",
+    "velocity.png",
+    "attitude.png",
+    "control_input.png"
+  ],
+  "count_definition_authority": "Config/control_platform/climbpath_baseline_count_definition.json",
+  "generator": "Scripts/syslab/plot_28_passed_detail_typlot.jl",
+  "g3_status": "pass",
+  "raw_csv": "Results\\control_platform\\phase2_full_48_climbpath\\lqr_baseline\\raw\\climbpath50s.csv",
+  "resolution": 600,
+  "key_metrics": {
+    "position_rmse_m": 0.20429428437790634,
+    "terminal_position_error_norm_m": 0.0027137995146974798
+  },
+  "schema": "mosim.typlot_detail.v1",
+  "sample_count": 5001,
+  "engine": "Syslab TyPlot",
+  "sample_interval_s": 0.01,
+  "duration_s": 50.0
+}
