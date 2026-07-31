@@ -24,6 +24,7 @@ Keep artifacts in declared project paths and run the targeted quality checker; u
 - Unrelated dirty paths, reference imports, and generated backlogs do not waive this gate.
 - Ignore only verified generated-cache classes or exact risks; do not use ignores to hide ordinary source, documents, scripts, configs, or small assets.
 - Treat a Windows reparse link whose target is outside the repository as a publication blocker. Do not follow, replace, or forge it in the Git index.
+- Treat repeated untracked directory segments such as `Scripts/X/Scripts/X/` as a path-cycle and ownership blocker. Do not commit, ignore, delete, or move the tree until its canonical source is identified.
 - Preserve third-party snapshot whitespace as evidence instead of rewriting it. A verified public-test-vector Gitleaks false positive may use only a path-and-pattern-scoped temporary allowlist.
 
 ## 5. Required Experiment Check
