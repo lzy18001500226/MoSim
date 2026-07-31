@@ -433,8 +433,9 @@ const OFFLINE_PROFILES = Dict(
         return clamp(16 + 18 * wrapped_lines, min_height, max_height)
     end
 
-    # Position root-level cards manually instead of relying on nested panel
-    # scrolling, which is inconsistent across MWORKS releases.
+    # Use fixed-size root-level views instead of nested panel scrolling. Some
+    # TyAppDesigner releases keep dynamically positioned child panels hidden;
+    # a single page view avoids that rendering-order dependency.
     function assistant_scroll_max_offset(content_height, viewport_height)
         return max(0, content_height - viewport_height)
     end
@@ -510,22 +511,9 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantChatPanel === nothing && return
         panels = app.assistant_message_panels()
         labels = app.assistant_message_labels()
-        for (panel, label) in zip(panels, labels)
-            panel.Visible = false
-            label.Visible = false
-        end
-        if isempty(app.AssistantLines)
-            app.AssistantChatContentHeight = app.AssistantChatPanel.Position[4]
-            app.AssistantChatScrollOffset = 0
-            app.AssistantChatAutoFollow = true
-            app.assistant_update_chat_navigation_controls()
-            return
-        end
-        panels = app.assistant_message_panels()
-        labels = app.assistant_message_labels()
         isempty(panels) && return
 
-        viewport_height = app.AssistantChatPanel.Position[4]
+        viewport_height = max(1, Int(app.AssistantChatPanel.Position[4]))
         previous_max_offset = app.assistant_scroll_max_offset(
             app.AssistantChatContentHeight,
             viewport_height,
@@ -533,53 +521,62 @@ const OFFLINE_PROFILES = Dict(
         follow_latest = app.AssistantChatAutoFollow ||
             app.AssistantChatScrollOffset >= previous_max_offset - 12
 
-        # First calculate the whole history, then apply the current viewport
-        # offset while placing only the cards that are actually visible.
-        y = 10
-        heights = Int[]
-        for entry in app.AssistantLines
-            height = app.assistant_message_height(entry)
-            push!(heights, height)
-            y += height + 10
+        # Render one bounded page. The other pre-created views stay hidden so
+        # no stale root-level card can occlude the current transcript.
+        for index in 2:length(panels)
+            panels[index].Visible = false
+            labels[index].Visible = false
         end
-        app.AssistantChatContentHeight = max(viewport_height, y)
-        max_offset = app.assistant_scroll_max_offset(app.AssistantChatContentHeight, viewport_height)
+        app.AssistantChatPanel.Visible = false
+        app.AssistantChatContentPanel.Visible = false
+
+        page_size = 4
+        page_count = max(1, cld(length(app.AssistantLines), page_size))
+        page_step = app.assistant_scroll_step(viewport_height)
+        app.AssistantChatContentHeight = viewport_height + (page_count - 1) * page_step
+        max_offset = app.assistant_scroll_max_offset(
+            app.AssistantChatContentHeight,
+            viewport_height,
+        )
         app.AssistantChatAutoFollow = follow_latest
         app.AssistantChatScrollOffset = follow_latest ? max_offset :
             clamp(app.AssistantChatScrollOffset, 0, max_offset)
 
-        y = 10
-        slot = 1
-        chat_x = app.AssistantChatPanel.Position[1]
-        chat_y = app.AssistantChatPanel.Position[2]
-        for (index, entry) in enumerate(app.AssistantLines)
-            class_name = app.assistant_message_class(entry)
-            height = heights[index]
-            left = class_name == "user" ? 316 : (class_name == "system" ? 96 : 16)
-            width = class_name == "user" ? 1028 : (class_name == "system" ? 1248 : 1328)
-            visible_y = y - app.AssistantChatScrollOffset
-            in_viewport = visible_y + height > 0 && visible_y < viewport_height
-            if !in_viewport
-                y += height + 10
-                continue
-            end
-            slot > length(panels) && break
-            panel = panels[slot]
-            label = labels[slot]
-            panel.Position = [chat_x + left, chat_y + visible_y, width, height]
-            label.Position = [12, 8, width - 24, height - 16]
-            label.Text = app.assistant_message_text_for_display(entry)
-            panel.BackgroundColor = class_name == "user" ? [0.89, 0.95, 0.95] :
-                (class_name == "system" ? [1.0, 0.97, 0.87] : [1.0, 1.0, 1.0])
-            panel.BorderColor = class_name == "user" ? [0.48, 0.72, 0.73] :
-                (class_name == "system" ? [0.82, 0.67, 0.34] : [0.70, 0.78, 0.81])
-            label.BackgroundColor = panel.BackgroundColor
-            label.FontColor = class_name == "system" ? [0.35, 0.27, 0.10] : [0.08, 0.16, 0.22]
-            label.Visible = true
-            panel.Visible = true
-            slot += 1
-            y += height + 10
-        end
+        page_index = clamp(
+            fld(app.AssistantChatScrollOffset, page_step) + 1,
+            1,
+            page_count,
+        )
+        first_index = isempty(app.AssistantLines) ? 1 : (page_index - 1) * page_size + 1
+        last_index = isempty(app.AssistantLines) ? 0 :
+            min(length(app.AssistantLines), first_index + page_size - 1)
+        page_entries = last_index == 0 ? String[] : app.AssistantLines[first_index:last_index]
+        page_text = isempty(page_entries) ?
+            "MoSim 助手\n\n等待问题。" :
+            join([app.assistant_message_text_for_display(entry) for entry in page_entries],
+                "\n\n" * repeat("-", 68) * "\n\n")
+
+        chat_x = Int(app.AssistantChatPanel.Position[1])
+        chat_y = Int(app.AssistantChatPanel.Position[2])
+        chat_width = max(100, Int(app.AssistantChatPanel.Position[3]) - 2)
+        chat_height = max(80, viewport_height - 2)
+        panel = panels[1]
+        label = labels[1]
+        panel.Position = [chat_x + 1, chat_y + 1, chat_width, chat_height]
+        label.Position = [12, 8, chat_width - 24, chat_height - 16]
+        label.Text = page_text
+        panel.BackgroundColor = [1.0, 1.0, 1.0]
+        panel.BorderColor = [0.70, 0.78, 0.81]
+        label.BackgroundColor = [1.0, 1.0, 1.0]
+        label.FontColor = [0.08, 0.16, 0.22]
+        label.Visible = true
+        panel.Visible = true
+
+        # Keep the old direct label as a paint fallback for releases that do
+        # not repaint a root-level panel after it is moved into view.
+        app.AssistantChatLabel.Position = [chat_x + 1, chat_y + 1, chat_width, chat_height]
+        app.AssistantChatLabel.Text = page_text
+        app.AssistantChatLabel.Visible = true
         app.assistant_update_chat_navigation_controls()
     end
 
