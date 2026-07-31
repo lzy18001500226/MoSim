@@ -403,27 +403,44 @@ class Px4ctrlBasicMission:
             return None
         return float(self.last_sunray_truth["z"] - self.home[2])
 
+    def observed_truth_takeoff_rise_m(self) -> float | None:
+        """Return the greatest physical rise observed in the display-only truth stream."""
+        if self.home is None:
+            return None
+        rises = [
+            float(row["z"]) - self.home[2]
+            for row in self.sunray_truth_rows
+            if math.isfinite(float(row.get("z", float("nan"))))
+        ]
+        return max(rises) if rises else None
+
     def wait_land_and_optionally_disarm(self) -> None:
-        end = time.time() + self.args.land_wait_s
+        end = self.now() + self.args.land_wait_s
         rate = rospy.Rate(10)
-        while not rospy.is_shutdown() and time.time() < end:
+        while not rospy.is_shutdown() and self.now() < end:
             if self.last_state is not None and not self.last_state.armed:
                 self.disarm_success = True
                 return
-            rate.sleep()
+            try:
+                rate.sleep()
+            except rospy.exceptions.ROSTimeMovedBackwardsException:
+                end = self.now() + self.args.land_wait_s
 
         if not self.args.force_disarm_after_land:
             return
 
-        end = time.time() + self.args.force_disarm_timeout_s
-        while not rospy.is_shutdown() and time.time() < end:
+        end = self.now() + self.args.force_disarm_timeout_s
+        while not rospy.is_shutdown() and self.now() < end:
             if self.last_state is not None and not self.last_state.armed:
                 self.disarm_success = True
                 return
             final_z_rel = self.final_z_rel_m()
             if final_z_rel is not None and final_z_rel <= self.args.force_disarm_max_z_rel_m:
                 break
-            rate.sleep()
+            try:
+                rate.sleep()
+            except rospy.exceptions.ROSTimeMovedBackwardsException:
+                end = self.now() + self.args.force_disarm_timeout_s
         else:
             return
 
@@ -433,7 +450,7 @@ class Px4ctrlBasicMission:
         except Exception:
             return
 
-        while not rospy.is_shutdown() and time.time() < end:
+        while not rospy.is_shutdown() and self.now() < end:
             if self.last_state is not None and not self.last_state.armed:
                 self.disarm_success = True
                 return
@@ -453,13 +470,16 @@ class Px4ctrlBasicMission:
     def wait_for_final_disarm_state(self, timeout_s: float) -> None:
         if timeout_s <= 0.0:
             return
-        end = time.time() + timeout_s
+        end = self.now() + timeout_s
         rate = rospy.Rate(10)
-        while not rospy.is_shutdown() and time.time() < end:
+        while not rospy.is_shutdown() and self.now() < end:
             if self.final_disarmed_ok():
                 self.disarm_success = True
                 return
-            rate.sleep()
+            try:
+                rate.sleep()
+            except rospy.exceptions.ROSTimeMovedBackwardsException:
+                end = self.now() + timeout_s
 
     def make_position_cmd(self, x: float, y: float, z: float, vx: float, vy: float, vz: float,
                           ax: float, ay: float, az: float, yaw: float, yaw_rate: float = 0.0,
@@ -767,7 +787,13 @@ class Px4ctrlBasicMission:
                     "last_sample": sample,
                 }
             )
-            rate.sleep()
+            try:
+                rate.sleep()
+            except rospy.exceptions.ROSTimeMovedBackwardsException:
+                # Gazebo may publish one startup /clock reset before the vehicle is armed.
+                # Restart the contiguous stability window; no setpoint has been sent here.
+                stable_samples = 0
+                rate = rospy.Rate(20)
         self.pre_takeoff_state_gate.update(
             {
                 "status": "blocked",
@@ -1087,6 +1113,11 @@ class Px4ctrlBasicMission:
                 True,
                 forced_reason="pre_takeoff_state_not_stable",
             )
+        # Publish the frozen, display-only mission target before takeoff.  A
+        # takeoff-hover-land reference is vertical in world coordinates, so it
+        # is rendered as a target marker by Ground Control rather than a fake
+        # lateral path.
+        self.publish_reference_path()
         self.phase = "takeoff"
         self.publish_takeoff_land(TakeoffLand.TAKEOFF, repeats=self.args.takeoff_cmd_repeats)
         takeoff_ok = self.wait_until_altitude(self.args.takeoff_timeout_s)
@@ -1476,23 +1507,40 @@ class Px4ctrlBasicMission:
         all_reference_metrics = tracking_metrics(errors)
         all_command_metrics = tracking_metrics(command_errors)
         if self.args.mission == "takeoff_hover_land":
-            gate = self.goal1_gate(takeoff_ok, static_odom_ok, forced_reason, steady_hover_metrics)
+            formal_gate = self.goal1_gate(takeoff_ok, static_odom_ok, forced_reason, steady_hover_metrics)
         elif self.args.mission in {"step_x", "step_y", "step_z"}:
-            gate = step_gate(step_metrics, steady_hover_metrics)
+            formal_gate = step_gate(step_metrics, steady_hover_metrics)
         elif self.args.gate_mode == "g7":
-            gate = self.g7_gate(takeoff_ok, static_odom_ok, forced_reason, trajectory_metrics, steady_hover_metrics)
+            formal_gate = self.g7_gate(takeoff_ok, static_odom_ok, forced_reason, trajectory_metrics, steady_hover_metrics)
         else:
-            gate = self.goal2_gate(takeoff_ok, static_odom_ok, forced_reason, steady_hover_metrics, trajectory_metrics)
+            formal_gate = self.goal2_gate(takeoff_ok, static_odom_ok, forced_reason, steady_hover_metrics, trajectory_metrics)
+        operational_lifecycle_gate = self.operational_lifecycle_gate(
+            takeoff_ok,
+            static_odom_ok,
+            forced_reason,
+        )
+        active_gate = (
+            operational_lifecycle_gate
+            if self.args.acceptance_mode == "operational_lifecycle"
+            else formal_gate
+        )
         result = {
             "schema": "mosim.sunray_ros1.px4ctrl_basic_mission.v1",
-            "status": gate["status"],
-            "reason": gate["reason"],
+            "status": active_gate["status"],
+            "reason": active_gate["reason"],
             "mission": self.args.mission,
-            "active_gate": gate,
-            "goal1_gate": gate if self.args.mission == "takeoff_hover_land" else None,
-            "goal2_gate": gate if self.args.gate_mode != "g7" and self.args.mission in {"figure8", "spiral"} else None,
-            "goal7_gate": gate if self.args.gate_mode == "g7" and self.args.mission in TRAJECTORY_MISSIONS else None,
-            "step_gate": gate if self.args.mission in {"step_x", "step_y", "step_z"} else None,
+            "acceptance_mode": self.args.acceptance_mode,
+            "acceptance_claim_boundary": (
+                "operational_lifecycle proves only localization readiness, arm, takeoff, landing, and disarm; "
+                "it does not replace the formal performance gate."
+            ),
+            "active_gate": active_gate,
+            "formal_performance_gate": formal_gate,
+            "operational_lifecycle_gate": operational_lifecycle_gate,
+            "goal1_gate": formal_gate if self.args.mission == "takeoff_hover_land" else None,
+            "goal2_gate": formal_gate if self.args.gate_mode != "g7" and self.args.mission in {"figure8", "spiral"} else None,
+            "goal7_gate": formal_gate if self.args.gate_mode == "g7" and self.args.mission in TRAJECTORY_MISSIONS else None,
+            "step_gate": formal_gate if self.args.mission in {"step_x", "step_y", "step_z"} else None,
             "static_odom_ready_before_takeoff": bool(static_odom_ok),
             "pre_takeoff_state_gate": self.pre_takeoff_state_gate,
             "takeoff_reached_altitude": bool(takeoff_ok),
@@ -1681,6 +1729,69 @@ class Px4ctrlBasicMission:
             "alignment_preview": alignment,
             "delta_error_preview": delta_error,
             "full_delta_error_preview_diagnostic_only": full_delta_error,
+        }
+
+    def operational_lifecycle_gate(
+        self,
+        takeoff_ok: bool,
+        static_odom_ok: bool,
+        forced_reason: str | None,
+    ) -> dict:
+        """Keep the video/demo lifecycle verdict distinct from performance evidence."""
+        blockers: list[str] = []
+        if forced_reason:
+            blockers.append(forced_reason)
+        if self.args.mission != "takeoff_hover_land":
+            blockers.append(f"operational_lifecycle_requires_takeoff_hover_land:not_{self.args.mission}")
+        if self.pre_takeoff_state_gate.get("status") != "passed":
+            blockers.append("pre_takeoff_state_not_ready")
+        if not static_odom_ok:
+            blockers.append("static_odom_not_ready_before_takeoff")
+        observed_takeoff_rise_m = self.observed_truth_takeoff_rise_m()
+        physical_takeoff_observed = (
+            observed_takeoff_rise_m is not None
+            and observed_takeoff_rise_m >= self.args.operational_min_takeoff_rise_m
+        )
+        if not physical_takeoff_observed:
+            if observed_takeoff_rise_m is None:
+                blockers.append("missing_truth_takeoff_evidence")
+            else:
+                blockers.append(
+                    "physical_takeoff_rise_below_min:"
+                    f"{observed_takeoff_rise_m:.6f}<{self.args.operational_min_takeoff_rise_m:.6f}"
+                )
+        if self.last_state is None:
+            blockers.append("missing_final_mavros_state")
+        elif self.last_state.armed:
+            blockers.append("final_state_still_armed")
+        if self.last_sunray_truth is None:
+            blockers.append("missing_final_truth")
+        elif self.home is None:
+            blockers.append("missing_home_truth")
+        else:
+            final_z_rel = self.last_sunray_truth["z"] - self.home[2]
+            if final_z_rel > self.args.max_final_z_rel_m:
+                blockers.append(f"final_z_rel_above_max:{final_z_rel}")
+
+        return {
+            "schema": "mosim.sunray_ros1.operational_lifecycle_gate.v1",
+            "status": "passed" if not blockers else "blocked",
+            "reason": None if not blockers else ";".join(blockers),
+            "blockers": blockers,
+            "scope": "Operational lifecycle only; not a controller-performance claim.",
+            "mission": self.args.mission,
+            "checks": {
+                "pre_takeoff_state_ready": self.pre_takeoff_state_gate.get("status") == "passed",
+                "static_odom_ready_before_takeoff": bool(static_odom_ok),
+                "formal_takeoff_reached_altitude": bool(takeoff_ok),
+                "physical_takeoff_observed": physical_takeoff_observed,
+                "physical_takeoff_rise_m": observed_takeoff_rise_m,
+                "minimum_physical_takeoff_rise_m": self.args.operational_min_takeoff_rise_m,
+                "final_state_disarmed": self.last_state is not None and not self.last_state.armed,
+                "final_truth_available": self.last_sunray_truth is not None,
+                "final_z_rel_m": self.final_z_rel_m(),
+                "max_final_z_rel_m": self.args.max_final_z_rel_m,
+            },
         }
 
     def goal2_gate(
@@ -1872,6 +1983,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--result-dir", required=True)
     parser.add_argument("--mission", choices=["takeoff_hover_land", "manual", "figure8", "spiral", "circle", "step_x", "step_y", "step_z"], default="takeoff_hover_land")
     parser.add_argument("--gate-mode", choices=["goal2", "g7"], default="goal2")
+    parser.add_argument(
+        "--acceptance-mode",
+        choices=["formal", "operational_lifecycle"],
+        default="formal",
+        help="Keep formal performance evidence separate from a reproducible operational lifecycle check.",
+    )
     parser.add_argument("--truth-model-name", default="uav1")
     parser.add_argument("--sunray-truth-topic", default="/uav1/sunray/gazebo_pose")
     parser.add_argument("--control-odom-topic", default="/uav1/mavros/local_position/odom")
@@ -1962,6 +2079,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-trajectory-xyz-max-m", type=float, default=0.15)
     parser.add_argument("--min-trajectory-samples", type=int, default=200)
     parser.add_argument("--max-final-z-rel-m", type=float, default=0.18)
+    parser.add_argument(
+        "--operational-min-takeoff-rise-m",
+        type=float,
+        default=0.5,
+        help="Minimum Gazebo truth rise for the operational lifecycle display gate only.",
+    )
     parser.add_argument("--min-alignment-samples", type=int, default=100)
     parser.add_argument("--min-hold-reference-samples", type=int, default=100)
     parser.add_argument("--max-truth-local-delta-xy-error-m", type=float, default=0.15)

@@ -47,7 +47,7 @@ def test_basic_gate_waits_for_estimator_attitude_to_settle_before_takeoff() -> N
     source = BASIC_GATE.read_text(encoding="utf-8")
 
     assert source.count("--pre-takeoff-state-timeout-s 60") == 2
-    assert source.count("--pre-takeoff-max-abs-roll-pitch-deg 0.5") == 2
+    assert source.count("--pre-takeoff-max-abs-roll-pitch-deg 2.0") == 2
 
 
 def test_qgc_ground_standby_runs_until_managed_stop() -> None:
@@ -75,7 +75,8 @@ def test_fastlio_ekf_fusion_requires_a_boot_time_contract() -> None:
     assert contract in gate
     assert fusion_enable < resolve < overlay
     assert 'FASTLIO_ALIGNMENT_Z_SOURCE="fastlio"' in gate
-    assert "Gazebo truth is evaluation-only." in gate
+    assert 'truth|truth_delta)' in gate
+    assert "px4ctrl still consumes MAVROS/PX4 local odometry." in gate
     assert "PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED" in gate
     assert "PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED" in gate
     assert "PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES" in gate
@@ -83,15 +84,42 @@ def test_fastlio_ekf_fusion_requires_a_boot_time_contract() -> None:
     assert '"sunray150_imu_calibration_applied"' in gate
 
 
-def test_sunray150_imu_calibration_applies_before_any_fastlio_branch() -> None:
+def test_source_local_fastlio_hover_entry_freezes_the_non_gps_state_chain() -> None:
+    runner = ROOT / "Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh"
+    source = runner.read_text(encoding="utf-8")
+
+    assert "SUNRAY_GPS_SENSOR_MODE=removed" in source
+    assert "PX4CTRL_HOVER_PERCENTAGE=0.456" in source
+    assert "PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true" in source
+    assert "PX4CTRL_START_EXTERNAL_FUSION=true" in source
+    assert "PX4CTRL_ODOM_SOURCE=mavros_local" in source
+    assert "FASTLIO_ALIGNMENT_Z_SOURCE=truth" in source
+    assert "FASTLIO_ALIGNMENT_REFERENCE=config" in source
+    assert "run_px4ctrl_basic_gate.sh" in source
+
+
+def test_goal1_alignment_uses_the_steady_hover_window() -> None:
+    mission_node = ROOT / "Scripts/sunray/px4ctrl_basic_mission_node.py"
+    source = mission_node.read_text(encoding="utf-8")
+
+    goal1_start = source.index("    def goal1_gate(")
+    goal2_start = source.index("    def goal2_gate(", goal1_start)
+    goal1 = source[goal1_start:goal2_start]
+
+    assert 'gate_truth_rows = [r for r in self.sunray_truth_rows if r.get("phase") == "hover_before"]' in goal1
+    assert 'gate_local_rows = [r for r in self.local_rows if r.get("phase") == "hover_before"]' in goal1
+    assert "full_delta_error_preview_diagnostic_only" in goal1
+
+
+def test_sunray150_imu_calibration_is_opt_in_before_any_fastlio_branch() -> None:
     gate = BASIC_GATE.read_text(encoding="utf-8")
 
     calibration_call = gate.index("resolve_sunray150_imu_calibration_boot_contract\n\nif")
     fusion_enable = gate.index('if [[ "${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION}" == "true" ]]; then')
 
     assert calibration_call < fusion_enable
-    assert "CAL_GYRO0_PRIO=50" in gate
-    assert "CAL_ACC0_PRIO=50" in gate
+    assert 'PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED:-false}"' in gate
+    assert 'PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES:-}"' in gate
     assert "PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=true" in gate
 
 

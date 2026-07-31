@@ -154,7 +154,11 @@ def test_boot_gate_freezes_nested_gps_without_flight() -> None:
     assert "mavros_runtime_config_resolution.json" in basic_gate
     assert "rospack find sunray_simulator" in basic_gate
     assert "apply_project_mavros_plugin_profile_before_node" in basic_gate
-    assert "rosparam load \"${profile_path}\" /uav1/mavros" in basic_gate
+    assert "application_mode=launch_loaded" in basic_gate
+    assert "never mutates MAVROS parameters" in basic_gate
+    assert 'MAVROS_LAUNCH_PARAM_TIMEOUT_S="${MAVROS_LAUNCH_PARAM_TIMEOUT_S:-30}"' in basic_gate
+    assert "SECONDS + MAVROS_LAUNCH_PARAM_TIMEOUT_S" in basic_gate
+    assert "rosparam load \"${profile_path}\" /uav1/mavros" not in basic_gate
     assert "mavros_plugin_profile_apply.txt" in basic_gate
     assert "capture_mavros_plugin_params_before_node" in basic_gate
     assert 'rospy.signal_shutdown("connected")' not in basic_gate

@@ -7,6 +7,7 @@ PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 PX4_ROS1_GUARD_UXRCE_DDS="${PX4_ROS1_GUARD_UXRCE_DDS:-true}"
 PX4_ROS1_OVERLAY_PKG=""
 PX4_GCS_REMOTE_HOST="${PX4_GCS_REMOTE_HOST:-auto}"
+PX4_GCS_REMOTE_PORT="${PX4_GCS_REMOTE_PORT:-14550}"
 PX4CTRL_BOOT_PARAM_OVERRIDES="${PX4CTRL_BOOT_PARAM_OVERRIDES:-}"
 MISSION="${1:-${MISSION:-takeoff_hover_land}}"
 RUN_ID="${RUN_ID:-sunray_ros1_px4ctrl_${MISSION}_$(date +%Y%m%d_%H%M%S)}"
@@ -48,6 +49,8 @@ PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.37}"
 PX4CTRL_THRUST_ESTIMATE_ENABLE="${PX4CTRL_THRUST_ESTIMATE_ENABLE:-false}"
 PX4CTRL_KP_XY="${PX4CTRL_KP_XY:-11}"
 PX4CTRL_KP_Z="${PX4CTRL_KP_Z:-4}"
+# calculateOriginalControl uses Kv * (velocity_ref - velocity_mea); these
+# defaults therefore must be positive damping gains.
 PX4CTRL_KV_XY="${PX4CTRL_KV_XY:-6.5}"
 PX4CTRL_KV_Z="${PX4CTRL_KV_Z:-4}"
 PX4CTRL_KI_XY="${PX4CTRL_KI_XY:-0.0}"
@@ -113,6 +116,8 @@ PX4CTRL_ODOM_VELOCITY_FRAME="${PX4CTRL_ODOM_VELOCITY_FRAME:-body}"
 PX4CTRL_TAKEOFF_HEIGHT="${PX4CTRL_TAKEOFF_HEIGHT:-1.0}"
 PX4CTRL_TAKEOFF_LAND_SPEED="${PX4CTRL_TAKEOFF_LAND_SPEED:-0.12}"
 PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE:-original}"
+PX4CTRL_EXPECTED_BUILD_BACKEND="${PX4CTRL_EXPECTED_BUILD_BACKEND:-}"
+PX4CTRL_BUILD_BACKEND_EFFECTIVE="not_checked"
 PX4CTRL_ATTITUDE_OUTPUT_TOPIC="${PX4CTRL_ATTITUDE_OUTPUT_TOPIC:-/uav1/mavros/setpoint_raw/attitude}"
 PX4CTRL_PRE_MISSION_OWNER_TOPIC="${PX4CTRL_PRE_MISSION_OWNER_TOPIC:-}"
 PX4CTRL_PRE_MISSION_OWNER_STATE="${PX4CTRL_PRE_MISSION_OWNER_STATE:-ACTIVE}"
@@ -126,8 +131,8 @@ PX4CTRL_ODOM_TOPIC="${PX4CTRL_ODOM_TOPIC:-/uav1/mavros/local_position/odom}"
 PX4CTRL_MISSION_EXTRA_ARGS="${PX4CTRL_MISSION_EXTRA_ARGS:-}"
 PX4CTRL_MANUAL_INPUT_FILE="${PX4CTRL_MANUAL_INPUT_FILE:-${PROJECT_ROOT}/Results/ui_platform/manual_control/manual_control.json}"
 PX4CTRL_MANUAL_RUN_ID="${PX4CTRL_MANUAL_RUN_ID:-${RUN_ID}}"
-PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS="${PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS:---initial-hover-s 20 --steady-hover-tail-s 8 --land-wait-s 25 --force-disarm-after-land --force-disarm-timeout-s 18 --command-x-bias-m -0.006 --command-y-bias-m -0.004 --command-z-bias-m 0.0 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 60 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
-PX4CTRL_TRAJECTORY_DEFAULT_ARGS="${PX4CTRL_TRAJECTORY_DEFAULT_ARGS:---force-disarm-after-land --force-disarm-timeout-s 18 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 60 --pre-takeoff-max-abs-roll-pitch-deg 0.5}"
+PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS="${PX4CTRL_TAKEOFF_HOVER_DEFAULT_ARGS:---initial-hover-s 20 --steady-hover-tail-s 8 --land-wait-s 25 --force-disarm-after-land --force-disarm-timeout-s 18 --command-x-bias-m -0.006 --command-y-bias-m -0.004 --command-z-bias-m 0.0 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 60 --pre-takeoff-max-abs-roll-pitch-deg 2.0}"
+PX4CTRL_TRAJECTORY_DEFAULT_ARGS="${PX4CTRL_TRAJECTORY_DEFAULT_ARGS:---force-disarm-after-land --force-disarm-timeout-s 18 --pre-takeoff-state-stable-s 3.0 --pre-takeoff-state-timeout-s 60 --pre-takeoff-max-abs-roll-pitch-deg 2.0}"
 PX4CTRL_SKIP_MISSION="${PX4CTRL_SKIP_MISSION:-false}"
 PX4CTRL_START_CONTROLLER="${PX4CTRL_START_CONTROLLER:-true}"
 PX4CTRL_SET_EKF_GLOBAL_ORIGIN="${PX4CTRL_SET_EKF_GLOBAL_ORIGIN:-false}"
@@ -141,8 +146,11 @@ PX4CTRL_PARAM_DUMP_TIMEOUT_S="${PX4CTRL_PARAM_DUMP_TIMEOUT_S:-45}"
 PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}"
 PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}"
 PX4CTRL_EXTRA_PARAM_OVERRIDES="${PX4CTRL_EXTRA_PARAM_OVERRIDES:-}"
-PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED:-true}"
-PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES:-CAL_GYRO0_PRIO=50,CAL_GYRO0_XOFF=-0.001141657936386764,CAL_GYRO0_YOFF=-0.004853107035160065,CAL_GYRO0_ZOFF=-0.00022918041213415563,CAL_ACC0_PRIO=50,CAL_ACC0_XOFF=-0.19448795914649963,CAL_ACC0_YOFF=0.1512581706047058,CAL_ACC0_ZOFF=-0.0606503039598465}"
+# Gazebo samples IMU turn-on bias at every PX4 boot. A saved offset is only
+# valid for the run that measured it, so calibration remains opt-in and must
+# be supplied by that run's caller.
+PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED:-false}"
+PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES="${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES:-}"
 PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=false
 PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT="EKF2_GPS_CTRL=0,EKF2_BARO_CTRL=0,EKF2_RNG_CTRL=0,EKF2_OF_CTRL=0,EKF2_EV_CTRL=15,EKF2_HGT_REF=3,EKF2_EV_DELAY=0,EKF2_EV_NOISE_MD=1,EKF2_EVP_NOISE=0.03,EKF2_EVA_NOISE=0.03"
 PX4CTRL_FASTLIO_BOOT_PARAM_CONTRACT_APPLIED=false
@@ -171,6 +179,8 @@ REVIEW_START_FASTLIO_ALIGNMENT="${REVIEW_START_FASTLIO_ALIGNMENT:-false}"
 FASTLIO_WS="${FASTLIO_WS:-${LOCAL_ROS1_WS}}"
 FASTLIO_MODE="${FASTLIO_MODE:-livox_custom}"
 FASTLIO_SCAN_RATE_HZ="${FASTLIO_SCAN_RATE_HZ:-20.0}"
+FASTLIO_FILTER_SIZE_SURF="${FASTLIO_FILTER_SIZE_SURF:-0.02}"
+FASTLIO_FILTER_SIZE_MAP="${FASTLIO_FILTER_SIZE_MAP:-0.02}"
 FASTLIO_SENSOR_START_TIMEOUT_S="${FASTLIO_SENSOR_START_TIMEOUT_S:-120}"
 FASTLIO_START_TIMEOUT_S="${FASTLIO_START_TIMEOUT_S:-90}"
 FASTLIO_REVIEW_FILTER_MIN_Z="${FASTLIO_REVIEW_FILTER_MIN_Z:-0.05}"
@@ -385,13 +395,27 @@ REVIEW_TRAJECTORY_RVIZ_CONFIG="${REVIEW_TRAJECTORY_RVIZ_CONFIG:-${PROJECT_ROOT}/
 REVIEW_CLOUD_RVIZ_CONFIG="${REVIEW_CLOUD_RVIZ_CONFIG:-${PROJECT_ROOT}/Config/rviz/sunray_ros1_fastlio_accumulated_map_review.rviz}"
 
 case "${PX4CTRL_CORE_PROFILE}" in
-  original|mworks_generated|generated_c|mworks_generated_c|official_pid|cascade_pid|gain_scheduled_pid|fuzzy_pid|neural_pid|anti_windup|feedforward_profile|lqr_baseline|lqi_baseline|so3_attitude|backstepping_baseline|lqg|feedback_linearization|passivity_based_control|adaptive_backstepping|pole_placement_luenberger|mrac|ndi|fopid|h2_state_feedback|integral_smc|terminal_smc|nonsingular_terminal_smc|super_twisting_smc|adaptive_smc|fuzzy_smc|linear_mpc|robust_mpc|adaptive_mpc|tube_mpc|explicit_gain_scheduled_mpc|ilqr|mppi|l1_adaptive|awff|complete_adrc|standardized_indi|parameter_scheduling|ilc|trained_neural_residual|rl_gain_scheduler|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|l1_awff_minimal|hinf_hover_wrench|dfbc_high_order_attitude|dfbc_high_order_bodyrate|dfbc_smooth_robust_attitude|dfbc_smooth_robust_bodyrate|dfbc_dob_eso_disabled|dfbc_dob_eso|safety_filter|cbf|reference_governor|geofence|emergency_stop|return_and_land|failsafe_state_machine|fault_allocation)
+  original|graphical_c99|mworks_generated|generated_c|mworks_generated_c|official_pid|cascade_pid|gain_scheduled_pid|fuzzy_pid|neural_pid|anti_windup|feedforward_profile|lqr_baseline|lqi_baseline|so3_attitude|backstepping_baseline|lqg|feedback_linearization|passivity_based_control|adaptive_backstepping|pole_placement_luenberger|mrac|ndi|fopid|h2_state_feedback|integral_smc|terminal_smc|nonsingular_terminal_smc|super_twisting_smc|adaptive_smc|fuzzy_smc|linear_mpc|robust_mpc|adaptive_mpc|tube_mpc|explicit_gain_scheduled_mpc|ilqr|mppi|l1_adaptive|awff|complete_adrc|standardized_indi|parameter_scheduling|ilc|trained_neural_residual|rl_gain_scheduler|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|l1_awff_minimal|hinf_hover_wrench|dfbc_high_order_attitude|dfbc_high_order_bodyrate|dfbc_smooth_robust_attitude|dfbc_smooth_robust_bodyrate|dfbc_dob_eso_disabled|dfbc_dob_eso|safety_filter|cbf|reference_governor|geofence|emergency_stop|return_and_land|failsafe_state_machine|fault_allocation)
     ;;
   *)
     echo "Unsupported PX4CTRL_CORE_PROFILE=${PX4CTRL_CORE_PROFILE}" >&2
     exit 2
     ;;
 esac
+
+case "${PX4CTRL_EXPECTED_BUILD_BACKEND}" in
+  ""|legacy_px4ctrl|graphical_px4ctrl_c99)
+    ;;
+  *)
+    echo "Unsupported PX4CTRL_EXPECTED_BUILD_BACKEND=${PX4CTRL_EXPECTED_BUILD_BACKEND}" >&2
+    exit 2
+    ;;
+esac
+if [[ "${PX4CTRL_CORE_PROFILE}" == "graphical_c99" &&
+      "${PX4CTRL_EXPECTED_BUILD_BACKEND}" != "graphical_px4ctrl_c99" ]]; then
+  echo "graphical_c99 requires PX4CTRL_EXPECTED_BUILD_BACKEND=graphical_px4ctrl_c99" >&2
+  exit 2
+fi
 
 case "${PX4CTRL_ODOM_SOURCE}" in
   mavros_local)
@@ -569,6 +593,11 @@ PY
     echo "Unable to resolve Windows QGC host IPv4 address: ${gcs_remote_host}" >&2
     exit 2
   fi
+  if [[ ! "${PX4_GCS_REMOTE_PORT}" =~ ^[0-9]+$ ]] ||
+     (( 10#${PX4_GCS_REMOTE_PORT} < 1 || 10#${PX4_GCS_REMOTE_PORT} > 65535 )); then
+    echo "Invalid PX4 GCS remote UDP port: ${PX4_GCS_REMOTE_PORT}" >&2
+    exit 2
+  fi
 
   python3 - "${overlay_rcs}" <<'PY'
 import sys
@@ -589,15 +618,16 @@ if "# MoSim ROS1 guard: force rcS success" not in text:
 path.write_text(text, encoding="utf-8")
 PY
 
-  python3 - "${overlay_mavlink}" "${gcs_remote_host}" <<'PY'
+  python3 - "${overlay_mavlink}" "${gcs_remote_host}" "${PX4_GCS_REMOTE_PORT}" <<'PY'
 import sys
 from pathlib import Path
 
 path = Path(sys.argv[1])
 host = sys.argv[2]
+port = sys.argv[3]
 text = path.read_text(encoding="utf-8")
 old = "mavlink start -x -u $udp_gcs_port_local -r 4000000 -f"
-new = f"{old} -t {host}"
+new = f"{old} -t {host} -o {port}"
 if old not in text:
     raise SystemExit(f"GCS mavlink start line not found in {path}")
 path.write_text(text.replace(old, new, 1), encoding="utf-8")
@@ -617,6 +647,7 @@ PY
     echo "PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED=${PX4CTRL_SUNRAY150_IMU_CALIBRATION_APPLIED}"
     echo "PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES=${PX4CTRL_SUNRAY150_IMU_CALIBRATION_OVERRIDES:-none}"
     echo "gcs_remote_host=${gcs_remote_host}"
+    echo "gcs_remote_port=${PX4_GCS_REMOTE_PORT}"
     grep -n "uxrce_dds_client start" "${overlay_rcs}" || true
     grep -n "continuing for MoSim ROS1/MAVROS gate" "${overlay_rcs}" || true
     tail -5 "${overlay_rcs}" || true
@@ -654,6 +685,36 @@ PY
   export GAZEBO_RESOURCE_PATH="${SUNRAY_WS}/simulation/sunray_simulator:${GAZEBO_RESOURCE_PATH:-}"
   export GAZEBO_PLUGIN_PATH="${LOCAL_ROS1_WS}/devel/lib:${GAZEBO_PLUGIN_PATH:-}"
   export LD_LIBRARY_PATH="${LOCAL_ROS1_WS}/devel/lib:/opt/ros/noetic/lib:${LD_LIBRARY_PATH:-}"
+}
+
+capture_px4ctrl_build_backend() {
+  local cache_path="${LOCAL_ROS1_WS}/build/CMakeCache.txt"
+  local build_backend=""
+  if [[ ! -f "${cache_path}" ]]; then
+    echo "px4ctrl CMake cache is missing: ${cache_path}" >&2
+    return 1
+  fi
+  build_backend="$(sed -n 's/^MOSIM_PX4CTRL_GENERATED_BACKEND:STRING=//p' "${cache_path}" | tail -n 1)"
+  if [[ -z "${build_backend}" ]]; then
+    echo "MOSIM_PX4CTRL_GENERATED_BACKEND is absent from ${cache_path}" >&2
+    return 1
+  fi
+  PX4CTRL_BUILD_BACKEND_EFFECTIVE="${build_backend}"
+  {
+    echo "PX4CTRL_BUILD_BACKEND=${build_backend}"
+    echo "PX4CTRL_CORE_PROFILE=${PX4CTRL_CORE_PROFILE}"
+    echo "PX4CTRL_EXPECTED_BUILD_BACKEND=${PX4CTRL_EXPECTED_BUILD_BACKEND:-none}"
+    echo "CMAKE_CACHE=${cache_path}"
+    if [[ "${build_backend}" == "graphical_px4ctrl_c99" ]]; then
+      sha256sum "${PROJECT_ROOT}/src/control/codegen/px4ctrl/codegen_manifest.json"
+      sha256sum "${PROJECT_ROOT}/src/control/codegen/px4ctrl/px4ctrl_graphical_generated_shared.c"
+    fi
+  } > "${RESULT_DIR}/px4ctrl_build_backend.txt"
+  if [[ -n "${PX4CTRL_EXPECTED_BUILD_BACKEND}" &&
+        "${build_backend}" != "${PX4CTRL_EXPECTED_BUILD_BACKEND}" ]]; then
+    echo "px4ctrl build backend mismatch: expected ${PX4CTRL_EXPECTED_BUILD_BACKEND}, got ${build_backend}" >&2
+    return 1
+  fi
 }
 
 capture_mavros_runtime_config_resolution() {
@@ -871,6 +932,8 @@ start_fastlio_stack() {
   fi
 
   roslaunch fast_lio "${fastlio_launch}" rviz:=false \
+    filter_size_surf:="${FASTLIO_FILTER_SIZE_SURF}" \
+    filter_size_map:="${FASTLIO_FILTER_SIZE_MAP}" \
     > "${RESULT_DIR}/fastlio_mapping.log" 2>&1 &
   PIDS+=("$!")
 
@@ -1018,6 +1081,9 @@ mkdir -p "${MOSIM_RUNTIME_ROS_HOME}"
 export ROS_HOME="${MOSIM_RUNTIME_ROS_HOME}"
 prepare_px4_ros1_runtime_overlay
 source_env
+if ! capture_px4ctrl_build_backend; then
+  exit 2
+fi
 export SUNRAY_MID360_PLUGIN_DOWNSAMPLE
 export SUNRAY_LIVOX_PLUGIN_FILENAME
 export SUNRAY_MID360_CSV_FILE_NAME
@@ -1738,7 +1804,8 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
   "result_dir": "${RESULT_DIR}",
   "controller": "src/control/runtime_adapters/px4ctrl",
   "controller_core_profile": "${PX4CTRL_CORE_PROFILE}",
-  "claim_boundary": "Fast-Drone-250 px4ctrl ROS wrapper through Sunray ROS1 PX4/Gazebo plant; PX4CTRL_CORE_PROFILE selects original LinearControl, MWORKS generated px4ctrl_core, or G9 ATTITUDE_THRUST controller backend; no Sunray uav_control_node",
+  "controller_build_backend": "${PX4CTRL_BUILD_BACKEND_EFFECTIVE}",
+  "claim_boundary": "Fast-Drone-250 px4ctrl ROS wrapper through Sunray ROS1 PX4/Gazebo plant; PX4CTRL_CORE_PROFILE selects original LinearControl, the MWORKS graphical C99 outer loop, MWORKS generated px4ctrl_core, or a declared ATTITUDE_THRUST controller backend; no Sunray uav_control_node",
   "gazebo": {
     "launch_file": "${SUNRAY_GAZEBO_LAUNCH_FILE}",
     "world_file": "$(printf '%s' "${WORLD_FILE}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read())[1:-1])')",
@@ -1887,6 +1954,8 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "fastlio_ws": "${FASTLIO_WS}",
     "fastlio_mode": "${FASTLIO_MODE}",
     "fastlio_scan_rate_hz": ${FASTLIO_SCAN_RATE_HZ},
+    "fastlio_filter_size_surf_m": ${FASTLIO_FILTER_SIZE_SURF},
+    "fastlio_filter_size_map_m": ${FASTLIO_FILTER_SIZE_MAP},
     "path_frame": "${PX4CTRL_PATH_FRAME}",
     "fastlio_axes_marker_topic": "${FASTLIO_AXES_MARKER_TOPIC}",
     "fastlio_axes_path_topic": "${FASTLIO_AXES_PATH_TOPIC}",

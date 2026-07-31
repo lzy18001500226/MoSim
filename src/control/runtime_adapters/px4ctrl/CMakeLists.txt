@@ -24,6 +24,8 @@ catkin_package(
 )
 
 get_filename_component(MOSIM_PX4CTRL_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}" REALPATH)
+get_filename_component(MOSIM_PX4CTRL_CONTROL_SOURCE_DIR
+  "${MOSIM_PX4CTRL_SOURCE_DIR}/../.." REALPATH)
 set(MOSIM_PX4CTRL_GENERATED_BACKEND "legacy_px4ctrl"
   CACHE STRING "MoSim generated controller backend; see the selection chain below")
 set(MOSIM_PX4CTRL_GENERATED_ROOT
@@ -35,6 +37,9 @@ set(MOSIM_PX4CTRL_GENERATED_ROOT
 set(MOSIM_PX4CTRL_GENERATED_DIR
   "${MOSIM_PX4CTRL_GENERATED_ROOT}/legacy_px4ctrl"
   CACHE PATH "Project-local legacy px4ctrl generated source directory" FORCE)
+set(MOSIM_PX4CTRL_GRAPHICAL_C99_SOURCE_DIR
+  "${MOSIM_PX4CTRL_CONTROL_SOURCE_DIR}/codegen/px4ctrl"
+  CACHE PATH "Project-local MWORKS graphical px4ctrl C99 export directory" FORCE)
 set(MOSIM_PX4CTRL_G9_FAMILY_GENERATED_DIR
   "${MOSIM_PX4CTRL_GENERATED_ROOT}/g9_family"
   CACHE PATH "Project-local G9 controller-family generated source directory" FORCE)
@@ -102,6 +107,10 @@ if(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "legacy_px4ctrl")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_GENERATED_DIR}")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "PX4CTRL_Core_CFunction_Sysblock")
   add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_LEGACY=1)
+elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "graphical_px4ctrl_c99")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_GRAPHICAL_C99_SOURCE_DIR}")
+  set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "PX4CTRL_Original_OuterLoop_Graphical_Sysblock")
+  add_definitions(-DMOSIM_PX4CTRL_GENERATED_BACKEND_GRAPHICAL_PX4CTRL_C99=1)
 elseif(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "g9_family")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR "${MOSIM_PX4CTRL_G9_FAMILY_GENERATED_DIR}")
   set(MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL "G9_Family_CFunction_Sysblock")
@@ -162,7 +171,11 @@ else()
   message(FATAL_ERROR "Unsupported MOSIM_PX4CTRL_GENERATED_BACKEND=${MOSIM_PX4CTRL_GENERATED_BACKEND}")
 endif()
 
-mosim_require_path_within("px4ctrl active generated source" "${MOSIM_PX4CTRL_GENERATED_ROOT}" "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}")
+if(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "graphical_px4ctrl_c99")
+  mosim_require_path_within("px4ctrl graphical C99 source" "${MOSIM_PX4CTRL_CONTROL_SOURCE_DIR}" "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}")
+else()
+  mosim_require_path_within("px4ctrl active generated source" "${MOSIM_PX4CTRL_GENERATED_ROOT}" "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}")
+endif()
 mosim_require_path_within("px4ctrl core source" "${MOSIM_PX4CTRL_GENERATED_ROOT}" "${MOSIM_PX4CTRL_GOLDEN_SLICE_DIR}")
 
 message(STATUS "MoSim px4ctrl generated backend: ${MOSIM_PX4CTRL_GENERATED_BACKEND}")
@@ -172,8 +185,23 @@ set(MOSIM_PX4CTRL_REQUIRED_GENERATED_FILES
   "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}.c"
   "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}.h"
   "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_data.c"
-  "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_private.h"
-  "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c")
+  "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_private.h")
+if(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "graphical_px4ctrl_c99")
+  list(APPEND MOSIM_PX4CTRL_REQUIRED_GENERATED_FILES
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_extern_include.h"
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/mwb_runtime.h"
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/mwb_types.h"
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/px4ctrl_graphical_generated_shared.c"
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/px4ctrl_graphical_generated_shared.h"
+    "${MOSIM_PX4CTRL_GENERATED_DIR}/PX4CTRL_Core_CFunction_Sysblock.c"
+    "${MOSIM_PX4CTRL_GENERATED_DIR}/PX4CTRL_Core_CFunction_Sysblock.h"
+    "${MOSIM_PX4CTRL_GENERATED_DIR}/PX4CTRL_Core_CFunction_Sysblock_data.c"
+    "${MOSIM_PX4CTRL_GENERATED_DIR}/PX4CTRL_Core_CFunction_Sysblock_private.h"
+    "${MOSIM_PX4CTRL_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c")
+else()
+  list(APPEND MOSIM_PX4CTRL_REQUIRED_GENERATED_FILES
+    "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c")
+endif()
 if(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "legacy_px4ctrl")
   list(APPEND MOSIM_PX4CTRL_REQUIRED_GENERATED_FILES
     "${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_extern_include.h"
@@ -199,20 +227,38 @@ include_directories(
   ${MOSIM_PX4CTRL_GOLDEN_SLICE_DIR}
   ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}
   ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/extern_inc
+  ${MOSIM_PX4CTRL_GENERATED_DIR}
+  ${MOSIM_PX4CTRL_GENERATED_DIR}/extern_inc
   include/${PROJECT_NAME}
   include
 )
 
-add_executable(px4ctrl_node
+set(MOSIM_PX4CTRL_NODE_SOURCES
   src/px4ctrl_node.cpp
   src/PX4CtrlFSM.cpp
   src/PX4CtrlParam.cpp
   src/controller.cpp
   src/input.cpp
-  ${MOSIM_PX4CTRL_GOLDEN_SLICE_DIR}/px4ctrl_core.cpp
-  ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}.c
-  ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_data.c
-  ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c
+  ${MOSIM_PX4CTRL_GOLDEN_SLICE_DIR}/px4ctrl_core.cpp)
+
+if(MOSIM_PX4CTRL_GENERATED_BACKEND STREQUAL "graphical_px4ctrl_c99")
+  # The graphical export owns the active C99 control path.  The renamed
+  # wrapper avoids Init/Step symbol collisions with the legacy compatibility
+  # source retained for inactive historical CFunction modes.
+  list(APPEND MOSIM_PX4CTRL_NODE_SOURCES
+    ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/px4ctrl_graphical_generated_shared.c
+    ${MOSIM_PX4CTRL_GENERATED_DIR}/PX4CTRL_Core_CFunction_Sysblock.c
+    ${MOSIM_PX4CTRL_GENERATED_DIR}/PX4CTRL_Core_CFunction_Sysblock_data.c
+    ${MOSIM_PX4CTRL_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c)
+else()
+  list(APPEND MOSIM_PX4CTRL_NODE_SOURCES
+    ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}.c
+    ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/${MOSIM_PX4CTRL_ACTIVE_GENERATED_MODEL}_data.c
+    ${MOSIM_PX4CTRL_ACTIVE_GENERATED_DIR}/extern_inc/momodel_extern_ince1.c)
+endif()
+
+add_executable(px4ctrl_node
+  ${MOSIM_PX4CTRL_NODE_SOURCES}
 )
 
 add_dependencies(px4ctrl_node ${catkin_EXPORTED_TARGETS})
@@ -220,6 +266,9 @@ add_dependencies(px4ctrl_node ${catkin_EXPORTED_TARGETS})
 target_link_libraries(px4ctrl_node
   ${catkin_LIBRARIES}
 )
+if(UNIX)
+  target_link_libraries(px4ctrl_node m)
+endif()
 
 catkin_install_python(PROGRAMS thrust_calibrate_scrips/thrust_calibrate.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

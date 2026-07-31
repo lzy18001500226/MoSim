@@ -142,15 +142,25 @@ FAST-LIO entry instead. It freezes `SUNRAY_GPS_SENSOR_MODE=removed`,
 truth for the simulated altitude channel, then enters PX4 external vision.
 `px4ctrl` still reads only `/uav1/mavros/local_position/odom`.
 
+For the MWORKS graphical-C99 deployment gate, rebuild the controller with
+`graphical_px4ctrl_c99` and launch the corresponding runtime profile. The
+adapter consumes the exported desired acceleration and attitude commands, while
+the recorded Gazebo `0.456` hover-thrust map remains the sole normalized-thrust
+calibration. Do not send the graphical model's fixed `0.37` normalization
+directly to MAVROS.
+
 ```powershell
-wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile controller --build --verify --jobs 1 --px4ctrl-backend graphical_px4ctrl_c99'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && PX4CTRL_CORE_PROFILE=graphical_c99 bash Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh'
 ```
 
 Classify this gate from `PX4CTRL_BASIC_MISSION_METRICS.json`, not from an
 empty mission stdout file. This entry accepts the completed
 arm/takeoff/hover/land/disarm lifecycle as the source-local reproducibility
-criterion. Hover metrics remain recorded for review but do not block this
-functional baseline.
+criterion. `px4ctrl_build_backend.txt` must report
+`PX4CTRL_BUILD_BACKEND=graphical_px4ctrl_c99`, and `px4ctrl.log` must contain
+`runtime_loaded_symbol=MosimPx4ctrlGeneratedGraphStepScalar`. Hover metrics
+remain recorded for review but do not block this functional baseline.
 
 ### Source-local quick reproduction
 
@@ -162,9 +172,9 @@ wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Sc
 wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile foundation --build --verify --jobs 1'
 wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile flight_adapter --build --verify --jobs 1'
 wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile perception --build --verify --jobs 1'
-wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile controller --build --verify --jobs 1'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile controller --build --verify --jobs 1 --px4ctrl-backend graphical_px4ctrl_c99'
 wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/check_sunray_ros1_runtime_preflight.sh'
-wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && PX4CTRL_CORE_PROFILE=graphical_c99 bash Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh'
 ```
 
 The last command creates one timestamped directory under

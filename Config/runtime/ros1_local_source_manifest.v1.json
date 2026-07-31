@@ -63,7 +63,7 @@
     },
     "controller": {
       "extends": "foundation",
-      "purpose": "Build px4ctrl against the versioned legacy generated-controller source copied into its package-local generated directory.",
+      "purpose": "Build px4ctrl from project-local sources. The default preserves the legacy backend; --px4ctrl-backend graphical_px4ctrl_c99 selects the MWORKS graphical C99 outer-loop export.",
       "links": [
         {
           "workspace_path": "Utils/cmake_utils",
@@ -147,10 +147,11 @@
       "source_path": "src/control/runtime_adapters/px4ctrl",
       "role": "ROS1 position controller runtime adapter",
       "activation_stage": "controller",
-      "generated_backend": "legacy_px4ctrl",
-      "generated_source_path": "src/control/runtime_adapters/px4ctrl/generated/legacy_px4ctrl",
+      "generated_backend": "graphical_px4ctrl_c99",
+      "generated_source_path": "src/control/codegen/px4ctrl",
       "generated_core_path": "src/control/runtime_adapters/px4ctrl/generated/golden_slice",
-      "generated_source_policy": "CMake accepts only package-local generated paths. Other controller-family artifacts remain intentionally unmigrated and fail explicitly when selected."
+      "legacy_compatibility_source_path": "src/control/runtime_adapters/px4ctrl/generated/legacy_px4ctrl",
+      "generated_source_policy": "CMake accepts the project-local graphical C99 export or the package-local legacy fallback only. Other controller-family artifacts remain intentionally unmigrated and fail explicitly when selected."
     },
     {
       "id": "px4_autopilot",

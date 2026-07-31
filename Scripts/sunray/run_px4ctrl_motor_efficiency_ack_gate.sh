@@ -12,6 +12,23 @@ EFFECTIVENESS="${MOTOR_EFFICIENCY_EFFECTIVENESS:-0.85}"
 DURATION_S="${MOTOR_EFFICIENCY_DURATION_S:-4}"
 MINIMUM_ALTITUDE_M="${MOTOR_EFFICIENCY_MINIMUM_ALTITUDE_M:-0.95}"
 AIRBORNE_TIMEOUT_S="${MOTOR_EFFICIENCY_AIRBORNE_TIMEOUT_S:-90}"
+OPERATOR_RUN_ID="${MOSIM_OPERATOR_RUN_ID:-}"
+OPERATOR_RUN_DIR="${MOSIM_OPERATOR_RUN_DIR:-}"
+OPERATOR_RUN_MANIFEST="${MOSIM_OPERATOR_RUN_MANIFEST:-}"
+OPERATOR_RUN_ENABLED=false
+QGC_SIDECAR_PID=""
+
+if [[ -n "${OPERATOR_RUN_ID}" || -n "${OPERATOR_RUN_DIR}" || -n "${OPERATOR_RUN_MANIFEST}" ]]; then
+  if [[ -z "${OPERATOR_RUN_ID}" || -z "${OPERATOR_RUN_DIR}" || -z "${OPERATOR_RUN_MANIFEST}" ]]; then
+    echo "MOSIM_OPERATOR_RUN_ID, MOSIM_OPERATOR_RUN_DIR, and MOSIM_OPERATOR_RUN_MANIFEST must be set together" >&2
+    exit 2
+  fi
+  if [[ -z "${WORLD_FILE:-}" || -z "${SUNRAY_GAZEBO_LAUNCH_FILE:-}" ]]; then
+    echo "WORLD_FILE and SUNRAY_GAZEBO_LAUNCH_FILE are required when QGC display is enabled" >&2
+    exit 2
+  fi
+  OPERATOR_RUN_ENABLED=true
+fi
 
 mkdir -p "${RESULT_DIR}"
 PLUGIN_LIB_DIR="${FTC_PLUGIN_WS}/devel/lib"
@@ -19,7 +36,31 @@ PLUGIN_LIBRARY="${PLUGIN_LIB_DIR}/libmosim_gazebo_ftc_actuator_plugin.so"
 BASIC_PID=""
 RUNTIME_LOCK_DIR="${PROJECT_ROOT}/Results/sunray_ros1/.sunray_ros1_runtime.lock"
 
+stop_qgc_sidecar() {
+  if [[ -z "${QGC_SIDECAR_PID}" ]]; then
+    return
+  fi
+  if ! kill -0 "${QGC_SIDECAR_PID}" 2>/dev/null; then
+    wait "${QGC_SIDECAR_PID}" 2>/dev/null || true
+    QGC_SIDECAR_PID=""
+    return
+  fi
+  kill -INT "${QGC_SIDECAR_PID}" 2>/dev/null || true
+  for _ in $(seq 1 10); do
+    if ! kill -0 "${QGC_SIDECAR_PID}" 2>/dev/null; then
+      break
+    fi
+    sleep 0.2
+  done
+  if kill -0 "${QGC_SIDECAR_PID}" 2>/dev/null; then
+    kill -TERM "${QGC_SIDECAR_PID}" 2>/dev/null || true
+  fi
+  wait "${QGC_SIDECAR_PID}" 2>/dev/null || true
+  QGC_SIDECAR_PID=""
+}
+
 cleanup() {
+  stop_qgc_sidecar
   if [[ -n "${BASIC_PID}" ]] && kill -0 "${BASIC_PID}" 2>/dev/null; then
     kill "${BASIC_PID}" 2>/dev/null || true
     wait "${BASIC_PID}" 2>/dev/null || true
@@ -47,6 +88,8 @@ fi
 
 set +u
 source /opt/ros/noetic/setup.bash
+source "${PROJECT_ROOT}/Scripts/sunray/resolve_local_ros1_runtime.sh"
+source "${LOCAL_ROS1_WS}/devel/setup.bash"
 set -u
 
 env \
@@ -114,6 +157,34 @@ PY
   exit 4
 fi
 
+if [[ "${OPERATOR_RUN_ENABLED}" == "true" ]]; then
+  python3 "${PROJECT_ROOT}/Scripts/ui/prepare_factory_live_operator_map.py" \
+    --run-dir "${OPERATOR_RUN_DIR}" \
+    --manifest "${OPERATOR_RUN_MANIFEST}" \
+    --world-file "${WORLD_FILE}" \
+    --gazebo-launch-file "${SUNRAY_GAZEBO_LAUNCH_FILE}" \
+    > "${RESULT_DIR}/qgc_factory_map_prepare.log" 2>&1
+  python3 "${PROJECT_ROOT}/Scripts/ui/runtime_sidecar.py" \
+    --run-dir "${OPERATOR_RUN_DIR}" \
+    --manifest "${OPERATOR_RUN_MANIFEST}" \
+    --contract "${PROJECT_ROOT}/Config/control_platform/factory_injection_contract.json" \
+    --vehicle-count 1 \
+    --odom-topic /uav1/sunray/gazebo_pose \
+    --expected-path-topic /mosim/px4ctrl/reference_path \
+    --coordinate-evidence "${OPERATOR_RUN_DIR}/OPERATOR_MAP_COORDINATE_EVIDENCE.json" \
+    --read-only \
+    > "${RESULT_DIR}/qgc_runtime_sidecar.log" 2>&1 &
+  QGC_SIDECAR_PID=$!
+  sleep 0.5
+  sidecar_state="$(ps -o stat= -p "${QGC_SIDECAR_PID}" 2>/dev/null | tr -d '[:space:]')"
+  if ! kill -0 "${QGC_SIDECAR_PID}" 2>/dev/null || [[ -z "${sidecar_state}" ]] || [[ "${sidecar_state:0:1}" == "Z" ]]; then
+    wait "${QGC_SIDECAR_PID}" 2>/dev/null || true
+    QGC_SIDECAR_PID=""
+    echo "QGC read-only telemetry sidecar exited during startup" >&2
+    exit 7
+  fi
+fi
+
 set +e
 python3 "${PROJECT_ROOT}/Scripts/sunray/apply_motor_efficiency_fault.py" \
   --result-dir "${RESULT_DIR}" \
@@ -124,10 +195,75 @@ python3 "${PROJECT_ROOT}/Scripts/sunray/apply_motor_efficiency_fault.py" \
   --airborne-timeout-s "${AIRBORNE_TIMEOUT_S}" \
   > "${RESULT_DIR}/motor_efficiency_injector.log" 2>&1
 INJECTOR_EXIT_CODE=$?
+if [[ "${OPERATOR_RUN_ENABLED}" == "true" ]]; then
+  python3 - \
+    "${RESULT_DIR}" \
+    "${OPERATOR_RUN_DIR}" \
+    "${OPERATOR_RUN_ID}" \
+    "${ROTOR_INDEX}" \
+    "${EFFECTIVENESS}" <<'PY'
+import json
+import os
+import pathlib
+import sys
+import time
+
+result_dir = pathlib.Path(sys.argv[1])
+operator_run_dir = pathlib.Path(sys.argv[2])
+operator_run_id = sys.argv[3]
+rotor_index = int(sys.argv[4])
+effectiveness = float(sys.argv[5])
+source = result_dir / "MOTOR_EFFICIENCY_INJECTION_EVIDENCE.json"
+try:
+    injection = json.loads(source.read_text(encoding="utf-8"))
+except (OSError, json.JSONDecodeError):
+    injection = {}
+
+accepted = injection.get("status") == "passed"
+observed = int(injection.get("fault_effectiveness_observed_samples") or 0)
+recovery_commanded = injection.get("reset_to_nominal_commanded") is True
+reason = "terminal_fault_observed_and_nominal_restore_commanded"
+if not accepted:
+    reason = "terminal_fault_injection_not_accepted"
+elif not recovery_commanded:
+    reason = "terminal_fault_observed_restore_not_confirmed"
+
+payload = {
+    "schema": "mosim.runtime_injection_ack.v1",
+    "command_id": "terminal-motor-efficiency-{}-{}".format(rotor_index, int(time.time() * 1000)),
+    "run_id": operator_run_id,
+    "vehicle_id": "uav1",
+    "target": "motor_effectiveness",
+    "rotor_index": rotor_index,
+    "apply_mode": "set",
+    "source": "terminal_motor_efficiency_ack_gate",
+    "accepted": accepted,
+    "reason_code": reason,
+    "requested_value": effectiveness,
+    "applied_value": effectiveness if accepted else None,
+    "applied_at": time.time(),
+    "observed_fault_samples": observed,
+    "recovery": {
+        "requested_effectiveness": 1.0,
+        "reset_to_nominal_commanded": recovery_commanded,
+        "evidence": str(source),
+    },
+}
+ack_dir = operator_run_dir / "injection_acks"
+ack_dir.mkdir(parents=True, exist_ok=True)
+target = ack_dir / (payload["command_id"] + ".json")
+temporary = target.with_name(target.name + ".{}.tmp".format(os.getpid()))
+with temporary.open("w", encoding="utf-8", newline="\n") as stream:
+    json.dump(payload, stream, ensure_ascii=False, indent=2)
+    stream.write("\n")
+temporary.replace(target)
+PY
+fi
 wait "${BASIC_PID}"
 BASIC_EXIT_CODE=$?
 set -e
 BASIC_PID=""
+stop_qgc_sidecar
 
 python3 - "${RESULT_DIR}" "${BASIC_EXIT_CODE}" "${INJECTOR_EXIT_CODE}" <<'PY'
 import json

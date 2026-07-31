@@ -10,6 +10,7 @@ WORKSPACE="${WORKSPACE:-${PROJECT_ROOT}/build/ros1/local_source_ws}"
 PROFILE="foundation"
 BUILD=false
 VERIFY=false
+PX4CTRL_BACKEND=""
 # The generated Catkin tree lives on the Windows-mounted project volume.
 # Single-threaded default avoids timestamp/dependency-file races on that mount.
 CATKIN_JOBS="${CATKIN_JOBS:-1}"
@@ -29,6 +30,9 @@ Options:
   --build                 Run the profile's visible catkin_make command.
   --verify                Source the generated workspace and prove each profile
                           package resolves to project src/ through rospack.
+  --px4ctrl-backend <legacy_px4ctrl|graphical_px4ctrl_c99>
+                          Select the generated px4ctrl backend for the
+                          controller profile (default: legacy_px4ctrl).
   --jobs <count>          catkin_make parallel job count (default: 1).
   -h, --help              Show this help.
 EOF
@@ -58,6 +62,11 @@ while [[ "$#" -gt 0 ]]; do
     --verify)
       VERIFY=true
       shift
+      ;;
+    --px4ctrl-backend)
+      [[ "$#" -ge 2 ]] || die "--px4ctrl-backend requires a value"
+      PX4CTRL_BACKEND="$2"
+      shift 2
       ;;
     --jobs)
       [[ "$#" -ge 2 ]] || die "--jobs requires a value"
@@ -92,6 +101,20 @@ case "${WORKSPACE}" in
 esac
 
 [[ "${CATKIN_JOBS}" =~ ^[1-9][0-9]*$ ]] || die "--jobs must be a positive integer"
+
+PX4CTRL_BACKEND_EFFECTIVE=""
+if [[ "${PROFILE}" == "controller" ]]; then
+  PX4CTRL_BACKEND_EFFECTIVE="${PX4CTRL_BACKEND:-legacy_px4ctrl}"
+  case "${PX4CTRL_BACKEND_EFFECTIVE}" in
+    legacy_px4ctrl|graphical_px4ctrl_c99)
+      ;;
+    *)
+      die "unsupported --px4ctrl-backend=${PX4CTRL_BACKEND_EFFECTIVE}"
+      ;;
+  esac
+elif [[ -n "${PX4CTRL_BACKEND}" ]]; then
+  die "--px4ctrl-backend is valid only with --profile controller"
+fi
 
 mkdir -p "${WORKSPACE}/src"
 
@@ -170,6 +193,10 @@ CMAKE_SYSTEM_PACKAGE_RESET_ARGS=(
   -Uabsl_DIR
   -Uutf8_range_DIR
 )
+if [[ -n "${PX4CTRL_BACKEND_EFFECTIVE}" ]]; then
+  CMAKE_SYSTEM_PACKAGE_RESET_ARGS+=(
+    "-DMOSIM_PX4CTRL_GENERATED_BACKEND=${PX4CTRL_BACKEND_EFFECTIVE}")
+fi
 
 verify_workspace_packages() {
   [[ -f "${WORKSPACE}/devel/setup.bash" ]] || die "workspace has no generated setup.bash; build before --verify: ${WORKSPACE}"
@@ -224,7 +251,7 @@ CATKIN_TOPLEVEL="/opt/ros/noetic/share/catkin/cmake/toplevel.cmake"
 [[ -f "${CATKIN_TOPLEVEL}" ]] || die "ROS Noetic catkin toplevel is missing: ${CATKIN_TOPLEVEL}"
 safe_link "$(realpath "${CATKIN_TOPLEVEL}")" "${WORKSPACE}/src/CMakeLists.txt"
 
-python3 - "${WORKSPACE}/workspace_manifest.json" "${PROFILE}" "${WORKSPACE}" "${MANIFEST}" "${LINK_RECORDS[@]}" <<'PY'
+python3 - "${WORKSPACE}/workspace_manifest.json" "${PROFILE}" "${WORKSPACE}" "${MANIFEST}" "${PX4CTRL_BACKEND_EFFECTIVE}" "${LINK_RECORDS[@]}" <<'PY'
 import json
 import pathlib
 import sys
@@ -234,8 +261,9 @@ output = pathlib.Path(sys.argv[1])
 profile = sys.argv[2]
 workspace = sys.argv[3]
 source_manifest = sys.argv[4]
+px4ctrl_backend = sys.argv[5]
 links = []
-for record in sys.argv[5:]:
+for record in sys.argv[6:]:
     workspace_path, source_path = record.split(":", 1)
     links.append({"workspace_path": workspace_path, "source_path": source_path})
 payload = {
@@ -247,6 +275,8 @@ payload = {
     "source_input_root": "src",
     "links": links,
 }
+if px4ctrl_backend:
+    payload["px4ctrl_generated_backend"] = px4ctrl_backend
 output.write_text(json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
 PY
 
@@ -254,6 +284,9 @@ printf 'LOCAL_ROS1_WORKSPACE=%s\n' "${WORKSPACE}"
 printf 'PROFILE=%s\n' "${PROFILE}"
 printf 'SOURCE_MANIFEST=%s\n' "${MANIFEST}"
 printf 'WORKSPACE_MANIFEST=%s\n' "${WORKSPACE}/workspace_manifest.json"
+if [[ -n "${PX4CTRL_BACKEND_EFFECTIVE}" ]]; then
+  printf 'PX4CTRL_GENERATED_BACKEND=%s\n' "${PX4CTRL_BACKEND_EFFECTIVE}"
+fi
 printf 'CATKIN_COMMAND='
 printf 'catkin_make -C %q --force-cmake --only-pkg-with-deps' "${WORKSPACE}"
 printf ' %q' "${BUILD_PACKAGES[@]}"
