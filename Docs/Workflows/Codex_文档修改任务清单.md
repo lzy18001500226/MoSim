@@ -158,7 +158,7 @@
 
 **位置**: `Docs/报告/仿真分析报告_正文骨架.md` line 1070 后
 
-**操作**: 在 `### 10.4 三机编队控制` 标题下，**删除** line 1072-1157 的九种编队表格和 OpenBlocks 复杂地图内容（这些已废弃），**替换为**以下新内容：
+**操作**: 在 `### 10.4 三机编队控制` 标题下，**删除** line 1072-1157 的九种编队表格和 `three_uav_open_blocks_mworks_20260720` 旧 OpenBlocks 叙述（它们不作当前源码证据），**替换为**以下新内容。不得把 `three_uav_openblocks_gray_completion_20260730` 写为已废弃：该包须作为带限制的历史 Linear-MPC 记录保留。
 
 ```markdown
 ### 10.4 三机编队控制
@@ -187,7 +187,7 @@
 
 该结果证明 px4ctrl 控制器在 MWORKS 环境下支持多机固定编队飞行。更复杂的可重构编队和动态避障场景需要独立验证。
 
-> **历史证据说明**：本节原计划展示的 MWORKS 九种编队模式（p8_formation_mworks_20260717）和 OpenBlocks 复杂地图三机验证（three_uav_open_blocks_mworks_20260720）因发现实验设计问题，已标记为待重新验证。当前有效证据为上述 px4ctrl 三机 Figure8 MWORKS 验证和多机编队 Gazebo 部署（见 §12.4）。
+> **历史证据说明**：本节原计划展示的 MWORKS 九种编队模式（`p8_formation_mworks_20260717`）和旧 OpenBlocks 记录（`three_uav_open_blocks_mworks_20260720`）不作为当前源码证据；若要重新引用，须独立复验。后续的 `three_uav_openblocks_gray_completion_20260730` 没有被删除：它是 `accepted_with_reduced_clearance_margin` 的历史 Linear-MPC MWORKS 记录，但未保持 0.35 m 规划余量且绑定源码已漂移，只能作为离线参考跟踪历史，不能写作当前源码、PX4CTRL、在线避障或碰撞接触通过。当前源码绑定的主结论仍为上述 px4ctrl 三机 Figure8 MWORKS 验证。
 ```
 
 **数据来源**: `Results/control_platform/px4ctrl_three_uav_figure8_v1/RUN_RECORD.json`
@@ -374,7 +374,7 @@
 
 2. **Official PID 灵敏度分析求解器停滞**：电机故障场景下 Official PID 在 43.110s/86% 停滞，无有效临界值数据，标记为 failed_execution_solver_stall。
 
-3. **九种编队模式 MWORKS 验证**：p8_formation_mworks_20260717 和 OpenBlocks 复杂地图因实验设计问题待重新验证。
+3. **九种编队模式与 OpenBlocks MWORKS 验证**：`p8_formation_mworks_20260717` 和 `three_uav_open_blocks_mworks_20260720` 不作当前源码证据，重新引用前须独立复验。`three_uav_openblocks_gray_completion_20260730` 是带减少净空余量和源码漂移限制的历史接受 Linear-MPC 记录，不构成当前源码、PX4CTRL 或避障验收通过。
 
 4. **QGC 飞行控制界面**：QGC 界面设计原型已完成，但受控飞行操作界面、状态回执和证据导出待完善。
 
