@@ -34,6 +34,7 @@ NdiFormalRunner
 NeuralPidFormalRunner
 NonsingularTerminalSmcFormalRunner
 OfficialPidFormalRunner
+PidAwffLinearEsoFormalRunner
 OfficialPidYawAuthorityMappedFormalRunner
 OfficialPidYawCorrectedFormalRunner
 PassivityBasedControlFormalRunner
