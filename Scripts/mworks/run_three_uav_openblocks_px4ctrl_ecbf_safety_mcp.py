@@ -56,12 +56,13 @@ for _index in range(1, 4):
         _axis_index = "xyz".index(_axis) + 1
         VARIABLES[f"uav{_index}_{_axis}_m"] = f"vehicle{_index}.position[{_axis_index}]"
         VARIABLES[f"uav{_index}_nominal_ref_{_axis}_m"] = f"reference{_index}.position_command[{_axis_index}]"
-        VARIABLES[f"uav{_index}_safe_ref_{_axis}_m"] = f"safetyFilter.safe_position_{_index}[{_axis_index}]"
+        VARIABLES[f"uav{_index}_safe_ref_{_axis}_m"] = f"safetySmoother.safe_position_{_index}[{_axis_index}]"
     VARIABLES[f"uav{_index}_pitch_argument"] = f"vehicle{_index}.controller.pitch_argument"
 VARIABLES.update({
     "minimum_predicted_pair_distance_m": "safety_minimum_predicted_pair_distance_m",
     "safety_active_pair_count": "safety_active_pair_count",
     "safety_maximum_reference_offset_m": "safety_maximum_reference_offset_m",
+    "safety_requested_reference_offset_m": "safety_requested_reference_offset_m",
     "safety_maximum_ecbf_residual_m2_s2": "safety_maximum_ecbf_residual_m2_s2",
     "safety_correction_saturated": "safety_correction_saturated",
     "nominal_formation_deviation_m": "nominal_formation_deviation_m",
@@ -71,6 +72,7 @@ SOURCE_FILES = (
     ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Planning" / "ThreeUavOpenBlocksReconfigurableFormationPx4Ctrl.mo",
     ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Planning" / "ThreeUavOpenBlocksReconfigurableFormationPx4CtrlEcbfSafety.mo",
     ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Planning" / "ThreeUavPairwiseEcbfReferenceSafetyFilter.mo",
+    ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Planning" / "ThreeUavPairwiseEcbfReferenceSmoother.mo",
     ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Planning" / "OpenBlocksMapTruthDisplay.mo",
     ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Planning" / "PlanningNavigationDisplay.mo",
     ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Planning" / "OpenBlocksPx4CtrlVehicle.mo",
