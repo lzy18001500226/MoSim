@@ -415,6 +415,38 @@ def test_unknown_mworks_windows_override_clean_education_hint(tmp_path: Path) ->
     assert payload["all_window_license_gate"] == "blocked"
 
 
+def test_result_viewer_sharing_a_clean_education_process_is_a_trusted_companion(tmp_path: Path) -> None:
+    payload = run_fixture(
+        tmp_path,
+        [
+            {
+                "hwnd": 322,
+                "process_id": 9123,
+                "process_name": "mworks.exe",
+                "title": "OpenBlocksPx4Ctrl - Sysplorer [教育版]",
+                "class_name": "Qt5152QWindowIcon",
+                "visible": True,
+                "children": [{"text": "main window", "class_name": "Static"}],
+            },
+            {
+                "hwnd": 323,
+                "process_id": 9123,
+                "process_name": "mworks.exe",
+                "title": "OpenBlocksPx4Ctrl - 结果查看器",
+                "class_name": "Qt5152QWindowIcon",
+                "visible": True,
+                "children": [{"text": "animation result", "class_name": "Static"}],
+            },
+        ],
+    )
+    assert payload["status"] == "clean"
+    assert payload["education_window_count"] == 1
+    assert payload["education_companion_mworks_window_count"] == 1
+    assert payload["unknown_mworks_window_count"] == 0
+    assert payload["license_state_hint"] == "education_window_observed_activation_unverified"
+    assert payload["all_window_license_gate"] == "pass"
+
+
 def test_hidden_unknown_mworks_windows_do_not_override_clean_education_hint(tmp_path: Path) -> None:
     payload = run_fixture(
         tmp_path,

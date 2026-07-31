@@ -1,11 +1,11 @@
 within MoSimQuadrotorModel.Guidance.Planning;
-model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
-  "Three whole-aircraft Linear-MPC loops following synchronized collision-safe OpenBlocks references"
+model ThreeUavOpenBlocksReconfigurableFormationPx4Ctrl
+  "Three whole-aircraft PX4CTRL loops following synchronized collision-safe OpenBlocks references"
   parameter Real planned_clearance_m[3] = {0.446636389524, 0.44832134251, 0.445867622045};
   parameter Real transit_start_s = 27;
   parameter Real arrival_phase_s = 295.840532932;
 
-  PlannedQuinticReference reference1(
+  PlannedQuinticPx4CtrlReference reference1(
     n_segments = 40,
     p_x = {
       -41, -41, -36.270083617, -32.3576787813, -29.9329913237, -28.6986328768,
@@ -75,7 +75,7 @@ model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1})
     annotation(Placement(transformation(origin = {-82, 74}, extent = {{-18, -18}, {18, 18}})));
-  PlannedQuinticReference reference2(
+  PlannedQuinticPx4CtrlReference reference2(
     n_segments = 44,
     p_x = {
       -43, -43, -43, -37.0356816978, -32.3837818224, -30.1767088657,
@@ -145,7 +145,7 @@ model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1})
     annotation(Placement(transformation(origin = {-82, 4}, extent = {{-18, -18}, {18, 18}})));
-  PlannedQuinticReference reference3(
+  PlannedQuinticPx4CtrlReference reference3(
     n_segments = 35,
     p_x = {
       -41, -41, -41, -34.852176589, -30.0253057323, -26.6123427893,
@@ -287,11 +287,11 @@ model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
       1, 1, 1, 1, 1, 1})
     annotation(Placement(transformation(origin = {0, 72}, extent = {{-22, -22}, {22, 22}})));
 
-  OpenBlocksLinearMPCVehicle vehicle1(initial_position = {-41, -26, 1.5})
+  OpenBlocksPx4CtrlVehicle vehicle1(initial_position = {-41, -26, 1.5})
     annotation(Placement(transformation(origin = {70, 74}, extent = {{-22, -22}, {22, 22}})));
-  OpenBlocksLinearMPCVehicle vehicle2(initial_position = {-43, -26, 1.5})
+  OpenBlocksPx4CtrlVehicle vehicle2(initial_position = {-43, -26, 1.5})
     annotation(Placement(transformation(origin = {70, 4}, extent = {{-22, -22}, {22, 22}})));
-  OpenBlocksLinearMPCVehicle vehicle3(initial_position = {-41, -28, 1.32})
+  OpenBlocksPx4CtrlVehicle vehicle3(initial_position = {-41, -28, 1.32})
     annotation(Placement(transformation(origin = {70, -66}, extent = {{-22, -22}, {22, 22}})));
 
   Real pair_distance_12_m;
@@ -307,14 +307,14 @@ model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
 
 equation
   connect(reference1.position_command, vehicle1.position_reference) annotation(Line(points = {{-64, 81.2}, {18, 81.2}, {18, 87.2}, {43.6, 87.2}}, color = {0, 0, 127}));
-  connect(reference1.z_ref_rate, vehicle1.z_reference_rate) annotation(Line(points = {{-64, 74}, {24, 74}, {24, 76.2}, {43.6, 76.2}}, color = {0, 0, 127}));
-  connect(reference1.yaw_ref, vehicle1.yaw_reference) annotation(Line(points = {{-64, 66.8}, {18, 66.8}, {18, 65.2}, {43.6, 65.2}}, color = {0, 0, 127}));
+  connect(reference1.velocity_command, vehicle1.velocity_reference) annotation(Line(points = {{-64, 74}, {24, 74}, {24, 76.2}, {43.6, 76.2}}, color = {0, 0, 127}));
+  connect(reference1.acceleration_command, vehicle1.acceleration_reference) annotation(Line(points = {{-64, 66.8}, {18, 66.8}, {18, 65.2}, {43.6, 65.2}}, color = {0, 0, 127}));
   connect(reference2.position_command, vehicle2.position_reference) annotation(Line(points = {{-64, 11.2}, {18, 11.2}, {18, 17.2}, {43.6, 17.2}}, color = {0, 0, 127}));
-  connect(reference2.z_ref_rate, vehicle2.z_reference_rate) annotation(Line(points = {{-64, 4}, {24, 4}, {24, 6.2}, {43.6, 6.2}}, color = {0, 0, 127}));
-  connect(reference2.yaw_ref, vehicle2.yaw_reference) annotation(Line(points = {{-64, -3.2}, {18, -3.2}, {18, -4.8}, {43.6, -4.8}}, color = {0, 0, 127}));
+  connect(reference2.velocity_command, vehicle2.velocity_reference) annotation(Line(points = {{-64, 4}, {24, 4}, {24, 6.2}, {43.6, 6.2}}, color = {0, 0, 127}));
+  connect(reference2.acceleration_command, vehicle2.acceleration_reference) annotation(Line(points = {{-64, -3.2}, {18, -3.2}, {18, -4.8}, {43.6, -4.8}}, color = {0, 0, 127}));
   connect(reference3.position_command, vehicle3.position_reference) annotation(Line(points = {{-64, -58.8}, {18, -58.8}, {18, -52.8}, {43.6, -52.8}}, color = {0, 0, 127}));
-  connect(reference3.z_ref_rate, vehicle3.z_reference_rate) annotation(Line(points = {{-64, -66}, {24, -66}, {24, -63.8}, {43.6, -63.8}}, color = {0, 0, 127}));
-  connect(reference3.yaw_ref, vehicle3.yaw_reference) annotation(Line(points = {{-64, -73.2}, {18, -73.2}, {18, -74.8}, {43.6, -74.8}}, color = {0, 0, 127}));
+  connect(reference3.velocity_command, vehicle3.velocity_reference) annotation(Line(points = {{-64, -66}, {24, -66}, {24, -63.8}, {43.6, -63.8}}, color = {0, 0, 127}));
+  connect(reference3.acceleration_command, vehicle3.acceleration_reference) annotation(Line(points = {{-64, -73.2}, {18, -73.2}, {18, -74.8}, {43.6, -74.8}}, color = {0, 0, 127}));
   connect(vehicle1.position, navigationDisplay.actual_position) annotation(Line(points = {{96.4, 87.2}, {108, 87.2}, {108, 104}, {-34, 104}, {-34, 78.6}, {-26.4, 78.6}}, color = {0, 0, 127}));
   connect(reference1.position_command, navigationDisplay.reference_position) annotation(Line(points = {{-64, 81.2}, {-48, 81.2}, {-48, 65.4}, {-26.4, 65.4}}, color = {0, 0, 127}));
 
@@ -331,4 +331,4 @@ equation
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 304.840532932, Tolerance = 0.0001, Interval = 0.05));
   annotation(__MWORKS(hide=false));
-end ThreeUavOpenBlocksReconfigurableFormationLinearMPC;
+end ThreeUavOpenBlocksReconfigurableFormationPx4Ctrl;
