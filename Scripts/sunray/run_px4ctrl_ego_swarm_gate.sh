@@ -14,8 +14,8 @@ RACER_UNREACHABLE_RECOVERY_ENABLE="${RACER_UNREACHABLE_RECOVERY_ENABLE:-true}"
 SWARM_FORMATION_WS="${SWARM_FORMATION_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/swarm_formation_ws_d1_20260701_173306}"
 LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
 FASTLIO_WS="${FASTLIO_WS:-/opt/mosim_work/sunray_ws/fastlio_ws}"
-FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/FAST_LIO}"
-LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/livox_ros_driver_compat}"
+FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/src/perception/fast_lio}"
+LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC:-${PROJECT_ROOT}/src/perception/livox_ros_driver_compat}"
 UAV_NUM="${UAV_NUM:-3}"
 PLANNER_VARIANT="${PLANNER_VARIANT:-diff_planner}"
 RUN_ID="${RUN_ID:-sunray_ros1_goal5_${PLANNER_VARIANT}_${UAV_NUM}uav_$(date +%Y%m%d_%H%M%S)}"
@@ -1210,7 +1210,7 @@ prepare_swarm_formation_workspace() {
     planner/path_searching/src/dyn_a_star.cpp \
     planner/traj_opt/src/poly_traj_optimizer.cpp \
     planner/traj_opt/include/optimizer/poly_traj_optimizer.h; do
-    local audited_source="${PROJECT_ROOT}/References/Lab/swarm_coordination/Swarm-Formation/src/${source_rel}"
+    local audited_source="${PROJECT_ROOT}/src/planning/fixed_formation/src/${source_rel}"
     local runtime_source="${SWARM_FORMATION_WS}/src/${source_rel}"
     if [[ ! -f "${audited_source}" || ! -f "${runtime_source}" ]]; then
       echo "Swarm-Formation audited/runtime source missing: ${source_rel}" >&2

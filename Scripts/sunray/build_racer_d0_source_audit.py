@@ -16,7 +16,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SOURCE = ROOT / "References/Lab/exploration_coverage/RACER"
+DEFAULT_SOURCE = ROOT / "src/planning/racer"
 DEFAULT_OUTPUT_ROOT = ROOT / "Results/sunray_ros1"
 
 

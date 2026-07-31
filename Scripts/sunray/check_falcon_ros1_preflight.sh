@@ -2,7 +2,7 @@
 set -u
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-FALCON_ROOT="${ROOT_DIR}/References/Lab/exploration_coverage/FALCON-ros1-noetic"
+FALCON_ROOT="${ROOT_DIR}/src/planning/falcon"
 STAMP="$(date +%Y%m%d_%H%M%S)"
 OUT_DIR="${1:-${ROOT_DIR}/Results/sunray_ros1/falcon_f1_preflight_${STAMP}}"
 mkdir -p "${OUT_DIR}"

@@ -1,4 +1,4 @@
-PROBLEM_FILE = /mnt/c/Users/HP/Desktop/MoSim/References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/exploration_utils/resource/coverage_path.tsp
+PROBLEM_FILE = coverage_path.tsp
 GAIN23 = NO
-OUTPUT_TOUR_FILE =/mnt/c/Users/HP/Desktop/MoSim/References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/exploration_utils/resource/coverage_path.txt
+OUTPUT_TOUR_FILE = coverage_path.txt
 RUNS = 1

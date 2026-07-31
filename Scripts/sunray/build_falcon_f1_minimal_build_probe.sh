@@ -24,21 +24,21 @@ copy_pkg() {
   fi
 }
 
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/uav_simulator/utils/cmake_utils" "cmake_utils"
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/uav_simulator/utils/quadrotor_msgs" "quadrotor_msgs"
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/exploration_utils" "exploration_utils"
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/pathfinding" "pathfinding"
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/exploration_preprocessing" "exploration_preprocessing"
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/voxel_mapping" "voxel_mapping"
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/trajectory" "trajectory"
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/fast_planner" "fast_planner"
-copy_pkg "References/Lab/exploration_coverage/FALCON-ros1-noetic/falcon_planner/exploration_manager" "exploration_manager"
+copy_pkg "src/planning/falcon/uav_simulator/utils/cmake_utils" "cmake_utils"
+copy_pkg "src/planning/falcon/uav_simulator/utils/quadrotor_msgs" "quadrotor_msgs"
+copy_pkg "src/planning/falcon/falcon_planner/exploration_utils" "exploration_utils"
+copy_pkg "src/planning/falcon/falcon_planner/pathfinding" "pathfinding"
+copy_pkg "src/planning/falcon/falcon_planner/exploration_preprocessing" "exploration_preprocessing"
+copy_pkg "src/planning/falcon/falcon_planner/voxel_mapping" "voxel_mapping"
+copy_pkg "src/planning/falcon/falcon_planner/trajectory" "trajectory"
+copy_pkg "src/planning/falcon/falcon_planner/fast_planner" "fast_planner"
+copy_pkg "src/planning/falcon/falcon_planner/exploration_manager" "exploration_manager"
 
 # FALCON package.xml references plan_env, but this local FALCON snapshot does
 # not include that package and the audited FALCON source does not include its
 # headers. Use the closest local HKUST-style compatible package for build
 # probing without modifying the reference tree.
-copy_pkg "References/Lab/exploration_coverage/FUEL/fuel_planner/plan_env" "plan_env"
+copy_pkg "src/planning/fuel/fuel_planner/plan_env" "plan_env"
 
 {
   echo "ROOT_DIR=${ROOT_DIR}"

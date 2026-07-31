@@ -12,7 +12,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
-$VendorRoot = Join-Path $ProjectRoot "apps/flight_console/vendor/qgroundcontrol"
+$QgcRoot = Join-Path $ProjectRoot "src/ground_station/qgc/qgroundcontrol"
+$QgcManifest = Join-Path $ProjectRoot "src/ground_station/qgc/qgroundcontrol.SHA256SUMS"
 $BuildRoot = Join-Path $ProjectRoot "build/flight-console-qgc"
 $Preflight = Join-Path $ProjectRoot "Results/ui_platform/flight_console_windows_toolchain_preflight.json"
 if (-not $ToolRoot) { $ToolRoot = Join-Path $ProjectRoot ".tools/flight-console" }
@@ -40,12 +41,12 @@ $VsDevCmd = Join-Path $report.detected.visual_studio_installation "Common7/Tools
 
 & python (Join-Path $ProjectRoot "Scripts/ui/materialize_qgc_custom_overlay.py")
 if ($LASTEXITCODE -ne 0) { throw "Failed to materialize the MoSim QGC custom overlay" }
-& python (Join-Path $ProjectRoot "Scripts/ui/generate_qgc_vendor_manifest.py") --verify
-if ($LASTEXITCODE -ne 0) { throw "Frozen QGroundControl source verification failed" }
+& python (Join-Path $ProjectRoot "Scripts/ui/generate_qgc_vendor_manifest.py") --vendor $QgcRoot --manifest $QgcManifest --verify
+if ($LASTEXITCODE -ne 0) { throw "Canonical QGroundControl source verification failed" }
 
 # The materializer preserves source timestamps. Refresh the resource manifest
 # so Qt RCC rescans copied QML assets during an incremental build.
-$CustomResource = Join-Path $VendorRoot "custom/custom.qrc"
+$CustomResource = Join-Path $QgcRoot "custom/custom.qrc"
 & ([string]$report.detected.cmake) -E touch $CustomResource
 if ($LASTEXITCODE -ne 0) { throw "Failed to refresh the MoSim Ground Control custom resource manifest" }
 
@@ -54,7 +55,7 @@ $configure = "set `"PATH=$NinjaDir;$QtRoot\bin;$GStreamerRoot\bin;%PATH%`" && " 
     "call `"$VsDevCmd`" -arch=x64 -host_arch=x64 >nul && " +
     "set `"QTDIR=$QtRoot`" && set `"CMAKE_PREFIX_PATH=$QtRoot`" && " +
     "set `"GSTREAMER_1_0_ROOT_MSVC_X86_64=$GStreamerRoot`" && " +
-    "cmake $freshArgument-S `"$VendorRoot`" -B `"$BuildRoot`" -G `"Ninja Multi-Config`""
+    "cmake $freshArgument-S `"$QgcRoot`" -B `"$BuildRoot`" -G `"Ninja Multi-Config`" -DQGC_APP_VERSION_OVERRIDE=0.0.0 -DQGC_SOURCE_SNAPSHOT_ID=mosim-source-snapshot"
 & cmd.exe /d /s /c $configure
 if ($LASTEXITCODE -ne 0) { throw "MoSim Ground Control CMake configure failed" }
 if (-not $ConfigureOnly) {

@@ -14,16 +14,18 @@ for generated logs, experiment-specific source copies, or informal notes.
 | `canonical_active` | 当前注册的活动路径等于项目 `src/` canonical 路径；不代表已经通过运行时性能验收。 |
 | `copied_pending_activation` | 项目源码已复制到 `src/`，但至少一个当前入口仍使用 `References/` 或 vendor 路径。 |
 
-使用前先运行静态检查：
+交付前先运行静态检查：
 
 ```powershell
-python Scripts/quality/check_project_path_registry.py --project-root .
+python Scripts/quality/check_project_path_registry.py --project-root . --require-canonical-active
+python Scripts/quality/check_local_source_activation.py --project-root .
 ```
 
 根目录 [`README.md`](../README.md) 的“源码路径与运行入口对应表”是面向用户
 的展开说明；本文件和 `project_paths.json` 不证明 Gazebo/PX4/ROS 运行成功。
-`References/` 中仅被 `UPSTREAM.md`、`PATCHES.md` 或资产清单作为来源记录的路径，
-可以与实际运行入口区分；任何仍被配置或脚本直接消费的路径，在依赖改写前必须保留。
+本批次迁移的九个组件已由第二条检查验证为 `canonical_active`。保留的
+`References/` 路径用于来源追溯、回退和 Sunray 大型资产再物化，不是这些组件的
+活动源码入口；它们不能在未经依赖审计的情况下删除。
 
 | Path | Responsibility |
 |---|---|

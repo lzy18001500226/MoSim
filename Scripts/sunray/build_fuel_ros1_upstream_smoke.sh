@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
-FUEL_ROOT="${FUEL_ROOT:-${PROJECT_ROOT}/References/Lab/exploration_coverage/FUEL}"
+FUEL_ROOT="${FUEL_ROOT:-${PROJECT_ROOT}/src/planning/fuel}"
 FUEL_DEPS_ROOT="${FUEL_DEPS_ROOT:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/fuel_deps}"
 NLOPT_VERSION="${NLOPT_VERSION:-v2.7.1}"
 NLOPT_ROOT="${NLOPT_ROOT:-${FUEL_DEPS_ROOT}/install/nlopt-${NLOPT_VERSION}}"

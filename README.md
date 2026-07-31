@@ -133,55 +133,66 @@ Model Studio / ExperimentProfile
 ## 源码路径与运行入口对应表
 
 `Config/project_paths.json` 是组件路径的机器可读权威源。表中的
-`canonical_active` 表示注册表的活动路径已经指向 `src/`（并可被项目本地
-预检发现）；它不等于已经通过运行时性能验收。`copied_pending_activation`
-表示源码已经复制到 `src/`，但仍有至少一个当前入口解析到旧的
-`References/` 或 vendor 路径。**源码复制完成不等于运行入口切换完成。**
+`canonical_active` 表示注册表的活动路径已经指向 `src/`，并已通过项目本地
+静态入口检查；它不等于已经通过运行时性能验收。`copied_pending_activation`
+仍是注册表的保留状态，用于将来的迁移项，但下表九个组件不再使用该状态。
 
-### 项目本地活动路径
-
-| 组件 | 源码路径 | 当前解析路径 | 状态 | 主要入口 |
-| --- | --- | --- | --- | --- |
-| Sunray Gazebo 仿真 | `src/simulation/gazebo/sunray` | `src/simulation/gazebo/sunray` | `canonical_active` | `Config/profiles/runtime_bindings.json#sunray_gazebo.launch`; `Scripts/sunray/check_sunray_ros1_runtime_preflight.sh` |
-| Sunray Gazebo 插件 | `src/simulation/gazebo/plugins/sunray` | `src/simulation/gazebo/plugins/sunray` | `canonical_active` | `Scripts/sunray/check_sunray_ros1_runtime_preflight.sh`; `Scripts/sunray/prepare_local_ros1_runtime_overlay.sh` |
-| Sunray MAVROS 控制 | `src/flight_stack/mavros/sunray_uav_control` | `src/flight_stack/mavros/sunray_uav_control` | `canonical_active` | `Config/profiles/runtime_bindings.json#mavros_command_adapter.launch`; `Scripts/sunray/sync_assembled_model_into_sunray_ros1.py` |
-| Sunray 公共工具 | `src/common/utilities/ros1/sunray_common` | `src/common/utilities/ros1/sunray_common` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#foundation`; `Scripts/sunray/prepare_local_ros1_workspace.sh` |
-| px4ctrl 运行适配器 | `src/control/runtime_adapters/px4ctrl` | `src/control/runtime_adapters/px4ctrl` | `canonical_active` | `Config/profiles/runtime_bindings.json#controller_host.launch`; `Scripts/sunray/run_px4ctrl_basic_gate.sh` |
-| quadrotor 消息 | `src/integration/ros1_launch/quadrotor_msgs` | `src/integration/ros1_launch/quadrotor_msgs` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#controller` |
-| UAV 公共工具 | `src/common/utilities/ros1/uav_utils` | `src/common/utilities/ros1/uav_utils` | `canonical_active` | `src/control/runtime_adapters/px4ctrl` |
-| CMake 公共工具 | `src/common/utilities/ros1/cmake_utils` | `src/common/utilities/ros1/cmake_utils` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#controller` |
-| FAST-LIO | `src/perception/fast_lio` | `src/perception/fast_lio` | `canonical_active` | `Config/profiles/runtime_bindings.json#fastlio_review_or_ekf_bridge.launch`; `Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh` |
-| Livox 兼容驱动 | `src/perception/livox_ros_driver_compat` | `src/perception/livox_ros_driver_compat` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#foundation` |
-| MoSim QGC 扩展 | `src/ground_station/qgc/mosim_extension` | `src/ground_station/qgc/mosim_extension` | `canonical_active` | `Scripts/ui/materialize_qgc_custom_overlay.py`; `Scripts/ui/build_flight_console.ps1` |
-
-### 已复制但仍待切换的入口
+### 本批次已切换的九个组件
 
 | 组件 | 源码路径 | 当前解析路径 | 状态 | 主要入口 |
 | --- | --- | --- | --- | --- |
-| Sunray 规划工具 | `src/integration/ros1_launch/sunray_planner_utils` | `References/Sunray/General_Module/sunray_planner_utils` | `copied_pending_activation` | `Config/profiles/runtime_bindings.json#planner_adapter.launch` |
-| Sunray 任务适配器 | `src/planning/mission_adapters/sunray_tutorial` | `References/Sunray/General_Module/sunray_tutorial` | `copied_pending_activation` | `Scripts/sunray/run_sunray_ros1_default_stack_gate.sh`; `Scripts/sunray/run_sunray_ros1_native_mission_gate.sh` |
-| FUEL | `src/planning/fuel` | `References/Lab/exploration_coverage/FUEL` | `copied_pending_activation` | `Scripts/sunray/check_fuel_ros1_preflight.sh`; `Scripts/sunray/fuel_single_px4ctrl_goal4.launch` |
-| FALCON | `src/planning/falcon` | `References/Lab/exploration_coverage/FALCON-ros1-noetic` | `copied_pending_activation` | `Scripts/sunray/check_falcon_ros1_preflight.sh`; `Scripts/sunray/build_falcon_f1_minimal_build_probe.sh` |
-| RACER | `src/planning/racer` | `References/Lab/exploration_coverage/RACER` | `copied_pending_activation` | `References/Lab/exploration_coverage/RACER/swarm_exploration/exploration_manager/launch/*.launch` |
-| Diff-Planner | `src/planning/diff_planner` | `References/Lab/planning_local/Diff-Planner` | `copied_pending_activation` | `Scripts/sunray/setup_goal4_diff_planner_overlay.sh`; `Scripts/sunray/diff_*_px4ctrl_*.launch` |
-| Ego-Planner Swarm | `src/planning/ego_planner_swarm` | `References/Sunray/External_Module/ego-planner-swarm` | `copied_pending_activation` | `Scripts/sunray/setup_goal4_ego_overlay.sh`; `Scripts/sunray/run_px4ctrl_ego_*_gate.sh` |
-| 固定编队 | `src/planning/fixed_formation` | `References/Lab/swarm_coordination/Swarm-Formation` | `copied_pending_activation` | `Scripts/sunray/build_swarm_formation_ros1_upstream_smoke.sh`; `Scripts/sunray/swarm_formation_swarm_px4ctrl_d3.launch` |
+| Sunray 规划工具 | `src/integration/ros1_launch/sunray_planner_utils` | `src/integration/ros1_launch/sunray_planner_utils` | `canonical_active` | `Config/profiles/runtime_bindings.json#planner_adapter.launch`; `Config/runtime/ros1_local_source_manifest.v1.json#mission_adapter` |
+| Sunray 任务适配器 | `src/planning/mission_adapters/sunray_tutorial` | `src/planning/mission_adapters/sunray_tutorial` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#mission_adapter` |
+| FUEL | `src/planning/fuel` | `src/planning/fuel` | `canonical_active` | `Scripts/sunray/check_fuel_ros1_preflight.sh`; `Config/runtime/ros1_local_source_manifest.v1.json#fuel` |
+| FALCON | `src/planning/falcon` | `src/planning/falcon` | `canonical_active` | `Scripts/sunray/check_falcon_ros1_preflight.sh`; `Config/runtime/ros1_local_source_manifest.v1.json#falcon` |
+| RACER | `src/planning/racer` | `src/planning/racer` | `canonical_active` | `Scripts/sunray/build_racer_ros1_upstream_smoke.sh`; `Config/runtime/ros1_local_source_manifest.v1.json#racer` |
+| Diff-Planner | `src/planning/diff_planner` | `src/planning/diff_planner` | `canonical_active` | `Scripts/sunray/setup_goal4_diff_planner_overlay.sh`; `Config/runtime/ros1_local_source_manifest.v1.json#diff_planner` |
+| EGO-Planner Swarm | `src/planning/ego_planner_swarm` | `src/planning/ego_planner_swarm` | `canonical_active` | `Scripts/sunray/setup_goal4_ego_overlay.sh`; `Config/runtime/ros1_local_source_manifest.v1.json#ego_planner_swarm` |
+| 固定编队 | `src/planning/fixed_formation` | `src/planning/fixed_formation` | `canonical_active` | `Scripts/sunray/build_swarm_formation_ros1_upstream_smoke.sh`; `Config/runtime/ros1_local_source_manifest.v1.json#fixed_formation` |
+| QGroundControl 主体 | `src/ground_station/qgc/qgroundcontrol` | `src/ground_station/qgc/qgroundcontrol` | `canonical_active` | `Scripts/ui/build_flight_console.ps1`; `Scripts/ui/generate_qgc_vendor_manifest.py` |
 
-### 外部 vendor / 展示例外
+### 其他项目本地活动路径
 
-| 组件 | 项目源码路径 | 当前入口 | 状态 | 说明 |
-| --- | --- | --- | --- | --- |
-| QGroundControl 主体 | `src/ground_station/qgc/qgroundcontrol` | `apps/flight_console/vendor/qgroundcontrol` | `copied_pending_activation` | 构建入口仍由 `apps/flight_console/mosim/custom/CMakeLists.txt` 管理；不归入 MWORKS 控制器证据。 |
-| UE / 外部展示资产 | `UE5/` 与经审计的 `References/` 资产 | 按 UE 工程清单解析 | 交付例外 | 仅保留实际被 UE 工程/场景清单引用的资产；不能把 Reference 资产当作项目控制源码。 |
+`src/simulation/gazebo/sunray`、`src/simulation/gazebo/plugins/sunray`、
+`src/flight_stack/mavros/sunray_uav_control`、`src/common/utilities/ros1/sunray_common`、
+`src/control/runtime_adapters/px4ctrl`、`src/integration/ros1_launch/quadrotor_msgs`、
+`src/common/utilities/ros1/uav_utils`、`src/common/utilities/ros1/cmake_utils`、
+`src/perception/fast_lio`、`src/perception/livox_ros_driver_compat` 和
+`src/ground_station/qgc/mosim_extension` 也保持 `canonical_active`。其入口由
+`Config/project_paths.json`、`Config/profiles/runtime_bindings.json` 与
+`Config/runtime/ros1_local_source_manifest.v1.json` 共同约束。
 
-表中 `References/` 路径不是都可以直接删除：当前配置、规划入口和部分
-运行脚本仍有明确引用。`UPSTREAM.md`、`PATCHES.md` 等仅用于来源追溯的文字
-引用不构成运行依赖。清理时按“活动入口、证据路径、来源追溯”三类分别判断，
-不得按目录名或文件日期整体删除。
+### 交付与外部依赖
 
-交付时，项目源码包包含 `Models/`、`Config/`、`Scripts/`、`apps/`、`src/`
-和必要文档；`Results/` 作为单独筛选的证据集合；用户在完成最终审核后自行
-压缩。归档到 `MoSim_Archive/` 的历史/缓存内容不作为默认运行输入。
+可移植源码包应包含 `Models/`、`Config/`、`Scripts/`、`apps/`、`src/`、`Docs/`、
+`cmd/`、必要的筛选后 `Results/`，以及需要展示时的 `UE5/`。以上九个组件不再把
+`References/` 作为活动源码输入。`References/` 在本机保留为上游追溯、回退和
+Sunray 资产再物化来源，不能按目录整体删除。
+
+Sunray 的大型运行资产已经物化到 `src/`，但因体积被 Git 忽略，最终压缩包必须带上：
+
+| 内容 | 本地目标路径 | 规模 | 校验方式 |
+| --- | --- | ---: | --- |
+| Gazebo 网格、纹理、扫描数据与 Blender 源 | `src/simulation/gazebo/sunray/` | 487 文件，1,005,559,590 B | `ASSET_MANIFEST.json` |
+| Livox 插件扫描时序 | `src/simulation/gazebo/plugins/sunray/` | 6 文件，156,521,030 B | `ASSET_MANIFEST.json` |
+
+若不随源码包携带这些大文件，必须提供内容完全匹配两个资产清单的独立资产包；否则
+Gazebo 包不能作为完整运行输入。外部运行环境也不属于源码包：MWORKS/Sysplorer、
+Ubuntu 20.04、ROS Noetic、Gazebo Classic、MAVROS、PX4 工具链，以及 QGC 所需的
+Qt 6.8.3、Visual Studio 2022 C++ Build Tools、Windows SDK 和 GStreamer 1.22.12。
+
+执行下列检查可验证路径和资产，不会启动仿真：
+
+```powershell
+python Scripts/quality/check_project_path_registry.py --project-root . --require-canonical-active
+python Scripts/quality/check_local_source_activation.py --project-root .
+# Only when retained References/Sunray is available and large assets are absent:
+python Scripts/quality/materialize_sunray_runtime_assets.py --materialize
+python Scripts/quality/materialize_sunray_runtime_assets.py
+```
+
+详见 `Results/static_audits/local_source_activation_20260801/`。上述检查和构建预检
+不等于 Gazebo/PX4/ROS/MAVROS、规划器、控制器或飞行运行时验收。
 
 ## 阅读与操作
 

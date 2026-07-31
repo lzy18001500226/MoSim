@@ -85,6 +85,130 @@
       "build_packages": [
         "px4ctrl"
       ]
+    },
+    "mission_adapter": {
+      "purpose": "Build the Sunray tutorial and position-command planner adapter from project-local sources without launching a simulation.",
+      "links": [
+        {
+          "workspace_path": "General_Module/sunray_common",
+          "source_path": "src/common/utilities/ros1/sunray_common"
+        },
+        {
+          "workspace_path": "General_Module/sunray_planner_utils",
+          "source_path": "src/integration/ros1_launch/sunray_planner_utils"
+        },
+        {
+          "workspace_path": "General_Module/sunray_tutorial",
+          "source_path": "src/planning/mission_adapters/sunray_tutorial"
+        }
+      ],
+      "build_packages": [
+        "sunray_msgs",
+        "sunray_planner_utils",
+        "sunray_tutorial"
+      ]
+    },
+    "fuel": {
+      "purpose": "Build the FUEL planner from its project-local source tree in an isolated workspace.",
+      "links": [
+        {
+          "workspace_path": "planning/fuel",
+          "source_path": "src/planning/fuel"
+        }
+      ],
+      "build_packages": [
+        "exploration_manager",
+        "lkh_tsp_solver"
+      ]
+    },
+    "falcon": {
+      "purpose": "Build the FALCON planner with the project-local FUEL plan_env compatibility package in an isolated workspace.",
+      "links": [
+        {
+          "workspace_path": "planning/falcon",
+          "source_path": "src/planning/falcon"
+        },
+        {
+          "workspace_path": "compat/plan_env",
+          "source_path": "src/planning/fuel/fuel_planner/plan_env"
+        }
+      ],
+      "build_packages": [
+        "exploration_manager"
+      ]
+    },
+    "racer": {
+      "purpose": "Build the RACER planner from its project-local source tree in an isolated workspace.",
+      "links": [
+        {
+          "workspace_path": "planning/racer",
+          "source_path": "src/planning/racer"
+        }
+      ],
+      "build_packages": [
+        "exploration_manager"
+      ]
+    },
+    "diff_planner": {
+      "purpose": "Build Diff-Planner from its project-local source tree in an isolated workspace.",
+      "links": [
+        {
+          "workspace_path": "planning/diff_planner",
+          "source_path": "src/planning/diff_planner/src"
+        }
+      ],
+      "build_packages": [
+        "diff_planner"
+      ]
+    },
+    "ego_planner_swarm": {
+      "purpose": "Build EGO-Planner Swarm with project-local ROS utility and message dependencies.",
+      "links": [
+        {
+          "workspace_path": "planning/ego_planner_swarm",
+          "source_path": "src/planning/ego_planner_swarm/src"
+        },
+        {
+          "workspace_path": "Utils/cmake_utils",
+          "source_path": "src/common/utilities/ros1/cmake_utils"
+        },
+        {
+          "workspace_path": "Utils/uav_utils",
+          "source_path": "src/common/utilities/ros1/uav_utils"
+        },
+        {
+          "workspace_path": "Utils/quadrotor_msgs",
+          "source_path": "src/integration/ros1_launch/quadrotor_msgs"
+        }
+      ],
+      "build_packages": [
+        "ego_planner"
+      ]
+    },
+    "fixed_formation": {
+      "purpose": "Build the fixed-formation planner from project-local sources in an isolated workspace.",
+      "links": [
+        {
+          "workspace_path": "planning/fixed_formation",
+          "source_path": "src/planning/fixed_formation/src"
+        },
+        {
+          "workspace_path": "Utils/cmake_utils",
+          "source_path": "src/common/utilities/ros1/cmake_utils"
+        },
+        {
+          "workspace_path": "Utils/uav_utils",
+          "source_path": "src/common/utilities/ros1/uav_utils"
+        },
+        {
+          "workspace_path": "Utils/quadrotor_msgs",
+          "source_path": "src/integration/ros1_launch/quadrotor_msgs"
+        }
+      ],
+      "build_packages": [
+        "ego_planner",
+        "swarm_bridge"
+      ]
     }
   },
   "components": [
@@ -161,6 +285,54 @@
       "build_entrypoint": "Scripts/sunray/build_local_px4_sitl.sh",
       "default_build_directory": "build/px4/px4_sitl_default",
       "default_build_target": "px4"
+    },
+    {
+      "id": "sunray_planner_utils",
+      "source_path": "src/integration/ros1_launch/sunray_planner_utils",
+      "role": "Sunray planner-to-position-command adapter",
+      "activation_stage": "mission_adapter"
+    },
+    {
+      "id": "sunray_tutorial",
+      "source_path": "src/planning/mission_adapters/sunray_tutorial",
+      "role": "Sunray tutorial and demonstration mission adapter",
+      "activation_stage": "mission_adapter"
+    },
+    {
+      "id": "fuel",
+      "source_path": "src/planning/fuel",
+      "role": "FUEL exploration planner",
+      "activation_stage": "fuel"
+    },
+    {
+      "id": "falcon",
+      "source_path": "src/planning/falcon",
+      "role": "FALCON exploration planner",
+      "activation_stage": "falcon"
+    },
+    {
+      "id": "racer",
+      "source_path": "src/planning/racer",
+      "role": "RACER multi-UAV exploration planner",
+      "activation_stage": "racer"
+    },
+    {
+      "id": "diff_planner",
+      "source_path": "src/planning/diff_planner",
+      "role": "Diff-Planner trajectory planner",
+      "activation_stage": "diff_planner"
+    },
+    {
+      "id": "ego_planner_swarm",
+      "source_path": "src/planning/ego_planner_swarm",
+      "role": "EGO-Planner Swarm trajectory planner",
+      "activation_stage": "ego_planner_swarm"
+    },
+    {
+      "id": "fixed_formation",
+      "source_path": "src/planning/fixed_formation",
+      "role": "Fixed-formation multi-UAV planning stack",
+      "activation_stage": "fixed_formation"
     }
   ],
   "external_dependencies": [
@@ -180,12 +352,5 @@
       "required_for": ["flight_adapter", "controller"]
     }
   ],
-  "deferred_source_groups": [
-    "FUEL",
-    "fixed_formation",
-    "Diff-Planner",
-    "EGO-Planner-Swarm",
-    "FALCON",
-    "Racer"
-  ]
+  "deferred_source_groups": []
 }

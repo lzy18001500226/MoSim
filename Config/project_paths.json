@@ -46,10 +46,11 @@
       "role": "integration",
       "canonical_relpath": "src/integration/ros1_launch/sunray_planner_utils",
       "legacy_relpath": "References/Sunray/General_Module/sunray_planner_utils",
-      "active_relpath": "References/Sunray/General_Module/sunray_planner_utils",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/integration/ros1_launch/sunray_planner_utils",
+      "migration_state": "canonical_active",
       "entrypoints": [
-        "Config/profiles/runtime_bindings.json#planner_adapter.launch"
+        "Config/profiles/runtime_bindings.json#planner_adapter.launch",
+        "Config/runtime/ros1_local_source_manifest.v1.json#mission_adapter"
       ]
     },
     "sunray_common": {
@@ -67,9 +68,10 @@
       "role": "mission_adapter",
       "canonical_relpath": "src/planning/mission_adapters/sunray_tutorial",
       "legacy_relpath": "References/Sunray/General_Module/sunray_tutorial",
-      "active_relpath": "References/Sunray/General_Module/sunray_tutorial",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/planning/mission_adapters/sunray_tutorial",
+      "migration_state": "canonical_active",
       "entrypoints": [
+        "Config/runtime/ros1_local_source_manifest.v1.json#mission_adapter",
         "Scripts/sunray/run_sunray_ros1_default_stack_gate.sh",
         "Scripts/sunray/run_sunray_ros1_native_mission_gate.sh",
         "Scripts/sunray/start_sunray_ros1_gui_review.sh",
@@ -142,10 +144,12 @@
       "role": "planning",
       "canonical_relpath": "src/planning/fuel",
       "legacy_relpath": "References/Lab/exploration_coverage/FUEL",
-      "active_relpath": "References/Lab/exploration_coverage/FUEL",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/planning/fuel",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Scripts/sunray/check_fuel_ros1_preflight.sh",
+        "Scripts/sunray/build_fuel_ros1_upstream_smoke.sh",
+        "Config/runtime/ros1_local_source_manifest.v1.json#fuel",
         "Scripts/sunray/fuel_single_px4ctrl_goal4.launch"
       ]
     },
@@ -153,77 +157,85 @@
       "role": "planning",
       "canonical_relpath": "src/planning/falcon",
       "legacy_relpath": "References/Lab/exploration_coverage/FALCON-ros1-noetic",
-      "active_relpath": "References/Lab/exploration_coverage/FALCON-ros1-noetic",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/planning/falcon",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Scripts/sunray/check_falcon_ros1_preflight.sh",
-        "Scripts/sunray/build_falcon_f1_minimal_build_probe.sh"
+        "Scripts/sunray/build_falcon_f1_minimal_build_probe.sh",
+        "Config/runtime/ros1_local_source_manifest.v1.json#falcon"
       ]
     },
     "racer": {
       "role": "planning",
       "canonical_relpath": "src/planning/racer",
       "legacy_relpath": "References/Lab/exploration_coverage/RACER",
-      "active_relpath": "References/Lab/exploration_coverage/RACER",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/planning/racer",
+      "migration_state": "canonical_active",
       "entrypoints": [
-        "References/Lab/exploration_coverage/RACER/swarm_exploration/exploration_manager/launch/rviz.launch",
-        "References/Lab/exploration_coverage/RACER/swarm_exploration/exploration_manager/launch/swarm_exploration.launch"
+        "src/planning/racer/swarm_exploration/exploration_manager/launch/rviz.launch",
+        "src/planning/racer/swarm_exploration/exploration_manager/launch/swarm_exploration.launch",
+        "Scripts/sunray/build_racer_ros1_upstream_smoke.sh",
+        "Config/runtime/ros1_local_source_manifest.v1.json#racer"
       ]
     },
     "diff_planner": {
       "role": "planning",
       "canonical_relpath": "src/planning/diff_planner",
       "legacy_relpath": "References/Lab/planning_local/Diff-Planner",
-      "active_relpath": "References/Lab/planning_local/Diff-Planner",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/planning/diff_planner",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Scripts/sunray/setup_goal4_diff_planner_overlay.sh",
         "Scripts/sunray/diff_planner_single_px4ctrl_goal4.launch",
-        "Scripts/sunray/diff_swarm_px4ctrl_goal5.launch"
+        "Scripts/sunray/diff_swarm_px4ctrl_goal5.launch",
+        "Config/runtime/ros1_local_source_manifest.v1.json#diff_planner"
       ]
     },
     "ego_planner_swarm": {
       "role": "planning",
       "canonical_relpath": "src/planning/ego_planner_swarm",
       "legacy_relpath": "References/Sunray/External_Module/ego-planner-swarm",
-      "active_relpath": "References/Sunray/External_Module/ego-planner-swarm",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/planning/ego_planner_swarm",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Scripts/sunray/setup_goal4_ego_overlay.sh",
         "Scripts/sunray/run_px4ctrl_ego_single_gate.sh",
-        "Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh"
+        "Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh",
+        "Config/runtime/ros1_local_source_manifest.v1.json#ego_planner_swarm"
       ]
     },
     "fixed_formation": {
       "role": "planning",
       "canonical_relpath": "src/planning/fixed_formation",
       "legacy_relpath": "References/Lab/swarm_coordination/Swarm-Formation",
-      "active_relpath": "References/Lab/swarm_coordination/Swarm-Formation",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/planning/fixed_formation",
+      "migration_state": "canonical_active",
       "entrypoints": [
         "Scripts/sunray/build_swarm_formation_ros1_upstream_smoke.sh",
-        "Scripts/sunray/swarm_formation_swarm_px4ctrl_d3.launch"
+        "Scripts/sunray/swarm_formation_swarm_px4ctrl_d3.launch",
+        "Config/runtime/ros1_local_source_manifest.v1.json#fixed_formation"
       ]
     },
     "qgroundcontrol": {
       "role": "ground_station",
       "canonical_relpath": "src/ground_station/qgc/qgroundcontrol",
       "legacy_relpath": "apps/flight_console/vendor/qgroundcontrol",
-      "active_relpath": "apps/flight_console/vendor/qgroundcontrol",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/ground_station/qgc/qgroundcontrol",
+      "migration_state": "canonical_active",
       "entrypoints": [
-        "apps/flight_console/mosim/custom/CMakeLists.txt"
+        "Scripts/ui/build_flight_console.ps1",
+        "Scripts/ui/generate_qgc_vendor_manifest.py"
       ]
     },
     "qgc_mosim_extension": {
       "role": "ground_station",
       "canonical_relpath": "src/ground_station/qgc/mosim_extension",
       "legacy_relpath": "apps/flight_console/mosim",
-      "active_relpath": "apps/flight_console/mosim",
-      "migration_state": "copied_pending_activation",
+      "active_relpath": "src/ground_station/qgc/mosim_extension",
+      "migration_state": "canonical_active",
       "entrypoints": [
-        "apps/flight_console/mosim/custom/CMakeLists.txt"
+        "Scripts/ui/materialize_qgc_custom_overlay.py",
+        "Scripts/ui/build_flight_console.ps1"
       ]
     }
   }

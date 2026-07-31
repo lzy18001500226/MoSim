@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Materialize the project-owned MoSim custom build into the frozen QGC tree."""
+"""Materialize the project-owned MoSim custom build into canonical QGC source."""
 
 from __future__ import annotations
 
@@ -10,8 +10,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = ROOT / "apps" / "flight_console" / "mosim" / "custom"
-TARGET = ROOT / "apps" / "flight_console" / "vendor" / "qgroundcontrol" / "custom"
+SOURCE = ROOT / "src" / "ground_station" / "qgc" / "mosim_extension" / "custom"
+CANONICAL_QGC_ROOT = ROOT / "src" / "ground_station" / "qgc" / "qgroundcontrol"
+TARGET = CANONICAL_QGC_ROOT / "custom"
 
 
 def _digest(path: Path) -> str:
@@ -22,13 +23,13 @@ def materialize(source: Path = SOURCE, target: Path = TARGET, project_root: Path
     source = source.resolve()
     target = target.resolve()
     project_root = project_root.resolve()
-    vendor = (project_root / "apps" / "flight_console" / "vendor" / "qgroundcontrol").resolve()
+    canonical_qgc = (project_root / "src" / "ground_station" / "qgc" / "qgroundcontrol").resolve()
     if source != SOURCE.resolve() and project_root not in source.parents:
         raise ValueError("overlay source must be project-owned")
     if target != TARGET.resolve() and project_root not in target.parents:
         raise ValueError("overlay target must be project-owned")
-    if target == TARGET.resolve() and vendor not in target.parents:
-        raise ValueError("overlay target escaped the QGC vendor tree")
+    if target == TARGET.resolve() and canonical_qgc not in target.parents:
+        raise ValueError("overlay target escaped the canonical QGC source tree")
     if not (source / "CMakeLists.txt").is_file():
         raise FileNotFoundError(source / "CMakeLists.txt")
     target.mkdir(parents=True, exist_ok=True)

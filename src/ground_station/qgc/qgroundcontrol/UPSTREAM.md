@@ -18,17 +18,20 @@
   MoSim overlay. `custom-example/` remains in the payload as QGroundControl
   source.
 - The generated overlay is represented by the separate project-owned source
-  snapshot at `src/ground_station/qgc/mosim_extension`; its legacy materialized
-  output remains at `apps/flight_console/vendor/qgroundcontrol/custom`.
+  snapshot at `src/ground_station/qgc/mosim_extension`. Its active materialized
+  output is `src/ground_station/qgc/qgroundcontrol/custom`; the legacy output
+  remains at `apps/flight_console/vendor/qgroundcontrol/custom` as rollback.
 - Capture note: the retained QGroundControl worktree included a local change to
   `src/UI/MainWindow.qml`. It is retained byte-for-byte in this snapshot and is
   described in `PATCHES.md`.
-- Build-layout constraint: `cmake/Git.cmake` derives its version from the Git
-  repository above `CMAKE_SOURCE_DIR`. Before canonical activation, the build
-  must receive a reproducible QGroundControl revision/version contract rather
-  than accidentally using the MoSim repository revision.
+- Build-layout contract: `cmake/Git.cmake` now accepts the explicit
+  `QGC_APP_VERSION_OVERRIDE=0.0.0` and
+  `QGC_SOURCE_SNAPSHOT_ID=mosim-source-snapshot` values. This prevents the
+  source snapshot from inheriting the enclosing MoSim Git revision.
+- Build preflight: the canonical source configured successfully on 2026-08-01
+  through `Scripts/ui/build_flight_console.ps1 -ConfigureOnly`. It is not a
+  full executable-build or runtime claim.
 
-The registry state is `copied_pending_activation`. The legacy path remains the
-only active QGroundControl path until the source revision, license choice,
-materialization flow, build configuration, and a controlled QGC build check are
-audited.
+The registry state is `canonical_active`; the legacy vendor tree is retained
+unchanged for provenance and rollback. The original upstream revision and
+redistribution license choice remain unresolved external-delivery constraints.

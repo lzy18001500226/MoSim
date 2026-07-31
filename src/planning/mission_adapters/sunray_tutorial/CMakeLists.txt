@@ -25,6 +25,14 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(OpenCV REQUIRED)
 
+set(SUNRAY_COMMON_LIB_DIR
+  "${CMAKE_SOURCE_DIR}/General_Module/sunray_common/common_lib"
+  CACHE PATH "Path to the Sunray shared ROS1 headers"
+)
+if(NOT EXISTS "${SUNRAY_COMMON_LIB_DIR}/ros_msg_utils.h")
+  message(FATAL_ERROR "SUNRAY_COMMON_LIB_DIR must contain ros_msg_utils.h: ${SUNRAY_COMMON_LIB_DIR}")
+endif()
+
 ################################################
 ## Declare ROS messages, services and actions ##
 ################################################
@@ -41,7 +49,23 @@ generate_messages(
 )
 
 catkin_package(
-  CATKIN_DEPENDS  message_runtime
+  CATKIN_DEPENDS
+    message_runtime
+    roscpp
+    rospy
+    geometry_msgs
+    nav_msgs
+    sensor_msgs
+    std_msgs
+    std_srvs
+    tf
+    tf2_ros
+    tf2_eigen
+    sunray_msgs
+    tf2_geometry_msgs
+    mavros_msgs
+    cv_bridge
+    image_transport
 )
 ###########
 ## Build ##
@@ -49,7 +73,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${PROJECT_SOURCE_DIR}/../sunray_common/common_lib
+  ${SUNRAY_COMMON_LIB_DIR}
   ${OpenCV_INCLUDE_DIRS}
 )
 

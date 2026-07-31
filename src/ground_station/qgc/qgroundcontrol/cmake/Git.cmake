@@ -1,67 +1,72 @@
 find_package(Git)
 
-if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
-    option(GIT_SUBMODULE "Check submodules during build" OFF)
-    if(GIT_SUBMODULE)
-        message(STATUS "Submodule update")
-        execute_process(
-            COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-            RESULT_VARIABLE GIT_SUBMODULE_RESULT
-            OUTPUT_VARIABLE GIT_SUBMODULE_OUTPUT
-            ERROR_VARIABLE GIT_SUBMODULE_ERROR
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-        if(NOT GIT_SUBMODULE_RESULT EQUAL 0)
-            cmake_print_variables(GIT_SUBMODULE_RESULT GIT_SUBMODULE_OUTPUT GIT_SUBMODULE_ERROR)
-            message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMODULE_RESULT}, please checkout submodules")
-        endif()
-    endif()
-endif()
-
 include(CMakePrintHelpers)
 
-execute_process(
-    COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref @
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE QGC_GIT_BRANCH
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-# cmake_print_variables(QGC_GIT_BRANCH)
+set(QGC_APP_VERSION_OVERRIDE "0.0.0" CACHE STRING "Explicit version for a source snapshot without upstream Git metadata")
+set(QGC_SOURCE_SNAPSHOT_ID "mosim-source-snapshot" CACHE STRING "Identifier displayed for a non-Git QGC source snapshot")
 
-execute_process(
-    COMMAND ${GIT_EXECUTABLE} rev-parse --short @
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE QGC_GIT_HASH
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-# cmake_print_variables(QGC_GIT_HASH)
+if(QGC_APP_VERSION_OVERRIDE)
+    if(NOT QGC_APP_VERSION_OVERRIDE MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
+        message(FATAL_ERROR "QGC_APP_VERSION_OVERRIDE must be a numeric major.minor.patch value")
+    endif()
+    set(QGC_GIT_BRANCH "source-snapshot")
+    set(QGC_GIT_HASH "${QGC_SOURCE_SNAPSHOT_ID}")
+    set(QGC_APP_VERSION_STR "${QGC_APP_VERSION_OVERRIDE}-${QGC_SOURCE_SNAPSHOT_ID}")
+    set(QGC_APP_VERSION "${QGC_APP_VERSION_OVERRIDE}")
+    set(QGC_APP_DATE "1970-01-01")
+else()
+    if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
+        option(GIT_SUBMODULE "Check submodules during build" OFF)
+        if(GIT_SUBMODULE)
+            message(STATUS "Submodule update")
+            execute_process(
+                COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
+                WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+                RESULT_VARIABLE GIT_SUBMODULE_RESULT
+                OUTPUT_VARIABLE GIT_SUBMODULE_OUTPUT
+                ERROR_VARIABLE GIT_SUBMODULE_ERROR
+                OUTPUT_STRIP_TRAILING_WHITESPACE
+            )
+            if(NOT GIT_SUBMODULE_RESULT EQUAL 0)
+                cmake_print_variables(GIT_SUBMODULE_RESULT GIT_SUBMODULE_OUTPUT GIT_SUBMODULE_ERROR)
+                message(FATAL_ERROR "git submodule update --init failed with ${GIT_SUBMODULE_RESULT}, please checkout submodules")
+            endif()
+        endif()
+    endif()
 
-execute_process(
-    COMMAND ${GIT_EXECUTABLE} describe --always --tags
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE QGC_APP_VERSION_STR
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-# cmake_print_variables(QGC_APP_VERSION_STR)
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref @
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE QGC_GIT_BRANCH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} rev-parse --short @
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE QGC_GIT_HASH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} describe --always --tags
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE QGC_APP_VERSION_STR
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} describe --always --abbrev=0
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE QGC_APP_VERSION
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    execute_process(
+        COMMAND ${GIT_EXECUTABLE} log -1 --format=%aI ${QGC_APP_VERSION}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        OUTPUT_VARIABLE QGC_APP_DATE
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+endif()
 
-execute_process(
-    COMMAND ${GIT_EXECUTABLE} describe --always --abbrev=0
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE QGC_APP_VERSION
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-# cmake_print_variables(QGC_APP_VERSION)
-
-execute_process(
-    COMMAND ${GIT_EXECUTABLE} log -1 --format=%aI ${QGC_APP_VERSION}
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    OUTPUT_VARIABLE QGC_APP_DATE
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-# cmake_print_variables(QGC_APP_DATE)
-
-string(FIND ${QGC_APP_VERSION} "v" QGC_APP_VERSION_VALID)
+string(FIND "${QGC_APP_VERSION}" "v" QGC_APP_VERSION_VALID)
 if(QGC_APP_VERSION_VALID GREATER -1)
     string(REPLACE "v" "" QGC_APP_VERSION ${QGC_APP_VERSION})
 else()

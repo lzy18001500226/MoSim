@@ -11,7 +11,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-FALCON_ROOT = ROOT / "References" / "Lab" / "exploration_coverage" / "FALCON-ros1-noetic"
+FALCON_ROOT = ROOT / "src" / "planning" / "falcon"
 
 
 def read_text(path: Path) -> str:
@@ -67,7 +67,7 @@ def main() -> int:
 
     audit = {
         "status": "passed_with_integration_risks",
-        "reference_root": str(FALCON_ROOT),
+        "source_root": str(FALCON_ROOT),
         "key_files": {name: {"path": rel, "exists": exists_rel(rel)} for name, rel in key_files.items()},
         "source_findings": {
             "ros_noetic_claim": "README states setup was tested on Ubuntu 20.04 / ROS Noetic.",
@@ -149,7 +149,7 @@ def main() -> int:
 
 Status: `{audit["status"]}`
 
-Reference root: `{FALCON_ROOT}`
+Source root: `{FALCON_ROOT}`
 
 ## Decision
 

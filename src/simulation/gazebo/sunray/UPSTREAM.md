@@ -17,10 +17,12 @@
 - External runtime assets: 487 files, 1,005,559,590 bytes, tree SHA-256
   `d32fb9ba9e60306afb564caed8a199b8256b01e54b200cc5199e5aab34ba1afc`.
   Their per-file paths and hashes are frozen in `ASSET_MANIFEST.json`.
-- Build-layout constraint: the retained `CMakeLists.txt` refers to the sibling
-  Sunray common-library path. That reference is preserved verbatim and must be
-  audited before this canonical snapshot is activated.
+- Source selection: the registry state is `canonical_active`. The project-local
+  foundation profile links this source tree from `src/`; the retained source is
+  not an active code input.
+- Asset state: all 487 manifest-listed assets were materialized and verified on
+  2026-08-01. They remain Git-ignored and must be included in a release asset
+  pack or final archive.
 
-The registry state is `copied_pending_activation`. The legacy source remains
-the only active runtime path until asset delivery, provenance/license review,
-path activation, and controlled ROS1 validation are completed.
+Provenance/license review and controlled ROS1/Gazebo runtime validation remain
+separate, unproven delivery gates.

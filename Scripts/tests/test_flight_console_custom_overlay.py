@@ -9,7 +9,7 @@ from Scripts.ui.materialize_qgc_custom_overlay import materialize
 
 
 ROOT = Path(__file__).resolve().parents[2]
-CUSTOM = ROOT / "apps" / "flight_console" / "mosim" / "custom"
+CUSTOM = ROOT / "src" / "ground_station" / "qgc" / "mosim_extension" / "custom"
 
 
 def test_vendor_manifest_ignores_generated_gradle_cache(tmp_path: Path) -> None:
@@ -194,7 +194,8 @@ def test_windows_build_entrypoint_never_installs_dependencies() -> None:
     assert "choco install" not in lowered
     assert "materialize_qgc_custom_overlay.py" in script
     assert "generate_qgc_vendor_manifest.py" in script
-    assert '$CustomResource = Join-Path $VendorRoot "custom/custom.qrc"' in script
+    assert '$CustomResource = Join-Path $QgcRoot "custom/custom.qrc"' in script
+    assert 'src/ground_station/qgc/qgroundcontrol' in script
     assert "-E touch $CustomResource" in script
     assert "Ninja Multi-Config" in script
     assert "[switch]$Incremental" in script
