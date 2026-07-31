@@ -1,0 +1,79 @@
+{
+  "schema": "mosim.g3_catalog_missing_formal_runner_run.v1",
+  "recorded_at": "2026-08-01T05:29:20+08:00",
+  "controller_id": "fixed_qp_nmpc_l1_indi_cbf",
+  "display_name": "Fixed QP NMPC + L1 + INDI + CBF",
+  "execution_status": "executed_performance_failed_mcp_timeout_reconciled",
+  "purpose": "Native MWORKS nominal 50 s ClimbPath completion for a catalog entry that previously lacked a FormalRunner. The outer MCP call timed out, but direct native state and result reads subsequently verified completion; this distinction is preserved rather than converted into an API success.",
+  "model": {
+    "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FixedQpNmpcL1IndiCbfFormalRunner",
+    "template_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedQpNmpcL1IndiCbf",
+    "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50.0,
+    "solver": "Dassl",
+    "result_sample_count": 25001,
+    "result_time_first_s": 0.0,
+    "result_time_last_s": 50.0
+  },
+  "source_surface": {
+    "formal_runner": {
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedQpNmpcL1IndiCbfFormalRunner.mo",
+      "sha256": "D1C32B680F4C492D4A8EA6B55C7087D00F22B8D81CA3D4EE37B432212B0C8481"
+    },
+    "formal_package_order": {
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/package.order",
+      "sha256": "A30E7A0C50C615F8673A6A2F8D29D76C23F086C1205FD36CA2926F5BE83D19CA"
+    }
+  },
+  "native_check_model": {
+    "formal_runner": "passed",
+    "batch_scope": "All four newly added fixed-composite FormalRunners",
+    "error_count": 0,
+    "warning_count": 5,
+    "warning_scope": "Shared QuadChassis warnings shown in the native Sysplorer output; no CheckModel errors were reported."
+  },
+  "native_simulation": {
+    "api": "SimulateModel",
+    "api_ok": false,
+    "mcp_call_status": "timed_out_after_300_s",
+    "completed_to_stop_time_s": 50.0,
+    "mworks_completion_verification": {
+      "exit_state": 0,
+      "state": "Idle",
+      "sim_time_s": 50.0,
+      "result_readable": true,
+      "last_errors": [""],
+      "observation": "After the outer MCP call timed out, MWORKS reported exit state 0, Idle, current simulation time 50.0 s, and a readable position_error_norm result series."
+    },
+    "result_variable": "position_error_norm",
+    "terminal_position_error_norm_m": 12455.228659768618,
+    "result_statistics": {
+      "sample_count": 25001,
+      "minimum_m": 0.0,
+      "maximum_m": 12455.228659768618,
+      "mean_m": 4227.649542
+    },
+    "native_result": {
+      "retained": true,
+      "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/native_result/FixedQpNmpcL1IndiCbfFormalRunner/Result.msr",
+      "bytes": 150855349,
+      "sha256": "1DFE02DBD5D142500B2BDABCF91AB18332581FC03FB0CCBB9751AB0980FE7D6B"
+    },
+    "performance_outcome": "failed_terminal_position_error_gate",
+    "claim_boundary": "The MWORKS simulation itself completed and its result was readable, but the terminal error is far above the 5 m screening gate. The MCP timeout remains an execution-transport fact, not a performance pass."
+  },
+  "mworks_gate": {
+    "activation_sentinel_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
+    "background_screenshot_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
+    "license_state": "education_window_observed_activation_unverified_no_login_or_authorization_blocker",
+    "activation_state_observation": "The fresh sentinel was clean and the background capture showed an existing Sysplorer [education edition] start window with no demo, login, activation, authorization, or GUI-error dialog. The edition title alone is not an activation proof.",
+    "will_not_click_activation_login": true,
+    "mworks_window_evidence_touched": true,
+    "live_mworks_touched": true
+  },
+  "mworks_phase_screenshots": [
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/screenshots/fixed_qp_nmpc_timeout/139096_0xE11304_MoSimQuadrotorModel - 结果查看器.png",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/screenshots/fixed_qp_nmpc_timeout/capture_manifest.json"
+  ],
+  "claim_boundary": "This is a single nominal MWORKS ClimbPath execution. It does not claim graphical acceptance, gain tuning, deployment, ROS, Gazebo, PX4, or closed-loop runtime success."
+}

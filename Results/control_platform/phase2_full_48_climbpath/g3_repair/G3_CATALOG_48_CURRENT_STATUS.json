@@ -1,6 +1,6 @@
 {
   "schema": "mosim.phase2_full_48_climbpath.g3_catalog_reconciliation.v1",
-  "generated_at": "2026-08-01T04:42:48+08:00",
+  "generated_at": "2026-08-01T05:50:49+08:00",
   "authority": "Current status for the fixed 48-entry catalog. Historical G3_STATUS.json remains immutable execution evidence and is not overwritten by this reconciliation.",
   "scope": "Nominal 50 s ClimbPath evidence only. No scenario, tuning, deployment, ROS, Gazebo, or runtime claim.",
   "source_files": {
@@ -10,7 +10,7 @@
     },
     "scheme_id_alias_map": {
       "path": "Config/control_platform/scheme_id_alias_map.json",
-      "sha256": "8fc62c26238f71d34c10f176880a939e0f456b39702c58177c86c58c7d120825"
+      "sha256": "4e17d063de8dbf529d82411e8c70e372d466e10ddb8a36c8321cd381d9cc38b5"
     },
     "historical_g3_status": {
       "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json",
@@ -23,12 +23,12 @@
     "historical_g3_exact_count": 33,
     "historical_g3_alias_count": 8,
     "historical_g3_mapped_catalog_count": 41,
-    "supplemental_current_record_count": 3,
-    "formal_runner_missing_count": 4,
+    "supplemental_current_record_count": 7,
+    "formal_runner_missing_count": 0,
     "historical_g3_only_count": 7,
-    "passed_count": 28,
-    "failed_count": 16,
-    "not_run_count": 4,
+    "passed_count": 30,
+    "failed_count": 18,
+    "not_run_count": 0,
     "inventory_reconciled": true,
     "completed": false
   },
@@ -154,35 +154,45 @@
       "scheme_id": "fixed_awff_l1_residual",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
       "category": "pid_family",
-      "status": "not_run",
-      "completion_state": "not_run",
-      "evidence_origin": "catalog_entry_without_formal_runner",
+      "status": "fail",
+      "completion_state": "completed",
+      "evidence_origin": "post_freeze_formal_runner_record",
       "historical_g3_controller_id": null,
-      "runner_class": null,
-      "source_record": null,
-      "terminal_position_error_norm_m": null,
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FixedAwffL1ResidualFormalRunner",
+      "source_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/RUN_RECORD.json",
+      "source_record_sha256": "13debc1c790ae55236f41f5d1dbbe85f2949824985af0ceb053c7c073ea66070",
+      "source_status": "executed_performance_failed",
+      "check_model_status": "formal_runner_passed",
+      "stop_time_s": 50.0,
+      "sample_count": 25001,
+      "terminal_position_error_norm_m": 10628.468304322492,
       "position_rmse_m": null,
-      "failure_class": "formal_runner_missing",
+      "failure_class": "terminal_position_error_exceeds_5m",
       "failure_reasons": [
-        "composite fixed_ Sysblock variant; no FormalRunner exists"
-      ]
+        "terminal position_error_norm 10628.4683043 m is not below 5 m"
+      ],
+      "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
       "scheme_id": "fixed_awff_l1_indi",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
       "category": "pid_family",
-      "status": "not_run",
-      "completion_state": "not_run",
-      "evidence_origin": "catalog_entry_without_formal_runner",
+      "status": "pass",
+      "completion_state": "completed",
+      "evidence_origin": "post_freeze_formal_runner_record",
       "historical_g3_controller_id": null,
-      "runner_class": null,
-      "source_record": null,
-      "terminal_position_error_norm_m": null,
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FixedAwffL1IndiFormalRunner",
+      "source_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/RUN_RECORD.json",
+      "source_record_sha256": "1ba123a057ff5728ebb96e8f49ff96bd09a55f7958fe95356e0b5a223e8a22b9",
+      "source_status": "executed_passed_nominal_climbpath",
+      "check_model_status": "formal_runner_passed",
+      "stop_time_s": 50.0,
+      "sample_count": 25001,
+      "terminal_position_error_norm_m": 0.00047656188464517224,
       "position_rmse_m": null,
-      "failure_class": "formal_runner_missing",
-      "failure_reasons": [
-        "composite fixed_ Sysblock variant; no FormalRunner exists"
-      ]
+      "failure_class": null,
+      "failure_reasons": [],
+      "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
       "scheme_id": "lqr_baseline",
@@ -619,35 +629,45 @@
       "scheme_id": "fixed_linear_mpc_l1_indi",
       "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
       "category": "optimization_predictive",
-      "status": "not_run",
-      "completion_state": "not_run",
-      "evidence_origin": "catalog_entry_without_formal_runner",
+      "status": "pass",
+      "completion_state": "completed",
+      "evidence_origin": "post_freeze_formal_runner_record",
       "historical_g3_controller_id": null,
-      "runner_class": null,
-      "source_record": null,
-      "terminal_position_error_norm_m": null,
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FixedLinearMpcL1IndiFormalRunner",
+      "source_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/RUN_RECORD.json",
+      "source_record_sha256": "20635a197b266a7ea5793ecffe1911fa16b4e4765961843a99df52be6f691e86",
+      "source_status": "executed_passed_nominal_climbpath",
+      "check_model_status": "formal_runner_passed",
+      "stop_time_s": 50.0,
+      "sample_count": 25001,
+      "terminal_position_error_norm_m": 0.0004726003753151066,
       "position_rmse_m": null,
-      "failure_class": "formal_runner_missing",
-      "failure_reasons": [
-        "composite fixed_ Sysblock variant; no FormalRunner exists"
-      ]
+      "failure_class": null,
+      "failure_reasons": [],
+      "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
       "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
       "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
       "category": "optimization_predictive",
-      "status": "not_run",
-      "completion_state": "not_run",
-      "evidence_origin": "catalog_entry_without_formal_runner",
+      "status": "fail",
+      "completion_state": "completed",
+      "evidence_origin": "post_freeze_formal_runner_record",
       "historical_g3_controller_id": null,
-      "runner_class": null,
-      "source_record": null,
-      "terminal_position_error_norm_m": null,
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FixedQpNmpcL1IndiCbfFormalRunner",
+      "source_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/RUN_RECORD.json",
+      "source_record_sha256": "76cb338fafd014b669df0799c69f1cfa0c274a3a1592e881b3950ab2f8f8378a",
+      "source_status": "executed_performance_failed_mcp_timeout_reconciled",
+      "check_model_status": "formal_runner_passed_mcp_timeout_native_completion_verified",
+      "stop_time_s": 50.0,
+      "sample_count": 25001,
+      "terminal_position_error_norm_m": 12455.228659768618,
       "position_rmse_m": null,
-      "failure_class": "formal_runner_missing",
+      "failure_class": "terminal_position_error_exceeds_5m",
       "failure_reasons": [
-        "composite fixed_ Sysblock variant; no FormalRunner exists"
-      ]
+        "terminal position_error_norm 12455.2286598 m is not below 5 m"
+      ],
+      "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. The API timeout remains explicit; native completion is separately verified. This enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
       "scheme_id": "se3_basic",
@@ -863,11 +883,6 @@
       "claim_boundary": "Preserved historical G3 execution evidence; not counted in the current catalog-48 denominator."
     }
   ],
-  "unresolved_catalog_entries": [
-    "fixed_awff_l1_residual",
-    "fixed_awff_l1_indi",
-    "fixed_linear_mpc_l1_indi",
-    "fixed_qp_nmpc_l1_indi_cbf"
-  ],
+  "unresolved_catalog_entries": [],
   "claim_boundary": "This artifact reconciles evidence identities and statuses for the existing 48-entry catalog. It does not change the frozen historical G3 matrix, constitute a G3 retry, or claim 48/48 acceptance."
 }

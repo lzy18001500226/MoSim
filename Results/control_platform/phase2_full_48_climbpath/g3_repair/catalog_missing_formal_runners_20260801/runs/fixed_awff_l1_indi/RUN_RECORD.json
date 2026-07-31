@@ -1,0 +1,68 @@
+{
+  "schema": "mosim.g3_catalog_missing_formal_runner_run.v1",
+  "recorded_at": "2026-08-01T05:29:20+08:00",
+  "controller_id": "fixed_awff_l1_indi",
+  "display_name": "Fixed AWFF + L1 + INDI",
+  "execution_status": "executed_passed_nominal_climbpath",
+  "purpose": "Native MWORKS nominal 50 s ClimbPath completion for a catalog entry that previously lacked a FormalRunner. This is a bounded MWORKS screen result only, not controller acceptance, tuning, deployment, or runtime-equivalence evidence.",
+  "model": {
+    "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.FixedAwffL1IndiFormalRunner",
+    "template_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Indi",
+    "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+    "duration_s": 50.0,
+    "solver": "Dassl",
+    "result_sample_count": 25001,
+    "result_time_first_s": 0.0,
+    "result_time_last_s": 50.0
+  },
+  "source_surface": {
+    "formal_runner": {
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedAwffL1IndiFormalRunner.mo",
+      "sha256": "5E3C82709E808B30889020CF1C684B35AD78F1D7A074532D48B0187B92EAA90A"
+    },
+    "formal_package_order": {
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/package.order",
+      "sha256": "A30E7A0C50C615F8673A6A2F8D29D76C23F086C1205FD36CA2926F5BE83D19CA"
+    }
+  },
+  "native_check_model": {
+    "formal_runner": "passed",
+    "batch_scope": "All four newly added fixed-composite FormalRunners",
+    "error_count": 0,
+    "warning_count": 5,
+    "warning_scope": "Shared QuadChassis warnings shown in the native Sysplorer output; no CheckModel errors were reported."
+  },
+  "native_simulation": {
+    "api": "SimulateModel",
+    "api_ok": true,
+    "mcp_call_status": "returned_true",
+    "completed_to_stop_time_s": 50.0,
+    "result_variable": "position_error_norm",
+    "terminal_position_error_norm_m": 0.00047656188464517224,
+    "result_statistics": {
+      "sample_count": 25001,
+      "minimum_m": 0.0,
+      "maximum_m": 0.6114588650475912,
+      "mean_m": 0.070389
+    },
+    "native_result": {
+      "retained": false,
+      "reason": "The direct native MCP result was read through result_manager before the subsequent run replaced the active result; the requested run directory contains no Result.msr. The values above are retained as the durable execution record."
+    },
+    "performance_outcome": "passed_terminal_position_error_gate",
+    "claim_boundary": "The native 50 s result is readable and below the project 5 m terminal-error screening gate. It is not a deployment or runtime-equivalence claim."
+  },
+  "mworks_gate": {
+    "activation_sentinel_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
+    "background_screenshot_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
+    "license_state": "education_window_observed_activation_unverified_no_login_or_authorization_blocker",
+    "activation_state_observation": "The fresh sentinel was clean and the background capture showed an existing Sysplorer [education edition] start window with no demo, login, activation, authorization, or GUI-error dialog. The edition title alone is not an activation proof.",
+    "will_not_click_activation_login": true,
+    "mworks_window_evidence_touched": true,
+    "live_mworks_touched": true
+  },
+  "mworks_phase_screenshots": [
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/screenshots/after_check_model/139096_0x13A02E2_MoSimQuadrotorModel - Sysplorer _教育版_.png"
+  ],
+  "claim_boundary": "This is a single nominal MWORKS ClimbPath execution. It does not claim graphical acceptance, gain tuning, deployment, ROS, Gazebo, PX4, or closed-loop runtime success."
+}

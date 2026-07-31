@@ -235,10 +235,16 @@ API failures, and one CheckModel failure.
 
 For the active fixed catalog terminology, use
 `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`.
-It maps 33 exact historical identities plus eight aliases, accounts for the
-three post-freeze FormalRunner records, and leaves four catalog entries as
-`not_run` because no FormalRunner exists. Its current result is 28/48 passes,
-16/48 completed failures, and 4/48 not-run entries; `completed=false`. The
+It maps 33 exact historical identities plus eight aliases and accounts for
+seven post-freeze FormalRunner records. The four former no-runner fixed
+composite entries now have thin whole-aircraft FormalRunners and one native
+nominal 50 s ClimbPath record each: `fixed_awff_l1_indi` and
+`fixed_linear_mpc_l1_indi` pass the terminal 5 m gate, while
+`fixed_awff_l1_residual` and `fixed_qp_nmpc_l1_indi_cbf` are retained as
+terminal-error failures. The QP NMPC outer MCP call timed out but native
+MWORKS completion was separately verified at 50 s with a readable result; it
+is not represented as an API-success call. The current result is 30/48 passes,
+18/48 completed failures, and 0/48 not-run entries; `completed=false`. The
 seven historical G3-only execution rows remain preserved in the artifact but
 are not silently substituted for catalog entries.
 
