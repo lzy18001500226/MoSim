@@ -1,0 +1,160 @@
+{
+  "schema": "mosim.scheme_id_alias_map.v1",
+  "version": 1,
+  "generated_at": "2026-08-01",
+  "authority": "Bridge between the frozen design-side catalog namespace and the execution-side G3 runner namespace. This file does not redefine either side's entry count. The catalog remains the authority for terminology and family assignment; G3_STATUS remains the authority for historical execution status, while G3_CATALOG_48_CURRENT_STATUS records the current catalog-48 reconciliation.",
+  "scope": "ClimbPath 50 s phase2_full_48 baseline only. No scenario, code-generation, or deployment claim.",
+  "source_files": {
+    "catalog": "Config/control_platform/control_scheme_catalog.json",
+    "g3_status": "Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json",
+    "g3_catalog_48_current_status": "Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json",
+    "runner_dir": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal"
+  },
+  "reconciliation_summary": {
+    "catalog_frozen_entries": 48,
+    "g3_status_rows": 48,
+    "formal_runner_files": 49,
+    "exact_name_matches": 33,
+    "alias_resolved": 8,
+    "aligned_catalog_to_g3": 41,
+    "supplemental_current_records": 3,
+    "catalog_only_no_runner": 4,
+    "runner_only_no_catalog_entry": 7,
+    "arithmetic_check": {
+      "catalog": "33 exact + 8 alias + 3 supplemental current records + 4 no-runner = 48",
+      "g3_status": "33 exact + 8 alias + 7 runner-only = 48"
+    }
+  },
+  "aliases": [
+    {
+      "catalog_scheme_id": "lqi_baseline",
+      "g3_controller_id": "lqi",
+      "runner_class": "LqiFormalRunner",
+      "evidence": "runner_class",
+      "confidence": "confirmed"
+    },
+    {
+      "catalog_scheme_id": "h2_state_feedback",
+      "g3_controller_id": "h_2_state_feedback",
+      "runner_class": "H2StateFeedbackFormalRunner",
+      "evidence": "runner_class",
+      "confidence": "confirmed"
+    },
+    {
+      "catalog_scheme_id": "se3_basic",
+      "g3_controller_id": "se_3_basic",
+      "runner_class": "Se3BasicFormalRunner",
+      "evidence": "runner_class",
+      "confidence": "confirmed"
+    },
+    {
+      "catalog_scheme_id": "dfbc_high_order_bodyrate",
+      "g3_controller_id": "dfbc_high_order_body_rate",
+      "runner_class": "DfbcHighOrderBodyRateFormalRunner",
+      "evidence": "runner_class",
+      "confidence": "confirmed"
+    },
+    {
+      "catalog_scheme_id": "dfbc_smooth_robust_bodyrate",
+      "g3_controller_id": "dfbc_smooth_robust_body_rate",
+      "runner_class": "DfbcSmoothRobustBodyRateFormalRunner",
+      "evidence": "runner_class",
+      "confidence": "confirmed"
+    },
+    {
+      "catalog_scheme_id": "dfbc_high_order_attitude",
+      "g3_controller_id": "dfbc_high_order",
+      "runner_class": "DfbcHighOrderFormalRunner",
+      "evidence": "DfbcHighOrderFormalRunner.mo binds Control.Adapters.DfbcHighOrderAttitudeThrustAdapter; no DfbcHighOrderAttitudeFormalRunner.mo exists, so the unsuffixed execution id is the attitude variant",
+      "confidence": "confirmed"
+    },
+    {
+      "catalog_scheme_id": "dfbc_smooth_robust_attitude",
+      "g3_controller_id": "dfbc_smooth_robust",
+      "runner_class": "DfbcSmoothRobustFormalRunner",
+      "evidence": "DfbcSmoothRobustFormalRunner.mo documents itself as the runner for DfbcSmoothRobustAttitudeThrustAdapter; no DfbcSmoothRobustAttitudeFormalRunner.mo exists",
+      "confidence": "confirmed"
+    },
+    {
+      "catalog_scheme_id": "fixed_awff_pid",
+      "g3_controller_id": "awff",
+      "runner_class": "AwffFormalRunner",
+      "evidence": "catalog source_controller_id is awff_pid; only AwffFormalRunner.mo exists, no FixedAwffPidFormalRunner.mo",
+      "confidence": "confirmed"
+    }
+  ],
+  "catalog_current_supplemental_evidence": [
+    {
+      "catalog_scheme_id": "pid_awff_linear_eso",
+      "run_record": "Results/control_platform/pid_awff_linear_eso_baseline_20260731/RUN_RECORD.json",
+      "expected_status": "fail",
+      "evidence": "FormalRunner CheckModel passed and a native 50 s result with 25001 samples exists. Terminal position_error_norm is 3412.359226529184 m, above the 5 m gate. The direct equation-core compiler error remains explicitly retained.",
+      "claim_boundary": "Post-freeze native FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the historical G3 matrix."
+    },
+    {
+      "catalog_scheme_id": "smc_boundary_layer",
+      "run_record": "Results/control_platform/tier1_formal_promotion_20260731/runs/smc_boundary_layer/RUN_RECORD.json",
+      "expected_status": "fail",
+      "evidence": "Experimental FormalRunner CheckModel and 50 s simulation passed structurally; terminal position_error_norm is 15.029940929898276 m, above the 5 m gate.",
+      "claim_boundary": "Post-freeze experimental whole-aircraft evidence. It enters only the current catalog-48 reconciliation and does not rewrite the historical G3 matrix."
+    },
+    {
+      "catalog_scheme_id": "nmpc_outer",
+      "run_record": "Results/control_platform/tier1_formal_promotion_20260731/runs/nmpc_outer/RUN_RECORD.json",
+      "expected_status": "pass",
+      "evidence": "Experimental FormalRunner CheckModel and 50 s simulation passed; terminal position_error_norm is 0.142974149482056 m, below the 5 m gate.",
+      "claim_boundary": "Post-freeze experimental whole-aircraft evidence. It enters only the current catalog-48 reconciliation and does not rewrite the historical G3 matrix."
+    }
+  ],
+  "catalog_only_no_runner": [
+    {
+      "catalog_scheme_id": "fixed_awff_l1_residual",
+      "reason": "composite fixed_ Sysblock variant; no FormalRunner exists"
+    },
+    {
+      "catalog_scheme_id": "fixed_awff_l1_indi",
+      "reason": "composite fixed_ Sysblock variant; no FormalRunner exists"
+    },
+    {
+      "catalog_scheme_id": "fixed_linear_mpc_l1_indi",
+      "reason": "composite fixed_ Sysblock variant; no FormalRunner exists"
+    },
+    {
+      "catalog_scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "reason": "composite fixed_ Sysblock variant; no FormalRunner exists"
+    }
+  ],
+  "runner_only_no_catalog_entry": [
+    {
+      "g3_controller_id": "l_1",
+      "runner_class": "L1FormalRunner",
+      "note": "standalone L1 runner; the catalog only carries composite fixed_awff_l1_* variants, so no direct catalog id exists"
+    },
+    {
+      "g3_controller_id": "indi",
+      "runner_class": "IndiFormalRunner",
+      "note": "standalone INDI runner; the catalog only carries composite fixed_awff_l1_indi, so no direct catalog id exists"
+    },
+    {
+      "g3_controller_id": "improved_pid",
+      "runner_class": "ImprovedPidFormalRunner"
+    },
+    {
+      "g3_controller_id": "fault_compensation",
+      "runner_class": "FaultCompensationFormalRunner"
+    },
+    {
+      "g3_controller_id": "linear_mpc_rotor",
+      "runner_class": "LinearMpcRotorFormalRunner"
+    },
+    {
+      "g3_controller_id": "official_pid_yaw_corrected",
+      "runner_class": "OfficialPidYawCorrectedFormalRunner"
+    },
+    {
+      "g3_controller_id": "official_pid_yaw_authority_mapped",
+      "runner_class": "OfficialPidYawAuthorityMappedFormalRunner"
+    }
+  ],
+  "claim_boundary": "These seven runners produced historical G3 ClimbPath data but carry no approved catalog terminology. They are preserved as historical execution evidence and must not be counted inside the current 48-entry frozen catalog without a separate catalog decision."
+}
