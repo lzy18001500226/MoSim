@@ -324,13 +324,19 @@ def run_phase(args: argparse.Namespace, *, phase: str, stop_time_s: float, inter
             record["formation_tracking_status"] = metrics["status"]
             record["formation_tracking_accepted"] = metrics["accepted"]
             record["formation_tracking_gates"] = metrics["gates"]
-            record["gui_result_review"] = helper.open_gui_result_viewer(
-                client,
-                native_result=native_result,
-                model_name=MODEL_NAME,
-                variables=VARIABLES,
-                reset_windows=False,
-            )
+            if args.no_gui_result_viewer:
+                record["gui_result_review"] = {
+                    "attempted": False,
+                    "reason": "Numeric evidence requested; no GUI result viewer opened.",
+                }
+            else:
+                record["gui_result_review"] = helper.open_gui_result_viewer(
+                    client,
+                    native_result=native_result,
+                    model_name=MODEL_NAME,
+                    variables=VARIABLES,
+                    reset_windows=False,
+                )
         record["metrics_json"] = str(metrics_json)
         record["metrics_csv"] = str(metrics_csv)
         record["status"] = "completed"
@@ -356,6 +362,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--activation-sentinel", required=True)
     parser.add_argument("--background-manifest", required=True)
     parser.add_argument("--simulation-timeout-s", type=float, default=1500.0)
+    parser.add_argument(
+        "--no-gui-result-viewer",
+        action="store_true",
+        help="Keep the full run numeric-only and do not open the optional result viewer.",
+    )
     return parser.parse_args()
 
 

@@ -88,8 +88,6 @@ def main() -> int:
         assert_connection(safety_model, f"reference{index}.velocity_command", f"safetySmoother.nominal_velocity_{index}")
         assert_connection(safety_model, f"reference{index}.acceleration_command", f"safetySmoother.nominal_acceleration_{index}")
         assert_connection(safety_model, f"safetyFilter.safe_position_{index}", f"safetySmoother.raw_safe_position_{index}")
-        assert_connection(safety_model, f"safetyFilter.safe_velocity_{index}", f"safetySmoother.raw_safe_velocity_{index}")
-        assert_connection(safety_model, f"safetyFilter.safe_acceleration_{index}", f"safetySmoother.raw_safe_acceleration_{index}")
         assert_connection(safety_model, f"safetySmoother.safe_position_{index}", f"vehicle{index}.position_reference")
         assert_connection(safety_model, f"safetySmoother.safe_velocity_{index}", f"vehicle{index}.velocity_reference")
         assert_connection(safety_model, f"safetySmoother.safe_acceleration_{index}", f"vehicle{index}.acceleration_reference")
@@ -158,12 +156,14 @@ def main() -> int:
 
     for required in (
         "block ThreeUavPairwiseEcbfReferenceSmoother",
-        "position_time_constant_s",
-        "velocity_time_constant_s",
-        "acceleration_time_constant_s",
+        "correction_time_constant_s",
+        "correction_damping_ratio",
+        "maximum_correction_acceleration_m_s2",
         "der(positionCorrection[vehicle, axis])",
         "der(velocityCorrection[vehicle, axis])",
-        "der(accelerationCorrection[vehicle, axis])",
+        "correctionAccelerationRaw[vehicle, axis]",
+        "correctionAccelerationScale[vehicle]",
+        "correctionAcceleration[vehicle, axis]",
         "maximum_applied_reference_offset_m",
     ):
         assert required in safety_smoother, required

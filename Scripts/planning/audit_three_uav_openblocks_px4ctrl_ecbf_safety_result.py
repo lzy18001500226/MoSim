@@ -91,7 +91,7 @@ def audit(raw_path: Path, planning_path: Path) -> dict[str, Any]:
     )
     planning = json.loads(planning_path.read_text(encoding="utf-8"))
     metrics: dict[str, Any] = {
-        "schema": "mosim.mworks.three_uav_open_blocks_px4ctrl_ecbf_safety.metrics.v1",
+        "schema": "mosim.mworks.three_uav_open_blocks_px4ctrl_ecbf_safety.metrics.v2",
         "source": "MWORKS_MCP",
         "model_name": "MoSimQuadrotorModel.Guidance.Planning.ThreeUavOpenBlocksReconfigurableFormationPx4CtrlEcbfSafety",
         "raw_result": str(raw_path.resolve()),
@@ -173,7 +173,12 @@ def audit(raw_path: Path, planning_path: Path) -> dict[str, Any]:
     )
     maximum_reference_offset_m = max(data["safety_maximum_reference_offset_m"])
     maximum_ecbf_residual_m2_s2 = max(data["safety_maximum_ecbf_residual_m2_s2"])
-    intervention_sample_count = sum(1 for value in data["safety_active_pair_count"] if value > 0.5)
+    instantaneous_filter_active_sample_count = sum(
+        1 for value in data["safety_active_pair_count"] if value > 0.5
+    )
+    intervention_sample_count = sum(
+        1 for value in data["safety_maximum_reference_offset_m"] if value > 1e-3
+    )
     correction_saturated_sample_count = sum(1 for value in data["safety_correction_saturated"] if value > 0.5)
     clearance_proxy_m, clearance_proxy_time_s = min_value_time(data["clearance_lower_bound_m"], times)
 
@@ -192,7 +197,9 @@ def audit(raw_path: Path, planning_path: Path) -> dict[str, Any]:
         "maximum_reference_offset_m": maximum_reference_offset_m,
         "maximum_ecbf_residual_m2_s2": maximum_ecbf_residual_m2_s2,
         "maximum_active_pair_count": max(data["safety_active_pair_count"]),
+        "instantaneous_filter_active_sample_count": instantaneous_filter_active_sample_count,
         "intervention_sample_count": intervention_sample_count,
+        "intervention_basis": "applied_safety_reference_offset",
         "correction_saturated_sample_count": correction_saturated_sample_count,
         "minimum_clearance_proxy_m": clearance_proxy_m,
         "minimum_clearance_proxy_time_s": clearance_proxy_time_s,
@@ -253,6 +260,7 @@ def write_outputs(metrics: dict[str, Any], json_path: Path, csv_path: Path) -> N
         ("minimum_nominal_reference_pair_distance_m", metrics["minimum_nominal_reference_pair_distance_m"]),
         ("maximum_nominal_formation_deviation_m", metrics["maximum_nominal_formation_deviation_m"]),
         ("maximum_reference_offset_m", metrics["maximum_reference_offset_m"]),
+        ("instantaneous_filter_active_sample_count", metrics["instantaneous_filter_active_sample_count"]),
         ("intervention_sample_count", metrics["intervention_sample_count"]),
         ("correction_saturated_sample_count", metrics["correction_saturated_sample_count"]),
         ("minimum_clearance_proxy_m", metrics["minimum_clearance_proxy_m"]),
