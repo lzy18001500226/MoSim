@@ -9,13 +9,15 @@ boundary; P0b then passed Official PID and four shared Runner 50 s regressions
 before the later reference-velocity/reference-acceleration contract repair.
 Phase 1 completed its user-approved frozen 46-route matrix on 2026-07-27 CST.
 The pre-P0a matrix and the six-candidate recovery both remain historical
-trace-back only after the forward-reference repair. The three review-only
-profiles `pid_awff_linear_eso`, `smc_boundary_layer`, and `nmpc_outer` are
-Tier1-only; the Tier2 whole-aircraft population is 45 routes. Official PID has
-returned to its native continuous `RotorCommandRunner` boundary; its nominal
-50 s `ClimbPath` passed with RMSE `0.1729701479 m` and terminal error
-`0.0065067004 m`. The earlier v1 seven-scenario evidence remains historical
-trace-back only. The current two-controller v2 A/B set is isolated at
+trace-back only after the forward-reference repair. The current report-run
+audit counts 47 completed nominal run-evidence entries: the 46 existing MWORKS
+profiles plus the independent `px4ctrl` baseline. `pid_awff_linear_eso` is
+currently in progress and is excluded until its terminal record is available.
+`smc_boundary_layer` and `nmpc_outer` remain Tier1/Experimental and outside the
+frozen G2/G3 denominator, but their isolated whole-aircraft FormalRunner runs
+are valid evidence with separate pass/fail labels. The earlier v1
+seven-scenario evidence remains historical trace-back only. The current
+two-controller v2 A/B set is isolated at
 `Results/control_platform/seven_scenario_ab_v2/`: 12 of 14 records are valid,
 while both 50 percent rotor-1 fault cases remain preserved invalid negative
 evidence. Do not change the baseline, fault magnitude, or Plant to mask either
@@ -27,6 +29,12 @@ engineering/deployment baseline. The five named whole-aircraft Profiles belong
 to the PID or optimization/predictive family; `mu_synthesis` and `neural_smc`
 remain historical 67-route trace-back records only. This vocabulary changes no
 historical result or current runtime state.
+
+For report screenshots, do not use the catalog denominator as a screenshot
+completion claim. The 47-entry run-evidence audit is at
+`Docs/报告/审计/控制器原生截图归位/FORMAL_RUN_SCREENSHOT_COVERAGE_20260731.md`.
+It distinguishes source result captures, whole-aircraft FormalRunner records,
+and report-directory assets.
 
 ## 0. Task Authority and Evidence Snapshot
 

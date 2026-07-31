@@ -98,15 +98,21 @@ The six-candidate recovery record at
 `Results/control_platform/champion_candidate_recovery_20260727/` predates the
 shared reference-velocity/reference-acceleration repair. Its `ClimbPath`
 passes and RMSE are trace-back evidence only, not a valid ranking for the
-current source. The seven-scenario contract is bound through the Plant and four
-shared Runner classes. The three review-only profiles
-`pid_awff_linear_eso`, `smc_boundary_layer`, and `nmpc_outer` are Tier1-only;
-the Tier2 whole-aircraft population is 45 routes. Official PID retains its
-native continuous `RotorCommandRunner` boundary, while the other 44 Tier2
-routes use their 100 Hz discrete boundary. Its nominal 50 s `ClimbPath` passed
-with RMSE `0.1729701479 m` and terminal error `0.0065067004 m`. Six Official
-PID v1 seven-scenario records are valid. The v1 50 s motor-efficiency-fault
-record is invalid; preserve this historical negative evidence at
+ current source. The seven-scenario contract is bound through the Plant and four
+ shared Runner classes. The report-run audit now separates the 48-entry catalog
+ from the completed nominal evidence population: 46 existing MWORKS profiles
+ plus the independent `px4ctrl` MWORKS baseline have run evidence (47 total);
+ `pid_awff_linear_eso` is in progress and is excluded until its terminal record
+ closes. The `smc_boundary_layer` and `nmpc_outer` routes remain Tier1/Experimental
+ rather than part of the frozen G2/G3 denominator, but each now has an isolated
+ whole-aircraft FormalRunner record. The G6 screenshot population for the 46
+ existing profiles remains mixed: the audit labels its 46 result captures as
+ `internal_fixed_input_probe` unless a separate whole-aircraft record says
+ otherwise. Official PID retains its native continuous `RotorCommandRunner`
+ boundary, while the other routes use their declared 100 Hz boundary. Its
+ nominal 50 s `ClimbPath` passed with RMSE `0.1729701479 m` and terminal error
+ `0.0065067004 m`. Six Official PID v1 seven-scenario records are valid. The v1
+ 50 s motor-efficiency-fault record is invalid; preserve this historical negative evidence at
 `Results/control_platform/seven_scenario_ab/official_pid/motor_efficiency_fault/`
 and do not alter the baseline, fault magnitude, or Plant to relabel it valid.
 On 2026-07-30 CST, the user then authorized and completed a separate frozen
