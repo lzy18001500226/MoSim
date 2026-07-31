@@ -506,14 +506,6 @@ const OFFLINE_PROFILES = Dict(
         return panel, label
     end
 
-    function ensure_assistant_message_capacity(app, count)
-        while length(app.assistant_message_panels()) < count
-            panel, label = app.create_assistant_message_bubble()
-            push!(app.AssistantMessagePanels, panel)
-            push!(app.AssistantMessageLabels, label)
-        end
-    end
-
     function render_assistant_chat(app)
         app.AssistantChatPanel === nothing && return
         app.AssistantChatContentPanel === nothing && return
@@ -532,9 +524,9 @@ const OFFLINE_PROFILES = Dict(
             app.assistant_update_chat_navigation_controls()
             return
         end
-        app.ensure_assistant_message_capacity(length(app.AssistantLines))
         panels = app.assistant_message_panels()
         labels = app.assistant_message_labels()
+        isempty(panels) && return
 
         viewport_height = app.AssistantChatPanel.Position[4]
         previous_max_offset = app.assistant_scroll_max_offset(
@@ -562,15 +554,21 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantChatContentPanel.Position = [0, 0, 1360, viewport_height]
 
         y = 10
+        slot = 1
         for (index, entry) in enumerate(app.AssistantLines)
-            panel = panels[index]
-            label = labels[index]
             class_name = app.assistant_message_class(entry)
             height = heights[index]
             left = class_name == "user" ? 316 : (class_name == "system" ? 96 : 16)
             width = class_name == "user" ? 1028 : (class_name == "system" ? 1248 : 1328)
             visible_y = y - app.AssistantChatScrollOffset
             in_viewport = visible_y + height > 0 && visible_y < viewport_height
+            if !in_viewport
+                y += height + 10
+                continue
+            end
+            slot > length(panels) && break
+            panel = panels[slot]
+            label = labels[slot]
             panel.Position = [left, visible_y, width, height]
             label.Position = [12, 8, width - 24, height - 16]
             label.Text = app.assistant_message_text_for_display(entry)
@@ -580,8 +578,9 @@ const OFFLINE_PROFILES = Dict(
                 (class_name == "system" ? [0.82, 0.67, 0.34] : [0.70, 0.78, 0.81])
             label.BackgroundColor = panel.BackgroundColor
             label.FontColor = class_name == "system" ? [0.35, 0.27, 0.10] : [0.08, 0.16, 0.22]
-            label.Visible = in_viewport
-            panel.Visible = in_viewport
+            label.Visible = true
+            panel.Visible = true
+            slot += 1
             y += height + 10
         end
         app.assistant_update_chat_navigation_controls()
@@ -2592,8 +2591,20 @@ const OFFLINE_PROFILES = Dict(
             Visible=true,
             Position=[0, 0, 1360, 390],
         )
-        app.AssistantMessagePanels = Any[]
-        app.AssistantMessageLabels = Any[]
+        app.AssistantMessagePanel1, app.AssistantMessageLabel1 = app.create_assistant_message_bubble()
+        app.AssistantMessagePanel2, app.AssistantMessageLabel2 = app.create_assistant_message_bubble()
+        app.AssistantMessagePanel3, app.AssistantMessageLabel3 = app.create_assistant_message_bubble()
+        app.AssistantMessagePanel4, app.AssistantMessageLabel4 = app.create_assistant_message_bubble()
+        app.AssistantMessagePanel5, app.AssistantMessageLabel5 = app.create_assistant_message_bubble()
+        app.AssistantMessagePanel6, app.AssistantMessageLabel6 = app.create_assistant_message_bubble()
+        app.AssistantMessagePanels = Any[
+            app.AssistantMessagePanel1, app.AssistantMessagePanel2, app.AssistantMessagePanel3,
+            app.AssistantMessagePanel4, app.AssistantMessagePanel5, app.AssistantMessagePanel6,
+        ]
+        app.AssistantMessageLabels = Any[
+            app.AssistantMessageLabel1, app.AssistantMessageLabel2, app.AssistantMessageLabel3,
+            app.AssistantMessageLabel4, app.AssistantMessageLabel5, app.AssistantMessageLabel6,
+        ]
 
         app.AssistantChatPageUpButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.AssistantChatPageUpButton, "上翻", "AssistantChatPageUpPressed", [990, 596, 190, 32])
