@@ -1,11 +1,11 @@
 # Sunray Gazebo Source Snapshot
 
-This directory is a source-and-configuration snapshot of the retained ROS1
-`sunray_simulator` package. It is deliberately inactive: existing launch
-scripts and Profiles continue to use
-`References/Sunray/simulation/sunray_simulator` until a separate activation
-task audits the path, Catkin layout, sibling `sunray_common` dependency, and a
-controlled ROS1 preflight.
+This directory is the project-owned source-and-configuration copy of the ROS1
+`sunray_simulator` package. It is registered as the canonical source path in
+`Config/project_paths.json`, and source-local preflight/overlay scripts consume
+it. Some owner/runtime profiles and historical diagnostics still contain
+explicit `References/Sunray/simulation/sunray_simulator` paths; those consumers
+must be migrated independently before the legacy tree can be archived.
 
 ## External assets
 
@@ -23,5 +23,6 @@ but not a standalone runnable Gazebo package.
 ## Migration boundary
 
 No controller, launch, world, model, plugin, or configuration behavior was
-changed during this copy. The retained legacy directory stays intact and is the
-only active runtime path.
+changed during the copy. The legacy directory remains a compatibility/source
+reference until every direct consumer is replaced. Presence of this directory
+does not prove a complete standalone Gazebo runtime.

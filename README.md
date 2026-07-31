@@ -130,6 +130,59 @@ Model Studio / ExperimentProfile
 `.agents/`、`.codex/`、`.tmp/`、`.tools/`、`.venv/` 和类似隐藏目录是本机工作
 状态或工具缓存，不是项目阅读、运行或提交入口。
 
+## 源码路径与运行入口对应表
+
+`Config/project_paths.json` 是组件路径的机器可读权威源。表中的
+`canonical_active` 表示注册表的活动路径已经指向 `src/`（并可被项目本地
+预检发现）；它不等于已经通过运行时性能验收。`copied_pending_activation`
+表示源码已经复制到 `src/`，但仍有至少一个当前入口解析到旧的
+`References/` 或 vendor 路径。**源码复制完成不等于运行入口切换完成。**
+
+### 项目本地活动路径
+
+| 组件 | 源码路径 | 当前解析路径 | 状态 | 主要入口 |
+| --- | --- | --- | --- | --- |
+| Sunray Gazebo 仿真 | `src/simulation/gazebo/sunray` | `src/simulation/gazebo/sunray` | `canonical_active` | `Config/profiles/runtime_bindings.json#sunray_gazebo.launch`; `Scripts/sunray/check_sunray_ros1_runtime_preflight.sh` |
+| Sunray Gazebo 插件 | `src/simulation/gazebo/plugins/sunray` | `src/simulation/gazebo/plugins/sunray` | `canonical_active` | `Scripts/sunray/check_sunray_ros1_runtime_preflight.sh`; `Scripts/sunray/prepare_local_ros1_runtime_overlay.sh` |
+| Sunray MAVROS 控制 | `src/flight_stack/mavros/sunray_uav_control` | `src/flight_stack/mavros/sunray_uav_control` | `canonical_active` | `Config/profiles/runtime_bindings.json#mavros_command_adapter.launch`; `Scripts/sunray/sync_assembled_model_into_sunray_ros1.py` |
+| Sunray 公共工具 | `src/common/utilities/ros1/sunray_common` | `src/common/utilities/ros1/sunray_common` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#foundation`; `Scripts/sunray/prepare_local_ros1_workspace.sh` |
+| px4ctrl 运行适配器 | `src/control/runtime_adapters/px4ctrl` | `src/control/runtime_adapters/px4ctrl` | `canonical_active` | `Config/profiles/runtime_bindings.json#controller_host.launch`; `Scripts/sunray/run_px4ctrl_basic_gate.sh` |
+| quadrotor 消息 | `src/integration/ros1_launch/quadrotor_msgs` | `src/integration/ros1_launch/quadrotor_msgs` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#controller` |
+| UAV 公共工具 | `src/common/utilities/ros1/uav_utils` | `src/common/utilities/ros1/uav_utils` | `canonical_active` | `src/control/runtime_adapters/px4ctrl` |
+| CMake 公共工具 | `src/common/utilities/ros1/cmake_utils` | `src/common/utilities/ros1/cmake_utils` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#controller` |
+| FAST-LIO | `src/perception/fast_lio` | `src/perception/fast_lio` | `canonical_active` | `Config/profiles/runtime_bindings.json#fastlio_review_or_ekf_bridge.launch`; `Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh` |
+| Livox 兼容驱动 | `src/perception/livox_ros_driver_compat` | `src/perception/livox_ros_driver_compat` | `canonical_active` | `Config/runtime/ros1_local_source_manifest.v1.json#foundation` |
+| MoSim QGC 扩展 | `src/ground_station/qgc/mosim_extension` | `src/ground_station/qgc/mosim_extension` | `canonical_active` | `Scripts/ui/materialize_qgc_custom_overlay.py`; `Scripts/ui/build_flight_console.ps1` |
+
+### 已复制但仍待切换的入口
+
+| 组件 | 源码路径 | 当前解析路径 | 状态 | 主要入口 |
+| --- | --- | --- | --- | --- |
+| Sunray 规划工具 | `src/integration/ros1_launch/sunray_planner_utils` | `References/Sunray/General_Module/sunray_planner_utils` | `copied_pending_activation` | `Config/profiles/runtime_bindings.json#planner_adapter.launch` |
+| Sunray 任务适配器 | `src/planning/mission_adapters/sunray_tutorial` | `References/Sunray/General_Module/sunray_tutorial` | `copied_pending_activation` | `Scripts/sunray/run_sunray_ros1_default_stack_gate.sh`; `Scripts/sunray/run_sunray_ros1_native_mission_gate.sh` |
+| FUEL | `src/planning/fuel` | `References/Lab/exploration_coverage/FUEL` | `copied_pending_activation` | `Scripts/sunray/check_fuel_ros1_preflight.sh`; `Scripts/sunray/fuel_single_px4ctrl_goal4.launch` |
+| FALCON | `src/planning/falcon` | `References/Lab/exploration_coverage/FALCON-ros1-noetic` | `copied_pending_activation` | `Scripts/sunray/check_falcon_ros1_preflight.sh`; `Scripts/sunray/build_falcon_f1_minimal_build_probe.sh` |
+| RACER | `src/planning/racer` | `References/Lab/exploration_coverage/RACER` | `copied_pending_activation` | `References/Lab/exploration_coverage/RACER/swarm_exploration/exploration_manager/launch/*.launch` |
+| Diff-Planner | `src/planning/diff_planner` | `References/Lab/planning_local/Diff-Planner` | `copied_pending_activation` | `Scripts/sunray/setup_goal4_diff_planner_overlay.sh`; `Scripts/sunray/diff_*_px4ctrl_*.launch` |
+| Ego-Planner Swarm | `src/planning/ego_planner_swarm` | `References/Sunray/External_Module/ego-planner-swarm` | `copied_pending_activation` | `Scripts/sunray/setup_goal4_ego_overlay.sh`; `Scripts/sunray/run_px4ctrl_ego_*_gate.sh` |
+| 固定编队 | `src/planning/fixed_formation` | `References/Lab/swarm_coordination/Swarm-Formation` | `copied_pending_activation` | `Scripts/sunray/build_swarm_formation_ros1_upstream_smoke.sh`; `Scripts/sunray/swarm_formation_swarm_px4ctrl_d3.launch` |
+
+### 外部 vendor / 展示例外
+
+| 组件 | 项目源码路径 | 当前入口 | 状态 | 说明 |
+| --- | --- | --- | --- | --- |
+| QGroundControl 主体 | `src/ground_station/qgc/qgroundcontrol` | `apps/flight_console/vendor/qgroundcontrol` | `copied_pending_activation` | 构建入口仍由 `apps/flight_console/mosim/custom/CMakeLists.txt` 管理；不归入 MWORKS 控制器证据。 |
+| UE / 外部展示资产 | `UE5/` 与经审计的 `References/` 资产 | 按 UE 工程清单解析 | 交付例外 | 仅保留实际被 UE 工程/场景清单引用的资产；不能把 Reference 资产当作项目控制源码。 |
+
+表中 `References/` 路径不是都可以直接删除：当前配置、规划入口和部分
+运行脚本仍有明确引用。`UPSTREAM.md`、`PATCHES.md` 等仅用于来源追溯的文字
+引用不构成运行依赖。清理时按“活动入口、证据路径、来源追溯”三类分别判断，
+不得按目录名或文件日期整体删除。
+
+交付时，项目源码包包含 `Models/`、`Config/`、`Scripts/`、`apps/`、`src/`
+和必要文档；`Results/` 作为单独筛选的证据集合；用户在完成最终审核后自行
+压缩。归档到 `MoSim_Archive/` 的历史/缓存内容不作为默认运行输入。
+
 ## 阅读与操作
 
 建议按以下顺序进入项目：
@@ -143,13 +196,27 @@ Model Studio / ExperimentProfile
 
 ## 实验与归档边界
 
-当前目录布局在实验完成前保持稳定。`Docs/Workflows/project_structure_refactor.md`
-记录的是长期设计参考，已经被用户冻结：不得执行其中的目录迁移阶段，也不得移动
-`Models/`、`Config/`、`Scripts/`、`UE5/`、`References/` 或历史实验结果。
+当前目录布局和模型/源码入口保持稳定，不执行大范围重构。经过依赖审计、哈希归档
+和原路径留痕后，可以把明确无活动依赖的 `Results/` 或 `Config/` 子树移入
+`MoSim_Archive/`；这不等于允许移动模型根、当前运行时配置、UI/UE 资产或活动证据。
+`References/` 也不能按“已复制”整体删除，必须以本节路径表和实际消费者为准。
 
-旧实验、兼容模型和历史结果会在依赖运行完成后，经过引用审计、结果清单更新和明确
-归档决策再处理。当前只允许修正失效入口、文档指针和可复现性问题，不把目录整洁度
-置于赛题实验和证据完整性之前。
+旧实验、兼容配置和历史结果的归档必须保留归档清单、SHA-256 和原路径说明。归档
+只改变默认交付包的内容，不改变已声明的模型、控制器和证据结论。
+
+### 当前归档收敛记录（2026-08-01）
+
+- 已将 5 个无活动引用的旧 Codex/coagent GUI 与线程维护诊断目录归档到
+  `C:\Users\HP\Desktop\MoSim_Archive\20260801_unreferenced_codex_gui_phase3\`。
+  共 8 个文件、847,079 字节，归档清单 SHA-256 为
+  `ced1cd97ba438fcb2b2d8493a7ec545436d0eb7029e4c562532645a09c8a1c81`；原路径保留
+  `ARCHIVED_EXTERNALLY.md` 留痕。
+- `Config/` 本批次不移动。对 16 个顶层配置目录的引用扫描均发现仓库内消费者；
+  尤其 `control_platform`、`profiles`、`runtime`、`scenarios/system`、
+  `legacy` 和 `protocol` 不能按目录名整体归档。
+- `Results/agent_packets`、`Results/agent_runtime`、`Results/control_platform`、
+  `Results/official`、`Results/robustness`、运行时/UI 目录和当前报告证据均保留。
+  这些目录要么有活动消费者，要么属于证据/另一条运行责任线。
 
 ## 交付物
 
