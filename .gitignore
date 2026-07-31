@@ -435,3 +435,6 @@ References/超维空间科技
 
 # CTest runtime output is generated and not project source.
 Testing/Temporary/
+
+# Report audit scratch output is generated; keep report sources and records tracked.
+Scripts/report/_*.txt
