@@ -35,7 +35,8 @@
 | Result layout and review rule | `Results/README.md` |
 | Simulation analysis narrative | `Docs/simulation_report.md` |
 | User-facing operation guide | `Docs/user_manual.md` |
-| Report figures and assets | `Docs/报告/` |
+| P0 report/manual/delivery evidence numbers and claim boundaries | `Docs/Design/报告手册交付证据总账_P0_20260731.md` |
+| Active report, manual, formulas, figures, and asset routing | `Docs/报告/README.md`; figure asset index: `Docs/报告/图/README.md` |
 | Final package gate | `Docs/Workflows/pre_submit_check.md` |
 
 ## Reference And History
