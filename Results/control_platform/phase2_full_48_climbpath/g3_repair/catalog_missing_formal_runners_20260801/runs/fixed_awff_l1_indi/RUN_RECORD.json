@@ -52,6 +52,23 @@
     "performance_outcome": "passed_terminal_position_error_gate",
     "claim_boundary": "The native 50 s result is readable and below the project 5 m terminal-error screening gate. It is not a deployment or runtime-equivalence claim."
   },
+  "post_run_export": {
+    "exported_at": "2026-08-01T06:09:55+08:00",
+    "export_mode": "native_50s_reexport_for_missing_retained_result",
+    "source_change": false,
+    "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/raw/fixed_awff_l1_indi.csv",
+    "metrics_json": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/metrics/fixed_awff_l1_indi.json",
+    "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/metrics/fixed_awff_l1_indi.csv",
+    "raw_csv_bytes": 6027005,
+    "raw_csv_sha256": "E538F6B7840877CFB52EF2BC35DC70B7F2AFCF8197F327EDD6D890C632700FA1",
+    "row_count": 25001,
+    "time_first_s": 0.0,
+    "time_last_s": 50.0,
+    "nan_count": 0,
+    "native_result": "Results/native_result_cache/fixed_awff_l1_indi/FixedAwffL1IndiFormalRunner/Result.msr",
+    "native_result_sha256": "979C0F9F66B47869E5726F25F616B95507A6586AA47E707D50DD88DEE18362A0",
+    "claim_boundary": "Post-run analysis export only; original execution status and performance outcome are unchanged."
+  },
   "mworks_gate": {
     "activation_sentinel_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
     "background_screenshot_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",

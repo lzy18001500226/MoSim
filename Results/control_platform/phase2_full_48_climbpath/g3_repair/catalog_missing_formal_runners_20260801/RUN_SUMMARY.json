@@ -55,8 +55,12 @@
     "mworks_window_evidence_touched": true,
     "live_mworks_touched": true
   },
+  "post_run_csv_export": {
+    "summary": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/CSV_EXPORT_SUMMARY.json",
+    "observation": "All four records now have a parsed 25,001-row raw CSV plus metrics JSON/CSV. The two earlier direct-MCP runs that lacked retained Result.msr were re-executed with the same nominal 50 s model configuration solely to retain exportable native results; their original execution records and performance conclusions remain preserved."
+  },
   "evidence_limits": [
-    "Two direct-MCP result series were retained numerically but their requested run folders do not contain Result.msr; this summary does not claim retained native-result files for them.",
+    "The post-run re-exports add analysis artifacts but do not replace the original execution facts or convert any failed terminal-error result into a pass.",
     "This is nominal MWORKS ClimbPath evidence only. It does not claim graphical acceptance, controller tuning, PX4/Gazebo/ROS runtime equivalence, deployment, or 48/48 G3 completion."
   ]
 }

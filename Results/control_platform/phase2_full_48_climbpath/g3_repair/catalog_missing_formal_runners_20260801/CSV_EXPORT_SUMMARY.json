@@ -1,0 +1,93 @@
+{
+  "schema": "mosim.g3_catalog_missing_formal_runners_csv_export.v1",
+  "generated_at": "2026-08-01T06:16:45+08:00",
+  "purpose": "Durable raw time-series export for analysis of the four fixed-composite FormalRunner nominal 50 s ClimbPath records.",
+  "source": "MWORKS_MCP",
+  "preflight": {
+    "window_gate_summary": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
+    "sentinel_status": "clean",
+    "license_state": "education_window_observed_activation_unverified_no_login_or_authorization_blocker",
+    "activation_state_observation": "The current-turn sentinel was clean and the DPI-aware background capture showed the existing Sysplorer education-edition window without demo, login, activation, authorization, or GUI-error dialogs. The edition title is not treated as activation proof.",
+    "will_not_click_activation_login": true,
+    "mworks_window_evidence_touched": true,
+    "live_mworks_touched": true
+  },
+  "validation": {
+    "raw_csv_count": 4,
+    "metrics_json_count": 4,
+    "metrics_csv_count": 4,
+    "expected_row_count_each": 25001,
+    "expected_time_range_s": [0.0, 50.0],
+    "raw_numeric_invalid_cell_count": 0,
+    "raw_non_numeric_cell_count": 0,
+    "observation": "Each raw CSV was parsed in this turn. All four have 25,001 rows over 0.0 to 50.0 s, and no NaN, Infinity, or nonnumeric raw-series cells."
+  },
+  "controllers": [
+    {
+      "controller_id": "fixed_awff_l1_residual",
+      "display_name": "Fixed AWFF + L1 Residual",
+      "original_performance_outcome": "failed_terminal_position_error_gate",
+      "terminal_position_error_norm_m": 10628.468304322492,
+      "position_rmse_m": 4939.978295685661,
+      "export_mode": "native_50s_reexport_for_missing_retained_result",
+      "source_change_during_reexport": false,
+      "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/raw/fixed_awff_l1_residual.csv",
+      "raw_csv_bytes": 4677866,
+      "raw_csv_sha256": "F50127FEE124EE150697F0130765683F063BECC5912B09FAB52C3C98E7A3D722",
+      "metrics_json": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/metrics/fixed_awff_l1_residual.json",
+      "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/metrics/fixed_awff_l1_residual.csv",
+      "native_result": "Results/native_result_cache/fixed_awff_l1_residual/FixedAwffL1ResidualFormalRunner/Result.msr",
+      "native_result_sha256": "902E7C9F6F35967B1086DADB531FFAC79A4E34ED45CD261F2BFF8CE22ABFB940"
+    },
+    {
+      "controller_id": "fixed_awff_l1_indi",
+      "display_name": "Fixed AWFF + L1 + INDI",
+      "original_performance_outcome": "passed_terminal_position_error_gate",
+      "terminal_position_error_norm_m": 0.00047656188464517224,
+      "position_rmse_m": 0.13796276181151354,
+      "export_mode": "native_50s_reexport_for_missing_retained_result",
+      "source_change_during_reexport": false,
+      "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/raw/fixed_awff_l1_indi.csv",
+      "raw_csv_bytes": 6027005,
+      "raw_csv_sha256": "E538F6B7840877CFB52EF2BC35DC70B7F2AFCF8197F327EDD6D890C632700FA1",
+      "metrics_json": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/metrics/fixed_awff_l1_indi.json",
+      "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/metrics/fixed_awff_l1_indi.csv",
+      "native_result": "Results/native_result_cache/fixed_awff_l1_indi/FixedAwffL1IndiFormalRunner/Result.msr",
+      "native_result_sha256": "979C0F9F66B47869E5726F25F616B95507A6586AA47E707D50DD88DEE18362A0"
+    },
+    {
+      "controller_id": "fixed_linear_mpc_l1_indi",
+      "display_name": "Fixed Linear MPC + L1 + INDI",
+      "original_performance_outcome": "passed_terminal_position_error_gate",
+      "terminal_position_error_norm_m": 0.0004726003753151066,
+      "position_rmse_m": 0.13489374571846877,
+      "export_mode": "read_existing_native_result",
+      "source_change_during_export": false,
+      "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/raw/fixed_linear_mpc_l1_indi.csv",
+      "raw_csv_bytes": 6024590,
+      "raw_csv_sha256": "E159C300DE335FFB7F914DD50E6B5F92D5CCCE11A1052CB8CB7C3E7A618D809B",
+      "metrics_json": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/metrics/fixed_linear_mpc_l1_indi.json",
+      "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/metrics/fixed_linear_mpc_l1_indi.csv",
+      "native_result": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/native_result/FixedLinearMpcL1IndiFormalRunner/Result.msr",
+      "native_result_sha256": "3AA871B6BD07D4BD753BE6A6ED241973DCD3579AF2478FC8D878E76F66E69F77"
+    },
+    {
+      "controller_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "display_name": "Fixed QP NMPC + L1 + INDI + CBF",
+      "original_performance_outcome": "failed_terminal_position_error_gate",
+      "terminal_position_error_norm_m": 12455.228659768618,
+      "position_rmse_m": 5646.908137780791,
+      "export_mode": "read_existing_native_result_after_native_completion_verification",
+      "source_change_during_export": false,
+      "transport_fact": "The original outer MCP SimulateModel call timed out after 300 s; native MWORKS state/result reads verified Idle, 50.0 s, exit state 0, and a readable result before this read-only CSV export.",
+      "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/raw/fixed_qp_nmpc_l1_indi_cbf.csv",
+      "raw_csv_bytes": 4854736,
+      "raw_csv_sha256": "9AF44095A8DDCC1A9467E392C76DCC91073CAE511224D8143FC935A39F22A8E0",
+      "metrics_json": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/metrics/fixed_qp_nmpc_l1_indi_cbf.json",
+      "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/metrics/fixed_qp_nmpc_l1_indi_cbf.csv",
+      "native_result": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/native_result/FixedQpNmpcL1IndiCbfFormalRunner/Result.msr",
+      "native_result_sha256": "1DFE02DBD5D142500B2BDABCF91AB18332581FC03FB0CCBB9751AB0980FE7D6B"
+    }
+  ],
+  "claim_boundary": "This export makes raw MWORKS result series and derived metrics available for analysis. It preserves the original nominal-screening outcomes (two pass, two fail) and does not claim controller acceptance, tuning, deployment, ROS/Gazebo/PX4 equivalence, or 48/48 G3 completion."
+}

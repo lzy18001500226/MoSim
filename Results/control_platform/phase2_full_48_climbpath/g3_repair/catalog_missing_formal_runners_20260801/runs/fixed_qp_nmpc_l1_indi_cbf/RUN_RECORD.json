@@ -62,6 +62,23 @@
     "performance_outcome": "failed_terminal_position_error_gate",
     "claim_boundary": "The MWORKS simulation itself completed and its result was readable, but the terminal error is far above the 5 m screening gate. The MCP timeout remains an execution-transport fact, not a performance pass."
   },
+  "post_run_export": {
+    "exported_at": "2026-08-01T06:02:15+08:00",
+    "export_mode": "read_existing_native_result_after_native_completion_verification",
+    "source_change": false,
+    "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/raw/fixed_qp_nmpc_l1_indi_cbf.csv",
+    "metrics_json": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/metrics/fixed_qp_nmpc_l1_indi_cbf.json",
+    "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/metrics/fixed_qp_nmpc_l1_indi_cbf.csv",
+    "raw_csv_bytes": 4854736,
+    "raw_csv_sha256": "9AF44095A8DDCC1A9467E392C76DCC91073CAE511224D8143FC935A39F22A8E0",
+    "row_count": 25001,
+    "time_first_s": 0.0,
+    "time_last_s": 50.0,
+    "nan_count": 0,
+    "native_result": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/native_result/FixedQpNmpcL1IndiCbfFormalRunner/Result.msr",
+    "native_result_sha256": "1DFE02DBD5D142500B2BDABCF91AB18332581FC03FB0CCBB9751AB0980FE7D6B",
+    "claim_boundary": "Read-only analysis export; the original MCP timeout and failed terminal-error outcome are unchanged."
+  },
   "mworks_gate": {
     "activation_sentinel_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
     "background_screenshot_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
