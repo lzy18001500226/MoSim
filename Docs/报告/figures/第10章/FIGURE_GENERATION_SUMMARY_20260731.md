@@ -1,5 +1,9 @@
 # 第10章控制器详图生成总结
 
+> 口径：本目录是冻结历史 `G3_STATUS.json` 的 28 条通过快照，加上 `awff` 负性能
+> 样本。它不是当前固定 48 条目录的 30 通过 / 18 失败 / 0 未运行对账图集；当前
+> 目录口径见 `../../审计/当前目录48条ClimbPath口径对齐_20260801.md`。
+
 > 生成时间：2026-07-31  
 > 脚本：`Scripts/syslab/plot_28_passed_controllers_detail.jl`  
 > CSV来源：`Results/control_platform/phase2_full_48_climbpath/{controller_id}/raw/climbpath50s.csv`
@@ -20,8 +24,9 @@
 
 ### 1.2 29个控制器清单
 
-这 29 个是"跑通"控制器，不是"性能达标"控制器：28 条性能达标（终端位置误差
-< 5 m），加上 `awff` 一条跑通未达标（终端误差 48.82 m）。口径见
+这 29 个是冻结历史快照中的"跑通"控制器，不是当前目录口径的"性能达标"控制器：
+28 条历史性能达标（终端位置误差 < 5 m），加上 `awff` 一条跑通未达标（终端误差
+48.82 m）。口径见
 `Config/control_platform/climbpath_baseline_count_definition.json`。
 
 按控制族分类：

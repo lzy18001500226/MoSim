@@ -13,13 +13,16 @@ trace-back only after the forward-reference repair. The current report-run
 audit retains a fixed 48-entry catalog denominator. Its current status
 reconciliation is
 `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`:
-28 passes, 16 completed failures, and four entries without a FormalRunner
-record. It incorporates the post-freeze records for `pid_awff_linear_eso`
-(50 s completed but failed the 5 m gate at `3412.359226529184 m`),
-`smc_boundary_layer` (50 s completed but failed at `15.029940929898276 m`),
-and `nmpc_outer` (50 s passed at `0.142974149482056 m`). Those three records
-are not extra controllers and do not change the denominator. The historical
-G3 execution matrix remains separately preserved. The earlier v1
+30 passes, 18 completed failures, and zero `not_run` entries. All 48 catalog
+entries now have a FormalRunner mapping. The reconciliation incorporates seven
+post-freeze catalog records, including `pid_awff_linear_eso` (50 s completed
+but failed the 5 m gate at `3412.359226529184 m`), `smc_boundary_layer`
+(50 s completed but failed at `15.029940929898276 m`), `nmpc_outer` (50 s
+passed at `0.142974149482056 m`), and the four former missing-runner records.
+Those records are not extra controllers and do not change the denominator. The
+frozen historical G3 execution snapshot remains separately preserved at
+`G3_STATUS.json` (28 effective passes, 20 effective failures,
+`completed=false`); it is not the current catalog reconciliation. The earlier v1
 seven-scenario evidence remains historical trace-back only. The current
 two-controller v2 A/B set is isolated at
 `Results/control_platform/seven_scenario_ab_v2/`: 12 of 14 records are valid,
@@ -269,7 +272,7 @@ single-route 50 s `ClimbPath` replay before the next repair.
 
 The historical G3 target remains 48/48 effective routes with a completed 50 s
 result and terminal `position_error_norm < 5 m`. It is not an acceptance claim
-for the present 28/48 state. No G3 rerun, gain-performance optimization, or
+for the present current-catalog 30/48 state or the frozen historical 28/48 snapshot. No G3 rerun, gain-performance optimization, or
 Gazebo/ROS work is authorized by the P0 documentation task.
 
 ### User-Authorized Operator Surface - Separate Support Lane

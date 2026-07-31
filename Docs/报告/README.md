@@ -36,12 +36,15 @@
 
 ## 证据边界
 
-1. 48 为控制器目录冻结条目，46 为有 MWORKS 控制模块，44 为 Studio 可手动打开的
-   FormalRunner 路由。执行侧另有三层口径：41 条目录↔执行对齐、38 条跑通
-   （产出完整 50 s 数据集）、28 条性能达标（终端位置误差 < 5 m）。这些数字不可
-   互换，也不可相加成 48；口径定义与换算见
-   `Config/control_platform/climbpath_baseline_count_definition.json`，
-   两套 ID 命名的桥接见 `Config/control_platform/scheme_id_alias_map.json`。
+1. 当前固定 48 条目录的名义 ClimbPath 对账为 **30 通过、18 完成失败、0 未运行**，
+   权威源为
+   `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`。
+   冻结历史 `G3_STATUS.json` 的 28/20 是旧 G3 执行快照及现有 28 条图集的来源，
+   不能改写成当前目录状态。48 为目录冻结条目，46 为有 MWORKS 控制模块，44 为
+   Studio 可手动打开的 FormalRunner 路由，53 为 FormalRunner 源文件；这些分母均
+   不可互换。完整口径见
+   `Config/control_platform/climbpath_baseline_count_definition.json` 与
+   `Docs/报告/审计/当前目录48条ClimbPath口径对齐_20260801.md`。
 2. 七场景为 14 条总记录，其中 12 条有效、2 条无效负样本；灵敏度 24 条为
    17 通过、3 物理门限失败、4 执行阻塞。
 3. px4ctrl 的图形模型到 C、构建和 MWORKS 50 s SIL 已有证据；`graphical_c99`
