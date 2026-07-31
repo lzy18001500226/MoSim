@@ -1,0 +1,100 @@
+{
+  "figure_count_generated": 15,
+  "resolution": 600,
+  "figure_count_expected": 15,
+  "output_root": "C:\\Users\\HP\\Desktop\\MoSim\\Docs\\报告\\figures\\第11章",
+  "generator": "Scripts/syslab/plot_chapter11_typlot.jl",
+  "renderer": "TyPlot (Syslab native)",
+  "replaces_handwritten_svg": [
+    "Docs/报告/figures/第11章/七场景对比/*.svg  6 张 1080×620 手写 XML",
+    "Docs/报告/figures/第11章/灵敏度分析/*.svg  3 张 同模板",
+    "生成器 Scripts/syslab/plot_sensitivity_analysis.jl（svg_escape/scaled 像素算术）",
+    "生成器 Scripts/syslab/plot_seven_scenario_comparison.jl（残桩，数据源与输出路径均错）"
+  ],
+  "schema": "mosim.chapter11.typlot_manifest.v1",
+  "results": [
+    {
+      "figure": "hover_position_error_comparison",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "step_response_position_error_comparison",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "spiral_position_error_comparison",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "figure8_position_error_comparison",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "wind_disturbance_position_error_comparison",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "parameter_mismatch_position_error_comparison",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "wind_disturbance_sensitivity",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "parameter_mismatch_sensitivity",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "motor_efficiency_sensitivity",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "formation_trajectory_xy",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "inter_uav_distance",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "formation_error",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "tracking_error_divergence",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "ecbf_pair_distance",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "ecbf_applied_offset",
+      "error": "",
+      "ok": true
+    }
+  ],
+  "scope_notes": {
+    "ecbf_clearance_negative_cause": "clearance_lower_bound 最小 −14470.85 m 是 uav2 跟踪发散的副产品，不是撞障碍；pair_separation 门限为 True，最小实际机间距 1.5225 m > 1.0 m 门限。",
+    "ecbf_intervention_two_definitions": "intervention_sample_count=0 与 maximum_active_pair_count=0 统计的是硬约束激活样本（safety_active_pair_count 列全程 0），故 gates/safety_intervened 判负；但参考调节器确实动作：已落地修正量 |safe_ref−nominal_ref| 在 56/306 样本非零，最大 0.2676 m。两者非同一口径，图分上下栏区分。",
+    "ecbf_offset_column_not_used_as_applied": "safety_maximum_reference_offset_m 有 202/306 非零样本，但 >1e-9 仅 36 个、>0.01 仅 12 个，余为浮点噪声；引用 202 会把噪声说成动作。图上\"已施加\"一律用 |safe_ref−nominal_ref| 逐点算出的 56 样本口径。",
+    "sensitivity_rmse_source": "position_rmse_m 取自各次运行 metrics/METRICS.json；SENSITIVITY_BATCH_MATRIX.csv 只有 terminal/maximum 两列，无 rmse。",
+    "official_pid_motor_solver_stall": "sensitivity_motor_v1 的 official_pid 4 点均为 failed_execution_solver_stall，86% 进度处卡死，无 METRICS.json。边界：仅执行层数值求解器停滞，不构成终端误差鲁棒性结论或物理控制失败阈值。手写 SVG 图例列出该臂却无曲线也无说明，本脚本改为图内显式标注。",
+    "motor_efficiency_fault_excluded_from_11_1": "official_pid 无主 raw/result.csv（result_data_status=missing）；px4ctrl 仅 1707 行（partial，17.07 s 终止，终端误差 15.66 m）。该场景由 §11.2 灵敏度 motor 组承载，与手写 SVG 的排除口径一致。"
+  }
+}
