@@ -1,7 +1,7 @@
 # Project Scripts
 
 `Scripts/` contains reusable automation, validation, analysis, and runtime
-entry helpers. Human double-click launchers belong in `../cmd/`; evidence belongs
+entry helpers. Human double-click launchers belong in `cmd/`; evidence belongs
 in `../Results/`.
 
 | Area | Responsibility |
@@ -11,6 +11,7 @@ in `../Results/`.
 | `planning/`, `analysis/`, `results/` | planner helpers, metrics, plotting, extraction, and report-ready outputs |
 | `quality/`, `tests/`, `hooks/` | deterministic checks, test coverage, preflight and safety guardrails |
 | `UE5/`, `ui/` | UE bridge/display and application-support tools |
+| `cmd/` | Curated Windows C99 baseline, Ground Control, and managed-stop entrypoints |
 | `agent/`, `reference/`, `docs/`, `tools/`, `bat/`, `rflysim/` | notification, reference audit, documentation helpers, small utilities, compatibility, and external integration support |
 
 Before adding a script, check whether an existing script, quality checker, or
