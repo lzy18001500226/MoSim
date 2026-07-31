@@ -11,7 +11,7 @@ reference material. It does not replace the repository [README](../README.md).
 | Engineer selecting work | `../AGENTS.md` | `Workflows/new_conversation_context.md`, `Workflows/mainline_operations_board.md` |
 | MWORKS controller task | `Design/架构/01_控制器平台/` | matching `Skills/Mworks/` entry and topic workflow |
 | ROS1/Sunray runtime task | `Workflows/sunray_ros1_current_runtime_lane.md` | `Workflows/sunray_ros1_execution_checklist.md` |
-| Report or result review | `simulation_report.md` or `user_manual.md` | `../Results/README.md` and the cited evidence bundle |
+| Report or user manual review | `报告/README.md` | `报告/用户手册_正文骨架.md`、`报告/仿真分析报告_正文骨架.md` and the cited evidence bundle |
 
 ## Current MoSim And Future CoSim
 

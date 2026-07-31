@@ -205,6 +205,7 @@ python Scripts/quality/materialize_sunray_runtime_assets.py
 4. [`Docs/Index/simulation_model_structure_index.md`](Docs/Index/simulation_model_structure_index.md)：模型、场景、runner 和结果的对应关系。
 5. [`Docs/Workflows/mainline_operations_board.md`](Docs/Workflows/mainline_operations_board.md)：当前工程选择与下一项门。
 6. [`Docs/Workflows/sunray_ros1_current_runtime_lane.md`](Docs/Workflows/sunray_ros1_current_runtime_lane.md) 和 [`Docs/Workflows/sunray_ros1_execution_checklist.md`](Docs/Workflows/sunray_ros1_execution_checklist.md)：ROS1/Sunray/Gazebo/PX4/RViz 运行约束。
+7. [`Docs/报告/用户手册_正文骨架.md`](Docs/报告/用户手册_正文骨架.md)：MWORKS 操作与 C99 单机复现步骤、结果判据和阻断处理。
 
 ## 实验与归档边界
 

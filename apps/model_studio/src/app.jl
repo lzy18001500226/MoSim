@@ -54,6 +54,7 @@ const OFFLINE_BATCH_INDEX = joinpath(PROJECT_ROOT, "Results", "control_platform"
 const OPEN_MODEL_SCRIPT = joinpath(PROJECT_ROOT, "Scripts", "ui", "open_model_studio_model.py")
 const MODEL_TASK_CONFIG_WRITER = joinpath(PROJECT_ROOT, "Scripts", "ui", "model_studio_task_config.py")
 const MODEL_TASK_ROUTE_CATALOG = joinpath(PROJECT_ROOT, "Config", "control_platform", "model_studio_task_routes_v1.toml")
+const ASSISTANT_RUNTIME_LOG = joinpath(PROJECT_ROOT, "Results", "ui_platform", "model_studio_assistant_runtime.log")
 
 function load_model_task_routes()
     isfile(MODEL_TASK_ROUTE_CATALOG) || error("模型任务路由表不存在：" * MODEL_TASK_ROUTE_CATALOG)
@@ -368,6 +369,19 @@ const OFFLINE_PROFILES = Dict(
     AssistantActivityAutoFollow::Bool = true
     ConsoleExpanded::Bool = true
 
+    function assistant_log(app, event, detail="")
+        normalized = replace(replace(string(detail), '\n' => " | "), '\r' => " ")
+        try
+            mkpath(dirname(ASSISTANT_RUNTIME_LOG))
+            open(ASSISTANT_RUNTIME_LOG, "a") do io
+                timestamp = Dates.format(Dates.now(), "yyyy-mm-dd HH:MM:SS")
+                println(io, timestamp * "\t" * string(event) * "\t" * normalized)
+            end
+        catch
+            # Logging must never break the UI callback.
+        end
+    end
+
     function append_console(app, message; level="信息")
         normalized = replace(string(message), '\n' => "  |  ")
         timestamp = Dates.format(Dates.now(), "HH:MM:SS")
@@ -436,11 +450,11 @@ const OFFLINE_PROFILES = Dict(
     # Use fixed-size root-level views instead of nested panel scrolling. Some
     # TyAppDesigner releases keep dynamically positioned child panels hidden;
     # a single page view avoids that rendering-order dependency.
-    function assistant_scroll_max_offset(content_height, viewport_height)
+    function assistant_scroll_max_offset(app, content_height, viewport_height)
         return max(0, content_height - viewport_height)
     end
 
-    function assistant_scroll_step(viewport_height)
+    function assistant_scroll_step(app, viewport_height)
         return max(80, round(Int, viewport_height * 0.72))
     end
 
@@ -509,6 +523,7 @@ const OFFLINE_PROFILES = Dict(
 
     function render_assistant_chat(app)
         app.AssistantChatPanel === nothing && return
+        app.assistant_log("chat_render_start", "messages=" * string(length(app.AssistantLines)))
         panels = app.assistant_message_panels()
         labels = app.assistant_message_labels()
         isempty(panels) && return
@@ -578,13 +593,21 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantChatLabel.Text = page_text
         app.AssistantChatLabel.Visible = true
         app.assistant_update_chat_navigation_controls()
+        app.assistant_log("chat_render_end", "page=" * string(page_index) * "/" * string(page_count))
     end
 
     function append_assistant(app, author, message)
         timestamp = Dates.format(Dates.now(), "HH:MM")
         normalized = string(message)
+        preview = isempty(normalized) ? "" : first(normalized, min(length(normalized), 240))
+        app.assistant_log("message_append", author * " | " * preview)
         push!(app.AssistantLines, author * "  " * timestamp * "\n" * normalized)
-        app.render_assistant_chat()
+        try
+            app.render_assistant_chat()
+        catch error
+            app.assistant_log("chat_render_error", sprint(showerror, error))
+            rethrow()
+        end
     end
 
     function assistant_context_text(app)
@@ -891,6 +914,10 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function request_assistant_response(app, prompt; show_user=true)
+        question_preview = String(strip(prompt))
+        question_preview = isempty(question_preview) ? "" :
+            first(question_preview, min(length(question_preview), 500))
+        app.assistant_log("request_received", "show_user=" * string(show_user) * " | " * question_preview)
         if app.AssistantRequestInFlight
             app.set_assistant_status("当前回合仍在运行；可点击“停止”结束本轮，然后继续提问。"; state="运行")
             return
@@ -916,6 +943,8 @@ const OFFLINE_PROFILES = Dict(
                     attachments=app.AssistantAttachments,
                     codex_thread_id=app.AssistantCodexThreadId,
                 )
+                app.assistant_log("turn_started", "status=" * string(started.status) *
+                    "; request_id=" * string(started.request_id))
                 app.AssistantTurnId = started.request_id
                 if app.apply_assistant_turn_snapshot(started)
                     app.finish_assistant_turn()
@@ -924,6 +953,8 @@ const OFFLINE_PROFILES = Dict(
                 while app.AssistantRequestInFlight && !isempty(app.AssistantTurnId)
                     sleep(0.25)
                     snapshot = AgentIntegration.poll_mworks_turn(app.Appfile, app.AssistantTurnId)
+                    app.assistant_log("turn_polled", "status=" * string(snapshot.status) *
+                        "; request_id=" * string(snapshot.request_id))
                     if app.apply_assistant_turn_snapshot(snapshot)
                         app.finish_assistant_turn()
                         break
@@ -1746,6 +1777,7 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function configure_assistant_workspace(app)
+        app.assistant_log("workspace_configure_start", "mode=" * app.CurrentMode)
         app.set_top_status("MoSim AI | 只读 | Codex CLI 按需启动 | 输入 /help 查看命令"; state="正常")
         app.configure_section(app.ConfigSectionLabel, "MoSim AI 助手", [24, 144, 1392, 34])
         app.ConfigSectionLabel.Visible = true
@@ -1793,6 +1825,7 @@ const OFFLINE_PROFILES = Dict(
         else
             app.render_assistant_chat()
         end
+        app.assistant_log("workspace_configure_end", "messages=" * string(length(app.AssistantLines)))
     end
 
     function set_mode(app, mode)
