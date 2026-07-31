@@ -47,7 +47,7 @@ else
     legend()
     grid(true)
     ax = gca()
-    exportgraphics(ax, "Docs/figures/第10章/climbpath_comparison.png", resolution=300)
+    exportgraphics(ax, "Docs/报告/figures/第10章/climbpath_comparison.png", resolution=300)
 
     println("✓ ClimbPath对比图生成完成")
     println("  - climbpath_comparison.png")

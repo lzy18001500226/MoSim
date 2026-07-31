@@ -163,7 +163,7 @@ Docs/figures/test_compare/figures/
 ```bash
 python Scripts/syslab/generate_status_matrix.py \
   --status-json Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json \
-  --output Docs/figures/第10章/controller_status_matrix.svg
+  --output Docs/报告/figures/第10章/controller_status_matrix.svg
 ```
 
 **输出格式**：28行的状态表格SVG，每行包含：
@@ -234,7 +234,7 @@ CONTROLLER_FAMILY = {
 ```bash
 python Scripts/syslab/generate_heatmap.py \
   --batch-dir Results/control_platform/phase2_full_48_climbpath \
-  --output Docs/figures/第10章/rmse_heatmap.svg
+  --output Docs/报告/figures/第10章/rmse_heatmap.svg
 ```
 
 **数据扫描逻辑**：
@@ -285,7 +285,7 @@ def rmse_to_color(rmse):
 ```bash
 python Scripts/syslab/generate_radar_chart.py \
   --batch-dir Results/control_platform/phase2_full_48_climbpath \
-  --output Docs/figures/第10章/controller_radar_chart.svg
+  --output Docs/报告/figures/第10章/controller_radar_chart.svg
 ```
 
 **雷达图5个维度**：
@@ -329,7 +329,7 @@ python Scripts/syslab/generate_radar_chart.py \
 ```bash
 python Scripts/syslab/generate_all_chapter10_figures.py \
   --batch-dir Results/control_platform/phase2_full_48_climbpath \
-  --output-dir Docs/figures/第10章 \
+  --output-dir Docs/报告/figures/第10章 \
   --focus-controllers official_pid,px4ctrl
 ```
 
@@ -366,7 +366,7 @@ generate_summary_report(output_dir)
 
 **输出结构**：
 ```
-Docs/figures/第10章/
+Docs/报告/figures/第10章/
 ├── official_pid/                      # 完整4子图
 ├── px4ctrl/                           # 完整4子图
 ├── lqr_baseline/                      # 只有trajectory_xy
@@ -416,7 +416,7 @@ Docs/figures/第10章/
 
 **验收标准**：
 1. 运行脚本无报错，完整生成所有目录和文件
-2. `Docs/figures/第10章/`下有28个控制器子目录
+2. `Docs/报告/figures/第10章/`下有28个控制器子目录
 3. focus_controllers有完整4子图，其余只有trajectory_xy
 4. 各族对比图目录存在且包含4个SVG
 5. ANALYSIS_REPORT.md格式正确，RMSE数值与metrics.csv一致
@@ -535,8 +535,8 @@ python Scripts/syslab/generate_all_chapter10_figures.py \
 4. `Scripts/syslab/generate_heatmap.py` — 新增完成
 5. `Scripts/syslab/generate_radar_chart.py` — 新增完成
 6. `Scripts/syslab/generate_all_chapter10_figures.py` — 新增完成
-7. `Docs/figures/第10章/` — 完整目录树生成
-8. `Docs/figures/第10章/ANALYSIS_REPORT.md` — 汇总报告生成
+7. `Docs/报告/figures/第10章/` — 完整目录树生成
+8. `Docs/报告/figures/第10章/ANALYSIS_REPORT.md` — 汇总报告生成
 
 完成后，将以下两个文件发给用户审查：
 1. 技术规格文档：`Docs/Workflows/Syslab图表生成技术规格.md`

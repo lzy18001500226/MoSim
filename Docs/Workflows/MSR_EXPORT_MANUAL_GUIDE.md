@@ -142,7 +142,7 @@ CSV导出完成后，运行Julia脚本生成图表：
 julia Scripts/syslab/generate_controller_trajectories.jl
 
 # 2. 更新族内对比图（24张SVG，新字体标准）
-julia Scripts/syslab/compare_controllers.jl --climbpath {各族控制器CSV路径} --output-dir Docs/figures/第10章/{族名}_family_comparison
+julia Scripts/syslab/compare_controllers.jl --climbpath {各族控制器CSV路径} --output-dir Docs/报告/figures/第10章/{族名}_family_comparison
 ```
 
 具体命令我会在CSV导出完成后提供。
