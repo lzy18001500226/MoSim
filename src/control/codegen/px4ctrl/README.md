@@ -73,7 +73,8 @@ void MosimPx4ctrlGeneratedGraphStepScalar(
 
 ```bash
 cmake -S "${MOSIM_ROOT}/src/control/codegen/px4ctrl" \
-  -B "${MOSIM_ROOT}/src/control/codegen/px4ctrl/build-wsl"
+  -B "${MOSIM_ROOT}/src/control/codegen/px4ctrl/build-wsl" \
+  -DCMAKE_BUILD_TYPE=Release
 cmake --build "${MOSIM_ROOT}/src/control/codegen/px4ctrl/build-wsl" --parallel
 (cd "${MOSIM_ROOT}/src/control/codegen/px4ctrl/build-wsl" && ctest --output-on-failure)
 bash "${MOSIM_ROOT}/src/control/codegen/px4ctrl/hash_check.sh"
@@ -86,7 +87,8 @@ PowerShell 中执行：
 
 ```powershell
 cmake -S "$MOSIM_ROOT\src\control\codegen\px4ctrl" `
-  -B "$MOSIM_ROOT\src\control\codegen\px4ctrl\build-win"
+  -B "$MOSIM_ROOT\src\control\codegen\px4ctrl\build-win" `
+  -DCMAKE_BUILD_TYPE=Release
 cmake --build "$MOSIM_ROOT\src\control\codegen\px4ctrl\build-win" --config Release
 Push-Location "$MOSIM_ROOT\src\control\codegen\px4ctrl\build-win"
 ctest -C Release --output-on-failure
@@ -95,6 +97,8 @@ Pop-Location
 ```
 
 Windows 与 WSL 的静态库、共享库扩展名和 ABI 不同，必须在目标平台重新编译。
+`CMAKE_BUILD_TYPE=Release` 固定单配置生成器的构建类型；Visual Studio 等多配置
+生成器继续由 `--config Release` 选择测试目标。
 `Results/control_platform/px4ctrl_codegen_sil_v1/native/` 中的 Linux `.so` 仅
 证明当时的 WSL Linux 构建成功，不能表述为任意机器可直接运行。
 
