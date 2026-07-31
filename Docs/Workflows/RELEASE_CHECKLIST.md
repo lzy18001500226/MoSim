@@ -269,8 +269,12 @@ px4ctrl C 源、构建文件与共享库证据的完整哈希清单位于
 3. 灵敏度 24 条中有 3 条物理门限失败与 4 条执行阻塞；`sensitivity_wind_v1`
    的 8 条通过不替代总账。
 4. 固定三角队形 Figure8 仅为离线参考接入，未证明在线自主避障或可重构编队。
-5. px4ctrl 已完成 MWORKS 图形模型到生成 C、共享库和 50 s CFunction SIL；
-   尚未证明该生成 C 已接入 Gazebo/PX4 运行时。
+5. px4ctrl 已完成 MWORKS 图形模型到生成 C、共享库和 50 s CFunction SIL；其
+   `graphical_px4ctrl_c99` 后端还已在项目本地 `src` 的 MAVROS/PX4/Sunray/Gazebo
+   链路完成名义起飞-悬停-降落、风扰注入和转子效率故障恢复记录。该证据仅覆盖
+   px4ctrl 一条 C99 路线，不外推为全控制器部署、严格同 FAST-LIO 参数性能 A/B、
+   完整故障容错或实机验证。原始记录位于
+   `Results/sunray_ros1/sunray_ros1_graphical_c99_*`。
 
 ## 9. Config / Results 打包与归档边界
 
