@@ -8,15 +8,15 @@ where a measured value carries the point, cites it.
 CAP = {
  # ---- 7.3 performance distribution (5) ----
  '第10章/controller_dist_rmse_box.png':
-   '图 xx　28 条达标控制器位置 RMSE 的分族箱线分布',
+   '图 xx　冻结 G3 快照的 28 条达标控制器位置 RMSE 的分族箱线分布',
  '第10章/controller_dist_terminal_box.png':
-   '图 xx　28 条达标控制器终端位置误差的分族箱线分布',
+   '图 xx　冻结 G3 快照的 28 条达标控制器终端位置误差的分族箱线分布',
  '第10章/controller_dist_rmse_hist.png':
-   '图 xx　28 条达标控制器位置 RMSE 的总体直方分布',
+   '图 xx　冻结 G3 快照的 28 条达标控制器位置 RMSE 的总体直方分布',
  '第10章/controller_dist_terminal_hist.png':
-   '图 xx　28 条达标控制器终端位置误差的总体直方分布',
+   '图 xx　冻结 G3 快照的 28 条达标控制器终端位置误差的总体直方分布',
  '第10章/controller_ranking_rmse.png':
-   '图 xx　28 条达标控制器按位置 RMSE 的排名',
+   '图 xx　冻结 G3 快照的 28 条达标控制器按位置 RMSE 的排名',
 
  # ---- 7.5 family comparison, 6 families x 4 (24) ----
  'pid_family_comparison/figures/climbpath_rmse_bar.png':
