@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:56.989652Z",
+  "controller_id": "dfbc_smooth_robust",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/dfbc_smooth_robust/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/dfbc_smooth_robust/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 1.6336244568153713,
+    "terminal_position_error_m": 1.675879351051941,
+    "control_energy": 837413.1314569412,
+    "max_position_error_m": 1.9620333635196687,
+    "duration_s": 50.0
+  }
+}

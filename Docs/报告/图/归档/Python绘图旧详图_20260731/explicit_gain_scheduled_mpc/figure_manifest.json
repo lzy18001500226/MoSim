@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:54.831016Z",
+  "controller_id": "explicit_gain_scheduled_mpc",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/explicit_gain_scheduled_mpc/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/explicit_gain_scheduled_mpc/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 0.2042904972194766,
+    "terminal_position_error_m": 0.004321100426104121,
+    "control_energy": 837765.3619834441,
+    "max_position_error_m": 0.8940744682938543,
+    "duration_s": 50.0
+  }
+}
