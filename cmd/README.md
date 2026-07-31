@@ -10,7 +10,7 @@ their owning directories.
 
 | Purpose | Entrypoint |
 | --- | --- |
-| Flight Console / QGC operator interface | `启动MoSim地面站.cmd` |
+| MoSim Ground Control / QGC operator interface | `启动MoSim地面站.cmd` |
 | Managed Gazebo/PX4 flight runtime | `启动Gazebo飞行仿真.cmd` |
 | Stop managed simulation processes | `停止所有仿真.cmd` |
 | Sunray grounded infrastructure check | `01_启动Sunray基础自检.cmd` |
