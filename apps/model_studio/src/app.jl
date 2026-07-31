@@ -306,7 +306,9 @@ const OFFLINE_PROFILES = Dict(
     AssistantContextLabel::Any = nothing
     AssistantChatLabel::Any = nothing
     AssistantChatPanel::Any = nothing
+    AssistantChatContentPanel::Any = nothing
     AssistantActivityPanel::Any = nothing
+    AssistantActivityContentPanel::Any = nothing
     AssistantActivityLabel::Any = nothing
     AssistantMessagePanel1::Any = nothing
     AssistantMessagePanel2::Any = nothing
@@ -354,6 +356,8 @@ const OFFLINE_PROFILES = Dict(
     AssistantCodexThreadId::String = ""
     AssistantTurnId::String = ""
     AssistantPartialAnswer::String = ""
+    AssistantChatContentHeight::Int = 390
+    AssistantActivityContentHeight::Int = 62
     ConsoleExpanded::Bool = true
 
     function append_console(app, message; level="信息")
@@ -415,9 +419,81 @@ const OFFLINE_PROFILES = Dict(
         return clamp(30 + 18 * wrapped_lines, 50, 620)
     end
 
+    function assistant_text_height(app, text, chars_per_line; min_height=50, max_height=1600)
+        text_lines = split(String(text), '\n'; keepempty=true)
+        wrapped_lines = sum(max(1, cld(length(line), chars_per_line)) for line in text_lines)
+        return clamp(16 + 18 * wrapped_lines, min_height, max_height)
+    end
+
+    # TyAppDesigner revisions expose the native scroll offset under different
+    # property names. Keep manual scrolling native, and only auto-follow when
+    # the installed control exposes a writable offset.
+    function assistant_scroll_offset(app, panel)
+        panel === nothing && return nothing
+        for property in (:ScrollPosition, :scrollPosition)
+            hasproperty(panel, property) || continue
+            try
+                value = getproperty(panel, property)
+                if value isa AbstractVector || value isa Tuple
+                    length(value) >= 2 && return Float64(value[2])
+                elseif value isa Number
+                    return Float64(value)
+                end
+            catch
+            end
+        end
+        return nothing
+    end
+
+    function set_assistant_scroll_offset(app, panel, offset)
+        panel === nothing && return false
+        target_offset = max(0, round(Int, offset))
+        for property in (:ScrollPosition, :scrollPosition)
+            hasproperty(panel, property) || continue
+            try
+                value = getproperty(panel, property)
+                if value isa AbstractVector
+                    length(value) >= 2 || continue
+                    target = collect(value)
+                    target[2] = target_offset
+                    setproperty!(panel, property, target)
+                elseif value isa Tuple
+                    length(value) >= 2 || continue
+                    setproperty!(panel, property, (value[1], target_offset))
+                elseif value isa Number
+                    setproperty!(panel, property, target_offset)
+                else
+                    continue
+                end
+                return true
+            catch
+            end
+        end
+        return false
+    end
+
+    function assistant_near_bottom(app, panel, content_height, viewport_height)
+        offset = app.assistant_scroll_offset(panel)
+        offset === nothing && return true
+        return content_height - viewport_height - offset <= 24
+    end
+
+    function assistant_follow_bottom(app, panel, content_height, viewport_height)
+        app.set_assistant_scroll_offset(panel, max(0, content_height - viewport_height))
+    end
+
+    function set_assistant_activity_visible(app, visible)
+        app.CurrentMode == "assistant" || return
+        show_activity = visible && app.AssistantRequestInFlight
+        app.AssistantActivityPanel.Visible = show_activity
+        app.AssistantActivityContentPanel.Visible = show_activity
+        app.AssistantActivityLabel.Visible = show_activity
+        app.ModeStatusLabel.Visible = !show_activity
+    end
+
     function create_assistant_message_bubble(app)
         panel = TyAppDesigner.uipanel(
-            app.AssistantChatPanel;
+            app.AssistantChatContentPanel;
             Title="",
             BackgroundColor=[1.0, 1.0, 1.0],
             BorderType="solid",
@@ -450,18 +526,31 @@ const OFFLINE_PROFILES = Dict(
 
     function render_assistant_chat(app)
         app.AssistantChatPanel === nothing && return
+        app.AssistantChatContentPanel === nothing && return
         panels = app.assistant_message_panels()
         labels = app.assistant_message_labels()
         for (panel, label) in zip(panels, labels)
             panel.Visible = false
             label.Visible = false
         end
-        isempty(app.AssistantLines) && return
+        if isempty(app.AssistantLines)
+            app.AssistantChatContentHeight = app.AssistantChatPanel.Position[4]
+            app.AssistantChatContentPanel.Position = [0, 0, 1360, app.AssistantChatContentHeight]
+            return
+        end
         app.ensure_assistant_message_capacity(length(app.AssistantLines))
         panels = app.assistant_message_panels()
         labels = app.assistant_message_labels()
 
-        # The scrollable panel owns every bubble. No earlier message is removed.
+        viewport_height = app.AssistantChatPanel.Position[4]
+        follow_latest = app.assistant_near_bottom(
+            app.AssistantChatPanel,
+            app.AssistantChatContentHeight,
+            viewport_height,
+        )
+
+        # The inner content panel has an explicit height. This gives the native
+        # scroll container a stable range even when message bubble heights vary.
         y = 10
         for (index, entry) in enumerate(app.AssistantLines)
             panel = panels[index]
@@ -483,6 +572,13 @@ const OFFLINE_PROFILES = Dict(
             panel.Visible = true
             y += height + 10
         end
+        app.AssistantChatContentHeight = max(viewport_height, y)
+        app.AssistantChatContentPanel.Position = [0, 0, 1360, app.AssistantChatContentHeight]
+        follow_latest && app.assistant_follow_bottom(
+            app.AssistantChatPanel,
+            app.AssistantChatContentHeight,
+            viewport_height,
+        )
     end
 
     function append_assistant(app, author, message)
@@ -521,13 +617,33 @@ const OFFLINE_PROFILES = Dict(
 
     function set_assistant_activity(app, status, activities=String[], partial_answer="")
         app.AssistantActivityLabel === nothing && return
-        visible_events = isempty(activities) ? String[] : last(activities, min(3, length(activities)))
+        app.AssistantActivityContentPanel === nothing && return
+        visible_events = isempty(activities) ? String[] : last(activities, min(32, length(activities)))
         history = isempty(visible_events) ? "等待 Codex CLI 事件。" : join(["- " * item for item in visible_events], "\n")
         partial = strip(String(partial_answer))
-        preview = isempty(partial) ? "" : "\n\n可见回答生成中：" * first(partial, min(length(partial), 160))
-        app.AssistantActivityLabel.Text =
-            "运行过程：" * status * "\n" * history * preview *
-            "\n\n仅显示公开运行事件和可见回答片段，不显示模型内部推理。"
+        preview = isempty(partial) ? "" : "\n\n回答片段：" * first(partial, min(length(partial), 800))
+        text = "运行过程：" * status * "\n" * history * preview
+        previous_height = app.AssistantActivityContentHeight
+        viewport_height = app.AssistantActivityPanel.Position[4]
+        follow_latest = app.assistant_near_bottom(
+            app.AssistantActivityPanel,
+            previous_height,
+            viewport_height,
+        )
+        app.AssistantActivityContentHeight = app.assistant_text_height(
+            text,
+            44;
+            min_height=viewport_height,
+            max_height=1800,
+        )
+        app.AssistantActivityLabel.Text = text
+        app.AssistantActivityContentPanel.Position = [0, 0, 386, app.AssistantActivityContentHeight]
+        app.AssistantActivityLabel.Position = [8, 6, 370, max(40, app.AssistantActivityContentHeight - 12)]
+        follow_latest && app.assistant_follow_bottom(
+            app.AssistantActivityPanel,
+            app.AssistantActivityContentHeight,
+            viewport_height,
+        )
     end
 
     function local_assistant_reply(app, prompt)
@@ -590,6 +706,7 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantPartialAnswer = ""
         app.append_assistant("系统", "已开始新对话。旧消息仅从当前界面隐藏；新的问题会创建独立 Codex 会话。")
         app.set_assistant_activity("待命", String[])
+        app.set_assistant_activity_visible(false)
         app.set_assistant_status("等待问题。可输入 /help 查看命令。"; state="待命")
     end
 
@@ -688,6 +805,7 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantResultGuideButton.Enable = !running
         app.AssistantStopButton.Visible = app.CurrentMode == "assistant" && running
         app.AssistantStopButton.Enable = running
+        app.set_assistant_activity_visible(running)
     end
 
     function apply_assistant_turn_snapshot(app, result)
@@ -1599,14 +1717,14 @@ const OFFLINE_PROFILES = Dict(
         app.ConsoleClearButton.Visible = false
         app.set_visible(app.assistant_controls(), false)
         app.set_visible((
-            app.AssistantChatPanel, app.AssistantActivityPanel, app.AssistantActivityLabel,
+            app.AssistantChatPanel,
             app.AssistantInputField, app.AssistantSendButton, app.AssistantStopButton,
             app.AssistantClearButton, app.AssistantCommandDropDown,
         ), true)
 
-        app.AssistantChatPanel.Position = [24, 192, 1392, 300]
-        app.AssistantActivityPanel.Position = [24, 504, 1392, 90]
-        app.AssistantActivityLabel.Position = [12, 6, 1368, 78]
+        app.AssistantChatPanel.Position = [24, 192, 1392, 390]
+        app.AssistantChatContentPanel.Position = [0, 0, 1360, 390]
+        app.AssistantActivityPanel.Position = [1002, 74, 414, 62]
         app.AssistantCommandDropDown.Position = [24, 596, 540, 32]
         app.AssistantCommandDropDown.Label = "命令候选"
         app.AssistantInputField.Position = [24, 642, 980, 32]
@@ -1619,6 +1737,7 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantCommandDropDown.Visible = true
         app.AssistantStatusLabel.Visible = false
         app.set_assistant_request_controls(app.AssistantRequestInFlight)
+        app.set_assistant_activity_visible(app.AssistantRequestInFlight)
 
         app.refresh_assistant_context()
         if isempty(app.AssistantLines)
@@ -2409,6 +2528,15 @@ const OFFLINE_PROFILES = Dict(
             Scrollable=true,
             Position=[24, 192, 1392, 300],
         )
+        app.AssistantChatContentPanel = TyAppDesigner.uipanel(
+            app.AssistantChatPanel;
+            Title="",
+            BackgroundColor=[0.96, 0.97, 0.97],
+            BorderType="solid",
+            BorderWidth=0,
+            BorderColor=[0.96, 0.97, 0.97],
+            Position=[0, 0, 1360, 390],
+        )
         app.AssistantMessagePanels = Any[]
         app.AssistantMessageLabels = Any[]
 
@@ -2419,12 +2547,22 @@ const OFFLINE_PROFILES = Dict(
             BorderType="solid",
             BorderWidth=1,
             BorderColor=[0.60, 0.73, 0.74],
-            Position=[24, 504, 1392, 90],
+            Scrollable=true,
+            Position=[1002, 74, 414, 62],
+        )
+        app.AssistantActivityContentPanel = TyAppDesigner.uipanel(
+            app.AssistantActivityPanel;
+            Title="",
+            BackgroundColor=[0.93, 0.96, 0.96],
+            BorderType="solid",
+            BorderWidth=0,
+            BorderColor=[0.93, 0.96, 0.96],
+            Position=[0, 0, 386, 62],
         )
         app.AssistantActivityLabel = TyAppDesigner.uilabel(
-            app.AssistantActivityPanel;
-            Text="运行过程：待命\n等待问题。\n\n仅显示公开运行事件，不显示模型内部推理。",
-            Position=[12, 6, 1368, 78],
+            app.AssistantActivityContentPanel;
+            Text="运行过程：待命\n等待问题。",
+            Position=[8, 6, 370, 50],
             VerticalAlignment="top",
             WordWrap=true,
             FontColor=[0.08, 0.16, 0.22],
