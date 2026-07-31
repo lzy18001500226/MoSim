@@ -14,8 +14,42 @@
 | WSL gcc | 本批次构建验证：Ubuntu-20.04 WSL，`gcc 9.4.0` | `gcc --version` |
 | WSL CMake | 本批次构建验证：`cmake version 3.16.3` | `cmake --version` |
 
+### 1.1 Codex CLI 构建（可选，用于 AI 辅助功能）
+
+Model Studio 第四栏的 AI 助手功能需要 Codex CLI。该功能为**可选**，跳过不影响核心仿真。
+
+| 平台 | 构建命令 | 产物路径 |
+|---|---|---|
+| Windows | `cd src\Agent; .\build_codex.ps1` | `src\Agent\codex-main\codex-rs\target\release\codex.exe` |
+| Linux / macOS | `cd src/Agent && ./build_codex.sh` | `src/Agent/codex-main/codex-rs/target/release/codex` |
+
+**依赖检查：**
+
+```bash
+# 验证 Rust
+cargo --version
+# 预期：cargo 1.x.x 或更高
+# Windows 验证 Codex
+src\Agent\codex-main\codex-rs\target\release\codex.exe --version
+# Linux/macOS 验证 Codex
+src/Agent/codex-main/codex-rs/target/release/codex --version
+```
+
+**首次启用 GPT：** 将 `src/Agent/codex.config.example.toml` 的非密钥配置合并到
+用户自己的 `CODEX_HOME/config.toml`，然后使用本节产物执行 `login` 并以 `login status`
+核对。认证状态由 Codex 的用户配置保存，不写入 `MOSIM_ROOT`；
+AI 助手无法使用不影响 MWORKS 核心仿真、结果复核或 px4ctrl 代码生成。
+
+源码快照身份、许可证和树指纹见 `src/Agent/CODEX_SOURCE_MANIFEST.json`。导入快照
+未携带可验证的上游 Git revision，因此发布时必须同时保留该清单和 MoSim 的发布提交。
+
 Windows 上未检测到本机 `gcc`、`clang` 或 `cl`，因此本批次没有宣称 Windows DLL
 已构建。Windows 交付机需安装 Visual Studio Build Tools 或 LLVM/Clang 后重新构建。
+导入的 Codex 源码将 Windows 11 + WSL2 列为其文档化系统路径；`build_codex.ps1`
+是为 Studio 提供原生 `.exe` 的项目入口，只有目标机实际通过 `--version` 后才可
+视为可用。首次 `cargo build --locked` 仍可能下载锁定依赖，除非 Cargo 缓存已就绪。
+本机 2026-07-31 未检测到 `cargo` 或 `rustc`，因此未生成 Codex `.exe`，也未执行
+真实 GPT 请求；这不影响已完成的源码、桥接和离线合同验证。
 
 ## 2. 正式模型包根
 
@@ -114,6 +148,11 @@ Config/control_platform/model_studio_task_routes_v1.toml
 | 24 条灵敏度总账 | `Results/control_platform/sensitivity_analysis_long_v1/SENSITIVITY_LONG_V1_CLOSEOUT.json` | `de106345b724aeb0d71f74e9ec2bc0f5d578c0ab485d86d7d10d708e261183a3` |
 | 七场景矩阵 | `Results/control_platform/seven_scenario_ab_v2/SCENARIO_RMSE_MATRIX.pending_syslab.json` | `8accf3088bd1f77d0790f7b3c5a2dfad1e9b8a9de4d16b35ec0b2ee87bfb1d76` |
 | 50 s SIL 状态 | `Results/control_platform/px4ctrl_codegen_sil_v1/logs/CLOSED_LOOP_SIL_RESULT.json` | `2e7e438d0d54f6369dc75d7a51821296895547b1579981f45fa0c13c583a0570` |
+| Codex CLI Cargo 工作区 | `src/Agent/codex-main/codex-rs/Cargo.toml` | `dfc44a70b284492377e9c04084fd1a9f4ee074d608399921e4b06423ecff667f` |
+| Codex CLI 锁定依赖 | `src/Agent/codex-main/codex-rs/Cargo.lock` | `76ee8398f430b10fc79041af8c106fbc296a834cfe90afba359284176cc3b669` |
+| Codex Windows 构建脚本 | `src/Agent/build_codex.ps1` | `5805ac0fd744aab1e386083d76f799a0ebfd07eaf0e9f7818aad97b8f966925f` |
+| Codex Unix 构建脚本 | `src/Agent/build_codex.sh` | `68b120e91ddc3566768f01425b8de7237361eadb83cacb1831ab6526847f1ba2` |
+| Codex 源码清单 | `src/Agent/CODEX_SOURCE_MANIFEST.json` | 源码树 `ca332f08f756c1380e6f2ffa11ed6d21d9f1eaf38b8ad8b20d92e00ff55c0bb4` |
 
 px4ctrl C 源、构建文件与共享库证据的完整哈希清单位于
 `src/control/codegen/px4ctrl/codegen_manifest.json`。
@@ -133,23 +172,26 @@ px4ctrl C 源、构建文件与共享库证据的完整哈希清单位于
    export MOSIM_ROOT="/path/to/MoSim"
    ```
 
-2. 在授权的 MWORKS 中仅加载
+2. 可选启用 Studio AI 助手时，先在 `src/Agent` 运行本清单第 1.1 节对应平台的
+   构建脚本，再以该产物完成 `login` 与 `login status`。凭据和 `CODEX_HOME` 必须
+   位于用户目录，不能置于项目根。
+3. 在授权的 MWORKS 中仅加载
    `$MOSIM_ROOT\Models\MoSimQuadrotorModel\package.mo`。
-3. 在 Syslab 中启动 Studio：
+4. 在 Syslab 中启动 Studio：
 
    ```julia
    include(joinpath(ENV["MOSIM_ROOT"], "apps", "model_studio", "src", "app.jl"))
    ```
 
-4. 在 Studio 根据
+5. 在 Studio 根据
    `Config/control_platform/model_studio_task_routes_v1.toml` 选择有效任务和
    控制器，点击“写入配置”，再点击“打开仿真模型”。
-5. 在 MWORKS 内确认 Runner、执行 CheckModel，并由用户人工开始仿真。
-6. 在结果查看器读取 Result.msr，或读取该运行记录的 `metrics/METRICS.json`。
+6. 在 MWORKS 内确认 Runner、执行 CheckModel，并由用户人工开始仿真。
+7. 在结果查看器读取 Result.msr，或读取该运行记录的 `metrics/METRICS.json`。
    不把 Studio 窗口、截图或打开操作写作仿真成功。
-7. 需要重新导出 px4ctrl 时，在 MWORKS 中打开图形 Sysblock，使用
+8. 需要重新导出 px4ctrl 时，在 MWORKS 中打开图形 Sysblock，使用
    GenerateModelCode；随后更新生成文件哈希并按以下命令构建。
-8. Linux/WSL 构建与 C 测试：
+9. Linux/WSL 构建与 C 测试：
 
    ```bash
    cmake -S "${MOSIM_ROOT}/src/control/codegen/px4ctrl" \
@@ -159,9 +201,9 @@ px4ctrl C 源、构建文件与共享库证据的完整哈希清单位于
    bash "${MOSIM_ROOT}/src/control/codegen/px4ctrl/hash_check.sh"
    ```
 
-9. Windows 使用已安装的 Visual Studio Build Tools 或 LLVM/Clang 重新执行
+10. Windows 使用已安装的 Visual Studio Build Tools 或 LLVM/Clang 重新执行
    `CMakeLists.txt` 的构建；不要复用 Linux `.so` 作为 Windows DLL。
-10. 需要验证图形模型到 CFunction 的整机一致性时，使用相同的 ClimbPath、
+11. 需要验证图形模型到 CFunction 的整机一致性时，使用相同的 ClimbPath、
     初始条件和求解器复核 50 s SIL。现有 SIL 的证明范围到此为止，不跨越到
     Gazebo/PX4 运行时。
 
@@ -181,6 +223,12 @@ px4ctrl C 源、构建文件与共享库证据的完整哈希清单位于
 | `Results/control_platform/sensitivity_wind_v1/SENSITIVITY_BATCH_STATUS.json` | 8 条风扰批次 | 通过 |
 | `Results/control_platform/px4ctrl_codegen_sil_v1/logs/CLOSED_LOOP_SIL_RESULT.json` | 50 s SIL | 通过 |
 | `src/control/codegen/px4ctrl/` | C 生成交付目录 | 通过 |
+| `src/Agent/codex-main/` | 可选 Codex CLI 源码快照（Apache-2.0） | 通过 |
+| `src/Agent/CODEX_SOURCE_MANIFEST.json` | Codex 源码树指纹与安全扫描基线 | 通过 |
+| `src/Agent/build_codex.ps1` | Windows 锁定构建入口 | 通过 |
+| `src/Agent/build_codex.sh` | Linux/macOS 锁定构建入口 | 通过 |
+| `Config/control_platform/model_studio_codex_cli_v1.toml` | Studio Codex CLI 权威配置 | 通过 |
+| `Scripts/agent/codex_cli_agent_server.py` | Studio loopback Codex Bridge | 通过 |
 
 ## 8. 已知限制与必须随交付保留的状态
 

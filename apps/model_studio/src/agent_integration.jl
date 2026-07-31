@@ -15,7 +15,7 @@ function python_executable()
 end
 
 function server_script(root)
-    return joinpath(root, "Scripts", "agent", "mworks_analysis_agent_server.py")
+    return joinpath(root, "Scripts", "agent", "codex_cli_agent_server.py")
 end
 
 function client_script(root)

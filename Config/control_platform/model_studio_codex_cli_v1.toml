@@ -1,0 +1,27 @@
+schema = "mosim.model_studio_codex_cli.v1"
+version = 1
+scope = "Optional local Codex CLI backend for the Model Studio AI tab. It may inspect approved project context but must not modify project files, start simulation, generate code, or send runtime commands."
+
+[service]
+host = "127.0.0.1"
+port = 8765
+
+[codex_cli]
+binary_env = "MOSIM_CODEX_BIN"
+windows_binary = "src/Agent/codex-main/codex-rs/target/release/codex.exe"
+unix_binary = "src/Agent/codex-main/codex-rs/target/release/codex"
+
+[limits]
+max_question_chars = 6000
+max_context_chars = 2400
+max_answer_chars = 2400
+request_timeout_s = 110
+
+[safety]
+sandbox = "read-only"
+# Passed to current Codex CLI as: --config approval_policy="never".
+approval_policy = "never"
+allow_project_writes = false
+allow_runtime_command = false
+allow_external_file_paths = false
+audit_log_content = false

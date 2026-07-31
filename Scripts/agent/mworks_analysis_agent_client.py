@@ -36,7 +36,7 @@ def main() -> int:
     parser.add_argument("command", choices=["health", "query"])
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
-    parser.add_argument("--timeout", type=int, default=65)
+    parser.add_argument("--timeout", type=int, default=120)
     parser.add_argument("--question-b64")
     parser.add_argument("--context-b64", default="")
     args = parser.parse_args()

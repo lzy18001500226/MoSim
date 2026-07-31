@@ -1,0 +1,4 @@
+# Keep the vendored Codex snapshot byte-for-byte intact. Its upstream fixtures
+# and terminal frames intentionally contain whitespace that git diff --check
+# would otherwise report; MoSim-owned files remain subject to normal checks.
+codex-main/** -whitespace
