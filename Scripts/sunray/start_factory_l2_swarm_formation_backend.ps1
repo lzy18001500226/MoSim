@@ -149,8 +149,8 @@ $active | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $ActivePath -Encodi
 
 Write-Host "[MoSim] Starting the three-UAV Swarm-Formation backend in this terminal."
 Write-Host "[MoSim] RunId: $RunId"
-Write-Host "[MoSim] Use cmd/05_检查Factory三机状态.cmd before opening the RViz review."
-Write-Host "[MoSim] Use cmd/06_停止Factory三机编队.cmd for a controlled stop."
+Write-Host "[MoSim] The three-UAV Windows wrappers are archived and require a separate revalidation before use."
+Write-Host "[MoSim] Do not treat this historical route as the current C99 baseline."
 
 $exitCode = 1
 $rawGateExitCode = 1

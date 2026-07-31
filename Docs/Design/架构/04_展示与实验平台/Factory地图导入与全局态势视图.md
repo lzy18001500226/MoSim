@@ -272,15 +272,15 @@ review source semantics:
   /sdf_map/occupancy_all仍是FUEL内部规划占据图，不冒充全高度审核地图
 ```
 
-当前Factory FUEL单机探索审核入口：
+历史 Factory FUEL 单机探索审核入口已归档，不能作为当前支持入口：
 
 ```text
-cmd/启动Factory单机FUEL自主探索审核.cmd
+Scripts/cmd/Archive/legacy_unverified/启动Factory单机FUEL自主探索审核.cmd
 Config/rviz/sunray_ros1_factory_fuel_pointcloud_review.rviz
 Config/rviz/sunray_ros1_factory_fuel_grid3d_review.rviz
 ```
 
-该入口默认同时启动Factory UE live mirror，并将FUEL随机采样种子固定为
+该历史入口曾默认同时启动Factory UE live mirror，并将FUEL随机采样种子固定为
 `1`。UE只订阅`/uav1/mavros/local_position/odom`和`/position_cmd`：红线是
 实际odom轨迹，绿线是规划命令轨迹；它不向ROS、PX4、MAVROS、FUEL或Gazebo
 回写任何状态。可用`-NoUnreal`关闭UE，或用`-FuelRandomSeed -1`恢复FUEL的
