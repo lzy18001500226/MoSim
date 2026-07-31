@@ -1,0 +1,30 @@
+{
+  "controller_id": "awff",
+  "sampling_note": "采样间隔 0.002 s（25001 点），与本批 25 条一致。",
+  "figures": [
+    "trajectory_xy.png",
+    "trajectory_3d.png",
+    "altitude_z.png",
+    "position_error.png",
+    "velocity.png",
+    "attitude.png",
+    "control_input.png"
+  ],
+  "count_definition_authority": "Config/control_platform/climbpath_baseline_count_definition.json",
+  "failure_class": "terminal_position_error_exceeds_5m",
+  "generator": "Scripts/syslab/plot_28_passed_detail_typlot.jl",
+  "g3_status": "fail",
+  "raw_csv": "Results\\control_platform\\phase2_full_48_climbpath\\awff\\raw\\climbpath50s.csv",
+  "resolution": 600,
+  "negative_sample": true,
+  "negative_sample_note": "本控制器 G3 状态为 fail（terminal_position_error_exceeds_5m），计入 ran_to_completion=38，不计入 performance_accepted=28。图件仅作负性能样本证据，不得作为达标结论引用。",
+  "key_metrics": {
+    "position_rmse_m": 7.258035997242231,
+    "terminal_position_error_norm_m": 48.8182737515304
+  },
+  "schema": "mosim.typlot_detail.v1",
+  "sample_count": 25001,
+  "engine": "Syslab TyPlot",
+  "sample_interval_s": 0.002,
+  "duration_s": 50.0
+}
