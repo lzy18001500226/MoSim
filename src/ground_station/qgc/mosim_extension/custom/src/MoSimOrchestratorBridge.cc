@@ -120,9 +120,9 @@ MoSimOrchestratorBridge::MoSimOrchestratorBridge(QObject *parent)
             });
     _qgcMetricWindow.start();
     _qgcObservability.start();
-    loadOperatorMap();
     recoverRunIdentity();
-    QTimer::singleShot(0, this, &MoSimOrchestratorBridge::refreshControllers);
+    loadOperatorMap();
+    QTimer::singleShot(0, this, &MoSimOrchestratorBridge::refreshOperatorProfiles);
 }
 
 MoSimOrchestratorBridge::~MoSimOrchestratorBridge()
@@ -132,6 +132,18 @@ MoSimOrchestratorBridge::~MoSimOrchestratorBridge()
 
 void MoSimOrchestratorBridge::loadOperatorMap()
 {
+    _operatorMap.clear();
+    const QVariantMap manifestSnapshot = _runManifest.value(QStringLiteral("operator_map_snapshot")).toMap();
+    const QString manifestSnapshotHash = _runManifest.value(QStringLiteral("operator_map_snapshot_hash")).toString();
+    if (!_runId.isEmpty()) {
+        // A prepared run must render its immutable snapshot. Falling back to a
+        // catalog default here would silently mix a mutable map with a run.
+        if (!manifestSnapshot.isEmpty() && !manifestSnapshotHash.isEmpty()) {
+            _operatorMap = manifestSnapshot;
+            _operatorMap.insert(QStringLiteral("operator_map_snapshot_hash"), manifestSnapshotHash);
+        }
+        return;
+    }
     const QString catalogPath = QDir(_projectRoot).filePath(
         QStringLiteral("Config/control_platform/operator_map_catalog.json"));
     QFile catalogFile(catalogPath);
@@ -374,7 +386,6 @@ void MoSimOrchestratorBridge::updateManualVelocity(double forwardMps, double lat
 
 void MoSimOrchestratorBridge::startRun()
 {
-    _autoAttachUnrealAfterStart = true;
     invokeRunAction(QStringLiteral("start_run"));
 }
 
@@ -442,6 +453,34 @@ void MoSimOrchestratorBridge::restoreInjection(const QString &vehicleId, const Q
     invokeRunAction(QStringLiteral("restore_injection"), extra);
 }
 
+void MoSimOrchestratorBridge::stageWind(const QString &vehicleId, double value)
+{
+    invokeRunAction(QStringLiteral("stage_injection"),
+                    {QStringLiteral("--target"), QStringLiteral("wind_speed_mps"),
+                     QStringLiteral("--vehicle-id"), vehicleId,
+                     QStringLiteral("--value"), QString::number(value)});
+}
+
+void MoSimOrchestratorBridge::stageMotorEffectiveness(const QString &vehicleId, int rotorIndex, double value)
+{
+    invokeRunAction(QStringLiteral("stage_injection"),
+                    {QStringLiteral("--target"), QStringLiteral("motor_effectiveness"),
+                     QStringLiteral("--vehicle-id"), vehicleId,
+                     QStringLiteral("--rotor-index"), QString::number(rotorIndex),
+                     QStringLiteral("--value"), QString::number(value)});
+}
+
+void MoSimOrchestratorBridge::applyStagedInjection()
+{
+    invokeRunAction(QStringLiteral("apply_staged_injection"));
+}
+
+void MoSimOrchestratorBridge::restoreNormal(const QString &vehicleId)
+{
+    invokeRunAction(QStringLiteral("restore_normal"),
+                    {QStringLiteral("--vehicle-id"), vehicleId});
+}
+
 void MoSimOrchestratorBridge::prepareDisplays(const QStringList &displays)
 {
     QStringList extra;
@@ -471,6 +510,7 @@ void MoSimOrchestratorBridge::detachDisplays()
 }
 
 void MoSimOrchestratorBridge::refreshControllers() { invoke({QStringLiteral("list_controllers")}); }
+void MoSimOrchestratorBridge::refreshOperatorProfiles() { invoke({QStringLiteral("list_operator_profiles")}); }
 void MoSimOrchestratorBridge::proposeOperatorTask(const QString &prompt)
 {
     _agentProposal.clear();
@@ -796,7 +836,6 @@ void MoSimOrchestratorBridge::finishWithError(const QString &reason, const QStri
     _reasonCode = reason;
     _statusText = detail.isEmpty() ? reason : reason + QStringLiteral(": ") + detail;
     _lastResponse = _statusText;
-    _autoAttachUnrealAfterStart = false;
     _continuationAfterDisplayDetach.clear();
     _pendingAction.clear();
     emit responseChanged();
@@ -835,6 +874,7 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
         _recordingActive = false;
         _recordingPath.clear();
         _runtimeTelemetry.clear();
+        _pendingInjection.clear();
     }
     _profileHash = response.value(QStringLiteral("profile_hash")).toString(_profileHash);
     const QJsonObject manifest = response.value(QStringLiteral("manifest")).toObject();
@@ -845,19 +885,12 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
         _selectedControllerId = manifest.value(QStringLiteral("controller_id")).toString(_selectedControllerId);
         _selectedVehicleCount = manifest.value(QStringLiteral("vehicle_count")).toInt(_selectedVehicleCount);
     }
+    loadOperatorMap();
     const QJsonObject session = response.value(QStringLiteral("session")).toObject();
     if (!session.isEmpty()) {
         _displaySessionId = session.value(QStringLiteral("session_id")).toString(_displaySessionId);
-        const QJsonArray displays = session.value(QStringLiteral("displays")).toArray();
-        bool includesUnreal = false;
-        for (const QJsonValue &display : displays) {
-            includesUnreal = includesUnreal || display.toString() == QStringLiteral("unreal");
-        }
         const QString sessionState = session.value(QStringLiteral("state")).toString();
-        if ((completedAction == QStringLiteral("attach_display") || completedAction == QStringLiteral("get_run_state"))
-            && sessionState == QStringLiteral("attached") && includesUnreal && _accepted) {
-            QTimer::singleShot(0, this, &MoSimOrchestratorBridge::refreshUnrealEmbedding);
-        } else if (completedAction == QStringLiteral("detach_display") || sessionState == QStringLiteral("detached")) {
+        if (completedAction == QStringLiteral("detach_display") || sessionState == QStringLiteral("detached")) {
             clearUnrealWindow(QStringLiteral("not_attached"));
         }
     }
@@ -865,6 +898,15 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
     if (!controllers.isEmpty() || _pendingAction == QStringLiteral("list_controllers")) {
         _controllers = controllers.toVariantList();
         _registryHash = response.value(QStringLiteral("registry_hash")).toString();
+    }
+    const QJsonArray operatorProfiles = response.value(QStringLiteral("operator_profiles")).toArray();
+    if (!operatorProfiles.isEmpty() || completedAction == QStringLiteral("list_operator_profiles")) {
+        _operatorProfiles = operatorProfiles.toVariantList();
+    }
+    if (response.contains(QStringLiteral("pending_injection"))) {
+        _pendingInjection = response.value(QStringLiteral("pending_injection")).toObject().toVariantMap();
+    } else if (!manifest.isEmpty()) {
+        _pendingInjection = manifest.value(QStringLiteral("pending_injection")).toObject().toVariantMap();
     }
     if (completedAction == QStringLiteral("propose_operator_task")) {
         _agentProposal = _accepted
@@ -915,27 +957,14 @@ void MoSimOrchestratorBridge::processFinished(int exitCode, QProcess::ExitStatus
             _displaySessionId.clear();
         }
     }
-    if (completedAction == QStringLiteral("start_run") && !_accepted) {
-        _autoAttachUnrealAfterStart = false;
-    } else if (completedAction == QStringLiteral("prepare_display_session") && !_accepted) {
-        _autoAttachUnrealAfterStart = false;
-    } else if (completedAction == QStringLiteral("attach_display")) {
-        _autoAttachUnrealAfterStart = false;
-    }
     _pendingAction.clear();
     emit responseChanged();
     emit busyChanged();
-    if (completedAction == QStringLiteral("list_controllers") && _startupRunRecoveryPending) {
+    if (completedAction == QStringLiteral("list_operator_profiles") && _startupRunRecoveryPending) {
         _startupRunRecoveryPending = false;
         QTimer::singleShot(0, this, [this]() {
             invoke({QStringLiteral("get_run_state"), QStringLiteral("--run-id"), _runId});
         });
-    } else if (completedAction == QStringLiteral("start_run") && _accepted && _autoAttachUnrealAfterStart) {
-        launchRuntimeStatusTerminal();
-        QTimer::singleShot(0, this, [this]() { prepareDisplays({QStringLiteral("unreal")}); });
-    } else if (completedAction == QStringLiteral("prepare_display_session") && _accepted
-               && _autoAttachUnrealAfterStart) {
-        QTimer::singleShot(0, this, &MoSimOrchestratorBridge::attachDisplays);
     } else if (completedAction == QStringLiteral("detach_display") && _accepted
                && continuationAfterDisplayDetach == QStringLiteral("stop_run")) {
         QTimer::singleShot(0, this, [this]() { invokeRunAction(QStringLiteral("stop_run")); });

@@ -1,4 +1,4 @@
-message(STATUS "QGC: Adding MoSim Flight Console custom plugin")
+message(STATUS "QGC: Adding MoSim Ground Control custom plugin")
 
 set_property(DIRECTORY ${CMAKE_SOURCE_DIR}
     APPEND PROPERTY COMPILE_DEFINITIONS
@@ -13,8 +13,8 @@ set(QGC_RESOURCES ${QGC_RESOURCES} ${CUSTOM_RESOURCES} CACHE STRING "Custom reso
 set(CUSTOM_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomPlugin.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/CustomPlugin.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/MoSimOrchestratorBridge.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/MoSimOrchestratorBridge.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MoSimOperatorBridge.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/MoSimOperatorBridge.h
     CACHE INTERNAL "" FORCE
 )
 

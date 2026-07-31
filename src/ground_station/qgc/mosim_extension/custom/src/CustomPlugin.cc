@@ -2,20 +2,22 @@
 
 #include <QtCore/QApplicationStatic>
 #include <QtCore/QFile>
-#include <QtCore/QMetaObject>
-#include <QtCore/QTimer>
+#include <QtGui/QGuiApplication>
 #include <QtQml/QQmlApplicationEngine>
 #include <QtQml/QQmlContext>
 
-#include "MoSimOrchestratorBridge.h"
+#include "MoSimOperatorBridge.h"
 
 Q_APPLICATION_STATIC(CustomPlugin, customPluginInstance)
 
 CustomPlugin::CustomPlugin(QObject *parent)
     : QGCCorePlugin(parent)
-    , _orchestrator(new MoSimOrchestratorBridge(this))
+    , _operatorBridge(new MoSimOperatorBridge(this))
 {
     _showAdvancedUI = false;
+    // Keep the CMake-safe executable name while presenting the operator-facing name.
+    QGuiApplication::setApplicationName(QStringLiteral("MoSim Ground Control"));
+    QGuiApplication::setApplicationDisplayName(QStringLiteral("MoSim Ground Control"));
 }
 
 CustomPlugin::~CustomPlugin()
@@ -34,19 +36,9 @@ QGCCorePlugin *CustomPlugin::instance()
 QQmlApplicationEngine *CustomPlugin::createQmlApplicationEngine(QObject *parent)
 {
     _qmlEngine = QGCCorePlugin::createQmlApplicationEngine(parent);
-    _qmlEngine->rootContext()->setContextProperty(QStringLiteral("mosimOrchestrator"), _orchestrator);
+    _qmlEngine->rootContext()->setContextProperty(QStringLiteral("mosimOperator"), _operatorBridge);
     _selector = new CustomOverrideInterceptor();
     _qmlEngine->addUrlInterceptor(_selector);
-    QTimer::singleShot(250, _qmlEngine, [this]() {
-        if (_qmlEngine == nullptr) {
-            return;
-        }
-        for (QObject *rootObject : _qmlEngine->rootObjects()) {
-            if (QMetaObject::invokeMethod(rootObject, "showPlanView")) {
-                break;
-            }
-        }
-    });
     return _qmlEngine;
 }
 
