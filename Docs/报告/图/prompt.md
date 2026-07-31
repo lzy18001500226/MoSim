@@ -16,6 +16,10 @@ Drawing discipline:
 - When a block includes evidence, place evidence to the right or bottom edge and keep it read-only.
 - When a block includes comparison outputs, align the comparison outputs in a final row or final column, never inside the main loop.
 - When a block includes interface boundaries, keep the boundary labels separate from the implementation nodes.
+- Every retained figure is a main-body report figure. Do not render "附录", "Appendix", "supplementary", or a separate supplementary-material path.
+- Keep architecture explanation, formal MWORKS evidence, independent runtime evidence, and read-only display in visibly separate lanes. A dashed gray factual-reference arrow is never a control, deployment, or performance-equivalence arrow.
+- For multi-output hardware diagrams, make each output a dedicated horizontal or vertical lane from its source port to its matching destination port. Do not merge four motor wires into a fan-out/fan-in tangle.
+- Keep a node's incoming and outgoing ports on consistent sides: left-to-right signal flow enters on the left and exits on the right; only declared lower feedback rails may return right-to-left.
 
 Rules:
 
@@ -28,137 +32,182 @@ Rules:
 
 ---
 
-## 01 Layered Architecture of the MoSim Platform
+## Active Redraw Set
+
+Use the six replacement blocks below for the current redraw pass. They replace
+the earlier versions of the corresponding hand-drawn figures; the other
+hand-drawn figures are not regenerated in this pass.
+
+| Report figure | Prompt block | Required change |
+|---|---|---|
+| `12_Profile配置与状态注入链路.png` | 03 | Split the MWORKS formal Plant from the independent ROS1/PX4 lane and preserve command/event authority. |
+| `16_MWORKS建模仿真代码生成反馈闭环.png` | 02 | Replace the single deployment loop with separate formal-evidence, code-delivery, and runtime-evidence lanes. |
+| `19_四旋翼动力学与控制分配模型.png` | 05 | Use the source-aligned signed X allocation, actuator lag, rotor order, and principal inertia. |
+| `20_实验平台分层与故障反馈链路.png` | 01 | Show the actual motor/ESC/airframe graphical review and distinguish it from FormalRunner evidence. |
+| `21.png` | 21 | Replace the obsolete 46-route/cost taxonomy with a 48-entry catalogue and evidence map. |
+| `22.png` | 22 | Replace the speculative diagnostic tree with the frozen four-class G3 failure classification. |
+
+---
+
+## 01 Figure 20: Sunray150 System Architecture, Formal Evidence, and Display Boundary
 
 ```text
 Figure Subject:
-Create a strict 2D engineering architecture diagram showing the complete layered structure of the MoSim quadrotor modeling, control, deployment, and evidence platform. Use a pure white background, flat vector graphics, black text, solid black 1 px node borders, and sharp arrowheads. Use pale blue for modeling modules, pale green for control modules, pale red for safety and fault modules, pale yellow for evidence modules, and pale gray for display modules. Use only the exact in-figure labels listed below.
+Create a source-aligned 2D engineering architecture diagram for the Sunray150 graphical system review and the separate MWORKS whole-aircraft formal-evidence path. The upper lane must make the battery, controller, ESC, four motors, and airframe easy to inspect. The lower lane must show the actual FormalRunner evidence path. Use a pure white background, flat vector graphics, black text, solid black 1 px borders, and sharp arrowheads. Use pale blue for model/state nodes, pale green for control and actuator nodes, pale yellow for evidence nodes, and pale gray for read-only display or independent-runtime nodes.
 
 Diagram type:
-Layered system architecture diagram with compact UML-style rectangular nodes.
+Two-lane source-and-evidence architecture diagram with a shared report-output column.
 
 Layout:
-Use a 16:9 horizontal canvas. Arrange five horizontal layers from top to bottom. Keep all nodes aligned to a strict grid with even spacing. Put the layer labels at the far left of each band and keep the module nodes in one aligned row per band. Use only orthogonal vertical and horizontal connectors with 90-degree turns. The main closed-loop flow must remain visually dominant from scenario configuration through modeling, control, runtime validation, display, and evidence.
-Keep the five bands visually separated so the top configuration band, middle modeling-control band, deployment band, and bottom evidence band are unambiguous.
+Use a 16:9 horizontal canvas with two full-width horizontal lanes and one narrow shared evidence column at the far right. Label the upper lane "图形化系统审查（结构说明）" and the lower lane "MWORKS正式仿真证据（性能结论）". Keep the lanes separated by a solid horizontal divider; do not draw a control wire across it.
+
+In the upper lane, place computation and sensing at the left, the controller and ESC at the center, and propulsion/airframe at the right. Put "BatteryPowerModule" directly above "ESCDriveModule" with one vertical power arrow. Put the four motor nodes in four equal-height rows immediately right of the ESC. Put the four matching airframe rotor ports in the same four rows immediately right of the motors. Each ESC-to-motor-to-airframe route must be a straight horizontal lane: Motor 1 only reaches Rotor 1, and so on. Draw sensor feedback as one lower outer rail inside the upper lane: airframe -> sensor-feedback hub -> perception and flight-controller inputs. Do not draw diagonal motor, power, or feedback wires.
+
+In the lower lane, place the formal path in one left-to-right row. Put the Plant-state feedback in a separate lower return rail inside this lane. Place the shared evidence column outside both loops. Use only orthogonal connectors, strict grid alignment, equal motor spacing, and no nested decorative containers.
 
 Mandatory nodes:
-- Layer label: "实验配置层"
-- "Model Studio"
+- Lane label: "图形化系统审查（结构说明）"
+- "PerceptionInterfaceModule"
+- "V6XFlightControllerModule"
+- "ORINNXMissionComputerModule"
+- "SystemSupervisorModule"
+- "系统状态记录"
+- "AWFFControllerModule"
+- "BatteryPowerModule"
+- "ESCDriveModule"
+- "MotorDrive 1"
+- "MotorDrive 2"
+- "MotorDrive 3"
+- "MotorDrive 4"
+- "Sunray150AirframeSensorModule"
+- "传感器反馈汇聚"
+- "系统图形审查截图"
+- Lane label: "MWORKS正式仿真证据（性能结论）"
 - "Profile配置"
-- "任务与场景配置"
-- Layer label: "MWORKS建模与控制层"
-- "整机多领域模型"
-- "可组合控制器"
-- "安全与故障模块"
-- "结果查看器"
-- Layer label: "代码生成与接口层"
-- "GenerateModelCode"
-- "Controller Adapter"
-- "坐标系与单位转换"
-- Layer label: "ROS1部署验证层"
-- "PX4"
-- "MAVROS"
-- "px4ctrl"
-- "Gazebo"
-- "FAST-LIO"
-- "Diff-Planner / FUEL"
-- Layer label: "显示与证据层"
-- "QGC"
-- "RViz"
-- "UE"
-- "指标与报告证据"
+- "FormalRunner + Adapter + Controller"
+- "ActuatorCommandMapper"
+- "RotorActuatorCore"
+- "PhysicalWrenchAdapter"
+- "MultiBody Plant"
+- "Result.msr / 原始CSV / 指标"
+- "原生结果窗口"
+- "独立ROS1运行时记录"
+- "正文图、表与代码片段（无附录）"
+- Annotation: "结构审查不等于控制器性能结论"
+- Annotation: "运行时记录仅作事实性引用"
 
 Mandatory connections:
-- "Model Studio" -> "Profile配置" -> "整机多领域模型"
-- "任务与场景配置" -> "整机多领域模型"
-- "整机多领域模型" <-> "可组合控制器"
-- "可组合控制器" -> "安全与故障模块" -> "结果查看器"
-- "可组合控制器" -> "GenerateModelCode" -> "Controller Adapter" -> "px4ctrl"
-- "坐标系与单位转换" must sit between "Controller Adapter" and the runtime modules.
-- "px4ctrl" -> "MAVROS" -> "PX4" -> "Gazebo"
-- "Gazebo" -> "FAST-LIO" -> "Diff-Planner / FUEL" -> "px4ctrl"
-- "结果查看器", "QGC", "RViz", and "UE" -> "指标与报告证据"
-- Add one feedback arrow from "指标与报告证据" back to "Profile配置".
+- "PerceptionInterfaceModule" -> "V6XFlightControllerModule".
+- "PerceptionInterfaceModule" -> "ORINNXMissionComputerModule".
+- "V6XFlightControllerModule" -> "ORINNXMissionComputerModule".
+- "ORINNXMissionComputerModule" -> "AWFFControllerModule".
+- "V6XFlightControllerModule" -> "AWFFControllerModule".
+- "AWFFControllerModule" -> "ESCDriveModule".
+- "BatteryPowerModule" -> "ESCDriveModule" as one vertical arrow.
+- "BatteryPowerModule" -> "SystemSupervisorModule" -> "系统状态记录" as a thin side-status route, not a controller command route.
+- "ESCDriveModule" -> "MotorDrive 1" -> "Sunray150AirframeSensorModule" rotor port 1.
+- "ESCDriveModule" -> "MotorDrive 2" -> "Sunray150AirframeSensorModule" rotor port 2.
+- "ESCDriveModule" -> "MotorDrive 3" -> "Sunray150AirframeSensorModule" rotor port 3.
+- "ESCDriveModule" -> "MotorDrive 4" -> "Sunray150AirframeSensorModule" rotor port 4.
+- "Sunray150AirframeSensorModule" -> "传感器反馈汇聚" -> "PerceptionInterfaceModule" and "V6XFlightControllerModule" by the lower outer feedback rail.
+- "Sunray150AirframeSensorModule" -> "系统图形审查截图".
+- "系统状态记录" -> "系统图形审查截图".
+- "Profile配置" -> "FormalRunner + Adapter + Controller" -> "ActuatorCommandMapper" -> "RotorActuatorCore" -> "PhysicalWrenchAdapter" -> "MultiBody Plant" -> "Result.msr / 原始CSV / 指标".
+- "MultiBody Plant" -> "FormalRunner + Adapter + Controller" by the lower formal-lane feedback rail.
+- "Result.msr / 原始CSV / 指标" -> "原生结果窗口" and "正文图、表与代码片段（无附录）".
+- "系统图形审查截图" -> "正文图、表与代码片段（无附录）".
+- "独立ROS1运行时记录" -> "正文图、表与代码片段（无附录）" using a thin dashed gray factual-reference arrow only.
+- Bind "结构审查不等于控制器性能结论" to the divider between the two main lanes.
+- Bind "运行时记录仅作事实性引用" to "独立ROS1运行时记录".
 
 Negative constraints:
-No 3D, perspective, gradients, shadows, trays, floating text, decorative icons, screenshots, photos, curved lines, diagonal lines, crossed connectors, or large empty regions. Do not imply that QGC, RViz, or UE owns the control loop. Do not add any labels not explicitly listed.
+Do not draw a direct control arrow from the graphical-review lane, the runtime-record node, or any display node into the FormalRunner. Do not merge the four motor wires, duplicate the Plant, imply generated-code deployment success, or treat the system-graphical review as whole-aircraft performance evidence. No 3D, perspective, gradients, shadows, screenshots, photos, curved lines, diagonal lines, crossed connectors, fan-out tangles, large empty regions, appendix labels, or unlabeled authority changes.
 ```
 
 ---
 
-## 02 Modeling, Deployment Validation, and Parameter Feedback Loop
+## 02 Figure 16: MWORKS Modeling, Simulation, Code Delivery, and Evidence Lanes
 
 ```text
 Figure Subject:
-Create a strict 2D closed-loop engineering workflow showing how MoSim moves from MWORKS model construction to simulation, generated-code deployment, physical-runtime validation, problem diagnosis, and controller parameter feedback. Use a pure white background, flat vector graphics, black text, solid black borders, and a restrained pale engineering color palette. Use only the exact in-figure labels listed below.
+Create a strict 2D evidence workflow for the report body. Separate the MWORKS formal simulation path, the source-bound code-delivery verification branch, and the independent ROS1 runtime-record path. The diagram must show that the three paths may contribute factual material to the same report, but one path does not prove completion or equivalence of another. Use a pure white background, flat vector graphics, black text, solid black borders, and a restrained pale engineering color palette.
 
 Diagram type:
-Closed-loop lifecycle flowchart.
+Three-lane evidence workflow with one contained review-return path.
 
 Layout:
-Use a 16:9 horizontal canvas. Place the main forward pipeline in a single left-to-right row. Place deployment observations and diagnosis in a lower return row that flows right-to-left back to MWORKS. Keep the return row visually separate from the forward row, with one clear feedback entry point back into MWORKS. Use orthogonal connectors only. Use green arrows for accepted forward progress, red arrows for detected problems, and blue arrows for parameter feedback.
-Keep the forward row visually higher than the return row and do not let the return row cross the forward row.
+Use a 16:9 horizontal canvas with three horizontal lanes and a shared report-output column at the far right. The upper lane is the only formal control-evidence path and runs strictly left-to-right. The middle lane is a short code-delivery verification branch below its source model; it is not a deployment route. The lower lane contains independent completed ROS1 runtime records and must not enter either the formal or code lane.
+
+Keep every lane on a strict grid. Put the only feedback path below the upper lane: it must return from evidence review to the MWORKS model through one blue outer rail labelled as a separately authorized review action. Use black arrows for normal artifact flow, a blue arrow for that single review return, red short arrows only from a failed check to the retained failure record, and thin dashed gray arrows only for factual citation into the report. Do not use diagonal arrows or shared junctions between the three lanes.
 
 Mandatory nodes:
-- "需求与任务定义"
-- "MWORKS图形化建模"
-- "控制器设计与调参"
-- "MIL仿真"
-- "Result.msr与原生动画"
+- Lane label: "MWORKS形式化证据主线"
+- "任务与场景定义"
+- "冻结Profile与参数"
+- "MWORKS控制器模型与Adapter"
+- "CheckModel"
+- "FormalRunner ClimbPath 50 s"
+- "Result.msr / 原始CSV"
+- "指标、截图与失败记录"
+- Lane label: "源绑定代码交付核验"
 - "GenerateModelCode"
-- "SIL一致性检查"
-- "ROS1 / PX4 / Gazebo部署"
-- "FAST-LIO与规划任务验证"
-- "运行问题分类"
-- "模型失配"
-- "控制参数问题"
-- "接口与坐标系问题"
-- "执行器与传感器问题"
-- "参数回灌与模型修正"
-- "报告结论与证据"
+- "生成C/C++源码"
+- "CFunction SIL夹具"
+- "构建与静态检查"
+- "源绑定交付工件"
+- Lane label: "独立ROS1运行时证据线"
+- "ROS1 / Gazebo / PX4 / MAVROS / px4ctrl / RViz"
+- "已完成运行时记录"
+- "事实性正文引用"
+- "源与接口复核（需另行授权）"
+- "正文图、表与代码片段（无附录）"
+- Annotation: "三条证据线不互相等价"
+- Annotation: "失败记录保留，不改写为通过"
 
 Mandatory connections:
-- "需求与任务定义" -> "MWORKS图形化建模" -> "控制器设计与调参" -> "MIL仿真" -> "Result.msr与原生动画"
-- "Result.msr与原生动画" -> "GenerateModelCode" -> "SIL一致性检查" -> "ROS1 / PX4 / Gazebo部署" -> "FAST-LIO与规划任务验证"
-- "FAST-LIO与规划任务验证" -> "运行问题分类"
-- "运行问题分类" -> "模型失配"
-- "运行问题分类" -> "控制参数问题"
-- "运行问题分类" -> "接口与坐标系问题"
-- "运行问题分类" -> "执行器与传感器问题"
-- All four problem nodes -> "参数回灌与模型修正" -> "MWORKS图形化建模"
-- "Result.msr与原生动画" -> "报告结论与证据"
-- "FAST-LIO与规划任务验证" -> "报告结论与证据"
+- "任务与场景定义" -> "冻结Profile与参数" -> "MWORKS控制器模型与Adapter" -> "CheckModel" -> "FormalRunner ClimbPath 50 s" -> "Result.msr / 原始CSV" -> "指标、截图与失败记录" -> "正文图、表与代码片段（无附录）".
+- "CheckModel" -> "GenerateModelCode" -> "生成C/C++源码" -> "CFunction SIL夹具" -> "构建与静态检查" -> "源绑定交付工件" -> "正文图、表与代码片段（无附录）".
+- "ROS1 / Gazebo / PX4 / MAVROS / px4ctrl / RViz" -> "已完成运行时记录" -> "事实性正文引用" -> "正文图、表与代码片段（无附录）" using thin dashed gray arrows only.
+- "指标、截图与失败记录" -> "源与接口复核（需另行授权）" -> "MWORKS控制器模型与Adapter" by the single lower blue outer feedback rail.
+- Add a short red arrow from a small failed-check marker beside "CheckModel" and from a small failed-run marker beside "FormalRunner ClimbPath 50 s" into "指标、截图与失败记录"; do not create a second failure branch.
+- Bind "三条证据线不互相等价" to the vertical separation between the lanes.
+- Bind "失败记录保留，不改写为通过" to "指标、截图与失败记录".
 
 Negative constraints:
-No claim that generated code can be deployed without SIL and interface validation. No claim that Gazebo results replace MWORKS formal model evidence. No 3D, perspective, gradients, shadows, screenshots, decorative scenery, curved arrows, crossed lines, floating labels, or unboxed text.
+Do not draw any arrow from generated C/C++ code into the ROS1 runtime lane. Do not draw an arrow from the runtime lane back into MWORKS, code generation, controller tuning, or the formal Plant. Do not claim that code generation, SIL, ROS1, Gazebo, or a display record proves the other lane. No 3D, perspective, gradients, shadows, screenshots, decorative scenery, curved arrows, crossed lines, floating labels, unboxed text, appendix labels, or deployment-success claims.
 ```
 
 ---
 
-## 03 Reference, State, Command, Fault, and Metrics Data Flow
+## 03 Figure 12: Profile Configuration, State Sources, Event Injection, and Evidence Boundary
 
 ```text
 Figure Subject:
-Create a formal 2D data-flow diagram defining the ownership and direction of reference, state, command, fault, and metrics data in MoSim. Use a pure white background, flat vector graphics, black text, solid black node borders, pale blue data nodes, pale green control nodes, pale red fault nodes, and pale yellow metrics nodes. Use only the exact in-figure labels listed below.
+Create a formal 2D data-flow diagram defining Profile configuration, reference/state/command authority, fault event application, and metrics collection for the MWORKS FormalRunner path. Keep the independent ROS1/PX4 runtime record visibly outside the high-frequency loop. Use a pure white background, flat vector graphics, black text, solid black node borders, pale blue data nodes, pale green control nodes, pale red event nodes, pale yellow metrics nodes, and pale gray read-only or independent-runtime nodes.
 
 Diagram type:
 Directed data-flow and authority-boundary diagram.
 
 Layout:
-Use a 16:9 horizontal canvas with three aligned bands. The top band contains reference authority, the middle band contains the high-frequency control loop, and the bottom band contains injection, diagnostics, and metrics. Keep the bands clearly separated and align the authority nodes above the control chain. Use orthogonal connectors. Make the single command-authority path visually explicit and prevent any display module from entering the high-frequency loop.
-Keep the top authority band narrow, the middle loop band wide, and the bottom evidence band compact so the authority boundary is obvious at first glance.
+Use a 16:9 horizontal canvas with three aligned horizontal bands plus a narrow gray independent-runtime box at the far right. The top band contains Profile-driven reference and parameter authority. The middle band is the only high-frequency MWORKS FormalRunner loop. The bottom band contains event injection, diagnostics, metrics, and read-only evidence. Keep all high-frequency signal flow strictly left-to-right; draw the Plant-to-state return on one lower outer rail of the middle band.
+
+Place the fault route below the command route in red. It must show the distinction between requesting an event and observing its application. Do not merge the formal Plant with the runtime stack in a single node. Keep "MWORKS Formal Plant" and "独立ROS1/PX4运行时记录" as separate nodes with no command wire between them. Use only orthogonal connectors, aligned ports, and no crossings.
 
 Mandatory nodes:
+- "Profile配置"
+- "任务与场景配置"
 - "任务参考源"
 - "ReferenceFrame"
 - "参考权威"
-- "状态估计"
+- "状态源"
 - "StateFrame"
+- "状态权威"
+- "FormalRunner"
 - "控制器"
 - "CommandFrame"
 - "命令权威"
 - "Adapter"
-- "Plant / PX4"
+- "MWORKS Formal Plant"
 - "传感器反馈"
 - "InjectionCommand"
 - "故障执行器"
@@ -167,24 +216,29 @@ Mandatory nodes:
 - "MetricsFrame"
 - "证据存储"
 - "只读显示"
+- "独立ROS1/PX4运行时记录"
+- Annotation: "请求不等于已应用"
+- Annotation: "单一发布权威"
+- Annotation: "运行时记录不进入MWORKS高频环"
 
 Mandatory connections:
-- "任务参考源" -> "ReferenceFrame" -> "参考权威" -> "控制器"
-- "传感器反馈" -> "状态估计" -> "StateFrame" -> "控制器"
-- "控制器" -> "CommandFrame" -> "命令权威" -> "Adapter" -> "Plant / PX4"
-- "Plant / PX4" -> "传感器反馈"
-- "InjectionCommand" -> "故障执行器" -> "Plant / PX4"
+- "Profile配置" -> "任务与场景配置" -> "任务参考源" -> "ReferenceFrame" -> "参考权威" -> "FormalRunner" -> "控制器".
+- "MWORKS Formal Plant" -> "传感器反馈" -> "状态源" -> "StateFrame" -> "状态权威" -> "FormalRunner" by the lower outer return rail of the middle band.
+- "控制器" -> "CommandFrame" -> "命令权威" -> "Adapter" -> "MWORKS Formal Plant".
+- "Profile配置" -> "InjectionCommand" -> "故障执行器" -> "MWORKS Formal Plant".
 - "故障执行器" -> "AppliedEvent" -> "MetricsFrame"
 - "控制器" -> "ControllerDiagnostics" -> "MetricsFrame"
 - "StateFrame" -> "MetricsFrame"
 - "ReferenceFrame" -> "MetricsFrame"
 - "CommandFrame" -> "MetricsFrame"
 - "MetricsFrame" -> "证据存储" -> "只读显示"
-- Add a red annotation label on the fault path: "请求不等于已应用"
-- Add a green annotation label on the command path: "单一发布权威"
+- "独立ROS1/PX4运行时记录" -> "证据存储" using one thin dashed gray factual-reference arrow only.
+- Bind the red annotation label "请求不等于已应用" to the route from "InjectionCommand" through "故障执行器" to "AppliedEvent".
+- Bind the green annotation label "单一发布权威" to the route from "CommandFrame" through "命令权威" to "Adapter".
+- Bind "运行时记录不进入MWORKS高频环" to "独立ROS1/PX4运行时记录".
 
 Negative constraints:
-Do not connect the read-only display node to the controller, command-authority node, or plant. Do not show a file queue inside the high-frequency control loop. No 3D, shadows, gradients, screenshots, decorative icons, curved lines, connector crossings, floating text, or unlabeled authority changes.
+Do not connect the read-only display node or the independent-runtime node to the controller, command-authority node, Adapter, FormalRunner, or MWORKS Formal Plant. Do not show a file queue inside the high-frequency loop. Do not conflate an injection request with an applied event. No 3D, shadows, gradients, screenshots, decorative icons, curved lines, connector crossings, floating text, appendix labels, or unlabeled authority changes.
 ```
 
 ---
@@ -234,50 +288,64 @@ Do not interchange quaternion order. Do not omit axis directions. Do not use an 
 
 ---
 
-## 05 Quadrotor Six-Degree-of-Freedom Forces and Moments
+## 05 Figure 19: Source-Aligned Quadrotor Actuation, Dynamics, and X Allocation
 
 ```text
 Figure Subject:
-Create a precise 2D engineering mechanics diagram for a quadrotor showing translational forces, rotational moments, rotor numbering, and the relationship between individual rotor thrusts and the total wrench. Use a white background, black technical linework, flat vector graphics, and restrained color coding. Use only the exact in-figure labels listed below.
+Create a precise source-aligned 2D engineering mechanics diagram for the MoSim Sunray150 virtual plant. Show the actual FLU rotor order, signed motor commands, first-order rotor actuator lag, per-rotor thrust/effectiveness, rotor-center moment, principal-inertia rigid-body dynamics, and the current signed X allocation. Use a white background, black technical linework, flat vector graphics, solid black node borders, green physical force arrows, blue state/signal arrows, and pale red only for the fault/effectiveness multiplier.
 
 Diagram type:
-Free-body diagram plus force-and-moment allocation diagram.
+Three-panel actuation, force/moment, and signed-allocation diagram.
 
 Layout:
-Use a 16:9 horizontal canvas. Place a top-view quadrotor free-body diagram on the left, a side-view force diagram in the center, and a compact wrench-equation block on the right. Use straight dimension and force arrows. Rotor thrust arrows must be parallel and directionally consistent.
-Keep the free-body view, force view, and equation block as three separate panels with no shared background container.
+Use a 16:9 horizontal canvas with three equal-height panels separated by thin vertical dividers. The left panel is a top-view FLU rotor map. The middle panel is an actuator-to-force-and-moment chain. The right panel is a compact signed X-allocation and rigid-body-equation panel. Do not use one large enclosing card.
+
+In the left panel, orient the nose and +x_B upward and +y_B leftward. Place Rotor 1 at front-right (+x,-y), Rotor 2 at front-left (+x,+y), Rotor 3 at rear-left (-x,+y), and Rotor 4 at rear-right (-x,-y). Print the signed visual command and yaw-direction symbols beside the disks as +, -, +, -. Do not substitute an arbitrary symmetric B matrix or arbitrary CW/CCW convention.
+
+In the middle panel, use four vertically aligned mini-lanes with identical left-to-right geometry: command -> lag -> actual speed -> nominal thrust -> effectiveness -> force/moment contribution. Each row must preserve its rotor index. Route the four force/moment contributions into one aligned sum bus at the right edge of the middle panel; do not use diagonal wires. Put translational and rotational formulas below that bus. Use a lower thin feedback annotation only if needed; it must not cross actuator lanes.
 
 Mandatory nodes:
-- "机体系 FLU"
-- "Rotor 1"
-- "Rotor 2"
-- "Rotor 3"
-- "Rotor 4"
-- "推力 f1"
-- "推力 f2"
-- "推力 f3"
-- "推力 f4"
-- "总推力 T"
-- "重力 mg"
-- "气动阻力"
-- "滚转力矩 tau_x"
-- "俯仰力矩 tau_y"
-- "偏航力矩 tau_z"
+- Left-panel label: "机体系 FLU（x前、y左、z上）"
+- "Rotor 1 (+x,-y)"
+- "Rotor 2 (+x,+y)"
+- "Rotor 3 (-x,+y)"
+- "Rotor 4 (-x,-y)"
+- "旋向/偏航符号：+，-，+，-"
+- "命令角速度 ω_cmd,i"
+- "一阶电机滞后"
+- Formula node: "dω_i/dt = (ω_cmd,i - ω_i) / τ_i"
+- "实际角速度 ω_i"
+- Formula node: "T0,i = C_T ω_i²"
+- Formula node: "T_i = η_f,i η_T,i T0,i"
+- "旋翼位置 r_i"
+- Formula node: "τ_i = [r_y,i T_i, -r_x,i T_i, η_f,i d_i η_M,i C_M η_T,i T0,i]^T"
+- Formula node: "T = Σ T_i，τ = Σ τ_i"
 - "质心"
-- "惯性矩阵 J"
+- "重力 mg"
+- "气动阻力 F_d"
 - Formula node: "m v_dot = R(q) T e3 - m g e3 + F_d"
-- Formula node: "J omega_dot = tau - omega x J omega"
-- Formula node: "[T, tau_x, tau_y, tau_z]^T = B [f1, f2, f3, f4]^T"
+- Formula node: "J = diag(Jx, Jy, Jz)"
+- Formula node: "J ω_dot = τ - ω × Jω"
+- Right-panel label: "当前带符号X型分配"
+- Formula node: "ω_1,raw = ω_h + Δω_c - y - p + r"
+- Formula node: "ω_2,raw = -ω_h - Δω_c - y + p + r"
+- Formula node: "ω_3,raw = ω_h + Δω_c - y + p - r"
+- Formula node: "ω_4,raw = -ω_h - Δω_c - y - p - r"
+- Formula node: "Rotor 1,3: [0, ω_max]；Rotor 2,4: [-ω_max, 0]"
+- Annotation: "虚拟Plant工程参数，不是实机辨识真值"
 
 Mandatory connections:
-- Each rotor node -> its corresponding thrust node -> "总推力 T".
-- "Rotor 1", "Rotor 2", "Rotor 3", and "Rotor 4" -> "滚转力矩 tau_x", "俯仰力矩 tau_y", and "偏航力矩 tau_z" through a compact allocation block.
-- "总推力 T", "重力 mg", and "气动阻力" -> translational formula node.
-- "滚转力矩 tau_x", "俯仰力矩 tau_y", "偏航力矩 tau_z", and "惯性矩阵 J" -> rotational formula node.
-- Show opposite rotor rotation directions with straight circular-arrow symbols near the rotor disks, without decorative rendering.
+- Each rotor map entry must connect by one indexed dotted guide to its matching actuator mini-lane only: Rotor 1 -> lane 1, Rotor 2 -> lane 2, Rotor 3 -> lane 3, Rotor 4 -> lane 4.
+- In every mini-lane, "命令角速度 ω_cmd,i" -> "一阶电机滞后" -> "实际角速度 ω_i" -> "T0,i = C_T ω_i²" -> "T_i = η_f,i η_T,i T0,i" -> "τ_i = [r_y,i T_i, -r_x,i T_i, η_f,i d_i η_M,i C_M η_T,i T0,i]^T".
+- The four per-rotor thrust contributions enter "T = Σ T_i，τ = Σ τ_i" through four equal horizontal ports, one per row.
+- "T = Σ T_i，τ = Σ τ_i", "重力 mg", and "气动阻力 F_d" -> "m v_dot = R(q) T e3 - m g e3 + F_d".
+- "T = Σ T_i，τ = Σ τ_i" and "J = diag(Jx, Jy, Jz)" -> "J ω_dot = τ - ω × Jω".
+- Place "旋翼位置 r_i" directly beside the per-rotor moment formula, not on a crossing connector.
+- Place all four signed-allocation formulas in one right-panel vertical stack, ordered 1 through 4; place the saturation formula directly beneath them.
+- Bind "虚拟Plant工程参数，不是实机辨识真值" to the lower-right corner outside the equations.
 
 Negative constraints:
-No photorealistic drone, no 3D perspective, no unexplained aerodynamic effects, no wrong thrust direction, no missing rotor numbers, no gradients, shadows, curved data connectors, decorative background, or floating formula text.
+Do not use a generic full inertia tensor, a generic B allocation matrix, an arbitrary rotor order, unsigned motor commands, or an unlabelled clockwise/counter-clockwise convention. Do not reverse the thrust direction or map a motor lane to the wrong rotor port. No photorealistic drone, 3D perspective, unexplained aerodynamic effects, gradients, shadows, curved data connectors, decorative background, floating formula text, crossed motor lines, or appendix labels.
 ```
 
 ---
@@ -1074,6 +1142,90 @@ Do not merge FUEL with Diff-Planner. Do not claim control-performance improvemen
 
 ---
 
+## 21 Figure 21: 48-Controller Catalogue and Evidence Map
+
+```text
+
+Figure Subject:
+Create a strict 2D catalogue-and-evidence diagram for the 48 frozen report entries. The figure must distinguish the 47 MWORKS Control Profiles from the one px4ctrl engineering/deployment baseline, group the Profiles by the seven report families, and state the current G3 effective screening result without turning structural coverage into a performance claim. Use a white background, flat vector graphics, black borders, and distinct restrained pale colors for family cards and evidence-status cards.
+
+Diagram type:
+Catalogue hierarchy with a parallel family grid and a bottom evidence-status strip.
+
+Layout:
+Use a 16:9 horizontal canvas. Put one root at the top center. In the second row, place the 47 MWORKS Profile parent on the left two-thirds and the px4ctrl baseline card on the right third. Under the MWORKS parent, place seven equal-size family cards in a strict 4-plus-3 grid with a blank grid cell for balance; do not draw controller-name leaves. Put a full-width bottom status strip below the family grid. All connectors are short orthogonal downward segments or a single horizontal bus with equal vertical drops. Keep the px4ctrl card visually separate from the seven-family grid.
+
+Mandatory nodes:
+- Root: "48个冻结目录条目"
+- "MWORKS Control Profiles（47条）"
+- "px4ctrl工程/部署基线（1条）"
+- "PID族（10条）"
+- "线性与鲁棒（6条）"
+- "非线性与自适应（6条）"
+- "滑模（7条）"
+- "预测与优化（10条）"
+- "几何与微分平坦（6条）"
+- "学习控制（2条）"
+- "名义ClimbPath 50 s筛查"
+- "G3有效状态：28通过 / 20失败"
+- "结构覆盖不等于性能通过"
+- "逐控制器证据见正文表格"
+
+Mandatory connections:
+- "48个冻结目录条目" -> "MWORKS Control Profiles（47条）" and "px4ctrl工程/部署基线（1条）" using two short orthogonal downward branches.
+- "MWORKS Control Profiles（47条）" -> all seven family cards by one horizontal bus with seven equal vertical drops.
+- The seven family cards -> "名义ClimbPath 50 s筛查" by seven short aligned dotted evidence guides; do not connect family cards to one another.
+- "名义ClimbPath 50 s筛查" -> "G3有效状态：28通过 / 20失败" -> "结构覆盖不等于性能通过" -> "逐控制器证据见正文表格" as a left-to-right bottom strip.
+- "px4ctrl工程/部署基线（1条）" -> "逐控制器证据见正文表格" using one thin dashed factual-reference guide, not a family membership arrow.
+
+Negative constraints:
+Do not show 46 routes, historical year timelines, MATLAB toolbox prices, annual-cost claims, software logos, individual controller leaves, family-to-family evolution arrows, or a claim that all entries passed or were deployed. Do not treat px4ctrl as a MWORKS Profile family member. No 3D, gradients, shadows, screenshots, decorative icons, curved branches, crossed lines, floating text, appendix labels, or marketing comparisons.
+```
+
+---
+
+## 22 Figure 22: G3 Effective Failure Classification
+
+```text
+
+Figure Subject:
+Create a strict 2D classification diagram for the frozen G3 effective failures in the nominal ClimbPath 50 s screen. It must report four mutually exclusive result-status classes and their counts without guessing root causes, giving example controllers, or drawing a decision/diagnostic process that the evidence does not establish. Use a white background, flat vector graphics, black borders, pale red for failure-class cards, pale yellow for the screen/source strip, and pale gray for scope notes.
+
+Diagram type:
+Four-column result-classification matrix with a shared evidence-source strip.
+
+Layout:
+Use a 16:9 horizontal canvas. Place the screen node at the upper left and the root failure-total node at the upper center. Draw one short horizontal bus below the root. Under it, place four equal-width and equal-height failure-class cards in one left-to-right row. Connect the bus to the cards with four equal vertical drops; do not use diamonds, nested branches, side statistics boxes, or diagonal lines. Put one full-width shared source strip below the cards. Put the two scope notes in compact gray callouts at the lower corners.
+
+Mandatory nodes:
+- "ClimbPath 50 s名义筛查"
+- Root: "G3有效失败（20 / 48）"
+- Card 1: "CheckModel未通过（1）"
+- Code label: "check_model_failed"
+- Card 2: "仿真API失败（2）"
+- Code label: "simulate_failed"
+- Card 3: "MCP仿真超时（8）"
+- Code label: "simulation_timeout"
+- Card 4: "终端位置误差 ≥ 5 m（9）"
+- Code label: "terminal_position_error_exceeds_5m"
+- "G3_STATUS.json + 各控制器RUN_RECORD"
+- "分类仅为结果状态，不等于根因分析"
+- "失败记录保留，不改写为“待跑”"
+
+Mandatory connections:
+- "ClimbPath 50 s名义筛查" -> "G3有效失败（20 / 48）".
+- "G3有效失败（20 / 48）" -> one short horizontal bus -> the four failure-class cards by four equal vertical drops.
+- Place each code label directly inside the lower edge of its matching card; do not draw it as a separate connected node.
+- Put "G3_STATUS.json + 各控制器RUN_RECORD" as the shared full-width source strip below the four cards, with no causal arrows into the cards.
+- Bind "分类仅为结果状态，不等于根因分析" to the lower-left gray callout.
+- Bind "失败记录保留，不改写为“待跑”" to the lower-right gray callout.
+
+Negative constraints:
+Do not show controller examples, common causes, parameter-tuning recommendations, fault trees, decision diamonds, success paths, recovery promises, or permanent-failure claims. Do not imply that this classification replaces a controller-specific evidence review. No 3D, gradients, shadows, screenshots, decorative icons, curved connectors, crossed branches, floating text, appendix labels, or success-biased language.
+```
+
+---
+
 ## Recommended Drawing Order
 
 1. Figures 01, 02, 03, 06, 07, 16, and 17.
@@ -1081,5 +1233,6 @@ Do not merge FUEL with Diff-Planner. Do not claim control-performance improvemen
 3. Figures 08 through 14.
 4. Figure 15.
 5. Figures 18 through 20.
+6. **Figures 21 and 22 after the Chapter 10 catalogue table and G3 source-status table are fixed.**
 
 Use real screenshots instead of additional hand-drawn figures for the MWORKS whole-aircraft model, motor and sensor subsystem models, Model Studio UI, MWORKS Result Viewer animation, controller Sysblock models, controller result curves, QGC, RViz, UE, point clouds, maps, and runtime windows.
