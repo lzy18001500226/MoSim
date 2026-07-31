@@ -25,6 +25,7 @@ Keep artifacts in declared project paths and run the targeted quality checker; u
 - Ignore only verified generated-cache classes or exact risks; do not use ignores to hide ordinary source, documents, scripts, configs, or small assets.
 - Treat a Windows reparse link whose target is outside the repository as a publication blocker. Do not follow, replace, or forge it in the Git index.
 - Treat repeated untracked directory segments such as `Scripts/X/Scripts/X/` as a path-cycle and ownership blocker. Do not commit, ignore, delete, or move the tree until its canonical source is identified.
+- Treat an observed background `git diff` or `git ls-files` process with no `.git/index.lock` as read-only inventory, not an index writer. Before staging, committing, or pushing, block on an index lock or an observed Git writer command; preserve background readers and recheck the exact candidate paths after publication.
 - Preserve third-party snapshot whitespace as evidence instead of rewriting it. A verified public-test-vector Gitleaks false positive may use only a path-and-pattern-scoped temporary allowlist.
 
 ## 5. Required Experiment Check
