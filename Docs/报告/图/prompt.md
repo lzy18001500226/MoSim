@@ -20,6 +20,8 @@ Drawing discipline:
 - Keep architecture explanation, formal MWORKS evidence, independent runtime evidence, and read-only display in visibly separate lanes. A dashed gray factual-reference arrow is never a control, deployment, or performance-equivalence arrow.
 - For multi-output hardware diagrams, make each output a dedicated horizontal or vertical lane from its source port to its matching destination port. Do not merge four motor wires into a fan-out/fan-in tangle.
 - Keep a node's incoming and outgoing ports on consistent sides: left-to-right signal flow enters on the left and exits on the right; only declared lower feedback rails may return right-to-left.
+- A block may declare more than one feedback rail. Every right-to-left wire must belong to a rail that the block lists explicitly, and each rail occupies its own reserved horizontal track so rails never share a line.
+- Dotted reference guides that pair an indexed item with its index-ordered counterpart are exempt from the orthogonal-only routing rule. They may be drawn as thin straight or gently curved leaders and may cross one another; solid signal wires may not.
 
 Rules:
 
@@ -61,7 +63,7 @@ Two-lane source-and-evidence architecture diagram with a shared report-output co
 Layout:
 Use a 16:9 horizontal canvas with two full-width horizontal lanes and one narrow shared evidence column at the far right. Label the upper lane "图形化系统审查（结构说明）" and the lower lane "MWORKS正式仿真证据（性能结论）". Keep the lanes separated by a solid horizontal divider; do not draw a control wire across it.
 
-In the upper lane, place computation and sensing at the left, the controller and ESC at the center, and propulsion/airframe at the right. Put "BatteryPowerModule" directly above "ESCDriveModule" with one vertical power arrow. Put the four motor nodes in four equal-height rows immediately right of the ESC. Put the four matching airframe rotor ports in the same four rows immediately right of the motors. Each ESC-to-motor-to-airframe route must be a straight horizontal lane: Motor 1 only reaches Rotor 1, and so on. Draw sensor feedback as one lower outer rail inside the upper lane: airframe -> sensor-feedback hub -> perception and flight-controller inputs. Do not draw diagonal motor, power, or feedback wires.
+In the upper lane, place computation and sensing at the left, the controller and ESC at the center, and propulsion/airframe at the right. Put "BatteryPowerModule" directly above "ESCDriveModule" with one vertical power arrow. Put the four motor nodes in four equal-height rows immediately right of the ESC. Put the four matching airframe rotor ports in the same four rows immediately right of the motors. Each ESC-to-motor-to-airframe route must be a straight horizontal lane: Motor 1 only reaches Rotor 1, and so on. Reserve two stacked right-to-left return tracks below the propulsion rows inside the upper lane. The upper track carries the four motor-speed reports back to the flight controller; the lower outer track carries airframe -> sensor-feedback hub -> perception and flight-controller inputs. Keep the two tracks on separate horizontal lines and never merge them into one rail. Do not draw diagonal motor, power, or feedback wires.
 
 In the lower lane, place the formal path in one left-to-right row. Put the Plant-state feedback in a separate lower return rail inside this lane. Place the shared evidence column outside both loops. Use only orthogonal connectors, strict grid alignment, equal motor spacing, and no nested decorative containers.
 
@@ -75,12 +77,13 @@ Mandatory nodes:
 - "AWFFControllerModule"
 - "BatteryPowerModule"
 - "ESCDriveModule"
-- "MotorDrive 1"
-- "MotorDrive 2"
-- "MotorDrive 3"
-- "MotorDrive 4"
+- "MotorDriveModule 1"
+- "MotorDriveModule 2"
+- "MotorDriveModule 3"
+- "MotorDriveModule 4"
 - "Sunray150AirframeSensorModule"
 - "传感器反馈汇聚"
+- "电机转速回报汇聚"
 - "系统图形审查截图"
 - Lane label: "MWORKS正式仿真证据（性能结论）"
 - "Profile配置"
@@ -105,11 +108,12 @@ Mandatory connections:
 - "AWFFControllerModule" -> "ESCDriveModule".
 - "BatteryPowerModule" -> "ESCDriveModule" as one vertical arrow.
 - "BatteryPowerModule" -> "SystemSupervisorModule" -> "系统状态记录" as a thin side-status route, not a controller command route.
-- "ESCDriveModule" -> "MotorDrive 1" -> "Sunray150AirframeSensorModule" rotor port 1.
-- "ESCDriveModule" -> "MotorDrive 2" -> "Sunray150AirframeSensorModule" rotor port 2.
-- "ESCDriveModule" -> "MotorDrive 3" -> "Sunray150AirframeSensorModule" rotor port 3.
-- "ESCDriveModule" -> "MotorDrive 4" -> "Sunray150AirframeSensorModule" rotor port 4.
-- "Sunray150AirframeSensorModule" -> "传感器反馈汇聚" -> "PerceptionInterfaceModule" and "V6XFlightControllerModule" by the lower outer feedback rail.
+- "ESCDriveModule" -> "MotorDriveModule 1" -> "Sunray150AirframeSensorModule" rotor port 1.
+- "ESCDriveModule" -> "MotorDriveModule 2" -> "Sunray150AirframeSensorModule" rotor port 2.
+- "ESCDriveModule" -> "MotorDriveModule 3" -> "Sunray150AirframeSensorModule" rotor port 3.
+- "ESCDriveModule" -> "MotorDriveModule 4" -> "Sunray150AirframeSensorModule" rotor port 4.
+- "Sunray150AirframeSensorModule" -> "传感器反馈汇聚" -> "PerceptionInterfaceModule" and "V6XFlightControllerModule" by the outer sensor-feedback rail, which is the lower of the two reserved return tracks in the upper lane.
+- "MotorDriveModule 1", "MotorDriveModule 2", "MotorDriveModule 3", and "MotorDriveModule 4" each send one motor-speed report to "电机转速回报汇聚" -> "V6XFlightControllerModule" port "motor_speed_raw[1..4]", carried on the upper of the two reserved return tracks in the upper lane. Draw these four reports as short vertical drops from each motor row into the shared track so they never cross the ESC-to-motor-to-airframe lanes.
 - "Sunray150AirframeSensorModule" -> "系统图形审查截图".
 - "系统状态记录" -> "系统图形审查截图".
 - "Profile配置" -> "FormalRunner + Adapter + Controller" -> "ActuatorCommandMapper" -> "RotorActuatorCore" -> "PhysicalWrenchAdapter" -> "MultiBody Plant" -> "Result.msr / 原始CSV / 指标".
@@ -136,9 +140,9 @@ Diagram type:
 Three-lane evidence workflow with one contained review-return path.
 
 Layout:
-Use a 16:9 horizontal canvas with three horizontal lanes and a shared report-output column at the far right. The upper lane is the only formal control-evidence path and runs strictly left-to-right. The middle lane is a short code-delivery verification branch below its source model; it is not a deployment route. The lower lane contains independent completed ROS1 runtime records and must not enter either the formal or code lane.
+Use a 16:9 horizontal canvas with three horizontal lanes and a shared report-output column at the far right. The upper lane is the only formal control-evidence path and runs strictly left-to-right. The middle lane is a short code-delivery verification branch that takes off from "CheckModel" in the upper lane and is placed directly below "CheckModel"; it is not a deployment route. The lower lane contains independent completed ROS1 runtime records and must not enter either the formal or code lane.
 
-Keep every lane on a strict grid. Put the only feedback path below the upper lane: it must return from evidence review to the MWORKS model through one blue outer rail labelled as a separately authorized review action. Use black arrows for normal artifact flow, a blue arrow for that single review return, red short arrows only from a failed check to the retained failure record, and thin dashed gray arrows only for factual citation into the report. Do not use diagonal arrows or shared junctions between the three lanes.
+Keep every lane on a strict grid. Put the only feedback path above the upper lane: it must return from evidence review to the MWORKS model through one blue outer rail labelled as a separately authorized review action, drawn on a reserved track between the upper lane label and the top canvas edge. Route it as a rectangular outer arc: up out of the review node, right-to-left across the reserved top track, then down into the model node. It must not pass through, above, or beside the code-delivery lane, and it must not enter the ROS1 lane. Use black arrows for normal artifact flow, a blue arrow for that single review return, red short arrows only from a failed check to the retained failure record, and thin dashed gray arrows only for factual citation into the report. Do not use diagonal arrows or shared junctions between the three lanes.
 
 Mandatory nodes:
 - Lane label: "MWORKS形式化证据主线"
@@ -168,7 +172,8 @@ Mandatory connections:
 - "任务与场景定义" -> "冻结Profile与参数" -> "MWORKS控制器模型与Adapter" -> "CheckModel" -> "FormalRunner ClimbPath 50 s" -> "Result.msr / 原始CSV" -> "指标、截图与失败记录" -> "正文图、表与代码片段（无附录）".
 - "CheckModel" -> "GenerateModelCode" -> "生成C/C++源码" -> "CFunction SIL夹具" -> "构建与静态检查" -> "源绑定交付工件" -> "正文图、表与代码片段（无附录）".
 - "ROS1 / Gazebo / PX4 / MAVROS / px4ctrl / RViz" -> "已完成运行时记录" -> "事实性正文引用" -> "正文图、表与代码片段（无附录）" using thin dashed gray arrows only.
-- "指标、截图与失败记录" -> "源与接口复核（需另行授权）" -> "MWORKS控制器模型与Adapter" by the single lower blue outer feedback rail.
+- "指标、截图与失败记录" -> "源与接口复核（需另行授权）" -> "MWORKS控制器模型与Adapter" by the single blue outer feedback rail on the reserved top track above the upper lane.
+- "CheckModel" -> "GenerateModelCode" must leave "CheckModel" from its bottom port as one vertical drop into the code-delivery lane; the code lane's first node sits directly beneath "CheckModel".
 - Add a short red arrow from a small failed-check marker beside "CheckModel" and from a small failed-run marker beside "FormalRunner ClimbPath 50 s" into "指标、截图与失败记录"; do not create a second failure branch.
 - Bind "三条证据线不互相等价" to the vertical separation between the lanes.
 - Bind "失败记录保留，不改写为通过" to "指标、截图与失败记录".
@@ -191,7 +196,7 @@ Directed data-flow and authority-boundary diagram.
 Layout:
 Use a 16:9 horizontal canvas with three aligned horizontal bands plus a narrow gray independent-runtime box at the far right. The top band contains Profile-driven reference and parameter authority. The middle band is the only high-frequency MWORKS FormalRunner loop. The bottom band contains event injection, diagnostics, metrics, and read-only evidence. Keep all high-frequency signal flow strictly left-to-right; draw the Plant-to-state return on one lower outer rail of the middle band.
 
-Place the fault route below the command route in red. It must show the distinction between requesting an event and observing its application. Do not merge the formal Plant with the runtime stack in a single node. Keep "MWORKS Formal Plant" and "独立ROS1/PX4运行时记录" as separate nodes with no command wire between them. Use only orthogonal connectors, aligned ports, and no crossings.
+Place the fault route below the command route in red. It must show that the fault is a Profile-declared parameter frozen at translation time and then applied deterministically inside the rotor actuator, not a runtime request that waits for an acknowledgement. Do not merge the formal Plant with the runtime stack in a single node. Keep "MWORKS Formal Plant" and "独立ROS1/PX4运行时记录" as separate nodes with no command wire between them. Use only orthogonal connectors, aligned ports, and no crossings.
 
 Mandatory nodes:
 - "Profile配置"
@@ -209,15 +214,17 @@ Mandatory nodes:
 - "Adapter"
 - "MWORKS Formal Plant"
 - "传感器反馈"
-- "InjectionCommand"
-- "故障执行器"
-- "AppliedEvent"
-- "ControllerDiagnostics"
+- "故障注入参数"
+- "fault_start_s / fault_rotor_index / fault_rotor_effectiveness"
+- "翻译期参数冻结"
+- "RotorActuatorCore"
+- "fault_effectiveness[i]"
+- "DiagnosticsFrame"
 - "MetricsFrame"
 - "证据存储"
 - "只读显示"
 - "独立ROS1/PX4运行时记录"
-- Annotation: "请求不等于已应用"
+- Annotation: "故障注入为翻译期参数，按时间确定性生效"
 - Annotation: "单一发布权威"
 - Annotation: "运行时记录不进入MWORKS高频环"
 
@@ -225,20 +232,21 @@ Mandatory connections:
 - "Profile配置" -> "任务与场景配置" -> "任务参考源" -> "ReferenceFrame" -> "参考权威" -> "FormalRunner" -> "控制器".
 - "MWORKS Formal Plant" -> "传感器反馈" -> "状态源" -> "StateFrame" -> "状态权威" -> "FormalRunner" by the lower outer return rail of the middle band.
 - "控制器" -> "CommandFrame" -> "命令权威" -> "Adapter" -> "MWORKS Formal Plant".
-- "Profile配置" -> "InjectionCommand" -> "故障执行器" -> "MWORKS Formal Plant".
-- "故障执行器" -> "AppliedEvent" -> "MetricsFrame"
-- "控制器" -> "ControllerDiagnostics" -> "MetricsFrame"
+- "Profile配置" -> "故障注入参数" -> "fault_start_s / fault_rotor_index / fault_rotor_effectiveness" -> "翻译期参数冻结" -> "RotorActuatorCore".
+- "RotorActuatorCore" -> "fault_effectiveness[i]" -> "MWORKS Formal Plant".
+- "fault_effectiveness[i]" -> "MetricsFrame"
+- "控制器" -> "DiagnosticsFrame" -> "MetricsFrame"
 - "StateFrame" -> "MetricsFrame"
 - "ReferenceFrame" -> "MetricsFrame"
 - "CommandFrame" -> "MetricsFrame"
 - "MetricsFrame" -> "证据存储" -> "只读显示"
 - "独立ROS1/PX4运行时记录" -> "证据存储" using one thin dashed gray factual-reference arrow only.
-- Bind the red annotation label "请求不等于已应用" to the route from "InjectionCommand" through "故障执行器" to "AppliedEvent".
+- Bind the red annotation label "故障注入为翻译期参数，按时间确定性生效" to the route from "故障注入参数" through "翻译期参数冻结" to "RotorActuatorCore".
 - Bind the green annotation label "单一发布权威" to the route from "CommandFrame" through "命令权威" to "Adapter".
 - Bind "运行时记录不进入MWORKS高频环" to "独立ROS1/PX4运行时记录".
 
 Negative constraints:
-Do not connect the read-only display node or the independent-runtime node to the controller, command-authority node, Adapter, FormalRunner, or MWORKS Formal Plant. Do not show a file queue inside the high-frequency loop. Do not conflate an injection request with an applied event. No 3D, shadows, gradients, screenshots, decorative icons, curved lines, connector crossings, floating text, appendix labels, or unlabeled authority changes.
+Do not connect the read-only display node or the independent-runtime node to the controller, command-authority node, Adapter, FormalRunner, or MWORKS Formal Plant. Do not show a file queue inside the high-frequency loop. Do not draw an injection request node, an acknowledgement node, a request-versus-applied pair, or any command-plane handshake on the MWORKS fault route; that handshake exists only in the ROS1 sidecar path and is out of scope for this figure. Do not invent Frame names: use only ReferenceFrame, StateFrame, CommandFrame, DiagnosticsFrame, and MetricsFrame. No 3D, shadows, gradients, screenshots, decorative icons, curved lines, connector crossings, floating text, appendix labels, or unlabeled authority changes.
 ```
 
 ---
@@ -292,7 +300,7 @@ Do not interchange quaternion order. Do not omit axis directions. Do not use an 
 
 ```text
 Figure Subject:
-Create a precise source-aligned 2D engineering mechanics diagram for the MoSim Sunray150 virtual plant. Show the actual FLU rotor order, signed motor commands, first-order rotor actuator lag, per-rotor thrust/effectiveness, rotor-center moment, principal-inertia rigid-body dynamics, and the current signed X allocation. Use a white background, black technical linework, flat vector graphics, solid black node borders, green physical force arrows, blue state/signal arrows, and pale red only for the fault/effectiveness multiplier.
+Create a precise source-aligned 2D engineering mechanics diagram for the MoSim Sunray150 virtual plant. Show the actual FLU rotor order, signed motor commands, a compact graphical-review-only ESC drive context, first-order motor/propeller actuator lag, per-rotor thrust/effectiveness, rotor-center moment, principal-inertia rigid-body dynamics, and the current signed X allocation. Use a white background, black technical linework, flat vector graphics, solid black node borders, green physical force arrows, blue state/signal arrows, pale red only for the fault/effectiveness multiplier, and a thin gray dashed boundary for the graphical-review-only ESC context.
 
 Diagram type:
 Three-panel actuation, force/moment, and signed-allocation diagram.
@@ -302,7 +310,7 @@ Use a 16:9 horizontal canvas with three equal-height panels separated by thin ve
 
 In the left panel, orient the nose and +x_B upward and +y_B leftward. Place Rotor 1 at front-right (+x,-y), Rotor 2 at front-left (+x,+y), Rotor 3 at rear-left (-x,+y), and Rotor 4 at rear-right (-x,-y). Print the signed visual command and yaw-direction symbols beside the disks as +, -, +, -. Do not substitute an arbitrary symmetric B matrix or arbitrary CW/CCW convention.
 
-In the middle panel, use four vertically aligned mini-lanes with identical left-to-right geometry: command -> lag -> actual speed -> nominal thrust -> effectiveness -> force/moment contribution. Each row must preserve its rotor index. Route the four force/moment contributions into one aligned sum bus at the right edge of the middle panel; do not use diagonal wires. Put translational and rotational formulas below that bus. Use a lower thin feedback annotation only if needed; it must not cross actuator lanes.
+In the middle panel, reserve a narrow gray-dashed context strip along the top edge for the graphical system review only: ESCDriveModule applies bus-voltage scaling, a power_ok gate, and an absolute motor-command clamp before the four motors. Keep this strip visibly outside the FormalRunner dynamics chain. Below it, use four vertically aligned mini-lanes with identical left-to-right geometry: command -> lagged motor/propeller speed -> nominal propeller thrust -> effectiveness -> force/moment contribution. Each row must preserve its rotor index. Route the four force/moment contributions into one aligned sum bus at the right edge of the middle panel; do not use diagonal wires. Put translational and rotational formulas below that bus. Use a lower thin feedback annotation only if needed; it must not cross actuator lanes.
 
 Mandatory nodes:
 - Left-panel label: "机体系 FLU（x前、y左、z上）"
@@ -311,10 +319,16 @@ Mandatory nodes:
 - "Rotor 3 (-x,+y)"
 - "Rotor 4 (-x,-y)"
 - "旋向/偏航符号：+，-，+，-"
+- "ESCDriveModule（系统图形审查）"
+- "母线缩放 + power_ok 栅控 + |motor_command|≤80"
+- Annotation: "图形审查上下文；FormalRunner 以 ActuatorCommandMapper + RotorActuatorCore 为准"
 - "命令角速度 ω_cmd,i"
 - "一阶电机滞后"
-- Formula node: "dω_i/dt = (ω_cmd,i - ω_i) / τ_i"
+- Formula node: "dω_i/dt = (ω_cmd,i - ω_i) / τ_lag"
+- Formula node: "τ_lag = τ_up if |ω_cmd,i| > |ω_i| else τ_down"
+- "τ_up = 0.0125 s，τ_down = 0.025 s（四旋翼共用）"
 - "实际角速度 ω_i"
+- "电机/桨叶旋翼"
 - Formula node: "T0,i = C_T ω_i²"
 - Formula node: "T_i = η_f,i η_T,i T0,i"
 - "旋翼位置 r_i"
@@ -322,8 +336,8 @@ Mandatory nodes:
 - Formula node: "T = Σ T_i，τ = Σ τ_i"
 - "质心"
 - "重力 mg"
-- "气动阻力 F_d"
-- Formula node: "m v_dot = R(q) T e3 - m g e3 + F_d"
+- Formula node: "m v_dot = R(q) T e3 - m g e3"
+- Annotation: "虚拟Plant未施加气动阻力，F_d = 0"
 - Formula node: "J = diag(Jx, Jy, Jz)"
 - Formula node: "J ω_dot = τ - ω × Jω"
 - Right-panel label: "当前带符号X型分配"
@@ -335,17 +349,20 @@ Mandatory nodes:
 - Annotation: "虚拟Plant工程参数，不是实机辨识真值"
 
 Mandatory connections:
-- Each rotor map entry must connect by one indexed dotted guide to its matching actuator mini-lane only: Rotor 1 -> lane 1, Rotor 2 -> lane 2, Rotor 3 -> lane 3, Rotor 4 -> lane 4.
-- In every mini-lane, "命令角速度 ω_cmd,i" -> "一阶电机滞后" -> "实际角速度 ω_i" -> "T0,i = C_T ω_i²" -> "T_i = η_f,i η_T,i T0,i" -> "τ_i = [r_y,i T_i, -r_x,i T_i, η_f,i d_i η_M,i C_M η_T,i T0,i]^T".
+- Each rotor map entry must connect by one indexed dotted guide to its matching actuator mini-lane only: Rotor 1 -> lane 1, Rotor 2 -> lane 2, Rotor 3 -> lane 3, Rotor 4 -> lane 4. The rotor map is a 2D quadrant layout and the mini-lanes are an index-ordered vertical column, so these four dotted guides will cross; that crossing is permitted and expected. Draw them as thin dotted leaders and do not reorder either panel to avoid it.
+- In the gray-dashed context strip, draw "motor_command_raw[1..4]" -> "ESCDriveModule（系统图形审查）" -> "motor_command[1..4]". Print the compact source-aligned note "voltage_scale = clamp(bus_voltage / 16.8, 0, 1); power_ok=0 -> command=0; |command|≤80" inside that strip. Connect its output to the four command entries only by thin dashed gray factual-reference guides, never as a FormalRunner dynamics wire. Bind "图形审查上下文；FormalRunner 以 ActuatorCommandMapper + RotorActuatorCore 为准" to the dashed boundary.
+- Place "dω_i/dt = (ω_cmd,i - ω_i) / τ_lag", "τ_lag = τ_up if |ω_cmd,i| > |ω_i| else τ_down", and "τ_up = 0.0125 s，τ_down = 0.025 s（四旋翼共用）" as one grouped caption beside the "一阶电机滞后" stage, printed once for the whole panel rather than repeated in each of the four lanes.
+- In every mini-lane, "命令角速度 ω_cmd,i" -> "一阶电机滞后" -> "实际角速度 ω_i" -> "电机/桨叶旋翼" -> "T0,i = C_T ω_i²" -> "T_i = η_f,i η_T,i T0,i" -> "τ_i = [r_y,i T_i, -r_x,i T_i, η_f,i d_i η_M,i C_M η_T,i T0,i]^T".
 - The four per-rotor thrust contributions enter "T = Σ T_i，τ = Σ τ_i" through four equal horizontal ports, one per row.
-- "T = Σ T_i，τ = Σ τ_i", "重力 mg", and "气动阻力 F_d" -> "m v_dot = R(q) T e3 - m g e3 + F_d".
+- "T = Σ T_i，τ = Σ τ_i" and "重力 mg" -> "m v_dot = R(q) T e3 - m g e3".
+- Bind "虚拟Plant未施加气动阻力，F_d = 0" beside the translational equation as a plain text note, not as a node with an incoming arrow.
 - "T = Σ T_i，τ = Σ τ_i" and "J = diag(Jx, Jy, Jz)" -> "J ω_dot = τ - ω × Jω".
 - Place "旋翼位置 r_i" directly beside the per-rotor moment formula, not on a crossing connector.
 - Place all four signed-allocation formulas in one right-panel vertical stack, ordered 1 through 4; place the saturation formula directly beneath them.
 - Bind "虚拟Plant工程参数，不是实机辨识真值" to the lower-right corner outside the equations.
 
 Negative constraints:
-Do not use a generic full inertia tensor, a generic B allocation matrix, an arbitrary rotor order, unsigned motor commands, or an unlabelled clockwise/counter-clockwise convention. Do not reverse the thrust direction or map a motor lane to the wrong rotor port. No photorealistic drone, 3D perspective, unexplained aerodynamic effects, gradients, shadows, curved data connectors, decorative background, floating formula text, crossed motor lines, or appendix labels.
+Do not use a generic full inertia tensor, a generic B allocation matrix, an arbitrary rotor order, unsigned motor commands, or an unlabelled clockwise/counter-clockwise convention. Do not reverse the thrust direction or map a motor lane to the wrong rotor port. Do not draw an aerodynamic drag force arrow, a drag node, or a drag term in the translational equation. Do not print a per-rotor lag constant subscript such as τ_1 through τ_4, and do not reuse the symbol τ_i for both the lag constant and the moment vector. No photorealistic drone, 3D perspective, unexplained aerodynamic effects, gradients, shadows, curved solid data connectors, decorative background, floating formula text, crossed solid motor lines, or appendix labels.
 ```
 
 ---
@@ -1170,6 +1187,8 @@ Mandatory nodes:
 - "G3有效状态：28通过 / 20失败"
 - "结构覆盖不等于性能通过"
 - "逐控制器证据见正文表格"
+- Scope note: "G3状态表的48行与冻结目录的48条不是同一命名空间，二者仅41条对齐"
+- Scope note: "五个口径不可相加：目录48 / 脚本49 / 对齐41 / 跑完38 / 性能接受28"
 
 Mandatory connections:
 - "48个冻结目录条目" -> "MWORKS Control Profiles（47条）" and "px4ctrl工程/部署基线（1条）" using two short orthogonal downward branches.
@@ -1177,9 +1196,11 @@ Mandatory connections:
 - The seven family cards -> "名义ClimbPath 50 s筛查" by seven short aligned dotted evidence guides; do not connect family cards to one another.
 - "名义ClimbPath 50 s筛查" -> "G3有效状态：28通过 / 20失败" -> "结构覆盖不等于性能通过" -> "逐控制器证据见正文表格" as a left-to-right bottom strip.
 - "px4ctrl工程/部署基线（1条）" -> "逐控制器证据见正文表格" using one thin dashed factual-reference guide, not a family membership arrow.
+- Print "G3状态表的48行与冻结目录的48条不是同一命名空间，二者仅41条对齐" as a gray callout bound to the boundary between the family grid and "名义ClimbPath 50 s筛查", so the screening strip is read as a separate namespace rather than a subtotal of the root.
+- Print "五个口径不可相加：目录48 / 脚本49 / 对齐41 / 跑完38 / 性能接受28" as a gray callout at the lower-right corner of the bottom strip.
 
 Negative constraints:
-Do not show 46 routes, historical year timelines, MATLAB toolbox prices, annual-cost claims, software logos, individual controller leaves, family-to-family evolution arrows, or a claim that all entries passed or were deployed. Do not treat px4ctrl as a MWORKS Profile family member. No 3D, gradients, shadows, screenshots, decorative icons, curved branches, crossed lines, floating text, appendix labels, or marketing comparisons.
+Do not sum, subtract, or otherwise reconcile the root count with any screening count, and do not draw the bottom strip as a partition of the 48 root entries. Do not show 46 routes, historical year timelines, MATLAB toolbox prices, annual-cost claims, software logos, individual controller leaves, family-to-family evolution arrows, or a claim that all entries passed or were deployed. Do not treat px4ctrl as a MWORKS Profile family member. No 3D, gradients, shadows, screenshots, decorative icons, curved branches, crossed lines, floating text, appendix labels, or marketing comparisons.
 ```
 
 ---
@@ -1211,17 +1232,19 @@ Mandatory nodes:
 - "G3_STATUS.json + 各控制器RUN_RECORD"
 - "分类仅为结果状态，不等于根因分析"
 - "失败记录保留，不改写为“待跑”"
+- Scope note: "G3_STATUS.json 记为 completed = false，扫描尚未收口，计数为2026-07-30快照"
 
 Mandatory connections:
 - "ClimbPath 50 s名义筛查" -> "G3有效失败（20 / 48）".
 - "G3有效失败（20 / 48）" -> one short horizontal bus -> the four failure-class cards by four equal vertical drops.
 - Place each code label directly inside the lower edge of its matching card; do not draw it as a separate connected node.
 - Put "G3_STATUS.json + 各控制器RUN_RECORD" as the shared full-width source strip below the four cards, with no causal arrows into the cards.
+- Print "G3_STATUS.json 记为 completed = false，扫描尚未收口，计数为2026-07-30快照" inside the source strip as a second line of that strip, in gray, not as a separate connected node.
 - Bind "分类仅为结果状态，不等于根因分析" to the lower-left gray callout.
 - Bind "失败记录保留，不改写为“待跑”" to the lower-right gray callout.
 
 Negative constraints:
-Do not show controller examples, common causes, parameter-tuning recommendations, fault trees, decision diamonds, success paths, recovery promises, or permanent-failure claims. Do not imply that this classification replaces a controller-specific evidence review. No 3D, gradients, shadows, screenshots, decorative icons, curved connectors, crossed branches, floating text, appendix labels, or success-biased language.
+Do not show controller examples, common causes, parameter-tuning recommendations, fault trees, decision diamonds, success paths, recovery promises, or permanent-failure claims. Do not present the counts as a closed or final sweep result. Do not imply that this classification replaces a controller-specific evidence review. No 3D, gradients, shadows, screenshots, decorative icons, curved connectors, crossed branches, floating text, appendix labels, or success-biased language.
 ```
 
 ---
