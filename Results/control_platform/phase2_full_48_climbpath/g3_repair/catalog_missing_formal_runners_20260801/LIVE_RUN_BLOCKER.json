@@ -1,0 +1,58 @@
+{
+  "schema": "mosim.g3_catalog_missing_formal_runners_live_blocker.v1",
+  "created_at": "2026-08-01T04:52:13+08:00",
+  "status": "blocked",
+  "blocker_kind": "gui_or_sentinel_unavailable",
+  "department_local_goal": "Create the smallest project-owned whole-aircraft FormalRunner surfaces for the four fixed catalog variants, then run each through native CheckModel and a nominal 50 s ClimbPath record without changing the fixed 48-entry denominator.",
+  "requested_catalog_entries": [
+    "fixed_awff_l1_residual",
+    "fixed_awff_l1_indi",
+    "fixed_linear_mpc_l1_indi",
+    "fixed_qp_nmpc_l1_indi_cbf"
+  ],
+  "critical_path_steps": [
+    "Current-turn activation sentinel and background capture for an existing reusable MWORKS or Sysplorer window.",
+    "Static inspection of each fixed composite variant and a proven FormalRunner template.",
+    "Create minimal project-owned FormalRunner surfaces with no controller gain or plant changes.",
+    "Native CheckModel for each new runner.",
+    "Serial native 50 s ClimbPath simulations with raw result, metrics, and phase screenshots.",
+    "Reconcile the four rows into the fixed catalog-48 status without overwriting historical G3 evidence."
+  ],
+  "parallelizable_slices": [
+    "Static source-template comparison can be read-only and independent.",
+    "All MWORKS model load, CheckModel, and simulation calls must remain serialized against one approved reusable session."
+  ],
+  "subagent_plan": "available_but_not_useful",
+  "subagent_plan_reason": "The next executable work mutates and observes a shared MWORKS session, so parallel agents would create session ownership and result-provenance risk.",
+  "subagents_used": [],
+  "verification_gates": [
+    "Current activation/window evidence must show a usable existing MWORKS or Sysplorer target window with no blocking license, login, authorization, demo, or GUI-error state.",
+    "Each new FormalRunner requires native CheckModel before simulation.",
+    "Each 50 s record requires readable native result data, finite samples, terminal-error metrics, and phase screenshot evidence.",
+    "The resulting catalog reconciliation must retain exactly 48 unique catalog entries."
+  ],
+  "manual_review_or_blocker_triggers": [
+    "Empty capture manifest or no reusable MWORKS/Sysplorer target window.",
+    "Demo, login, activation, authorization, mixed-license, unknown-license, or GUI-error evidence.",
+    "Missing source surface or CheckModel failure after static source inspection.",
+    "Simulation API failure, timeout, unreadable result, non-finite result, or terminal error at or above 5 m."
+  ],
+  "activation_sentinel_before": "Results/mworks_gui_incidents/g3_catalog_missing_formal_runners_20260801/gui_sentinel_before.json",
+  "gui_sentinel_before": "Results/mworks_gui_incidents/g3_catalog_missing_formal_runners_20260801/gui_sentinel_before.json",
+  "background_screenshot_before": "Results/mworks_background_capture/g3_catalog_missing_formal_runners_20260801/capture_manifest.json",
+  "activation_state_observation": "The sentinel returned status=clean with no demo, login, authorization, or crash pattern. Its MWORKS-like inventory contained Syslab windows only, including an off-screen '起始页 - Syslab[教育版]' title. The required Sysplorer/MWORKS background capture manifest is an empty array, so no existing target MWORKS/Sysplorer main window was captured or available for current-turn readiness classification.",
+  "license_state": "unknown_blocked",
+  "will_not_click_activation_login": true,
+  "mworks_window_evidence_touched": true,
+  "live_mworks_touched": false,
+  "mworks_phase_screenshots": [],
+  "mworks_phase_observations": [],
+  "blocker_evidence": {
+    "sentinel_status": "clean",
+    "sentinel_target_observation": "No usable Sysplorer/MWORKS main-window title was present; visible MWORKS-related evidence was Syslab only.",
+    "background_capture_manifest_status": "empty_array",
+    "no_mcp_or_model_operation_performed": true
+  },
+  "next_authorized_action": "Provide an approved reusable MWORKS/Sysplorer target window for a fresh current-turn preflight, or explicitly authorize controlled main-window startup under the activation gate. Do not treat the current Syslab-only evidence as MWORKS simulation readiness.",
+  "claim_boundary": "No FormalRunner was created, no MWORKS model was loaded, and no CheckModel or simulation was invoked in this blocked turn."
+}
