@@ -7,14 +7,14 @@ $ErrorActionPreference = "Stop"
 $qgcLauncher = Join-Path $script:MoSimProjectRoot "Scripts/ui/run_flight_console.ps1"
 $displayHelper = Join-Path $script:MoSimProjectRoot "Scripts/ui/attach_orchestrated_displays.ps1"
 
-if (Get-Process -Name "MoSimFlightConsole" -ErrorAction SilentlyContinue) {
-    throw "qgc_already_running: close the existing Flight Console first"
+if (Get-Process -Name "MoSimGroundControl" -ErrorAction SilentlyContinue) {
+    throw "qgc_already_running: close MoSim Ground Control first"
 }
 
 function Start-FlightConsoleConfigurationMode {
     param([string]$Reason)
 
-    Write-Output "Starting Flight Console in task configuration mode ($Reason)."
+    Write-Output "Starting MoSim Ground Control in task configuration mode ($Reason)."
     Write-Output "Select a task, validate its Profile, then start it from QGC."
     Write-Output "Gazebo/PX4/MAVROS and the managed UE viewport will start for that run_id."
     & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $qgcLauncher

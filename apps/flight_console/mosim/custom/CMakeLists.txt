@@ -1,4 +1,4 @@
-message(STATUS "QGC: Adding MoSim Flight Console custom plugin")
+message(STATUS "QGC: Adding MoSim Ground Control custom plugin")
 
 set_property(DIRECTORY ${CMAKE_SOURCE_DIR}
     APPEND PROPERTY COMPILE_DEFINITIONS

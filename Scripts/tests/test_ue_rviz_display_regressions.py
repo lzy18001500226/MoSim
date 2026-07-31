@@ -7,14 +7,13 @@ from types import SimpleNamespace
 
 def test_ros1_display_launcher_gates_real_d6_topics_and_frames() -> None:
     launcher = Path("Scripts/ui/launch_ros1_display.sh").read_text(encoding="utf-8")
-    runtime = Path("Scripts/ui/run_orchestrated_runtime.sh").read_text(encoding="utf-8")
+    fastlio_runtime = Path("Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh").read_text(encoding="utf-8")
     pointcloud_config = Path("Config/rviz/sunray_ros1_fastlio_accumulated_map_review.rviz").read_text(
         encoding="utf-8"
     )
     grid_config = Path("Config/rviz/sunray_ros1_fastlio_grid3d_review.rviz").read_text(encoding="utf-8")
 
-    assert 'export REVIEW_START_FASTLIO="true"' in runtime
-    assert 'export REVIEW_START_OCCUPANCY_NODE="true"' in runtime
+    assert 'export REVIEW_START_FASTLIO=true' in fastlio_runtime
     assert "/mosim/fastlio/laser_map_obstacles" in launcher
     assert "/mosim/fastlio/occupancy_object_review" in launcher
     assert "assert_topic_frame /mosim/fastlio/laser_map_obstacles camera_init" in launcher
@@ -31,6 +30,7 @@ def test_ros1_display_launcher_gates_real_d6_topics_and_frames() -> None:
 def test_ue_live_bridge_has_single_sender_and_stale_source_guards() -> None:
     streamer = Path("Scripts/UE5/stream_ros1_state_to_ue_udp.py").read_text(encoding="utf-8")
     launcher = Path("Scripts/ui/launch_ros1_display.sh").read_text(encoding="utf-8")
+    unreal_launcher = Path("Scripts/UE5/open_unreal_renderer.sh").read_text(encoding="utf-8")
     helper = Path("Scripts/ui/attach_orchestrated_displays.ps1").read_text(encoding="utf-8")
     receiver = Path(
         "UE5/Bridge/Source/QuadrotorMworksBridge/Private/QuadrotorMworksUdpReceiverComponent.cpp"
@@ -58,6 +58,7 @@ def test_ue_live_bridge_has_single_sender_and_stale_source_guards() -> None:
     assert "require_ros_master" not in unreal_bridge_case
     assert '--source-timeout-s 0.5' in launcher
     assert '--stream-id "${owner_id}"' in launcher
+    assert '"/Game/Maps/Demonstration?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode"' in unreal_launcher
     assert "StreamTakeoverTimeoutSeconds = 1.0" in receiver_header
     assert "rejected competing UDP stream" in receiver
     assert "rejected non-monotonic UDP frame" in receiver
@@ -199,8 +200,9 @@ def test_basic_runner_guards_ros1_mavlink_startup_from_uxrce_failure() -> None:
     assert "prepare_px4_ros1_runtime_overlay()" in runner
     assert "continuing for MoSim ROS1/MAVROS gate" in runner
     assert 'PX4_GCS_REMOTE_HOST="${PX4_GCS_REMOTE_HOST:-auto}"' in runner
+    assert 'PX4_GCS_REMOTE_PORT="${PX4_GCS_REMOTE_PORT:-14550}"' in runner
     assert "ip route show default" in runner
-    assert 'new = f"{old} -t {host}"' in runner
+    assert 'new = f"{old} -t {host} -o {port}"' in runner
     assert '${PX4_ROS1_OVERLAY_PKG:+${PX4_ROS1_OVERLAY_PKG}:}${SUNRAY_PX4_DIR}' in runner
     assert runner.index("prepare_px4_ros1_runtime_overlay\nsource_env") < runner.index(
         'roslaunch "${SUNRAY_GAZEBO_LAUNCH_FILE}"'

@@ -28,6 +28,13 @@ def _write_json(path: Path, value: dict) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def test_prepare_operator_run_uses_python38_compatible_atomic_json_write() -> None:
+    source = MODULE_PATH.read_text(encoding="utf-8")
+
+    assert '.open("w", encoding="utf-8", newline="\\n")' in source
+    assert "temporary.write_text(" not in source
+
+
 def _fixture_root(tmp_path: Path) -> Path:
     _write_json(
         tmp_path / "Config/profiles/operator_profiles.json",
@@ -154,6 +161,55 @@ def test_prepare_refuses_to_replace_a_live_pointer_until_operator_clears_it(tmp_
         now=4.0,
     )
     assert result["run_id"] == "qgc-second-run"
+
+
+def test_finalize_marks_the_last_map_frame_terminal_and_releases_the_next_run(tmp_path: Path) -> None:
+    module = _module()
+    root = _fixture_root(tmp_path)
+    prepared = module.prepare_run(
+        root=root,
+        profile_id="factory_demo_v1",
+        runtime_profile_id="factory_demo_runtime_v1",
+        run_id="qgc-terminal-run",
+        now=1.0,
+    )
+    _write_json(
+        prepared["run_directory"] / "telemetry.json",
+        {
+            "schema": "mosim.runtime_telemetry.v2",
+            "run_id": "qgc-terminal-run",
+            "timestamp": 2.0,
+            "readiness": {"status": "running"},
+        },
+    )
+
+    final = module.finalize_active_run(
+        root=root,
+        expected_run_id="qgc-terminal-run",
+        terminal_state="completed",
+        reason_code="factory_l2_fault_demo_completed",
+        source="test_terminal",
+        now=3.0,
+    )
+
+    pointer = json.loads((root / "Results/ui_platform/qgc_active_run.json").read_text(encoding="utf-8"))
+    telemetry = json.loads((prepared["run_directory"] / "telemetry.json").read_text(encoding="utf-8"))
+    runtime_status = json.loads((prepared["run_directory"] / "RUNTIME_STATUS.json").read_text(encoding="utf-8"))
+    assert final["telemetry_present"] is True
+    assert pointer["state"] == "completed"
+    assert pointer["terminal_reason_code"] == "factory_l2_fault_demo_completed"
+    assert runtime_status["status"] == "completed"
+    assert telemetry["operator_runtime_status"]["state"] == "completed"
+    assert telemetry["mission_status"]["terminal"] is True
+
+    next_run = module.prepare_run(
+        root=root,
+        profile_id="factory_demo_v1",
+        runtime_profile_id="factory_demo_runtime_v1",
+        run_id="qgc-after-terminal-run",
+        now=4.0,
+    )
+    assert next_run["run_id"] == "qgc-after-terminal-run"
 
 
 def test_prepare_rejects_non_matching_runtime_backend(tmp_path: Path) -> None:

@@ -103,6 +103,7 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "mapConfig: mosimOperator.operatorMap || ({})" in fly_layer
     assert "runManifest: mosimOperator.runManifest || ({})" in fly_layer
     assert "mapState: root.runtimeTelemetry.map_state || ({})" in fly_layer
+    assert "runtimeStatus: root.runtimeStatus" in fly_layer
     assert "runId: mosimOperator.runId" in fly_layer
     assert "copySelectedLaunchCommand" in fly_layer
     assert "copyClearActiveRunCommand" in fly_layer
@@ -219,9 +220,12 @@ def test_factory_floorplan_is_packaged_for_the_flight_console() -> None:
     assert "metersPerPixel" in fly_map and "niceScaleMeters" in fly_map
     assert "taskBoundaryCanvas" in fly_map
     assert "taskPathCanvas" in fly_map
+    assert "missionTargetCanvas" in fly_map
     assert "actualTrackCanvas" in fly_map
     assert "actualTrackSourceIdentity" in fly_map
+    assert "hasPlanarExtent" in fly_map
     assert "rosbag_replay" in fly_map
+    assert "missionTarget" in fly_map and "paintMissionTarget" in fly_map
     assert "formationTarget" in fly_map and "explorationBoundary" in fly_map
 
     catalog = json.loads(
@@ -303,15 +307,15 @@ def test_windows_run_entrypoint_uses_private_runtime_and_reuses_existing_instanc
     script = (ROOT / "Scripts" / "ui" / "run_flight_console.ps1").read_text(encoding="utf-8")
 
     assert "flight_console_windows_toolchain_preflight.json" in script
-    assert 'Get-Process -Name "MoSimFlightConsole"' in script
+    assert 'Get-Process -Name "MoSimGroundControl"' in script
     assert "detected.qt_root" in script
     assert "detected.gstreamer_root" in script
     assert "Start-Process" in script
-    assert "build/flight-console-qgc/Release/MoSimFlightConsole.exe" in script
-    assert "build/flight-console-qgc-candidate/Release/MoSimFlightConsole.exe" in script
+    assert "build/flight-console-qgc/Release/MoSimGroundControl.exe" in script
+    assert "build/flight-console-qgc-candidate/Release/MoSimGroundControl.exe" in script
     assert "$candidateItem.LastWriteTimeUtc -gt $formalItem.LastWriteTimeUtc" in script
-    assert "Using newer Flight Console candidate build" in script
-    assert "Flight Console executable:" in script
+    assert "Using newer MoSim Ground Control candidate build" in script
+    assert "MoSim Ground Control executable:" in script
     assert "[switch]$ResolveOnly" in script
     assert "if ($ResolveOnly)" in script
     assert "[int]$StartupTimeoutSeconds = 15" in script

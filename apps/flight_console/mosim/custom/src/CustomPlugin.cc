@@ -16,6 +16,7 @@ CustomPlugin::CustomPlugin(QObject *parent)
 {
     _showAdvancedUI = false;
     // Keep the CMake-safe executable name while presenting the operator-facing name.
+    QGuiApplication::setApplicationName(QStringLiteral("MoSim Ground Control"));
     QGuiApplication::setApplicationDisplayName(QStringLiteral("MoSim Ground Control"));
 }
 

@@ -217,6 +217,13 @@ def test_replay_entry_writes_completed_run_bound_telemetry(
     assert telemetry["map_state"]["task_paths"]["future"]["status"] == "available"
     assert telemetry["map_state"]["task_paths"]["future"]["semantics"] == "planner_sampled_future_trajectory"
     assert telemetry["map_state"]["task_paths"]["future"]["points"][-1] == {"x": 2.0, "y": 0.5, "z": 1.2}
+    assert telemetry["map_state"]["actual_tracks"]["uav1"]["semantics"] == "actual_vehicle_track"
+    assert telemetry["map_state"]["actual_tracks"]["uav1"]["frame_id"] == "mworks_world"
+    assert telemetry["map_state"]["actual_tracks"]["uav1"]["points"] == [
+        {"x": 0.0, "y": 0.0, "z": 1.2},
+        {"x": 1.0, "y": 0.0, "z": 1.2},
+        {"x": 1.5, "y": 0.0, "z": 1.2},
+    ]
     states_by_playback_time = {
         round(float(state["transport"]["playback_time_s"]), 4): state for state in written_map_states
     }
@@ -225,6 +232,11 @@ def test_replay_entry_writes_completed_run_bound_telemetry(
     assert set(states_by_playback_time[0.2]["task_paths"]) == {"expected"}
     assert set(states_by_playback_time[0.3]["task_paths"]) == {"expected"}
     assert set(states_by_playback_time[0.4]["task_paths"]) == {"expected", "future"}
+    assert states_by_playback_time[0.4]["actual_tracks"]["uav1"]["points"][-1] == {
+        "x": 1.5,
+        "y": 0.0,
+        "z": 1.2,
+    }
     assert telemetry["operator_runtime_status"] == {
         "schema": "mosim.operator_runtime_status.v1",
         "run_id": manifest["run_id"],

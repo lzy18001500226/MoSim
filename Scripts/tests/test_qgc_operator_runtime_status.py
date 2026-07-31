@@ -109,6 +109,7 @@ def test_qgc_status_surface_checks_identity_and_marks_missing_metrics_unmeasured
     assert "isReadableOperatorRuntimeStatus" in bridge
     assert "operator_runtime_status_identity_mismatch" in bridge
     assert "runtimeStatusIsBound" in layer
+    assert 'state === "completed"' in layer
     assert "root.runtimeMetricText" in layer
     assert "未测量" in layer
     assert "运行端未上报告警" in layer

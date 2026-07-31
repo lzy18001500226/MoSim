@@ -238,7 +238,7 @@ case "${display_kind}" in
     stop_project_ue_bridge 5005
     cd "${PROJECT_ROOT}"
     # rospy will wait for the ROS master. Keep the display bridge alive when
-    # Flight Console starts before Gazebo/ROS instead of requiring a restart.
+    # MoSim Ground Control starts before Gazebo/ROS instead of requiring a restart.
     exec python3 -u Scripts/UE5/stream_ros1_state_to_ue_udp.py \
       --odom-topic /uav1/sunray/gazebo_pose \
       --position-cmd-topic /position_cmd \

@@ -25,6 +25,12 @@ def test_fly_map_zoom_uses_viewport_coordinates_and_uses_the_upper_left_scale_co
     assert "id: mapTitlePanel" not in qml
     assert "等待当前运行清单" not in qml
     assert "root.manifestMatchesRun && !root.mapStateReady" in qml
+    assert "required property var runtimeStatus" in qml
+    assert "completedLiveFrame" in qml
+    assert "任务已结束，显示最后有效地图帧" in qml
+    assert "function publishedActualTracks()" in qml
+    assert '"actual_vehicle_track"' in qml
+    assert "实际轨迹已保留" in qml
 
 
 def test_factory_fly_view_hides_the_underlying_online_map_scale() -> None:

@@ -80,6 +80,6 @@ if (-not $SkipGStreamer) {
 }
 
 & $PrivatePython (Join-Path $ProjectRoot "Scripts/ui/check_qgc_windows_toolchain.py") --tool-root $ToolRoot
-if ($LASTEXITCODE -ne 0) { throw "Private Flight Console toolchain preflight failed" }
+if ($LASTEXITCODE -ne 0) { throw "Private MoSim Ground Control toolchain preflight failed" }
 
-Write-Host "Flight Console private toolchain is ready at $ToolRoot"
+Write-Host "MoSim Ground Control private toolchain is ready at $ToolRoot"

@@ -11,6 +11,7 @@ Item {
     required property var mapConfig
     required property var runManifest
     required property var mapState
+    required property var runtimeStatus
     required property string runId
 
     property real minZoom: 1.0
@@ -28,6 +29,7 @@ Item {
     property bool showFuturePath: true
     property bool showTaskBoundary: true
     property bool showFormationTarget: true
+    property bool showMissionTarget: true
     property real leftControlInset: ScreenTools.defaultFontPixelWidth * 7
 
     readonly property var bounds: mapConfig.world_bounds_m || ({})
@@ -87,12 +89,23 @@ Item {
             return false
         if (mode === "live_ros1") {
             var receivedAt = Number(mapTransport.received_at_unix_s || 0)
-            return receivedAt > 0 && Math.abs(Date.now() / 1000.0 - receivedAt) <= 2.5
+            return receivedAt > 0 && (Math.abs(Date.now() / 1000.0 - receivedAt) <= 2.5
+                    || completedLiveFrame)
         }
         if (mode === "rosbag_replay")
             return ["playing", "paused", "completed"].indexOf(String(mapTransport.playback_state || "")) >= 0
         return false
     }
+    readonly property bool runtimeStatusMatchesRun: String(runtimeStatus.schema || "")
+            === "mosim.operator_runtime_status.v1"
+            && String(runtimeStatus.run_id || "") === runId
+            && String(runtimeStatus.experiment_profile_id || "")
+                    === String(runManifest.experiment_profile_id || "")
+            && String(runtimeStatus.experiment_profile_hash || "")
+                    === String(runManifest.experiment_profile_hash || "")
+    readonly property bool completedLiveFrame: String(mapTransport.mode || "") === "live_ros1"
+            && runtimeStatusMatchesRun
+            && ["completed", "blocked", "failed"].indexOf(String(runtimeStatus.state || "")) >= 0
     readonly property bool mapFrameAccepted: String(mapDataStatus.state || "accepted") === "accepted"
     readonly property bool mapStateReady: mapConfigValid && loadedImageSizeMatchesContract && mapIdentityMatches && mapTransportFresh
             && String(mapMetadata.coordinate_contract_status || "") === "verified" && mapFrameAccepted
@@ -187,6 +200,43 @@ Item {
         return sourcePixelForWorld(0, worldY).v / imageHeightPx * factoryImage.height
     }
 
+    function publishedActualTracks() {
+        if (!mapStateReady || !mapState || mapState.actual_tracks === undefined)
+            return null
+        var rawTracks = mapState.actual_tracks
+        if (!rawTracks || typeof rawTracks !== "object")
+            return ({})
+        var normalized = ({})
+        var ids = Object.keys(rawTracks).sort()
+        for (var idIndex = 0; idIndex < ids.length; ++idIndex) {
+            var id = ids[idIndex]
+            var track = rawTracks[id]
+            if (!track || typeof track !== "object"
+                    || String(track.status || "") !== "available"
+                    || String(track.semantics || "") !== "actual_vehicle_track"
+                    || String(track.vehicle_id || "") !== id
+                    || String(track.run_id || "") !== runId
+                    || String(track.frame_id || "") !== String(mapConfig.world_frame || "")
+                    || !isFinite(Number(track.updated_at))
+                    || !track.points || track.points.length === undefined)
+                return ({})
+            var points = []
+            for (var pointIndex = 0; pointIndex < track.points.length; ++pointIndex) {
+                var point = track.points[pointIndex]
+                if (!validWorldPoint(point))
+                    return ({})
+                if (point.z !== undefined && !isFinite(Number(point.z)))
+                    return ({})
+                var normalizedPoint = { x: Number(point.x), y: Number(point.y) }
+                if (point.z !== undefined)
+                    normalizedPoint.z = Number(point.z)
+                points.push(normalizedPoint)
+            }
+            normalized[id] = points
+        }
+        return normalized
+    }
+
     function appendActualTracks() {
         if (!mapStateReady)
             return
@@ -195,6 +245,13 @@ Item {
         if (actualTrackRunId !== runId || actualTrackSourceIdentity !== sourceIdentity
                 || (actualTrackLastSequence > 0 && sequence > 0 && sequence < actualTrackLastSequence))
             resetTracks()
+        var publishedTracks = publishedActualTracks()
+        if (publishedTracks !== null) {
+            actualTracksByVehicle = publishedTracks
+            actualTrackRevision += 1
+            actualTrackLastSequence = Math.max(actualTrackLastSequence, sequence)
+            return
+        }
         var nextTracks = actualTracksByVehicle
         var changed = false
         for (var index = 0; index < vehicles.length; ++index) {
@@ -238,7 +295,24 @@ Item {
             if (!validWorldPoint(path.points[index]))
                 return ({})
         }
+        // A vertical takeoff-hover-land reference has no planar extent.  Keep
+        // its real final point as the target marker instead of drawing a
+        // misleading zero-length 2D route.
+        if (kind === "expected" && !hasPlanarExtent(path.points))
+            return ({})
         return path
+    }
+
+    function hasPlanarExtent(points) {
+        if (!points || points.length < 2)
+            return false
+        var first = points[0]
+        for (var index = 1; index < points.length; ++index) {
+            var point = points[index]
+            if (Math.hypot(Number(point.x) - Number(first.x), Number(point.y) - Number(first.y)) >= 0.01)
+                return true
+        }
+        return false
     }
 
     function taskPathLabel(kind) {
@@ -258,10 +332,13 @@ Item {
         var labels = []
         if (taskPath("expected").status === "available")
             labels.push(taskPathLabel("expected") + "已接收")
+        if (missionTarget() !== null)
+            labels.push("任务目标已接收")
         if (taskPath("future").status === "available")
             labels.push(taskPathLabel("future") + "已接收")
         if (Object.keys(actualTracksByVehicle).length > 0)
-            labels.push(String(mapTransport.mode || "") === "rosbag_replay" ? "实际轨迹回放中" : "实际轨迹实时记录中")
+            labels.push(completedLiveFrame ? "实际轨迹已保留"
+                     : (String(mapTransport.mode || "") === "rosbag_replay" ? "实际轨迹回放中" : "实际轨迹实时记录中"))
         return labels.length > 0 ? labels.join("；") : "等待任务轨迹与飞机位置"
     }
 
@@ -289,6 +366,8 @@ Item {
                 return "实时地图坐标数据无效"
             return "实时地图帧已拒绝"
         }
+        if (completedLiveFrame)
+            return "任务已结束，显示最后有效地图帧"
         if (String(mapTransport.mode || "") === "live_ros1")
             return "实时地图数据已过期"
         if (String(mapTransport.mode || "") === "rosbag_replay")
@@ -322,6 +401,24 @@ Item {
         if (!target || target.length !== 2 || !validWorldPoint({ x: target[0], y: target[1] }))
             return null
         return { x: Number(target[0]), y: Number(target[1]) }
+    }
+
+    function missionTarget() {
+        if (!mapStateReady)
+            return null
+        var paths = mapState.task_paths || ({})
+        var path = paths.expected || ({})
+        // A takeoff-hover-land reference is vertical in 3D, so all XY points
+        // may be identical. Keep its final published reference as a target
+        // marker rather than inventing a visible lateral trajectory.
+        if (path.status !== "available" || !path.points || path.points.length < 1)
+            return null
+        if (path.run_id !== undefined && String(path.run_id) !== runId)
+            return null
+        var point = path.points[path.points.length - 1]
+        if (!validWorldPoint(point))
+            return null
+        return { x: Number(point.x), y: Number(point.y) }
     }
 
     function vehicleColor(index) {
@@ -403,6 +500,28 @@ Item {
         context.beginPath()
         context.arc(x, y, radius, 0, Math.PI * 2)
         context.strokeStyle = "#f05d9b"
+        context.lineWidth = 3
+        context.stroke()
+        context.beginPath()
+        context.moveTo(x - radius - 4, y)
+        context.lineTo(x + radius + 4, y)
+        context.moveTo(x, y - radius - 4)
+        context.lineTo(x, y + radius + 4)
+        context.stroke()
+    }
+
+    function paintMissionTarget(canvas) {
+        var context = canvas.getContext("2d")
+        context.reset()
+        var target = missionTarget()
+        if (!target)
+            return
+        var x = imageXForWorld(target.x)
+        var y = imageYForWorld(target.y)
+        var radius = Math.max(7, Math.min(13, factoryImage.width / 70))
+        context.beginPath()
+        context.arc(x, y, radius, 0, Math.PI * 2)
+        context.strokeStyle = "#ffb020"
         context.lineWidth = 3
         context.stroke()
         context.beginPath()
@@ -525,13 +644,28 @@ Item {
             }
 
             Canvas {
+                id: missionTargetCanvas
+                x: factoryImage.x
+                y: factoryImage.y
+                width: factoryImage.width
+                height: factoryImage.height
+                visible: root.showMissionTarget && root.missionTarget() !== null
+                z: 3
+                property int mapSequence: Number(root.mapTransport.sequence || 0)
+                onMapSequenceChanged: requestPaint()
+                onWidthChanged: requestPaint()
+                onHeightChanged: requestPaint()
+                onPaint: root.paintMissionTarget(this)
+            }
+
+            Canvas {
                 id: formationTargetCanvas
                 x: factoryImage.x
                 y: factoryImage.y
                 width: factoryImage.width
                 height: factoryImage.height
                 visible: root.showFormationTarget && root.formationTarget() !== null
-                z: 3
+                z: 4
                 property int mapSequence: Number(root.mapTransport.sequence || 0)
                 onMapSequenceChanged: requestPaint()
                 onWidthChanged: requestPaint()
@@ -546,7 +680,7 @@ Item {
                 width: factoryImage.width
                 height: factoryImage.height
                 visible: root.mapStateReady && root.showActualTracks
-                z: 4
+                z: 5
                 property int trackRevision: root.actualTrackRevision
                 onTrackRevisionChanged: requestPaint()
                 onWidthChanged: requestPaint()
@@ -563,7 +697,7 @@ Item {
                     visible: root.mapStateReady && root.vehicleMapPositionValid(vehicle)
                     width: 22
                     height: 22
-                    z: 5
+                    z: 6
                     rotation: 90 - root.vehicleYawDegrees(vehicle)
                     x: factoryImage.x + root.imageXForWorld(Number(vehicle.state.position.x)) - width / 2
                     y: factoryImage.y + root.imageYForWorld(Number(vehicle.state.position.y)) - height / 2
@@ -668,6 +802,7 @@ Item {
         Repeater {
             model: [
                 { label: "实际", color: "#00d084", visible: root.showActualTracks && Object.keys(root.actualTracksByVehicle).length > 0 },
+                { label: "悬停目标", color: "#ffb020", visible: root.showMissionTarget && root.missionTarget() !== null },
                 { label: root.taskPathLabel("expected"), color: "#ffb020", visible: root.showExpectedPath && root.taskPath("expected").status === "available" },
                 { label: root.taskPathLabel("future"), color: "#4aa3ff", visible: root.showFuturePath && root.taskPath("future").status === "available" },
                 { label: "编队目标", color: "#f05d9b", visible: root.showFormationTarget && root.formationTarget() !== null }

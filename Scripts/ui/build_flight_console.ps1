@@ -29,7 +29,7 @@ if ($NinjaPath) { $preflightArgs += @("--ninja-path", $NinjaPath) }
 if ($GStreamerDir) { $preflightArgs += @("--gstreamer-dir", $GStreamerDir) }
 & python @preflightArgs
 if ($LASTEXITCODE -ne 0) {
-    throw "Flight Console toolchain preflight failed. See $Preflight"
+    throw "MoSim Ground Control toolchain preflight failed. See $Preflight"
 }
 
 $report = Get-Content -LiteralPath $Preflight -Raw | ConvertFrom-Json
@@ -47,7 +47,7 @@ if ($LASTEXITCODE -ne 0) { throw "Frozen QGroundControl source verification fail
 # so Qt RCC rescans copied QML assets during an incremental build.
 $CustomResource = Join-Path $VendorRoot "custom/custom.qrc"
 & ([string]$report.detected.cmake) -E touch $CustomResource
-if ($LASTEXITCODE -ne 0) { throw "Failed to refresh the Flight Console custom resource manifest" }
+if ($LASTEXITCODE -ne 0) { throw "Failed to refresh the MoSim Ground Control custom resource manifest" }
 
 $freshArgument = if ($Incremental) { "" } else { "--fresh " }
 $configure = "set `"PATH=$NinjaDir;$QtRoot\bin;$GStreamerRoot\bin;%PATH%`" && " +
@@ -56,7 +56,7 @@ $configure = "set `"PATH=$NinjaDir;$QtRoot\bin;$GStreamerRoot\bin;%PATH%`" && " 
     "set `"GSTREAMER_1_0_ROOT_MSVC_X86_64=$GStreamerRoot`" && " +
     "cmake $freshArgument-S `"$VendorRoot`" -B `"$BuildRoot`" -G `"Ninja Multi-Config`""
 & cmd.exe /d /s /c $configure
-if ($LASTEXITCODE -ne 0) { throw "Flight Console CMake configure failed" }
+if ($LASTEXITCODE -ne 0) { throw "MoSim Ground Control CMake configure failed" }
 if (-not $ConfigureOnly) {
     $build = "set `"PATH=$NinjaDir;$QtRoot\bin;$GStreamerRoot\bin;%PATH%`" && " +
         "call `"$VsDevCmd`" -arch=x64 -host_arch=x64 >nul && " +
@@ -64,5 +64,5 @@ if (-not $ConfigureOnly) {
         "set `"GSTREAMER_1_0_ROOT_MSVC_X86_64=$GStreamerRoot`" && " +
         "cmake --build `"$BuildRoot`" --config $Configuration --parallel"
     & cmd.exe /d /s /c $build
-    if ($LASTEXITCODE -ne 0) { throw "Flight Console build failed" }
+    if ($LASTEXITCODE -ne 0) { throw "MoSim Ground Control build failed" }
 }

@@ -67,6 +67,11 @@ bool isActiveRunState(const QString &value)
         || value == QStringLiteral("replaying");
 }
 
+bool isDisplayableRunState(const QString &value)
+{
+    return isActiveRunState(value) || value == QStringLiteral("completed");
+}
+
 bool isExpectedVehicleId(const QString &value, int vehicleCount)
 {
     static const QRegularExpression pattern(QStringLiteral("^uav([1-9])$"));
@@ -152,7 +157,7 @@ QVariantMap MoSimOperatorBridge::selectedProfile() const
 
 bool MoSimOperatorBridge::profileSelectionLocked() const
 {
-    return !_runManifest.value(QStringLiteral("experiment_profile_id")).toString().isEmpty();
+    return isActiveRunState(_activeRunState);
 }
 
 QString MoSimOperatorBridge::discoverProjectRoot() const
@@ -397,6 +402,7 @@ void MoSimOperatorBridge::loadCatalogs()
 void MoSimOperatorBridge::loadActiveRun()
 {
     _runId.clear();
+    _activeRunState.clear();
     _runManifest.clear();
     _runtimeTelemetry.clear();
     _faultAcks.clear();
@@ -405,8 +411,9 @@ void MoSimOperatorBridge::loadActiveRun()
     }
 
     const QVariantMap active = readJsonObject(projectPath(QStringLiteral("Results/ui_platform/qgc_active_run.json")));
+    const QString activeState = active.value(QStringLiteral("state")).toString();
     if (active.value(QStringLiteral("schema")).toString() != QStringLiteral("mosim.qgc_active_run_pointer.v1")
-        || !isActiveRunState(active.value(QStringLiteral("state")).toString())) {
+        || !isDisplayableRunState(activeState)) {
         return;
     }
     const QString runId = active.value(QStringLiteral("run_id")).toString();
@@ -434,6 +441,7 @@ void MoSimOperatorBridge::loadActiveRun()
     }
 
     _runId = runId;
+    _activeRunState = activeState;
     _runManifest = manifest;
     _selectedProfileId = frozenProfileId;
     _selectedControllerSchemeId = controllerSchemeForProfile(frozenProfileId);
@@ -489,6 +497,8 @@ void MoSimOperatorBridge::refresh()
         setStatus(QStringLiteral("active_run_missing"), QStringLiteral("已加载操作配置，未检测到活动运行清单"));
     } else if (_runtimeTelemetry.isEmpty()) {
         setStatus(QStringLiteral("telemetry_pending"), QStringLiteral("已加载运行清单，等待真实遥测或 rosbag 回放"));
+    } else if (_activeRunState == QStringLiteral("completed")) {
+        setStatus(QStringLiteral("telemetry_completed"), QStringLiteral("已加载已完成运行的最后有效地图帧"));
     } else {
         setStatus(QStringLiteral("telemetry_loaded"), QStringLiteral("已加载当前运行的地图遥测"));
     }
@@ -509,6 +519,10 @@ void MoSimOperatorBridge::refreshRuntimeState()
     }
     if (_runtimeTelemetry.isEmpty()) {
         setStatus(QStringLiteral("telemetry_pending"), QStringLiteral("已冻结本次运行，等待真实遥测或 rosbag 回放"));
+        return;
+    }
+    if (_activeRunState == QStringLiteral("completed")) {
+        setStatus(QStringLiteral("telemetry_completed"), QStringLiteral("已加载已完成运行的最后有效地图帧"));
         return;
     }
     setStatus(QStringLiteral("telemetry_loaded"), QStringLiteral("已加载当前运行的地图遥测"));

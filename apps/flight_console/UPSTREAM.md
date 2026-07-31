@@ -1,6 +1,6 @@
-# Flight Console Upstream Baseline
+# MoSim Ground Control Upstream Baseline
 
-MoSim Flight Console uses the official QGroundControl custom-build extension
+MoSim Ground Control uses the official QGroundControl custom-build extension
 points. Upstream source is vendored so MoSim never modifies the read-only
 reference snapshot.
 
