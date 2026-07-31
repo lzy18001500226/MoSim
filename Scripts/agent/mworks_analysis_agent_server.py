@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Local, read-only OpenAI Responses-compatible backend for MoSim Studio.
+"""Legacy direct-Responses backend retained for migration tests.
 
-The server binds only to loopback.  It never reads an API key from a project
-file: the key must be supplied in the process environment.  The supported
-tools are implemented in ``model_studio_agent_tools.py`` and are read-only.
+Model Studio now starts ``codex_cli_agent_server.py`` and invokes the vendored
+Codex CLI. This module remains unchanged so legacy tests and migration review
+can still inspect the prior read-only Responses implementation.
 """
 
 from __future__ import annotations

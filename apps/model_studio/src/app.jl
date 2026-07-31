@@ -405,7 +405,7 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantQgcGuideButton.Enable = false
         app.AssistantResultGuideButton.Enable = false
         app.AssistantClearButton.Enable = false
-        app.set_assistant_status("正在连接本机 Agent 服务，并仅按需读取当前配置和项目证据。"; state="运行")
+        app.set_assistant_status("正在调用本机 Codex CLI，并仅以只读方式检查当前配置和项目证据。"; state="运行")
         context_text = app.assistant_context_text()
         @async begin
             try
@@ -417,10 +417,10 @@ const OFFLINE_PROFILES = Dict(
                     request_text = isempty(result.request_id) ? "在线回答已完成。" :
                         "在线回答已完成；请求编号 " * result.request_id
                     app.set_assistant_status(request_text; state="正常")
-                elseif result.error_code == "model_not_configured"
+                elseif result.error_code in ("codex_not_built", "codex_auth_required", "codex_cli_unavailable")
                     fallback = app.local_assistant_reply(question)
-                    app.append_assistant("MoSim 助手", fallback * "\n\n模型服务未配置；设置 MOSIM_OPENAI_API_KEY 后可启用项目只读检索。")
-                    app.set_assistant_status("当前使用本地指引。未检测到 MOSIM_OPENAI_API_KEY。"; state="待命")
+                    app.append_assistant("MoSim 助手", fallback * "\n\nCodex CLI 未完成构建或 GPT 登录；请按发布清单完成 src/Agent 构建和 codex login。")
+                    app.set_assistant_status("当前使用本地指引。等待本机 Codex CLI 构建与登录。"; state="待命")
                 else
                     app.append_assistant("MoSim 助手", app.trim_assistant_answer(result.answer) * "\n\n" * app.local_assistant_reply(question))
                     app.set_assistant_status("在线模型暂不可用，已回退到本地指引。"; state="阻断")
@@ -466,7 +466,7 @@ const OFFLINE_PROFILES = Dict(
         empty!(app.AssistantLines)
         app.AssistantRequestInFlight = false
         app.append_assistant("MoSim 助手", "已清空对话。我已保留当前实验配置上下文。")
-        app.set_assistant_status("等待问题。首次发送会按需启动本机只读 Agent 服务。"; state="待命")
+        app.set_assistant_status("等待问题。首次发送会按需启动本机只读 Codex CLI 服务。"; state="待命")
     end
 
     function set_top_status(app, text; state="待命")
@@ -1266,8 +1266,8 @@ const OFFLINE_PROFILES = Dict(
 
         app.refresh_assistant_context()
         if isempty(app.AssistantLines)
-            app.append_assistant("MoSim 助手", "你好，我已读取当前实验配置。发送问题后将按需启动本机只读 Agent 服务。")
-            app.set_assistant_status("等待问题。模型密钥只从进程环境变量读取，不会写入项目文件。"; state="待命")
+            app.append_assistant("MoSim 助手", "你好，我已读取当前实验配置。发送问题后将按需启动本机只读 Codex CLI 服务。")
+            app.set_assistant_status("等待问题。AI 助手需要本机已构建并登录的 Codex CLI，不会把凭据写入项目。"; state="待命")
         end
     end
 

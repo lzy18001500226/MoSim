@@ -1,6 +1,8 @@
+# Legacy direct-Responses backend. Model Studio now reads
+# model_studio_codex_cli_v1.toml through codex_cli_agent_server.py.
 schema = "mosim.model_studio_agent.v1"
 version = 1
-scope = "Local Model Studio assistant. It may read approved project evidence and provide guidance, but it must not modify models/configuration, start simulation, generate code, or send QGC/Gazebo/PX4 commands."
+scope = "Legacy direct-Responses backend retained for migration tests. It is not the active Model Studio assistant path."
 
 [service]
 host = "127.0.0.1"

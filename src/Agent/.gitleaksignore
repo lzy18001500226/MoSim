@@ -1,0 +1,13 @@
+src/Agent/codex-main/codex-rs/app-server/tests/suite/v2/connection_handling_websocket.rs:generic-api-key:303
+src/Agent/codex-main/codex-rs/agent-identity/src/lib.rs:private-key:832
+src/Agent/codex-main/codex-rs/app-server/README.md:generic-api-key:2304
+src/Agent/codex-main/codex-rs/Cargo.lock:generic-api-key:5080
+src/Agent/codex-main/codex-rs/cli/tests/login.rs:generic-api-key:166
+src/Agent/codex-main/codex-rs/cli/tests/login.rs:generic-api-key:182
+src/Agent/codex-main/codex-rs/cli/src/login.rs:generic-api-key:575
+src/Agent/codex-main/codex-rs/cli/src/login.rs:generic-api-key:581
+src/Agent/codex-main/codex-rs/codex-mcp/src/connection_manager_tests.rs:generic-api-key:3632
+src/Agent/codex-main/codex-rs/core-plugins/src/remote/catalog_cache.rs:generic-api-key:168
+src/Agent/codex-main/codex-rs/exec/tests/suite/apply_patch.rs:jwt:200
+src/Agent/codex-main/codex-rs/login/src/auth/agent_identity.rs:private-key:529
+src/Agent/codex-main/codex-rs/login/src/auth/auth_tests.rs:private-key:2069

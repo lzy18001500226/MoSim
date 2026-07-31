@@ -1,50 +1,47 @@
 # MoSim Agent 实施说明
 
-## 当前实现
+## 当前实现（Codex CLI）
 
-Model Studio 的第四栏现已接入本机只读 Agent：
+Model Studio 的第四栏现已使用仓库内源码构建的 Codex CLI：
 
 ```text
 Model Studio (Julia/TyAppDesigner)
   -> agent_integration.jl
   -> 127.0.0.1:8765
-  -> mworks_analysis_agent_server.py
-  -> OpenAI Responses-compatible API + allowlisted read-only project tools
+  -> codex_cli_agent_server.py
+  -> src/Agent/codex-main/codex-rs/target/release/codex
+  -> 用户已登录的 GPT Provider
 ```
 
-服务按用户首次提问启动，绑定到 `127.0.0.1`，密钥仅由启动 Studio 的
-进程环境变量 `MOSIM_OPENAI_API_KEY` 提供。项目配置
-`Config/control_platform/model_studio_agent_v1.toml` 不含密钥，记录端点、
-模型、推理强度和只读限额。模型服务不可用或未设置密钥时，第四栏保留原有
-本地指引，不会阻断其余 Studio 工作区。
+服务按用户首次提问启动，且只能绑定 `127.0.0.1`。它只接受项目构建出的
+Codex 二进制；未构建时，Studio 回退到本地指引并显示构建与登录提示。实际权威
+配置为 `Config/control_platform/model_studio_codex_cli_v1.toml`，构建说明和
+许可证信息位于 `src/Agent/README.md`。
 
-## 已实现的工具边界
+Codex CLI 不包含 GPT 模型权重。用户须在自己的 `CODEX_HOME` 完成 `codex login`
+及 Provider 配置，不能将凭据放在项目、Studio 字段、日志或环境变量转发链中。
+Bridge 会移除常见 API-key 环境变量后再启动 `codex exec`，从而避免模型通过只读
+shell 查询继承到的密钥。
 
-当前后端有 30 个实际可调用的只读工具，覆盖 Studio 上下文、FormalRunner
-路由、七场景 Profile、控制器实现映射、G3 门禁和运行记录、MWORKS 文档、
-Modelica 静态依赖、CSV 指标、代码生成交付目录和工作流推荐。每个工具只读取
-项目内的 `Docs/`、`Config/`、限定 `Results/`、`Models/` 与
-`src/control/codegen/` 路径。
+## 运行边界
 
-其中轨迹图、对比图、热力图和报告图导出工具只校验输入并返回人工交接数据；
-它们不会生成文件。求解器/MCP 诊断也只解读既有运行记录，不连接实时会话。
+Bridge 用 `codex exec --ephemeral --sandbox read-only -c 'approval_policy="never"'`
+运行，系统提示词和沙箱共同限制为只读项目分析。它不得修改文件、启动
+CheckModel/仿真/代码生成/编译，也不得发送 QGC、Gazebo、PX4、ROS、MAVROS、
+飞控或电机命令。MWORKS、QGC 和 Gazebo/PX4 的执行与证据仍由用户在原生工具中
+完成；模型可打开、静态源码或 UI 状态不能替代仿真或运行时结论。
 
-它不实现历史设计稿中的“自动执行工作流”或“运行/导出/部署”能力，也不把
-模型可打开、静态源码或 UI 状态升级为仿真或运行时结论。MWORKS、QGC 和
-Gazebo/PX4 仍需由用户在对应原生工具中确认和执行。
+旧的 `mworks_analysis_agent_server.py`、30 个直连 Responses 工具以及
+`model_studio_agent_v1.toml` 仅保留为迁移测试材料，Studio 不再启动它们。
 
-## 与初稿的关系
+## 离线核对
 
-`MoSim Agent架构设计文档.md` 和 `MoSim Agent执行任务指令.md` 中的 Claude
-示例、30 个规划工具和 Genie/Stipple 片段是初始设计输入，不是当前源码。
-当前 Studio 已是 TyAppDesigner 应用，因此实施采用现有 UI、OpenAI
-Responses-compatible API 和可离线测试的 Python 标准库回退服务。后续增加
-工具前必须先补充实际数据源、路径白名单、单元测试和不执行边界。
+```powershell
+python Scripts\agent\codex_cli_agent_server.py --health
+python -m unittest Scripts.agent.tests.test_codex_cli_agent_server
+```
 
-## 模型配置
+构建本身依赖 Rust 工具链；本机当前未检测到 `cargo`，因此本次只完成源码、脚本和
+离线桥接合同验证，未将“Windows 二进制已构建”写入交付结论。
 
-`model_studio_agent_v1.toml` 保留 `model`、`review_model` 与
-`model_reasoning_effort`，用于集中管理供应方设置。当前版本只发送一轮主模型
-请求；不会在未提示的情况下自动发起二次审查请求，因此 `review_model` 仅为未来
-明确授权的审查流程预留。密钥始终只从 `MOSIM_OPENAI_API_KEY` 或兼容回退环境变量
-读取，不进入仓库、请求日志或 Studio 配置文件。
+## 历史设计输入

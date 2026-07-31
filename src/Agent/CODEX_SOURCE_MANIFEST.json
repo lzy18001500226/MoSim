@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.codex_source_manifest.v1",
+  "imported_on": "2026-07-31",
+  "source": {
+    "name": "OpenAI Codex CLI source snapshot",
+    "upstream_repository": "https://github.com/openai/codex",
+    "upstream_revision": "not_recorded_in_imported_snapshot",
+    "license": "Apache-2.0",
+    "license_file": "codex-main/LICENSE",
+    "notice_file": "codex-main/NOTICE"
+  },
+  "inventory": {
+    "codex_main_file_count": 5854,
+    "codex_main_byte_count": 57036169,
+    "tree_sha256": "ca332f08f756c1380e6f2ffa11ed6d21d9f1eaf38b8ad8b20d92e00ff55c0bb4",
+    "tree_hash_rule": "SHA256 over sorted UTF-8 lines: repository-relative-path, tab, file-SHA256, newline."
+  },
+  "anchor_hashes": {
+    "codex-rs/Cargo.toml": "dfc44a70b284492377e9c04084fd1a9f4ee074d608399921e4b06423ecff667f",
+    "codex-rs/Cargo.lock": "76ee8398f430b10fc79041af8c106fbc296a834cfe90afba359284176cc3b669",
+    "LICENSE": "d17f227e4df5da1600391338865ce0f3055211760a36688f816941d58232d8dc",
+    "NOTICE": "9d71575ecfd9a843fc1677b0efb08053c6ba9fd686a0de1a6f5382fd3c220915"
+  },
+  "security_scan": {
+    "tool": "gitleaks",
+    "scope": "src/Agent",
+    "result": "13 upstream test-fixture, documentation-example, or hash-constant signatures retained unchanged; their exact fingerprints are in .gitleaksignore. No MoSim credential was introduced.",
+    "action": "Do not add credentials to this source tree. Re-run the release security scan after every source update; new findings must not be ignored without review."
+  }
+}
