@@ -14,6 +14,7 @@
 | Place, compress, or archive documentation | `Docs/Workflows/documentation_governance.md` |
 | Promote/reject session history | `Docs/Workflows/session_memory_migration.md` |
 | Close a changed task or final package | `Docs/Workflows/pre_submit_check.md` |
+| Reproduce a release, code-delivery hash, or package boundary | `Docs/Workflows/RELEASE_CHECKLIST.md` |
 | Trace an old AgentOS packet only | `Docs/Workflows/agent_task_ledger.md` |
 
 ## Current Phase 1
