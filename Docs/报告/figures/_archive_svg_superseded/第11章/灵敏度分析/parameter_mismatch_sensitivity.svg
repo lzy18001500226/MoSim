@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="620" viewBox="0 0 1080 620">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="140.0" y="55.0" width="895.0" height="475.0" fill="none" stroke="#222"/>
+<line x1="140.0" y1="530.0" x2="1035.0" y2="530.0" stroke="#eeeeee"/>
+<text x="132.0" y="534.0" text-anchor="end" font-family="Times New Roman" font-size="16">0.0</text>
+<line x1="140.0" y1="435.0" x2="1035.0" y2="435.0" stroke="#eeeeee"/>
+<text x="132.0" y="439.0" text-anchor="end" font-family="Times New Roman" font-size="16">0.543</text>
+<line x1="140.0" y1="340.0" x2="1035.0" y2="340.0" stroke="#eeeeee"/>
+<text x="132.0" y="344.0" text-anchor="end" font-family="Times New Roman" font-size="16">1.086</text>
+<line x1="140.0" y1="245.0" x2="1035.0" y2="245.0" stroke="#eeeeee"/>
+<text x="132.0" y="249.0" text-anchor="end" font-family="Times New Roman" font-size="16">1.628</text>
+<line x1="140.0" y1="150.0" x2="1035.0" y2="150.0" stroke="#eeeeee"/>
+<text x="132.0" y="154.0" text-anchor="end" font-family="Times New Roman" font-size="16">2.171</text>
+<line x1="140.0" y1="54.99999999999994" x2="1035.0" y2="54.99999999999994" stroke="#eeeeee"/>
+<text x="132.0" y="58.99999999999994" text-anchor="end" font-family="Times New Roman" font-size="16">2.714</text>
+<text x="140.0" y="554.0" text-anchor="middle" font-family="Times New Roman" font-size="16">110</text>
+<text x="438.3333333333333" y="554.0" text-anchor="middle" font-family="Times New Roman" font-size="16">120</text>
+<text x="736.6666666666666" y="554.0" text-anchor="middle" font-family="Times New Roman" font-size="16">130</text>
+<text x="1035.0" y="554.0" text-anchor="middle" font-family="Times New Roman" font-size="16">140</text>
+<circle cx="140.0" cy="512.0936295514456" r="5" fill="#1f77b4"/>
+<line x1="140.0" y1="512.0936295514456" x2="438.3333333333333" y2="511.8134464169608" stroke="#1f77b4" stroke-width="2.0"/>
+<circle cx="140.0" cy="420.89533881706745" r="5" fill="#d62728"/>
+<line x1="140.0" y1="420.89533881706745" x2="438.3333333333333" y2="315.4621383172214" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="438.3333333333333" cy="511.8134464169608" r="5" fill="#1f77b4"/>
+<line x1="438.3333333333333" y1="511.8134464169608" x2="736.6666666666666" y2="511.3844371581304" stroke="#1f77b4" stroke-width="2.0"/>
+<circle cx="438.3333333333333" cy="315.4621383172214" r="5" fill="#d62728"/>
+<line x1="438.3333333333333" y1="315.4621383172214" x2="736.6666666666666" y2="214.30628637532243" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="736.6666666666666" cy="511.3844371581304" r="5" fill="#1f77b4"/>
+<line x1="736.6666666666666" y1="511.3844371581304" x2="1035.0" y2="510.83048017953655" stroke="#1f77b4" stroke-width="2.0"/>
+<circle cx="736.6666666666666" cy="214.30628637532243" r="5" fill="#d62728"/>
+<line x1="736.6666666666666" y1="214.30628637532243" x2="1035.0" y2="116.95652173913044" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="1035.0" cy="510.83048017953655" r="5" fill="#1f77b4"/>
+<circle cx="1035.0" cy="116.95652173913044" r="5" fill="#d62728"/>
+<text x="587.5" y="600" text-anchor="middle" font-family="Times New Roman" font-size="18">Parameter Scale (%)</text>
+<text x="30" y="292.5" transform="rotate(-90 30 292.5)" text-anchor="middle" font-family="Times New Roman" font-size="18">Position RMSE (m)</text>
+<line x1="140.0" y1="558" x2="164.0" y2="558" stroke="#1f77b4" stroke-width="2.0"/>
+<circle cx="152.0" cy="558" r="5" fill="#1f77b4"/>
+<text x="170.0" y="562" font-family="Times New Roman" font-size="14">Official PID</text>
+<line x1="320.0" y1="558" x2="344.0" y2="558" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="332.0" cy="558" r="5" fill="#d62728"/>
+<text x="350.0" y="562" font-family="Times New Roman" font-size="14">px4ctrl</text>
+</svg>

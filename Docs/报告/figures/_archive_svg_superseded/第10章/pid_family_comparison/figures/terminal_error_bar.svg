@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="560" viewBox="0 0 980 560">
+<rect width="100%" height="100%" fill="white"/>
+<text x="490.0" y="30" text-anchor="middle" font-family="Times New Roman" font-size="20">ClimbPath Terminal Error Comparison</text>
+<line x1="90.0" y1="445.0" x2="940.0" y2="445.0" stroke="#222"/>
+<line x1="90.0" y1="55.0" x2="90.0" y2="445.0" stroke="#222"/>
+<line x1="90.0" y1="445.0" x2="940.0" y2="445.0" stroke="#dddddd"/>
+<text x="80.0" y="449.0" text-anchor="end" font-family="Times New Roman" font-size="12">0.0</text>
+<line x1="90.0" y1="367.0" x2="940.0" y2="367.0" stroke="#dddddd"/>
+<text x="80.0" y="371.0" text-anchor="end" font-family="Times New Roman" font-size="12">0.012</text>
+<line x1="90.0" y1="289.0" x2="940.0" y2="289.0" stroke="#dddddd"/>
+<text x="80.0" y="293.0" text-anchor="end" font-family="Times New Roman" font-size="12">0.025</text>
+<line x1="90.0" y1="211.00000000000003" x2="940.0" y2="211.00000000000003" stroke="#dddddd"/>
+<text x="80.0" y="215.00000000000003" text-anchor="end" font-family="Times New Roman" font-size="12">0.037</text>
+<line x1="90.0" y1="133.0" x2="940.0" y2="133.0" stroke="#dddddd"/>
+<text x="80.0" y="137.0" text-anchor="end" font-family="Times New Roman" font-size="12">0.05</text>
+<line x1="90.0" y1="55.00000000000006" x2="940.0" y2="55.00000000000006" stroke="#dddddd"/>
+<text x="80.0" y="59.00000000000006" text-anchor="end" font-family="Times New Roman" font-size="12">0.062</text>
+<rect x="164.375" y="404.09363733177446" width="276.25" height="40.906362668225526" fill="#1f77b4"/>
+<text x="302.5" y="397.09363733177446" text-anchor="middle" font-family="Times New Roman" font-size="12">0.0065</text>
+<text x="302.5" y="465.0" text-anchor="end" transform="rotate(-35 302.5 465.0)" font-family="Times New Roman" font-size="12">official_pid</text>
+<rect x="589.375" y="105.86956521739125" width="276.25" height="339.13043478260875" fill="#d62728"/>
+<text x="727.5" y="98.86956521739125" text-anchor="middle" font-family="Times New Roman" font-size="12">0.0539</text>
+<text x="727.5" y="465.0" text-anchor="end" transform="rotate(-35 727.5 465.0)" font-family="Times New Roman" font-size="12">official_pid_yaw_authority_mapped</text>
+<text x="20" y="280.0" transform="rotate(-90 20 280.0)" text-anchor="middle" font-family="Times New Roman" font-size="14">Terminal Error (m)</text>
+</svg>
