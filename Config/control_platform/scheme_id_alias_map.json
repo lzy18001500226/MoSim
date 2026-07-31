@@ -13,15 +13,15 @@
   "reconciliation_summary": {
     "catalog_frozen_entries": 48,
     "g3_status_rows": 48,
-    "formal_runner_files": 49,
+    "formal_runner_files": 53,
     "exact_name_matches": 33,
     "alias_resolved": 8,
     "aligned_catalog_to_g3": 41,
-    "supplemental_current_records": 3,
-    "catalog_only_no_runner": 4,
+    "supplemental_current_records": 7,
+    "catalog_only_no_runner": 0,
     "runner_only_no_catalog_entry": 7,
     "arithmetic_check": {
-      "catalog": "33 exact + 8 alias + 3 supplemental current records + 4 no-runner = 48",
+      "catalog": "33 exact + 8 alias + 7 supplemental current records = 48",
       "g3_status": "33 exact + 8 alias + 7 runner-only = 48"
     }
   },
@@ -104,26 +104,37 @@
       "expected_status": "pass",
       "evidence": "Experimental FormalRunner CheckModel and 50 s simulation passed; terminal position_error_norm is 0.142974149482056 m, below the 5 m gate.",
       "claim_boundary": "Post-freeze experimental whole-aircraft evidence. It enters only the current catalog-48 reconciliation and does not rewrite the historical G3 matrix."
-    }
-  ],
-  "catalog_only_no_runner": [
+    },
     {
       "catalog_scheme_id": "fixed_awff_l1_residual",
-      "reason": "composite fixed_ Sysblock variant; no FormalRunner exists"
+      "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/RUN_RECORD.json",
+      "expected_status": "fail",
+      "evidence": "The new thin FormalRunner passed native CheckModel and completed a native 50 s ClimbPath result with 25001 samples. Terminal position_error_norm is 10628.468304322492 m, above the 5 m gate.",
+      "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
       "catalog_scheme_id": "fixed_awff_l1_indi",
-      "reason": "composite fixed_ Sysblock variant; no FormalRunner exists"
+      "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/RUN_RECORD.json",
+      "expected_status": "pass",
+      "evidence": "The new thin FormalRunner passed native CheckModel and completed a native 50 s ClimbPath result with 25001 samples. Terminal position_error_norm is 0.00047656188464517224 m, below the 5 m gate.",
+      "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
       "catalog_scheme_id": "fixed_linear_mpc_l1_indi",
-      "reason": "composite fixed_ Sysblock variant; no FormalRunner exists"
+      "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/RUN_RECORD.json",
+      "expected_status": "pass",
+      "evidence": "The new thin FormalRunner passed native CheckModel and completed a native 50 s ClimbPath result with 25001 samples. Terminal position_error_norm is 0.0004726003753151066 m, below the 5 m gate.",
+      "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
       "catalog_scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
-      "reason": "composite fixed_ Sysblock variant; no FormalRunner exists"
+      "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/RUN_RECORD.json",
+      "expected_status": "fail",
+      "evidence": "The new thin FormalRunner passed native CheckModel. The outer MCP call timed out, but native MWORKS then reported exit state 0, Idle, simulation time 50.0 s, and a readable 25001-sample result. Terminal position_error_norm is 12455.228659768618 m, above the 5 m gate.",
+      "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. The API timeout remains explicit; native completion is separately verified. This enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     }
   ],
+  "catalog_only_no_runner": [],
   "runner_only_no_catalog_entry": [
     {
       "g3_controller_id": "l_1",

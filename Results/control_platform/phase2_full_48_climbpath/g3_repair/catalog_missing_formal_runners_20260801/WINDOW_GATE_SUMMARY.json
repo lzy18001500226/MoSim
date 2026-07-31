@@ -1,0 +1,26 @@
+{
+  "schema": "mosim.mworks_window_gate_summary.v1",
+  "recorded_at": "2026-08-01T05:29:20+08:00",
+  "purpose": "Sanitized MWORKS-only summary of the current-turn window gate for the four fixed-composite FormalRunner executions.",
+  "preflight": {
+    "sentinel_status": "clean",
+    "matched_license_or_crash_marker": false,
+    "observed_target_window": "Sysplorer [education edition]",
+    "observed_blockers": [],
+    "observation": "The fresh sentinel and background capture showed a Sysplorer education-edition window without a demo, login, activation, authorization, or GUI-error dialog. The edition title is not treated as activation proof."
+  },
+  "post_qp_timeout": {
+    "sentinel_status": "clean",
+    "matched_license_or_crash_marker": false,
+    "observed_target_windows": [
+      "MoSimQuadrotorModel - Sysplorer [education edition]",
+      "MoSimQuadrotorModel - result viewer"
+    ],
+    "observation": "The post-timeout capture showed the native result viewer and the project window, with no login, activation, authorization, or GUI-error dialog."
+  },
+  "committed_visual_evidence": [
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/screenshots/after_check_model/139096_0x13A02E2_MoSimQuadrotorModel - Sysplorer _教育版_.png",
+    "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/screenshots/fixed_qp_nmpc_timeout/139096_0xE11304_MoSimQuadrotorModel - 结果查看器.png"
+  ],
+  "privacy_boundary": "Raw sentinel and capture-manifest exports remain local evidence only because they enumerate unrelated desktop metadata. This summary preserves only task-relevant MWORKS observations."
+}

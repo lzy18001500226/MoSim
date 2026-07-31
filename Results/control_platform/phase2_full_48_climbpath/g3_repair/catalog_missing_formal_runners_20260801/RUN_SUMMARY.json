@@ -1,0 +1,62 @@
+{
+  "schema": "mosim.g3_catalog_missing_formal_runners_execution_summary.v1",
+  "recorded_at": "2026-08-01T05:29:20+08:00",
+  "purpose": "Close the four catalog entries that had no FormalRunner through one native MWORKS CheckModel batch and one serial nominal 50 s ClimbPath attempt per entry.",
+  "source_change": {
+    "new_formal_runners": [
+      "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedAwffL1ResidualFormalRunner.mo",
+      "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedAwffL1IndiFormalRunner.mo",
+      "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedLinearMpcL1IndiFormalRunner.mo",
+      "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedQpNmpcL1IndiCbfFormalRunner.mo"
+    ],
+    "source_change_boundary": "Each runner is a thin whole-aircraft extends surface over its existing fixed integrated-chain model and exports position_error_norm. No plant, allocator, controller gain, trajectory, or runtime source was changed."
+  },
+  "native_check_model": {
+    "result": "passed",
+    "runners_checked": 4,
+    "error_count": 0,
+    "warning_count": 5,
+    "observation": "All four native CheckModel calls returned true. The Sysplorer output showed shared warnings but no CheckModel errors."
+  },
+  "serial_nominal_50s_results": [
+    {
+      "controller_id": "fixed_awff_l1_residual",
+      "terminal_position_error_norm_m": 10628.468304322492,
+      "sample_count": 25001,
+      "status": "fail"
+    },
+    {
+      "controller_id": "fixed_awff_l1_indi",
+      "terminal_position_error_norm_m": 0.00047656188464517224,
+      "sample_count": 25001,
+      "status": "pass"
+    },
+    {
+      "controller_id": "fixed_linear_mpc_l1_indi",
+      "terminal_position_error_norm_m": 0.0004726003753151066,
+      "sample_count": 25001,
+      "status": "pass"
+    },
+    {
+      "controller_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "terminal_position_error_norm_m": 12455.228659768618,
+      "sample_count": 25001,
+      "status": "fail",
+      "transport_fact": "The outer MCP call timed out at 300 s; direct native state/result reads then verified exit state 0, Idle, simulation time 50.0 s, and a readable result series."
+    }
+  ],
+  "mworks_gate": {
+    "activation_sentinel_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
+    "background_screenshot_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
+    "post_run_sentinel": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
+    "license_state": "education_window_observed_activation_unverified_no_login_or_authorization_blocker",
+    "activation_state_observation": "Before native work, the sentinel was clean and the background capture showed Sysplorer [education edition] without a login, activation, authorization, demo, or GUI-error dialog. The post-QP sentinel was also clean. The title is not treated as an activation proof.",
+    "will_not_click_activation_login": true,
+    "mworks_window_evidence_touched": true,
+    "live_mworks_touched": true
+  },
+  "evidence_limits": [
+    "Two direct-MCP result series were retained numerically but their requested run folders do not contain Result.msr; this summary does not claim retained native-result files for them.",
+    "This is nominal MWORKS ClimbPath evidence only. It does not claim graphical acceptance, controller tuning, PX4/Gazebo/ROS runtime equivalence, deployment, or 48/48 G3 completion."
+  ]
+}

@@ -106,7 +106,7 @@ passes and RMSE are trace-back evidence only, not a valid ranking for the
  retained as negative performance evidence because its terminal position error
  is `3412.359226529184 m`, not as a pass. The fixed catalog-48 G3 reconciliation
  is `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`:
- 28 passed, 16 completed failures, and four `not_run`; it accounts for the
+ 30 passed, 18 completed failures, and zero `not_run`; it accounts for the
  post-freeze `pid_awff_linear_eso`, `smc_boundary_layer`, and `nmpc_outer`
  FormalRunner records without changing the denominator or overwriting the frozen
  historical `G3_STATUS.json`. The G6 screenshot population for the 46

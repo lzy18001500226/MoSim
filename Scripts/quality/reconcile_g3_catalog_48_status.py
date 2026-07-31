@@ -131,8 +131,21 @@ def supplemental_row(catalog_scheme: dict[str, Any], definition: dict[str, Any])
             raise ValueError(f"{scheme_id} native record is missing model, simulation, or CheckModel details")
         if check_model.get("formal_runner") != "passed":
             raise ValueError(f"{scheme_id} FormalRunner CheckModel did not pass")
-        if not require_bool(simulation.get("api_ok"), f"{scheme_id}.native_simulation.api_ok"):
-            raise ValueError(f"{scheme_id} native simulation API did not succeed")
+        api_ok = require_bool(simulation.get("api_ok"), f"{scheme_id}.native_simulation.api_ok")
+        if not api_ok:
+            completion = simulation.get("mworks_completion_verification")
+            if simulation.get("mcp_call_status") != "timed_out_after_300_s":
+                raise ValueError(f"{scheme_id} native simulation API did not succeed")
+            if not isinstance(completion, dict):
+                raise ValueError(f"{scheme_id} MCP timeout lacks native completion verification")
+            if require_number(completion.get("exit_state"), f"{scheme_id}.exit_state") != 0:
+                raise ValueError(f"{scheme_id} native completion has nonzero exit state")
+            if completion.get("state") != "Idle":
+                raise ValueError(f"{scheme_id} native completion is not Idle")
+            if abs(require_number(completion.get("sim_time_s"), f"{scheme_id}.sim_time_s") - 50.0) > 1e-9:
+                raise ValueError(f"{scheme_id} native completion did not reach 50 s")
+            if not require_bool(completion.get("result_readable"), f"{scheme_id}.result_readable"):
+                raise ValueError(f"{scheme_id} native completion result is not readable")
         stop_time_s = require_number(simulation.get("completed_to_stop_time_s"), f"{scheme_id}.stop_time_s")
         terminal_error_m = require_number(
             simulation.get("terminal_position_error_norm_m"), f"{scheme_id}.terminal_position_error_norm_m"
@@ -140,7 +153,14 @@ def supplemental_row(catalog_scheme: dict[str, Any], definition: dict[str, Any])
         runner_class = model.get("runner_class")
         sample_count = model.get("result_sample_count")
         source_status = record.get("execution_status")
-        check_model_status = "formal_runner_passed_direct_core_error_retained"
+        if api_ok:
+            check_model_status = (
+                "formal_runner_passed_direct_core_error_retained"
+                if check_model.get("equation_core") == "failed_mworks_compiler_internal_error"
+                else "formal_runner_passed"
+            )
+        else:
+            check_model_status = "formal_runner_passed_mcp_timeout_native_completion_verified"
     else:
         metrics = record.get("metrics")
         check_model = record.get("check_model")
@@ -367,10 +387,10 @@ def validate_status(status: dict[str, Any]) -> None:
             raise ValueError(f"summary {key} is stale: expected {value!r}, got {summary.get(key)!r}")
     if summary.get("historical_g3_mapped_catalog_count") != 41:
         raise ValueError("historical G3 mapping must account for 41 catalog entries")
-    if summary.get("supplemental_current_record_count") != 3:
-        raise ValueError("supplemental current evidence must account for exactly three catalog entries")
-    if summary.get("formal_runner_missing_count") != 4:
-        raise ValueError("exactly four catalog entries must remain without a FormalRunner")
+    if summary.get("supplemental_current_record_count") != 7:
+        raise ValueError("supplemental current evidence must account for exactly seven catalog entries")
+    if summary.get("formal_runner_missing_count") != 0:
+        raise ValueError("no catalog entry may remain without a FormalRunner")
     if summary.get("historical_g3_only_count") != 7:
         raise ValueError("seven historical G3-only rows must remain preserved")
     if not summary.get("inventory_reconciled"):

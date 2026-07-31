@@ -31,12 +31,12 @@ def main() -> int:
             "historical_g3_exact_count": 33,
             "historical_g3_alias_count": 8,
             "historical_g3_mapped_catalog_count": 41,
-            "supplemental_current_record_count": 3,
-            "formal_runner_missing_count": 4,
+            "supplemental_current_record_count": 7,
+            "formal_runner_missing_count": 0,
             "historical_g3_only_count": 7,
-            "passed_count": 28,
-            "failed_count": 16,
-            "not_run_count": 4,
+            "passed_count": 30,
+            "failed_count": 18,
+            "not_run_count": 0,
             "inventory_reconciled": True,
             "completed": False,
         }
@@ -45,12 +45,14 @@ def main() -> int:
         assert rows["nmpc_outer"]["status"] == "pass"
         assert rows["smc_boundary_layer"]["status"] == "fail"
         assert rows["pid_awff_linear_eso"]["status"] == "fail"
-        assert set(status["unresolved_catalog_entries"]) == {
-            "fixed_awff_l1_residual",
-            "fixed_awff_l1_indi",
-            "fixed_linear_mpc_l1_indi",
-            "fixed_qp_nmpc_l1_indi_cbf",
-        }
+        assert rows["fixed_awff_l1_residual"]["status"] == "fail"
+        assert rows["fixed_awff_l1_indi"]["status"] == "pass"
+        assert rows["fixed_linear_mpc_l1_indi"]["status"] == "pass"
+        assert rows["fixed_qp_nmpc_l1_indi_cbf"]["status"] == "fail"
+        assert rows["fixed_qp_nmpc_l1_indi_cbf"]["check_model_status"] == (
+            "formal_runner_passed_mcp_timeout_native_completion_verified"
+        )
+        assert status["unresolved_catalog_entries"] == []
         assert len(status["historical_g3_only_rows"]) == 7
         run([sys.executable, "-B", str(SCRIPT), "--output", str(output), "--check"])
     print("catalog-48 G3 reconciliation test passed")
