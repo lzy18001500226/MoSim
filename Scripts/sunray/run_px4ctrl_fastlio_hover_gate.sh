@@ -32,7 +32,18 @@ done
 
 export PROJECT_ROOT
 export SUNRAY_GPS_SENSOR_MODE=removed
-export PX4CTRL_CORE_PROFILE=original
+export PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE:-original}"
+case "${PX4CTRL_CORE_PROFILE}" in
+  original)
+    ;;
+  graphical_c99)
+    export PX4CTRL_EXPECTED_BUILD_BACKEND=graphical_px4ctrl_c99
+    ;;
+  *)
+    echo "The source-local FAST-LIO entry accepts PX4CTRL_CORE_PROFILE=original or graphical_c99." >&2
+    exit 2
+    ;;
+esac
 # The generic px4ctrl source keeps the Modelica/base-adapter 0.37 default.
 # This frozen Gazebo hover gate uses the measured runtime thrust map instead.
 export PX4CTRL_HOVER_PERCENTAGE=0.456

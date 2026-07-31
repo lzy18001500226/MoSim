@@ -77,6 +77,7 @@ private:
   std::queue<std::pair<ros::Time, double>> timed_thrust_;
   static constexpr double kMinNormalizedCollectiveThrust_ = 3.0;
   bool use_mosim_generated_core_;
+  bool use_graphical_c99_core_;
   bool use_official_pid_core_;
   bool use_se3_basic_core_;
   bool use_dfbc_basic_core_;
@@ -150,6 +151,11 @@ private:
       const Eigen::Quaterniond &current_attitude,
       const Eigen::Vector3d &feedforward_bodyrates) const;
   quadrotor_msgs::Px4ctrlDebug calculateGeneratedCoreControl(
+      const Desired_State_t &des,
+      const Odom_Data_t &odom,
+      const Imu_Data_t &imu,
+      Controller_Output_t &u);
+  quadrotor_msgs::Px4ctrlDebug calculateGraphicalC99Control(
       const Desired_State_t &des,
       const Odom_Data_t &odom,
       const Imu_Data_t &imu,

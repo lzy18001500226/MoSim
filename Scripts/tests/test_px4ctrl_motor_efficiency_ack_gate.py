@@ -25,3 +25,14 @@ def test_motor_efficiency_ack_gate_separates_ack_from_mission_quality() -> None:
     assert "fault_ack_status" in source
     assert "basic_mission_status" in source
     assert "Mission-quality acceptance remains governed separately" in source
+
+
+def test_motor_efficiency_ack_gate_can_attach_a_read_only_qgc_display() -> None:
+    source = GATE.read_text(encoding="utf-8")
+
+    assert "MOSIM_OPERATOR_RUN_ID" in source
+    assert "WORLD_FILE and SUNRAY_GAZEBO_LAUNCH_FILE are required when QGC display is enabled" in source
+    assert "prepare_factory_live_operator_map.py" in source
+    assert "runtime_sidecar.py" in source
+    assert "--read-only" in source
+    assert "terminal_motor_efficiency_ack_gate" in source

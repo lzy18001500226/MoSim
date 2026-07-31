@@ -1,9 +1,15 @@
 #include "controller.h"
 
 #include <algorithm>
+#include <cmath>
 
 extern "C" {
-#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY)
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_GRAPHICAL_PX4CTRL_C99)
+#include "px4ctrl_graphical_generated_shared.h"
+// In graphical-C99 builds the legacy CFunction declarations remain available
+// only for inactive compatibility methods compiled into this ROS adapter.
+#include "PX4CTRL_Core_CFunction_Sysblock_private.h"
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY)
 #include "G9_Family_CFunction_Sysblock_private.h"
 #elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G10_BDE_FAMILY)
 #include "G10_BDE_Family_CFunction_Sysblock_StateIso_private.h"
@@ -408,6 +414,7 @@ double LinearControl::fromQuaternion2yaw(Eigen::Quaterniond q)
 
 LinearControl::LinearControl(Parameter_t &param) : param_(param),
                                                    use_mosim_generated_core_(false),
+                                                   use_graphical_c99_core_(false),
                                                    use_official_pid_core_(false),
                                                    use_se3_basic_core_(false),
                                                    use_dfbc_basic_core_(false),
@@ -432,6 +439,7 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
   use_mosim_generated_core_ = (core_mode == "mworks_generated" ||
                                core_mode == "generated_c" ||
                                core_mode == "mworks_generated_c");
+  use_graphical_c99_core_ = (core_mode == "graphical_c99");
   use_official_pid_core_ = (core_mode == "official_pid");
   use_se3_basic_core_ = (core_mode == "se3_basic");
   use_dfbc_basic_core_ = (core_mode == "dfbc_basic");
@@ -521,7 +529,19 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
       static_cast<double>(generated_family_controller_id_),
       static_cast<double>(kG9OfficialPid),
       static_cast<double>(max_generated_family_controller_id)));
-#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY)
+#if defined(MOSIM_PX4CTRL_GENERATED_BACKEND_GRAPHICAL_PX4CTRL_C99)
+  if (use_graphical_c99_core_)
+  {
+    ROS_INFO_STREAM("[mosim_generated_runtime] backend=mworks_graphical_c99"
+                    << " build_backend=graphical_px4ctrl_c99"
+                    << " build_backend_definition=MOSIM_PX4CTRL_GENERATED_BACKEND_GRAPHICAL_PX4CTRL_C99"
+                    << " generated_model_name=PX4CTRL_Original_OuterLoop_Graphical_Sysblock"
+                    << " runtime_loaded_symbol=MosimPx4ctrlGeneratedGraphStepScalar"
+                    << " controller_id=px4ctrl_graphical_c99"
+                    << " output_interface=ATTITUDE_THRUST"
+                    << " thrust_mapping=runtime_hover_percentage");
+  }
+#elif defined(MOSIM_PX4CTRL_GENERATED_BACKEND_G9_FAMILY)
   use_mosim_generated_core_ = use_mosim_generated_core_ ||
                                use_official_pid_core_ ||
                                use_se3_basic_core_ ||
@@ -849,6 +869,7 @@ LinearControl::LinearControl(Parameter_t &param) : param_(param),
 #endif
   ROS_INFO_STREAM("[px4ctrl] mosim_generated_core_mode=" << core_mode
                   << " use_mosim_generated_core=" << (use_mosim_generated_core_ ? "true" : "false")
+                  << " use_graphical_c99_core=" << (use_graphical_c99_core_ ? "true" : "false")
                   << " generated_family_controller_id=" << generated_family_controller_id_
                   << " use_official_pid_core=" << (use_official_pid_core_ ? "true" : "false")
                   << " use_se3_basic_core=" << (use_se3_basic_core_ ? "true" : "false")
@@ -873,6 +894,10 @@ LinearControl::calculateControl(const Desired_State_t &des,
     const Imu_Data_t &imu, 
     Controller_Output_t &u)
 {
+  if (use_graphical_c99_core_)
+  {
+    return calculateGraphicalC99Control(des, odom, imu, u);
+  }
   if (use_mosim_generated_core_)
   {
     return calculateGeneratedCoreControl(des, odom, imu, u);
@@ -945,6 +970,21 @@ LinearControl::calculateOriginalControl(const Desired_State_t &des,
       des_acc = des.a + Kv.asDiagonal() * (des.v - odom.v) + Kp.asDiagonal() * (des.p - odom.p);
       des_acc += Eigen::Vector3d(0,0,param_.gra);
 
+      // The original outer loop expresses lateral acceleration as a small-angle
+      // roll/pitch command below. Bound that command with the configured
+      // max_angle before publishing an unrecoverable attitude request.
+      if (param_.max_angle > 0.0)
+      {
+        const double horizontal_acceleration = std::hypot(des_acc(0), des_acc(1));
+        const double max_horizontal_acceleration = param_.gra * param_.max_angle;
+        if (horizontal_acceleration > max_horizontal_acceleration)
+        {
+          const double scale = max_horizontal_acceleration / horizontal_acceleration;
+          des_acc(0) *= scale;
+          des_acc(1) *= scale;
+        }
+      }
+
       u.thrust = computeDesiredCollectiveThrustSignal(des_acc);
       double roll,pitch,yaw,yaw_imu;
       double yaw_odom = fromQuaternion2yaw(odom.q);
@@ -995,10 +1035,95 @@ LinearControl::calculateOriginalControl(const Desired_State_t &des,
   return debug_msg_;
 }
 
+quadrotor_msgs::Px4ctrlDebug
+LinearControl::calculateGraphicalC99Control(const Desired_State_t &des,
+    const Odom_Data_t &odom,
+    const Imu_Data_t &imu,
+    Controller_Output_t &u)
+{
+#if !defined(MOSIM_PX4CTRL_GENERATED_BACKEND_GRAPHICAL_PX4CTRL_C99)
+  ROS_ERROR_THROTTLE(1.0,
+      "graphical_c99 was selected, but px4ctrl was not built with graphical_px4ctrl_c99");
+  return calculateOriginalControl(des, odom, imu, u);
+#else
+  double desired_acc_x = 0.0;
+  double desired_acc_y = 0.0;
+  double desired_acc_z = 0.0;
+  double roll_cmd = 0.0;
+  double pitch_cmd = 0.0;
+  double yaw_cmd = 0.0;
+  double collective_thrust_n = 0.0;
+  double generated_normalized_thrust = 0.0;
+
+  MosimPx4ctrlGeneratedGraphStepScalar(
+      des.p(0), odom.p(0), des.v(0), odom.v(0), des.a(0),
+      des.p(1), odom.p(1), des.v(1), odom.v(1), des.a(1),
+      des.p(2), odom.p(2), des.v(2), odom.v(2), des.a(2),
+      fromQuaternion2yaw(odom.q), des.yaw,
+      &desired_acc_x, &desired_acc_y, &desired_acc_z,
+      &roll_cmd, &pitch_cmd, &yaw_cmd,
+      &collective_thrust_n, &generated_normalized_thrust);
+
+  if (!std::isfinite(desired_acc_x) || !std::isfinite(desired_acc_y) ||
+      !std::isfinite(desired_acc_z) || !std::isfinite(roll_cmd) ||
+      !std::isfinite(pitch_cmd) || !std::isfinite(yaw_cmd) ||
+      !std::isfinite(collective_thrust_n) ||
+      !std::isfinite(generated_normalized_thrust))
+  {
+    ROS_ERROR_THROTTLE(1.0,
+        "MWORKS graphical px4ctrl C99 returned a non-finite output; using the original adapter for this cycle");
+    return calculateOriginalControl(des, odom, imu, u);
+  }
+
+  if (param_.max_angle > 0.0)
+  {
+    const double generated_tilt = std::hypot(roll_cmd, pitch_cmd);
+    if (generated_tilt > param_.max_angle)
+    {
+      const double scale = param_.max_angle / generated_tilt;
+      roll_cmd *= scale;
+      pitch_cmd *= scale;
+    }
+  }
+
+  const Eigen::Vector3d generated_des_acc(
+      desired_acc_x, desired_acc_y, desired_acc_z);
+  // The graphical model's 0.37 is a frozen model output.  Runtime throttle
+  // remains calibrated through the current Gazebo hover map (0.456), so only
+  // its physical desired acceleration is passed into the MAVROS adapter.
+  u.thrust = computeDesiredCollectiveThrustSignal(generated_des_acc);
+  const Eigen::Quaterniond q =
+      Eigen::AngleAxisd(yaw_cmd, Eigen::Vector3d::UnitZ()) *
+      Eigen::AngleAxisd(pitch_cmd, Eigen::Vector3d::UnitY()) *
+      Eigen::AngleAxisd(roll_cmd, Eigen::Vector3d::UnitX());
+  u.q = (imu.q * odom.q.inverse() * q).normalized();
+  u.bodyrates = bodyrateAttitudeFeedback(u.q, imu.q, Eigen::Vector3d::Zero());
+
+  debug_msg_.des_v_x = des.v(0);
+  debug_msg_.des_v_y = des.v(1);
+  debug_msg_.des_v_z = des.v(2);
+  debug_msg_.des_a_x = generated_des_acc(0);
+  debug_msg_.des_a_y = generated_des_acc(1);
+  debug_msg_.des_a_z = generated_des_acc(2);
+  debug_msg_.des_q_x = u.q.x();
+  debug_msg_.des_q_y = u.q.y();
+  debug_msg_.des_q_z = u.q.z();
+  debug_msg_.des_q_w = u.q.w();
+  debug_msg_.des_thr = u.thrust;
+
+  timed_thrust_.push(std::pair<ros::Time, double>(ros::Time::now(), u.thrust));
+  while (timed_thrust_.size() > 100)
+  {
+    timed_thrust_.pop();
+  }
+  return debug_msg_;
+#endif
+}
+
 bool
 LinearControl::usingGeneratedCore(void) const
 {
-  return use_mosim_generated_core_;
+  return use_mosim_generated_core_ || use_graphical_c99_core_;
 }
 
 bool

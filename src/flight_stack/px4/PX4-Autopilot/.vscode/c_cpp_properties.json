@@ -11,7 +11,7 @@
             "cppStandard": "c++14",
             "cStandard": "c11",
             "forcedInclude": [
-                 "/mnt/c/Users/HP/Desktop/MoSim/build/px4/px4_sitl_clean_probe/px4_boardconfig.h",
+                 "/mnt/c/Users/HP/Desktop/MoSim/build/px4/px4_sitl_default/px4_boardconfig.h",
                  "/mnt/c/Users/HP/Desktop/MoSim/src/flight_stack/px4/PX4-Autopilot/platforms/common/include/px4_platform_common/defines.h"
                  ]
         }
