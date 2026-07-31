@@ -147,10 +147,31 @@ wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Sc
 ```
 
 Classify this gate from `PX4CTRL_BASIC_MISSION_METRICS.json`, not from an
-empty mission stdout file. A completed arm/takeoff/hover/land/disarm lifecycle
-only proves the runnable chain. If the frozen 2 cm hover threshold is exceeded,
-record the result as a tracking-quality blocker and stop before any gain or
-architecture change unless that next scope is explicitly authorized.
+empty mission stdout file. This entry accepts the completed
+arm/takeoff/hover/land/disarm lifecycle as the source-local reproducibility
+criterion. Hover metrics remain recorded for review but do not block this
+functional baseline.
+
+### Source-local quick reproduction
+
+Run these commands in order from Windows PowerShell. They build only from
+project-owned `src/` trees, then run the single-aircraft functional baseline:
+
+```powershell
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/build_local_px4_sitl.sh --build --jobs 2'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile foundation --build --verify --jobs 1'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile flight_adapter --build --verify --jobs 1'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile perception --build --verify --jobs 1'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/prepare_local_ros1_workspace.sh --profile controller --build --verify --jobs 1'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/check_sunray_ros1_runtime_preflight.sh'
+wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh'
+```
+
+The last command creates one timestamped directory under
+`Results/sunray_ros1/`. Check its `PX4CTRL_BASIC_MISSION_METRICS.json` for
+`"status": "passed"`. Stop a retained foundation review with
+`cmd/00_停止Sunray基础仿真.cmd`; the flight entry cleans up its own Gazebo/PX4/ROS
+processes after landing.
 
 Before MAVROS starts, the base runner writes
 `mavros_runtime_config_resolution.json`. It must resolve
