@@ -298,9 +298,9 @@ model ThreeUavOpenBlocksReconfigurableFormationPx4CtrlEcbfSafety
     projection_passes = 2)
     annotation(Placement(transformation(origin = {-2, 0}, extent = {{-20, -60}, {20, 60}})));
   ThreeUavPairwiseEcbfReferenceSmoother safetySmoother(
-    position_time_constant_s = 0.20,
-    velocity_time_constant_s = 0.12,
-    acceleration_time_constant_s = 0.12)
+    correction_time_constant_s = 0.20,
+    correction_damping_ratio = 1.0,
+    maximum_correction_acceleration_m_s2 = 1.5)
     annotation(Placement(transformation(origin = {26, -102}, extent = {{-18, -18}, {18, 18}})));
 
   OpenBlocksPx4CtrlVehicle vehicle1(initial_position = {-41, -26, 1.5})
@@ -379,14 +379,8 @@ equation
   connect(velocityEstimator3.y, safetyFilter.actual_velocity_3) annotation(Line(points = {{49, -68}, {58, -68}, {58, -50.4}, {-26, -50.4}}, color = {0, 0, 127}));
 
   connect(safetyFilter.safe_position_1, safetySmoother.raw_safe_position_1);
-  connect(safetyFilter.safe_velocity_1, safetySmoother.raw_safe_velocity_1);
-  connect(safetyFilter.safe_acceleration_1, safetySmoother.raw_safe_acceleration_1);
   connect(safetyFilter.safe_position_2, safetySmoother.raw_safe_position_2);
-  connect(safetyFilter.safe_velocity_2, safetySmoother.raw_safe_velocity_2);
-  connect(safetyFilter.safe_acceleration_2, safetySmoother.raw_safe_acceleration_2);
   connect(safetyFilter.safe_position_3, safetySmoother.raw_safe_position_3);
-  connect(safetyFilter.safe_velocity_3, safetySmoother.raw_safe_velocity_3);
-  connect(safetyFilter.safe_acceleration_3, safetySmoother.raw_safe_acceleration_3);
 
   connect(safetySmoother.safe_position_1, vehicle1.position_reference);
   connect(safetySmoother.safe_velocity_1, vehicle1.velocity_reference);
