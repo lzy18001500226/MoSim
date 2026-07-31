@@ -433,8 +433,8 @@ const OFFLINE_PROFILES = Dict(
         return clamp(16 + 18 * wrapped_lines, min_height, max_height)
     end
 
-    # Position cards inside the proven content panel instead of relying on the
-    # native panel scroll range, which is inconsistent across MWORKS releases.
+    # Position root-level cards manually instead of relying on nested panel
+    # scrolling, which is inconsistent across MWORKS releases.
     function assistant_scroll_max_offset(content_height, viewport_height)
         return max(0, content_height - viewport_height)
     end
@@ -483,7 +483,7 @@ const OFFLINE_PROFILES = Dict(
 
     function create_assistant_message_bubble(app)
         panel = TyAppDesigner.uipanel(
-            app.AssistantChatPanel;
+            app.UIFigure;
             Title="",
             BackgroundColor=[1.0, 1.0, 1.0],
             BorderType="solid",
@@ -550,6 +550,8 @@ const OFFLINE_PROFILES = Dict(
 
         y = 10
         slot = 1
+        chat_x = app.AssistantChatPanel.Position[1]
+        chat_y = app.AssistantChatPanel.Position[2]
         for (index, entry) in enumerate(app.AssistantLines)
             class_name = app.assistant_message_class(entry)
             height = heights[index]
@@ -564,7 +566,7 @@ const OFFLINE_PROFILES = Dict(
             slot > length(panels) && break
             panel = panels[slot]
             label = labels[slot]
-            panel.Position = [left, visible_y, width, height]
+            panel.Position = [chat_x + left, chat_y + visible_y, width, height]
             label.Position = [12, 8, width - 24, height - 16]
             label.Text = app.assistant_message_text_for_display(entry)
             panel.BackgroundColor = class_name == "user" ? [0.89, 0.95, 0.95] :
