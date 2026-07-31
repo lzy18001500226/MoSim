@@ -4,6 +4,7 @@ param(
     [string]$QtDir = "",
     [string]$NinjaPath = "",
     [string]$GStreamerDir = "",
+    [string]$BuildRoot = "",
     [ValidateSet("Debug", "Release")]
     [string]$Configuration = "Release",
     [switch]$ConfigureOnly,
@@ -14,7 +15,17 @@ $ErrorActionPreference = "Stop"
 $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
 $QgcRoot = Join-Path $ProjectRoot "src/ground_station/qgc/qgroundcontrol"
 $QgcManifest = Join-Path $ProjectRoot "src/ground_station/qgc/qgroundcontrol.SHA256SUMS"
-$BuildRoot = Join-Path $ProjectRoot "build/flight-console-qgc"
+$DefaultBuildRoot = Join-Path $ProjectRoot "build/flight-console-qgc"
+if (-not $BuildRoot) {
+    $BuildRoot = $DefaultBuildRoot
+} elseif (-not [IO.Path]::IsPathRooted($BuildRoot)) {
+    $BuildRoot = Join-Path $ProjectRoot $BuildRoot
+}
+$BuildRoot = [IO.Path]::GetFullPath($BuildRoot)
+$ProjectBuildRoot = [IO.Path]::GetFullPath((Join-Path $ProjectRoot "build"))
+if (-not $BuildRoot.StartsWith($ProjectBuildRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
+    throw "QGC build root must remain under $ProjectBuildRoot"
+}
 $Preflight = Join-Path $ProjectRoot "Results/ui_platform/flight_console_windows_toolchain_preflight.json"
 if (-not $ToolRoot) { $ToolRoot = Join-Path $ProjectRoot ".tools/flight-console" }
 
