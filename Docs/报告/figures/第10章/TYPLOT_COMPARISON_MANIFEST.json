@@ -1,0 +1,80 @@
+{
+  "control_energy_baseline_legacy": {
+    "controller_id": "official_pid",
+    "value": 838825.6055603315
+  },
+  "accepted_controller_count": 28,
+  "figure_count_written": 33,
+  "count_definition_authority": "Config/control_platform/climbpath_baseline_count_definition.json",
+  "status_matrix_removed_20260731": {
+    "resolution": "整体删除，三态计数（28/10/10）改由正文文字叙述；报告需同步删除对 controller_status_matrix.png 的引用",
+    "rejected_encodings": [
+      "2/1/0 单列热图：连续色标为三态离散值造出 1.2/1.8 中间刻度，且单列无从横向比较",
+      "三色互斥堆叠横条：48 行在 14 in 高度下 y 标签竖向压字，x 轴全为 1.0 零信息量"
+    ]
+  },
+  "radar_normalization_change_20260731": {
+    "degenerate_rule": "单族或极差为 0 时该维退化为 0.5，明示无区分度而非误报满分",
+    "minmax_range": {
+      "position_rmse_m": {
+        "max": 2.162091102107092,
+        "min": 0.20497592464335546
+      },
+      "terminal_position_error_m": {
+        "max": 2.7120917380559404,
+        "min": 0.002682854466775294
+      },
+      "max_position_error_m": {
+        "max": 3.3460450901705006,
+        "min": 0.7003842008881261
+      },
+      "control_energy": {
+        "max": 974746.6088400864,
+        "min": 833906.5838703794
+      }
+    },
+    "legacy_limits": {
+      "position_rmse_m": 2.0,
+      "terminal_position_error_m": 5.0,
+      "max_position_error_m": 10.0
+    },
+    "to": "跨族 min-max：得分 =(max-v)/(max-min)，越小越好，最差族 0 / 最优族 1",
+    "from": "固定阈值 1 - v/limit（RMSE≤2, Terminal≤5, Max≤10, Energy 基准=official_pid 自身能量）",
+    "reason": "固定阈值下 Control Energy 是死轴 —— 基准取 official_pid 自身能量时七族得分极差仅 0.006，肉眼不可分；min-max 后极差 0.362。"
+  },
+  "failures": [],
+  "generator": "Scripts/syslab/plot_chapter10_comparison_typlot.jl",
+  "replaces_handwritten_svg": [
+    "Scripts/syslab/compare_controllers.jl",
+    "Scripts/syslab/generate_radar_chart.py",
+    "Scripts/syslab/generate_status_matrix.py",
+    "Scripts/syslab/generate_heatmap.py"
+  ],
+  "g3_frozen_entry_count": 48,
+  "resolution": 600,
+  "family_breakdown": {
+    "geometric": 6,
+    "sliding": 5,
+    "pid": 2,
+    "linear": 4,
+    "nonlinear": 5,
+    "optimal": 5,
+    "baseline": 1,
+    "learning": 0
+  },
+  "schema": "mosim.typlot_chapter10_comparison.v1",
+  "engine": "Syslab TyPlot",
+  "radar_dimension_change_20260731": {
+    "reason": "无实测数据，原口径恒取 1.0，八族全同，不构成区分度；五维降为四维。",
+    "removed_dimension": "Compute Efficiency",
+    "dims_now": [
+      "Position RMSE",
+      "Terminal Error",
+      "Control Energy",
+      "Max Error"
+    ]
+  },
+  "figure_count_expected": 33,
+  "rmse_heatmap_removed_20260731": "单列 N×1 热图与 controller_ranking_rmse.png 同为 28 条 RMSE 排序，后者可直读数值、比长短，前者仅凭颜色估大小；属重复，删除。",
+  "status_matrix_scope_note": "原 controller_status_matrix.svg 为 28 条全 accepted 的文本表格（status 列恒等，作图无信息量）；TyPlot 版改为 G3 全 48 条状态矩阵（28 accepted / 20 executed-blocked）。"
+}
