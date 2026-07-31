@@ -80,7 +80,10 @@ function start_agent_service(appfile)
     root = project_root(appfile)
     script = server_script(root)
     runtime_log(appfile, "service_start_requested", script)
-    isfile(script) || return (ok=false, configured=false, detail="助手服务脚本不存在")
+    if !isfile(script)
+        runtime_log(appfile, "service_script_missing", script)
+        return (ok=false, configured=false, detail="助手服务脚本不存在")
+    end
     current = health(appfile)
     if current.ok
         runtime_log(appfile, "service_already_ready", current.detail)
@@ -92,7 +95,9 @@ function start_agent_service(appfile)
             wait=false,
         )
     catch error
-        return (ok=false, configured=false, detail="启动助手服务失败：" * sprint(showerror, error))
+        detail = "启动助手服务失败：" * sprint(showerror, error)
+        runtime_log(appfile, "service_start_error", detail)
+        return (ok=false, configured=false, detail=detail)
     end
     for _ in 1:20
         sleep(0.15)
