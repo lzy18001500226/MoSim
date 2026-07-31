@@ -1,0 +1,38 @@
+{
+  "radar_scores": {
+    "Control Energy": 0.0,
+    "Max Error": 0.0,
+    "Position RMSE": 0.05645144724506297,
+    "Terminal Error": 0.0
+  },
+  "family": "滑模族",
+  "controllers": [
+    "adaptive_smc",
+    "fuzzy_smc",
+    "integral_smc",
+    "nonsingular_terminal_smc",
+    "terminal_smc"
+  ],
+  "figures": [
+    "figures/climbpath_rmse_bar.png",
+    "figures/terminal_error_bar.png",
+    "figures/control_energy_bar.png",
+    "figures/climbpath_trajectory_overlay.png"
+  ],
+  "controller_count": 5,
+  "count_definition_authority": "Config/control_platform/climbpath_baseline_count_definition.json",
+  "family_label_en": "Sliding Mode",
+  "generator": "Scripts/syslab/plot_chapter10_comparison_typlot.jl",
+  "resolution": 600,
+  "family_slug": "sliding",
+  "schema": "mosim.typlot_controller_comparison.v1",
+  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv",
+  "engine": "Syslab TyPlot",
+  "family_median": {
+    "position_rmse_m": 2.0516091179139857,
+    "terminal_position_error_m": 2.7120917380559404,
+    "max_position_error_m": 3.3460450901705006,
+    "control_energy": 974746.6088400864
+  },
+  "metric_source": "Results/control_platform/phase2_full_48_climbpath/<controller>/metrics/metrics.csv（冻结值，未重算）"
+}
