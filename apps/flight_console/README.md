@@ -8,11 +8,11 @@ commands; it does not launch or supervise simulation processes.
 Directory ownership:
 
 ```text
-UPSTREAM.md                    frozen provenance and update policy
+UPSTREAM.md                    retained legacy-vendor provenance and update policy
 LICENSES/                      copied upstream license texts
-vendor/qgroundcontrol/         immutable QGC source baseline
+vendor/qgroundcontrol/         retained rollback QGC snapshot, not active build source
 vendor/qgroundcontrol.SHA256SUMS
-mosim/                         MoSim-owned UI and adapters
+mosim/                         retained rollback MoSim UI snapshot
 ```
 
 The current release exposes published one- and three-UAV Profiles. Unsupported
@@ -20,15 +20,17 @@ vehicle scales and controllers without a compatible published Profile remain
 visible but disabled. The active RunManifest locks the selected Profile.
 
 The Windows baseline requires Qt 6.8.3, Ninja, Visual Studio 2022 C++ Build
-Tools, a Windows SDK, and GStreamer 1.22.12. The current machine preflight is
-recorded in `Results/ui_platform/flight_console_windows_toolchain_preflight.json`.
+Tools, a Windows SDK, and GStreamer 1.22.12. The current canonical-source
+toolchain preflight is recorded in
+`Results/static_audits/local_source_activation_20260801/QGC_WINDOWS_TOOLCHAIN_PREFLIGHT.json`.
 
 ## MoSim custom build
 
-The project-owned QGroundControl custom build lives under:
+The active project-owned QGroundControl custom build lives under:
 
 ```text
-apps/flight_console/mosim/custom/
+src/ground_station/qgc/qgroundcontrol/
+src/ground_station/qgc/mosim_extension/custom/
 ```
 
 Materialize the generated overlay without editing upstream files:
@@ -50,11 +52,11 @@ Results/ui_platform/flight_console_d5_source_gate_20260717/GATE.json
 ```
 
 The source/contract gate is not a Windows executable gate. The current
-preflight is `status=ready`, and the 2026-07-28 Release build produced
-`build/flight-console-qgc/Release/MoSimGroundControl.exe`. This establishes
-that the current custom source compiles and links on this machine. It does not
-establish QGC, ROS, Gazebo, PX4, MAVROS, controller, planner, or flight-runtime
-success.
+canonical-source preflight is `status=ready`, and a 2026-08-01 canonical
+`-ConfigureOnly` run passed. Historical Release-build output from the retained
+legacy vendor tree is not evidence that the canonical snapshot has completed a
+full executable build. Neither result establishes QGC, ROS, Gazebo, PX4,
+MAVROS, controller, planner, or flight-runtime success.
 
 Run the read-only preflight at any time:
 
@@ -70,8 +72,8 @@ entrypoint:
 powershell -ExecutionPolicy Bypass -File Scripts/ui/build_flight_console.ps1
 ```
 
-The build entrypoint verifies the frozen upstream manifest and regenerates the
-custom overlay before CMake. It never installs system software.
+The build entrypoint verifies the canonical QGroundControl source manifest and
+regenerates the custom overlay before CMake. It never installs system software.
 
 To start only the QGC operation surface after a successful build, use the
 separate visible-terminal entrypoint:

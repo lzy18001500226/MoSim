@@ -10,14 +10,11 @@ six Livox scan-pattern CSV assets listed in `ASSET_MANIFEST.json`.
 asset manifest are migration metadata outside the 27-file source/configuration
 payload represented by the SHA-256 in `UPSTREAM.md`.
 
-Before this component can become `canonical_active`, a later task must:
+On 2026-08-01, the six manifest-listed Livox scan assets were materialized into
+this directory and SHA-256 verified. The source tree is now `canonical_active`
+for project-local source selection. The retained
+`References/Sunray/simulation/gazebo_plugin` directory was not modified.
 
-1. choose and publish a versioned Livox scan-asset delivery mechanism, then
-   verify it against `ASSET_MANIFEST.json`;
-2. recover or document upstream provenance and resolve the three unresolved
-   package licenses;
-3. audit the isolated Livox overlay, message dependency, and every current
-   script/Profile consumer;
-4. update only those audited consumers to the canonical path; and
-5. run the declared static and controlled ROS1 build/preflight checks while
-   keeping `References/Sunray/simulation/gazebo_plugin` intact as rollback.
+Remaining external-delivery boundaries are provenance/license review, portable
+distribution of Git-ignored assets, the optional vendor Livox driver feature,
+and separately authorized Gazebo/ROS/PX4 runtime validation.

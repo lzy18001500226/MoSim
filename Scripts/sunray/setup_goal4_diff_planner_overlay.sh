@@ -5,10 +5,10 @@ set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
-DIFF_SRC="${DIFF_SRC:-${PROJECT_ROOT}/References/Lab/planning_local/Diff-Planner/src}"
+DIFF_SRC="${DIFF_SRC:-${PROJECT_ROOT}/src/planning/diff_planner/src}"
 DIFF_WS="${DIFF_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/goal4_diff_planner_ws_px4msg}"
 PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws}"
-PX4CTRL_MSG_SRC="${PX4CTRL_MSG_SRC:-${PROJECT_ROOT}/References/Lab/planning_local/Fast-Drone-250/src/utils/quadrotor_msgs}"
+PX4CTRL_MSG_SRC="${PX4CTRL_MSG_SRC:-${PROJECT_ROOT}/src/integration/ros1_launch/quadrotor_msgs}"
 DIFF_MSG_SRC="${DIFF_MSG_SRC:-${DIFF_SRC}/Utils/quadrotor_msgs}"
 OVERLAY_MSG_SRC="${DIFF_WS}/generated_src/quadrotor_msgs_mosim_diff_overlay"
 LOG_PATH="${LOG_PATH:-${PROJECT_ROOT}/Results/sunray_ros1/goal4_diff_planner_overlay_build.log}"

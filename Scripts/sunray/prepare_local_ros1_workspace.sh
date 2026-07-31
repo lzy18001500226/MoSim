@@ -25,7 +25,7 @@ does not start ROS/Gazebo/PX4, and does not use References, Results, or an old
 WSL workspace as a source input.
 
 Options:
-  --profile <foundation|flight_adapter|perception|controller>
+  --profile <foundation|flight_adapter|perception|controller|mission_adapter|fuel|falcon|racer|diff_planner|ego_planner_swarm|fixed_formation>
   --workspace <project-relative build/ros1 path>
   --build                 Run the profile's visible catkin_make command.
   --verify                Source the generated workspace and prove each profile

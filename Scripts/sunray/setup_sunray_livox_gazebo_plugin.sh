@@ -4,12 +4,12 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
-SUNRAY_WS="${SUNRAY_WS:-${PROJECT_ROOT}/References/Sunray}"
+SUNRAY_SOURCE_ROOT="${SUNRAY_SOURCE_ROOT:-${PROJECT_ROOT}/src/simulation/gazebo}"
 LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
 LOG_PATH="${LOG_PATH:-${PROJECT_ROOT}/Results/sunray_ros1/sunray_livox_plugin_build.log}"
 PATCH_STAMP="${LIVOX_PLUGIN_WS}/.mosim_multiuav_livox_patch_v1"
 
-SRC_PKG="${SUNRAY_WS}/simulation/gazebo_plugin/livox_laser_simulation"
+SRC_PKG="${SUNRAY_SOURCE_ROOT}/plugins/sunray/livox_laser_simulation"
 DST_PKG="${LIVOX_PLUGIN_WS}/src/livox_laser_simulation"
 
 if [[ ! -d "${SRC_PKG}" ]]; then
@@ -132,7 +132,7 @@ sed -i 's/target_link_libraries(livox_laser_simulation libprotobuf.so.9)/target_
 
 {
   echo "LIVOX_PLUGIN_WS=${LIVOX_PLUGIN_WS}"
-  echo "SUNRAY_WS=${SUNRAY_WS}"
+  echo "SUNRAY_SOURCE_ROOT=${SUNRAY_SOURCE_ROOT}"
   echo "SRC_PKG=${SRC_PKG}"
   echo "DST_PKG=${DST_PKG}"
   export PATH=/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib

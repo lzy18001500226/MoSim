@@ -24,9 +24,9 @@
       ]
     },
     "planner_adapter.launch": {
-      "purpose": "Deferred legacy planner adapter reference; not a source-local runtime entry",
+      "purpose": "Source-local planner-to-Sunray position-command adapter",
       "required_paths": [
-        "References/Sunray/General_Module/sunray_planner_utils/launch/positionCmd2sunray.launch"
+        "src/integration/ros1_launch/sunray_planner_utils/launch/positionCmd2sunray.launch"
       ]
     },
     "trajectory_server.launch": {

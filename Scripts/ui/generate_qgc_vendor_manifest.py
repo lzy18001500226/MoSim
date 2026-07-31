@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate or verify the immutable QGroundControl vendor SHA256 manifest."""
+"""Generate or verify the canonical QGroundControl source SHA256 manifest."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_VENDOR = PROJECT_ROOT / "apps" / "flight_console" / "vendor" / "qgroundcontrol"
+DEFAULT_VENDOR = PROJECT_ROOT / "src" / "ground_station" / "qgc" / "qgroundcontrol"
 DEFAULT_MANIFEST = DEFAULT_VENDOR.parent / "qgroundcontrol.SHA256SUMS"
 MAIN_WINDOW = Path("src/UI/MainWindow.qml")
 MOSIM_MAIN_WINDOW_PATCH = (
@@ -67,12 +67,12 @@ def main() -> int:
         if args.manifest.read_text(encoding="utf-8") != expected:
             print(f"vendor manifest mismatch: {args.manifest}")
             return 1
-        print(f"vendor manifest verified: {len(expected.splitlines())} files")
+        print(f"QGroundControl source manifest verified: {len(expected.splitlines())} files")
         return 0
 
     args.manifest.parent.mkdir(parents=True, exist_ok=True)
     args.manifest.write_text(expected, encoding="utf-8", newline="\n")
-    print(f"vendor manifest written: {len(expected.splitlines())} files")
+    print(f"QGroundControl source manifest written: {len(expected.splitlines())} files")
     return 0
 
 

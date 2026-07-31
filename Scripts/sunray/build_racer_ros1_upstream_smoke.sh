@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
-RACER_ROOT="${RACER_ROOT:-${PROJECT_ROOT}/References/Lab/exploration_coverage/RACER}"
+RACER_ROOT="${RACER_ROOT:-${PROJECT_ROOT}/src/planning/racer}"
 RACER_DEPS_ROOT="${RACER_DEPS_ROOT:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/fuel_deps}"
 NLOPT_VERSION="${NLOPT_VERSION:-v2.7.1}"
 NLOPT_ROOT="${NLOPT_ROOT:-${RACER_DEPS_ROOT}/install/nlopt-${NLOPT_VERSION}}"

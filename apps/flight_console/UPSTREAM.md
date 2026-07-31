@@ -23,13 +23,17 @@ The release contains one Git submodule:
 
 ## Product boundary
 
-`vendor/qgroundcontrol/` is the immutable upstream baseline. MoSim-owned code
-belongs in `mosim/` and in a generated `vendor/qgroundcontrol/custom/` overlay
-that follows QGroundControl's supported custom-build contract. Do not make
-ad-hoc edits in upstream source files.
+`vendor/qgroundcontrol/` is the retained immutable rollback baseline.
+Canonical source selection uses `src/ground_station/qgc/qgroundcontrol`, while
+MoSim-owned code lives in `src/ground_station/qgc/mosim_extension` and is
+materialized as `src/ground_station/qgc/qgroundcontrol/custom`. Do not make
+ad-hoc edits in the imported QGroundControl source snapshot.
 
-The full file digest is stored in `vendor/qgroundcontrol.SHA256SUMS`. Run
-`Scripts/ui/generate_qgc_vendor_manifest.py` to verify or regenerate it.
+The legacy digest is stored in `vendor/qgroundcontrol.SHA256SUMS`; the active
+canonical-source digest is
+`src/ground_station/qgc/qgroundcontrol.SHA256SUMS`. Run
+`Scripts/ui/generate_qgc_vendor_manifest.py` to verify or regenerate the
+canonical digest.
 
 ## Update procedure
 

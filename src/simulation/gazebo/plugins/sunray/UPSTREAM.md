@@ -24,11 +24,13 @@
 - External runtime assets: 6 files, 156,521,030 bytes, tree SHA-256
   `acd4ff7500c83d1f6b6e02192faafaffc7f43960b787c2aa81b849ecb79f7593`.
   Their per-file paths and hashes are frozen in `ASSET_MANIFEST.json`.
-- Build-layout constraint: current scripts copy the legacy
-  `livox_laser_simulation` package into an isolated Catkin overlay. This copy
-  is not independently activatable until that overlay, its Livox message
-  dependency, and all plugin consumers are audited.
+- Source selection: the registry state is `canonical_active`. The project-local
+  foundation profile links this source tree from `src/`; the retained source is
+  not an active code input.
+- Asset state: all six manifest-listed scan assets were materialized and
+  verified on 2026-08-01. They remain Git-ignored and must be included in a
+  release asset pack or final archive.
 
-The registry state is `copied_pending_activation`. The legacy source remains
-the only active runtime path until asset delivery, provenance/license review,
-path activation, and controlled ROS1 validation are completed.
+Provenance/license review, the optional vendor Livox driver feature, and
+controlled ROS1/Gazebo runtime validation remain separate, unproven delivery
+gates.

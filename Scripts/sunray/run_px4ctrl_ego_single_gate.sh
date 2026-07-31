@@ -838,8 +838,8 @@ PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}"
 PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}"
 PX4CTRL_EXTRA_PARAM_OVERRIDES="${PX4CTRL_EXTRA_PARAM_OVERRIDES:-}"
 FASTLIO_WS="${FASTLIO_WS:-/opt/mosim_work/sunray_ws/fastlio_ws}"
-FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/FAST_LIO}"
-LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC:-${PROJECT_ROOT}/References/Lab/localization_slam/livox_ros_driver_compat}"
+FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/src/perception/fast_lio}"
+LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC:-${PROJECT_ROOT}/src/perception/livox_ros_driver_compat}"
 FASTLIO_MODE="${FASTLIO_MODE:-livox_custom}"
 FASTLIO_SCAN_RATE_HZ="${FASTLIO_SCAN_RATE_HZ:-20.0}"
 FASTLIO_CUSTOM_POINT_TIME_MODE="${FASTLIO_CUSTOM_POINT_TIME_MODE:-instantaneous}"
@@ -1397,7 +1397,7 @@ PY
 }
 
 sync_mavros_plugin_config() {
-  local source_config="${PROJECT_ROOT}/References/Sunray/simulation/sunray_simulator/config/px4_pluginlists.yaml"
+  local source_config="${MAVROS_PLUGIN_CONFIG_SOURCE:-${PROJECT_ROOT}/src/simulation/gazebo/sunray/config/px4_pluginlists.yaml}"
   local runtime_config="${SUNRAY_WS}/simulation/sunray_simulator/config/px4_pluginlists.yaml"
   if [[ ! -f "${source_config}" || ! -d "$(dirname "${runtime_config}")" ]]; then
     echo "MAVROS plugin config sync inputs missing: ${source_config} -> ${runtime_config}" >&2

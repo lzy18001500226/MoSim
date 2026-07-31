@@ -15,25 +15,46 @@ find_package(catkin REQUIRED COMPONENTS
   pcl_ros
   laser_geometry
   tf2_eigen
-  livox_ros_driver2
 )
 
-# 判断是否有livox_ros_driver2包，如果有则添加
-foreach(pkg livox_ros_driver2)
-  if(NOT ${pkg}_FOUND)
-    message(STATUS "Required ROS package ${pkg} not found")
-  else() 
-    message(STATUS "Found livox_ros_driver2")
-    find_package(livox_ros_driver2)
-  endif()
-endforeach()
+# The Livox conversion executable is an optional integration feature.  Keep
+# the position-command adapters buildable in a base ROS1 workspace that does
+# not contain the vendor-specific livox_ros_driver2 package.
+find_package(livox_ros_driver2 QUIET)
+if(livox_ros_driver2_FOUND)
+  message(STATUS "Found optional livox_ros_driver2")
+else()
+  message(STATUS "Optional livox_ros_driver2 not found; skipping livox2Point")
+endif()
 
 ## System dependencies are found with CMake's conventions
 find_package(Boost REQUIRED COMPONENTS system)
 
+set(SUNRAY_COMMON_LIB_DIR
+  "${CMAKE_SOURCE_DIR}/General_Module/sunray_common/common_lib"
+  CACHE PATH "Path to the Sunray shared ROS1 headers"
+)
+if(NOT EXISTS "${SUNRAY_COMMON_LIB_DIR}/ros_msg_utils.h")
+  message(FATAL_ERROR "SUNRAY_COMMON_LIB_DIR must contain ros_msg_utils.h: ${SUNRAY_COMMON_LIB_DIR}")
+endif()
+
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS message_runtime laser_geometry roscpp std_msgs tf
+  CATKIN_DEPENDS
+    message_runtime
+    gazebo_dev
+    gazebo_msgs
+    gazebo_ros
+    roscpp
+    geometry_msgs
+    sensor_msgs
+    std_msgs
+    sunray_msgs
+    pcl_conversions
+    pcl_ros
+    laser_geometry
+    tf
+    tf2_eigen
 )
 
 # include_directories(
@@ -44,7 +65,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${PROJECT_SOURCE_DIR}/../sunray_common/common_lib
+  ${SUNRAY_COMMON_LIB_DIR}
 )
 ###############################
 ##      声明可执行cpp文件     ##
@@ -71,13 +92,11 @@ add_executable(goal2swarm src/goal2swarm.cpp)
 add_dependencies(goal2swarm ${catkin_EXPORTED_TARGETS})
 target_link_libraries(goal2swarm ${catkin_LIBRARIES} yaml-cpp)
 
-foreach(pkg livox_ros_driver2)
-  if(${pkg}_FOUND)
-    add_executable(livox2Point src/livox2Point.cpp)
-    add_dependencies(livox2Point ${catkin_EXPORTED_TARGETS})
-    target_link_libraries(livox2Point ${catkin_LIBRARIES})
-  endif()
-endforeach()
+if(livox_ros_driver2_FOUND)
+  add_executable(livox2Point src/livox2Point.cpp)
+  add_dependencies(livox2Point ${catkin_EXPORTED_TARGETS})
+  target_link_libraries(livox2Point ${catkin_LIBRARIES})
+endif()
 
 ## Mark cpp header files for installation
 install(DIRECTORY include/${PROJECT_NAME}/

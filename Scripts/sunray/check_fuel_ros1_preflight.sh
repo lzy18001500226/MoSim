@@ -2,7 +2,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
-FUEL_ROOT="${FUEL_ROOT:-${PROJECT_ROOT}/References/Lab/exploration_coverage/FUEL}"
+FUEL_ROOT="${FUEL_ROOT:-${PROJECT_ROOT}/src/planning/fuel}"
 STRICT_BUILD=0
 
 fail() {

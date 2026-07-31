@@ -14,27 +14,26 @@ task must extract and review it as an explicit patch against a known upstream
 QGroundControl revision.
 
 The following legacy directory is intentionally not part of this upstream
-snapshot because `apps/flight_console/mosim/README.md` defines it as generated
-output of the MoSim custom-build source:
+snapshot because it is the retained rollback output of the MoSim custom-build
+source:
 
 ```text
 apps/flight_console/vendor/qgroundcontrol/custom/
 ```
 
 Its authoritative source, including current QML/C++ changes and Factory map
-assets, is copied separately to `src/ground_station/qgc/mosim_extension`.
+assets, is copied separately to `src/ground_station/qgc/mosim_extension`; the
+active generated overlay is materialized under this canonical QGC source tree.
 `android/.gradle/` is also excluded as Gradle cache. Neither exclusion modifies
 or removes the retained legacy directory.
 
-Before this component can become `canonical_active`, the migration task must:
+On 2026-08-01, the QGC source was activated at
+`src/ground_station/qgc/qgroundcontrol`: the overlay materialization path,
+source manifest, build entrypoint, and version fallback were switched to the
+canonical snapshot. The source manifest and configure-only build preflight
+passed. `apps/flight_console/vendor/qgroundcontrol` remains unchanged as a
+rollback and provenance snapshot.
 
-1. recover or intentionally pin a QGroundControl upstream revision and record
-   the applicable Apache/GPL distribution terms;
-2. materialize the MoSim extension from its canonical source without editing
-   the upstream snapshot directly;
-3. replace the current Git-derived QGroundControl version behavior with an
-   explicit reproducible build-version contract;
-4. update only audited build and launcher references to the canonical paths;
-5. run the declared static path checks and controlled QGC build/preflight; and
-6. retain `apps/flight_console/vendor/qgroundcontrol` unchanged unless a later
-   user-approved archival task says otherwise.
+Remaining external-delivery boundaries are upstream revision recovery, license
+selection, full executable build on the target machine, and separately owned
+QGC/ROS/Gazebo runtime validation.
