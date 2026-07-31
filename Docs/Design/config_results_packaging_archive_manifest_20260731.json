@@ -1,0 +1,226 @@
+{
+  "schema_version": "1.0",
+  "manifest_id": "mosim_config_results_packaging_archive_20260731",
+  "review_date": "2026-07-31",
+  "scope": "non_destructive_config_results_packaging_audit",
+  "non_destructive": true,
+  "source_release": [
+    {
+      "id": "mworks_authoritative_config",
+      "action": "keep_in_source_release",
+      "owner": "mworks_controller_evidence",
+      "paths": [
+        "Config/control_platform",
+        "Config/profiles",
+        "Config/plant",
+        "Config/schemas",
+        "Config/codegen",
+        "Config/project_paths.json"
+      ],
+      "reason": "Current route, profile, plant, schema, code-generation, and root-discovery inputs.",
+      "preconditions": [
+        "Run this manifest validator.",
+        "Validate hashes from RELEASE_CHECKLIST.md when building the release."
+      ]
+    },
+    {
+      "id": "mworks_planning_formation_scenarios",
+      "action": "keep_in_source_release",
+      "owner": "mworks_controller_evidence",
+      "paths": [
+        "Config/scenarios/planning",
+        "Config/scenarios/formation"
+      ],
+      "reason": "Project-owned MWORKS planning and formation scenario definitions.",
+      "preconditions": [
+        "Bundle only with matching project-owned models and runners."
+      ]
+    }
+  ],
+  "evidence_bundles": [
+    {
+      "id": "current_mworks_delivery_evidence",
+      "action": "keep_in_evidence_bundle",
+      "owner": "mworks_controller_evidence",
+      "paths": [
+        "Results/control_platform/phase2_full_48_climbpath",
+        "Results/control_platform/seven_scenario_ab_v2",
+        "Results/control_platform/sensitivity_analysis_long_v1",
+        "Results/control_platform/sensitivity_wind_v1",
+        "Results/control_platform/px4ctrl_baseline_verification",
+        "Results/control_platform/px4ctrl_graphical_completion_20260728",
+        "Results/control_platform/px4ctrl_codegen_sil_v1",
+        "Results/control_platform/px4ctrl_three_uav_figure8_v1"
+      ],
+      "reason": "Paths named by the current release checklist, evidence ledger, or MWORKS delivery board.",
+      "preconditions": [
+        "Build a SHA-256 inventory before copying.",
+        "Preserve invalid and negative records alongside valid records."
+      ]
+    },
+    {
+      "id": "pending_mworks_review_evidence",
+      "action": "keep_in_evidence_bundle",
+      "owner": "mworks_controller_evidence",
+      "paths": [
+        "Results/control_platform/pid_awff_linear_eso_baseline_20260731",
+        "Results/control_platform/hinf_hover_wrench_repair_20260730",
+        "Results/control_platform/tier1_formal_promotion_20260731",
+        "Results/planning/three_uav_openblocks_px4ctrl_ecbf_safety_20260731"
+      ],
+      "reason": "Current or pending-review MWORKS evidence that must not be silently dropped from an internal package.",
+      "preconditions": [
+        "Mark claim scope and outcome status in the evidence index."
+      ]
+    },
+    {
+      "id": "immutable_negative_history",
+      "action": "retain_immutable_history",
+      "owner": "mworks_controller_evidence",
+      "paths": [
+        "Results/control_platform/seven_scenario_ab",
+        "Results/control_platform/champion_candidate_recovery_20260727",
+        "Results/control_platform/g1_formal_runner_checkmodel_20260728"
+      ],
+      "reason": "Historical trace-back and negative evidence remain necessary for honest reproduction and report boundaries.",
+      "preconditions": [
+        "Do not change source/result associations.",
+        "Keep outside a minimal release bundle unless the recipient requests full provenance."
+      ]
+    }
+  ],
+  "archive_candidates": [
+    {
+      "id": "legacy_example1_robustness_pair",
+      "action": "archive_candidate_after_dependency_audit",
+      "owner": "mworks_controller_evidence",
+      "paths": [
+        "Results/robustness",
+        "Config/controllers",
+        "Config/scenarios/robustness"
+      ],
+      "reason": "2026-05 Example1 process artifacts and paired compatibility configuration; not part of the current P0 evidence set.",
+      "preconditions": [
+        "Produce a per-file SHA-256 manifest.",
+        "Create a tombstone README/index at original paths.",
+        "Update or pin all remaining script and document references before moving."
+      ]
+    },
+    {
+      "id": "legacy_controller_control_platform_children",
+      "action": "child_manifest_required",
+      "owner": "mworks_controller_evidence",
+      "paths": [
+        "Results/control_platform"
+      ],
+      "reason": "This root mixes current release evidence with historical G/P/wave batches; it must never be moved as one directory.",
+      "preconditions": [
+        "Generate a child-level reference inventory.",
+        "Keep all paths named by this manifest and RELEASE_CHECKLIST.md."
+      ]
+    },
+    {
+      "id": "legacy_governance_config",
+      "action": "archive_candidate_after_dependency_audit",
+      "owner": "project_governance",
+      "paths": [
+        "Config/legacy",
+        "Config/protocol"
+      ],
+      "reason": "Legacy coordination and protocol inputs with remaining compatibility references.",
+      "preconditions": [
+        "Replace or pin the current capability, documentation, and test references."
+      ]
+    },
+    {
+      "id": "local_tool_state",
+      "action": "exclude_from_source_release",
+      "owner": "local_tooling",
+      "paths": [
+        "Results/tmp",
+        "Results/cache",
+        "Results/agent_packets",
+        "Results/agent_runtime",
+        "Results/context_packs",
+        "Results/browser_captures",
+        "Results/mworks_background_capture",
+        "Results/mworks_foreground_capture",
+        "Results/mworks_gui_incidents",
+        "Results/mworks_gui_sentinel"
+      ],
+      "reason": "Ignored local transport, capture, and transient state; exclusion from a source archive is not deletion authorization.",
+      "preconditions": [
+        "Check for active-task or result-index references.",
+        "Retain hash-bound screenshots cited by durable evidence."
+      ]
+    },
+    {
+      "id": "quarantine_download_research_state",
+      "action": "archive_candidate_after_dependency_audit",
+      "owner": "project_governance",
+      "paths": [
+        "Results/_quarantine",
+        "Results/_scratch_stage_contract_probe",
+        "Results/external_downloads",
+        "Results/external_learning",
+        "Results/paper_text_extracts"
+      ],
+      "reason": "Intake, probe, and research material outside the current release evidence set.",
+      "preconditions": [
+        "Check provenance, license, and downstream references before any archive operation."
+      ]
+    }
+  ],
+  "owner_locked": [
+    {
+      "id": "runtime_ui_config",
+      "action": "owner_locked",
+      "owner": "separate_qgc_gazebo_runtime_conversation",
+      "paths": [
+        "Config/gazebo",
+        "Config/runtime",
+        "Config/ros2",
+        "Config/rviz",
+        "Config/rviz2",
+        "Config/planners",
+        "Config/scenarios/system",
+        "Config/scenarios/ui"
+      ],
+      "reason": "Separate runtime, visualization, and planner ownership boundary.",
+      "preconditions": [
+        "Require owner approval for any joint release, archive, or pruning task."
+      ]
+    },
+    {
+      "id": "runtime_ui_results",
+      "action": "owner_locked",
+      "owner": "separate_qgc_gazebo_runtime_conversation",
+      "paths": [
+        "Results/sunray_ros1",
+        "Results/gazebo_review",
+        "Results/gazebo_ros2",
+        "Results/gazebo_visual_review",
+        "Results/px4_gazebo",
+        "Results/ros2_build",
+        "Results/ros2_runtime",
+        "Results/ue_build",
+        "Results/ue_replay_input",
+        "Results/ui",
+        "Results/ui_platform",
+        "Results/unreal_scene_mapping",
+        "Results/unreal_scene_review",
+        "Results/runs"
+      ],
+      "reason": "Live runtime and UI evidence outside this thread's authority.",
+      "preconditions": [
+        "Require owner approval and a runtime-specific evidence retention decision."
+      ]
+    }
+  ],
+  "explicitly_not_authorized": [
+    "Delete or move any existing Config or Results path.",
+    "Archive the Results/control_platform root as a whole.",
+    "Prune owner-locked runtime or UI paths.",
+    "Treat exclusion from the source package as proof that evidence is disposable."
+  ]
+}

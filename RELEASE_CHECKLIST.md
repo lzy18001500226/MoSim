@@ -248,3 +248,21 @@ px4ctrl C 源、构建文件与共享库证据的完整哈希清单位于
 4. 固定三角队形 Figure8 仅为离线参考接入，未证明在线自主避障或可重构编队。
 5. px4ctrl 已完成 MWORKS 图形模型到生成 C、共享库和 50 s CFunction SIL；
    尚未证明该生成 C 已接入 Gazebo/PX4 运行时。
+
+## 9. Config / Results 打包与归档边界
+
+源代码包与证据包必须分开制作：根 `.gitignore` 排除了 `Results/`，因此克隆仓库
+不能替代证据交付。当前的非破坏性分类、保留路径和归档前置条件见
+`Docs/Design/config_results_packaging_archive_audit_20260731.md`；机器可读清单为
+`Docs/Design/config_results_packaging_archive_manifest_20260731.json`。
+
+打包前运行：
+
+```powershell
+python Scripts/quality/validate_config_results_packaging_archive.py `
+  --output Results/final_submission/config_results_packaging_archive_audit_20260731.json
+```
+
+该检查只验证路径和分类，不移动或删除任何 `Config/`、`Results/` 文件。`Results/robustness/`
+及其配套旧配置是可追溯的历史归档候选，不属于当前 P0 证据包；ROS/Gazebo/PX4/QGC/UE
+路径由其运行时所有者锁定，不能在 MWORKS 交付打包时擅自处理。
