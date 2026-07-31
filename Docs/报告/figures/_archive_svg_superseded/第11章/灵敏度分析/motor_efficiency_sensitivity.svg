@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="620" viewBox="0 0 1080 620">
+<rect width="100%" height="100%" fill="white"/>
+<rect x="140.0" y="55.0" width="895.0" height="475.0" fill="none" stroke="#222"/>
+<line x1="140.0" y1="530.0" x2="1035.0" y2="530.0" stroke="#eeeeee"/>
+<text x="132.0" y="534.0" text-anchor="end" font-family="Times New Roman" font-size="16">0.0</text>
+<line x1="140.0" y1="435.0" x2="1035.0" y2="435.0" stroke="#eeeeee"/>
+<text x="132.0" y="439.0" text-anchor="end" font-family="Times New Roman" font-size="16">0.325</text>
+<line x1="140.0" y1="340.0" x2="1035.0" y2="340.0" stroke="#eeeeee"/>
+<text x="132.0" y="344.0" text-anchor="end" font-family="Times New Roman" font-size="16">0.65</text>
+<line x1="140.0" y1="245.00000000000006" x2="1035.0" y2="245.00000000000006" stroke="#eeeeee"/>
+<text x="132.0" y="249.00000000000006" text-anchor="end" font-family="Times New Roman" font-size="16">0.975</text>
+<line x1="140.0" y1="149.99999999999994" x2="1035.0" y2="149.99999999999994" stroke="#eeeeee"/>
+<text x="132.0" y="153.99999999999994" text-anchor="end" font-family="Times New Roman" font-size="16">1.3</text>
+<line x1="140.0" y1="55.0" x2="1035.0" y2="55.0" stroke="#eeeeee"/>
+<text x="132.0" y="59.0" text-anchor="end" font-family="Times New Roman" font-size="16">1.625</text>
+<text x="140.0" y="554.0" text-anchor="middle" font-family="Times New Roman" font-size="16">55</text>
+<text x="438.3333333333333" y="554.0" text-anchor="middle" font-family="Times New Roman" font-size="16">65</text>
+<text x="736.6666666666666" y="554.0" text-anchor="middle" font-family="Times New Roman" font-size="16">75</text>
+<text x="1035.0" y="554.0" text-anchor="middle" font-family="Times New Roman" font-size="16">85</text>
+<circle cx="140.0" cy="116.95652173913044" r="5" fill="#d62728"/>
+<line x1="140.0" y1="116.95652173913044" x2="438.3333333333333" y2="170.89046221071595" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="438.3333333333333" cy="170.89046221071595" r="5" fill="#d62728"/>
+<line x1="438.3333333333333" y1="170.89046221071595" x2="736.6666666666666" y2="217.78384085170393" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="736.6666666666666" cy="217.78384085170393" r="5" fill="#d62728"/>
+<line x1="736.6666666666666" y1="217.78384085170393" x2="1035.0" y2="415.035145008449" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="1035.0" cy="415.035145008449" r="5" fill="#d62728"/>
+<text x="587.5" y="600" text-anchor="middle" font-family="Times New Roman" font-size="18">Motor Efficiency (%)</text>
+<text x="30" y="292.5" transform="rotate(-90 30 292.5)" text-anchor="middle" font-family="Times New Roman" font-size="18">Position RMSE (m)</text>
+<line x1="140.0" y1="558" x2="164.0" y2="558" stroke="#1f77b4" stroke-width="2.0"/>
+<circle cx="152.0" cy="558" r="5" fill="#1f77b4"/>
+<text x="170.0" y="562" font-family="Times New Roman" font-size="14">Official PID</text>
+<line x1="320.0" y1="558" x2="344.0" y2="558" stroke="#d62728" stroke-width="2.0"/>
+<circle cx="332.0" cy="558" r="5" fill="#d62728"/>
+<text x="350.0" y="562" font-family="Times New Roman" font-size="14">px4ctrl</text>
+</svg>
