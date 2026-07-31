@@ -1,0 +1,108 @@
+{
+  "schema": "mosim.current_native_structure_capture_bindings.v1",
+  "scope": "Four current native MWORKS window captures materialized into the 48-controller report structure-image tree. These images document rendered model topology only; they do not claim a fresh CheckModel, simulation pass, controller performance, code generation, runtime success, or closed-loop acceptance.",
+  "created_at": "2026-07-31",
+  "preflight": {
+    "activation_sentinel_before": "Results/control_platform/controller_structure_screenshot_refresh_20260731/preflight/gui_sentinel_before.json",
+    "background_screenshot_before": "Results/control_platform/controller_structure_screenshot_refresh_20260731/preflight/background_capture/84184_0x22D1846_MoSimQuadrotorModel - Sysplorer _教育版_.png",
+    "gui_sentinel_before": "clean",
+    "license_state": "education_edition_task_local_api_no_authorization_error",
+    "activation_state_observation": "The current-turn sentinel reported clean and the existing Sysplorer target-window capture showed a rendered MoSimQuadrotorModel window with no demo, login, activation, authorization, error-report, or unknown modal. License info returned only the education edition marker; this is task-local sufficiency for diagram capture, not proof of permanent activation.",
+    "will_not_click_activation_login": true,
+    "live_mworks_touched": true,
+    "mworks_window_evidence_touched": true,
+    "mworks_window_policy": "reuse_existing_session_no_new_main_window"
+  },
+  "captures": [
+    {
+      "scheme_id": "smc_boundary_layer",
+      "capture_binding_kind": "direct_current_native_window",
+      "review_surface": "graphical_controller_core",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+        "model_sha256": "42cb305a3df9de94ce9335a6dce9b684268aec7363af00a476bccb196e66a8b4",
+        "model_role": "graphical_controller_core"
+      },
+      "original_capture_screenshot": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/smc_boundary_layer/84184_0x22D1846_MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Control.Implementations.SlidingMode_ - Sysplorer _教育版_.png",
+      "original_capture_manifest": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/smc_boundary_layer/capture_manifest.json",
+      "report_asset": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer/01_图形模型.png",
+      "source_sha256": "2fff889efc8a2a19ca59bfbb01df81f47ea7598fc1ffac6037020dd75f9a907b",
+      "source_width": 2578,
+      "source_height": 1398,
+      "window_title": "MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW[MoSimQuadrotorModel.Control.Implementations.SlidingMode] - Sysplorer [教育版]",
+      "capture_observation_zh": "当前图显示 position_error_in、velocity_error_in、auxiliary_in，经 lambda_position、sliding_surface、boundary_layer、switching_gain、acceleration_sum 与 acceleration_limit 到 command 的完整图形连接。截图下方的既有求解器日志不是本次任务运行结果。"
+    },
+    {
+      "scheme_id": "nmpc_outer",
+      "capture_binding_kind": "direct_current_native_window",
+      "review_surface": "graphical_controller_core",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+        "model_sha256": "9e36df1677ae5e7850d04d36c0976cc591635609817994c71dac93d1dcfc7d32",
+        "model_role": "graphical_controller_core"
+      },
+      "original_capture_screenshot": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/nmpc_outer/84184_0x22D1846_MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Control.Implementations.Optimization_ - Sysplorer _教育版_.png",
+      "original_capture_manifest": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/nmpc_outer/capture_manifest.json",
+      "report_asset": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer/01_图形模型.png",
+      "source_sha256": "e80adf998916b607264b0c793bc13a625673a4d8d2d898feb2487e084a9eece1",
+      "source_width": 2578,
+      "source_height": 1398,
+      "window_title": "MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW[MoSimQuadrotorModel.Control.Implementations.Optimization] - Sysplorer [教育版]",
+      "capture_observation_zh": "当前图显示 position_error_in 与 velocity_error_in 的 prediction 增益、horizon_state、quadratic_optimizer、command_increment、previous_command UnitDelay 反馈、increment_limit、acceleration_limit 与 command 的图形连接。截图下方的既有求解器日志不是本次任务运行结果。"
+    },
+    {
+      "scheme_id": "px4ctrl",
+      "capture_binding_kind": "direct_current_native_window",
+      "review_surface": "graphical_outer_loop",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
+        "model_sha256": "86dc0be78490e87ed7bf487406b49531330ee5379d042cf0e44c8a4b718307d6",
+        "model_role": "graphical_outer_loop"
+      },
+      "original_capture_screenshot": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/px4ctrl/84184_0x22D1846_PX4CTRL_Original_OuterLoop_Graphical_Sysblock_MoSimQuadrotorModel.Control.Implementations.Sysblocks_ - Sysplorer _教育版_.png",
+      "original_capture_manifest": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/px4ctrl/capture_manifest.json",
+      "report_asset": "Docs/报告/图/控制器/01_PID族/px4ctrl/01_图形模型.png",
+      "source_sha256": "16e70facf5e3dc5009381176609f865d6c77918f1bc41bf0eb2f91a4dd130c26",
+      "source_width": 2578,
+      "source_height": 1398,
+      "window_title": "PX4CTRL_Original_OuterLoop_Graphical_Sysblock[MoSimQuadrotorModel.Control.Implementations.Sysblocks] - Sysplorer [教育版]",
+      "capture_observation_zh": "原生全图显示 PX4CTRL 位置/速度外环的全部输入、图形运算块和姿态/推力输出。该模型的声明坐标范围较大，故全图截图在原生比例下密集；它是当前图形外环结构图，不是 PX4、ROS 或 C++ 部署等效证明。"
+    },
+    {
+      "scheme_id": "pid_awff_linear_eso",
+      "capture_binding_kind": "direct_current_native_window",
+      "review_surface": "equation_core_formal_runner_interface",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PidAwffLinearEsoFormalRunner.mo",
+        "model_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.PidAwffLinearEsoFormalRunner",
+        "model_sha256": "4433cb32321002068d16a7b38b0e436ab0585a48cb2700a451c80fcd9db514ab",
+        "model_role": "formal_runner_interface_surface"
+      },
+      "source_bindings": [
+        {
+          "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_PidLinearEsoControllerEquation_Sysblock.mo",
+          "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_PidLinearEsoControllerEquation_Sysblock",
+          "model_sha256": "67a278241de3e10c7151bda7645eddda1d4057c8a145db81c01a7fd5e24b2ec5",
+          "model_role": "equation_controller_core"
+        },
+        {
+          "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/PidAwffLinearEsoRotorAdapter.mo",
+          "model_class": "MoSimQuadrotorModel.Control.Adapters.PidAwffLinearEsoRotorAdapter",
+          "model_sha256": "2d31b1dc45c73af408b221ed9fb9c2b5bb40742f39b71e588257a1aaf19102eb",
+          "model_role": "rotor_adapter"
+        }
+      ],
+      "original_capture_screenshot": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/pid_awff_linear_eso_formal_runner/84184_0x22D1846_PidAwffLinearEsoFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - Sysplorer _教育版_.png",
+      "original_capture_manifest": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/pid_awff_linear_eso_formal_runner/capture_manifest.json",
+      "report_asset": "Docs/报告/图/控制器/01_PID族/pid_awff_linear_eso/01_图形模型.png",
+      "source_sha256": "5db320195e3b76c3c6fff34110495584a59211ade3430e976931b0d6a1779c04",
+      "source_width": 2578,
+      "source_height": 1398,
+      "window_title": "PidAwffLinearEsoFormalRunner[MoSimQuadrotorModel.Experiment.Runners.Formal] - Sysplorer [教育版]",
+      "capture_observation_zh": "该控制器核心为 equation Modelica 实现，直接核心和 Adapter 图只显示端口壳。故使用当前 FormalRunner 原生图作为接口结构面，图中可见 controller、采样参考/反馈块和 Sunray150 植物连接；这不把 FormalRunner 误写成内部图形控制律。"
+    }
+  ]
+}

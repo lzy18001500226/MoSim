@@ -1,7 +1,8 @@
 {
   "schema": "mosim.controller_screenshot_rebuild_manifest.v2",
-  "scope": "Static screenshot rebuild ledger only; no MWORKS review, simulation, code generation, runtime result, or report acceptance is claimed.",
+  "scope": "Static screenshot rebuild ledger for all 48 report structure-image slots. Four slots use current native-window captures; 44 retain user-reviewed historical structure candidates. No simulation, code generation, runtime result, or report acceptance is claimed.",
   "source_model_map": "Config/control_platform/current_model_entry_map.json",
+  "supplemental_capture_bindings": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
   "active_asset_root": "Docs/报告/图/控制器",
   "archive": {
     "root": "Docs/报告/图/归档/控制器旧导出资产_20260722",
@@ -10,26 +11,30 @@
   },
   "summary": {
     "catalog_scheme_count": 48,
-    "current_screenshot_scope_count": 46,
-    "asset_directory_count": 46,
-    "directory_version_marker_count": 46,
-    "excluded_from_current_screenshot_scope_count": 2,
-    "current_native_structure_capture_count": 0,
-    "user_reviewed_historical_structure_count": 46,
+    "current_screenshot_scope_count": 48,
+    "asset_directory_count": 48,
+    "directory_version_marker_count": 48,
+    "excluded_from_current_screenshot_scope_count": 0,
+    "current_native_structure_capture_count": 4,
+    "current_g5_structure_capture_count": 0,
+    "user_reviewed_historical_structure_count": 44,
     "minimum_result_capture_count": 0,
     "unexpected_active_png_count": 0,
     "legacy_archive_valid": true
   },
-  "excluded_routes": [
+  "excluded_routes": [],
+  "supplemental_current_capture_routes": [
     {
       "scheme_id": "pid_awff_linear_eso",
-      "mapping_state": "planned_profile_no_model",
-      "reason_zh": "已批准的 MWORKS Profile 设计项；尚无模型、Adapter、Runner 或图审对象。"
+      "source_map_mapping_state": "planned_profile_no_model",
+      "capture_binding": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+      "reason_zh": "已取得当前原生结构图；该报告截图补充不改写冻结的 G4 控制器入口映射。"
     },
     {
       "scheme_id": "px4ctrl",
-      "mapping_state": "pending_mworks_equivalent_core",
-      "reason_zh": "工程/部署基线；已有独立 MWORKS 图形化闭环证据，但不纳入本批 46 条 MWORKS 控制器图审/对比范围。"
+      "source_map_mapping_state": "pending_mworks_equivalent_core",
+      "capture_binding": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+      "reason_zh": "已取得当前原生结构图；该报告截图补充不改写冻结的 G4 控制器入口映射。"
     }
   ],
   "slots": [
@@ -54,6 +59,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -102,6 +108,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -150,6 +157,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -198,6 +206,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -246,6 +255,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -294,6 +304,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -342,6 +353,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -390,6 +402,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -438,6 +451,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -466,6 +480,150 @@
       }
     },
     {
+      "scheme_id": "pid_awff_linear_eso",
+      "display_name_zh": "AWFF PID 加线性 ESO 扰动观测补偿",
+      "category": "pid_family",
+      "family_directory": "01_PID族",
+      "review_kind": "equation_core_formal_runner_interface",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PidAwffLinearEsoFormalRunner.mo",
+        "model_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.PidAwffLinearEsoFormalRunner",
+        "model_sha256": "4433cb32321002068d16a7b38b0e436ab0585a48cb2700a451c80fcd9db514ab",
+        "model_role": "formal_runner_interface_surface"
+      },
+      "asset_directory": "Docs/报告/图/控制器/01_PID族/pid_awff_linear_eso",
+      "directory_version_marker": "Docs/报告/图/控制器/01_PID族/pid_awff_linear_eso/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/01_PID族/pid_awff_linear_eso/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/pid_awff_linear_eso/02_最小闭环结果原生窗口.png",
+        "capture_manifest": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "g5_review_packet": null
+      },
+      "source_capture": {
+        "capture_binding_kind": "direct_current_native_window",
+        "capture_binding": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "source_screenshot": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/pid_awff_linear_eso_formal_runner/84184_0x22D1846_PidAwffLinearEsoFormalRunner_MoSimQuadrotorModel.Experiment.Runners.Formal_ - Sysplorer _教育版_.png",
+        "report_asset": "Docs/报告/图/控制器/01_PID族/pid_awff_linear_eso/01_图形模型.png",
+        "source_sha256": "5db320195e3b76c3c6fff34110495584a59211ade3430e976931b0d6a1779c04",
+        "source_width": 2578,
+        "source_height": 1398,
+        "capture_manifest": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "g5_review_packet": null,
+        "review_target": {
+          "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PidAwffLinearEsoFormalRunner.mo",
+          "model_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.PidAwffLinearEsoFormalRunner",
+          "model_sha256": "4433cb32321002068d16a7b38b0e436ab0585a48cb2700a451c80fcd9db514ab",
+          "model_role": "formal_runner_interface_surface"
+        },
+        "source_bindings": [
+          {
+            "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_PidLinearEsoControllerEquation_Sysblock.mo",
+            "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_PidLinearEsoControllerEquation_Sysblock",
+            "model_sha256": "67a278241de3e10c7151bda7645eddda1d4057c8a145db81c01a7fd5e24b2ec5",
+            "model_role": "equation_controller_core"
+          },
+          {
+            "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/PidAwffLinearEsoRotorAdapter.mo",
+            "model_class": "MoSimQuadrotorModel.Control.Adapters.PidAwffLinearEsoRotorAdapter",
+            "model_sha256": "2d31b1dc45c73af408b221ed9fb9c2b5bb40742f39b71e588257a1aaf19102eb",
+            "model_role": "rotor_adapter"
+          }
+        ],
+        "capture_observation_zh": "该控制器核心为 equation Modelica 实现，直接核心和 Adapter 图只显示端口壳。故使用当前 FormalRunner 原生图作为接口结构面，图中可见 controller、采样参考/反馈块和 Sunray150 植物连接；这不把 FormalRunner 误写成内部图形控制律。"
+      },
+      "source_bindings": [
+        {
+          "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_PidLinearEsoControllerEquation_Sysblock.mo",
+          "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_PidLinearEsoControllerEquation_Sysblock",
+          "model_sha256": "67a278241de3e10c7151bda7645eddda1d4057c8a145db81c01a7fd5e24b2ec5",
+          "model_role": "equation_controller_core"
+        },
+        {
+          "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/PidAwffLinearEsoRotorAdapter.mo",
+          "model_class": "MoSimQuadrotorModel.Control.Adapters.PidAwffLinearEsoRotorAdapter",
+          "model_sha256": "2d31b1dc45c73af408b221ed9fb9c2b5bb40742f39b71e588257a1aaf19102eb",
+          "model_role": "rotor_adapter"
+        }
+      ],
+      "user_reviewed_archive_source": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "present_current_native_window",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
+      "scheme_id": "px4ctrl",
+      "display_name_zh": "px4ctrl 工程基线",
+      "category": "pid_family",
+      "family_directory": "01_PID族",
+      "review_kind": "graphical_outer_loop",
+      "review_target": {
+        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
+        "model_sha256": "86dc0be78490e87ed7bf487406b49531330ee5379d042cf0e44c8a4b718307d6",
+        "model_role": "graphical_outer_loop"
+      },
+      "asset_directory": "Docs/报告/图/控制器/01_PID族/px4ctrl",
+      "directory_version_marker": "Docs/报告/图/控制器/01_PID族/px4ctrl/.gitkeep",
+      "required_assets": {
+        "structure_native_window": "Docs/报告/图/控制器/01_PID族/px4ctrl/01_图形模型.png",
+        "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/01_PID族/px4ctrl/02_最小闭环结果原生窗口.png",
+        "capture_manifest": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "g5_review_packet": null
+      },
+      "source_capture": {
+        "capture_binding_kind": "direct_current_native_window",
+        "capture_binding": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "source_screenshot": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/px4ctrl/84184_0x22D1846_PX4CTRL_Original_OuterLoop_Graphical_Sysblock_MoSimQuadrotorModel.Control.Implementations.Sysblocks_ - Sysplorer _教育版_.png",
+        "report_asset": "Docs/报告/图/控制器/01_PID族/px4ctrl/01_图形模型.png",
+        "source_sha256": "16e70facf5e3dc5009381176609f865d6c77918f1bc41bf0eb2f91a4dd130c26",
+        "source_width": 2578,
+        "source_height": 1398,
+        "capture_manifest": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "g5_review_packet": null,
+        "review_target": {
+          "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
+          "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
+          "model_sha256": "86dc0be78490e87ed7bf487406b49531330ee5379d042cf0e44c8a4b718307d6",
+          "model_role": "graphical_outer_loop"
+        },
+        "source_bindings": [],
+        "capture_observation_zh": "原生全图显示 PX4CTRL 位置/速度外环的全部输入、图形运算块和姿态/推力输出。该模型的声明坐标范围较大，故全图截图在原生比例下密集；它是当前图形外环结构图，不是 PX4、ROS 或 C++ 部署等效证明。"
+      },
+      "source_bindings": [],
+      "user_reviewed_archive_source": null,
+      "capture_rules": {
+        "allowed_source": "windows_mcp_direct_whole_window_capture_only",
+        "approved_historical_structure_source": "user_visual_reviewed_archive_candidate_only",
+        "capture_surface": "Windows MCP direct whole-window or desktop capture of the rendered MWORKS window",
+        "preserve_window_native_aspect_ratio": true,
+        "forbidden_sources": [
+          "exported_canvas",
+          "report_copy",
+          "historical_result_capture",
+          "cropped_or_aspect_ratio_distorted_capture",
+          "wrapper_only_port_shell"
+        ]
+      },
+      "capture_status": {
+        "structure_native_window": "present_current_native_window",
+        "minimum_closed_loop_result_native_window": "not_captured"
+      }
+    },
+    {
       "scheme_id": "h2_state_feedback",
       "display_name_zh": "H2 状态反馈",
       "category": "linear_robust_state_feedback",
@@ -486,6 +644,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -534,6 +693,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -582,6 +742,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -630,6 +791,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -678,6 +840,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -726,6 +889,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -774,6 +938,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -822,6 +987,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -870,6 +1036,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -918,6 +1085,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -966,6 +1134,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1014,6 +1183,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1062,6 +1232,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1110,6 +1281,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1158,6 +1330,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1206,6 +1379,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1242,7 +1416,7 @@
       "review_target": {
         "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
         "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
-        "model_sha256": "c42cc5f743ece1e5636092ac3e573a587a80224353a644e9e981ef71d53695a5",
+        "model_sha256": "42cb305a3df9de94ce9335a6dce9b684268aec7363af00a476bccb196e66a8b4",
         "model_role": "graphical_controller_core"
       },
       "asset_directory": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer",
@@ -1250,10 +1424,29 @@
       "required_assets": {
         "structure_native_window": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer/01_图形模型.png",
         "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer/02_最小闭环结果原生窗口.png",
-        "capture_manifest": null,
+        "capture_manifest": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
         "g5_review_packet": null
       },
-      "source_capture": null,
+      "source_capture": {
+        "capture_binding_kind": "direct_current_native_window",
+        "capture_binding": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "source_screenshot": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/smc_boundary_layer/84184_0x22D1846_MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Control.Implementations.SlidingMode_ - Sysplorer _教育版_.png",
+        "report_asset": "Docs/报告/图/控制器/04_滑模控制/smc_boundary_layer/01_图形模型.png",
+        "source_sha256": "2fff889efc8a2a19ca59bfbb01df81f47ea7598fc1ffac6037020dd75f9a907b",
+        "source_width": 2578,
+        "source_height": 1398,
+        "capture_manifest": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "g5_review_packet": null,
+        "review_target": {
+          "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+          "model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+          "model_sha256": "42cb305a3df9de94ce9335a6dce9b684268aec7363af00a476bccb196e66a8b4",
+          "model_role": "graphical_controller_core"
+        },
+        "source_bindings": [],
+        "capture_observation_zh": "当前图显示 position_error_in、velocity_error_in、auxiliary_in，经 lambda_position、sliding_surface、boundary_layer、switching_gain、acceleration_sum 与 acceleration_limit 到 command 的完整图形连接。截图下方的既有求解器日志不是本次任务运行结果。"
+      },
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1277,7 +1470,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_user_reviewed_historical_graphical",
+        "structure_native_window": "present_current_native_window",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1302,6 +1495,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1350,6 +1544,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1398,6 +1593,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1446,6 +1642,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1494,6 +1691,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1542,6 +1740,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1590,6 +1789,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1638,6 +1838,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1686,6 +1887,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1722,7 +1924,7 @@
       "review_target": {
         "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
         "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
-        "model_sha256": "06adcc55285ab7b942093617c9dd2bf4e974c34c3bc37c6cea40a937a7e98eb7",
+        "model_sha256": "9e36df1677ae5e7850d04d36c0976cc591635609817994c71dac93d1dcfc7d32",
         "model_role": "graphical_controller_core"
       },
       "asset_directory": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer",
@@ -1730,10 +1932,29 @@
       "required_assets": {
         "structure_native_window": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer/01_图形模型.png",
         "minimum_closed_loop_result_native_window": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer/02_最小闭环结果原生窗口.png",
-        "capture_manifest": null,
+        "capture_manifest": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
         "g5_review_packet": null
       },
-      "source_capture": null,
+      "source_capture": {
+        "capture_binding_kind": "direct_current_native_window",
+        "capture_binding": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "source_screenshot": "Results/control_platform/controller_structure_screenshot_refresh_20260731/captures/nmpc_outer/84184_0x22D1846_MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW_MoSimQuadrotorModel.Control.Implementations.Optimization_ - Sysplorer _教育版_.png",
+        "report_asset": "Docs/报告/图/控制器/05_最优与预测控制/nmpc_outer/01_图形模型.png",
+        "source_sha256": "e80adf998916b607264b0c793bc13a625673a4d8d2d898feb2487e084a9eece1",
+        "source_width": 2578,
+        "source_height": 1398,
+        "capture_manifest": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
+        "g5_review_packet": null,
+        "review_target": {
+          "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+          "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+          "model_sha256": "9e36df1677ae5e7850d04d36c0976cc591635609817994c71dac93d1dcfc7d32",
+          "model_role": "graphical_controller_core"
+        },
+        "source_bindings": [],
+        "capture_observation_zh": "当前图显示 position_error_in 与 velocity_error_in 的 prediction 增益、horizon_state、quadratic_optimizer、command_increment、previous_command UnitDelay 反馈、increment_limit、acceleration_limit 与 command 的图形连接。截图下方的既有求解器日志不是本次任务运行结果。"
+      },
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1757,7 +1978,7 @@
         ]
       },
       "capture_status": {
-        "structure_native_window": "present_user_reviewed_historical_graphical",
+        "structure_native_window": "present_current_native_window",
         "minimum_closed_loop_result_native_window": "not_captured"
       }
     },
@@ -1782,6 +2003,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1830,6 +2052,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1878,6 +2101,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1926,6 +2150,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -1974,6 +2199,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -2022,6 +2248,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -2070,6 +2297,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -2118,6 +2346,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -2166,6 +2395,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
@@ -2214,6 +2444,7 @@
         "g5_review_packet": null
       },
       "source_capture": null,
+      "source_bindings": [],
       "user_reviewed_archive_source": {
         "review_status": "user_visual_reviewed",
         "review_date": "2026-07-28",
