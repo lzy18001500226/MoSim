@@ -26,10 +26,10 @@ def test_current_qgc_copy_only_runtime_contract_is_source_closed() -> None:
     result = check(CATALOG)
 
     assert result["status"] == "passed", result["errors"]
-    assert result["runtime_profile_count"] == 7
-    assert result["operator_profile_count"] == 7
-    assert result["enabled_operator_profile_count"] == 5
-    assert result["enabled_operator_invocation_count"] == 5
+    assert result["runtime_profile_count"] == 9
+    assert result["operator_profile_count"] == 9
+    assert result["enabled_operator_profile_count"] == 7
+    assert result["enabled_operator_invocation_count"] == 7
     assert result["controller_scheme_count"] == 48
     assert result["published_controller_scheme_count"] == 3
     assert result["enabled_controller_scheme_count"] == 2

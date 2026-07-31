@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -162,9 +163,34 @@ def test_sidecar_can_skip_ftc_readiness_for_non_fault_profiles() -> None:
     assert '"--skip-actuator-telemetry-readiness"' in sidecar
 
 
+def test_sidecar_read_only_mode_cannot_publish_or_apply_injection_commands(monkeypatch) -> None:
+    from Scripts.ui import runtime_sidecar
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "runtime_sidecar.py",
+            "--run-dir", "run",
+            "--manifest", "run/RUN_MANIFEST.json",
+            "--contract", "Config/control_platform/factory_injection_contract.json",
+            "--read-only",
+        ],
+    )
+    assert runtime_sidecar.parse_args().read_only is True
+
+    source = Path("Scripts/ui/runtime_sidecar.py").read_text(encoding="utf-8")
+    assert "if not args.read_only:" in source
+    assert 'return False, "read_only_fault_commands_disabled"' in source
+    assert '"fault_command_owner": "terminal_or_external" if self.args.read_only else "runtime_sidecar"' in source
+    assert '"actuator_plugin_telemetry"' in source
+
+
 def test_sidecar_exports_only_real_reference_and_future_path_sources() -> None:
     sidecar = Path("Scripts/ui/runtime_sidecar.py").read_text(encoding="utf-8")
     assert '"task_paths": self.task_paths' in sidecar
+    assert "# Empty Path heartbeats must not erase a previously latched real plan." in sidecar
+    assert "if len(points) < 2:" in sidecar
     assert 'semantics = "formation_center_reference"' in sidecar
     assert 'semantics = "exploration_target_sequence"' in sidecar
     assert 'semantics = "mission_reference"' in sidecar
@@ -177,6 +203,9 @@ def test_sidecar_exports_only_real_reference_and_future_path_sources() -> None:
     assert '"transport_state": "terminal" if terminal' in sidecar
     assert '"--coordinate-evidence"' in sidecar
     assert "project_live_operator_map_frame(" in sidecar
+    assert "append_operator_map_actual_tracks(" in sidecar
+    assert "self.actual_tracks" in sidecar
+    assert "actual_tracks=self.actual_tracks" in sidecar
     assert "coordinate evidence cannot be combined with a status override" in sidecar
 
 

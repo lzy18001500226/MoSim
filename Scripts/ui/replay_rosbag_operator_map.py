@@ -32,6 +32,7 @@ from src.orchestration.operator_map_replay import (
     load_coordinate_evidence,
     sha256_file,
 )
+from src.orchestration.operator_map_state import append_operator_map_actual_tracks
 from src.orchestration.runtime_sidecar_contract import atomic_write_json, build_operator_runtime_status
 
 
@@ -551,6 +552,7 @@ def run_replay(args: argparse.Namespace) -> int:
     task_path_event_index = 0
     active_task_paths: dict[str, dict[str, Any]] = {}
     projected_task_paths: dict[str, dict[str, Any]] = {}
+    actual_tracks: dict[str, dict[str, Any]] = {}
     last_vehicles: list[dict[str, Any]] = []
     last_source_timestamp_s: float | None = None
     last_playback_time_s = 0.0
@@ -582,6 +584,13 @@ def run_replay(args: argparse.Namespace) -> int:
             coordinate_evidence=coordinate_evidence,
             run_id=str(manifest["run_id"]),
         )
+        actual_tracks = append_operator_map_actual_tracks(
+            actual_tracks,
+            last_vehicles,
+            run_id=str(manifest["run_id"]),
+            world_frame=str(map_snapshot["world_frame"]),
+            updated_at=now,
+        )
         map_state = build_operator_map_state(
             manifest=manifest,
             map_snapshot=map_snapshot,
@@ -594,6 +603,7 @@ def run_replay(args: argparse.Namespace) -> int:
             bag_id=bag_id,
             vehicles=last_vehicles,
             task_paths=projected_task_paths,
+            actual_tracks=actual_tracks,
         )
         atomic_write_json(args.run_dir / "telemetry.json", _telemetry_payload(manifest, map_state, now=now))
         _write_status(
@@ -624,6 +634,7 @@ def run_replay(args: argparse.Namespace) -> int:
         bag_id=bag_id,
         vehicles=last_vehicles,
         task_paths=projected_task_paths,
+        actual_tracks=actual_tracks,
     )
     atomic_write_json(args.run_dir / "telemetry.json", _telemetry_payload(manifest, completed_state, now=now))
     _write_status(

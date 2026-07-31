@@ -248,6 +248,8 @@ Item {
             return "已阻塞"
         if (state === "replaying")
             return "回放中"
+        if (state === "completed")
+            return "已完成（运行端已停止）"
         return state.length > 0 ? state : "运行端未上报状态"
     }
 
@@ -336,6 +338,7 @@ Item {
         mapConfig: mosimOperator.operatorMap || ({})
         runManifest: mosimOperator.runManifest || ({})
         mapState: root.mapState
+        runtimeStatus: root.runtimeStatus
         runId: mosimOperator.runId
         showVehicles: root.showMapVehicles
         showActualTracks: root.showMapActualTracks
@@ -371,7 +374,7 @@ Item {
             RowLayout {
                 Layout.fillWidth: true
                 QGCLabel {
-                    text: "MoSim 地面站"
+                    text: "MoSim Ground Control"
                     font.bold: true
                     Layout.fillWidth: true
                 }

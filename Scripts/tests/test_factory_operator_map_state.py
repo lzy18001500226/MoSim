@@ -14,6 +14,7 @@ from Scripts.ui.runtime_sidecar import (
 )
 from src.orchestration.operator_map_replay import validate_coordinate_evidence
 from src.orchestration.operator_map_state import (
+    append_operator_map_actual_tracks,
     validate_image_coordinate_contract,
     validate_operator_map_snapshot,
     validate_operator_map_state,
@@ -137,6 +138,92 @@ def test_replay_map_state_preserves_a_paused_frame_without_claiming_live_data() 
     assert state["transport"]["mode"] == "rosbag_replay"
     assert state["transport"]["playback_state"] == "paused"
     assert state["transport"]["bag_id"] == "factory_l2_fuel_run.bag"
+
+
+def test_actual_tracks_are_bounded_real_vehicle_samples_and_bind_the_map_run() -> None:
+    manifest = _manifest()
+    tracks = append_operator_map_actual_tracks(
+        {},
+        [
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 1.0, "y": -2.0, "z": 0.5},
+                    "position_frame": "mworks_world",
+                },
+            }
+        ],
+        run_id=str(manifest["run_id"]),
+        world_frame="mworks_world",
+        updated_at=1_784_000_020.0,
+    )
+    tracks = append_operator_map_actual_tracks(
+        tracks,
+        [
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 1.01, "y": -2.0, "z": 0.6},
+                    "position_frame": "mworks_world",
+                },
+            }
+        ],
+        run_id=str(manifest["run_id"]),
+        world_frame="mworks_world",
+        updated_at=1_784_000_021.0,
+    )
+    tracks = append_operator_map_actual_tracks(
+        tracks,
+        [
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 1.1, "y": -2.0, "z": 0.7},
+                    "position_frame": "mworks_world",
+                },
+            }
+        ],
+        run_id=str(manifest["run_id"]),
+        world_frame="mworks_world",
+        updated_at=1_784_000_022.0,
+    )
+    assert tracks["uav1"]["semantics"] == "actual_vehicle_track"
+    assert tracks["uav1"]["points"] == [
+        {"x": 1.0, "y": -2.0, "z": 0.5},
+        {"x": 1.1, "y": -2.0, "z": 0.7},
+    ]
+
+    state = build_operator_map_state(
+        manifest=manifest,
+        map_snapshot=_snapshot(),
+        transport_mode="live_ros1",
+        sequence=10,
+        received_at_unix_s=1_784_000_022.0,
+        source_timestamp_s=43.0,
+        playback_state="live",
+        playback_time_s=None,
+        bag_id="",
+        vehicles=[
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 1.1, "y": -2.0, "z": 0.7},
+                    "position_frame": "mworks_world",
+                    "orientation": {"w": 1.0, "x": 0.0, "y": 0.0, "z": 0.0},
+                },
+            }
+        ],
+        task_paths={},
+        actual_tracks=tracks,
+    )
+    validate_operator_map_state(state, manifest=manifest)
+    state["actual_tracks"]["uav1"]["run_id"] = "other-run"
+    with pytest.raises(ValueError, match="operator_map_actual_track_run_id_mismatch"):
+        validate_operator_map_state(state, manifest=manifest)
 
 
 def test_replay_requires_a_bag_identity_and_valid_coordinate_status() -> None:

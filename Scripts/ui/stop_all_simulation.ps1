@@ -51,7 +51,7 @@ function Stop-ManagedProcessAndWait {
     }
 }
 
-foreach ($process in @(Get-Process -Name "MoSimFlightConsole" -ErrorAction SilentlyContinue)) {
+foreach ($process in @(Get-Process -Name "MoSimGroundControl" -ErrorAction SilentlyContinue)) {
     Stop-ManagedProcessAndWait -Process $process -Kind "flight_console"
 }
 

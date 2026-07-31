@@ -16,6 +16,12 @@ from src.orchestration.run_manifest_contract import (
 )
 
 
+def test_timestamp_validator_stays_compatible_with_ros1_python38_runtime() -> None:
+    source = Path("src/orchestration/run_manifest_contract.py").read_text(encoding="utf-8")
+
+    assert ".removesuffix(" not in source
+
+
 ROOT = Path(__file__).resolve().parents[2]
 INDEX_SCRIPT = ROOT / "Scripts" / "results" / "build_run_index.py"
 SCHEMA_PATH = ROOT / "Config" / "schemas" / "mosim_run_manifest_v2.schema.json"

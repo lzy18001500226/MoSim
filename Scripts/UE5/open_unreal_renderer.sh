@@ -109,7 +109,27 @@ case "${MODE}" in
     EXTRA_ARGS=("-game" "-windowed" "-ResX=1280" "-ResY=720" "-MoSimSceneReview")
     ;;
   simulation-review)
-    EXTRA_ARGS=("-game" "-windowed" "-ResX=1280" "-ResY=720" "-MoSimSimulationReview")
+    # The independent review window is a display-only receiver. Follow the
+    # live UDP playback actor by default so a valid flight stream is visible
+    # immediately instead of leaving the camera at a static factory overview.
+    EXTRA_ARGS=(
+      "-game"
+      "-windowed"
+      "-ResX=1280"
+      "-ResY=720"
+      "/Game/Maps/Demonstration?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode"
+      "-MoSimSimulationReview"
+      "-MoSimDayReview"
+      "-MoSimPlaybackActorCount=1"
+      "-MoSimPlaybackBaseUdpPort=5005"
+      "-MoSimFollowPlaybackCamera"
+      "-MoSimFollowCameraBackCm=231.25"
+      "-MoSimFollowCameraRightCm=0"
+      "-MoSimFollowCameraUpCm=95"
+      "-MoSimFollowCameraLocationInterpSpeed=0"
+      "-MoSimFollowCameraRotationInterpSpeed=0"
+      "-MoSimNoReviewCollision"
+    )
     ;;
   *)
     echo "Usage: $0 [editor|game|review-scene|simulation-review]" >&2

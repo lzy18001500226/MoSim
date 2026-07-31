@@ -347,6 +347,147 @@ def _validate_task_paths(
             raise ValueError("operator_map_task_path_frame_mismatch")
 
 
+def _validate_actual_tracks(
+    value: Any,
+    *,
+    run_id: str,
+    vehicle_count: int,
+    bounds: dict[str, float],
+    world_frame: str,
+    coordinate_verified: bool,
+) -> None:
+    """Validate durable, display-only tracks sampled from projected telemetry."""
+
+    tracks = _mapping(value, "operator_map_actual_tracks_invalid")
+    expected_ids = {f"uav{index}" for index in range(1, vehicle_count + 1)}
+    observed_ids = set(tracks)
+    if not observed_ids.issubset(expected_ids):
+        raise ValueError("operator_map_actual_track_vehicle_id_invalid")
+    for vehicle_id, raw_track in tracks.items():
+        if not isinstance(vehicle_id, str) or VEHICLE_ID_PATTERN.fullmatch(vehicle_id) is None:
+            raise ValueError("operator_map_actual_track_vehicle_id_invalid")
+        track = _mapping(raw_track, "operator_map_actual_track_invalid")
+        if track.get("status") != "available":
+            raise ValueError("operator_map_actual_track_status_invalid")
+        if track.get("semantics") != "actual_vehicle_track":
+            raise ValueError("operator_map_actual_track_semantics_invalid")
+        if track.get("vehicle_id") != vehicle_id:
+            raise ValueError("operator_map_actual_track_vehicle_id_invalid")
+        if track.get("run_id") != run_id:
+            raise ValueError("operator_map_actual_track_run_id_mismatch")
+        _required_string(track.get("source"), "operator_map_actual_track_source_invalid")
+        _required_string(track.get("frame_id"), "operator_map_actual_track_frame_invalid")
+        if not _finite_number(track.get("updated_at")):
+            raise ValueError("operator_map_actual_track_timestamp_invalid")
+        if coordinate_verified and track.get("frame_id") != world_frame:
+            raise ValueError("operator_map_actual_track_frame_mismatch")
+        points = track.get("points")
+        if not isinstance(points, list) or len(points) > MAX_PATH_POINTS:
+            raise ValueError("operator_map_actual_track_points_invalid")
+        for point in points:
+            _validate_point(point, bounds, "operator_map_actual_track_points_invalid")
+
+
+def append_operator_map_actual_tracks(
+    existing: dict[str, dict[str, Any]],
+    vehicles: list[dict[str, Any]],
+    *,
+    run_id: str,
+    world_frame: str,
+    updated_at: float,
+    min_distance_m: float = 0.05,
+    max_points: int = MAX_PATH_POINTS,
+) -> dict[str, dict[str, Any]]:
+    """Append real projected vehicle positions to a bounded map-only track.
+
+    ``vehicles`` must already be in the frozen operator-map frame. This helper
+    deliberately records only connected vehicles with finite positions; it
+    never interpolates a missing sample or converts a reference path into an
+    actual track.
+    """
+
+    if not isinstance(existing, dict):
+        raise ValueError("operator_map_actual_tracks_state_invalid")
+    if not isinstance(vehicles, list):
+        raise ValueError("operator_map_actual_tracks_vehicles_invalid")
+    if not isinstance(run_id, str) or not run_id:
+        raise ValueError("operator_map_actual_tracks_run_id_invalid")
+    if not isinstance(world_frame, str) or not world_frame:
+        raise ValueError("operator_map_actual_tracks_frame_invalid")
+    if not _finite_number(updated_at) or updated_at <= 0.0:
+        raise ValueError("operator_map_actual_tracks_timestamp_invalid")
+    if not _finite_number(min_distance_m) or min_distance_m < 0.0:
+        raise ValueError("operator_map_actual_tracks_distance_invalid")
+    if not isinstance(max_points, int) or isinstance(max_points, bool) or not 1 <= max_points <= MAX_PATH_POINTS:
+        raise ValueError("operator_map_actual_tracks_limit_invalid")
+
+    tracks: dict[str, dict[str, Any]] = {}
+    for vehicle_id, raw_track in existing.items():
+        if not isinstance(vehicle_id, str) or VEHICLE_ID_PATTERN.fullmatch(vehicle_id) is None:
+            continue
+        track = raw_track if isinstance(raw_track, dict) else {}
+        raw_points = track.get("points")
+        points: list[dict[str, float]] = []
+        if isinstance(raw_points, list):
+            for point in raw_points:
+                if not isinstance(point, dict):
+                    continue
+                coordinates = {axis: point.get(axis) for axis in ("x", "y", "z")}
+                if all(_finite_number(coordinates[axis]) for axis in coordinates):
+                    points.append({axis: float(coordinates[axis]) for axis in coordinates})
+        tracks[vehicle_id] = {
+            "status": "available",
+            "semantics": "actual_vehicle_track",
+            "vehicle_id": vehicle_id,
+            "run_id": run_id,
+            "source": "operator_map_telemetry",
+            "frame_id": world_frame,
+            "updated_at": float(track.get("updated_at", updated_at))
+            if _finite_number(track.get("updated_at", updated_at))
+            else float(updated_at),
+            "points": points[-max_points:],
+        }
+
+    for vehicle in vehicles:
+        if not isinstance(vehicle, dict):
+            continue
+        vehicle_id = vehicle.get("vehicle_id")
+        state = vehicle.get("state")
+        position = state.get("position") if isinstance(state, dict) else None
+        if (
+            not isinstance(vehicle_id, str)
+            or VEHICLE_ID_PATTERN.fullmatch(vehicle_id) is None
+            or not isinstance(state, dict)
+            or state.get("connected") is not True
+            or not isinstance(position, dict)
+            or any(not _finite_number(position.get(axis)) for axis in ("x", "y", "z"))
+        ):
+            continue
+        point = {axis: float(position[axis]) for axis in ("x", "y", "z")}
+        track = tracks.setdefault(
+            vehicle_id,
+            {
+                "status": "available",
+                "semantics": "actual_vehicle_track",
+                "vehicle_id": vehicle_id,
+                "run_id": run_id,
+                "source": "operator_map_telemetry",
+                "frame_id": world_frame,
+                "updated_at": float(updated_at),
+                "points": [],
+            },
+        )
+        points = track["points"]
+        previous = points[-1] if points else None
+        if previous is None or math.hypot(point["x"] - previous["x"], point["y"] - previous["y"]) >= float(min_distance_m):
+            points.append(point)
+            if len(points) > max_points:
+                del points[:-max_points]
+        track["updated_at"] = float(updated_at)
+
+    return tracks
+
+
 def _validate_boundary(value: Any, *, bounds: dict[str, float]) -> None:
     boundary = _mapping(value, "operator_map_boundary_invalid")
     keys = ("min_x_m", "max_x_m", "min_y_m", "max_y_m")
@@ -468,6 +609,15 @@ def validate_operator_map_state(value: Any, *, manifest: dict[str, Any]) -> None
         world_frame=world_frame,
         coordinate_verified=coordinate_verified,
     )
+    if "actual_tracks" in state:
+        _validate_actual_tracks(
+            state["actual_tracks"],
+            run_id=run_id,
+            vehicle_count=vehicle_count,
+            bounds=bounds,
+            world_frame=world_frame,
+            coordinate_verified=coordinate_verified,
+        )
     _validate_map_data_status(state.get("map_data_status"))
     if "task_boundary" in state:
         _validate_boundary(state["task_boundary"], bounds=bounds)

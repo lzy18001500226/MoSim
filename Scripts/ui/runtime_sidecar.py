@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish same-run ROS readiness, telemetry, and audited physical injections."""
+"""Publish same-run ROS readiness, telemetry, and optional physical injections."""
 
 from __future__ import annotations
 
@@ -30,6 +30,7 @@ from src.orchestration.operator_map_state import (
     OPERATOR_MAP_IDENTITY_FIELDS,
     OPERATOR_MAP_STATE_SCHEMA,
     OPERATOR_MAP_TRANSPORT_MODES,
+    append_operator_map_actual_tracks,
     validate_operator_map_snapshot,
     validate_operator_map_state,
 )
@@ -172,6 +173,7 @@ def build_operator_map_state(
     bag_id: str,
     vehicles: list[dict[str, Any]],
     task_paths: dict[str, dict[str, Any]],
+    actual_tracks: dict[str, dict[str, Any]] | None = None,
     map_data_status: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     """Project runtime telemetry into the strict 2D operator-map envelope."""
@@ -220,6 +222,8 @@ def build_operator_map_state(
         "vehicles": vehicles,
         "task_paths": task_paths,
     }
+    if actual_tracks is not None:
+        state["actual_tracks"] = actual_tracks
     if map_data_status is not None:
         state["map_data_status"] = dict(map_data_status)
     boundary = scenario.get("exploration_boundary")
@@ -451,15 +455,25 @@ class RosRuntimeSidecar:
         from geometry_msgs.msg import Point, Wrench
         from mavros_msgs.msg import AttitudeTarget, State
         from nav_msgs.msg import Odometry, Path as RosPath
-        from quadrotor_msgs.msg import PositionCommand
         from std_msgs.msg import Float64MultiArray
         from visualization_msgs.msg import Marker
+
+        # The read-only operator map only needs standard ROS messages for the
+        # vehicle state and the latched reference path.  Keep the optional
+        # px4ctrl command detail when its generated message package is present,
+        # but do not let an overlay packaging gap prevent QGC from showing the
+        # actual and planned paths.
+        try:
+            from quadrotor_msgs.msg import PositionCommand
+        except ImportError:
+            PositionCommand = None
 
         self.rospy = rospy
         self.ApplyBodyWrench = ApplyBodyWrench
         self.Wrench = Wrench
         self.Point = Point
         self.Float64MultiArray = Float64MultiArray
+        self.PositionCommand = PositionCommand
         self.args = args
         self.run_dir = args.run_dir
         self.manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
@@ -495,6 +509,7 @@ class RosRuntimeSidecar:
         self.active_injections: dict[str, dict[str, Any]] = {}
         self.processed_commands: set[str] = set()
         self.task_paths: dict[str, dict[str, Any]] = {}
+        self.actual_tracks: dict[str, dict[str, Any]] = {}
         self.vehicles: dict[str, dict[str, Any]] = {
             vehicle_id: {
                 "state": None,
@@ -512,19 +527,26 @@ class RosRuntimeSidecar:
 
         for vehicle_id in self.vehicle_ids:
             topics = self._topics(vehicle_id)
-            self.command_pubs[vehicle_id] = rospy.Publisher(
-                topics["actuator_command"], Float64MultiArray, queue_size=5
-            )
+            if not args.read_only:
+                self.command_pubs[vehicle_id] = rospy.Publisher(
+                    topics["actuator_command"], Float64MultiArray, queue_size=5
+                )
             rospy.Subscriber(topics["state"], State, self._store, (vehicle_id, "state"), queue_size=20)
             rospy.Subscriber(topics["odom"], Odometry, self._store, (vehicle_id, "odom"), queue_size=50)
             rospy.Subscriber(
                 topics["target_attitude"], AttitudeTarget, self._store,
                 (vehicle_id, "target_attitude"), queue_size=50,
             )
-            rospy.Subscriber(
-                topics["position_command"], PositionCommand, self._store,
-                (vehicle_id, "position_command"), queue_size=50,
-            )
+            if self.PositionCommand is not None:
+                rospy.Subscriber(
+                    topics["position_command"], self.PositionCommand, self._store,
+                    (vehicle_id, "position_command"), queue_size=50,
+                )
+            else:
+                rospy.logwarn_once(
+                    "quadrotor_msgs/PositionCommand is unavailable; QGC will show the "
+                    "latched expected path but not the instantaneous command detail."
+                )
             rospy.Subscriber(
                 topics["actuator_telemetry"], Float64MultiArray, self._store,
                 (vehicle_id, "actuator"), queue_size=50,
@@ -540,7 +562,7 @@ class RosRuntimeSidecar:
                 args.future_marker_topic, Marker, self._future_marker_cb,
                 callback_args=args.future_marker_topic, queue_size=10,
             )
-        self.wrench = rospy.ServiceProxy(args.wrench_service, ApplyBodyWrench)
+        self.wrench = None if args.read_only else rospy.ServiceProxy(args.wrench_service, ApplyBodyWrench)
 
     @staticmethod
     def _bounded_points(points: list[Any], max_points: int = 1200) -> list[dict[str, float]]:
@@ -550,6 +572,10 @@ class RosRuntimeSidecar:
         return [_vector(point) for point in points[::stride]][:max_points]
 
     def _expected_path_cb(self, msg: Any, source_topic: str) -> None:
+        points = self._bounded_points([pose.pose.position for pose in msg.poses])
+        # Empty Path heartbeats must not erase a previously latched real plan.
+        if len(points) < 2:
+            return
         if self.profile_id == "factory_l2_three_uav_swarm_formation_v1":
             semantics = "formation_center_reference"
             vehicle_scope = "formation_center"
@@ -566,7 +592,7 @@ class RosRuntimeSidecar:
             "source_topic": source_topic,
             "frame_id": str(msg.header.frame_id),
             "updated_at": time.time(),
-            "points": self._bounded_points([pose.pose.position for pose in msg.poses]),
+            "points": points,
         }
 
     def _future_marker_cb(self, msg: Any, source_topic: str) -> None:
@@ -632,6 +658,8 @@ class RosRuntimeSidecar:
         return not missing, missing
 
     def _publish_effectiveness(self, vehicle_id: str) -> None:
+        if self.args.read_only:
+            return
         msg = self.Float64MultiArray()
         msg.data = [0.0, *self.vehicles[vehicle_id]["effectiveness"], 0.0, 0.0, 0.0, 0.0]
         self.command_pubs[vehicle_id].publish(msg)
@@ -641,6 +669,8 @@ class RosRuntimeSidecar:
         return resolve_gazebo_body_name(configured, self.model_names, vehicle_id)
 
     def _apply_wind_force(self, vehicle_id: str) -> tuple[bool, str]:
+        if self.args.read_only:
+            return False, "read_only_fault_commands_disabled"
         vehicle = self.vehicles[vehicle_id]
         if vehicle["wind_speed_mps"] <= 0.0:
             return True, "wind_zero"
@@ -687,6 +717,8 @@ class RosRuntimeSidecar:
         atomic_write_json(self.run_dir / "injection_acks" / f"{command.get('command_id', 'invalid')}.json", payload)
 
     def _consume_commands(self) -> None:
+        if self.args.read_only:
+            return
         command_dir = self.run_dir / "injection_commands"
         command_dir.mkdir(parents=True, exist_ok=True)
         for path in sorted(command_dir.glob("inj-*.json")):
@@ -722,6 +754,9 @@ class RosRuntimeSidecar:
 
     def _vehicle_telemetry(self, vehicle_id: str) -> dict[str, Any]:
         vehicle = self.vehicles[vehicle_id]
+        observed_effectiveness: list[float] | None = None
+        if vehicle["actuator"] and len(vehicle["actuator"][0].data) == 18:
+            observed_effectiveness = [float(value) for value in vehicle["actuator"][0].data[13:17]]
         telemetry: dict[str, Any] = {
             "vehicle_id": vehicle_id,
             "state": {},
@@ -730,12 +765,22 @@ class RosRuntimeSidecar:
             "injection_state": {
                 "wind_speed_mps": vehicle["wind_speed_mps"],
                 "wind_direction_deg": vehicle["wind_direction_deg"],
-                "motor_effectiveness": vehicle["effectiveness"],
+                "motor_effectiveness": observed_effectiveness or vehicle["effectiveness"],
+                "source": (
+                    "actuator_plugin_telemetry"
+                    if observed_effectiveness is not None
+                    else ("read_only_display" if self.args.read_only else "sidecar_command_state")
+                ),
             },
             "rotor_state": None,
             "attitude_error": None,
             "control_output": None,
-            "module_diagnostics": {"active_controller_command": vehicle["target_attitude"] is not None},
+            "module_diagnostics": {
+                "active_controller_command": vehicle["target_attitude"] is not None,
+                "position_command_detail_available": self.PositionCommand is not None,
+                "sidecar_mode": "read_only_display" if self.args.read_only else "injection_capable",
+                "fault_command_owner": "terminal_or_external" if self.args.read_only else "runtime_sidecar",
+            },
             "safety_intervention": False,
         }
         if vehicle["state"]:
@@ -818,6 +863,13 @@ class RosRuntimeSidecar:
             coordinate_evidence=self.coordinate_evidence,
             run_id=self.manifest["run_id"],
         )
+        self.actual_tracks = append_operator_map_actual_tracks(
+            self.actual_tracks,
+            map_vehicles,
+            run_id=str(self.manifest["run_id"]),
+            world_frame=str(self.operator_map["world_frame"]),
+            updated_at=now,
+        )
         self.map_sequence += 1
         map_state = build_operator_map_state(
             manifest=self.manifest,
@@ -831,6 +883,7 @@ class RosRuntimeSidecar:
             bag_id=self.args.replay_bag_id,
             vehicles=map_vehicles,
             task_paths=map_task_paths,
+            actual_tracks=self.actual_tracks,
             map_data_status=map_data_status,
         )
         telemetry: dict[str, Any] = {
@@ -867,11 +920,12 @@ class RosRuntimeSidecar:
     def run(self) -> None:
         rate = self.rospy.Rate(self.args.rate_hz)
         while not self.rospy.is_shutdown():
-            self._consume_commands()
-            for vehicle_id in self.vehicle_ids:
-                self._publish_effectiveness(vehicle_id)
-                if self.vehicles[vehicle_id]["wind_speed_mps"] > 0.0:
-                    self._apply_wind_force(vehicle_id)
+            if not self.args.read_only:
+                self._consume_commands()
+                for vehicle_id in self.vehicle_ids:
+                    self._publish_effectiveness(vehicle_id)
+                    if self.vehicles[vehicle_id]["wind_speed_mps"] > 0.0:
+                        self._apply_wind_force(vehicle_id)
             self._write_status_and_telemetry()
             rate.sleep()
 
@@ -934,6 +988,14 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--model-states-topic", default="/gazebo/model_states")
     parser.add_argument("--wrench-service", default="/gazebo/apply_body_wrench")
+    parser.add_argument(
+        "--read-only",
+        action="store_true",
+        help=(
+            "Display telemetry only. Do not create actuator publishers, consume injection commands, "
+            "or apply Gazebo wind forces."
+        ),
+    )
     return parser.parse_args()
 
 

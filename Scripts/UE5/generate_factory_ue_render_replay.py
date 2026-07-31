@@ -118,13 +118,28 @@ def read_csv_rows(path: Path, vehicle_id: str) -> VehicleRows:
     return VehicleRows(vehicle_id=vehicle_id, source_path=path, rows=rows)
 
 
+def resolve_vehicle_csv_path(
+    run_dir: Path,
+    vehicle_id: str,
+    source_name: str,
+    vehicle_count: int,
+) -> Path:
+    """Resolve multi-UAV files first, then the established single-UAV layout."""
+    vehicle_path = run_dir / f"{vehicle_id}_{source_name}.csv"
+    if vehicle_path.exists() or vehicle_count != 1:
+        return vehicle_path
+    return run_dir / f"{source_name}.csv"
+
+
 def read_plan_csv_rows(path: Path, vehicle_id: str) -> VehiclePlanRows:
-    required = ["t", "x", "y", "z"]
     if not path.exists() or path.stat().st_size <= 0:
         raise FileNotFoundError(f"missing or empty reference-plan CSV: {rel(path)}")
     with path.open(newline="", encoding="utf-8") as handle:
         reader = csv.DictReader(handle)
         headers = list(reader.fieldnames or [])
+        command_columns = ["cmd_x", "cmd_y", "cmd_z"]
+        position_columns = command_columns if all(name in headers for name in command_columns) else ["x", "y", "z"]
+        required = ["t", *position_columns]
         missing = [name for name in required if name not in headers]
         if missing:
             raise ValueError(f"{rel(path)} missing required columns: {missing}")
@@ -134,9 +149,9 @@ def read_plan_csv_rows(path: Path, vehicle_id: str) -> VehiclePlanRows:
                 {
                     "t": parse_float(raw.get("t")),
                     "phase": raw.get("phase") or "",
-                    "x": parse_float(raw.get("x")),
-                    "y": parse_float(raw.get("y")),
-                    "z": parse_float(raw.get("z")),
+                    "x": parse_float(raw.get(position_columns[0])),
+                    "y": parse_float(raw.get(position_columns[1])),
+                    "z": parse_float(raw.get(position_columns[2])),
                 }
             )
     rows = [row for row in rows if math.isfinite(float(row["t"]))]
@@ -501,7 +516,7 @@ def build_manifest(
             "orientation_source": "roll/pitch/yaw radians converted to quaternion xyzw in bridge replay",
         },
         "timebase_profile": {
-            "source_timestamps": "CSV t column from the source Factory run bundle",
+            "source_timestamps": "CSV t column from the source runtime run bundle",
             "output_rate_hz": display_rate_hz,
             "resampling": "linear interpolation for position/velocity; wrapped interpolation for roll/pitch/yaw",
             "frame_order": "global sequence sorted by timestamp then vehicle id",
@@ -520,7 +535,7 @@ def build_manifest(
         "planner_profile": planner_profile,
         "state_source_profile": source_profile,
         "display_profile": {
-            "first_target": "Factory Global Overview attitude trails at 10 Hz",
+            "first_target": f"{scene_id} Global Overview attitude trails at {display_rate_hz:g} Hz",
             "show_attitude_axes": True,
             "trail_sample_interval_frames": 1,
             "trail_time_window_s": 0,
@@ -551,7 +566,7 @@ def build_manifest(
             "mission_exit_code": metadata.get("run_manifest", {}).get("mission_exit_code"),
         },
         "claim_boundary": [
-            "F7a proves a one-way replay data contract from a passed Factory runtime run.",
+            "F7a proves a one-way replay data contract from a source runtime run.",
             "It does not prove UE Editor/runtime visual acceptance until F7b/F7c evidence exists.",
             "It must not feed truth, control, planner target, estimator, or actor transforms back to Gazebo/PX4/MAVROS/planners.",
         ],
@@ -700,18 +715,24 @@ def build_replay(args: argparse.Namespace) -> dict[str, Any]:
     if not vehicle_ids:
         raise ValueError("--vehicles produced an empty vehicle list")
 
-    source_profile = (
+    derived_source_profile = (
         f"factory_l2_synthetic_xyz_calibration_display_only_from_{args.state_source}_start"
         if args.synthetic_calibration_state
         else f"factory_l2_{args.state_source}_csv_display_only"
     )
+    source_profile = args.source_profile or derived_source_profile
     vehicles: list[VehicleRows] = []
     plan_rows_by_vehicle: dict[str, list[dict[str, Any]]] = {}
     plan_sources: dict[str, Path] = {}
     local_plan_points_by_vehicle: dict[str, list[list[float]]] = {}
     local_plan_sources_by_vehicle: dict[str, str] = {}
     for vehicle_id in vehicle_ids:
-        source_path = run_dir / f"{vehicle_id}_{args.state_source}.csv"
+        source_path = resolve_vehicle_csv_path(
+            run_dir,
+            vehicle_id,
+            args.state_source,
+            len(vehicle_ids),
+        )
         vehicle = read_csv_rows(source_path, vehicle_id)
         if args.synthetic_calibration_state:
             synthetic_rows = build_synthetic_calibration_rows(
@@ -724,7 +745,12 @@ def build_replay(args: argparse.Namespace) -> dict[str, Any]:
             vehicle = VehicleRows(vehicle_id=vehicle.vehicle_id, source_path=vehicle.source_path, rows=synthetic_rows)
         vehicles.append(vehicle)
         if args.include_reference_plan:
-            plan_path = run_dir / f"{vehicle_id}_{args.reference_plan_source}.csv"
+            plan_path = resolve_vehicle_csv_path(
+                run_dir,
+                vehicle_id,
+                args.reference_plan_source,
+                len(vehicle_ids),
+            )
             plan = read_plan_csv_rows(plan_path, vehicle_id)
             resampled_plan = resample_position_rows(plan.rows, args.reference_plan_rate_hz or args.rate_hz)
             plan_rows_by_vehicle[vehicle_id] = resampled_plan
@@ -849,6 +875,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--run-id", default=None, help="Override run_id; defaults to run directory name")
     parser.add_argument("--vehicles", default="uav1,uav2,uav3", help="Comma-separated vehicle ids")
     parser.add_argument("--state-source", choices=["truth", "odom"], default="truth", help="Per-UAV CSV suffix to consume")
+    parser.add_argument(
+        "--source-profile",
+        default=None,
+        help="Explicit display-only state-source identity; defaults to the Factory replay convention.",
+    )
     parser.add_argument("--include-reference-plan", action="store_true", help="Embed per-UAV position_cmd CSV as a display-only expected trajectory overlay")
     parser.add_argument("--reference-plan-source", default="position_cmd", help="Per-UAV CSV suffix used for the display-only expected trajectory")
     parser.add_argument("--reference-plan-rate-hz", type=float, default=0.0, help="Expected trajectory overlay resample rate; defaults to --rate-hz")

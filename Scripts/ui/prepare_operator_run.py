@@ -27,6 +27,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.orchestration.operator_map_state import validate_operator_map_snapshot
+from src.orchestration.runtime_sidecar_contract import build_operator_runtime_status
 from src.orchestration.run_manifest_contract import (
     RUN_MANIFEST_V2_SCHEMA,
     artifact_slot,
@@ -39,6 +40,7 @@ RUNS_RELATIVE_ROOT = Path("Results") / "runs"
 ACTIVE_POINTER_RELATIVE_PATH = Path("Results") / "ui_platform" / "qgc_active_run.json"
 RUN_ID_PATTERN = re.compile(r"^qgc-[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
 ACTIVE_STATES = {"launch_prepared", "running", "replaying"}
+TERMINAL_STATES = {"completed", "blocked", "failed"}
 
 
 def _read_object(path: Path) -> dict[str, Any]:
@@ -51,11 +53,9 @@ def _read_object(path: Path) -> dict[str, Any]:
 def _atomic_write_json(path: Path, value: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
-    temporary.write_text(
-        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-        newline="\n",
-    )
+    with temporary.open("w", encoding="utf-8", newline="\n") as stream:
+        json.dump(value, stream, ensure_ascii=False, indent=2)
+        stream.write("\n")
     temporary.replace(path)
 
 
@@ -320,6 +320,105 @@ def clear_active_run(*, root: Path = ROOT, now: float | None = None) -> dict[str
     return pointer
 
 
+def finalize_active_run(
+    *,
+    expected_run_id: str,
+    terminal_state: str,
+    reason_code: str,
+    source: str,
+    root: Path = ROOT,
+    now: float | None = None,
+) -> dict[str, Any]:
+    """Mark the prepared run terminal after the live sidecar has stopped.
+
+    The frozen RunManifest stays unchanged. The terminal status tells QGC that
+    the final map frame is historical, not current MAVLink telemetry.
+    """
+    root = root.resolve()
+    if not RUN_ID_PATTERN.fullmatch(expected_run_id):
+        raise ValueError("operator_run_id_invalid")
+    if terminal_state not in TERMINAL_STATES:
+        raise ValueError("operator_run_terminal_state_invalid")
+    if not re.fullmatch(r"[a-z0-9_]+", reason_code):
+        raise ValueError("operator_run_terminal_reason_invalid")
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+", source):
+        raise ValueError("operator_run_terminal_source_invalid")
+
+    pointer_path = _active_pointer_path(root)
+    if not pointer_path.is_file():
+        raise ValueError("operator_run_active_pointer_missing")
+    pointer = _read_object(pointer_path)
+    if (
+        pointer.get("schema") != "mosim.qgc_active_run_pointer.v1"
+        or pointer.get("state") not in ACTIVE_STATES | TERMINAL_STATES
+        or pointer.get("run_id") != expected_run_id
+    ):
+        raise ValueError("operator_run_active_pointer_invalid")
+
+    run_directory_relative = f"Results/runs/{expected_run_id}"
+    if pointer.get("run_directory") != run_directory_relative:
+        raise ValueError("operator_run_active_pointer_directory_invalid")
+    run_directory = _root_path(root, run_directory_relative)
+    manifest = _read_object(run_directory / "RUN_MANIFEST.json")
+    if (
+        manifest.get("run_id") != expected_run_id
+        or manifest.get("experiment_profile_id") != pointer.get("experiment_profile_id")
+        or manifest.get("experiment_profile_hash") != pointer.get("experiment_profile_hash")
+        or manifest.get("runtime_profile_id") != pointer.get("runtime_profile_id")
+    ):
+        raise ValueError("operator_run_terminal_manifest_identity_mismatch")
+    validate_run_manifest_v2(manifest)
+
+    timestamp = time.time() if now is None else now
+    if not isinstance(timestamp, (int, float)) or timestamp < 0:
+        raise ValueError("operator_run_timestamp_invalid")
+    status_payload = {
+        "schema": "mosim.runtime_status.v1",
+        "run_id": expected_run_id,
+        "status": terminal_state,
+        "reason_code": reason_code,
+        "vehicle_count": manifest["vehicle_count"],
+        "missing_readiness": [],
+        "updated_at": float(timestamp),
+    }
+    _atomic_write_json(run_directory / "RUNTIME_STATUS.json", status_payload)
+
+    telemetry_path = run_directory / "telemetry.json"
+    if telemetry_path.is_file():
+        telemetry = _read_object(telemetry_path)
+        if telemetry.get("run_id") != expected_run_id:
+            raise ValueError("operator_run_terminal_telemetry_identity_mismatch")
+        telemetry = dict(telemetry)
+        telemetry["timestamp"] = float(timestamp)
+        telemetry["readiness"] = status_payload
+        telemetry["mission_status"] = {
+            "transport_state": terminal_state,
+            "fresh": False,
+            "terminal": True,
+            "reason_code": reason_code,
+        }
+        telemetry["operator_runtime_status"] = build_operator_runtime_status(
+            manifest=manifest,
+            state=terminal_state,
+            reason_code=reason_code,
+            updated_at_unix_s=float(timestamp),
+        )
+        _atomic_write_json(telemetry_path, telemetry)
+
+    pointer = dict(pointer)
+    pointer["state"] = terminal_state
+    pointer["updated_at_unix_s"] = float(timestamp)
+    pointer["terminal_at_unix_s"] = float(timestamp)
+    pointer["terminal_reason_code"] = reason_code
+    pointer["source"] = source
+    _atomic_write_json(pointer_path, pointer)
+    return {
+        "pointer": pointer,
+        "runtime_status": status_payload,
+        "telemetry_present": telemetry_path.is_file(),
+    }
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--profile-id")
@@ -327,14 +426,49 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--run-id")
     parser.add_argument("--print-run-id", action="store_true")
     parser.add_argument("--clear-active", action="store_true")
+    parser.add_argument("--finalize-active", action="store_true")
+    parser.add_argument("--expected-run-id")
+    parser.add_argument("--terminal-state", choices=tuple(sorted(TERMINAL_STATES)))
+    parser.add_argument("--reason-code")
+    parser.add_argument("--terminal-source", default="terminal_runtime")
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     try:
+        if args.finalize_active:
+            if args.clear_active or args.profile_id or args.runtime_profile_id or args.run_id or args.print_run_id:
+                raise ValueError("operator_run_finalize_arguments_invalid")
+            if not args.expected_run_id or not args.terminal_state or not args.reason_code:
+                raise ValueError("operator_run_finalize_arguments_missing")
+            result = finalize_active_run(
+                expected_run_id=args.expected_run_id,
+                terminal_state=args.terminal_state,
+                reason_code=args.reason_code,
+                source=args.terminal_source,
+            )
+            print(
+                json.dumps(
+                    {
+                        "schema": "mosim.qgc_operator_run_result.v1",
+                        "state": result["pointer"]["state"],
+                        "run_id": result["pointer"]["run_id"],
+                        "telemetry_present": result["telemetry_present"],
+                    }
+                )
+            )
+            return 0
         if args.clear_active:
-            if args.profile_id or args.runtime_profile_id or args.run_id or args.print_run_id:
+            if (
+                args.profile_id
+                or args.runtime_profile_id
+                or args.run_id
+                or args.print_run_id
+                or args.expected_run_id
+                or args.terminal_state
+                or args.reason_code
+            ):
                 raise ValueError("operator_run_clear_arguments_invalid")
             result = clear_active_run()
             print(json.dumps({"schema": "mosim.qgc_operator_run_result.v1", "state": "cleared", "run_id": result["run_id"]}))

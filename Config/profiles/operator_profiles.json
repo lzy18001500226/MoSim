@@ -23,6 +23,26 @@
       "agent_keywords": ["8字", "八字", "figure eight", "figure8"]
     },
     {
+      "profile_id": "px4ctrl_fastlio_motor_efficiency_fault_recovery_v1",
+      "profile_path": "Config/profiles/experiments/px4ctrl_fastlio_motor_efficiency_fault_recovery_v1.json",
+      "label": "单机起飞悬停故障恢复",
+      "controller_scheme_id": "px4ctrl",
+      "task_key": "fault_recovery_lifecycle",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["起飞", "悬停", "电机故障", "故障恢复", "降落"]
+    },
+    {
+      "profile_id": "px4ctrl_fastlio_factory_takeoff_hover_land_v1",
+      "profile_path": "Config/profiles/experiments/px4ctrl_fastlio_factory_takeoff_hover_land_v1.json",
+      "label": "单机起飞悬停降落",
+      "controller_scheme_id": "px4ctrl",
+      "task_key": "takeoff_hover_land",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["起飞", "悬停", "降落", "单机"]
+    },
+    {
       "profile_id": "cascade_pid_figure8_generated_c_v1",
       "profile_path": "Config/profiles/experiments/cascade_pid_figure8_generated_c_v1.json",
       "label": "生成代码控制器8字飞行",

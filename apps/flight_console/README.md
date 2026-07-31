@@ -1,6 +1,6 @@
-# MoSim Flight Console
+# MoSim Ground Control
 
-Flight Console is a QGroundControl custom build for MoSim experiment operation,
+MoSim Ground Control is a QGroundControl custom build for MoSim experiment operation,
 Factory 2D situational awareness, published-Profile selection, discrete fault
 request staging, and evidence access. It renders copy-only foreground terminal
 commands; it does not launch or supervise simulation processes.
@@ -51,7 +51,7 @@ Results/ui_platform/flight_console_d5_source_gate_20260717/GATE.json
 
 The source/contract gate is not a Windows executable gate. The current
 preflight is `status=ready`, and the 2026-07-28 Release build produced
-`build/flight-console-qgc/Release/MoSimFlightConsole.exe`. This establishes
+`build/flight-console-qgc/Release/MoSimGroundControl.exe`. This establishes
 that the current custom source compiles and links on this machine. It does not
 establish QGC, ROS, Gazebo, PX4, MAVROS, controller, planner, or flight-runtime
 success.
@@ -80,6 +80,6 @@ separate visible-terminal entrypoint:
 powershell -ExecutionPolicy Bypass -File Scripts/ui/run_flight_console.ps1
 ```
 
-This starts no simulator. Runtime commands shown in Flight Console are copied
+This starts no simulator. Runtime commands shown in MoSim Ground Control are copied
 for the operator to run in a visible terminal; each ROS1/Gazebo/PX4/MAVROS/UE
 runtime acceptance remains a separately authorized step.

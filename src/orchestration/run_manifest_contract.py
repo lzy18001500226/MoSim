@@ -74,7 +74,8 @@ def _is_utc_timestamp(value: Any) -> bool:
     if not isinstance(value, str) or not value.endswith("Z"):
         return False
     try:
-        datetime.fromisoformat(value.removesuffix("Z") + "+00:00")
+        # Ubuntu 20.04 ships Python 3.8, which lacks the later suffix helper.
+        datetime.fromisoformat(value[:-1] + "+00:00")
     except ValueError:
         return False
     return True
