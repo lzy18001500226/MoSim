@@ -12,6 +12,7 @@ PLANNING = ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Planning"
 BASELINE = PLANNING / "ThreeUavOpenBlocksReconfigurableFormationPx4Ctrl.mo"
 SAFETY_MODEL = PLANNING / "ThreeUavOpenBlocksReconfigurableFormationPx4CtrlEcbfSafety.mo"
 SAFETY_FILTER = PLANNING / "ThreeUavPairwiseEcbfReferenceSafetyFilter.mo"
+SAFETY_SMOOTHER = PLANNING / "ThreeUavPairwiseEcbfReferenceSmoother.mo"
 PACKAGE = PLANNING / "package.mo"
 ORDER = PLANNING / "package.order"
 RUNNER = ROOT / "Scripts" / "mworks" / "run_three_uav_openblocks_px4ctrl_ecbf_safety_completion.py"
@@ -53,6 +54,7 @@ def main() -> int:
     baseline = BASELINE.read_text(encoding="utf-8")
     safety_model = SAFETY_MODEL.read_text(encoding="utf-8")
     safety_filter = SAFETY_FILTER.read_text(encoding="utf-8")
+    safety_smoother = SAFETY_SMOOTHER.read_text(encoding="utf-8")
     package = PACKAGE.read_text(encoding="utf-8")
     order = ORDER.read_text(encoding="utf-8").splitlines()
     runner = RUNNER.read_text(encoding="utf-8")
@@ -70,6 +72,7 @@ def main() -> int:
     assert safety_model.count("OpenBlocksPx4CtrlVehicle vehicle") == 3
     assert "OpenBlocksMapTruthDisplay navigationDisplay" in safety_model
     assert "ThreeUavPairwiseEcbfReferenceSafetyFilter safetyFilter" in safety_model
+    assert "ThreeUavPairwiseEcbfReferenceSmoother safetySmoother" in safety_model
     filter_parameters = component_body(safety_model, "safetyFilter")
     assert "pair_minimum_distance_m = 1.0" in filter_parameters
     assert "pair_activation_distance_m = 1.5" in filter_parameters
@@ -81,9 +84,15 @@ def main() -> int:
         assert_connection(safety_model, f"reference{index}.acceleration_command", f"safetyFilter.nominal_acceleration_{index}")
         assert_connection(safety_model, f"vehicle{index}.position", f"safetyFilter.actual_position_{index}")
         assert_connection(safety_model, f"velocityEstimator{index}.y", f"safetyFilter.actual_velocity_{index}")
-        assert_connection(safety_model, f"safetyFilter.safe_position_{index}", f"vehicle{index}.position_reference")
-        assert_connection(safety_model, f"safetyFilter.safe_velocity_{index}", f"vehicle{index}.velocity_reference")
-        assert_connection(safety_model, f"safetyFilter.safe_acceleration_{index}", f"vehicle{index}.acceleration_reference")
+        assert_connection(safety_model, f"reference{index}.position_command", f"safetySmoother.nominal_position_{index}")
+        assert_connection(safety_model, f"reference{index}.velocity_command", f"safetySmoother.nominal_velocity_{index}")
+        assert_connection(safety_model, f"reference{index}.acceleration_command", f"safetySmoother.nominal_acceleration_{index}")
+        assert_connection(safety_model, f"safetyFilter.safe_position_{index}", f"safetySmoother.raw_safe_position_{index}")
+        assert_connection(safety_model, f"safetyFilter.safe_velocity_{index}", f"safetySmoother.raw_safe_velocity_{index}")
+        assert_connection(safety_model, f"safetyFilter.safe_acceleration_{index}", f"safetySmoother.raw_safe_acceleration_{index}")
+        assert_connection(safety_model, f"safetySmoother.safe_position_{index}", f"vehicle{index}.position_reference")
+        assert_connection(safety_model, f"safetySmoother.safe_velocity_{index}", f"vehicle{index}.velocity_reference")
+        assert_connection(safety_model, f"safetySmoother.safe_acceleration_{index}", f"vehicle{index}.acceleration_reference")
 
         baseline_reference = component_body(baseline, f"reference{index}")
         safety_reference = component_body(safety_model, f"reference{index}")
@@ -91,12 +100,13 @@ def main() -> int:
             assert len(literal_vector(baseline_reference, field)) == expected_length, (index, field)
             assert literal_vector(baseline_reference, field) == literal_vector(safety_reference, field), (index, field)
 
-    assert_connection(safety_model, "safetyFilter.safe_position_1", "navigationDisplay.reference_position")
+    assert_connection(safety_model, "safetySmoother.safe_position_1", "navigationDisplay.reference_position")
     for channel in (
         "nominal_formation_deviation_m",
         "safety_minimum_predicted_pair_distance_m",
         "safety_active_pair_count",
         "safety_maximum_reference_offset_m",
+        "safety_requested_reference_offset_m",
         "safety_maximum_ecbf_residual_m2_s2",
         "safety_correction_saturated",
     ):
@@ -136,6 +146,7 @@ def main() -> int:
 
     for entry in (
         "ThreeUavPairwiseEcbfReferenceSafetyFilter",
+        "ThreeUavPairwiseEcbfReferenceSmoother",
         "ThreeUavOpenBlocksReconfigurableFormationPx4CtrlEcbfSafety",
     ):
         assert order.count(entry) == 1, entry
@@ -144,6 +155,18 @@ def main() -> int:
         "extends MoSimQuadrotorModel.Guidance.Planning."
         "ThreeUavOpenBlocksReconfigurableFormationPx4CtrlEcbfSafety;"
     ) in package
+
+    for required in (
+        "block ThreeUavPairwiseEcbfReferenceSmoother",
+        "position_time_constant_s",
+        "velocity_time_constant_s",
+        "acceleration_time_constant_s",
+        "der(positionCorrection[vehicle, axis])",
+        "der(velocityCorrection[vehicle, axis])",
+        "der(accelerationCorrection[vehicle, axis])",
+        "maximum_applied_reference_offset_m",
+    ):
+        assert required in safety_smoother, required
 
     print("[OK] Three-UAV OpenBlocks PX4CTRL ECBF reference-safety source contract")
     return 0

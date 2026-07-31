@@ -48,7 +48,7 @@
     },
     {
       "path": "px4ctrl_graphical_generated_shared.c",
-      "sha256": "6ea91051b22b4202e89195f584020d87100e8f9526daee70e726368067fa9ca7"
+      "sha256": "513a35f3d84ebb858f6331b9ebc7067c83f7d80c4d5fdec068052a82ed090c4d"
     }
   ],
   "delivery_files": [
