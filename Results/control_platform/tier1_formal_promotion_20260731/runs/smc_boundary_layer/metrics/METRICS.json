@@ -1,0 +1,10 @@
+{
+  "sample_count": 5001,
+  "time_start_s": 0.0,
+  "time_end_s": 50.0,
+  "position_rmse_m": 9.868769502105888,
+  "terminal_position_error_norm_m": 15.029940929898276,
+  "maximum_position_error_norm_m": 15.029940929898276,
+  "terminal_error_gate_m": 5.0,
+  "terminal_error_gate_passed": false
+}
