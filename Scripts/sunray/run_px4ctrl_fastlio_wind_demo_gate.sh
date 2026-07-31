@@ -10,6 +10,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="${PROJECT_ROOT:-$(cd "${SCRIPT_DIR}/../.." && pwd)}"
+export PROJECT_ROOT
 RUN_ID="${RUN_ID:-sunray_ros1_graphical_c99_wind_hover_$(date +%Y%m%d_%H%M%S)}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
 FORCE_N="${C99_WIND_FORCE_N:-0.8}"
@@ -63,6 +64,7 @@ source "${LOCAL_ROS1_WS}/devel/setup.bash"
 set -u
 
 env \
+  PROJECT_ROOT="${PROJECT_ROOT}" \
   RUN_ID="${RUN_ID}" \
   RESULT_DIR="${RESULT_DIR}" \
   PX4CTRL_CORE_PROFILE=graphical_c99 \
