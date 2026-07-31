@@ -52,6 +52,23 @@
     "performance_outcome": "failed_terminal_position_error_gate",
     "claim_boundary": "The native 50 s run completed and its result was readable. Its terminal position error is far above the 5 m screening gate, so this is retained only as negative MWORKS baseline evidence."
   },
+  "post_run_export": {
+    "exported_at": "2026-08-01T06:08:18+08:00",
+    "export_mode": "native_50s_reexport_for_missing_retained_result",
+    "source_change": false,
+    "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/raw/fixed_awff_l1_residual.csv",
+    "metrics_json": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/metrics/fixed_awff_l1_residual.json",
+    "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/metrics/fixed_awff_l1_residual.csv",
+    "raw_csv_bytes": 4677866,
+    "raw_csv_sha256": "F50127FEE124EE150697F0130765683F063BECC5912B09FAB52C3C98E7A3D722",
+    "row_count": 25001,
+    "time_first_s": 0.0,
+    "time_last_s": 50.0,
+    "nan_count": 0,
+    "native_result": "Results/native_result_cache/fixed_awff_l1_residual/FixedAwffL1ResidualFormalRunner/Result.msr",
+    "native_result_sha256": "902E7C9F6F35967B1086DADB531FFAC79A4E34ED45CD261F2BFF8CE22ABFB940",
+    "claim_boundary": "Post-run analysis export only; original negative performance outcome is unchanged."
+  },
   "mworks_gate": {
     "activation_sentinel_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
     "background_screenshot_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",

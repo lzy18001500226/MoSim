@@ -54,6 +54,23 @@
     "performance_outcome": "passed_terminal_position_error_gate",
     "claim_boundary": "The native 50 s result is readable and below the project 5 m terminal-error screening gate. It is not a deployment or runtime-equivalence claim."
   },
+  "post_run_export": {
+    "exported_at": "2026-08-01T06:01:03+08:00",
+    "export_mode": "read_existing_native_result",
+    "source_change": false,
+    "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/raw/fixed_linear_mpc_l1_indi.csv",
+    "metrics_json": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/metrics/fixed_linear_mpc_l1_indi.json",
+    "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/metrics/fixed_linear_mpc_l1_indi.csv",
+    "raw_csv_bytes": 6024590,
+    "raw_csv_sha256": "E159C300DE335FFB7F914DD50E6B5F92D5CCCE11A1052CB8CB7C3E7A618D809B",
+    "row_count": 25001,
+    "time_first_s": 0.0,
+    "time_last_s": 50.0,
+    "nan_count": 0,
+    "native_result": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/native_result/FixedLinearMpcL1IndiFormalRunner/Result.msr",
+    "native_result_sha256": "3AA871B6BD07D4BD753BE6A6ED241973DCD3579AF2478FC8D878E76F66E69F77",
+    "claim_boundary": "Read-only analysis export; original performance outcome is unchanged."
+  },
   "mworks_gate": {
     "activation_sentinel_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
     "background_screenshot_before": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/WINDOW_GATE_SUMMARY.json",
