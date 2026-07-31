@@ -483,7 +483,7 @@ const OFFLINE_PROFILES = Dict(
 
     function create_assistant_message_bubble(app)
         panel = TyAppDesigner.uipanel(
-            app.AssistantChatContentPanel;
+            app.AssistantChatPanel;
             Title="",
             BackgroundColor=[1.0, 1.0, 1.0],
             BorderType="solid",
@@ -508,7 +508,6 @@ const OFFLINE_PROFILES = Dict(
 
     function render_assistant_chat(app)
         app.AssistantChatPanel === nothing && return
-        app.AssistantChatContentPanel === nothing && return
         panels = app.assistant_message_panels()
         labels = app.assistant_message_labels()
         for (panel, label) in zip(panels, labels)
@@ -519,8 +518,6 @@ const OFFLINE_PROFILES = Dict(
             app.AssistantChatContentHeight = app.AssistantChatPanel.Position[4]
             app.AssistantChatScrollOffset = 0
             app.AssistantChatAutoFollow = true
-            app.AssistantChatContentPanel.Visible = true
-            app.AssistantChatContentPanel.Position = [0, 0, 1360, app.AssistantChatContentHeight]
             app.assistant_update_chat_navigation_controls()
             return
         end
@@ -550,8 +547,6 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantChatAutoFollow = follow_latest
         app.AssistantChatScrollOffset = follow_latest ? max_offset :
             clamp(app.AssistantChatScrollOffset, 0, max_offset)
-        app.AssistantChatContentPanel.Visible = true
-        app.AssistantChatContentPanel.Position = [0, 0, 1360, viewport_height]
 
         y = 10
         slot = 1
@@ -1770,8 +1765,7 @@ const OFFLINE_PROFILES = Dict(
         ), true)
 
         app.AssistantChatPanel.Position = [24, 192, 1392, 390]
-        app.AssistantChatContentPanel.Position = [0, 0, 1360, 390]
-        app.AssistantChatContentPanel.Visible = true
+        app.AssistantChatContentPanel.Visible = false
         app.AssistantActivityPanel.Position = [1002, 74, 414, 62]
         app.AssistantActivityContentPanel.Visible = false
         app.AssistantActivityPageUpButton.Position = [350, 4, 56, 24]
@@ -2578,7 +2572,7 @@ const OFFLINE_PROFILES = Dict(
             BorderType="solid",
             BorderWidth=1,
             BorderColor=[0.68, 0.75, 0.78],
-            Scrollable=true,
+            Scrollable=false,
             Position=[24, 192, 1392, 300],
         )
         app.AssistantChatContentPanel = TyAppDesigner.uipanel(
@@ -2588,8 +2582,8 @@ const OFFLINE_PROFILES = Dict(
             BorderType="solid",
             BorderWidth=0,
             BorderColor=[0.96, 0.97, 0.97],
-            Visible=true,
-            Position=[0, 0, 1360, 390],
+            Visible=false,
+            Position=HIDDEN_CONTROL_POSITION,
         )
         app.AssistantMessagePanel1, app.AssistantMessageLabel1 = app.create_assistant_message_bubble()
         app.AssistantMessagePanel2, app.AssistantMessageLabel2 = app.create_assistant_message_bubble()
