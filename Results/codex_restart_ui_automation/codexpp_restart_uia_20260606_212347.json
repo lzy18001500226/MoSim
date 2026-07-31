@@ -1,8 +1,0 @@
-{
-  "timestamp": "2026-06-06T21:23:48+08:00",
-  "status": "blocked_window_not_found",
-  "manager_path": "D:\\Program Files\\Codex++\\codex-plus-plus-manager.exe",
-  "method": "PowerShell UIAutomation InvokePattern, no screenshot, no coordinate click",
-  "evidence_note": "Written before/around invoking the Codex++ restart button. If Codex restarts, later fields may be absent.",
-  "process_id": 26588
-}

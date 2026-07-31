@@ -8,10 +8,11 @@ Gazebo plugin packages:
 - `realsense_gazebo_plugin`
 - `wind_zone_plugin`
 
-It is deliberately inactive. Existing scripts and runtime profiles continue
-to use `References/Sunray/simulation/gazebo_plugin` until a separate
-activation task audits the Catkin overlay, source provenance, licenses, and
-all consumers.
+It is registered as the project-owned canonical source path in
+`Config/project_paths.json`, and the source-local ROS1 preflight/overlay uses
+it. Some asset manifests, UE helpers, and historical runtime consumers still
+name `References/Sunray/simulation/gazebo_plugin`; those direct consumers must
+be migrated or explicitly retained before that legacy tree is archived.
 
 ## External assets
 
@@ -25,5 +26,6 @@ manifest before this snapshot is used as a runtime source.
 ## Migration boundary
 
 No plugin source, package manifest, CMake input, world, or configuration was
-changed during the copy. The retained legacy directory remains intact and is
-the only active runtime path.
+changed during the copy. The legacy directory remains a compatibility/source
+reference until every direct consumer is replaced. Presence of this directory
+does not prove a complete standalone Gazebo runtime.
