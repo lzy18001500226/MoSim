@@ -58,7 +58,7 @@ reassigns it. A direct user scope assignment overrides an older broad
   `Docs/Workflows/project_structure_refactor.md` remains a user-frozen design
   reference. Do not move models, configs, scripts, results, UE projects, or
   references unless the user explicitly reopens that refactor. The root-level
-  `cmd/` launcher organization is a scoped entrypoint cleanup and does not
+  `Scripts/cmd/` launcher organization is a scoped entrypoint cleanup and does not
   execute the frozen plan.
 - Put new evidence in `Results/`; put stable design in `Docs/Design/`; put
   repeatable operating procedures in `Docs/Workflows/`.

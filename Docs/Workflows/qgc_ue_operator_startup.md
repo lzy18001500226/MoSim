@@ -1,16 +1,16 @@
-# MoSim Flight Console 二维任务操作流程
+# MoSim Ground Control 二维任务操作流程
 
-> 当前入口：`cmd/启动MoSim地面站.cmd` 只启动 Flight Console/QGC，并默认显示
+> 当前入口：`Scripts/cmd/启动MoSim地面站.cmd` 只启动 MoSim Ground Control/QGC，并默认显示
 > Factory L2 二维底图。它不启动 UE、Gazebo、PX4、MAVROS、RViz、ROS 节点或
 > Orchestrator。所有运行命令均由用户在一个可见终端执行。
 
 本流程的目标是让操作者不依赖 Codex 或隐藏后台进程，也能看到每一步的命令、日志、错误和
-停止信号。Flight Console 是操作和显示面，不是运行时编排器。
+停止信号。MoSim Ground Control 是操作和显示面，不是运行时编排器。
 
 ## 1. 启动地面站
 
-1. 双击 `cmd/启动MoSim地面站.cmd`。
-2. 等待 Flight Console 打开。Factory L2 二维底图、右侧操作页和原生 QGC 飞控工具应可见。
+1. 双击 `Scripts/cmd/启动MoSim地面站.cmd`。
+2. 等待 MoSim Ground Control 打开。Factory L2 二维底图、右侧操作页和原生 QGC 飞控工具应可见。
 3. 没有活动 RunManifest 时，二维图只显示底图和任务草案，不显示飞机、轨迹或演示坐标。
 
 启动入口会在最多 15 秒内检查主窗口是否出现。只有输出 `main window ready` 才表示地面站已启动；
@@ -94,7 +94,7 @@ QGC 原生飞控交互，不得与程控任务并行争抢控制权。
 
 ## 6. UE 与 RViz
 
-UE 保持独立展示窗口，不嵌入 Flight Console，也不承担控制、地图或操作焦点。其鼠标进入后应能
+UE 保持独立展示窗口，不嵌入 MoSim Ground Control，也不承担控制、地图或操作焦点。其鼠标进入后应能
 通过 `Esc` 或失焦释放；该输入问题由独立 UE 路线处理。点云、栅格和 TF 的权威审核面仍是 RViz。
 
 当前构建只注册 `MoSimOperatorBridge`；历史 `MoSimOrchestratorBridge` 源码保留用于追溯，
@@ -106,7 +106,7 @@ UE 保持独立展示窗口，不嵌入 Flight Console，也不承担控制、�
    重复启动第二个实例。
 2. 手动任务使用 QGC 原生降落和解除武装后，在启动它的可见终端按 `Ctrl+C` 结束相关进程。
 3. 保存运行终端日志、RunManifest、遥测和结果目录。若需全局清理，只使用经审核的
-   `cmd/停止所有仿真.cmd`，并确认没有其他实验仍在运行。
+   `Scripts/cmd/停止所有仿真.cmd`，并确认没有其他实验仍在运行。
 
 ## 8. 证据边界
 
@@ -121,7 +121,7 @@ MWORKS 模型、原生结果和代码生成一致性证据判定。
 
 | Gate | 操作者动作 | 必须观察到的证据 | 不得据此声称 |
 | --- | --- | --- | --- |
-| Q0 地面站独立启动 | 双击 `cmd/启动MoSim地面站.cmd` | Flight Console/QGC 打开，显示 Factory L2 底图；没有自动启动 UE、Gazebo、ROS、PX4、MAVROS 或 RViz | 已连接飞机、已启动仿真或已生成 RunManifest |
+| Q0 地面站独立启动 | 双击 `Scripts/cmd/启动MoSim地面站.cmd` | MoSim Ground Control/QGC 打开，显示 Factory L2 底图；没有自动启动 UE、Gazebo、ROS、PX4、MAVROS 或 RViz | 已连接飞机、已启动仿真或已生成 RunManifest |
 | Q1 Profile 与地图 | 在 QGC 选择一个已发布 Profile，确认控制器、机数、任务和地图由同一条目派生 | 无活动运行时，图上只有底图和任务草案；禁用 Profile 不可选择并给出原因 | 控制器已加载、任务已开始或飞机已起飞 |
 | Q2 运行准备 | 在 QGC 点击“复制启动命令”，由操作者在一个可见终端执行 | `Results/runs/<run_id>/RUN_MANIFEST.json` 与 `Results/ui_platform/qgc_active_run.json` 身份、Profile hash 和地图快照一致 | 后端 launcher、ROS、Gazebo、PX4、MAVROS、控制器或规划器已接受执行 |
 | Q3 二维坐标门禁 | 由同一可见终端启动已绑定 run_id 的地图 sidecar，并提供匹配的坐标证据 | `map_state` 的 run/profile/map 快照一致且 `coordinate_contract_status=verified`；之后才可显示飞机、航向、实际/未来轨迹与边界 | 原生 QGC 航点已经发布到飞控 |

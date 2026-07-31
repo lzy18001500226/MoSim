@@ -31,7 +31,7 @@ Controller Core / Generated C or C++ / Adapter / PX4 / MAVROS / Gazebo / Sunray 
   -> 命令语义、飞控接口、plant、执行器、传感器、真值、定位、规划和故障环境
 
 第三层：展示、实验操作与审核
-RViz / UE / QGC / Flight Console / Web / Results
+RViz / UE / QGC / MoSim Ground Control / Web / Results
   -> ExperimentProfile 选择、状态展示、点云与轨迹审核、录屏、报告和结果追溯
 ```
 
@@ -46,7 +46,7 @@ Ubuntu-20.04 / ROS1 Noetic
   -> RViz 点云、轨迹、地图与坐标系审核
 ```
 
-UE、QGC 和 Flight Console 属于第三层；它们改善操作、展示和视频证据，但不拥有
+UE、QGC 和 MoSim Ground Control 属于第三层；它们改善操作、展示和视频证据，但不拥有
 控制闭环、定位或规划成功的最终判定权。
 
 ## 正式模型架构
@@ -89,21 +89,22 @@ Model Studio / ExperimentProfile
 
 ## 启动入口
 
-仓库根目录的 Windows 双击操作入口都集中在 [`cmd/`](cmd/)，根目录不再放置 `.cmd`
-文件。`Scripts/`、技能和工具目录中的内部 wrapper 保持原位，不属于这个入口层。
-入口按用途分组，完整清单见 [`cmd/README.md`](cmd/README.md)。
+Windows 双击操作入口都集中在 [`Scripts/cmd/`](Scripts/cmd/)，仓库根目录不再放置
+`.cmd` 文件。该目录只保留已确认的 C99 单机复现入口、地面站启动和受管停止；完整清单
+见 [`Scripts/cmd/README.md`](Scripts/cmd/README.md)。
 
 | 目的 | 入口 |
 | --- | --- |
-| Flight Console / QGC 操作界面 | [`cmd/启动MoSim地面站.cmd`](cmd/启动MoSim地面站.cmd) |
-| 受管 Gazebo/PX4 运行时 | [`cmd/启动Gazebo飞行仿真.cmd`](cmd/启动Gazebo飞行仿真.cmd) |
-| 停止当前受管仿真进程 | [`cmd/停止所有仿真.cmd`](cmd/停止所有仿真.cmd) |
-| Sunray ROS1 基础链路自检 | [`cmd/01_启动Sunray基础自检.cmd`](cmd/01_启动Sunray基础自检.cmd) |
-| Sunray Gazebo 可视化审核 | [`cmd/02_启动Sunray基础可视化审核.cmd`](cmd/02_启动Sunray基础可视化审核.cmd) |
-| 只停止基础链路 | [`cmd/00_停止Sunray基础仿真.cmd`](cmd/00_停止Sunray基础仿真.cmd) |
+| C99 本地环境准备 | [`Scripts/cmd/00_准备C99单机环境.cmd`](Scripts/cmd/00_准备C99单机环境.cmd) |
+| C99 名义起飞-悬停-降落 | [`Scripts/cmd/01_运行C99单机起飞悬停降落.cmd`](Scripts/cmd/01_运行C99单机起飞悬停降落.cmd) |
+| C99 风扰与电机故障恢复 | [`Scripts/cmd/02_运行C99风扰闭环.cmd`](Scripts/cmd/02_运行C99风扰闭环.cmd)；[`Scripts/cmd/03_运行C99电机故障恢复闭环.cmd`](Scripts/cmd/03_运行C99电机故障恢复闭环.cmd) |
+| MoSim Ground Control / QGC 操作界面 | [`Scripts/cmd/启动MoSim地面站.cmd`](Scripts/cmd/启动MoSim地面站.cmd) |
+| 停止当前受管仿真进程 | [`Scripts/cmd/停止所有仿真.cmd`](Scripts/cmd/停止所有仿真.cmd) |
 
-基础自检只证明 Gazebo、PX4、MAVROS 与非空 MID360 点云可启动，且飞行器保持
-地面、未解锁状态。它不是 FAST-LIO、控制器、规划器或编队任务的通过结论。
+当前正式 C99 记录只覆盖 px4ctrl 图形 C99 后端的单机生命周期、受限风扰注入和
+转子效率故障恢复确认。它不代表规划器、多机、严格性能门、完整故障容错或 QGC/UE
+显示闭环已通过。旧 FUEL、Diff 和三机入口保留在
+[`Scripts/cmd/Archive/legacy_unverified/`](Scripts/cmd/Archive/legacy_unverified/)，只供追溯。
 
 ## 目录地图
 
@@ -112,8 +113,8 @@ Model Studio / ExperimentProfile
 | `Models/` | 项目拥有的 MWORKS/Sysplorer 模型；正式根为 `MoSimQuadrotorModel/`。 |
 | `Config/` | 控制器、场景、ExperimentProfile、能力索引及机器可读协议。 |
 | `Scripts/` | 运行编排、质量检查、结果提取、绘图与测试。 |
-| `cmd/` | Windows 双击入口；只做启动和停止转发。 |
-| `apps/` | Flight Console、Model Studio 和项目应用代码。 |
+| `Scripts/cmd/` | 当前 Windows 双击入口；仅保留 C99 单机复现、地面站和受管停止。 |
+| `apps/` | MoSim Ground Control、Model Studio 和项目应用代码。 |
 | `src/` | 可复用的项目编排代码；不能绕过 `Models/`、`Config/` 或运行时权威边界。 |
 | `Docs/Skills/Mworks/mworks-mcp-operations/wrappers/` | Sysplorer MCP 兼容性启动包装器；配置与具体工具说明仍以 `Docs/Skills/` 和 API 索引为准。 |
 | `build/` | 本地应用构建或候选目录；不是模型、配置或正式证据的唯一来源。 |
@@ -165,7 +166,7 @@ Model Studio / ExperimentProfile
 ### 交付与外部依赖
 
 可移植源码包应包含 `Models/`、`Config/`、`Scripts/`、`apps/`、`src/`、`Docs/`、
-`cmd/`、必要的筛选后 `Results/`，以及需要展示时的 `UE5/`。以上九个组件不再把
+`Scripts/cmd/`、必要的筛选后 `Results/`，以及需要展示时的 `UE5/`。以上九个组件不再把
 `References/` 作为活动源码输入。`References/` 在本机保留为上游追溯、回退和
 Sunray 资产再物化来源，不能按目录整体删除。
 

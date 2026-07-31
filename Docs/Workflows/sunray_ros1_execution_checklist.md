@@ -6,6 +6,41 @@
 
 Status: active current checklist, 2026-07-01 CST.
 
+## 0. Current Supported C99 Single-Aircraft Baseline
+
+The only supported Windows runtime route is the source-local graphical px4ctrl
+C99 baseline. It has three completed evidence records:
+
+| Demonstration | Passed evidence | What it proves |
+| --- | --- | --- |
+| Nominal takeoff, hover, land, disarm | `Results/sunray_ros1/sunray_ros1_graphical_c99_takeoff_hover_land_20260731_002/` | C99 adapter, MAVROS, PX4, FAST-LIO state chain, and Sunray/Gazebo complete the lifecycle |
+| Bounded wind injection | `Results/sunray_ros1/sunray_ros1_graphical_c99_wind_hover_20260801_002/` | The same C99 lifecycle completes and Gazebo accepts the configured wind wrench |
+| Rotor-1 efficiency 0.85 and reset | `Results/sunray_ros1/sunray_ros1_graphical_c99_motor_fault_recovery_20260731_002/` | The same C99 lifecycle completes and the physical actuator plugin acknowledges loss and recovery |
+
+The entrypoints are deliberately small and terminal-visible:
+
+```text
+Scripts/cmd/00_准备C99单机环境.cmd
+Scripts/cmd/01_运行C99单机起飞悬停降落.cmd
+Scripts/cmd/02_运行C99风扰闭环.cmd
+Scripts/cmd/03_运行C99电机故障恢复闭环.cmd
+```
+
+Run the preparation entry after a fresh clone or runtime-source change, then
+run exactly one demonstration. A fresh run must create a new timestamped
+directory under `Results/sunray_ros1/`; never substitute an old result bundle
+for a new execution. Check `px4ctrl_build_backend.txt` for
+`graphical_px4ctrl_c99`, then inspect the designated JSON status file named by
+`Scripts/cmd/README.md`.
+
+The baseline uses `PX4CTRL_HOVER_PERCENTAGE=0.456`, GPS removed, FAST-LIO to
+PX4 external vision, and `/uav1/mavros/local_position/odom` as px4ctrl's only
+state input. Gazebo truth only supports the simulation alignment adapter and
+is never supplied directly to px4ctrl. The nominal record uses FAST-LIO
+`0.02 m` filters; the wind and motor records use `0.5 m`, so they are not a
+strict same-parameter performance comparison. QGC, UE, RViz, planners, and
+multi-aircraft behavior are outside this C99 acceptance scope.
+
 ## 1. Goal
 
 Before changing files or running live tools, write the local goal in one
@@ -104,21 +139,9 @@ Scripts/sunray/start_mid360_fastlio_review.sh
 Use `Scripts/gazebo/` only when a current Sunray ROS1 workflow explicitly
 points there. Do not choose old ROS2/Gazebo scripts by name similarity.
 
-For a self-service no-flight infrastructure check, use the root-level `cmd/`
-Windows entrypoints instead of manually composing terminal commands:
-
-```text
-cmd/01_启动Sunray基础自检.cmd
-cmd/02_启动Sunray基础可视化审核.cmd
-cmd/00_停止Sunray基础仿真.cmd
-```
-
-The first entry proves only `Gazebo + PX4 + MAVROS + nonempty MID360` in a
-grounded, unarmed state. The second retains the verified runtime for Gazebo
-inspection until `Ctrl+C`; its terminal and per-run `STATUS.md` remain the
-first error surface. The stop entry deliberately refuses to terminate a
-non-foundation managed run. It is not a substitute for FAST-LIO, controller,
-planner, or formation gates.
+The older no-flight foundation wrappers are now under
+`Scripts/cmd/Archive/legacy_unverified/`. They are retained only for trace-back
+and are not a substitute for the C99 baseline in section 0.
 
 The dedicated GPS/EKF boot-only gate is an optional nested-GPS compatibility
 diagnostic. It starts no controller, external-fusion node, arming, or mission
@@ -179,9 +202,9 @@ wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && PX4CTRL
 
 The last command creates one timestamped directory under
 `Results/sunray_ros1/`. Check its `PX4CTRL_BASIC_MISSION_METRICS.json` for
-`"status": "passed"`. Stop a retained foundation review with
-`cmd/00_停止Sunray基础仿真.cmd`; the flight entry cleans up its own Gazebo/PX4/ROS
-processes after landing.
+`"status": "passed"`. The flight entry cleans up its own Gazebo/PX4/ROS
+processes after landing. Use `Scripts/cmd/停止所有仿真.cmd` only when an abnormal
+run has left managed processes behind.
 
 Before MAVROS starts, the base runner writes
 `mavros_runtime_config_resolution.json`. It must resolve
@@ -337,12 +360,12 @@ Do not use `Publish Point` as a normal target input because it can only select
 rendered point-cloud/geometry surfaces and can place goals inside obstacles.
 `/clicked_point` is diagnostic-only unless the run explicitly enables it.
 
-Use `cmd/启动Diff交互审核.cmd` as the normal Windows
-double-click entry for manual Diff-Planner review. The implementation script is
-`Scripts/sunray/start_diff_interactive_review.ps1`, but do not double-click the
-`.ps1` file because Windows may open it as text instead of executing it. The
-`.cmd` entry runs the Sunray ROS1 preflight, opens the point-cloud and 3D-grid
-RViz windows, and sets the review defaults to:
+The prior Diff-Planner Windows helper now lives in
+`Scripts/cmd/Archive/legacy_unverified/启动Diff交互审核.cmd`. It is a historical
+review wrapper, not a current supported entrypoint. The implementation script
+is `Scripts/sunray/start_diff_interactive_review.ps1`; use it only after a
+separate planner acceptance task explicitly reopens the route. Its historical
+review defaults were:
 
 ```text
 DIFF_INTERACTIVE_REVIEW_HOLD_S=0
@@ -398,13 +421,12 @@ trajectory in the narrow height band above. If the raw planner still climbs
 toward the ceiling, treat that as a planner/map-parameter problem before tuning
 px4ctrl.
 
-Use `cmd/关闭Diff交互审核.cmd` to stop an active Diff-Planner
-interactive review. `cmd/关闭所有RViz窗口.cmd` only closes RViz windows; it does not
-stop Gazebo, PX4, MAVROS, Diff-Planner, px4ctrl, or the Goal4 adapter/helper
-nodes. Before starting a new Diff review after a failed or abandoned run, stop
-the previous Diff review first; otherwise stale ROS nodes can keep old
-parameters such as `DIFF_CMD_MAX_Z=1.35` or `virtual_ceil_height=1.6` alive and
-invalidate the new evidence.
+The matching Diff stop helper is archived beside it. Do not revive either
+helper without first checking the active runtime source, result contract, and
+planner acceptance state. Before a future Diff review after a failed or
+abandoned run, stop the previous process set before restarting; otherwise stale
+ROS nodes can keep old parameters such as `DIFF_CMD_MAX_Z=1.35` or
+`virtual_ceil_height=1.6` alive and invalidate the new evidence.
 
 Current single-UAV Diff-Planner freeze, 2026-06-29 CST:
 
@@ -592,10 +614,10 @@ or RViz. Rebuild the closeout package with:
 python Scripts\sunray\px4ctrl_golden_slice\build_g8_mworks_full_loop_closeout.py
 ```
 
-or double-click the `cmd/` helper:
+or use the archived historical helper only for trace-back:
 
 ```text
-cmd/build_g8_mworks_closeout.cmd
+Scripts/cmd/Archive/legacy_unverified/build_g8_mworks_closeout.cmd
 ```
 
 Only rerun G7B/G7C runtime gates when a generated controller or scoped
