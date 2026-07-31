@@ -432,3 +432,6 @@ References/UAVStacks/Prometheus/Modules/FAST_LIO/Log/*.txt
 References/UAVStacks/Prometheus/Modules/FAST_LIO/PCD/
 
 References/超维空间科技
+
+# CTest runtime output is generated and not project source.
+Testing/Temporary/
