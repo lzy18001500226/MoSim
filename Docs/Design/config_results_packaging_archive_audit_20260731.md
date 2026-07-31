@@ -95,6 +95,28 @@ runtime/UI ownership lane or include its live artifacts.
 5. **B4 - Owner handoff.** Request the ROS/Gazebo/QGC/UI owner's decision for
    their Config/Results trees. Do not infer approval from file age.
 
+## Materialized Archive Record
+
+The first low-risk batch was materialized on 2026-07-31 as a verified external
+copy. This is an archive receipt, not a source deletion or an evidence-status
+change.
+
+| Field | Value |
+|---|---|
+| Archive candidate | `legacy_example1_robustness_pair` |
+| External archive | `C:\Users\HP\Desktop\MoSim_Archive\202605_example1_robustness\` |
+| Included source-relative roots | `Results/robustness/`, `Config/controllers/`, `Config/scenarios/robustness/` |
+| Copy mode | Copy only; all original repository files remain in place. |
+| Verified content | 577 files, 398,562,113 bytes, source/destination SHA-256 checked per file. |
+| External manifest | `ARCHIVE_MANIFEST.json`, SHA-256 `a00023774517b688a34cb837467e6ceb667cddbf08d6eab6b3098b95ae0f17b6` |
+| Archive-side recovery metadata | `SHA256SUMS.txt` and `ARCHIVE_README.md` |
+
+The external archive keeps repository-relative paths below its root. A later
+removal from the working repository still requires the dependency audit,
+original-location tombstone, and explicit review described above. The copy is
+therefore a packaging-safe recovery point, not authorization to delete the
+legacy sources or historical results.
+
 ## Claim Boundary
 
 This document organizes packaging inputs only. It does not assert that a
