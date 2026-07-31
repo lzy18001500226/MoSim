@@ -3,8 +3,13 @@
 
 set -euo pipefail
 
-if [[ "$#" -gt 1 ]] || { [[ "$#" -eq 1 ]] && [[ "$1" != "takeoff_hover_land" ]]; }; then
-  echo "Usage: $0 [takeoff_hover_land]" >&2
+MISSION="${1:-${MISSION:-takeoff_hover_land}}"
+if [[ "$#" -gt 1 ]] || { [[ "$#" -eq 1 ]] && [[ "$1" != "takeoff_hover_land" && "$1" != "figure8" ]]; }; then
+  echo "Usage: $0 [takeoff_hover_land|figure8]" >&2
+  exit 2
+fi
+if [[ "${MISSION}" != "takeoff_hover_land" && "${MISSION}" != "figure8" ]]; then
+  echo "Unsupported operator mission: ${MISSION}" >&2
   exit 2
 fi
 
@@ -37,8 +42,14 @@ REVIEW_OPEN_RVIZ="${REVIEW_OPEN_RVIZ:-true}"
 REVIEW_START_CLOUD_NODE="${REVIEW_START_CLOUD_NODE:-true}"
 REVIEW_PRESTART_HOLD_S="${REVIEW_PRESTART_HOLD_S:-15}"
 MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-180}"
+TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-600}"
 MOSIM_UE_STATE_STREAM="${MOSIM_UE_STATE_STREAM:-true}"
 MOSIM_UE_STATE_STREAM_RATE_HZ="${MOSIM_UE_STATE_STREAM_RATE_HZ:-100}"
+PX4CTRL_MISSION_EXTRA_ARGS="${PX4CTRL_MISSION_EXTRA_ARGS:-}"
+
+if [[ "${MISSION}" == "figure8" && -z "${PX4CTRL_MISSION_EXTRA_ARGS}" ]]; then
+  PX4CTRL_MISSION_EXTRA_ARGS="--initial-hover-s 12 --figure8-period-s 24 --figure8-cycles 1 --figure8-x-amp-m 0.45 --figure8-y-amp-m 0.25 --post-hold-s 3 --land-wait-s 20 --force-disarm-after-land --force-disarm-timeout-s 18 --pre-takeoff-state-stable-s 3 --pre-takeoff-state-timeout-s 60 --pre-takeoff-max-abs-roll-pitch-deg 2 --takeoff-timeout-s 90 --wall-timeout-s 480 --acceptance-mode formal"
+fi
 
 # This wrapper is the Factory L2 live route, so it must never silently fall
 # back to the generic small-voxel settings used by other worlds.  The values
@@ -107,6 +118,7 @@ write_demo_status() {
   python3 - \
     "${RESULT_DIR}" \
     "${RUN_ID}" \
+    "${MISSION}" \
     "${basic_exit_code}" \
     "${RECORD_ROSBAG}" \
     "${ROSBAG_FILE}" \
@@ -117,10 +129,11 @@ import sys
 
 root = pathlib.Path(sys.argv[1])
 run_id = sys.argv[2]
-basic_exit_code = int(sys.argv[3])
-record_requested = sys.argv[4].lower() == "true"
-rosbag_path = pathlib.Path(sys.argv[5])
-operator_display_requested = sys.argv[6].lower() == "true"
+mission = sys.argv[3]
+basic_exit_code = int(sys.argv[4])
+record_requested = sys.argv[5].lower() == "true"
+rosbag_path = pathlib.Path(sys.argv[6])
+operator_display_requested = sys.argv[7].lower() == "true"
 metrics_path = root / "PX4CTRL_BASIC_MISSION_METRICS.json"
 try:
     metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
@@ -128,17 +141,80 @@ except (OSError, json.JSONDecodeError):
     metrics = {}
 
 lifecycle = metrics.get("operational_lifecycle_gate") or {}
+checks = lifecycle.get("checks") or {}
+sample_counts = metrics.get("sample_counts") or {}
+trajectory = metrics.get("trajectory") or {}
 rosbag_ready = (not record_requested) or (rosbag_path.is_file() and rosbag_path.stat().st_size > 0)
-passed = basic_exit_code == 0 and lifecycle.get("status") == "passed" and rosbag_ready
+display_lifecycle_blockers = []
+if not checks.get("pre_takeoff_state_ready"):
+    display_lifecycle_blockers.append("pre_takeoff_state_not_ready")
+if not checks.get("static_odom_ready_before_takeoff"):
+    display_lifecycle_blockers.append("static_odom_not_ready")
+if not checks.get("physical_takeoff_observed"):
+    display_lifecycle_blockers.append("physical_takeoff_not_observed")
+if not checks.get("final_state_disarmed"):
+    display_lifecycle_blockers.append("final_state_not_disarmed")
+if not checks.get("final_truth_available"):
+    display_lifecycle_blockers.append("final_truth_missing")
+final_z_rel = checks.get("final_z_rel_m")
+max_final_z_rel = checks.get("max_final_z_rel_m")
+if isinstance(final_z_rel, (int, float)) and isinstance(max_final_z_rel, (int, float)) and final_z_rel > max_final_z_rel:
+    display_lifecycle_blockers.append(f"final_z_rel_above_max:{final_z_rel}")
+
+trajectory_required = mission in {"figure8", "spiral", "circle", "step_x", "step_y", "step_z"}
+trajectory_blockers = []
+if trajectory_required:
+    if int(sample_counts.get("reference", 0) or 0) <= 0:
+        trajectory_blockers.append("reference_samples_missing")
+    if int(sample_counts.get("truth", 0) or 0) <= 0:
+        trajectory_blockers.append("truth_samples_missing")
+    if int(trajectory.get("matched_samples", 0) or 0) <= 0:
+        trajectory_blockers.append("matched_trajectory_samples_missing")
+
+expected_exit_codes = {0} if mission == "takeoff_hover_land" else {0, 2}
+display_lifecycle_passed = not display_lifecycle_blockers
+trajectory_data_chain_passed = not trajectory_blockers
+passed = (
+    basic_exit_code in expected_exit_codes
+    and display_lifecycle_passed
+    and trajectory_data_chain_passed
+    and rosbag_ready
+)
+reasons = []
+if basic_exit_code not in expected_exit_codes:
+    reasons.append(f"unexpected_basic_gate_exit:{basic_exit_code}")
+reasons.extend(f"display_lifecycle:{item}" for item in display_lifecycle_blockers)
+reasons.extend(f"trajectory_data_chain:{item}" for item in trajectory_blockers)
+if not rosbag_ready:
+    reasons.append("rosbag_not_recorded")
 payload = {
     "schema": "mosim.sunray_ros1.fastlio_operator_live_status.v1",
     "run_id": run_id,
+    "mission": mission,
     "status": "passed" if passed else "blocked",
-    "reason": None if passed else (
-        lifecycle.get("reason")
-        or ("rosbag_not_recorded" if not rosbag_ready else f"basic_gate_exit:{basic_exit_code}")
-    ),
+    "reason": None if passed else ";".join(reasons),
     "functional_lifecycle": lifecycle,
+    "operator_display_lifecycle": {
+        "status": "passed" if display_lifecycle_passed else "blocked",
+        "blockers": display_lifecycle_blockers,
+        "checks": checks,
+        "claim_boundary": "This is a display/reproducibility lifecycle check; it does not replace the controller performance gate.",
+    },
+    "trajectory_data_chain": {
+        "status": "passed" if trajectory_data_chain_passed else "blocked",
+        "blockers": trajectory_blockers,
+        "required": trajectory_required,
+        "reference_samples": int(sample_counts.get("reference", 0) or 0),
+        "truth_samples": int(sample_counts.get("truth", 0) or 0),
+        "matched_samples": int(trajectory.get("matched_samples", 0) or 0),
+        "claim_boundary": "Trajectory samples prove that live reference/truth data were published and recorded; they do not prove tracking performance.",
+    },
+    "underlying_controller_gate": {
+        "status": metrics.get("status"),
+        "exit_code": basic_exit_code,
+        "formal_performance_gate": metrics.get("formal_performance_gate"),
+        "note": "The operator display gate never upgrades a blocked formal controller-performance result.",
+    },
     "quality_observation": {
         "formal_performance_gate": metrics.get("formal_performance_gate"),
         "policy": "Formal tracking performance remains an observation and is not replaced by this operational lifecycle gate.",
@@ -155,12 +231,26 @@ payload = {
             "/position_cmd",
             "/mosim/px4ctrl/reference_path",
             "/mosim/px4ctrl/truth_path",
+            "/gazebo/model_states",
+            "/Laser_map",
+            "/cloud_registered",
+            "/Odometry",
+            "/path",
+            "/mosim/fastlio/laser_map_obstacles",
+            "/mosim/fastlio/occupancy_object_review",
+            "/mosim/fastlio/uav_path",
+            "/mosim/fastlio/uav_axes",
+            "/uav1/livox/lidar",
+            "/uav1/livox/imu",
+            "/tf",
+            "/tf_static",
         ],
     },
     "display": {
         "qgc_read_only_requested": operator_display_requested,
         "ue_state_stream_metrics": str(root / "ue_sender_metrics.json"),
         "rviz_requested": True,
+        "trajectory_topics": ["/mosim/px4ctrl/reference_path", "/mosim/px4ctrl/truth_path", "/mosim/fastlio/uav_path"],
         "claim_boundary": "QGC, UE and RViz are display surfaces only. Gazebo, PX4, MAVROS and the recorded ROS topics remain runtime evidence.",
     },
     "claim_boundary": "This gate proves only a no-fault source-local lifecycle and display/recording path. It is not a controller-performance, fault-tolerance, planner or UE-control claim.",
@@ -188,7 +278,8 @@ trap 'exit 143' TERM
 
 {
   echo "schema=mosim.sunray_ros1.fastlio_operator_live_command.v1"
-  echo "operation_selector=factory_l2_takeoff_hover_land"
+  echo "operation_selector=factory_l2_${MISSION}"
+  echo "mission=${MISSION}"
   echo "run_id=${RUN_ID}"
   echo "result_dir=${RESULT_DIR}"
   echo "controller_authority=px4ctrl_only"
@@ -205,27 +296,35 @@ source "${PROJECT_ROOT}/Scripts/sunray/resolve_local_ros1_runtime.sh"
 source "${LOCAL_ROS1_WS}/devel/setup.bash"
 set -u
 
-env \
-  RUN_ID="${RUN_ID}" \
-  RESULT_DIR="${RESULT_DIR}" \
-  GUI="${GUI}" \
-  REVIEW_OPEN_RVIZ="${REVIEW_OPEN_RVIZ}" \
-  REVIEW_START_CLOUD_NODE="${REVIEW_START_CLOUD_NODE}" \
-  REVIEW_PRESTART_HOLD_S="${REVIEW_PRESTART_HOLD_S}" \
-  MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S}" \
-  WORLD_FILE="${WORLD_FILE}" \
-  GAZEBO_MODEL_PATH="${GAZEBO_MODEL_PATH}" \
-  SUNRAY_GAZEBO_LAUNCH_FILE="${SUNRAY_GAZEBO_LAUNCH_FILE}" \
-  SUNRAY_UAV_INIT_X="${SUNRAY_UAV_INIT_X}" \
-  SUNRAY_UAV_INIT_Y="${SUNRAY_UAV_INIT_Y}" \
-  SUNRAY_UAV_INIT_Z="${SUNRAY_UAV_INIT_Z}" \
-  SUNRAY_UAV_INIT_YAW="${SUNRAY_UAV_INIT_YAW}" \
-  FASTLIO_FILTER_SIZE_SURF="${FASTLIO_FILTER_SIZE_SURF}" \
-  FASTLIO_FILTER_SIZE_MAP="${FASTLIO_FILTER_SIZE_MAP}" \
-  REVIEW_START_OCCUPANCY_NODE="${REVIEW_START_OCCUPANCY_NODE}" \
-  PX4CTRL_ACCEPTANCE_MODE="operational_lifecycle" \
-  bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh" takeoff_hover_land \
-  > "${RESULT_DIR}/basic_gate_runner.log" 2>&1 &
+run_inner_gate() {
+  export PROJECT_ROOT RUN_ID RESULT_DIR GUI REVIEW_OPEN_RVIZ REVIEW_START_CLOUD_NODE
+  export REVIEW_PRESTART_HOLD_S MAVROS_READY_TIMEOUT_S TOTAL_TIMEOUT_S WORLD_FILE GAZEBO_MODEL_PATH
+  export SUNRAY_GAZEBO_LAUNCH_FILE SUNRAY_UAV_INIT_X SUNRAY_UAV_INIT_Y
+  export SUNRAY_UAV_INIT_Z SUNRAY_UAV_INIT_YAW FASTLIO_FILTER_SIZE_SURF
+  export FASTLIO_FILTER_SIZE_MAP REVIEW_START_OCCUPANCY_NODE
+  export SUNRAY_GPS_SENSOR_MODE=removed
+  export PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true
+  export PX4CTRL_START_EXTERNAL_FUSION=true
+  export PX4CTRL_ODOM_SOURCE=mavros_local
+  export PX4CTRL_ODOM_TOPIC=/uav1/mavros/local_position/odom
+  export FASTLIO_ALIGNMENT_Z_SOURCE=truth
+  export FASTLIO_ALIGNMENT_REFERENCE=config
+  export FASTLIO_ALIGNMENT_REQUIRED=true
+  export REVIEW_START_FASTLIO=true
+  export PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.456}"
+  export PX4CTRL_SUNRAY150_IMU_CALIBRATION_ENABLED=false
+  if [[ "${PX4CTRL_CORE_PROFILE:-}" == "graphical_c99" ]]; then
+    export PX4CTRL_EXPECTED_BUILD_BACKEND=graphical_px4ctrl_c99
+  fi
+  if [[ "${MISSION}" == "takeoff_hover_land" ]]; then
+    export PX4CTRL_ACCEPTANCE_MODE=operational_lifecycle
+    exec bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh" takeoff_hover_land
+  fi
+  export PX4CTRL_MISSION_EXTRA_ARGS
+  exec bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_basic_gate.sh" "${MISSION}"
+}
+
+run_inner_gate > "${RESULT_DIR}/basic_gate_runner.log" 2>&1 &
 BASIC_PID=$!
 
 MASTER_READY=false
@@ -248,7 +347,7 @@ if [[ "${MASTER_READY}" != "true" ]]; then
   set -e
   BASIC_PID=""
   write_demo_status "${BASIC_EXIT_CODE}"
-  finalize_operator_run "blocked" "factory_l2_takeoff_hover_land_runtime_not_ready"
+  finalize_operator_run "blocked" "factory_l2_${MISSION}_runtime_not_ready"
   exit 4
 fi
 
@@ -318,9 +417,22 @@ if [[ "${RECORD_ROSBAG}" == "true" ]]; then
     /uav1/mavros/state \
     /uav1/mavros/local_position/odom \
     /uav1/sunray/gazebo_pose \
+    /gazebo/model_states \
     /position_cmd \
     /mosim/px4ctrl/reference_path \
     /mosim/px4ctrl/truth_path \
+    /Laser_map \
+    /cloud_registered \
+    /Odometry \
+    /path \
+    /mosim/fastlio/laser_map_obstacles \
+    /mosim/fastlio/occupancy_object_review \
+    /mosim/fastlio/uav_path \
+    /mosim/fastlio/uav_axes \
+    /uav1/livox/lidar \
+    /uav1/livox/imu \
+    /tf \
+    /tf_static \
     > "${RESULT_DIR}/rosbag_record.log" 2>&1 &
   ROSBAG_PID=$!
 fi
@@ -344,9 +456,9 @@ print("completed" if status == "passed" else "blocked")
 PY
 )"
 if [[ "${TERMINAL_STATE}" == "completed" ]]; then
-  finalize_operator_run "completed" "factory_l2_takeoff_hover_land_completed"
+  finalize_operator_run "completed" "factory_l2_${MISSION}_completed"
 else
-  finalize_operator_run "blocked" "factory_l2_takeoff_hover_land_blocked"
+  finalize_operator_run "blocked" "factory_l2_${MISSION}_blocked"
 fi
 stop_process QGC_SIDECAR_PID
 

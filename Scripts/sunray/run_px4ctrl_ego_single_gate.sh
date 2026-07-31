@@ -8,6 +8,7 @@ export MOSIM_PROJECT_ROOT="${PROJECT_ROOT}"
 FACTORY_WORLD_MODE="${FACTORY_WORLD_MODE:-}"
 SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
 SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
+PX4_BUILD_DIR="${PX4_BUILD_DIR:-${SUNRAY_PX4_DIR}/build/px4_sitl_default}"
 PX4_ROS1_GUARD_UXRCE_DDS="${PX4_ROS1_GUARD_UXRCE_DDS:-true}"
 PX4_ROS1_OVERLAY_PKG=""
 PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws}"
@@ -887,7 +888,7 @@ OCCUPANCY_REVIEW_MAX_ACCUM_YAW_RATE_DEG_S="${OCCUPANCY_REVIEW_MAX_ACCUM_YAW_RATE
 OCCUPANCY_REVIEW_MAX_ACCUM_SPEED_XY_MPS="${OCCUPANCY_REVIEW_MAX_ACCUM_SPEED_XY_MPS:-${POINTCLOUD_REVIEW_MAX_ACCUM_SPEED_XY_MPS}}"
 OCCUPANCY_REVIEW_MAX_ACCUM_SPEED_Z_MPS="${OCCUPANCY_REVIEW_MAX_ACCUM_SPEED_Z_MPS:-${POINTCLOUD_REVIEW_MAX_ACCUM_SPEED_Z_MPS}}"
 case "${PX4CTRL_CORE_PROFILE}" in
-  original|mworks_generated|generated_c|mworks_generated_c|official_pid|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|safety_filter|fault_allocation)
+  original|mworks_generated|generated_c|mworks_generated_c|graphical_c99|official_pid|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|safety_filter|fault_allocation)
     ;;
   *)
     echo "Unsupported PX4CTRL_CORE_PROFILE=${PX4CTRL_CORE_PROFILE}" >&2
@@ -935,6 +936,10 @@ PLANNER_CMD_SMOOTH_MAX_STEP_M="0"
 PLANNER_CMD_SMOOTH_ZERO_DYNAMICS="true"
 PLANNER_CMD_MOTION_TIME_BASIS="wall"
 PLANNER_CMD_RECOMPUTE_VELOCITY_FROM_POSITION="false"
+PLANNER_CMD_MAX_VELOCITY_MPS="${PLANNER_CMD_MAX_VELOCITY_MPS:-0}"
+PLANNER_CMD_MAX_ACCELERATION_MPS2="${PLANNER_CMD_MAX_ACCELERATION_MPS2:-0}"
+PLANNER_CMD_MAX_LATERAL_ACCELERATION_MPS2="${PLANNER_CMD_MAX_LATERAL_ACCELERATION_MPS2:-0}"
+PLANNER_CMD_MAX_JERK_MPS3="${PLANNER_CMD_MAX_JERK_MPS3:-0}"
 PLANNER_CMD_ZERO_ALL_DYNAMICS="${PLANNER_CMD_ZERO_ALL_DYNAMICS:-false}"
 PLANNER_CMD_FIXED_Z="${PLANNER_CMD_FIXED_Z:-}"
 PLANNER_CMD_FIXED_YAW="${PLANNER_CMD_FIXED_YAW:-}"
@@ -1330,8 +1335,8 @@ prepare_px4_ros1_runtime_overlay() {
     return 0
   fi
 
-  local original_px4_etc="${SUNRAY_PX4_DIR}/build/px4_sitl_default/etc"
-  local original_px4_bin="${SUNRAY_PX4_DIR}/build/px4_sitl_default/bin"
+  local original_px4_etc="${PX4_BUILD_DIR}/etc"
+  local original_px4_bin="${PX4_BUILD_DIR}/bin"
   local original_package="${SUNRAY_PX4_DIR}/package.xml"
   local overlay_root="${RESULT_DIR}/px4_ros1_runtime_overlay_$$"
   local overlay_pkg="${overlay_root}/px4"
@@ -1425,7 +1430,7 @@ source_env() {
   source /opt/ros/noetic/setup.bash
   source "${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/setup_gazebo.bash" \
     "${SUNRAY_PX4_DIR}" \
-    "${SUNRAY_PX4_DIR}/build/px4_sitl_default"
+    "${PX4_BUILD_DIR}"
   source "${SUNRAY_WS}/devel/setup.bash"
   if [[ -f "${PX4CTRL_WS}/devel/setup.bash" ]]; then
     source "${PX4CTRL_WS}/devel/setup.bash"

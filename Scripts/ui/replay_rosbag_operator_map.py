@@ -421,6 +421,26 @@ def _replay_timeline(
     return timeline
 
 
+def _display_update_times(timeline: list[float], max_update_rate_hz: float) -> list[float]:
+    """Select bounded UI write times while retaining every raw replay event.
+
+    The caller still walks the complete timeline to retain all recorded state,
+    task-path, and actual-track samples. This only bounds cross-process
+    telemetry writes for an operator display such as QGC.
+    """
+
+    if max_update_rate_hz <= 0.0 or len(timeline) <= 2:
+        return timeline
+    minimum_interval_s = 1.0 / max_update_rate_hz
+    selected = [timeline[0]]
+    for bag_time_s in timeline[1:-1]:
+        if bag_time_s - selected[-1] + 1e-9 >= minimum_interval_s:
+            selected.append(bag_time_s)
+    if timeline[-1] != selected[-1]:
+        selected.append(timeline[-1])
+    return selected
+
+
 def _telemetry_payload(manifest: dict[str, Any], map_state: dict[str, Any], *, now: float) -> dict[str, Any]:
     vehicles = map_state["vehicles"]
     readiness = {
@@ -515,6 +535,13 @@ def run_replay(args: argparse.Namespace) -> int:
         if topic
     }
     timeline = _replay_timeline(frames, task_path_events)
+    try:
+        max_update_rate_hz = float(getattr(args, "max_update_rate_hz", 0.0))
+    except (TypeError, ValueError) as exc:
+        raise ValueError("operator_map_replay_update_rate_invalid") from exc
+    if not math.isfinite(max_update_rate_hz) or max_update_rate_hz < 0.0:
+        raise ValueError("operator_map_replay_update_rate_invalid")
+    display_times = set(_display_update_times(timeline, max_update_rate_hz))
     timeline_start_s = timeline[0]
     timeline_duration_s = timeline[-1] - timeline_start_s
     replay_manifest = build_replay_manifest(
@@ -542,6 +569,8 @@ def run_replay(args: argparse.Namespace) -> int:
             "source_kind": source_kind,
             "bag_id": bag_id,
             "frame_count": len(frames),
+            "raw_timeline_frame_count": len(timeline),
+            "display_update_rate_hz": max_update_rate_hz,
             "updated_at": time.time(),
         },
     )
@@ -568,7 +597,6 @@ def run_replay(args: argparse.Namespace) -> int:
             last_vehicles = frame["vehicles"]
             if frame["source_timestamp_s"] is not None:
                 last_source_timestamp_s = frame["source_timestamp_s"]
-        sequence += 1
         now = time.time()
         while (
             task_path_event_index < len(task_path_events)
@@ -579,18 +607,24 @@ def run_replay(args: argparse.Namespace) -> int:
             if event["source_timestamp_s"] is not None:
                 last_source_timestamp_s = event["source_timestamp_s"]
             task_path_event_index += 1
-        projected_task_paths = _project_replay_task_paths(
-            active_task_paths,
-            coordinate_evidence=coordinate_evidence,
-            run_id=str(manifest["run_id"]),
-        )
-        actual_tracks = append_operator_map_actual_tracks(
-            actual_tracks,
-            last_vehicles,
-            run_id=str(manifest["run_id"]),
-            world_frame=str(map_snapshot["world_frame"]),
-            updated_at=now,
-        )
+        if task_path_event_index > 0:
+            projected_task_paths = _project_replay_task_paths(
+                active_task_paths,
+                coordinate_evidence=coordinate_evidence,
+                run_id=str(manifest["run_id"]),
+            )
+        if frame is not None:
+            actual_tracks = append_operator_map_actual_tracks(
+                actual_tracks,
+                last_vehicles,
+                run_id=str(manifest["run_id"]),
+                world_frame=str(map_snapshot["world_frame"]),
+                updated_at=now,
+            )
+        if bag_time_s not in display_times:
+            last_playback_time_s = playback_time_s
+            continue
+        sequence += 1
         map_state = build_operator_map_state(
             manifest=manifest,
             map_snapshot=map_snapshot,
@@ -615,6 +649,8 @@ def run_replay(args: argparse.Namespace) -> int:
                 "bag_id": bag_id,
                 "sequence": sequence,
                 "playback_time_s": playback_time_s,
+                "raw_timeline_frame_count": len(timeline),
+                "display_update_rate_hz": max_update_rate_hz,
                 "updated_at": now,
             },
         )
@@ -646,6 +682,8 @@ def run_replay(args: argparse.Namespace) -> int:
             "bag_id": bag_id,
             "sequence": sequence,
             "playback_time_s": last_playback_time_s,
+            "raw_timeline_frame_count": len(timeline),
+            "display_update_rate_hz": max_update_rate_hz,
             "updated_at": now,
         },
     )
@@ -672,6 +710,12 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--coordinate-evidence", type=Path)
     parser.add_argument("--speed", type=float, default=1.0)
+    parser.add_argument(
+        "--max-update-rate-hz",
+        type=float,
+        default=0.0,
+        help="Maximum QGC telemetry-write rate; 0 keeps every recorded update.",
+    )
     parser.add_argument("--no-wait", action="store_true", help="Write frames immediately for deterministic tests.")
     return parser.parse_args()
 
@@ -680,6 +724,8 @@ def main() -> int:
     args = parse_args()
     if not math.isfinite(args.speed) or args.speed <= 0.0:
         raise SystemExit("operator_map_replay_speed_invalid")
+    if not math.isfinite(args.max_update_rate_hz) or args.max_update_rate_hz < 0.0:
+        raise SystemExit("operator_map_replay_update_rate_invalid")
     try:
         return run_replay(args)
     except ValueError as exc:

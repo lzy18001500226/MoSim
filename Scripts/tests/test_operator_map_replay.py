@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 import Scripts.ui.replay_rosbag_operator_map as replay_entry
-from Scripts.ui.replay_rosbag_operator_map import _telemetry_payload, run_replay
+from Scripts.ui.replay_rosbag_operator_map import _display_update_times, _telemetry_payload, run_replay
 from Scripts.ui.runtime_sidecar import _canonical_hash, build_operator_map_state, load_operator_map_snapshot
 from src.orchestration.operator_map_replay import (
     build_replay_manifest,
@@ -131,6 +131,13 @@ def test_multivehicle_replay_never_invents_missing_vehicle_positions() -> None:
     assert [vehicle["vehicle_id"] for vehicle in frames[2]["vehicles"]] == ["uav1", "uav2", "uav3"]
 
 
+def test_display_update_limit_keeps_first_and_last_raw_times() -> None:
+    timeline = [0.0, 0.04, 0.1, 0.14, 0.21]
+
+    assert _display_update_times(timeline, 10.0) == [0.0, 0.1, 0.21]
+    assert _display_update_times(timeline, 0.0) == timeline
+
+
 def test_coordinate_evidence_cannot_be_reused_for_another_map_snapshot() -> None:
     manifest = _manifest()
     snapshot = manifest["operator_map_snapshot"]
@@ -191,6 +198,7 @@ def test_replay_entry_writes_completed_run_bound_telemetry(
         odom_topic=[],
         coordinate_evidence=evidence_path,
         speed=1.0,
+        max_update_rate_hz=0.0,
         no_wait=True,
     )
 

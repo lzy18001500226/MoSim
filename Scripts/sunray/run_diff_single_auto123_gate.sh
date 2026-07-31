@@ -11,14 +11,150 @@ PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 RUN_ID="${RUN_ID:-diff_single_auto123_$(date +%Y%m%d_%H%M%S)}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
 
+source "${PROJECT_ROOT}/Scripts/sunray/resolve_local_ros1_runtime.sh"
+GOAL4_DIFF_PLANNER_WS="${GOAL4_DIFF_PLANNER_WS:-${PROJECT_ROOT}/build/ros1/diff_planner_ws_c99}"
+# FAST-LIO is built in its own generated workspace.  The source-local
+# controller workspace already owns perception/fast_lio and
+# perception/livox_ros_driver_compat, so putting the legacy top-level aliases
+# there creates duplicate Catkin package names during rosmsg lookup.
+FASTLIO_WS="${DIFF_FASTLIO_WS:-${PROJECT_ROOT}/build/ros1/fastlio_c99_ws}"
+FASTLIO_SRC="${FASTLIO_SRC:-${PROJECT_ROOT}/src/perception/fast_lio}"
+LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC:-${PROJECT_ROOT}/src/perception/livox_ros_driver_compat}"
+PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE:-graphical_c99}"
+PX4CTRL_EXPECTED_BUILD_BACKEND="${PX4CTRL_EXPECTED_BUILD_BACKEND:-graphical_px4ctrl_c99}"
+PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.456}"
+PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-15}"
+PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-3}"
+PX4CTRL_BOOT_PARAM_OVERRIDES="${PX4CTRL_BOOT_PARAM_OVERRIDES:-EKF2_GPS_CTRL=0,EKF2_BARO_CTRL=0,EKF2_RNG_CTRL=0,EKF2_OF_CTRL=0,EKF2_EV_CTRL=15,EKF2_HGT_REF=3,EKF2_EV_DELAY=0,EKF2_EV_NOISE_MD=1,EKF2_EVP_NOISE=0.03,EKF2_EVA_NOISE=0.03}"
+# Keep the accepted source-local FAST-LIO baseline resolution.  These values
+# are localization inputs, not a planner-speed tuning knob.
+FASTLIO_FILTER_SIZE_SURF="${FASTLIO_FILTER_SIZE_SURF:-0.02}"
+FASTLIO_FILTER_SIZE_MAP="${FASTLIO_FILTER_SIZE_MAP:-0.02}"
+
+if [[ "${PX4CTRL_CORE_PROFILE}" != "graphical_c99" ]]; then
+  echo "This Diff C99 gate requires PX4CTRL_CORE_PROFILE=graphical_c99." >&2
+  exit 2
+fi
+
 GOALS="${GOALS:-1.0,0.0,1.0;2.0,0.0,1.0;3.0,0.5,1.0}"
 GOAL_COUNT="${DIFF_INTERACTIVE_AUTO_PASS_GOAL_COUNT:-$(printf '%s\n' "${GOALS}" | awk -F';' '{count=0; for (i=1; i<=NF; i++) if ($i != "") count++; print count}')}"
 TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-320}"
 DIFF_INTERACTIVE_REVIEW_HOLD_S="${DIFF_INTERACTIVE_REVIEW_HOLD_S:-240}"
 DIFF_INTERACTIVE_FINAL_HOVER_HOLD_S="${DIFF_INTERACTIVE_FINAL_HOVER_HOLD_S:-3.0}"
+# A clean source-local FAST-LIO workspace may need more than the historical
+# 120 s probe window for its first Catkin build.  This waits only for the
+# already-running runtime to become ready; it does not alter planner behavior.
+DIFF_INTERACTIVE_READY_TIMEOUT_S="${DIFF_INTERACTIVE_READY_TIMEOUT_S:-300}"
+# The outer goal probe starts while Gazebo, FAST-LIO and the mission adapter
+# initialize. Keep this bounded wait explicit so a cold source-local run cannot
+# reject a target before the mission node has announced readiness.
+DIFF_INTERACTIVE_PRE_GOAL_STABLE_TIMEOUT_S="${DIFF_INTERACTIVE_PRE_GOAL_STABLE_TIMEOUT_S:-540}"
 
 mkdir -p "${RESULT_DIR}"
 date --iso-8601=seconds > "${RESULT_DIR}/auto123_gate_start.txt"
+
+prepare_source_local_fastlio_workspace() {
+  local local_src="${LOCAL_ROS1_WS}/src"
+  local catkin_toplevel="/opt/ros/noetic/share/catkin/cmake/toplevel.cmake"
+  local catkin_link="${FASTLIO_WS}/src/CMakeLists.txt"
+  local legacy_link
+
+  [[ -f "${FASTLIO_SRC}/package.xml" ]] || {
+    echo "Source-local FAST-LIO package is missing: ${FASTLIO_SRC}" >&2
+    return 2
+  }
+  [[ -f "${LIVOX_COMPAT_SRC}/package.xml" ]] || {
+    echo "Source-local Livox compatibility package is missing: ${LIVOX_COMPAT_SRC}" >&2
+    return 2
+  }
+  [[ -f "${catkin_toplevel}" ]] || {
+    echo "ROS Noetic Catkin toplevel is missing: ${catkin_toplevel}" >&2
+    return 2
+  }
+
+  {
+    echo "LOCAL_ROS1_WS=${LOCAL_ROS1_WS}"
+    echo "FASTLIO_WS=${FASTLIO_WS}"
+    echo "FASTLIO_SRC=${FASTLIO_SRC}"
+    echo "LIVOX_COMPAT_SRC=${LIVOX_COMPAT_SRC}"
+    # These aliases are a known generated-workspace residue from the old
+    # reference layout.  The source-local manifest owns only the nested
+    # perception paths, so remove exactly these generated links before ROS
+    # package discovery.
+    for legacy_link in FAST_LIO livox_ros_driver_compat; do
+      local legacy_path="${local_src}/${legacy_link}"
+      if [[ -L "${legacy_path}" ]]; then
+        echo "removed_stale_generated_link=${legacy_path}->$(readlink -f "${legacy_path}")"
+        rm -f "${legacy_path}"
+      elif [[ -e "${legacy_path}" ]]; then
+        echo "unexpected_nonlink=${legacy_path}"
+        return 2
+      else
+        echo "no_stale_generated_link=${legacy_path}"
+      fi
+    done
+
+    mkdir -p "${FASTLIO_WS}/src"
+    if [[ -L "${catkin_link}" ]]; then
+      if [[ "$(readlink -f "${catkin_link}")" != "$(readlink -f "${catkin_toplevel}")" ]]; then
+        echo "unexpected_fastlio_catkin_link=${catkin_link}->$(readlink -f "${catkin_link}")"
+        return 2
+      fi
+      echo "reused_fastlio_catkin_link=${catkin_link}"
+    elif [[ -e "${catkin_link}" ]]; then
+      echo "unexpected_fastlio_catkin_file=${catkin_link}"
+      return 2
+    else
+      ln -s "${catkin_toplevel}" "${catkin_link}"
+      echo "created_fastlio_catkin_link=${catkin_link}"
+    fi
+  } > "${RESULT_DIR}/fastlio_workspace_source_guard.txt"
+}
+
+prepare_source_local_fastlio_workspace || exit $?
+
+if [[ ! -f "${GOAL4_DIFF_PLANNER_WS}/devel/setup.bash" ]]; then
+  echo "Source-local Diff workspace is missing: ${GOAL4_DIFF_PLANNER_WS}/devel/setup.bash" >&2
+  exit 2
+fi
+
+bash "${PROJECT_ROOT}/Scripts/sunray/prepare_local_ros1_runtime_overlay.sh" \
+  --workspace "${SUNRAY_WS}" \
+  > "${RESULT_DIR}/local_runtime_overlay.log" 2>&1
+
+if [[ -L "${SUNRAY_WS}/devel" ]]; then
+  [[ "$(readlink -f "${SUNRAY_WS}/devel")" == "$(readlink -f "${LOCAL_ROS1_WS}/devel")" ]] || {
+    echo "Runtime overlay devel link targets another workspace: ${SUNRAY_WS}/devel" >&2
+    exit 2
+  }
+elif [[ ! -e "${SUNRAY_WS}/devel" ]]; then
+  ln -s "${LOCAL_ROS1_WS}/devel" "${SUNRAY_WS}/devel"
+else
+  echo "Runtime overlay devel path is not a generated link: ${SUNRAY_WS}/devel" >&2
+  exit 2
+fi
+
+export GOAL4_DIFF_PLANNER_WS
+export PX4CTRL_CORE_PROFILE
+export PX4CTRL_EXPECTED_BUILD_BACKEND
+export PX4CTRL_HOVER_PERCENTAGE
+export PX4CTRL_EKF2_EV_CTRL_OVERRIDE
+export PX4CTRL_EKF2_HGT_REF_OVERRIDE
+export PX4CTRL_BOOT_PARAM_OVERRIDES
+export FASTLIO_FILTER_SIZE_SURF
+export FASTLIO_FILTER_SIZE_MAP
+export FASTLIO_WS
+export FASTLIO_SRC
+export LIVOX_COMPAT_SRC
+export MAVROS_PLUGIN_CONFIG_SOURCE="${PROJECT_ROOT}/Config/gazebo/mavros/px4_pluginlists.yaml"
+export SUNRAY_GPS_SENSOR_MODE=removed
+export PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true
+export PX4CTRL_START_EXTERNAL_FUSION=true
+export PX4CTRL_ODOM_SOURCE=mavros_local
+export PX4CTRL_ODOM_TOPIC=/uav1/mavros/local_position/odom
+export FASTLIO_ALIGNMENT_Z_SOURCE=truth
+export FASTLIO_ALIGNMENT_REFERENCE=config
+export FASTLIO_ALIGNMENT_REQUIRED=true
 
 cat > "${RESULT_DIR}/auto123_gate_command.env" <<EOF
 RUN_ID=${RUN_ID}
@@ -27,7 +163,24 @@ GOALS=${GOALS}
 TOTAL_TIMEOUT_S=${TOTAL_TIMEOUT_S}
 DIFF_INTERACTIVE_REVIEW_HOLD_S=${DIFF_INTERACTIVE_REVIEW_HOLD_S}
 DIFF_INTERACTIVE_FINAL_HOVER_HOLD_S=${DIFF_INTERACTIVE_FINAL_HOVER_HOLD_S}
+DIFF_INTERACTIVE_READY_TIMEOUT_S=${DIFF_INTERACTIVE_READY_TIMEOUT_S}
+DIFF_INTERACTIVE_PRE_GOAL_STABLE_TIMEOUT_S=${DIFF_INTERACTIVE_PRE_GOAL_STABLE_TIMEOUT_S}
 DIFF_INTERACTIVE_AUTO_PASS_GOAL_COUNT=${GOAL_COUNT}
+SUNRAY_WS=${SUNRAY_WS}
+LOCAL_ROS1_WS=${LOCAL_ROS1_WS}
+GOAL4_DIFF_PLANNER_WS=${GOAL4_DIFF_PLANNER_WS}
+PX4CTRL_CORE_PROFILE=${PX4CTRL_CORE_PROFILE}
+PX4CTRL_EXPECTED_BUILD_BACKEND=${PX4CTRL_EXPECTED_BUILD_BACKEND}
+PX4CTRL_HOVER_PERCENTAGE=${PX4CTRL_HOVER_PERCENTAGE}
+PX4CTRL_EKF2_EV_CTRL_OVERRIDE=${PX4CTRL_EKF2_EV_CTRL_OVERRIDE}
+PX4CTRL_EKF2_HGT_REF_OVERRIDE=${PX4CTRL_EKF2_HGT_REF_OVERRIDE}
+PX4CTRL_BOOT_PARAM_OVERRIDES=${PX4CTRL_BOOT_PARAM_OVERRIDES}
+FASTLIO_FILTER_SIZE_SURF=${FASTLIO_FILTER_SIZE_SURF}
+FASTLIO_FILTER_SIZE_MAP=${FASTLIO_FILTER_SIZE_MAP}
+FASTLIO_WS=${FASTLIO_WS}
+FASTLIO_SRC=${FASTLIO_SRC}
+LIVOX_COMPAT_SRC=${LIVOX_COMPAT_SRC}
+MAVROS_PLUGIN_CONFIG_SOURCE=${MAVROS_PLUGIN_CONFIG_SOURCE}
 DIFF_CMD_INVALID_Z_POLICY=clamp
 DIFF_CMD_MIN_Z=0.95
 DIFF_CMD_MAX_Z=1.15
@@ -39,6 +192,24 @@ EOF
   cd "${PROJECT_ROOT}" || exit 97
   RUN_ID="${RUN_ID}" \
   RESULT_DIR="${RESULT_DIR}" \
+  SUNRAY_WS="${SUNRAY_WS}" \
+  SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR}" \
+  PX4_BUILD_DIR="${PX4_BUILD_DIR}" \
+  PX4CTRL_WS="${PX4CTRL_WS}" \
+  LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS}" \
+  FASTLIO_WS="${FASTLIO_WS}" \
+  FASTLIO_SRC="${FASTLIO_SRC}" \
+  LIVOX_COMPAT_SRC="${LIVOX_COMPAT_SRC}" \
+  GOAL4_DIFF_PLANNER_WS="${GOAL4_DIFF_PLANNER_WS}" \
+  PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE}" \
+  PX4CTRL_EXPECTED_BUILD_BACKEND="${PX4CTRL_EXPECTED_BUILD_BACKEND}" \
+  PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE}" \
+  PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE}" \
+  PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE}" \
+  PX4CTRL_BOOT_PARAM_OVERRIDES="${PX4CTRL_BOOT_PARAM_OVERRIDES}" \
+  FASTLIO_FILTER_SIZE_SURF="${FASTLIO_FILTER_SIZE_SURF}" \
+  FASTLIO_FILTER_SIZE_MAP="${FASTLIO_FILTER_SIZE_MAP}" \
+  MAVROS_PLUGIN_CONFIG_SOURCE="${MAVROS_PLUGIN_CONFIG_SOURCE}" \
   PLANNER_VARIANT=diff_planner \
   GUI=false \
   OPEN_RVIZ=false \
@@ -75,9 +246,8 @@ echo "${runner_pid}" > "${RESULT_DIR}/runner_pid.txt"
 
 set +u
 source /opt/ros/noetic/setup.bash
-source /opt/mosim_work/sunray_ws/Sunray/devel/setup.bash
-source "${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws/devel/setup.bash"
-source "${PROJECT_ROOT}/Results/sunray_ros1/workspaces/goal4_diff_planner_ws_px4msg/devel/setup.bash"
+source "${LOCAL_ROS1_WS}/devel/setup.bash"
+source "${GOAL4_DIFF_PLANNER_WS}/devel/setup.bash"
 set -u
 
 cd "${PROJECT_ROOT}" || exit 97
@@ -85,8 +255,8 @@ python3 Scripts/sunray/probe_diff_interactive_goal_switch_chain.py \
   --result-dir "${RESULT_DIR}" \
   --output-json DIFF_INTERACTIVE_GOAL_SWITCH_CHAIN_PROBE.json \
   --goals "${GOALS}" \
-  --ready-timeout-s 120 \
-  --pre-goal-stable-timeout-s 120 \
+  --ready-timeout-s "${DIFF_INTERACTIVE_READY_TIMEOUT_S}" \
+  --pre-goal-stable-timeout-s "${DIFF_INTERACTIVE_PRE_GOAL_STABLE_TIMEOUT_S}" \
   --pre-goal-stable-s 1.0 \
   --reach-xy-radius-m 0.35 \
   --reach-z-tol-m 0.12 \
