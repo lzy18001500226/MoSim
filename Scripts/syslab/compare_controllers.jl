@@ -104,8 +104,8 @@ function polyline_points(time, values, x_min, x_max, y_min, y_max, x0, y0, width
 end
 
 function write_climb_rmse_bar(path::String, climb_rows)
-    width, height = 980, 560
-    left, right, top, bottom = 90.0, 40.0, 55.0, 115.0
+    width, height = 980, 620
+    left, right, top, bottom = 140.0, 40.0, 55.0, 135.0
     labels = [row["controller_id"] for row in climb_rows]
     values = [Float64(row["metrics"]["position_rmse_m"]) for row in climb_rows]
     valid_values = [value for value in values if isfinite(value)]
@@ -119,14 +119,13 @@ function write_climb_rmse_bar(path::String, climb_rows)
     open(path, "w") do io
         println(io, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" height=\"$height\" viewBox=\"0 0 $width $height\">")
         println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
-        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"20\">ClimbPath Position RMSE Comparison</text>")
         println(io, "<line x1=\"$left\" y1=\"$(height - bottom)\" x2=\"$(width - right)\" y2=\"$(height - bottom)\" stroke=\"#222\"/>")
         println(io, "<line x1=\"$left\" y1=\"$top\" x2=\"$left\" y2=\"$(height - bottom)\" stroke=\"#222\"/>")
         for tick in 0:5
             value = y_max * tick / 5
             y = scaled(value, 0.0, y_max, height - bottom, top)
             println(io, "<line x1=\"$left\" y1=\"$y\" x2=\"$(width - right)\" y2=\"$y\" stroke=\"#dddddd\"/>")
-            println(io, "<text x=\"$(left - 10)\" y=\"$(y + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"12\">$(round(value; digits = 3))</text>")
+            println(io, "<text x=\"$(left - 10)\" y=\"$(y + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"16\">$(round(value; digits = 3))</text>")
         end
         for (index, (label, value)) in enumerate(zip(labels, values))
             center_x = left + (index - 0.5) * plot_width / length(labels)
@@ -135,10 +134,10 @@ function write_climb_rmse_bar(path::String, climb_rows)
             color = COLORS[mod1(index, length(COLORS))]
             println(io, "<rect x=\"$(center_x - bar_width / 2)\" y=\"$y\" width=\"$bar_width\" height=\"$bar_height\" fill=\"$color\"/>")
             rendered = isfinite(value) ? string(round(value; digits = 4)) : "n/a"
-            println(io, "<text x=\"$center_x\" y=\"$(y - 7)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"12\">$rendered</text>")
-            println(io, "<text x=\"$center_x\" y=\"$(height - bottom + 20)\" text-anchor=\"end\" transform=\"rotate(-35 $center_x $(height - bottom + 20))\" font-family=\"Times New Roman\" font-size=\"12\">$(svg_escape(label))</text>")
+            println(io, "<text x=\"$center_x\" y=\"$(y - 7)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"16\">$rendered</text>")
+            println(io, "<text x=\"$center_x\" y=\"$(height - bottom + 20)\" text-anchor=\"end\" transform=\"rotate(-45 $center_x $(height - bottom + 20))\" font-family=\"Times New Roman\" font-size=\"18\">$(svg_escape(label))</text>")
         end
-        println(io, "<text x=\"20\" y=\"$(height / 2)\" transform=\"rotate(-90 20 $(height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"14\">Position RMSE (m)</text>")
+        println(io, "<text x=\"30\" y=\"$(height / 2)\" transform=\"rotate(-90 30 $(height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"18\">Position RMSE (m)</text>")
         println(io, "</svg>")
     end
 end
@@ -149,8 +148,8 @@ function metric_value(row, key::String)
 end
 
 function write_metric_bar(path::String, rows, metric_key::String, title::String, y_label::String)
-    width, height = 980, 560
-    left, right, top, bottom = 90.0, 40.0, 55.0, 115.0
+    width, height = 980, 620
+    left, right, top, bottom = 140.0, 40.0, 55.0, 135.0
     labels = [row["controller_id"] for row in rows]
     values = [metric_value(row, metric_key) for row in rows]
     valid_values = [value for value in values if isfinite(value)]
@@ -164,14 +163,13 @@ function write_metric_bar(path::String, rows, metric_key::String, title::String,
     open(path, "w") do io
         println(io, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" height=\"$height\" viewBox=\"0 0 $width $height\">")
         println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
-        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"20\">$(svg_escape(title))</text>")
         println(io, "<line x1=\"$left\" y1=\"$(height - bottom)\" x2=\"$(width - right)\" y2=\"$(height - bottom)\" stroke=\"#222\"/>")
         println(io, "<line x1=\"$left\" y1=\"$top\" x2=\"$left\" y2=\"$(height - bottom)\" stroke=\"#222\"/>")
         for tick in 0:5
             value = y_max * tick / 5
             y = scaled(value, 0.0, y_max, height - bottom, top)
             println(io, "<line x1=\"$left\" y1=\"$y\" x2=\"$(width - right)\" y2=\"$y\" stroke=\"#dddddd\"/>")
-            println(io, "<text x=\"$(left - 10)\" y=\"$(y + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"12\">$(round(value; digits = 3))</text>")
+            println(io, "<text x=\"$(left - 10)\" y=\"$(y + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"16\">$(round(value; digits = 3))</text>")
         end
         for (index, (label, value)) in enumerate(zip(labels, values))
             center_x = left + (index - 0.5) * plot_width / length(labels)
@@ -180,10 +178,10 @@ function write_metric_bar(path::String, rows, metric_key::String, title::String,
             color = COLORS[mod1(index, length(COLORS))]
             println(io, "<rect x=\"$(center_x - bar_width / 2)\" y=\"$y\" width=\"$bar_width\" height=\"$bar_height\" fill=\"$color\"/>")
             rendered = isfinite(value) ? string(round(value; digits = 4)) : "n/a"
-            println(io, "<text x=\"$center_x\" y=\"$(y - 7)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"12\">$rendered</text>")
-            println(io, "<text x=\"$center_x\" y=\"$(height - bottom + 20)\" text-anchor=\"end\" transform=\"rotate(-35 $center_x $(height - bottom + 20))\" font-family=\"Times New Roman\" font-size=\"12\">$(svg_escape(label))</text>")
+            println(io, "<text x=\"$center_x\" y=\"$(y - 7)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"16\">$rendered</text>")
+            println(io, "<text x=\"$center_x\" y=\"$(height - bottom + 20)\" text-anchor=\"end\" transform=\"rotate(-45 $center_x $(height - bottom + 20))\" font-family=\"Times New Roman\" font-size=\"18\">$(svg_escape(label))</text>")
         end
-        println(io, "<text x=\"20\" y=\"$(height / 2)\" transform=\"rotate(-90 20 $(height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"14\">$(svg_escape(y_label))</text>")
+        println(io, "<text x=\"30\" y=\"$(height / 2)\" transform=\"rotate(-90 30 $(height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"18\">$(svg_escape(y_label))</text>")
         println(io, "</svg>")
     end
 end
@@ -198,7 +196,7 @@ end
 
 function write_climbpath_trajectory_overlay(path::String, rows)
     width, height = 1080, 720
-    left, right, top, bottom = 90.0, 45.0, 60.0, 115.0
+    left, right, top, bottom = 120.0, 45.0, 55.0, 90.0
     isempty(rows) && error("At least one ClimbPath row is required")
     all_x = Float64[]
     all_y = Float64[]
@@ -223,7 +221,6 @@ function write_climbpath_trajectory_overlay(path::String, rows)
     open(path, "w") do io
         println(io, "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" height=\"$height\" viewBox=\"0 0 $width $height\">")
         println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
-        println(io, "<text x=\"$(width / 2)\" y=\"30\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"20\">ClimbPath Trajectory Overlay (XY)</text>")
         println(io, "<rect x=\"$left\" y=\"$top\" width=\"$plot_width\" height=\"$plot_height\" fill=\"none\" stroke=\"#222\"/>")
         for tick in 0:5
             x_value = x_min + (x_max - x_min) * tick / 5
@@ -232,8 +229,8 @@ function write_climbpath_trajectory_overlay(path::String, rows)
             y_pixel = scaled(y_value, y_min, y_max, top + plot_height, top)
             println(io, "<line x1=\"$x_pixel\" y1=\"$top\" x2=\"$x_pixel\" y2=\"$(top + plot_height)\" stroke=\"#eeeeee\"/>")
             println(io, "<line x1=\"$left\" y1=\"$y_pixel\" x2=\"$(left + plot_width)\" y2=\"$y_pixel\" stroke=\"#eeeeee\"/>")
-            println(io, "<text x=\"$x_pixel\" y=\"$(top + plot_height + 24)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"12\">$(round(x_value; digits = 2))</text>")
-            println(io, "<text x=\"$(left - 8)\" y=\"$(y_pixel + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"12\">$(round(y_value; digits = 2))</text>")
+            println(io, "<text x=\"$x_pixel\" y=\"$(top + plot_height + 24)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"16\">$(round(x_value; digits = 2))</text>")
+            println(io, "<text x=\"$(left - 8)\" y=\"$(y_pixel + 4)\" text-anchor=\"end\" font-family=\"Times New Roman\" font-size=\"16\">$(round(y_value; digits = 2))</text>")
         end
         reference = polyline_points(ref_columns["x_ref"], ref_columns["y_ref"], x_min, x_max, y_min, y_max, left, top, plot_width, plot_height)
         println(io, "<polyline points=\"$reference\" fill=\"none\" stroke=\"#222222\" stroke-width=\"1.5\" stroke-dasharray=\"6,4\"/>")
@@ -242,11 +239,11 @@ function write_climbpath_trajectory_overlay(path::String, rows)
             points = polyline_points(columns["x"], columns["y"], x_min, x_max, y_min, y_max, left, top, plot_width, plot_height)
             println(io, "<polyline points=\"$points\" fill=\"none\" stroke=\"$(COLORS[mod1(index, length(COLORS))])\" stroke-width=\"2.0\"/>")
         end
-        println(io, "<text x=\"$(left + plot_width / 2)\" y=\"$(height - 20)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"14\">X Position (m)</text>")
-        println(io, "<text x=\"22\" y=\"$(top + plot_height / 2)\" transform=\"rotate(-90 22 $(top + plot_height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"14\">Y Position (m)</text>")
+        println(io, "<text x=\"$(left + plot_width / 2)\" y=\"$(height - 20)\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"18\">X Position (m)</text>")
+        println(io, "<text x=\"30\" y=\"$(top + plot_height / 2)\" transform=\"rotate(-90 30 $(top + plot_height / 2))\" text-anchor=\"middle\" font-family=\"Times New Roman\" font-size=\"18\">Y Position (m)</text>")
         legend_y = height - 62
         println(io, "<line x1=\"$left\" y1=\"$legend_y\" x2=\"$(left + 24)\" y2=\"$legend_y\" stroke=\"#222222\" stroke-width=\"1.5\" stroke-dasharray=\"6,4\"/>")
-        println(io, "<text x=\"$(left + 30)\" y=\"$(legend_y + 4)\" font-family=\"Times New Roman\" font-size=\"12\">reference</text>")
+        println(io, "<text x=\"$(left + 30)\" y=\"$(legend_y + 4)\" font-family=\"Times New Roman\" font-size=\"14\">reference</text>")
         for (index, row) in enumerate(rows)
             column = mod(index - 1, 5)
             legend_row = div(index - 1, 5)
@@ -255,7 +252,7 @@ function write_climbpath_trajectory_overlay(path::String, rows)
             color = COLORS[mod1(index, length(COLORS))]
             controller_label = svg_escape(row["controller_id"])
             println(io, "<line x1=\"$x\" y1=\"$y\" x2=\"$(x + 24)\" y2=\"$y\" stroke=\"$color\" stroke-width=\"2.0\"/>")
-            println(io, "<text x=\"$(x + 30)\" y=\"$(y + 4)\" font-family=\"Times New Roman\" font-size=\"12\">$controller_label</text>")
+            println(io, "<text x=\"$(x + 30)\" y=\"$(y + 4)\" font-family=\"Times New Roman\" font-size=\"14\">$controller_label</text>")
         end
         println(io, "</svg>")
     end
