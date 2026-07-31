@@ -92,6 +92,25 @@ Run the source inside Syslab:
 include(joinpath(ENV["MOSIM_ROOT"], "apps", "model_studio", "src", "app.jl"))
 ```
 
+## Assistant runtime log
+
+The assistant UI and local Codex bridge append diagnostics to:
+
+```text
+Results/ui_platform/model_studio_assistant_runtime.log
+```
+
+The log records workspace initialization, message insertion, chat rendering,
+local service startup, turn requests, polling, responses, and errors. To watch
+it from PowerShell while testing:
+
+```powershell
+Get-Content "$env:MOSIM_ROOT\Results\ui_platform\model_studio_assistant_runtime.log" -Wait
+```
+
+For a blank chat area, check for `chat_render_error`; for a request that does
+not leave the APP, check for `message_append` followed by `turn_start`.
+
 The earlier D4 native APP/Orchestrator gate passed on 2026-07-17. Its
 `MoSim Model Studio` installable artifact remains historical evidence for the
 older wired baseline; it is not the current `MoSim Studio` installation:

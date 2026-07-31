@@ -1,6 +1,7 @@
 module AgentIntegration
 
 using Base64
+using Dates
 
 const DEFAULT_HOST = "127.0.0.1"
 const DEFAULT_PORT = 8765
@@ -19,6 +20,20 @@ function project_root(appfile)
         current = parent
     end
     return normpath(joinpath(dirname(appfile), "..", "..", ".."))
+end
+
+function runtime_log(appfile, event, detail="")
+    normalized = replace(replace(string(detail), '\n' => " | "), '\r' => " ")
+    try
+        path = joinpath(project_root(appfile), "Results", "ui_platform", "model_studio_assistant_runtime.log")
+        mkpath(dirname(path))
+        open(path, "a") do io
+            timestamp = Dates.format(Dates.now(), "yyyy-mm-dd HH:MM:SS")
+            println(io, timestamp * "\tagent\t" * string(event) * "\t" * normalized)
+        end
+    catch
+        # Logging must never block the assistant request path.
+    end
 end
 
 function python_executable()
@@ -64,9 +79,13 @@ end
 function start_agent_service(appfile)
     root = project_root(appfile)
     script = server_script(root)
+    runtime_log(appfile, "service_start_requested", script)
     isfile(script) || return (ok=false, configured=false, detail="助手服务脚本不存在")
     current = health(appfile)
-    current.ok && return current
+    if current.ok
+        runtime_log(appfile, "service_already_ready", current.detail)
+        return current
+    end
     try
         server_process[] = run(
             Cmd(Cmd([python_executable(), script, "--host", DEFAULT_HOST, "--port", string(DEFAULT_PORT)]); dir=root);
@@ -78,8 +97,12 @@ function start_agent_service(appfile)
     for _ in 1:20
         sleep(0.15)
         current = health(appfile)
-        current.ok && return current
+        if current.ok
+            runtime_log(appfile, "service_ready", current.detail)
+            return current
+        end
     end
+    runtime_log(appfile, "service_start_timeout", current.detail)
     return (ok=false, configured=false, detail="助手服务启动超时")
 end
 
@@ -192,12 +215,19 @@ end
 
 function run_turn_client(appfile, arguments)
     root = project_root(appfile)
+    runtime_log(appfile, "client_request", isempty(arguments) ? "" : string(arguments[1]))
     ready = ensure_agent_service(appfile)
-    ready.ok || return turn_failure("助手服务不可用：" * ready.detail; configured=false, error_code="agent_service_unavailable")
+    if !ready.ok
+        runtime_log(appfile, "client_service_unavailable", ready.detail)
+        return turn_failure("助手服务不可用：" * ready.detail; configured=false, error_code="agent_service_unavailable")
+    end
     try
         raw = chomp(read(agent_command(root, arguments), String))
-        return parse_turn_response(raw, ready.configured)
+        result = parse_turn_response(raw, ready.configured)
+        runtime_log(appfile, "client_response", "status=" * string(result.status) * "; request_id=" * string(result.request_id))
+        return result
     catch error
+        runtime_log(appfile, "client_error", sprint(showerror, error))
         return turn_failure("助手请求失败：" * sprint(showerror, error); configured=ready.configured, error_code="agent_client_unavailable")
     end
 end
@@ -210,6 +240,7 @@ function start_mworks_turn(
     attachments=String[],
     codex_thread_id="",
 )
+    runtime_log(appfile, "turn_start", "question_chars=" * string(length(String(question))))
     question_b64 = base64encode(String(question))
     context_b64 = base64encode(String(context_text))
     attachments_b64 = base64encode(join(String.(attachments), "\n"))
@@ -222,6 +253,7 @@ function start_mworks_turn(
 end
 
 function poll_mworks_turn(appfile, request_id::AbstractString)
+    runtime_log(appfile, "turn_poll", "request_id=" * String(request_id))
     isempty(strip(String(request_id))) && return turn_failure("缺少会话请求编号。"; error_code="missing_request_id")
     return run_turn_client(appfile, [
         "turn-status", "--host", DEFAULT_HOST, "--port", string(DEFAULT_PORT),
