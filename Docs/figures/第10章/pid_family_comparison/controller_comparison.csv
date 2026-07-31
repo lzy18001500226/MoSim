@@ -1,3 +1,0 @@
-controller_id,climbpath_position_rmse_m,control_energy,terminal_position_error_m
-official_pid,0.17297014794091128,838825.6055603315,0.00650670038117275
-official_pid_yaw_authority_mapped,0.3392670612206072,850123.0283217132,0.053943200649841636
