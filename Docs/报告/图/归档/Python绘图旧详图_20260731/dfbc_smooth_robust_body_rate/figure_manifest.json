@@ -1,0 +1,22 @@
+{
+  "schema": "mosim.plot_results.v1",
+  "generated_at": "2026-07-30T17:59:57.557077Z",
+  "controller_id": "dfbc_smooth_robust_body_rate",
+  "scene_id": "climbpath50s",
+  "raw_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/dfbc_smooth_robust_body_rate/raw/result.csv",
+  "metrics_json": null,
+  "metrics_csv": "Results/control_platform/phase2_full_48_climbpath/g3_repair/dfbc_smooth_robust_body_rate/metrics/metrics.csv",
+  "figures": [
+    {
+      "file": "trajectory_xy.svg",
+      "type": "trajectory_xy"
+    }
+  ],
+  "key_metrics": {
+    "position_rmse_m": 1.6370127034475108,
+    "terminal_position_error_m": 1.6709584663359194,
+    "control_energy": 838389.4359248454,
+    "max_position_error_m": 1.9742291185128165,
+    "duration_s": 50.0
+  }
+}
