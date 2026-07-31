@@ -1,4 +1,5 @@
-set(QGC_APP_NAME "MoSimFlightConsole" CACHE STRING "CMake-safe app target name" FORCE)
+set(QGC_APP_NAME "MoSimGroundControl" CACHE STRING "CMake-safe app target name" FORCE)
+set(QGC_STABLE_BUILD ON CACHE BOOL "Use the MoSim Ground Control product identity" FORCE)
 # QGC v5.0.8 leaves this dependency on main. Use the private, hash-verified
 # source installed by install_flight_console_toolchain.ps1.
 get_filename_component(MOSIM_PROJECT_ROOT "${CMAKE_SOURCE_DIR}/../../../.." ABSOLUTE)

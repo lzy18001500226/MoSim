@@ -4,7 +4,7 @@
 
 #include "QGCCorePlugin.h"
 
-class MoSimOrchestratorBridge;
+class MoSimOperatorBridge;
 class QQmlApplicationEngine;
 
 class CustomPlugin final : public QGCCorePlugin
@@ -22,7 +22,7 @@ public:
 private:
     QQmlApplicationEngine *_qmlEngine = nullptr;
     class CustomOverrideInterceptor *_selector = nullptr;
-    MoSimOrchestratorBridge *_orchestrator = nullptr;
+    MoSimOperatorBridge *_operatorBridge = nullptr;
 };
 
 class CustomOverrideInterceptor final : public QQmlAbstractUrlInterceptor

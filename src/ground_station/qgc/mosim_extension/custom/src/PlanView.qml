@@ -27,6 +27,8 @@ import QGroundControl.ShapeFileHelper
 import QGroundControl.FlightDisplay
 import QGroundControl.UTMSP
 
+import "qrc:/Custom/qml/QGroundControl/Controls" as MoSimControls
+
 
 Item {
     id: _root
@@ -59,6 +61,7 @@ Item {
     property var    _vehicleID
     property bool   _triggerSubmit
     property bool   _resetRegisterFlightPlan
+    property string _appliedOperatorMapIdentity: ""
 
     readonly property var       _layers:                    [_layerMission, _layerGeoFence, _layerRallyPoints]
     readonly property var       _layersUTMSP:               [_layerMission, _layerRallyPoints, _layerUTMSP] //Adds additional UTMSP layer
@@ -68,6 +71,32 @@ Item {
     readonly property int       _layerRallyPoints:          3
     readonly property int       _layerUTMSP:                4 // Additional Tab button when UTMSP is enabled
     readonly property string    _armedVehicleUploadPrompt:  qsTr("Vehicle is currently armed. Do you want to upload the mission to the vehicle?")
+
+    function operatorMapIdentity() {
+        var map = mosimOperator.operatorMap || ({})
+        if (map.enabled !== true)
+            return ""
+        return [String(map.map_id || ""), String(map.map_version || ""),
+                String(map.asset_sha256 || ""), String(map.operator_map_snapshot_hash || "default")].join("|")
+    }
+
+    function applyOperatorMapViewport() {
+        var identity = operatorMapIdentity()
+        if (!identity || identity === _appliedOperatorMapIdentity)
+            return
+        _appliedOperatorMapIdentity = identity
+        editorMap.center = factoryPlanMap.mapCenter
+        editorMap.zoomLevel = Number((mosimOperator.operatorMap || ({})).default_zoom_level || 16)
+    }
+
+    function factoryMissionPublicationAllowed() {
+        var publication = (mosimOperator.operatorMap || ({})).mission_publication || ({})
+        return String(publication.status || "") === "verified"
+    }
+
+    function factoryMissionPublicationBlockReason() {
+        return qsTr("工厂二维图仅用于任务草案编辑；世界坐标到经纬度的往返校验尚未通过，当前禁止上传至飞控。")
+    }
 
 
     function mapCenter() {
@@ -92,8 +121,12 @@ Item {
 
     onVisibleChanged: {
         if(visible) {
-            editorMap.zoomLevel = QGroundControl.flightMapZoom
-            editorMap.center    = QGroundControl.flightMapPosition
+            if (operatorMapIdentity())
+                applyOperatorMapViewport()
+            else {
+                editorMap.zoomLevel = QGroundControl.flightMapZoom
+                editorMap.center = QGroundControl.flightMapPosition
+            }
             if (!_planMasterController.containsItems) {
                 toolStrip.simulateClick(toolStrip.fileButtonIndex)
             }
@@ -197,6 +230,10 @@ Item {
 
         function upload() {
             if (!checkReadyForSaveUpload(false /* save */)) {
+                return
+            }
+            if (!_root.factoryMissionPublicationAllowed()) {
+                mainWindow.showMessageDialog(qsTr("任务上传已阻止"), _root.factoryMissionPublicationBlockReason())
                 return
             }
             switch (_missionController.sendToVehiclePreCheck()) {
@@ -365,9 +402,8 @@ Item {
             }
 
             Component.onCompleted: {
-                if (mosimOrchestrator.operatorMap.enabled === true) {
-                    editorMap.center = factoryPlanMap.mapCenter
-                    editorMap.zoomLevel = Number(mosimOrchestrator.operatorMap.default_zoom_level || 16)
+                if (_root.operatorMapIdentity()) {
+                    _root.applyOperatorMapViewport()
                 } else {
                     editorMap.center = QGroundControl.flightMapPosition
                 }
@@ -375,11 +411,60 @@ Item {
 
             QGCMapPalette { id: mapPal; lightColors: editorMap.isSatelliteMap }
 
-            FactoryPlanMapOverlay {
+            MoSimControls.FactoryPlanMapOverlay {
                 id: factoryPlanMap
                 map: editorMap
-                mapConfig: mosimOrchestrator.operatorMap || ({})
-                runManifest: mosimOrchestrator.runManifest || ({})
+                mapConfig: mosimOperator.operatorMap || ({})
+                runManifest: mosimOperator.runManifest || ({})
+                mapState: (mosimOperator.runtimeTelemetry || ({})).map_state || ({})
+                runId: mosimOperator.runId || ""
+            }
+
+            function zoomAtPointer(viewX, viewY, wheelDelta) {
+                if (!isFinite(wheelDelta) || Math.abs(wheelDelta) < 0.0001)
+                    return
+                var pointer = Qt.point(viewX, viewY)
+                var anchor = editorMap.toCoordinate(pointer, false /* clipToViewPort */)
+                var oldZoom = editorMap.zoomLevel
+                editorMap.zoomLevel = oldZoom + wheelDelta / 120.0
+                if (Math.abs(editorMap.zoomLevel - oldZoom) >= 0.0001)
+                    editorMap.alignCoordinateToPoint(anchor, pointer)
+            }
+
+            // QGC's stock WheelHandler changes zoomLevel around map center.
+            // The Factory task map keeps the coordinate under the mouse fixed.
+            MouseArea {
+                id: factoryPlanWheelArea
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
+                hoverEnabled: true
+                z: QGroundControl.zOrderWaypointLines - 1
+                onWheel: function(wheel) {
+                    var delta = wheel.angleDelta.y
+                    if (Math.abs(delta) < 0.0001)
+                        delta = wheel.pixelDelta.y
+                    editorMap.zoomAtPointer(wheel.x, wheel.y, delta)
+                    wheel.accepted = true
+                }
+            }
+
+            MapScale {
+                id: factoryPlanMapScale
+                anchors.left: toolStrip.right
+                anchors.leftMargin: _toolsMargin
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: _toolsMargin
+                mapControl: editorMap
+                buttonsOnLeft: true
+                zoomButtonsVisible: true
+                z: QGroundControl.zOrderWidgets
+            }
+
+            Connections {
+                target: mosimOperator
+                function onStateChanged() {
+                    _root.applyOperatorMapViewport()
+                }
             }
 
             onZoomLevelChanged: {
@@ -512,6 +597,10 @@ Item {
 
             // Add the vehicles to the map
             MapItemView {
+                // Factory map geometry is drawn only from the run-bound,
+                // coordinate-evidence-gated map_state.  Avoid placing an
+                // unrelated MAVLink GPS icon over the factory floorplan.
+                visible: !factoryPlanMap.visible
                 model: QGroundControl.multiVehicleManager.vehicles
                 delegate: VehicleMapItem {
                     vehicle:        object
