@@ -1,0 +1,212 @@
+{
+  "official_pid": {
+    "rmse": 0.17297014794091128,
+    "term": 0.00650670038117275,
+    "status": "pass",
+    "zh": "官方 PID",
+    "cat": "pid_family"
+  },
+  "px4ctrl": {
+    "rmse": 0.2766961601143172,
+    "term": 0.002682854466775294,
+    "status": "pass",
+    "zh": "px4ctrl 工程基线",
+    "cat": "engineering_deployment_baseline"
+  },
+  "pid_family_comparison": null,
+  "linear_family_comparison": null,
+  "nonlinear_family_comparison": null,
+  "smc_family_comparison": null,
+  "mpc_family_comparison": null,
+  "geometric_family_comparison": null,
+  "controller_radar": null,
+  "h_2_state_feedback": {
+    "rmse": 0.08974783356659308,
+    "term": 0.0006048702068405875,
+    "status": "pass",
+    "zh": null,
+    "cat": null
+  },
+  "lqg": {
+    "rmse": 0.2427607354330561,
+    "term": 0.0035707744599062347,
+    "status": "pass",
+    "zh": "LQG",
+    "cat": "linear_robust_state_feedback"
+  },
+  "lqi": {
+    "rmse": 0.21221954634435075,
+    "term": 0.022064896641067727,
+    "status": "pass",
+    "zh": null,
+    "cat": null
+  },
+  "lqr_baseline": {
+    "rmse": 0.20429428437790634,
+    "term": 0.0027137995146974798,
+    "status": "pass",
+    "zh": "LQR",
+    "cat": "linear_robust_state_feedback"
+  },
+  "adaptive_backstepping": {
+    "rmse": 2.289471013723613,
+    "term": 2.421473426786086,
+    "status": "pass",
+    "zh": "自适应反步控制",
+    "cat": "nonlinear_adaptive"
+  },
+  "backstepping_baseline": {
+    "rmse": 1.8004411559773,
+    "term": 1.852120705583879,
+    "status": "pass",
+    "zh": "反步控制",
+    "cat": "nonlinear_adaptive"
+  },
+  "feedback_linearization": {
+    "rmse": 2.162091102107092,
+    "term": 2.196260919695625,
+    "status": "pass",
+    "zh": "反馈线性化",
+    "cat": "nonlinear_adaptive"
+  },
+  "ndi": {
+    "rmse": 0.10351048768735834,
+    "term": 0.0009085564467018949,
+    "status": "pass",
+    "zh": "非线性动态逆",
+    "cat": "nonlinear_adaptive"
+  },
+  "passivity_based_control": {
+    "rmse": 2.162091102107092,
+    "term": 2.196260919695625,
+    "status": "pass",
+    "zh": "无源控制",
+    "cat": "nonlinear_adaptive"
+  },
+  "adaptive_smc": {
+    "rmse": 2.0461191600375335,
+    "term": 2.762559114765275,
+    "status": "pass",
+    "zh": "自适应滑模控制",
+    "cat": "sliding_mode"
+  },
+  "fuzzy_smc": {
+    "rmse": 2.7051715450671203,
+    "term": 2.842577703555017,
+    "status": "pass",
+    "zh": "模糊滑模控制",
+    "cat": "sliding_mode"
+  },
+  "integral_smc": {
+    "rmse": 2.0516091179139857,
+    "term": 1.6605705226404683,
+    "status": "pass",
+    "zh": "积分滑模控制",
+    "cat": "sliding_mode"
+  },
+  "nonsingular_terminal_smc": {
+    "rmse": 1.4528915119346768,
+    "term": 1.4576099124455983,
+    "status": "pass",
+    "zh": "非奇异终端滑模控制",
+    "cat": "sliding_mode"
+  },
+  "terminal_smc": {
+    "rmse": 2.554592212814691,
+    "term": 2.7120917380559404,
+    "status": "pass",
+    "zh": "终端滑模控制",
+    "cat": "sliding_mode"
+  },
+  "explicit_gain_scheduled_mpc": {
+    "rmse": 0.2042904972194766,
+    "term": 0.004321100426104121,
+    "status": "pass",
+    "zh": "显式增益调度 MPC",
+    "cat": "optimization_predictive"
+  },
+  "ilqr": {
+    "rmse": 0.2185471293759734,
+    "term": 0.006165810860597446,
+    "status": "pass",
+    "zh": "iLQR",
+    "cat": "optimization_predictive"
+  },
+  "mppi": {
+    "rmse": 0.20497592464335546,
+    "term": 0.004429334159247959,
+    "status": "pass",
+    "zh": "MPPI",
+    "cat": "optimization_predictive"
+  },
+  "robust_mpc": {
+    "rmse": 0.20281091203054682,
+    "term": 0.0035219236160583243,
+    "status": "pass",
+    "zh": "鲁棒 MPC",
+    "cat": "optimization_predictive"
+  },
+  "tube_mpc": {
+    "rmse": 0.22660286891945042,
+    "term": 0.003616617837317414,
+    "status": "pass",
+    "zh": "管束 MPC",
+    "cat": "optimization_predictive"
+  },
+  "dfbc_basic": {
+    "rmse": 0.2760519080261363,
+    "term": 0.00830026773207186,
+    "status": "pass",
+    "zh": "基础微分平坦控制",
+    "cat": "geometric_flatness"
+  },
+  "dfbc_high_order": {
+    "rmse": 0.3576972701279664,
+    "term": 0.003031802154681142,
+    "status": "pass",
+    "zh": null,
+    "cat": null
+  },
+  "dfbc_high_order_body_rate": {
+    "rmse": 0.35747079266089554,
+    "term": 0.0023754294135566734,
+    "status": "pass",
+    "zh": null,
+    "cat": null
+  },
+  "dfbc_smooth_robust": {
+    "rmse": 1.6336244568153713,
+    "term": 1.675879351051941,
+    "status": "pass",
+    "zh": null,
+    "cat": null
+  },
+  "dfbc_smooth_robust_body_rate": {
+    "rmse": 1.6370127034475108,
+    "term": 1.6709584663359194,
+    "status": "pass",
+    "zh": null,
+    "cat": null
+  },
+  "se_3_basic": {
+    "rmse": 0.2765318225908831,
+    "term": 0.0029811618353429636,
+    "status": "pass",
+    "zh": null,
+    "cat": null
+  },
+  "awff": {
+    "rmse": 7.258035997242231,
+    "term": 48.8182737515304,
+    "status": "fail",
+    "zh": null,
+    "cat": null
+  },
+  "official_pid_yaw_authority_mapped": {
+    "rmse": 0.3392670612206072,
+    "term": 0.053943200649841636,
+    "status": "pass",
+    "zh": null,
+    "cat": null
+  }
+}
