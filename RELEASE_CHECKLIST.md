@@ -43,13 +43,18 @@ AI 助手无法使用不影响 MWORKS 核心仿真、结果复核或 px4ctrl 代
 源码快照身份、许可证和树指纹见 `src/Agent/CODEX_SOURCE_MANIFEST.json`。导入快照
 未携带可验证的上游 Git revision，因此发布时必须同时保留该清单和 MoSim 的发布提交。
 
-Windows 上未检测到本机 `gcc`、`clang` 或 `cl`，因此本批次没有宣称 Windows DLL
-已构建。Windows 交付机需安装 Visual Studio Build Tools 或 LLVM/Clang 后重新构建。
+Windows 上当前普通 PowerShell 未暴露 `gcc`、`clang` 或 `cl`，因此本批次没有宣称
+Windows DLL 已构建。已安装 Visual Studio Build Tools 的机器仍应在 Developer
+PowerShell/VS Native Tools 提示符中重新构建，或显式配置 LLVM/Clang。
 导入的 Codex 源码将 Windows 11 + WSL2 列为其文档化系统路径；`build_codex.ps1`
 是为 Studio 提供原生 `.exe` 的项目入口，只有目标机实际通过 `--version` 后才可
 视为可用。首次 `cargo build --locked` 仍可能下载锁定依赖，除非 Cargo 缓存已就绪。
-本机 2026-07-31 未检测到 `cargo` 或 `rustc`，因此未生成 Codex `.exe`，也未执行
-真实 GPT 请求；这不影响已完成的源码、桥接和离线合同验证。
+本机 2026-07-31 复核到 `D:\Dev\cargo\bin\cargo.exe`，但 Rustup 尚未配置默认
+工具链，`cargo --version` 会提示执行 `rustup default stable`；因此当前不能把
+“Cargo 已在 PATH”写成“可从零重编译”。现有
+`src\Agent\codex-main\codex-rs\target\release\codex.exe --version` 能输出
+`codex-cli 0.0.0`，这只证明该本机可执行文件可启动，不等同于目标机已构建、已登录
+或已完成 GPT 请求。
 
 ## 2. 正式模型包根
 

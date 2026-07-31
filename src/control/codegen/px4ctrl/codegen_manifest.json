@@ -70,7 +70,7 @@
     },
     {
       "path": "hash_check.ps1",
-      "sha256": "b38cbec001d35da5c1354e4c81afa6b256c36031d6ef0ce8179bbddb876aff03"
+      "sha256": "8caa373071cde231ca59013e876d58ab9f5efad090485f82249920e5717affeb"
     },
     {
       "path": "hash_check.sh",
