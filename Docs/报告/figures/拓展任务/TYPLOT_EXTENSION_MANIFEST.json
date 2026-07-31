@@ -1,0 +1,56 @@
+{
+  "figure_count_generated": 7,
+  "resolution": 600,
+  "figure_count_expected": 7,
+  "output_root": "C:\\Users\\HP\\Desktop\\MoSim\\Docs\\报告\\figures\\拓展任务",
+  "generator": "Scripts/syslab/plot_extension_openblocks_typlot.jl",
+  "renderer": "TyPlot (Syslab native)",
+  "results": [
+    {
+      "figure": "single_uav_trajectory_xy",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "single_uav_altitude_tracking",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "single_uav_position_error",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "three_uav_trajectory_xy",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "three_uav_pair_distance",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "three_uav_tracking_error",
+      "error": "",
+      "ok": true
+    },
+    {
+      "figure": "three_uav_clearance_bound",
+      "error": "",
+      "ok": true
+    }
+  ],
+  "schema": "mosim.extension_openblocks.typlot_manifest.v1",
+  "evidence_selection": "px4ctrl for both single-UAV and three-UAV（自研控制器，两侧都要给出可用证据）",
+  "scope_notes": {
+    "no_3d_figure": "原计划的 single_uav_trajectory_3d 已撤销：xy 幅面 82x52 m 对 z 幅面 2.5 m 约 33:1，任何视角下 z 起伏都不可辨，信息量不超过俯视图与高度时序图之和。",
+    "no_collision_statement": "三机最小实际机间距 0.9300 m（t=206.0 s），306 样本中仅 1 个低于 1.0 m 门限。门限由本项目自行制定且定得偏高；0.93 m 未构成碰撞。",
+    "single_uav_altitude_dominance": "单机 position_rmse_m 1.1731 m 中 z_rmse 1.1342 m 占绝对主导，xy_rmse 仅 0.2994 m。z 全程低于 terrain-follow AGL 参考约 1.2 m，末端收回，terminal 0.1176 m。altitude_violation_count=79、tilt_violation_count=83，safety_score=0。",
+    "random_columns_drawn_as_centers": "俯视图把 7102 根柱画成中心散点而非闭合矩形：柱边长 0.20 m 在 82 m 幅宽下不足一像素，逐个画矩形会产生 7102 条曲线，渲染与图例均不可行。散点即真实观感，几何计数未变。",
+    "obstacle_geometry_source": "Scripts/planning/export_openblocks_obstacles.py 复用规划器的 expand_wall_groups + expand_random_obstacles 展开 Config/planners/astar_min_snap/map_open_blocks.yaml，导出 Results/planning/_openblocks_obstacles.json：16 墙盒（8 组 L/T 模板）+ 7102 随机柱（seed=20260518，1000 簇，columns_per_cluster 4-10），合计 7118 = planner truth_obstacle_count。全部程序化，非手工录入。",
+    "clearance_lower_bound_definition": "actual_clearance_lower_bound_m = min_i(planned_clearance_m[i] − vehicle_i.tracking_error_m)，planned_clearance_m = {0.4466, 0.4483, 0.4459}（规划航线到最近障碍的静态间隙）。这是最坏方向假设下的保守下界，不是实测到障碍的距离。最小 −1.1879 m 出现在 t=200 s，对应 uav2 峰值跟踪误差 1.6362 m：0.4483 − 1.6362 = −1.1879，与记录完全吻合。",
+    "mworks_only": "两组证据均为 MWORKS 整机闭环仿真，不含 Gazebo/PX4/ROS 运行时链路。"
+  }
+}
