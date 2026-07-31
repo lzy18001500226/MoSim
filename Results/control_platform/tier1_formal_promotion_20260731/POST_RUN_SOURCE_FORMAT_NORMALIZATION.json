@@ -1,0 +1,30 @@
+{
+  "schema": "mosim.tier1_graphical_probe_post_run_format_normalization.v1",
+  "created_at": "2026-07-31T13:02:00+08:00",
+  "scope": "Formatting-only cleanup after the native CheckModel and 50 s ClimbPath attempts.",
+  "native_validation_records": [
+    "Results/control_platform/tier1_formal_promotion_20260731/CHECK_MODEL_RECORD.json",
+    "Results/control_platform/tier1_formal_promotion_20260731/SIMULATION_RECORD.json"
+  ],
+  "changed_sources": {
+    "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo": {
+      "sha256_after_format_normalization": "42CB305A3DF9DE94CE9335A6DCE9B684268AEC7363AF00A476BCCB196E66A8B4"
+    },
+    "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo": {
+      "sha256_after_format_normalization": "9E36DF1677AE5E7850D04D36C0976CC591635609817994C71DAC93D1DCFC7D32"
+    }
+  },
+  "formatting_operations": [
+    "normalize CRLF line endings to LF",
+    "remove trailing horizontal whitespace",
+    "ensure a final newline"
+  ],
+  "model_semantics_changed": false,
+  "static_validation": {
+    "frozen_formal_runner_count": 48,
+    "external_input_integrity": "passed",
+    "promotion_script_py_compile": "passed",
+    "scoped_git_diff_check": "passed"
+  },
+  "claim_boundary": "The formatting cleanup does not replace native evidence. Native CheckModel and simulation outcomes are only those recorded before formatting cleanup; no gain, solver, controller, allocator, Plant, or G2/G3 Formal-catalog behavior was changed."
+}

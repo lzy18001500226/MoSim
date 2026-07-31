@@ -26,6 +26,7 @@ MppiEquationBridge
 MracEquationBridge
 NdiEquationBridge
 NeuralPidEquationBridge
+NmpcOuterEquationBridge
 NonsingularTerminalSmcEquationBridge
 PassivityBasedControlEquationBridge
 PidAttitudeThrustCFunction
@@ -34,6 +35,7 @@ PredictiveMpcEquationBridge
 RlGainSchedulerEquationBridge
 RobustMpcEquationBridge
 Se3BasicEquationBridge
+SmcBoundaryLayerEquationBridge
 SuperTwistingSmcCFunction
 TerminalSmcEquationBridge
 TrainedNeuralResidualCFunction

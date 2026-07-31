@@ -1,0 +1,120 @@
+{
+  "schema": "mosim.tier1_graphical_probe_formal_simulation.v1",
+  "created_at": "2026-07-31T12:57:44+08:00",
+  "existing_independent_sysplorer_port": 49153,
+  "live_mworks_touched": true,
+  "will_not_click_activation_login": true,
+  "source_hashes_before": {
+    "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo": "55edcc23ed30f1a1c3e4fd2bf8963d0ca5032b5eff76b249320cb0b1a6088694",
+    "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo": "e45b938db8318b8b8e74773bbdebd2092df2aae63d4f603d30b8b26cd43fb674",
+    "Models/MoSimQuadrotorModel/Control/Bridges/SmcBoundaryLayerEquationBridge.mo": "8a05dd7b2cffa4da5b125e8ce9e7562f0c187188c5cd28e139ca606cd862416d",
+    "Models/MoSimQuadrotorModel/Control/Bridges/NmpcOuterEquationBridge.mo": "818fac75de643441e3218e18ea129bd16515991e73bdaf27120062cc0d36c14b",
+    "Models/MoSimQuadrotorModel/Control/Adapters/SmcBoundaryLayerAttitudeThrustAdapter.mo": "5e8f0a635c2f239fdc8fb7e0b19e1218209d942aa9753df5c856152426eefa85",
+    "Models/MoSimQuadrotorModel/Control/Adapters/NmpcOuterAttitudeThrustAdapter.mo": "42e940d141dfcd79c67c1ff542ede616919de9e715dd6d1c21aae15b0befee97",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/SmcBoundaryLayerFormalRunner.mo": "5abc8351de7669afc6be6157a1dc3f2aea92c925853f24c8161b5769d5bbe929",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/NmpcOuterFormalRunner.mo": "33291fa79fc4adec6ea2896c86e04aa68ef1d9dea9bfa4af29f376529e2e3103"
+  },
+  "runs": [
+    {
+      "schema": "mosim.tier1_graphical_probe_formal_run.v1",
+      "created_at": "2026-07-31T12:57:47+08:00",
+      "controller_id": "smc_boundary_layer",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Experimental.SmcBoundaryLayerFormalRunner",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+      "simulation_contract": {
+        "start_time_s": 0.0,
+        "stop_time_s": 50.0,
+        "interval_s": 0.01,
+        "solver": "runner_default_Dassl",
+        "parameter_tuning": "none"
+      },
+      "claim_boundary": "Isolated experimental whole-aircraft attempt only. It is excluded from the frozen 48-route G2/G3 catalog and does not claim controller acceptance, tuning, runtime, or deployment equivalence.",
+      "check_model": {
+        "passed": true,
+        "last_errors": [
+          ""
+        ]
+      },
+      "simulate_model": {
+        "returned": true,
+        "last_errors": [
+          ""
+        ]
+      },
+      "status": "completed_gate_failed",
+      "raw_csv": "Results/control_platform/tier1_formal_promotion_20260731/runs/smc_boundary_layer/raw/climbpath50s.csv",
+      "metrics": {
+        "sample_count": 5001,
+        "time_start_s": 0.0,
+        "time_end_s": 50.0,
+        "position_rmse_m": 9.868769502105888,
+        "terminal_position_error_norm_m": 15.029940929898276,
+        "maximum_position_error_norm_m": 15.029940929898276,
+        "terminal_error_gate_m": 5.0,
+        "terminal_error_gate_passed": false
+      },
+      "metrics_json": "Results/control_platform/tier1_formal_promotion_20260731/runs/smc_boundary_layer/metrics/METRICS.json",
+      "native_result": "Results/control_platform/tier1_formal_promotion_20260731/runs/smc_boundary_layer/native_result/SmcBoundaryLayerFormalRunner/Result.msr",
+      "completed_at": "2026-07-31T12:57:54+08:00"
+    },
+    {
+      "schema": "mosim.tier1_graphical_probe_formal_run.v1",
+      "created_at": "2026-07-31T12:57:54+08:00",
+      "controller_id": "nmpc_outer",
+      "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Experimental.NmpcOuterFormalRunner",
+      "trajectory_class": "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath",
+      "simulation_contract": {
+        "start_time_s": 0.0,
+        "stop_time_s": 50.0,
+        "interval_s": 0.01,
+        "solver": "runner_default_Dassl",
+        "parameter_tuning": "none"
+      },
+      "claim_boundary": "Isolated experimental whole-aircraft attempt only. It is excluded from the frozen 48-route G2/G3 catalog and does not claim controller acceptance, tuning, runtime, or deployment equivalence.",
+      "check_model": {
+        "passed": true,
+        "last_errors": [
+          ""
+        ]
+      },
+      "simulate_model": {
+        "returned": true,
+        "last_errors": [
+          ""
+        ]
+      },
+      "status": "passed",
+      "raw_csv": "Results/control_platform/tier1_formal_promotion_20260731/runs/nmpc_outer/raw/climbpath50s.csv",
+      "metrics": {
+        "sample_count": 5001,
+        "time_start_s": 0.0,
+        "time_end_s": 50.0,
+        "position_rmse_m": 1.2430238721258653,
+        "terminal_position_error_norm_m": 0.142974149482056,
+        "maximum_position_error_norm_m": 3.01087985426306,
+        "terminal_error_gate_m": 5.0,
+        "terminal_error_gate_passed": true
+      },
+      "metrics_json": "Results/control_platform/tier1_formal_promotion_20260731/runs/nmpc_outer/metrics/METRICS.json",
+      "native_result": "Results/control_platform/tier1_formal_promotion_20260731/runs/nmpc_outer/native_result/NmpcOuterFormalRunner/Result.msr",
+      "completed_at": "2026-07-31T12:58:00+08:00"
+    }
+  ],
+  "root_load": {
+    "root_package": "Models/MoSimQuadrotorModel/package.mo",
+    "erase_previous_root": true,
+    "open_model_file": true
+  },
+  "status": "passed",
+  "source_hashes_after": {
+    "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo": "55edcc23ed30f1a1c3e4fd2bf8963d0ca5032b5eff76b249320cb0b1a6088694",
+    "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo": "e45b938db8318b8b8e74773bbdebd2092df2aae63d4f603d30b8b26cd43fb674",
+    "Models/MoSimQuadrotorModel/Control/Bridges/SmcBoundaryLayerEquationBridge.mo": "8a05dd7b2cffa4da5b125e8ce9e7562f0c187188c5cd28e139ca606cd862416d",
+    "Models/MoSimQuadrotorModel/Control/Bridges/NmpcOuterEquationBridge.mo": "818fac75de643441e3218e18ea129bd16515991e73bdaf27120062cc0d36c14b",
+    "Models/MoSimQuadrotorModel/Control/Adapters/SmcBoundaryLayerAttitudeThrustAdapter.mo": "5e8f0a635c2f239fdc8fb7e0b19e1218209d942aa9753df5c856152426eefa85",
+    "Models/MoSimQuadrotorModel/Control/Adapters/NmpcOuterAttitudeThrustAdapter.mo": "42e940d141dfcd79c67c1ff542ede616919de9e715dd6d1c21aae15b0befee97",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/SmcBoundaryLayerFormalRunner.mo": "5abc8351de7669afc6be6157a1dc3f2aea92c925853f24c8161b5769d5bbe929",
+    "Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/NmpcOuterFormalRunner.mo": "33291fa79fc4adec6ea2896c86e04aa68ef1d9dea9bfa4af29f376529e2e3103"
+  },
+  "completed_at": "2026-07-31T12:58:00+08:00"
+}
