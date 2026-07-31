@@ -2,7 +2,7 @@
 setlocal
 title MoSim Ground Station Launcher
 
-for %%I in ("%~dp0..") do set "MOSIM_ROOT=%%~fI"
+for %%I in ("%~dp0..\..") do set "MOSIM_ROOT=%%~fI"
 set "LAUNCHER=%MOSIM_ROOT%\Scripts\ui\run_flight_console.ps1"
 
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%LAUNCHER%"
