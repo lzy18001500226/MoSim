@@ -248,6 +248,14 @@ def _window_ref(window: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _positive_process_id(window: dict[str, Any]) -> int | None:
+    try:
+        process_id = int(window.get("process_id"))
+    except (TypeError, ValueError):
+        return None
+    return process_id if process_id > 0 else None
+
+
 def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None = None) -> dict[str, Any]:
     matched_windows: list[dict[str, Any]] = []
     mworks_like_windows: list[dict[str, Any]] = []
@@ -259,6 +267,8 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
     upgrade_model_windows: list[dict[str, Any]] = []
     helper_mworks_windows: list[dict[str, Any]] = []
     visible_helper_mworks_windows: list[dict[str, Any]] = []
+    education_companion_mworks_windows: list[dict[str, Any]] = []
+    unclassified_mworks_windows: list[dict[str, Any]] = []
     unknown_mworks_windows: list[dict[str, Any]] = []
     visible_unknown_mworks_windows: list[dict[str, Any]] = []
     hidden_unknown_mworks_windows: list[dict[str, Any]] = []
@@ -301,6 +311,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                 "matched_upgrade_model_patterns": upgrade_model_matches,
                 "matched_crash_patterns": crash_matches,
                 "helper_window": helper_window,
+                "trusted_education_companion": False,
             }
             mworks_like_windows.append(summary)
             if education_matches:
@@ -330,13 +341,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
                     if summary.get("visible") and not summary.get("minimized_or_offscreen"):
                         visible_helper_mworks_windows.append(summary)
                 else:
-                    unknown_mworks_windows.append(summary)
-                    if summary.get("minimized_or_offscreen"):
-                        minimized_or_offscreen_unknown_mworks_windows.append(summary)
-                    elif summary.get("visible"):
-                        visible_unknown_mworks_windows.append(summary)
-                    else:
-                        hidden_unknown_mworks_windows.append(summary)
+                    unclassified_mworks_windows.append(summary)
 
         if crash_matches or license_matches:
             matched_windows.append(
@@ -360,6 +365,43 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
             )
             all_crash_matches.extend(crash_matches)
             all_license_matches.extend(license_matches)
+
+    education_process_ids = {
+        process_id
+        for item in education_windows
+        if (process_id := _positive_process_id(item)) is not None
+    }
+    blocking_process_ids = {
+        process_id
+        for item in mworks_like_windows
+        if (
+            item["matched_crash_patterns"]
+            or item["matched_demo_patterns"]
+            or item["matched_login_activation_patterns"]
+            or item["matched_authorization_patterns"]
+            or item["matched_license_dialog_patterns"]
+            or item["matched_upgrade_model_patterns"]
+        )
+        if (process_id := _positive_process_id(item)) is not None
+    }
+
+    # A result viewer shares its MWORKS process with the edition-bearing main
+    # window. Preserve it in the inventory, but do not reclassify it as an
+    # unknown license surface unless that same process has a blocking marker.
+    for summary in unclassified_mworks_windows:
+        process_id = _positive_process_id(summary)
+        if process_id in education_process_ids and process_id not in blocking_process_ids:
+            summary["trusted_education_companion"] = True
+            education_companion_mworks_windows.append(summary)
+            continue
+
+        unknown_mworks_windows.append(summary)
+        if summary.get("minimized_or_offscreen"):
+            minimized_or_offscreen_unknown_mworks_windows.append(summary)
+        elif summary.get("visible"):
+            visible_unknown_mworks_windows.append(summary)
+        else:
+            hidden_unknown_mworks_windows.append(summary)
 
     matched_text = "\n".join(match.get("text_sample", "") for match in matched_windows)
     report_paths = sorted(set(REPORT_PATH_RE.findall(matched_text)))
@@ -454,6 +496,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
         "upgrade_model_windows": upgrade_model_windows,
         "helper_mworks_windows": helper_mworks_windows,
         "visible_helper_mworks_windows": visible_helper_mworks_windows,
+        "education_companion_mworks_windows": education_companion_mworks_windows,
         "unknown_mworks_windows": unknown_mworks_windows,
         "visible_unknown_mworks_windows": visible_unknown_mworks_windows,
         "hidden_unknown_mworks_windows": hidden_unknown_mworks_windows,
@@ -467,6 +510,7 @@ def classify_windows(windows: list[dict[str, Any]], screenshot_path: str | None 
         "upgrade_model_window_count": len(upgrade_model_windows),
         "helper_mworks_window_count": len(helper_mworks_windows),
         "visible_helper_mworks_window_count": len(visible_helper_mworks_windows),
+        "education_companion_mworks_window_count": len(education_companion_mworks_windows),
         "unknown_mworks_window_count": len(unknown_mworks_windows),
         "visible_unknown_mworks_window_count": len(visible_unknown_mworks_windows),
         "hidden_unknown_mworks_window_count": len(hidden_unknown_mworks_windows),

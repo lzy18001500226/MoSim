@@ -27,10 +27,12 @@ equation
   core.state_r = angular_rate_estimator[3].y;
   core.state_u = velocity_mea[1];
   core.state_v = velocity_mea[2];
-  core.state_w = velocity_mea[3];
+  // ENU z is up-positive; the H-inf C core uses positive gains for w/z
+  // (designed for NED down-positive), so negate to avoid vertical positive feedback.
+  core.state_w = -velocity_mea[3];
   core.state_x = position_mea[1];
   core.state_y = position_mea[2];
-  core.state_z = position_mea[3];
+  core.state_z = -position_mea[3];
   core.reference_roll = 0;
   core.reference_pitch = 0;
   core.reference_yaw = 0;
@@ -39,17 +41,17 @@ equation
   core.reference_r = 0;
   core.reference_u = velocity_ref[1];
   core.reference_v = velocity_ref[2];
-  core.reference_w = velocity_ref[3];
+  core.reference_w = -velocity_ref[3];
   core.reference_x = position_ref[1];
   core.reference_y = position_ref[2];
-  core.reference_z = position_ref[3];
+  core.reference_z = -position_ref[3];
   core.enable = 1;
   core.reset = if time < 1.5 * sample_time_s then 1 else 0;
 
   // Preserve the CFunction's physical wrench. The shared allocator owns the
   // force/torque-to-rotor-speed conversion at this boundary.
   body_force = {0, 0, core.wrench_force_n_out};
-  body_torque = {core.wrench_tau_x_nm_out, core.wrench_tau_y_nm_out,
+  body_torque = {core.wrench_tau_y_nm_out, core.wrench_tau_x_nm_out,
     core.wrench_tau_z_nm_out};
 
   annotation(__MWORKS(version = "26.3.0"));

@@ -26,6 +26,11 @@ model Px4CtrlAttitudeThrustAdapter
   Real pitch_ref;
   Real yaw_ref;
   Real pitch_argument;
+  Real pitch_argument_safe;
+  Boolean pitch_argument_clipped;
+
+  parameter Real pitch_argument_domain_margin(min = 0, max = 0.01) = 1e-7
+    "Keep every asin evaluation strictly inside its real-valued domain";
 
 equation
   // Match the CascadePID adapter's shared MWORKS plant convention.
@@ -72,8 +77,13 @@ equation
   roll_ref = atan2(2 * (core.qd_w * core.qd_x + core.qd_y * core.qd_z),
     1 - 2 * (core.qd_x ^ 2 + core.qd_y ^ 2));
   pitch_argument = 2 * (core.qd_w * core.qd_y - core.qd_z * core.qd_x);
+  // MWORKS may evaluate both branches of an if-expression while resolving an
+  // event. Keep the asin operand valid even when the saturation branch wins.
+  pitch_argument_safe = min(1 - pitch_argument_domain_margin,
+    max(-1 + pitch_argument_domain_margin, pitch_argument));
+  pitch_argument_clipped = abs(pitch_argument - pitch_argument_safe) > 0;
   pitch_ref = if pitch_argument >= 1 then Modelica.Constants.pi / 2
-    else if pitch_argument <= -1 then -Modelica.Constants.pi / 2 else asin(pitch_argument);
+    else if pitch_argument <= -1 then -Modelica.Constants.pi / 2 else asin(pitch_argument_safe);
   yaw_ref = atan2(2 * (core.qd_w * core.qd_z + core.qd_x * core.qd_y),
     1 - 2 * (core.qd_y ^ 2 + core.qd_z ^ 2));
   attitude_ref[1] = -roll_ref;

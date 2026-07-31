@@ -34,9 +34,16 @@ class ThreeUavOpenBlocksMworksTest(unittest.TestCase):
     def test_generated_model_reuses_three_whole_aircraft_vehicles(self):
         model = (MODEL_DIR / "ThreeUavOpenBlocksReconfigurableFormationLinearMPC.mo").read_text(encoding="utf-8")
         vehicle = (MODEL_DIR / "OpenBlocksLinearMPCVehicle.mo").read_text(encoding="utf-8")
+        display = (MODEL_DIR / "PlanningNavigationDisplay.mo").read_text(encoding="utf-8")
         self.assertEqual(model.count("OpenBlocksLinearMPCVehicle vehicle"), 3)
         self.assertEqual(vehicle.count("MoSimQuadrotorModel.Vehicle.Electricals.Actuator actuator"), 4)
-        self.assertIn("terrain_render_stride = 10", model)
+        self.assertIn("OpenBlocksMapTruthDisplay navigationDisplay(", model)
+        self.assertNotIn("wall_arm1_min =", model)
+        self.assertNotIn("wall_arm2_max =", model)
+        self.assertIn(
+            'shapeType = if show_static_map_layers then static_obstacle_mesh_uri else "box"',
+            display,
+        )
         vehicle_reference_connections = [
             line for line in model.splitlines()
             if line.strip().startswith("connect(reference") and "vehicle" in line
@@ -47,7 +54,7 @@ class ThreeUavOpenBlocksMworksTest(unittest.TestCase):
         package = (MODEL_DIR / "package.mo").read_text(encoding="utf-8")
         order = (MODEL_DIR / "package.order").read_text(encoding="utf-8")
         self.assertIn("model OpenBlocksThreeUavFormation", package)
-        self.assertIn("OpenBlocksThreeUavFormation", order.splitlines())
+        self.assertIn("ThreeUavOpenBlocksReconfigurableFormationLinearMPC", order.splitlines())
 
     def test_real_mworks_result_passes_collision_gate(self):
         auditor = load_auditor()

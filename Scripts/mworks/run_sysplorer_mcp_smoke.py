@@ -996,7 +996,7 @@ RUN_SCRIPT_RESULT = results
         model_result = {"ok": False, "warning": f"gui_model_open_failed: {exc}"}
 
     declared_diagnostic_vars = [
-        value for alias, value in variables.items() if alias != "time"
+        value for alias, value in variables.items() if alias != "time" and value != "time"
     ]
     plot_vars = declared_diagnostic_vars or [
         variables.get("z", "sensors1_1.PosMea[3]"),

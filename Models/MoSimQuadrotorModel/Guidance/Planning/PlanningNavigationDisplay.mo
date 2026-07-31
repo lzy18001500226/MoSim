@@ -66,6 +66,10 @@ model PlanningNavigationDisplay
   parameter Real wall_arm1_max[max_wall_groups, 3] = fill(0.0, max_wall_groups, 3);
   parameter Real wall_arm2_min[max_wall_groups, 3] = fill(0.0, max_wall_groups, 3);
   parameter Real wall_arm2_max[max_wall_groups, 3] = fill(0.0, max_wall_groups, 3);
+  parameter Boolean show_global_wall_truth = false
+    "Render every configured wall arm as a full-map truth layer; local sensing remains a separate overlay.";
+  parameter Real local_wall_overlay_thickness_m = 0.06
+    "Raised thickness for the sensed-wall highlight when the global truth layer is enabled.";
   parameter Real terrain_cell_size_m = 0.50;
   parameter Integer terrain_x_count = integer(ceil((x_max - x_min) / terrain_cell_size_m));
   parameter Integer terrain_y_count = integer(ceil((y_max - y_min) / terrain_cell_size_m));
@@ -561,29 +565,55 @@ public
     height = {if pillar_sensed[i] or pillar_near[i] then pillar_height[i] else 0.0 for i in 1:max_pillars},
     color = {if pillar_sensed[i] then {70, 160, 255} else {238, 238, 238} for i in 1:max_pillars},
     each specularCoefficient = 0.25);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape global_wall_arm1[max_wall_groups](
+    each shapeType = "box",
+    each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {wall_arm1_position[i, :] for i in 1:max_wall_groups},
+    each r_shape = {0, 0, 0},
+    lengthDirection = {wall_arm1_length_direction[i, :] for i in 1:max_wall_groups},
+    widthDirection = {wall_arm1_width_direction[i, :] for i in 1:max_wall_groups},
+    length = {if show_global_wall_truth and i <= wall_group_count then wall_arm1_length[i] else 0.0 for i in 1:max_wall_groups},
+    width = {if show_global_wall_truth and i <= wall_group_count then wall_arm1_width[i] else 0.0 for i in 1:max_wall_groups},
+    height = {if show_global_wall_truth and i <= wall_group_count then wall_arm1_height[i] else 0.0 for i in 1:max_wall_groups},
+    each color = {150, 150, 150},
+    each specularCoefficient = 0.20);
+  Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape global_wall_arm2[max_wall_groups](
+    each shapeType = "box",
+    each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
+    r = {wall_arm2_position[i, :] for i in 1:max_wall_groups},
+    each r_shape = {0, 0, 0},
+    lengthDirection = {wall_arm2_length_direction[i, :] for i in 1:max_wall_groups},
+    widthDirection = {wall_arm2_width_direction[i, :] for i in 1:max_wall_groups},
+    length = {if show_global_wall_truth and i <= wall_group_count then wall_arm2_length[i] else 0.0 for i in 1:max_wall_groups},
+    width = {if show_global_wall_truth and i <= wall_group_count then wall_arm2_width[i] else 0.0 for i in 1:max_wall_groups},
+    height = {if show_global_wall_truth and i <= wall_group_count then wall_arm2_height[i] else 0.0 for i in 1:max_wall_groups},
+    each color = {150, 150, 150},
+    each specularCoefficient = 0.20);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape wall_arm1[max_wall_groups](
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
-    r = {wall_arm1_display_position[i, :] for i in 1:max_wall_groups},
+    r = {{wall_arm1_display_position[i, 1], wall_arm1_display_position[i, 2],
+      if show_global_wall_truth then wall_arm1_height[i] + 0.5 * local_wall_overlay_thickness_m else wall_arm1_display_position[i, 3]} for i in 1:max_wall_groups},
     each r_shape = {0, 0, 0},
     lengthDirection = {wall_arm1_length_direction[i, :] for i in 1:max_wall_groups},
     widthDirection = {wall_arm1_width_direction[i, :] for i in 1:max_wall_groups},
     length = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then wall_arm1_display_length[i] else 0.0 for i in 1:max_wall_groups},
-    width = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then wall_arm1_width[i] else 0.0 for i in 1:max_wall_groups},
-    height = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then wall_arm1_height[i] else 0.0 for i in 1:max_wall_groups},
-    color = {if wall_arm1_sensed[i] then {120, 155, 185} else {238, 238, 238} for i in 1:max_wall_groups},
+    width = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then if show_global_wall_truth then wall_arm1_width[i] + local_wall_overlay_thickness_m else wall_arm1_width[i] else 0.0 for i in 1:max_wall_groups},
+    height = {if i <= wall_group_count and (wall_arm1_sensed[i] or wall_arm1_near[i]) then if show_global_wall_truth then local_wall_overlay_thickness_m else wall_arm1_height[i] else 0.0 for i in 1:max_wall_groups},
+    color = {if wall_arm1_sensed[i] then {70, 160, 255} else {180, 205, 225} for i in 1:max_wall_groups},
     each specularCoefficient = 0.25);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape wall_arm2[max_wall_groups](
     each shapeType = "box",
     each R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
-    r = {wall_arm2_display_position[i, :] for i in 1:max_wall_groups},
+    r = {{wall_arm2_display_position[i, 1], wall_arm2_display_position[i, 2],
+      if show_global_wall_truth then wall_arm2_height[i] + 0.5 * local_wall_overlay_thickness_m else wall_arm2_display_position[i, 3]} for i in 1:max_wall_groups},
     each r_shape = {0, 0, 0},
     lengthDirection = {wall_arm2_length_direction[i, :] for i in 1:max_wall_groups},
     widthDirection = {wall_arm2_width_direction[i, :] for i in 1:max_wall_groups},
     length = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then wall_arm2_display_length[i] else 0.0 for i in 1:max_wall_groups},
-    width = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then wall_arm2_width[i] else 0.0 for i in 1:max_wall_groups},
-    height = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then wall_arm2_height[i] else 0.0 for i in 1:max_wall_groups},
-    color = {if wall_arm2_sensed[i] then {120, 155, 185} else {238, 238, 238} for i in 1:max_wall_groups},
+    width = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then if show_global_wall_truth then wall_arm2_width[i] + local_wall_overlay_thickness_m else wall_arm2_width[i] else 0.0 for i in 1:max_wall_groups},
+    height = {if i <= wall_group_count and (wall_arm2_sensed[i] or wall_arm2_near[i]) then if show_global_wall_truth then local_wall_overlay_thickness_m else wall_arm2_height[i] else 0.0 for i in 1:max_wall_groups},
+    color = {if wall_arm2_sensed[i] then {70, 160, 255} else {180, 205, 225} for i in 1:max_wall_groups},
     each specularCoefficient = 0.25);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape continuous_ground(
     shapeType = "box",
@@ -627,15 +657,15 @@ public
       if show_static_map_layers then {218, 190, 125} else {232, 232, 232}},
     each specularCoefficient = 0.10);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_obstacle_mesh(
-    shapeType = if show_static_map_layers and show_static_grid_overlay then static_obstacle_mesh_uri else "box",
+    shapeType = if show_static_map_layers then static_obstacle_mesh_uri else "box",
     R = Modelica.Mechanics.MultiBody.Frames.nullRotation(),
     r = {0, 0, 0},
     r_shape = {0, 0, 0},
     lengthDirection = {1, 0, 0},
     widthDirection = {0, 1, 0},
-    length = if show_static_map_layers and show_static_grid_overlay then 1.0 else 0.0,
-    width = if show_static_map_layers and show_static_grid_overlay then 1.0 else 0.0,
-    height = if show_static_map_layers and show_static_grid_overlay then 1.0 else 0.0,
+    length = if show_static_map_layers then 1.0 else 0.0,
+    width = if show_static_map_layers then 1.0 else 0.0,
+    height = if show_static_map_layers then 1.0 else 0.0,
     color = {150, 150, 150},
     specularCoefficient = 0.20);
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape static_grid_mesh(

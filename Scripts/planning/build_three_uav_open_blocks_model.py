@@ -15,6 +15,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 HELPER_PATH = ROOT / "Scripts/planning/update_planning_open_blocks_model.py"
+PLANNER_PATH = ROOT / "Scripts/planning/plan_astar_min_snap.py"
 DEFAULT_CONFIG = ROOT / "Config/planners/astar_min_snap/map_open_blocks.yaml"
 DEFAULT_METRICS = ROOT / "Results/planning/three_uav_open_blocks_mworks_20260720/metrics/three_uav_planning_metrics.json"
 DEFAULT_MODEL = ROOT / "Models/MoSimQuadrotorModel/Guidance/Planning/ThreeUavOpenBlocksReconfigurableFormationLinearMPC.mo"
@@ -29,6 +30,16 @@ def load_helper() -> Any:
     spec = importlib.util.spec_from_file_location("mosim_update_open_blocks", HELPER_PATH)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"Cannot load helper: {HELPER_PATH}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def load_planner() -> Any:
+    spec = importlib.util.spec_from_file_location("mosim_astar_min_snap", PLANNER_PATH)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Cannot load planner: {PLANNER_PATH}")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
@@ -99,36 +110,40 @@ def reference_constructor(helper: Any, name: str, ref: dict[str, Any], origin: t
     )
 
 
-def display_constructor(helper: Any, ref: dict[str, Any], map_config: dict[str, Any]) -> str:
-    bounds = map_config["bounds"]
+def build_wall_groups(planner: Any, helper: Any, config: dict[str, Any]) -> dict[str, Any]:
+    expanded = planner.expand_wall_groups(config)
+    map_config = expanded.get("map")
+    if not isinstance(map_config, dict):
+        raise ValueError("Expanded planner config has no map mapping")
+    obstacles = map_config.get("obstacles")
+    if not isinstance(obstacles, list):
+        raise ValueError("Expanded planner config has no obstacle list")
+    walls = helper.build_wall_groups({"truth_obstacles": obstacles})
+    if walls["wall_group_count"] != 8:
+        raise ValueError(f"Expected 8 OpenBlocks wall groups, got {walls['wall_group_count']}")
+    return walls
+
+
+def display_constructor(
+    helper: Any,
+    ref: dict[str, Any],
+) -> str:
     return (
-        "  PlanningNavigationDisplay navigationDisplay(\n"
+        "  OpenBlocksMapTruthDisplay navigationDisplay(\n"
         f"    n_segments = {ref['n_segments']},\n"
         f"    p_x = {helper.modelica_array(ref['p_x'])},\n"
         f"    p_y = {helper.modelica_array(ref['p_y'])},\n"
         f"    p_z = {helper.modelica_array(ref['p_z'])},\n"
-        f"    segment_duration = {helper.modelica_array(ref['segment_duration'])},\n"
-        f"    x_min = {helper.fmt(float(bounds['x'][0]))},\n"
-        f"    x_max = {helper.fmt(float(bounds['x'][1]))},\n"
-        f"    y_min = {helper.fmt(float(bounds['y'][0]))},\n"
-        f"    y_max = {helper.fmt(float(bounds['y'][1]))},\n"
-        "    render_boundary_walls = false,\n"
-        "    highlight_local_costmap = true,\n"
-        "    local_costmap_radius_m = 6,\n"
-        "    local_costmap_fade_radius_m = 9,\n"
-        "    show_static_map_mesh = false,\n"
-        "    show_static_map_layers = true,\n"
-        "    show_static_grid_overlay = false,\n"
-        "    render_terrain_blocks = false,\n"
-        "    terrain_render_stride = 10,\n"
-        "    show_continuous_ground = false)\n"
+        f"    segment_duration = {helper.modelica_array(ref['segment_duration'])})\n"
         "    annotation(Placement(transformation(origin = {0, 72}, extent = {{-22, -22}, {22, 22}})));"
     )
 
 
 def build_model(config: dict[str, Any], metrics: dict[str, Any]) -> str:
     helper = load_helper()
+    planner = load_planner()
     map_config = config["map"]
+    build_wall_groups(planner, helper, config)
     schedule_duration = float(metrics["schedule"]["duration_s"])
     vehicles = metrics["vehicles"]
     refs = [build_reference(helper, vehicle, map_config, schedule_duration) for vehicle in vehicles]
@@ -149,7 +164,7 @@ def build_model(config: dict[str, Any], metrics: dict[str, Any]) -> str:
     ]
     origins = ((-82, 74), (-82, 4), (-82, -66))
     declarations.extend(reference_constructor(helper, f"reference{index + 1}", ref, origins[index]) for index, ref in enumerate(refs))
-    declarations.extend(["", display_constructor(helper, refs[0], map_config), ""])
+    declarations.extend(["", display_constructor(helper, refs[0]), ""])
     vehicle_origins = ((70, 74), (70, 4), (70, -66))
     for index, (ref, origin) in enumerate(zip(refs, vehicle_origins), start=1):
         initial = helper.modelica_array(ref["initial_position"])

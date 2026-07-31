@@ -76,6 +76,19 @@ def test_px4ctrl_adapter_emits_newton_increment_about_hover() -> None:
     assert "collective_thrust_delta = core.collective_thrust_n - hover_collective_thrust_n" in source
 
 
+def test_px4ctrl_adapter_keeps_inverse_sine_evaluations_inside_the_real_domain() -> None:
+    source = ADAPTER.read_text(encoding="utf-8")
+
+    for token in (
+        "parameter Real pitch_argument_domain_margin",
+        "pitch_argument_safe = min(1 - pitch_argument_domain_margin",
+        "max(-1 + pitch_argument_domain_margin, pitch_argument))",
+        "pitch_argument_clipped = abs(pitch_argument - pitch_argument_safe) > 0",
+        "else asin(pitch_argument_safe)",
+    ):
+        assert token in source
+
+
 def test_px4ctrl_adapter_is_registered_in_the_package_order() -> None:
     assert "Px4CtrlAttitudeThrustAdapter" in PACKAGE_ORDER.read_text(encoding="utf-8").splitlines()
 
@@ -112,6 +125,7 @@ def main() -> int:
     test_px4ctrl_adapter_uses_the_shared_attitude_thrust_contract()
     test_px4ctrl_adapter_shares_odometry_and_imu_quaternions()
     test_px4ctrl_adapter_emits_newton_increment_about_hover()
+    test_px4ctrl_adapter_keeps_inverse_sine_evaluations_inside_the_real_domain()
     test_px4ctrl_adapter_is_registered_in_the_package_order()
     test_px4ctrl_formal_runner_is_registered_in_the_package_order()
     test_px4ctrl_baseline_binding_declares_the_shared_sampled_boundary()

@@ -1,11 +1,11 @@
 within MoSimQuadrotorModel.Guidance.Planning;
-model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
-  "Three whole-aircraft Linear-MPC loops following synchronized collision-safe OpenBlocks references"
+model ThreeUavOpenBlocksReconfigurableFormationPx4CtrlEcbfSafety
+  "Three PX4CTRL loops with a pairwise ECBF reference-safety branch over the frozen OpenBlocks route"
   parameter Real planned_clearance_m[3] = {0.446636389524, 0.44832134251, 0.445867622045};
   parameter Real transit_start_s = 27;
   parameter Real arrival_phase_s = 295.840532932;
 
-  PlannedQuinticReference reference1(
+  PlannedQuinticPx4CtrlReference reference1(
     n_segments = 40,
     p_x = {
       -41, -41, -36.270083617, -32.3576787813, -29.9329913237, -28.6986328768,
@@ -75,7 +75,7 @@ model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1})
     annotation(Placement(transformation(origin = {-82, 74}, extent = {{-18, -18}, {18, 18}})));
-  PlannedQuinticReference reference2(
+  PlannedQuinticPx4CtrlReference reference2(
     n_segments = 44,
     p_x = {
       -43, -43, -43, -37.0356816978, -32.3837818224, -30.1767088657,
@@ -145,7 +145,7 @@ model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1})
     annotation(Placement(transformation(origin = {-82, 4}, extent = {{-18, -18}, {18, 18}})));
-  PlannedQuinticReference reference3(
+  PlannedQuinticPx4CtrlReference reference3(
     n_segments = 35,
     p_x = {
       -41, -41, -41, -34.852176589, -30.0253057323, -26.6123427893,
@@ -285,14 +285,38 @@ model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1})
-    annotation(Placement(transformation(origin = {0, 72}, extent = {{-22, -22}, {22, 22}})));
+    annotation(Placement(transformation(origin = {2, 116}, extent = {{-22, -22}, {22, 22}})));
 
-  OpenBlocksLinearMPCVehicle vehicle1(initial_position = {-41, -26, 1.5})
+  ThreeUavPairwiseEcbfReferenceSafetyFilter safetyFilter(
+    pair_minimum_distance_m = 1.0,
+    pair_activation_distance_m = 1.5,
+    ecbf_lambda = 1.0,
+    prediction_horizon_s = 0.8,
+    reference_lookahead_s = 0.35,
+    max_reference_offset_m = 0.5,
+    max_safety_acceleration_correction_m_s2 = 1.5,
+    projection_passes = 2)
+    annotation(Placement(transformation(origin = {-2, 0}, extent = {{-20, -60}, {20, 60}})));
+
+  OpenBlocksPx4CtrlVehicle vehicle1(initial_position = {-41, -26, 1.5})
     annotation(Placement(transformation(origin = {70, 74}, extent = {{-22, -22}, {22, 22}})));
-  OpenBlocksLinearMPCVehicle vehicle2(initial_position = {-43, -26, 1.5})
+  OpenBlocksPx4CtrlVehicle vehicle2(initial_position = {-43, -26, 1.5})
     annotation(Placement(transformation(origin = {70, 4}, extent = {{-22, -22}, {22, 22}})));
-  OpenBlocksLinearMPCVehicle vehicle3(initial_position = {-41, -28, 1.32})
+  OpenBlocksPx4CtrlVehicle vehicle3(initial_position = {-41, -28, 1.32})
     annotation(Placement(transformation(origin = {70, -66}, extent = {{-22, -22}, {22, 22}})));
+
+  Modelica.Blocks.Continuous.Derivative velocityEstimator1[3](
+    each k = 1, each T = 0.05,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput, each y_start = 0)
+    annotation(Placement(transformation(origin = {38, 48}, extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Continuous.Derivative velocityEstimator2[3](
+    each k = 1, each T = 0.05,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput, each y_start = 0)
+    annotation(Placement(transformation(origin = {38, -10}, extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Continuous.Derivative velocityEstimator3[3](
+    each k = 1, each T = 0.05,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput, each y_start = 0)
+    annotation(Placement(transformation(origin = {38, -68}, extent = {{-10, -10}, {10, 10}})));
 
   Real pair_distance_12_m;
   Real pair_distance_13_m;
@@ -301,34 +325,78 @@ model ThreeUavOpenBlocksReconfigurableFormationLinearMPC
   Real reference_pair_distance_12_m;
   Real reference_pair_distance_13_m;
   Real reference_pair_distance_23_m;
+  Real nominal_reference_pair_distance_12_m;
+  Real nominal_reference_pair_distance_13_m;
+  Real nominal_reference_pair_distance_23_m;
   Real formation_distance_error_m;
+  Real nominal_formation_deviation_m;
+  Real nominal_tracking_error_1_m;
+  Real nominal_tracking_error_2_m;
+  Real nominal_tracking_error_3_m;
   Real actual_clearance_lower_bound_m;
+  Real safety_minimum_predicted_pair_distance_m;
+  Integer safety_active_pair_count;
+  Real safety_maximum_reference_offset_m;
+  Real safety_maximum_ecbf_residual_m2_s2;
+  Boolean safety_correction_saturated;
   Integer formation_mode "1 launch triangle, 2 corridor column, 3 arrival triangle";
 
 equation
-  connect(reference1.position_command, vehicle1.position_reference) annotation(Line(points = {{-64, 81.2}, {18, 81.2}, {18, 87.2}, {43.6, 87.2}}, color = {0, 0, 127}));
-  connect(reference1.z_ref_rate, vehicle1.z_reference_rate) annotation(Line(points = {{-64, 74}, {24, 74}, {24, 76.2}, {43.6, 76.2}}, color = {0, 0, 127}));
-  connect(reference1.yaw_ref, vehicle1.yaw_reference) annotation(Line(points = {{-64, 66.8}, {18, 66.8}, {18, 65.2}, {43.6, 65.2}}, color = {0, 0, 127}));
-  connect(reference2.position_command, vehicle2.position_reference) annotation(Line(points = {{-64, 11.2}, {18, 11.2}, {18, 17.2}, {43.6, 17.2}}, color = {0, 0, 127}));
-  connect(reference2.z_ref_rate, vehicle2.z_reference_rate) annotation(Line(points = {{-64, 4}, {24, 4}, {24, 6.2}, {43.6, 6.2}}, color = {0, 0, 127}));
-  connect(reference2.yaw_ref, vehicle2.yaw_reference) annotation(Line(points = {{-64, -3.2}, {18, -3.2}, {18, -4.8}, {43.6, -4.8}}, color = {0, 0, 127}));
-  connect(reference3.position_command, vehicle3.position_reference) annotation(Line(points = {{-64, -58.8}, {18, -58.8}, {18, -52.8}, {43.6, -52.8}}, color = {0, 0, 127}));
-  connect(reference3.z_ref_rate, vehicle3.z_reference_rate) annotation(Line(points = {{-64, -66}, {24, -66}, {24, -63.8}, {43.6, -63.8}}, color = {0, 0, 127}));
-  connect(reference3.yaw_ref, vehicle3.yaw_reference) annotation(Line(points = {{-64, -73.2}, {18, -73.2}, {18, -74.8}, {43.6, -74.8}}, color = {0, 0, 127}));
-  connect(vehicle1.position, navigationDisplay.actual_position) annotation(Line(points = {{96.4, 87.2}, {108, 87.2}, {108, 104}, {-34, 104}, {-34, 78.6}, {-26.4, 78.6}}, color = {0, 0, 127}));
-  connect(reference1.position_command, navigationDisplay.reference_position) annotation(Line(points = {{-64, 81.2}, {-48, 81.2}, {-48, 65.4}, {-26.4, 65.4}}, color = {0, 0, 127}));
+  connect(reference1.position_command, safetyFilter.nominal_position_1) annotation(Line(points = {{-64, 81.2}, {-42, 81.2}, {-42, 50.4}, {-26, 50.4}}, color = {0, 0, 127}));
+  connect(reference1.velocity_command, safetyFilter.nominal_velocity_1) annotation(Line(points = {{-64, 74}, {-40, 74}, {-40, 38.4}, {-26, 38.4}}, color = {0, 0, 127}));
+  connect(reference1.acceleration_command, safetyFilter.nominal_acceleration_1) annotation(Line(points = {{-64, 66.8}, {-38, 66.8}, {-38, 26.4}, {-26, 26.4}}, color = {0, 0, 127}));
+  connect(reference2.position_command, safetyFilter.nominal_position_2) annotation(Line(points = {{-64, 11.2}, {-42, 11.2}, {-42, 7.2}, {-26, 7.2}}, color = {0, 0, 127}));
+  connect(reference2.velocity_command, safetyFilter.nominal_velocity_2) annotation(Line(points = {{-64, 4}, {-40, 4}, {-40, -7.2}, {-26, -7.2}}, color = {0, 0, 127}));
+  connect(reference2.acceleration_command, safetyFilter.nominal_acceleration_2) annotation(Line(points = {{-64, -3.2}, {-38, -3.2}, {-38, -21.6}, {-26, -21.6}}, color = {0, 0, 127}));
+  connect(reference3.position_command, safetyFilter.nominal_position_3) annotation(Line(points = {{-64, -58.8}, {-42, -58.8}, {-42, -36}, {-26, -36}}, color = {0, 0, 127}));
+  connect(reference3.velocity_command, safetyFilter.nominal_velocity_3) annotation(Line(points = {{-64, -66}, {-40, -66}, {-40, -50.4}, {-26, -50.4}}, color = {0, 0, 127}));
+  connect(reference3.acceleration_command, safetyFilter.nominal_acceleration_3) annotation(Line(points = {{-64, -73.2}, {-38, -73.2}, {-38, -64.8}, {-26, -64.8}}, color = {0, 0, 127}));
+
+  connect(vehicle1.position, safetyFilter.actual_position_1) annotation(Line(points = {{96.4, 87.2}, {106, 87.2}, {106, 100}, {-54, 100}, {-54, 50.4}, {-26, 50.4}}, color = {0, 0, 127}));
+  connect(vehicle2.position, safetyFilter.actual_position_2) annotation(Line(points = {{96.4, 17.2}, {104, 17.2}, {104, 7.2}, {-26, 7.2}}, color = {0, 0, 127}));
+  connect(vehicle3.position, safetyFilter.actual_position_3) annotation(Line(points = {{96.4, -52.8}, {104, -52.8}, {104, -36}, {-26, -36}}, color = {0, 0, 127}));
+  connect(vehicle1.position, velocityEstimator1.u) annotation(Line(points = {{96.4, 87.2}, {104, 87.2}, {104, 48}, {50, 48}}, color = {0, 0, 127}));
+  connect(vehicle2.position, velocityEstimator2.u) annotation(Line(points = {{96.4, 17.2}, {104, 17.2}, {104, -10}, {50, -10}}, color = {0, 0, 127}));
+  connect(vehicle3.position, velocityEstimator3.u) annotation(Line(points = {{96.4, -52.8}, {104, -52.8}, {104, -68}, {50, -68}}, color = {0, 0, 127}));
+  connect(velocityEstimator1.y, safetyFilter.actual_velocity_1) annotation(Line(points = {{49, 48}, {58, 48}, {58, 92}, {-50, 92}, {-50, 38.4}, {-26, 38.4}}, color = {0, 0, 127}));
+  connect(velocityEstimator2.y, safetyFilter.actual_velocity_2) annotation(Line(points = {{49, -10}, {58, -10}, {58, -7.2}, {-26, -7.2}}, color = {0, 0, 127}));
+  connect(velocityEstimator3.y, safetyFilter.actual_velocity_3) annotation(Line(points = {{49, -68}, {58, -68}, {58, -50.4}, {-26, -50.4}}, color = {0, 0, 127}));
+
+  connect(safetyFilter.safe_position_1, vehicle1.position_reference) annotation(Line(points = {{22, 50.4}, {36, 50.4}, {36, 87.2}, {43.6, 87.2}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_velocity_1, vehicle1.velocity_reference) annotation(Line(points = {{22, 38.4}, {34, 38.4}, {34, 76.2}, {43.6, 76.2}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_acceleration_1, vehicle1.acceleration_reference) annotation(Line(points = {{22, 26.4}, {32, 26.4}, {32, 65.2}, {43.6, 65.2}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_position_2, vehicle2.position_reference) annotation(Line(points = {{22, 7.2}, {36, 7.2}, {36, 17.2}, {43.6, 17.2}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_velocity_2, vehicle2.velocity_reference) annotation(Line(points = {{22, -7.2}, {34, -7.2}, {34, 6.2}, {43.6, 6.2}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_acceleration_2, vehicle2.acceleration_reference) annotation(Line(points = {{22, -21.6}, {32, -21.6}, {32, -4.8}, {43.6, -4.8}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_position_3, vehicle3.position_reference) annotation(Line(points = {{22, -36}, {36, -36}, {36, -52.8}, {43.6, -52.8}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_velocity_3, vehicle3.velocity_reference) annotation(Line(points = {{22, -50.4}, {34, -50.4}, {34, -63.8}, {43.6, -63.8}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_acceleration_3, vehicle3.acceleration_reference) annotation(Line(points = {{22, -64.8}, {32, -64.8}, {32, -74.8}, {43.6, -74.8}}, color = {0, 0, 127}));
+  connect(vehicle1.position, navigationDisplay.actual_position) annotation(Line(points = {{96.4, 87.2}, {108, 87.2}, {108, 136}, {-34, 136}, {-34, 122.6}, {-24.4, 122.6}}, color = {0, 0, 127}));
+  connect(safetyFilter.safe_position_1, navigationDisplay.reference_position) annotation(Line(points = {{22, 50.4}, {28, 50.4}, {28, 108}, {-34, 108}, {-34, 109.4}, {-24.4, 109.4}}, color = {0, 0, 127}));
 
   pair_distance_12_m = sqrt(sum((vehicle1.position[i] - vehicle2.position[i]) ^ 2 for i in 1:3));
   pair_distance_13_m = sqrt(sum((vehicle1.position[i] - vehicle3.position[i]) ^ 2 for i in 1:3));
   pair_distance_23_m = sqrt(sum((vehicle2.position[i] - vehicle3.position[i]) ^ 2 for i in 1:3));
   min_inter_uav_distance_m = min(pair_distance_12_m, min(pair_distance_13_m, pair_distance_23_m));
-  reference_pair_distance_12_m = sqrt(sum((reference1.position_command[i] - reference2.position_command[i]) ^ 2 for i in 1:3));
-  reference_pair_distance_13_m = sqrt(sum((reference1.position_command[i] - reference3.position_command[i]) ^ 2 for i in 1:3));
-  reference_pair_distance_23_m = sqrt(sum((reference2.position_command[i] - reference3.position_command[i]) ^ 2 for i in 1:3));
+  reference_pair_distance_12_m = sqrt(sum((safetyFilter.safe_position_1[i] - safetyFilter.safe_position_2[i]) ^ 2 for i in 1:3));
+  reference_pair_distance_13_m = sqrt(sum((safetyFilter.safe_position_1[i] - safetyFilter.safe_position_3[i]) ^ 2 for i in 1:3));
+  reference_pair_distance_23_m = sqrt(sum((safetyFilter.safe_position_2[i] - safetyFilter.safe_position_3[i]) ^ 2 for i in 1:3));
+  nominal_reference_pair_distance_12_m = sqrt(sum((reference1.position_command[i] - reference2.position_command[i]) ^ 2 for i in 1:3));
+  nominal_reference_pair_distance_13_m = sqrt(sum((reference1.position_command[i] - reference3.position_command[i]) ^ 2 for i in 1:3));
+  nominal_reference_pair_distance_23_m = sqrt(sum((reference2.position_command[i] - reference3.position_command[i]) ^ 2 for i in 1:3));
   formation_distance_error_m = (abs(pair_distance_12_m - reference_pair_distance_12_m) + abs(pair_distance_13_m - reference_pair_distance_13_m) + abs(pair_distance_23_m - reference_pair_distance_23_m)) / 3;
-  actual_clearance_lower_bound_m = min(planned_clearance_m[1] - vehicle1.tracking_error_m, min(planned_clearance_m[2] - vehicle2.tracking_error_m, planned_clearance_m[3] - vehicle3.tracking_error_m));
+  nominal_formation_deviation_m = (abs(reference_pair_distance_12_m - nominal_reference_pair_distance_12_m) + abs(reference_pair_distance_13_m - nominal_reference_pair_distance_13_m) + abs(reference_pair_distance_23_m - nominal_reference_pair_distance_23_m)) / 3;
+  nominal_tracking_error_1_m = sqrt(sum((vehicle1.position[i] - reference1.position_command[i]) ^ 2 for i in 1:3));
+  nominal_tracking_error_2_m = sqrt(sum((vehicle2.position[i] - reference2.position_command[i]) ^ 2 for i in 1:3));
+  nominal_tracking_error_3_m = sqrt(sum((vehicle3.position[i] - reference3.position_command[i]) ^ 2 for i in 1:3));
+  actual_clearance_lower_bound_m = min(planned_clearance_m[1] - nominal_tracking_error_1_m, min(planned_clearance_m[2] - nominal_tracking_error_2_m, planned_clearance_m[3] - nominal_tracking_error_3_m));
+  safety_minimum_predicted_pair_distance_m = safetyFilter.minimum_predicted_pair_distance_m;
+  safety_active_pair_count = safetyFilter.active_pair_count;
+  safety_maximum_reference_offset_m = safetyFilter.maximum_reference_offset_m;
+  safety_maximum_ecbf_residual_m2_s2 = safetyFilter.maximum_ecbf_residual_m2_s2;
+  safety_correction_saturated = safetyFilter.correction_saturated;
   formation_mode = if time < transit_start_s then 1 else if time < arrival_phase_s then 2 else 3;
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 304.840532932, Tolerance = 0.0001, Interval = 0.05));
   annotation(__MWORKS(hide=false));
-end ThreeUavOpenBlocksReconfigurableFormationLinearMPC;
+end ThreeUavOpenBlocksReconfigurableFormationPx4CtrlEcbfSafety;
