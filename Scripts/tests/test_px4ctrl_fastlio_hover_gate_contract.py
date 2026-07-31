@@ -7,7 +7,7 @@ BASIC_GATE = ROOT / "Scripts/sunray/run_px4ctrl_basic_gate.sh"
 MISSION_NODE = ROOT / "Scripts/sunray/px4ctrl_basic_mission_node.py"
 
 
-def test_formal_fastlio_hover_runner_freezes_source_local_state_contract() -> None:
+def test_source_local_fastlio_hover_runner_freezes_source_local_state_contract() -> None:
     source = FORMAL_RUNNER.read_text(encoding="utf-8")
 
     assert "SUNRAY_GPS_SENSOR_MODE=removed" in source
@@ -19,6 +19,17 @@ def test_formal_fastlio_hover_runner_freezes_source_local_state_contract() -> No
     assert "PX4CTRL_ODOM_SOURCE=mavros_local" in source
     assert "FASTLIO_ALIGNMENT_Z_SOURCE=truth" in source
     assert "run_px4ctrl_basic_gate.sh" in source
+
+
+def test_source_local_entry_uses_lifecycle_acceptance_and_preserves_metrics() -> None:
+    runner = FORMAL_RUNNER.read_text(encoding="utf-8")
+    mission = MISSION_NODE.read_text(encoding="utf-8")
+
+    assert "export PX4CTRL_ACCEPTANCE_MODE=operational_lifecycle" in runner
+    assert '--acceptance-mode ${PX4CTRL_ACCEPTANCE_MODE}' in runner
+    assert 'choices=["formal", "operational_lifecycle"]' in mission
+    assert '"formal_performance_gate": formal_gate' in mission
+    assert '"operational_lifecycle_gate": operational_lifecycle_gate' in mission
 
 
 def test_hybrid_z_adapter_never_becomes_a_direct_px4ctrl_truth_input() -> None:
