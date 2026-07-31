@@ -19,7 +19,35 @@ const MUTED_COLOR = [0.93, 0.94, 0.94]
 const CONSOLE_COLOR = [0.07, 0.10, 0.12]
 const CONSOLE_TEXT_COLOR = [0.82, 0.91, 0.86]
 const HIDDEN_CONTROL_POSITION = [-2048, -2048, 1, 1]
-const PROJECT_ROOT = normpath(joinpath(@__DIR__, "..", "..", ".."))
+const ASSISTANT_COMMAND_ITEMS = [
+    "/help", "/status", "/model", "/model <model>", "/compact",
+    "/attach <project-relative-path>", "/attachments", "/stop", "/clear",
+]
+
+function project_root_candidates(start)
+    candidates = String[]
+    current = normpath(start)
+    for _ in 1:8
+        push!(candidates, current)
+        parent = dirname(current)
+        parent == current && break
+        current = parent
+    end
+    return candidates
+end
+
+function resolve_project_root()
+    configured = strip(get(ENV, "MOSIM_ROOT", ""))
+    if !isempty(configured) && isfile(joinpath(configured, "Scripts", "agent", "codex_cli_agent_server.py"))
+        return normpath(configured)
+    end
+    for candidate in vcat(project_root_candidates(@__DIR__), project_root_candidates(pwd()))
+        isfile(joinpath(candidate, "Scripts", "agent", "codex_cli_agent_server.py")) && return candidate
+    end
+    return normpath(joinpath(@__DIR__, "..", "..", ".."))
+end
+
+const PROJECT_ROOT = resolve_project_root()
 const OFFLINE_BATCH_RUNNER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "run_offline_profile_batch.py")
 const OFFLINE_ANIMATION_RESUMER = joinpath(PROJECT_ROOT, "Scripts", "mworks", "resume_offline_profile_animation.py")
 const OFFLINE_BATCH_INDEX = joinpath(PROJECT_ROOT, "Results", "control_platform", "offline_batches", "BATCH_INDEX.json")
@@ -277,8 +305,27 @@ const OFFLINE_PROFILES = Dict(
 
     AssistantContextLabel::Any = nothing
     AssistantChatLabel::Any = nothing
+    AssistantChatPanel::Any = nothing
+    AssistantActivityPanel::Any = nothing
+    AssistantActivityLabel::Any = nothing
+    AssistantMessagePanel1::Any = nothing
+    AssistantMessagePanel2::Any = nothing
+    AssistantMessagePanel3::Any = nothing
+    AssistantMessagePanel4::Any = nothing
+    AssistantMessagePanel5::Any = nothing
+    AssistantMessagePanel6::Any = nothing
+    AssistantMessageLabel1::Any = nothing
+    AssistantMessageLabel2::Any = nothing
+    AssistantMessageLabel3::Any = nothing
+    AssistantMessageLabel4::Any = nothing
+    AssistantMessageLabel5::Any = nothing
+    AssistantMessageLabel6::Any = nothing
+    AssistantMessagePanels::Any = nothing
+    AssistantMessageLabels::Any = nothing
     AssistantInputField::Any = nothing
+    AssistantCommandDropDown::Any = nothing
     AssistantSendButton::Any = nothing
+    AssistantStopButton::Any = nothing
     AssistantExplainButton::Any = nothing
     AssistantMworksGuideButton::Any = nothing
     AssistantQgcGuideButton::Any = nothing
@@ -301,7 +348,12 @@ const OFFLINE_PROFILES = Dict(
     TaskConfigDirty::Bool = true
     ConsoleLines::Any = nothing
     AssistantLines::Any = nothing
+    AssistantModel::String = ""
+    AssistantAttachments::Any = nothing
     AssistantRequestInFlight::Bool = false
+    AssistantCodexThreadId::String = ""
+    AssistantTurnId::String = ""
+    AssistantPartialAnswer::String = ""
     ConsoleExpanded::Bool = true
 
     function append_console(app, message; level="信息")
@@ -335,17 +387,115 @@ const OFFLINE_PROFILES = Dict(
             "只读分析与操作建议；不启动模型、不写配置、不发送运行时命令。"
     end
 
+    function assistant_message_class(app, entry)
+        startswith(entry, "你  ") && return "user"
+        startswith(entry, "系统  ") && return "system"
+        return "assistant"
+    end
+
+    function assistant_message_panels(app)
+        return app.AssistantMessagePanels === nothing ? Any[] : app.AssistantMessagePanels
+    end
+
+    function assistant_message_labels(app)
+        return app.AssistantMessageLabels === nothing ? Any[] : app.AssistantMessageLabels
+    end
+
+    function assistant_message_text_for_display(app, entry)
+        text = String(entry)
+        max_chars = 4800
+        length(text) <= max_chars && return text
+        return string(first(text, max_chars), "\n（单条消息超过显示上限；完整上下文仍保留在 Codex 会话中。）")
+    end
+
+    function assistant_message_height(app, entry)
+        display_text = app.assistant_message_text_for_display(entry)
+        text_lines = split(display_text, '\n'; keepempty=true)
+        wrapped_lines = sum(max(1, cld(length(line), 92)) for line in text_lines)
+        return clamp(30 + 18 * wrapped_lines, 50, 620)
+    end
+
+    function create_assistant_message_bubble(app)
+        panel = TyAppDesigner.uipanel(
+            app.AssistantChatPanel;
+            Title="",
+            BackgroundColor=[1.0, 1.0, 1.0],
+            BorderType="solid",
+            BorderWidth=1,
+            BorderColor=[0.70, 0.78, 0.81],
+            Visible=false,
+            Position=[16, 10, 1328, 50],
+        )
+        label = TyAppDesigner.uilabel(
+            panel;
+            Text="",
+            HorizontalAlignment="left",
+            VerticalAlignment="top",
+            WordWrap=true,
+            FontColor=[0.08, 0.16, 0.22],
+            BackgroundColor=[1.0, 1.0, 1.0],
+            Visible=false,
+            Position=[12, 8, 1304, 34],
+        )
+        return panel, label
+    end
+
+    function ensure_assistant_message_capacity(app, count)
+        while length(app.assistant_message_panels()) < count
+            panel, label = app.create_assistant_message_bubble()
+            push!(app.AssistantMessagePanels, panel)
+            push!(app.AssistantMessageLabels, label)
+        end
+    end
+
+    function render_assistant_chat(app)
+        app.AssistantChatPanel === nothing && return
+        panels = app.assistant_message_panels()
+        labels = app.assistant_message_labels()
+        for (panel, label) in zip(panels, labels)
+            panel.Visible = false
+            label.Visible = false
+        end
+        isempty(app.AssistantLines) && return
+        app.ensure_assistant_message_capacity(length(app.AssistantLines))
+        panels = app.assistant_message_panels()
+        labels = app.assistant_message_labels()
+
+        # The scrollable panel owns every bubble. No earlier message is removed.
+        y = 10
+        for (index, entry) in enumerate(app.AssistantLines)
+            panel = panels[index]
+            label = labels[index]
+            class_name = app.assistant_message_class(entry)
+            height = app.assistant_message_height(entry)
+            left = class_name == "user" ? 316 : (class_name == "system" ? 96 : 16)
+            width = class_name == "user" ? 1028 : (class_name == "system" ? 1248 : 1328)
+            panel.Position = [left, y, width, height]
+            label.Position = [12, 8, width - 24, height - 16]
+            label.Text = app.assistant_message_text_for_display(entry)
+            panel.BackgroundColor = class_name == "user" ? [0.89, 0.95, 0.95] :
+                (class_name == "system" ? [1.0, 0.97, 0.87] : [1.0, 1.0, 1.0])
+            panel.BorderColor = class_name == "user" ? [0.48, 0.72, 0.73] :
+                (class_name == "system" ? [0.82, 0.67, 0.34] : [0.70, 0.78, 0.81])
+            label.BackgroundColor = panel.BackgroundColor
+            label.FontColor = class_name == "system" ? [0.35, 0.27, 0.10] : [0.08, 0.16, 0.22]
+            label.Visible = true
+            panel.Visible = true
+            y += height + 10
+        end
+    end
+
     function append_assistant(app, author, message)
         timestamp = Dates.format(Dates.now(), "HH:MM")
         normalized = string(message)
         push!(app.AssistantLines, author * "  " * timestamp * "\n" * normalized)
-        length(app.AssistantLines) > 3 && deleteat!(app.AssistantLines, 1:length(app.AssistantLines)-3)
-        app.AssistantChatLabel.Text = join(app.AssistantLines, "\n\n")
+        app.render_assistant_chat()
     end
 
     function assistant_context_text(app)
         task_label = app.LastOperationalMode in ("model", "live") ?
             app.TaskDropDown.Value : app.MissionDropDown.Value
+        attachment_text = isempty(app.AssistantAttachments) ? "无" : join(app.AssistantAttachments, ", ")
         return join([
             "工作区：" * app.assistant_operational_mode_label(),
             "任务：" * task_label,
@@ -356,14 +506,28 @@ const OFFLINE_PROFILES = Dict(
             "增强层：" * app.AugmentationDropDown.Value,
             "安全层：" * app.SafetyDropDown.Value,
             "输出边界：" * app.OutputDropDown.Value,
+            "模型覆盖：" * (isempty(app.AssistantModel) ? "使用本机 Codex 配置" : app.AssistantModel),
+            "权限：只读分析；不修改文件、不启动仿真、不发送运行时命令",
+            "项目内附件：" * attachment_text,
+            "会话上下文：由本机 Codex CLI 持久 thread 维护；Studio 不截断或覆盖上文。",
         ], "\n")
     end
 
     function set_assistant_status(app, text; state="待命")
         title = state == "运行" ? "正在分析" : (state == "阻断" ? "服务不可用" : "助手状态")
-        app.AssistantStatusLabel.Text = title * "\n\n" * text * "\n\n" *
-            "权限：只读分析与操作建议\n" *
-            "执行：由用户在 MWORKS/QGC 原生界面确认"
+        app.AssistantStatusLabel.Text = title * "\n\n" * text
+        app.set_top_status("MoSim AI | " * title * " | " * text; state=state == "正常" ? "正常" : state)
+    end
+
+    function set_assistant_activity(app, status, activities=String[], partial_answer="")
+        app.AssistantActivityLabel === nothing && return
+        visible_events = isempty(activities) ? String[] : last(activities, min(3, length(activities)))
+        history = isempty(visible_events) ? "等待 Codex CLI 事件。" : join(["- " * item for item in visible_events], "\n")
+        partial = strip(String(partial_answer))
+        preview = isempty(partial) ? "" : "\n\n可见回答生成中：" * first(partial, min(length(partial), 160))
+        app.AssistantActivityLabel.Text =
+            "运行过程：" * status * "\n" * history * preview *
+            "\n\n仅显示公开运行事件和可见回答片段，不显示模型内部推理。"
     end
 
     function local_assistant_reply(app, prompt)
@@ -382,67 +546,246 @@ const OFFLINE_PROFILES = Dict(
         return "我已读取当前配置。可以继续询问控制链、MWORKS 模型、QGC 操作、故障注入或结果查看。"
     end
 
-    function trim_assistant_answer(answer, limit=700)
+    function trim_assistant_answer(app, answer, limit=700)
         text = strip(string(answer))
         return length(text) <= limit ? text : first(text, limit) * "\n\n[回答已截断，请缩小问题范围。]"
     end
 
-    function request_assistant_response(app, prompt; show_user=true)
-        if app.AssistantRequestInFlight
-            app.append_assistant("MoSim 助手", "上一条问题仍在分析，请等待其完成。")
+    function assistant_help_text(app)
+        return join([
+            "可用命令：",
+            "/model                 查看当前会话模型",
+            "/model <模型名>         设置本次会话模型",
+            "/status                查看助手、权限和上下文状态",
+            "/compact               请求 Codex 压缩内部上下文，界面历史不会删除",
+            "/attach <项目内路径>    添加项目内图片或文本附件",
+            "/attachments            查看当前附件",
+            "/stop                  停止当前只读分析",
+            "/clear                 清空界面并开始新 Codex 会话",
+            "/help                  显示此帮助",
+            "默认权限：只读分析，不修改文件、不启动仿真、不发送运行时命令。",
+            "会话上文保存在 Codex CLI thread 中；运行区域只显示公共过程，不显示内部推理。",
+        ], "\n")
+    end
+
+    function assistant_status_text(app)
+        model_text = isempty(app.AssistantModel) ? "本机 Codex 配置" : app.AssistantModel
+        attachment_text = isempty(app.AssistantAttachments) ? "无" : join(app.AssistantAttachments, ", ")
+        return join([
+            "模型：" * model_text,
+            "权限：只读分析",
+            "会话：" * (isempty(app.AssistantCodexThreadId) ? "下一条将创建新 Codex 会话" : "已连接到可续接 Codex thread"),
+            "界面历史：" * string(length(app.AssistantLines)) * " 条，未删除",
+            "上下文：当前配置实时注入；完整对话由 Codex thread 维护",
+            "附件：" * attachment_text,
+            "服务：本机 Codex CLI 按需启动，回环地址 127.0.0.1",
+        ], "\n")
+    end
+
+    function clear_assistant_history(app)
+        empty!(app.AssistantLines)
+        app.AssistantRequestInFlight = false
+        app.AssistantCodexThreadId = ""
+        app.AssistantTurnId = ""
+        app.AssistantPartialAnswer = ""
+        app.append_assistant("系统", "已开始新对话。旧消息仅从当前界面隐藏；新的问题会创建独立 Codex 会话。")
+        app.set_assistant_activity("待命", String[])
+        app.set_assistant_status("等待问题。可输入 /help 查看命令。"; state="待命")
+    end
+
+    function add_assistant_attachment(app, raw_path)
+        value = strip(String(raw_path))
+        isempty(value) && return "请提供项目内相对路径，例如 /attach Docs/报告/仿真分析报告_正文骨架.md。"
+        candidate = normpath(isabspath(value) ? value : joinpath(PROJECT_ROOT, value))
+        relative = relpath(candidate, PROJECT_ROOT)
+        startswith(relative, "..") && return "附件必须位于 MOSIM_ROOT 项目目录内。"
+        isfile(candidate) || return "附件不存在：" * relative
+        filesize(candidate) <= 8 * 1024 * 1024 || return "附件超过 8 MB 限制。"
+        extension = lowercase(splitext(candidate)[2])
+        allowed = (".png", ".jpg", ".jpeg", ".webp", ".gif", ".csv", ".json", ".md", ".mo", ".toml", ".txt")
+        extension in allowed || return "不支持的附件类型：" * extension
+        relative in app.AssistantAttachments || push!(app.AssistantAttachments, relative)
+        return "已添加项目内附件：" * relative
+    end
+
+    function handle_assistant_command(app, prompt)
+        parts = split(String(strip(prompt)); limit=2)
+        command = lowercase(parts[1])
+        argument = length(parts) == 2 ? strip(parts[2]) : ""
+        if command == "/help"
+            app.append_assistant("MoSim 助手", app.assistant_help_text())
+        elseif command == "/status"
+            app.append_assistant("MoSim 助手", app.assistant_status_text())
+        elseif command == "/model"
+            if isempty(argument)
+                model_text = isempty(app.AssistantModel) ? "本机 Codex 配置" : app.AssistantModel
+                app.append_assistant("MoSim 助手", "当前会话模型：" * model_text)
+            elseif occursin(r"^[A-Za-z0-9._:-]{1,100}$", argument)
+                app.AssistantModel = argument
+                app.append_assistant("MoSim 助手", "已设置本次会话模型：" * app.AssistantModel)
+            else
+                app.append_assistant("MoSim 助手", "模型名只允许字母、数字、点、下划线、冒号和连字符。")
+            end
+        elseif command == "/compact"
+            if isempty(app.AssistantCodexThreadId)
+                app.append_assistant("系统", "当前还没有可压缩的 Codex 会话。先发送一条普通问题即可建立会话；Studio 历史不会删除。")
+            else
+                app.append_assistant("系统", "正在请求 Codex 在当前 thread 内生成可续接的事实摘要；Studio 完整历史不会删除。")
+                app.request_assistant_response(
+                    "请将当前会话已确认的事实、用户约束与未完成事项压缩为简短可续接摘要。不要删除或否定既有事实；只回复摘要。";
+                    show_user=false,
+                )
+            end
+        elseif command == "/attach"
+            app.append_assistant("MoSim 助手", app.add_assistant_attachment(argument))
+        elseif command == "/attachments"
+            text = isempty(app.AssistantAttachments) ? "当前没有附件。" : "当前附件：\n" * join(app.AssistantAttachments, "\n")
+            app.append_assistant("MoSim 助手", text)
+        elseif command == "/stop"
+            app.stop_assistant_turn()
+        elseif command == "/clear"
+            app.clear_assistant_history()
+        else
+            app.append_assistant("MoSim 助手", "未知命令：" * command * "。输入 /help 查看可用命令。")
+        end
+        return true
+    end
+
+    function update_assistant_command_menu(app)
+        app.AssistantCommandDropDown === nothing && return
+        app.AssistantCommandDropDown.Items = ASSISTANT_COMMAND_ITEMS
+        app.AssistantCommandDropDown.Visible = app.CurrentMode == "assistant"
+    end
+
+    function AssistantInputChanged(app, event)
+        app.update_assistant_command_menu()
+    end
+
+    function AssistantInputCommitted(app, event)
+        prompt = String(strip(app.AssistantInputField.Value))
+        isempty(prompt) && return app.update_assistant_command_menu()
+        app.AssistantInputField.Value = ""
+        app.AssistantCommandDropDown.Visible = true
+        app.request_assistant_response(prompt)
+    end
+
+    function AssistantCommandChanged(app, event)
+        selected = String(app.AssistantCommandDropDown.Value)
+        isempty(selected) && return
+        selected == "/model <model>" && (selected = "/model ")
+        app.AssistantInputField.Value = selected
+        app.AssistantCommandDropDown.Visible = true
+    end
+
+    function set_assistant_request_controls(app, running)
+        app.AssistantRequestInFlight = running
+        app.AssistantSendButton.Enable = !running
+        app.AssistantInputField.Enable = !running
+        app.AssistantClearButton.Enable = !running
+        app.AssistantExplainButton.Enable = !running
+        app.AssistantMworksGuideButton.Enable = !running
+        app.AssistantQgcGuideButton.Enable = !running
+        app.AssistantResultGuideButton.Enable = !running
+        app.AssistantStopButton.Visible = app.CurrentMode == "assistant" && running
+        app.AssistantStopButton.Enable = running
+    end
+
+    function apply_assistant_turn_snapshot(app, result)
+        !isempty(result.codex_thread_id) && (app.AssistantCodexThreadId = result.codex_thread_id)
+        app.AssistantPartialAnswer = result.partial_answer
+        status_text = result.status == "queued" ? "请求已排队" :
+            (result.status == "running" ? "正在分析" :
+            (result.status == "completed" ? "回答完成" :
+            (result.status == "cancelled" ? "已停止" : "调用失败")))
+        app.set_assistant_activity(status_text, result.activities, result.partial_answer)
+        result.status in ("completed", "failed", "cancelled") || return false
+
+        if result.status == "completed" && !isempty(strip(result.answer))
+            app.append_assistant("MoSim AI", app.trim_assistant_answer(result.answer, 2400))
+            app.set_assistant_status("当前回合已完成；后续问题将恢复同一 Codex 会话。"; state="正常")
+        elseif result.status == "cancelled"
+            app.append_assistant("系统", "本轮只读分析已停止；此前完整对话和 Codex 会话上下文均保留。")
+            app.set_assistant_status("本轮已停止。可以继续提问或输入 /clear 新建会话。"; state="待命")
+        else
+            message = isempty(strip(result.answer)) ? result.error : result.answer
+            isempty(strip(message)) && (message = "Codex CLI 未返回可显示结果。")
+            app.append_assistant("MoSim AI", app.trim_assistant_answer(message, 1200))
+            app.set_assistant_status("本轮未完成；没有执行任何模型或运行时操作。"; state="阻断")
+        end
+        return true
+    end
+
+    function finish_assistant_turn(app)
+        app.AssistantTurnId = ""
+        app.AssistantPartialAnswer = ""
+        app.set_assistant_request_controls(false)
+    end
+
+    function stop_assistant_turn(app)
+        if !app.AssistantRequestInFlight || isempty(app.AssistantTurnId)
+            app.set_assistant_status("当前没有可停止的分析回合。"; state="待命")
             return
         end
-        question = strip(prompt)
+        result = AgentIntegration.cancel_mworks_turn(app.Appfile, app.AssistantTurnId)
+        app.apply_assistant_turn_snapshot(result)
+        result.status in ("completed", "failed", "cancelled") && app.finish_assistant_turn()
+    end
+
+    function AssistantStopPressed(app, event)
+        app.stop_assistant_turn()
+    end
+
+    function request_assistant_response(app, prompt; show_user=true)
+        if app.AssistantRequestInFlight
+            app.set_assistant_status("当前回合仍在运行；可点击“停止”结束本轮，然后继续提问。"; state="运行")
+            return
+        end
+        question = String(strip(prompt))
         if isempty(question)
             app.append_assistant("MoSim 助手", "请先输入问题。")
             return
         end
         show_user && app.append_assistant("你", question)
-        app.AssistantRequestInFlight = true
-        app.AssistantSendButton.Enable = false
-        app.AssistantExplainButton.Enable = false
-        app.AssistantMworksGuideButton.Enable = false
-        app.AssistantQgcGuideButton.Enable = false
-        app.AssistantResultGuideButton.Enable = false
-        app.AssistantClearButton.Enable = false
-        app.set_assistant_status("正在调用本机 Codex CLI，并仅以只读方式检查当前配置和项目证据。"; state="运行")
+        startswith(question, "/") && return app.handle_assistant_command(question)
+        app.set_assistant_request_controls(true)
+        app.set_assistant_status("正在调用本机 Codex CLI；本轮保持只读。"; state="运行")
+        app.set_assistant_activity("正在启动", ["正在请求本机 Codex CLI"], "")
         context_text = app.assistant_context_text()
         @async begin
             try
-                result = AgentIntegration.query_mworks_agent(app.Appfile, question, context_text)
-                if result.ok
-                    tools_text = isempty(result.tools) ? "本次未调用项目工具。" :
-                        "本次只读工具：" * join(result.tools, "、")
-                    app.append_assistant("MoSim AI", app.trim_assistant_answer(result.answer) * "\n\n" * tools_text)
-                    request_text = isempty(result.request_id) ? "在线回答已完成。" :
-                        "在线回答已完成；请求编号 " * result.request_id
-                    app.set_assistant_status(request_text; state="正常")
-                elseif result.error_code in ("codex_not_built", "codex_auth_required", "codex_cli_unavailable")
-                    fallback = app.local_assistant_reply(question)
-                    app.append_assistant("MoSim 助手", fallback * "\n\nCodex CLI 未完成构建或 GPT 登录；请按发布清单完成 src/Agent 构建和 codex login。")
-                    app.set_assistant_status("当前使用本地指引。等待本机 Codex CLI 构建与登录。"; state="待命")
-                else
-                    app.append_assistant("MoSim 助手", app.trim_assistant_answer(result.answer) * "\n\n" * app.local_assistant_reply(question))
-                    app.set_assistant_status("在线模型暂不可用，已回退到本地指引。"; state="阻断")
+                started = AgentIntegration.start_mworks_turn(
+                    app.Appfile,
+                    question,
+                    context_text;
+                    model=app.AssistantModel,
+                    attachments=app.AssistantAttachments,
+                    codex_thread_id=app.AssistantCodexThreadId,
+                )
+                app.AssistantTurnId = started.request_id
+                if app.apply_assistant_turn_snapshot(started)
+                    app.finish_assistant_turn()
+                    return
+                end
+                while app.AssistantRequestInFlight && !isempty(app.AssistantTurnId)
+                    sleep(0.25)
+                    snapshot = AgentIntegration.poll_mworks_turn(app.Appfile, app.AssistantTurnId)
+                    if app.apply_assistant_turn_snapshot(snapshot)
+                        app.finish_assistant_turn()
+                        break
+                    end
                 end
             catch error
-                app.append_assistant("MoSim 助手", "助手调用异常：" * sprint(showerror, error))
+                app.append_assistant("MoSim AI", "助手调用异常：" * sprint(showerror, error))
                 app.set_assistant_status("助手调用异常，未执行任何模型或运行时操作。"; state="阻断")
-            finally
-                app.AssistantRequestInFlight = false
-                app.AssistantSendButton.Enable = true
-                app.AssistantExplainButton.Enable = true
-                app.AssistantMworksGuideButton.Enable = true
-                app.AssistantQgcGuideButton.Enable = true
-                app.AssistantResultGuideButton.Enable = true
-                app.AssistantClearButton.Enable = true
+                app.finish_assistant_turn()
             end
         end
     end
 
     function AssistantSendPressed(app, event)
-        prompt = strip(app.AssistantInputField.Value)
+        prompt = String(strip(app.AssistantInputField.Value))
         app.AssistantInputField.Value = ""
+        app.AssistantCommandDropDown.Visible = true
         app.request_assistant_response(prompt)
     end
 
@@ -463,10 +806,7 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function AssistantClearPressed(app, event)
-        empty!(app.AssistantLines)
-        app.AssistantRequestInFlight = false
-        app.append_assistant("MoSim 助手", "已清空对话。我已保留当前实验配置上下文。")
-        app.set_assistant_status("等待问题。首次发送会按需启动本机只读 Codex CLI 服务。"; state="待命")
+        app.clear_assistant_history()
     end
 
     function set_top_status(app, text; state="待命")
@@ -573,7 +913,11 @@ const OFFLINE_PROFILES = Dict(
             app.InjectionValuesLabel, app.ApplyInjectionButton,
             app.RestoreInjectionButton, app.ManifestLabel,
             app.AssistantContextLabel, app.AssistantChatLabel,
-            app.AssistantInputField, app.AssistantSendButton,
+            app.AssistantChatPanel, app.AssistantActivityPanel, app.AssistantActivityLabel,
+            app.assistant_message_panels()...,
+            app.assistant_message_labels()..., app.AssistantInputField,
+            app.AssistantCommandDropDown, app.AssistantSendButton,
+            app.AssistantStopButton,
             app.AssistantExplainButton, app.AssistantMworksGuideButton,
             app.AssistantQgcGuideButton, app.AssistantResultGuideButton,
             app.AssistantClearButton, app.AssistantStatusLabel,
@@ -583,7 +927,11 @@ const OFFLINE_PROFILES = Dict(
     function assistant_controls(app)
         return (
             app.AssistantContextLabel, app.AssistantChatLabel,
-            app.AssistantInputField, app.AssistantSendButton,
+            app.AssistantChatPanel, app.AssistantActivityPanel, app.AssistantActivityLabel,
+            app.assistant_message_panels()...,
+            app.assistant_message_labels()..., app.AssistantInputField,
+            app.AssistantCommandDropDown, app.AssistantSendButton,
+            app.AssistantStopButton,
             app.AssistantExplainButton, app.AssistantMworksGuideButton,
             app.AssistantQgcGuideButton, app.AssistantResultGuideButton,
             app.AssistantClearButton, app.AssistantStatusLabel,
@@ -684,7 +1032,7 @@ const OFFLINE_PROFILES = Dict(
         return controller.id in task.controller_ids
     end
 
-    function model_task_route_boundary(controller_id)
+    function model_task_route_boundary(app, controller_id)
         route = get(MODEL_TASK_ROUTES, controller_id, nothing)
         route === nothing && return nothing
         route.available || return nothing
@@ -1239,35 +1587,46 @@ const OFFLINE_PROFILES = Dict(
     end
 
     function configure_assistant_workspace(app)
-        app.set_top_status("MoSim AI 助手  |  当前配置上下文已读取  |  只读分析，不直接控制仿真或飞行端"; state="正常")
-        app.configure_section(app.ConfigSectionLabel, "当前配置", [24, 144, 320, 34])
-        app.configure_section(app.ChainSectionLabel, "MoSim AI 助手", [364, 144, 692, 34])
-        app.configure_section(app.InjectionSectionLabel, "快捷问题", [1076, 144, 340, 34])
+        app.set_top_status("MoSim AI | 只读 | Codex CLI 按需启动 | 输入 /help 查看命令"; state="正常")
+        app.configure_section(app.ConfigSectionLabel, "MoSim AI 助手", [24, 144, 1392, 34])
         app.ConfigSectionLabel.Visible = true
-        app.ChainSectionLabel.Visible = true
-        app.InjectionSectionLabel.Visible = true
+        app.ChainSectionLabel.Visible = false
+        app.InjectionSectionLabel.Visible = false
         app.set_visible(app.workspace_controls(), false)
         app.set_visible(app.action_buttons(), false)
         app.StatusLabel.Visible = false
         app.ConsoleToggleButton.Visible = false
         app.ConsoleClearButton.Visible = false
-        app.set_visible(app.assistant_controls(), true)
+        app.set_visible(app.assistant_controls(), false)
+        app.set_visible((
+            app.AssistantChatPanel, app.AssistantActivityPanel, app.AssistantActivityLabel,
+            app.AssistantInputField, app.AssistantSendButton, app.AssistantStopButton,
+            app.AssistantClearButton, app.AssistantCommandDropDown,
+        ), true)
 
-        app.AssistantContextLabel.Position = [24, 192, 320, 468]
-        app.AssistantChatLabel.Position = [364, 192, 692, 394]
-        app.AssistantInputField.Position = [364, 616, 510, 32]
-        app.AssistantSendButton.Position = [890, 614, 166, 36]
-        app.AssistantClearButton.Position = [364, 664, 166, 32]
-        app.AssistantExplainButton.Position = [1076, 192, 340, 40]
-        app.AssistantMworksGuideButton.Position = [1076, 246, 340, 40]
-        app.AssistantQgcGuideButton.Position = [1076, 300, 340, 40]
-        app.AssistantResultGuideButton.Position = [1076, 354, 340, 40]
-        app.AssistantStatusLabel.Position = [1076, 418, 340, 242]
+        app.AssistantChatPanel.Position = [24, 192, 1392, 300]
+        app.AssistantActivityPanel.Position = [24, 504, 1392, 90]
+        app.AssistantActivityLabel.Position = [12, 6, 1368, 78]
+        app.AssistantCommandDropDown.Position = [24, 596, 540, 32]
+        app.AssistantCommandDropDown.Label = "命令候选"
+        app.AssistantInputField.Position = [24, 642, 980, 32]
+        app.AssistantInputField.Label = "输入问题"
+        app.AssistantInputField.Placeholder = "输入问题，按 Enter 发送；输入 / 查看命令"
+        app.AssistantSendButton.Position = [1020, 640, 190, 36]
+        app.AssistantStopButton.Position = [1226, 640, 190, 36]
+        app.AssistantClearButton.Position = [24, 684, 160, 30]
+        app.AssistantCommandDropDown.Items = ASSISTANT_COMMAND_ITEMS
+        app.AssistantCommandDropDown.Visible = true
+        app.AssistantStatusLabel.Visible = false
+        app.set_assistant_request_controls(app.AssistantRequestInFlight)
 
         app.refresh_assistant_context()
         if isempty(app.AssistantLines)
-            app.append_assistant("MoSim 助手", "你好，我已读取当前实验配置。发送问题后将按需启动本机只读 Codex CLI 服务。")
-            app.set_assistant_status("等待问题。AI 助手需要本机已构建并登录的 Codex CLI，不会把凭据写入项目。"; state="待命")
+            app.append_assistant("MoSim 助手", "你好。我会读取当前 MoSim 配置并通过本机 Codex CLI 做只读分析。完整上文将保留在可恢复的 Codex 会话中；输入 /help 查看命令。")
+            app.set_assistant_activity("待命", ["等待问题"])
+            app.set_assistant_status("等待问题。"; state="待命")
+        else
+            app.render_assistant_chat()
         end
     end
 
@@ -2040,15 +2399,61 @@ const OFFLINE_PROFILES = Dict(
         app.AssistantChatLabel.BackgroundColor = [1.0, 1.0, 1.0]
         app.AssistantChatLabel.FontColor = [0.08, 0.16, 0.22]
 
+        app.AssistantChatPanel = TyAppDesigner.uipanel(
+            app.UIFigure;
+            Title="",
+            BackgroundColor=[0.96, 0.97, 0.97],
+            BorderType="solid",
+            BorderWidth=1,
+            BorderColor=[0.68, 0.75, 0.78],
+            Scrollable=true,
+            Position=[24, 192, 1392, 300],
+        )
+        app.AssistantMessagePanels = Any[]
+        app.AssistantMessageLabels = Any[]
+
+        app.AssistantActivityPanel = TyAppDesigner.uipanel(
+            app.UIFigure;
+            Title="",
+            BackgroundColor=[0.93, 0.96, 0.96],
+            BorderType="solid",
+            BorderWidth=1,
+            BorderColor=[0.60, 0.73, 0.74],
+            Position=[24, 504, 1392, 90],
+        )
+        app.AssistantActivityLabel = TyAppDesigner.uilabel(
+            app.AssistantActivityPanel;
+            Text="运行过程：待命\n等待问题。\n\n仅显示公开运行事件，不显示模型内部推理。",
+            Position=[12, 6, 1368, 78],
+            VerticalAlignment="top",
+            WordWrap=true,
+            FontColor=[0.08, 0.16, 0.22],
+            BackgroundColor=[0.93, 0.96, 0.96],
+        )
+
         app.AssistantInputField = TyAppDesigner.uieditfield(app.UIFigure)
         app.AssistantInputField.Position = [364, 616, 510, 32]
         app.AssistantInputField.Label = "输入问题"
+        app.AssistantInputField.Placeholder = "输入问题，按 Enter 发送；输入 / 查看命令"
         app.AssistantInputField.Value = ""
+        app.AssistantInputField.ValueChangingFcn = "AssistantInputChanged"
+        app.AssistantInputField.ValueChangedFcn = "AssistantInputCommitted"
+
+        app.AssistantCommandDropDown = TyAppDesigner.uidropdown(app.UIFigure)
+        app.AssistantCommandDropDown.Position = [24, 604, 430, 32]
+        app.AssistantCommandDropDown.Label = "命令候选"
+        app.AssistantCommandDropDown.Items = ASSISTANT_COMMAND_ITEMS
+        app.AssistantCommandDropDown.Value = ASSISTANT_COMMAND_ITEMS[1]
+        app.AssistantCommandDropDown.ValueChangedFcn = "AssistantCommandChanged"
+        app.AssistantCommandDropDown.Visible = false
 
         app.AssistantSendButton = TyAppDesigner.uibutton(app.UIFigure)
-        app.configure_action(app.AssistantSendButton, "发送", "AssistantSendPressed", [890, 614, 166, 36])
+        app.configure_action(app.AssistantSendButton, "发送", "AssistantSendPressed", [1020, 640, 190, 36])
+        app.AssistantStopButton = TyAppDesigner.uibutton(app.UIFigure)
+        app.configure_action(app.AssistantStopButton, "停止", "AssistantStopPressed", [1226, 640, 190, 36])
+        app.AssistantStopButton.Visible = false
         app.AssistantClearButton = TyAppDesigner.uibutton(app.UIFigure)
-        app.configure_action(app.AssistantClearButton, "清空对话", "AssistantClearPressed", [364, 664, 166, 32])
+        app.configure_action(app.AssistantClearButton, "新建对话", "AssistantClearPressed", [24, 684, 160, 30])
 
         app.AssistantExplainButton = TyAppDesigner.uibutton(app.UIFigure)
         app.configure_action(app.AssistantExplainButton, "解释当前控制链", "AssistantExplainPressed", [1076, 192, 340, 40])
@@ -2077,6 +2482,7 @@ const OFFLINE_PROFILES = Dict(
         app.Appfile = @__FILE__
         app.ConsoleLines = String[]
         app.AssistantLines = String[]
+        app.AssistantAttachments = String[]
         app.createComponents()
         TyAppDesigner.registerApp(app, app.UIFigure)
         return app
