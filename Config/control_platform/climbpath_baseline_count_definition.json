@@ -1,0 +1,97 @@
+{
+  "schema": "mosim.climbpath_baseline_count_definition.v1",
+  "version": 1,
+  "generated_at": "2026-07-31",
+  "authority": "The single reconciled count definition for the nominal ClimbPath 50 s baseline. The report, user manual and APP must cite these tiers instead of a bare 48-entry or single pass-count figure.",
+  "scope": "Nominal ClimbPath 50 s, phase2_full_48 batch plus the 2026-07-31 pid_awff_linear_eso run. No multi-scenario, sensitivity, code-generation, Gazebo or deployment claim.",
+  "why_this_file_exists": "Two parallel id namespaces exist. control_scheme_catalog.json is frozen at 2026-07-27 and owns terminology and family assignment. G3_STATUS.json was generated 2026-07-30 and owns execution status and performance. Both happen to hold 48 entries, but only 41 pairs align; the coincidence made a bare '48' ambiguous and a bare '29/48 pass' unverifiable.",
+  "tiers": [
+    {
+      "tier": "catalog_frozen_entries",
+      "count": 48,
+      "definition": "Approved top-level entries in the frozen design catalog: 47 MWORKS control profiles across seven families plus the px4ctrl engineering/deployment baseline.",
+      "authority_file": "Config/control_platform/control_scheme_catalog.json",
+      "usable_for": "terminology, family assignment, APP catalog",
+      "not_usable_for": "any execution or performance claim; 6 of these 48 have no FormalRunner at all"
+    },
+    {
+      "tier": "formal_runner_files",
+      "count": 49,
+      "definition": "FormalRunner .mo files that exist in the model tree, excluding package.mo.",
+      "authority_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal",
+      "usable_for": "execution capability boundary",
+      "not_usable_for": "performance claim; existence of a runner does not imply it ran or passed"
+    },
+    {
+      "tier": "aligned_catalog_to_execution",
+      "count": 41,
+      "definition": "Entries carrying evidence on both sides: 33 exact id matches plus 8 alias-resolved pairs.",
+      "authority_file": "Config/control_platform/scheme_id_alias_map.json",
+      "usable_for": "any statement that needs both an approved term and an execution record"
+    },
+    {
+      "tier": "ran_to_completion",
+      "count": 38,
+      "definition": "Runs that produced a complete readable 50 s dataset, regardless of tracking performance. G3 contributes 37; pid_awff_linear_eso contributes 1 (25001 samples, 2026-07-31, absent from the G3 batch).",
+      "authority_files": [
+        "Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json",
+        "Results/control_platform/pid_awff_linear_eso_baseline_20260731/CONTROLLER_EVIDENCE.md"
+      ],
+      "usable_for": "simulation-executability claims",
+      "not_usable_for": "acceptance; 10 of these 38 exceed the terminal-error bound"
+    },
+    {
+      "tier": "performance_accepted",
+      "count": 28,
+      "definition": "Ran to completion AND terminal position_error_norm below 5 m. This is the only tier that means accepted.",
+      "authority_file": "Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json",
+      "authority_field": "effective_passed_count"
+    }
+  ],
+  "arithmetic_check": {
+    "execution_universe": 49,
+    "execution_universe_definition": "48 G3_STATUS rows plus the standalone pid_awff_linear_eso run, which is absent from the G3 batch. This equals formal_runner_files 49 and is deliberately NOT equal to catalog_frozen_entries 48.",
+    "g3_side": "28 accepted + 9 exceeds_5m + 11 no_data = 48 G3 rows",
+    "external_side": "pid_awff_linear_eso: 1 ran to completion, 0 accepted",
+    "tier_sum": "ran_to_completion 38 + never_ran 11 = 49 execution units",
+    "accepted_sum": "performance_accepted 28 + ran_but_not_accepted 10 = ran_to_completion 38",
+    "do_not_expect": "These tiers do not sum to 48. Any statement that mixes catalog_frozen_entries with execution tiers in one total is wrong."
+  },
+  "ran_but_not_accepted": {
+    "count": 10,
+    "composition": "9 G3 rows with failure_class terminal_position_error_exceeds_5m, plus pid_awff_linear_eso from its standalone run",
+    "definition": "Complete 50 s dataset but terminal position_error_norm at or above 5 m. These are valid negative performance evidence, not failures to execute.",
+    "entries": [
+      { "controller_id": "fopid", "terminal_position_error_norm_m": 18.52 },
+      { "controller_id": "l_1", "terminal_position_error_norm_m": 46.55 },
+      { "controller_id": "awff", "terminal_position_error_norm_m": 48.82 },
+      { "controller_id": "linear_mpc_rotor", "terminal_position_error_norm_m": 204.01 },
+      { "controller_id": "indi", "terminal_position_error_norm_m": 248.3 },
+      { "controller_id": "official_pid_yaw_corrected", "terminal_position_error_norm_m": 1038.92 },
+      { "controller_id": "fault_compensation", "terminal_position_error_norm_m": 2626.32 },
+      { "controller_id": "pid_awff_linear_eso", "terminal_position_error_norm_m": 3412.36, "source": "Results/control_platform/pid_awff_linear_eso_baseline_20260731/CONTROLLER_EVIDENCE.md" },
+      { "controller_id": "hinf_hover_wrench", "terminal_position_error_norm_m": 15047.34 },
+      { "controller_id": "mrac", "terminal_position_error_norm_m": 33819.18 }
+    ]
+  },
+  "never_ran": {
+    "count": 11,
+    "definition": "No usable 50 s dataset produced.",
+    "breakdown": {
+      "simulation_timeout": 8,
+      "simulate_failed": 2,
+      "check_model_failed": 1
+    }
+  },
+  "superseded_claims": {
+    "29_of_48_pass": "Not supported by any file. G3_STATUS.json reports effective_passed_count 28 and effective_failed_count 20. The 29/19 pair in the report body predates this reconciliation and must be replaced by the tier table above.",
+    "48_entries_all_validated": "Not supported. 48 is the frozen catalog size only; 6 of those entries have no FormalRunner and 11 runs never produced data."
+  },
+  "open_items": [
+    "control_scheme_catalog.json still marks pid_awff_linear_eso role=planned, implementation_status=planned, selection_eligibility=not_runnable although its runner, adapter and Sysblock all exist and a 50 s run completed. The entry is deliberately left unchanged because check_control_scheme_catalog.py enforces CSC-PLANNED-01 and CSC-COUNT-04 (exactly one planned profile) and CSC-FREEZE-01 pins frozen_at to 2026-07-27. Correcting it requires an explicit re-freeze decision plus matching validator constants.",
+    "Seven runners hold ClimbPath data but no approved catalog terminology: l_1, indi, improved_pid, fault_compensation, linear_mpc_rotor, official_pid_yaw_corrected, official_pid_yaw_authority_mapped. They must not be cited under a catalog family label until catalog entries exist.",
+    "G3_STATUS.json carries completed=false and generated_at 2026-07-30, so the G3 sweep itself is not closed.",
+    "model_studio_task_routes_v1.toml holds 48 [[route]] blocks of which 44 are available=true. Its pid_awff_linear_eso route is still available=false with reason 'no registered graphical control core, Adapter or FormalRunner', but PidAwffLinearEsoFormalRunner.mo now exists on disk and the controller completed a standalone 50 s run on 2026-07-31. The route table lags the model tree; available=false must not be read as unimplemented or never-run.",
+    "Five of the 49 FormalRunner files are absent from the 44 available Studio routes: FaultCompensationFormalRunner.mo, ImprovedPidFormalRunner.mo, OfficialPidYawAuthorityMappedFormalRunner.mo, OfficialPidYawCorrectedFormalRunner.mo, PidAwffLinearEsoFormalRunner.mo. The 49-vs-44 gap is a route-registration gap, not a performance result."
+  ]
+}

@@ -23,6 +23,16 @@
       "agent_keywords": ["8字", "八字", "figure eight", "figure8"]
     },
     {
+      "profile_id": "px4ctrl_graphical_c99_factory_figure8_v1",
+      "profile_path": "Config/profiles/experiments/px4ctrl_graphical_c99_factory_figure8_v1.json",
+      "label": "MWORKS 图形化 C99 8字飞行",
+      "controller_scheme_id": "px4ctrl",
+      "task_key": "graphical_c99_figure8",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["c99", "图形化", "mworks", "px4ctrl", "8字", "八字"]
+    },
+    {
       "profile_id": "px4ctrl_fastlio_motor_efficiency_fault_recovery_v1",
       "profile_path": "Config/profiles/experiments/px4ctrl_fastlio_motor_efficiency_fault_recovery_v1.json",
       "label": "单机起飞悬停故障恢复",

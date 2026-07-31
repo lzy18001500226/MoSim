@@ -4,12 +4,17 @@
 from __future__ import annotations
 
 import json
+import shutil
 import textwrap
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "src" / "app.jl"
+DEPENDENCIES = [
+    ROOT / "src" / "agent_integration.jl",
+    ROOT / "src" / "live_cosim_backend.jl",
+]
 NATIVE_DIR = ROOT / "native_app"
 NATIVE_SOURCE = NATIVE_DIR / "app.jl"
 OUTPUT = NATIVE_DIR / "MoSimModelStudioApp.slapp"
@@ -325,6 +330,10 @@ def build_project() -> dict:
 def main() -> None:
     NATIVE_DIR.mkdir(parents=True, exist_ok=True)
     NATIVE_SOURCE.write_text(SOURCE.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
+    for dependency in DEPENDENCIES:
+        if not dependency.is_file():
+            raise FileNotFoundError(f"Missing APP dependency: {dependency}")
+        shutil.copy2(dependency, NATIVE_DIR / dependency.name)
     OUTPUT.write_text(
         json.dumps(build_project(), ensure_ascii=False, indent=4) + "\n",
         encoding="utf-8",

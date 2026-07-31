@@ -181,6 +181,53 @@
       "status": "source_ready_live_gate_pending"
     },
     {
+      "runtime_profile_id": "sunray_ros1_factory_l2_graphical_px4ctrl_c99_figure8_v1",
+      "experiment_profile_ids": ["px4ctrl_graphical_c99_factory_figure8_v1"],
+      "controller_ids": ["px4ctrl"],
+      "vehicle_counts": [1],
+      "launcher": "wsl_project_script",
+      "wsl_distribution": "Ubuntu-20.04",
+      "operation_id": "factory_l2_graphical_px4ctrl_c99_figure8",
+      "project_script": "Scripts/sunray/run_px4ctrl_fastlio_operator_live_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false",
+          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "MAVROS_READY_TIMEOUT_S": "180",
+          "FASTLIO_FILTER_SIZE_SURF": "0.5",
+          "FASTLIO_FILTER_SIZE_MAP": "0.5",
+          "MOSIM_UE_STATE_STREAM": "true",
+          "MOSIM_UE_STATE_STREAM_RATE_HZ": "100",
+          "PX4CTRL_CORE_PROFILE": "graphical_c99",
+          "PX4CTRL_EXPECTED_BUILD_BACKEND": "graphical_px4ctrl_c99",
+          "PX4CTRL_PATH_FRAME": "world",
+          "RECORD_ROSBAG": "true",
+          "REVIEW_OPEN_RVIZ": "true",
+          "REVIEW_PRESTART_HOLD_S": "15",
+          "REVIEW_START_CLOUD_NODE": "true",
+          "REVIEW_START_OCCUPANCY_NODE": "true",
+          "SUNRAY_GAZEBO_LAUNCH_FILE": "Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
+          "SUNRAY_UAV_INIT_X": "-10.575025",
+          "SUNRAY_UAV_INIT_Y": "-19.36313",
+          "SUNRAY_UAV_INIT_Z": "0.2",
+          "SUNRAY_UAV_INIT_YAW": "0",
+          "TOTAL_TIMEOUT_S": "600",
+          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+        },
+        "arguments": ["figure8"]
+      },
+      "result_gate": "DEMO_STATUS.json",
+      "operator_contract": {
+        "flight_authority": "mission_adapter",
+        "takeoff_owner": "mission_adapter",
+        "mission_adapter_source": "Scripts/sunray/px4ctrl_basic_mission_node.py",
+        "terminal_ack": "mission_status_channel_v1",
+        "safe_stop": "safe_stop_channel_v1"
+      },
+      "status": "source_ready_live_gate_pending"
+    },
+    {
       "runtime_profile_id": "sunray_ros1_cascade_pid_generated_figure8_single_v1",
       "experiment_profile_ids": ["cascade_pid_figure8_generated_c_v1"],
       "controller_ids": ["cascade_pid"],

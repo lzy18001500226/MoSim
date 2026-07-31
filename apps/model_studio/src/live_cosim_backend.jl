@@ -20,6 +20,17 @@ const RESPONSE_FIELDS = [
 ]
 
 function project_root(appfile)
+    configured = strip(get(ENV, "MOSIM_ROOT", ""))
+    if !isempty(configured) && isfile(joinpath(configured, "Scripts", "agent", "codex_cli_agent_server.py"))
+        return normpath(configured)
+    end
+    current = normpath(dirname(appfile))
+    for _ in 1:8
+        isfile(joinpath(current, "Scripts", "agent", "codex_cli_agent_server.py")) && return current
+        parent = dirname(current)
+        parent == current && break
+        current = parent
+    end
     return normpath(joinpath(dirname(appfile), "..", "..", ".."))
 end
 
