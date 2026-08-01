@@ -15,6 +15,50 @@ PX4/Gazebo 验证链路。目标不是搭建通用机器人导航演示，而是
 3. 覆盖阶跃、螺旋、8 字、参数摄动、风扰、执行器退化等场景；多机编队是单机闭环稳定后的扩展任务。
 4. 交付完整源文件、用户手册、仿真分析报告和演示材料，所有结论必须能追溯到模型、配置、日志、指标或图件。
 
+## 下载后快速入口
+
+GitHub 克隆和百度网盘源码包应得到相同的项目根目录。`MOSIM_ROOT` 必须指向
+同时包含 `AGENTS.md`、`Models/` 和 `Config/` 的 `MoSim` 目录；不要把它指向
+外层下载目录，也不要把项目解压成 `MoSim/MoSim/` 后误设根目录。
+
+```powershell
+$MOSIM_ROOT = (Resolve-Path '<包含 AGENTS.md、Models 和 Config 的 MoSim 目录>').Path
+$env:MOSIM_ROOT = $MOSIM_ROOT
+Test-Path "$MOSIM_ROOT\Models\MoSimQuadrotorModel\package.mo"
+```
+
+优先复现 APP 和 MWORKS 仿真时，按以下顺序操作：
+
+1. 在已授权的 MWORKS Syslab 中加载 `Models/MoSimQuadrotorModel/package.mo`；
+2. 在同一 Syslab 会话执行 `apps/model_studio/src/app.jl` 的 `include(...)` 入口；
+3. 在 Studio 选择任务和控制器，点击“写入配置”，再点击“打开仿真模型”；
+4. 在 MWORKS 原生窗口确认 FormalRunner、执行 CheckModel，再由用户手动启动仿真；
+5. 在结果查看器读取 `Result.msr`，并用同次运行目录的指标和运行记录判定结果。
+
+APP 不是普通 Julia 命令行程序，不要用 `julia src/app.jl` 代替 Syslab 入口。`Results/`
+被源码仓库忽略，首次写入配置时会自动生成交接 JSON 和临时 harness；历史 Results
+证据包是独立交付物，不是 APP 启动依赖。Gazebo、ROS、PX4 和 QGC 属于可选的运行时
+扩展，不是 APP 或 MWORKS 单机仿真的前置条件。
+
+代码导航：
+
+| 需要查找 | 首选路径 |
+| --- | --- |
+| 正式 Modelica 包根 | `Models/MoSimQuadrotorModel/package.mo` |
+| 机体、动力学和装配 | `Models/MoSimQuadrotorModel/Vehicle/` |
+| 控制器接口、Adapter 和实现 | `Models/MoSimQuadrotorModel/Control/` |
+| 单机 FormalRunner | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/` |
+| 三机/编队 Runner | `Models/MoSimQuadrotorModel/Experiment/Runners/Formation/` |
+| 轨迹、障碍场和编队参考 | `Models/MoSimQuadrotorModel/Guidance/` |
+| Studio 当前源码 | `apps/model_studio/src/app.jl` |
+| Studio 路由权威表 | `Config/control_platform/model_studio_task_routes_v1.toml` |
+| 写入配置/打开模型脚本 | `Scripts/ui/model_studio_task_config.py`、`Scripts/ui/open_model_studio_model.py` |
+
+完整操作步骤见 [`apps/model_studio/README.md`](apps/model_studio/README.md) 和
+[`Docs/报告/用户手册_正文骨架.md`](Docs/报告/用户手册_正文骨架.md)。
+模型包的命名空间、入口类、子包职责和浏览器可见性见
+[`Models/README.md`](Models/README.md)。
+
 ## 三层架构
 
 README 以三个产品责任域组织项目；其中运行验证层内部的控制运行时、PX4/MAVROS、
@@ -166,9 +210,17 @@ Windows 双击操作入口都集中在 [`Scripts/cmd/`](Scripts/cmd/)，仓库�
 ### 交付与外部依赖
 
 可移植源码包应包含 `Models/`、`Config/`、`Scripts/`、`apps/`、`src/`、`Docs/`、
-`Scripts/cmd/`、必要的筛选后 `Results/`，以及需要展示时的 `UE5/`。以上九个组件不再把
+`Scripts/cmd/`，以及需要展示时的 `UE5/`；报告复核所需的筛选后 `Results/` 作为独立
+证据包交付。以上九个组件不再把
 `References/` 作为活动源码输入。`References/` 在本机保留为上游追溯、回退和
 Sunray 资产再物化来源，不能按目录整体删除。
+
+源码包与证据包必须分开验证：根 `.gitignore` 排除了 `Results/`，因此干净 Git 克隆
+默认不包含结果文件。源码包负责模型、配置、脚本、APP 和运行时输入；证据包负责
+报告引用的指标、CSV/JSON、截图和运行记录。APP 首次点击“写入配置”时会在
+`Results/ui_platform/model_studio_task_handoffs/` 自动生成 `latest.json` 与临时 harness，
+干净源码包缺少这个文件是正常的，不应把历史交接文件当作仿真结果。证据包应携带
+自己的发布 ID、相对路径清单和 `SHA256SUMS.txt`，不能依赖开发者机器的绝对路径。
 
 Sunray 的大型运行资产已经物化到 `src/`，但因体积被 Git 忽略，最终压缩包必须带上：
 
@@ -219,8 +271,9 @@ python Scripts/quality/materialize_sunray_runtime_assets.py
 
 ### 当前归档收敛记录（2026-08-01）
 
-- 已将 5 个无活动引用的旧 Codex/coagent GUI 与线程维护诊断目录归档到
-  `C:\Users\HP\Desktop\MoSim_Archive\20260801_unreferenced_codex_gui_phase3\`。
+- 已将 5 个无活动引用的旧 Codex/coagent GUI 与线程维护诊断目录归档到外部
+  `MoSim_Archive/20260801_unreferenced_codex_gui_phase3/`（该目录不属于源码包，
+  仅作为本机归档示例）。
   共 8 个文件、847,079 字节，归档清单 SHA-256 为
   `ced1cd97ba438fcb2b2d8493a7ec545436d0eb7029e4c562532645a09c8a1c81`；原路径保留
   `ARCHIVED_EXTERNALLY.md` 留痕。
@@ -233,7 +286,7 @@ python Scripts/quality/materialize_sunray_runtime_assets.py
 
 ## 交付物
 
-最终竞赛包至少应包含完整模型和依赖、配置、脚本、可复现结果、用户手册、仿真分析
-报告以及演示视频。提交前按
+最终竞赛包至少应包含完整模型和依赖、配置、脚本、独立的可复现证据包、用户手册、
+仿真分析报告以及演示视频。提交前按
 [`Docs/Workflows/pre_submit_check.md`](Docs/Workflows/pre_submit_check.md) 逐项检查；
 报告写作源、图件和导出要求位于 `Docs/报告/`。

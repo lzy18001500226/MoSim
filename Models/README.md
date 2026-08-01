@@ -13,13 +13,16 @@ a second project or a required dependency root.
 | Controller closed loop | `MoSimQuadrotorModel.Experiment.Runners.<Controller>FormalRunner` | One formal whole-aircraft runner per controller route |
 | PID legacy example review | `MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.<Example>` | Original Example1/2/3 PID variants retained for report and demo review |
 | Reference trajectory | `MoSimQuadrotorModel.Guidance.Trajectories.<Trajectory>` | Replaceable reference used by formal runners |
-| Three-aircraft formation prototype | `MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC` | MWORKS prototype only; separate from the ROS/Gazebo deployment route |
+| Three-aircraft formation prototype | `MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC` (defined in `Guidance/Formation/package.mo`) | MWORKS prototype only; separate from the formal `Experiment.Runners.Formation.Px4CtrlThreeUavFigure8Runner` and the ROS/Gazebo deployment route |
 
-The active controller route catalog is the 48-entry matrix in
-`Config/control_platform/formal_closed_loop_harness_map.json`. It contains the
-px4ctrl route, official PID baseline, and the project controller routes. The
-catalog is the authority for route names and semantic grouping; folders are not
-used to invent extra controller families.
+The APP/manual route catalog is
+`Config/control_platform/model_studio_task_routes_v1.toml`. It is the authority
+for named Model Studio handoff routes and their declared output boundaries. The
+48-entry `Config/control_platform/formal_closed_loop_harness_map.json` is a
+separate D2 formal-harness mapping and measured-winner selection contract; it is
+not proof that a route is available, simulated, or accepted. Both files remain
+subordinate to the `MoSimQuadrotorModel` package root, and neither replaces
+native MWORKS `CheckModel` or simulation evidence.
 
 ## Package Responsibilities
 
