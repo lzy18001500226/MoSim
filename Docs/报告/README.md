@@ -29,10 +29,24 @@
 根目录的 `RELEASE_CHECKLIST.md` 提供环境核对、44 条 Studio 手动入口索引、
 关键哈希、代码生成构建命令、复现步骤和已知限制。
 
-现有 `.docx` 与 `build_word_reports.py` 是历史辅助材料，尚未由本批次 Markdown
-重新导出；它们不得被当作比当前 Markdown 更新的权威正文。需要导出 Word 时，
-应以这三份 Markdown、证据总账和发布清单为源重新审校，不能回填旧计划数字或
-无原始路径的图表。
+历史 `build_word_reports.py` 与旧版 `.docx` 仍是辅助材料，不得被当作比当前
+Markdown 更新的权威正文。当前国赛版 Word 由
+`build_competition_report_docx.py` 从 `仿真分析报告_正文骨架.md` 与
+`国赛论文模版.docx` 生成：
+
+```powershell
+python Docs/报告/build_competition_report_docx.py --export-pdf
+```
+
+默认输出为 `MoSim_仿真分析报告_国赛版.docx`。脚本保留模板的页面、页眉页脚和
+标题样式，生成原生 Word 表格与 Office Math；图片按原文件嵌入且显式关闭 Word
+图片压缩。图、表题注使用 Word 的 `SEQ` 域，按一级标题自动形成 `图 12-20`、
+`表 12-20` 这类章节内编号。构建清单与 PDF 核查产物位于
+`Results/docx_build/competition_report_20260802/`。
+
+该国赛版 Word 可能超过 GitHub 的单文件限制；不要为了提交而压缩或降采样图件。
+若需将成品发布到远端，应使用经审核的 Git LFS 或发布附件渠道，Markdown、构建
+脚本和证据总账仍是可审计源。
 
 ## 证据边界
 

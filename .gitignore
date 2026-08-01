@@ -438,3 +438,6 @@ Testing/Temporary/
 
 # Report audit scratch output is generated; keep report sources and records tracked.
 Scripts/report/_*.txt
+
+# Generated uncompressed competition report; source Markdown and builder stay tracked.
+Docs/报告/MoSim_仿真分析报告_国赛版.docx
