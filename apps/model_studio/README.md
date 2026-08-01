@@ -10,6 +10,19 @@ operator surface for discrete fault application and recovery. The APP does not
 replace Sysplorer graphical modeling, the native MWORKS result viewer, or
 runtime flight control.
 
+`src/app.jl` is the current source entry. `project/app.slapp`, `native_app/`,
+`native_app_d1_gate*/`, and `dist/MoSim Model Studio.slappinstall` are retained
+for historical or packaging trace-back; they are not alternate current launch
+paths. Start the current APP from the Syslab `include(...)` command below.
+
+This is not a standalone Julia command-line application: do not run
+`julia src/app.jl` from an ordinary Julia installation. On either a GitHub clone
+or a Baidu source archive, set `MOSIM_ROOT` to the directory containing
+`AGENTS.md`, `Models/`, and `Config/`, then load the source inside the installed
+MWORKS Syslab. The primary reproducibility path is APP configuration followed
+by native MWORKS CheckModel and user-started simulation; Gazebo/ROS/PX4 is an
+optional runtime extension and is not required for this APP/MWORKS path.
+
 ## Current D4 proof
 
 The current source UI baseline includes:
@@ -88,9 +101,21 @@ sufficient unless the change specifically affects interactive UI behavior.
 
 Run the source inside Syslab:
 
-```julia
+~~~julia
 include(joinpath(ENV["MOSIM_ROOT"], "apps", "model_studio", "src", "app.jl"))
-```
+~~~
+
+When the APP's native model-open action is used on another Windows machine,
+set the local MWORKS executable paths before opening a model if the installed
+Sysplorer location is not the script fallback:
+
+~~~powershell
+$env:MWORKS_SYSPLORE_EXE = "C:\path\to\mworks.exe"
+$env:MWORKS_SYSPLORE_PYTHON = "C:\path\to\External\python64\python.exe"
+~~~
+
+These variables affect the native open/check helper only; they do not start a
+solver and are not needed for the offline task-configuration writer.
 
 ## Assistant runtime log
 
@@ -157,6 +182,12 @@ evidence-scope boundary, not a prohibition on a user manually opening another
 `available=true` FormalRunner with a compatible task/configuration. A
 user-created slider or scenario combination is recorded as a task parameter
 variant, not as pre-existing formal evidence.
+
+`Results/` is intentionally ignored by the source repository. On a clean source
+package, `latest.json` and its harness are absent until `写入配置` is run; the
+writer creates the directory and files. A separately delivered Results evidence
+package may contain a historical snapshot for review, but it is not a required
+APP startup input and must not be treated as a simulation result by itself.
 
 The `实时联合仿真` workspace retains its separate controls and opens its own
 MWORKS Live model. Neither workspace starts, stops, or opens a result; after
