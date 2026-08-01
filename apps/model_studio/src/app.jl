@@ -2393,7 +2393,7 @@ const OFFLINE_PROFILES = Dict(
 
         app.ModeStatusLabel = TyAppDesigner.uilabel(app.UIFigure)
         app.ModeStatusLabel.Position = [814, 82, 602, 40]
-        app.ModeStatusLabel.HorizontalAlignment = "right"
+        app.ModeStatusLabel.HorizontalAlignment = "left"
         app.ModeStatusLabel.WordWrap = true
         app.ModeStatusLabel.FontColor = [0.25, 0.32, 0.36]
 

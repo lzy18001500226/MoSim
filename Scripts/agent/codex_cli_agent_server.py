@@ -552,6 +552,7 @@ def _run_turn(record: TurnRecord, command: list[str], config: CodexCliConfig) ->
             command,
             cwd=ROOT,
             env=safe_child_environment(),
+            stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -592,8 +593,38 @@ def _run_turn(record: TurnRecord, command: list[str], config: CodexCliConfig) ->
                     _append_diagnostic(record, stripped)
                 continue
             if isinstance(event, dict):
+                terminal_event = str(event.get("type", "")) in {"turn.completed", "turn.failed", "error"}
                 with TURNS._lock:
                     _record_stream_event(record, event)
+                    if terminal_event and record.status not in {"cancelled", "failed", "completed"}:
+                        if str(event.get("type", "")) == "turn.completed":
+                            if not record.answer and record.partial_answer:
+                                record.answer = record.partial_answer
+                            if record.answer:
+                                record.answer = record.answer[: config.max_answer_chars]
+                                record.partial_answer = record.partial_answer[: config.max_answer_chars]
+                                record.status = "completed"
+                                record.finished_at = time.monotonic()
+                                _add_activity(record, "分析完成")
+                            else:
+                                record.status = "failed"
+                                record.error_code = "codex_empty_response"
+                                record.error = "Codex 未返回可显示的回答，请检查本机登录状态后重试。"
+                                record.answer = record.error
+                                record.finished_at = time.monotonic()
+                                _add_activity(record, "本轮分析未完成")
+                        else:
+                            record.status = "failed"
+                            record.error_code = record.error_code or "codex_stream_error"
+                            record.error = record.error or "Codex CLI 返回错误。"
+                            record.answer = record.error
+                            record.finished_at = time.monotonic()
+                            _add_activity(record, "本轮分析未完成")
+                if terminal_event:
+                    try:
+                        process.terminate()
+                    except OSError:
+                        pass
         return_code = process.wait()
     finally:
         if timer is not None:
@@ -603,7 +634,7 @@ def _run_turn(record: TurnRecord, command: list[str], config: CodexCliConfig) ->
         record.process = None
         if record.status == "cancelled":
             return
-        if record.status == "failed":
+        if record.status in {"completed", "failed"}:
             return
         if record.error:
             record.status = "failed"
