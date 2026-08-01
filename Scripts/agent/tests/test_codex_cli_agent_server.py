@@ -117,7 +117,7 @@ class CodexCliAgentServerTests(unittest.TestCase):
         self.assertIn("start_mworks_turn", bridge)
         self.assertIn("poll_mworks_turn", bridge)
         self.assertIn("AssistantCodexThreadId", app_source)
-        self.assertIn("Scrollable=true", app_source)
+        self.assertIn("Scrollable=false", app_source)
         self.assertNotIn("deleteat!(app.AssistantLines", app_source)
         self.assertIn("function trim_assistant_answer(app, answer, limit=700)", app_source)
 

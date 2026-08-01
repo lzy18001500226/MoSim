@@ -25,8 +25,8 @@ shell 查询继承到的密钥。
 
 ## 运行边界
 
-Bridge 用 `codex exec --ephemeral --sandbox read-only -c 'approval_policy="never"'`
-运行，系统提示词和沙箱共同限制为只读项目分析。它不得修改文件、启动
+Bridge 用 `codex exec --ignore-user-config --sandbox read-only -c 'approval_policy="never"'`
+运行，并将子进程 stdin 关闭，避免 Codex 等待追加输入；系统提示词和沙箱共同限制为只读项目分析。它不得修改文件、启动
 CheckModel/仿真/代码生成/编译，也不得发送 QGC、Gazebo、PX4、ROS、MAVROS、
 飞控或电机命令。MWORKS、QGC 和 Gazebo/PX4 的执行与证据仍由用户在原生工具中
 完成；模型可打开、静态源码或 UI 状态不能替代仿真或运行时结论。
