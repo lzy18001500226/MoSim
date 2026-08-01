@@ -23,6 +23,20 @@ MWORKS Syslab. The primary reproducibility path is APP configuration followed
 by native MWORKS CheckModel and user-started simulation; Gazebo/ROS/PX4 is an
 optional runtime extension and is not required for this APP/MWORKS path.
 
+### Dependency tiers
+
+- Required for the base APP path: an authorized MWORKS Syslab with
+  `ObjectOriented`/`TyAppDesigner`, Python for the configuration writer, and
+  the native MWORKS `ModelingPy` helper used by the model-open action.
+- Optional: the Sysplorer MCP wrapper. The APP's automatic `运行 MWORKS MIL`
+  and offline batch/certification paths call it through
+  `Scripts/mworks/run_sysplorer_mcp_smoke.py`; without the wrapper those
+  operations fail closed with a blocked result. The manual path remains
+  available: write the task, open the model, run native CheckModel, and start
+  simulation from MWORKS.
+- Optional: the local Codex assistant service and the ROS/Gazebo/PX4 runtime.
+  Their absence does not prevent APP configuration or manual MWORKS simulation.
+
 ## Current D4 proof
 
 The current source UI baseline includes:

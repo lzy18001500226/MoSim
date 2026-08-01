@@ -40,6 +40,12 @@ APP 不是普通 Julia 命令行程序，不要用 `julia src/app.jl` 代替 Sys
 证据包是独立交付物，不是 APP 启动依赖。Gazebo、ROS、PX4 和 QGC 属于可选的运行时
 扩展，不是 APP 或 MWORKS 单机仿真的前置条件。
 
+依赖分层：基础 APP、写入配置、通过原生 `ModelingPy` 打开模型，以及用户在 MWORKS
+窗口中执行 CheckModel/仿真，不要求安装 Sysplorer MCP wrapper。APP 中的自动“运行
+MWORKS MIL”/批量回归和部分自动化证据脚本才使用 Sysplorer MCP；没有 wrapper 时这些
+自动操作会明确返回阻断，不能当作控制器失败，也不会自动替代手动 MWORKS 流程。
+MoSim 助手的本机 Codex 服务和 Gazebo/ROS/PX4 运行时同样是可选组件。
+
 代码导航：
 
 | 需要查找 | 首选路径 |
