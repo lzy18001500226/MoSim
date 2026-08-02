@@ -71,8 +71,10 @@ runner_alias = "indi"
 
 [[route]]
 controller_id = "pid_awff_linear_eso"
-available = false
-reason = "未登记图形控制核心、Adapter 或 FormalRunner"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.PidAwffLinearEsoFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PidAwffLinearEsoFormalRunner.mo"
+boundary = "ROTOR_COMMAND"
 
 [[route]]
 controller_id = "lqr_baseline"
@@ -204,8 +206,10 @@ boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "smc_boundary_layer"
-available = false
-reason = "当前图形模型为固定输入探针，未公开参考与测量接口"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Experimental.SmcBoundaryLayerFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/SmcBoundaryLayerFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "linear_mpc"
@@ -258,8 +262,10 @@ boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "nmpc_outer"
-available = false
-reason = "当前图形模型为固定输入探针，未公开参考与测量接口"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Experimental.NmpcOuterFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/NmpcOuterFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "fixed_linear_mpc_l1_indi"
@@ -271,8 +277,10 @@ runner_alias = "linear_mpc_rotor"
 
 [[route]]
 controller_id = "fixed_qp_nmpc_l1_indi_cbf"
-available = false
-reason = "未登记可复用的全机 FormalRunner"
+available = true
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FixedQpNmpcL1IndiCbfFormalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedQpNmpcL1IndiCbfFormalRunner.mo"
+boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "se3_basic"
