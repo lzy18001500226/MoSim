@@ -1,0 +1,26 @@
+{
+  "schema": "mosim.pid_awff_linear_eso_graphical_build.v1",
+  "recorded_at_utc": "2026-08-02T09:37:59.462564+00:00",
+  "model_name": "MoSim_PID_AWFF_LINEAR_ESO_GRAPHICAL_MIL",
+  "model_source": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/MoSim_PID_AWFF_LINEAR_ESO_GRAPHICAL_MIL.mo",
+  "model_source_sha256": "d2509977d14592ae110f486f90c3355ad956a056d364260000453d5d9b3e6e9b",
+  "equation_source": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_PidLinearEsoControllerEquation_Sysblock.mo",
+  "equation_source_sha256": "67a278241de3e10c7151bda7645eddda1d4057c8a145db81c01a7fd5e24b2ec5",
+  "diagram": "Results/control_platform/pid_awff_linear_eso_graphical_20260802/screenshots/MoSim_PID_AWFF_LINEAR_ESO_GRAPHICAL_MIL.png",
+  "diagram_sha256": "86bf6ee908555754681649f6558503a4ef3abdc9ba4dda7fda513e10f1d4872b",
+  "saved": true,
+  "check_model": true,
+  "component_count": 104,
+  "connect_count": 135,
+  "line_annotation_count": 135,
+  "required_signal_chain": [
+    "position error",
+    "AWFF base control",
+    "x/y/z third-order ESO",
+    "bounded disturbance compensation",
+    "base command minus compensation",
+    "attitude/thrust command limits",
+    "four-rotor mixer"
+  ],
+  "claim_boundary": "This artifact is an independently CheckModel-passed graphical controller-core view of the active equation source. It does not modify the existing Adapter, FormalRunner, or retained 50 s numerical record."
+}
