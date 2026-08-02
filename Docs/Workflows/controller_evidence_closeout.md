@@ -36,11 +36,11 @@ MWORKS codegen 和 generated-C SIL 门。报告副本中的模型图和结果图
 `neural_smc` 只保留为该历史矩阵中的未实现记录，不是当前活动条目。
 
 当前工程固定为 **48 个活动条目**：**47 个 MWORKS Control Profile** 和 1 条
-`px4ctrl` 工程/部署基线。47 个 Profile 由 46 条已有 MWORKS 路线和 1 条已批准但
-尚未实现的 `pid_awff_linear_eso` 构成，分属 **七个语义控制族**。五条已有命名整机
-Profile 已归入 PID 或最优与预测控制族，不再作为独立控制器族。G1 清单不会把
-`Results/` 中的历史模型副本提升为当前模型库入口；当前所有条目的
-`mworks_run_eligible=false`。
+`px4ctrl` 工程/部署基线。47 个 Profile 的项目源、Adapter/集成链和 Runner 路由
+均已登记，`pid_awff_linear_eso` 也已有 50 s FormalRunner 记录；其当前记录未通过
+性能门，不能写成性能通过。目录/映射文件中遗留的 `planned/not_runnable` 是冻结元数据，
+不是当前“未实现”判定。五条命名整机 Profile 已归入 PID 或最优与预测控制族，不再
+作为独立控制器族。G1 清单不会把 `Results/` 中的历史模型副本提升为当前模型库入口。
 
 ## 赛题覆盖与项目扩展场景矩阵
 
@@ -69,16 +69,19 @@ Profile 已归入 PID 或最优与预测控制族，不再作为独立控制器�
 2. G2：统一 48/65/67、七个语义控制族、七场景、命名整机 Profile、编队和 `px4ctrl` 的设计边界。
 3. G3：核对工作流、索引、检查器、模型入口和证据路径，冻结重构与实验契约。
 4. G4：按冻结契约非破坏重构模型库，并把每个活动条目映射到当前入口或状态。已完成：
-   `Config/control_platform/current_model_entry_map.json` 固定 46 条项目内入口、1 条
-   计划 ESO Profile 和 1 条待实现等效核的 `px4ctrl` 工程/部署基线；41 个图形控制器核
+   `Config/control_platform/current_model_entry_map.json` 保留 46 条历史项目内入口、1 条
+   冻结为 planned 的兼容字段和 1 条待实现等效核的 `px4ctrl` 工程/部署基线；这两个状态
+   字段不覆盖当前已经落盘的 PID-AWFF-LINEAR-ESO 源/Runner 和运行记录；41 个图形控制器核
    仅作为带来源哈希的正式包副本，不作为完整飞机通过证据。
-5. G5：48 个活动条目都保留入口或状态记录。D2 已冻结为 `46 = 41 + 5`：41 条图形控制器核
-   与 5 条已归族的命名整机 Profile。G5 只处理 46 条当前 MWORKS 路线的图形处理闭环：打开
+5. G5：48 个活动条目都保留入口或状态记录。D2 的历史基线冻结为 `46 = 41 + 5`：41 条图形控制器核
+   与 5 条已归族的命名整机 Profile。G5 原批次处理 46 条路线的图形处理闭环；后续
+   PID-AWFF-LINEAR-ESO、SMC boundary layer 和 NMPC outer 已有补充 FormalRunner 记录，不能再按
+   缺失入口处理。G5 的剩余证据仍按类别和性能门判定：打开
    实际内部控制律，修复包装器、不可读布局和模型检查问题，取得当前模型哈希的 `CheckModel`
    与 Windows 原生整窗图，并把每条写成 `graphical_ready`。图形控制器核在本阶段仍只证明内部
-   图形实现，不得被改写为整机闭环；命名整机 Profile 也只完成图形/模型检查。计划 ESO Profile
-   与待实现 MWORKS 等效核的 `px4ctrl` 只记录未实现状态，不伪造 MWORKS 图。
-6. G6：仅在 46 条当前路线全部完成 G5 图形处理闭环后，才开始任何 `simulate_model`、最小闭环或
+    图形实现，不得被改写为整机闭环；命名整机 Profile 也只完成图形/模型检查。PID-AWFF-LINEAR-ESO
+    的补充记录应保留其性能失败边界，`px4ctrl` 仍只记录等效核未完成状态，不伪造 MWORKS 图。
+6. G6：原始 G6 批次仅在 46 条路线全部完成 G5 图形处理闭环后，才开始任何 `simulate_model`、最小闭环或
    七场景任务。先在七个语义控制族中按当前来源的 ClimbPath RMSE 选择一条实测胜出者。胜出者
    不能借用其他 Profile 或历史结果进入七场景：必须先按 D2 的冠军测试壳晋级契约，在
    `Models/MoSimQuadrotorModel/` 下建立并验证与其核心、Adapter、正式整机植物和最小场景绑定的
@@ -96,7 +99,7 @@ G5 前必须依次完成下列三轮审查，并把发现写回本工作流、�
 machine-readable manifest；不能以一次静态扫描替代三轮。
 
 1. D1 文档与入口审查：确认当前口径只有 48 个活动条目、47 个 MWORKS Control Profile、
-   46 条当前 MWORKS 路线、1 条计划 ESO Profile 和 1 条待实现等效核的 `px4ctrl`
+   46 条原始 G6 路线、1 条已物化但性能失败的 ESO Profile 和 1 条待实现等效核的 `px4ctrl`
    工程/部署基线；正式实现和公开入口只指向
    `Models/MoSimQuadrotorModel/`。67 路历史矩阵、旧报告和旧结果必须明确标为历史，
    不能作为当前运行或报告完成证据。
@@ -141,9 +144,10 @@ python Scripts/quality/audit_report_controller_assets.py
 
 ### E1 / G5 图形结构复核
 
-G4 映射完成后，48 个活动条目都必须有审查记录。`pid_awff_linear_eso` 是计划 Profile，
-`px4ctrl` 是待实现 MWORKS 等效核的工程/部署基线；两者都不进入当前图审或截图范围，
-也不得伪造或寻找替代图。其余 46 条当前 MWORKS 路线按控制器族分批，每批 4 至 6 条。对每条：
+G4 映射完成后，48 个活动条目都必须有审查记录。`pid_awff_linear_eso` 已有项目源、
+Adapter、FormalRunner 和负性能记录，但仍须与其它路线一样按证据类别审核；`px4ctrl`
+仍是独立的工程/部署基线，不把它写成已完成 MWORKS 等效核。其余 47 条 MWORKS Profile
+按控制器族分批，每批 4 至 6 条。对每条：
 
 1. 先读取 `Config/control_platform/formal_closed_loop_harness_map.json` 中该路线的
    `formal_harness_state`，再用当前 activation/window 证据或一次有界 sentinel/probe 确认 MWORKS 可用；
@@ -232,7 +236,7 @@ R1 的持续门是：
 
 G7 交接前必须满足：
 
-- 48 个活动条目均有当前入口或明确状态；46 条当前 MWORKS 路线均已完成 `graphical_ready`，即实际内部控制律可读、当前模型 `CheckModel` 通过、Windows 原生整窗图已归档；计划 ESO Profile 与待实现 MWORKS 等效核的 `px4ctrl` 保持各自未运行状态。
+- 48 个活动条目均有当前入口或明确状态；47 个 MWORKS Profile 均有源/Runner 路由和对应运行或失败记录。`pid_awff_linear_eso` 的实现与 50 s 记录已存在，但性能门失败；`px4ctrl` 仍保持独立工程/部署等效性边界。`graphical_ready`、CheckModel、整机仿真和性能通过仍按各自证据字段单独判定。
 - 41 条 `GraphicalMIL` 核均保留内部固定输入探针或 blocker，且未被写成整机闭环；5 条
   命名整机 Profile 均保留整机最小闭环证据或 blocker，并与 D2 映射中的正式测试壳一致。
 - 七族实测胜出者与 Official PID 的核心对比均有正式根内的核心/Adapter/整机测试壳绑定、真实模型、结果、指标和同场景记录；`px4ctrl` 只有在其 MWORKS 等效核完成验证后才加入。任何胜出者都不得由其他 Profile 或历史结果代替。

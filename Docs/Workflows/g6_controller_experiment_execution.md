@@ -9,10 +9,11 @@
 ## 1. Scope and Claim Boundary
 
 The frozen current inventory is 48 active entries: 47 MWORKS Control Profiles
-(46 current MWORKS routes plus the planned `pid_awff_linear_eso` Profile) and
-the `px4ctrl` engineering/deployment baseline. G6 executes only the 46 current
-MWORKS routes. Historical `65/67` code-generation or SIL records are trace-back
-material only and are not G6 result rows.
+and the `px4ctrl` engineering/deployment baseline. The original G6 batch executed
+46 routes; `pid_awff_linear_eso` was materialized and run in the post-freeze
+evidence set, so its old `planned` label is historical metadata rather than a
+missing implementation. Historical `65/67` code-generation or SIL records are
+trace-back material only and are not current G6 result rows.
 
 Every route must produce a current result record, but the result class is
 fixed by `Config/control_platform/formal_closed_loop_harness_map.json`:

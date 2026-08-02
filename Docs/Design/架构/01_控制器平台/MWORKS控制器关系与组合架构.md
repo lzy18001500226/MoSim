@@ -65,15 +65,15 @@ MoSim 不把历史 67 条分层证据路线平铺成 67 个可互换的“控制
 | `fixed_awff_l1_indi` | `PidAwffL1Indi` | PID 与智能 PID |
 | `fixed_linear_mpc_l1_indi` | `LinearMpcL1Indi` | 最优与预测控制 |
 | `fixed_qp_nmpc_l1_indi_cbf` | `QpNmpcL1IndiCbf` | 最优与预测控制，`research_only` |
-| 新增 | `PidAwffLinearEso` | PID 与智能 PID，`planned` |
+| 新增 | `PidAwffLinearEso` | PID 与智能 PID，冻结标签 `planned`；当前源/Runner 已物化 |
 
-当前 `Config/control_platform/controller_route_interface_matrix.json` 仍记录 46 条
-尚未迁移的路线，保留历史分类名以便追溯。第 47 条 `PidAwffLinearEso` 在控制器
-目录和 `current_model_entry_map.json` 中仍是 `planned/not_runnable`，尚未完成正式
-Modelica 控制核心映射；但路由表已登记其 FormalRunner，且已有一条 50 s 负性能记录。
-因此 **47 是 MWORKS Profile 目录数，不是当前已实现或已通过的证据数量**；模型库
-原子迁移时仍必须同步更新配置、Registry、图形模型和证据矩阵，不能把这条独立
-FormalRunner 记录写成正式 Profile 已完成。
+当前 `Config/control_platform/controller_route_interface_matrix.json` 的 46 条记录是
+历史迁移分类快照，保留用于追溯，不能作为当前“未实现数量”。第 47 条
+`PidAwffLinearEso` 的项目源、Adapter、FormalRunner 和 50 s 运行记录均已存在；
+其终端误差 3412.36 m，属于性能失败而非实现缺失。`current_model_entry_map.json`
+中的 `planned/not_runnable` 仍是冻结兼容字段，不能覆盖当前源面和运行证据。
+因此 **47 是当前 MWORKS Profile 目录数，48 是含 `px4ctrl` 基线的活动条目数**；
+“已实现/已运行”和“性能通过/正式选择资格”必须分开表述。
 
 每个 Profile 至少声明 `profile_id`、`family`、`role`、`nominal_controller`、
 `augmentation_chain`、输出边界、Adapter、场景和 `implementation_status`。其中
@@ -317,7 +317,7 @@ Profile 的结果提升新组合的证据等级。
 
 因此历史 `67` 条路线与目标 `47` 个 Profile 并不冲突：前者是覆盖名义控制、增强、
 安全、故障、编队等责任层的证据路线，后者是将当前 46 条路线按控制责任重新归族并加入
-一个计划 ESO Profile 后，用于选择、解释和比较的完整目录。两者不是一一映射，也不能
+一个已物化但性能待评估的 ESO Profile 后，用于选择、解释和比较的完整目录。两者不是一一映射，也不能
 由历史图形探针直接推导整机闭环、代码生成或部署状态。
 
 ## 7. 文档分工与阅读顺序

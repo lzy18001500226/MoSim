@@ -31,8 +31,8 @@ evidence. Do not change the baseline, fault magnitude, or Plant to mask either
 failure.
 
 Catalog vocabulary: 48 active entries consist of 47 MWORKS Control Profiles
-(46 existing routes plus planned `pid_awff_linear_eso`) and the `px4ctrl`
-engineering/deployment baseline. The five named whole-aircraft Profiles belong
+(46 original routes plus the now materialized `pid_awff_linear_eso` route) and the
+`px4ctrl` engineering/deployment baseline. The five named whole-aircraft Profiles belong
 to the PID or optimization/predictive family; `mu_synthesis` and `neural_smc`
 remain historical 67-route trace-back records only. This vocabulary changes no
 historical result or current runtime state.
@@ -455,7 +455,8 @@ convergence. It uses the fixed 48-route denominator and
 `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`
 for current catalog state, with `G3_STATUS.json` retained as the immutable
 historical execution record. Do not infer an additional runnable route from a
-historical `adapter_missing` row or the planned ESO profile. G2 remains
+historical `adapter_missing` row; the ESO route already has a current source,
+FormalRunner and result record. G2 remains
 trace-back evidence; no live rerun is part of P0.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant
