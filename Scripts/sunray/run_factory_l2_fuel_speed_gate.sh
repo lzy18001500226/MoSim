@@ -129,19 +129,22 @@ export FASTLIO_SCAN_RATE_HZ=20
 # MID360 baseline for the localization map and keep review density separate.
 export FASTLIO_FILTER_SIZE_SURF="${FASTLIO_FILTER_SIZE_SURF:-0.5}"
 export FASTLIO_FILTER_SIZE_MAP="${FASTLIO_FILTER_SIZE_MAP:-0.5}"
-# The accepted simulation baseline uses FAST-LIO for horizontal localization
-# and Gazebo truth only as the height source. Native FAST-LIO z is not yet an
-# accepted control input for this gate.
+# The default accepted simulation baseline uses FAST-LIO for horizontal
+# localization and Gazebo truth only as the height source. Native FAST-LIO z is
+# not yet an accepted control input for this gate. A caller with a separately
+# frozen control-state contract may override the fusion toggles below.
 export FASTLIO_ALIGNMENT_Z_SOURCE=truth
-export PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true
+export PX4CTRL_ENABLE_FASTLIO_EKF_FUSION="${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION:-true}"
 export PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE=true
 # PX4 v1.14 does not consume MAVLink VISION_SPEED_ESTIMATE. Feed synchronized
 # pose and velocity through one MAVLink ODOMETRY message instead of split
 # external_fusion/vision_speed topics.
 export PX4CTRL_FASTLIO_ODOMETRY_FUSION_ENABLED="${PX4CTRL_FASTLIO_ODOMETRY_FUSION_ENABLED:-true}"
-export PX4CTRL_FASTLIO_VELOCITY_FUSION_ENABLED=false
-export PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-15}"
-export PX4CTRL_EKF2_HGT_REF_OVERRIDE=3
+export PX4CTRL_FASTLIO_VELOCITY_FUSION_ENABLED="${PX4CTRL_FASTLIO_VELOCITY_FUSION_ENABLED:-false}"
+# Keep the legacy defaults for an unset variable, while allowing a bounded
+# caller to export an explicit empty value when its frozen run has no override.
+export PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE-15}"
+export PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE-3}"
 # The synchronized r60 diagnostic measured about 0.128 m/s 95th-percentile
 # FAST-LIO velocity error and rare dynamic peaks near 0.50 m/s. The previous
 # 0.20 m/s covariance was overconfident and caused a short EV velocity reject
@@ -157,8 +160,8 @@ export SUNRAY_GAZEBO_MAX_STEP_SIZE_S=0.001
 export SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ=1000
 export SUNRAY_SPLIT_WORLD_BASIC_LAUNCH=true
 export MAVROS_READY_TIMEOUT_S=180
-export SUNRAY_MID360_PLUGIN_DOWNSAMPLE=4
-export SUNRAY_MID360_GOAL5_CSV_STRIDE=4
+export SUNRAY_MID360_PLUGIN_DOWNSAMPLE="${SUNRAY_MID360_PLUGIN_DOWNSAMPLE:-4}"
+export SUNRAY_MID360_GOAL5_CSV_STRIDE="${SUNRAY_MID360_GOAL5_CSV_STRIDE:-4}"
 export GUI=false
 export OPEN_RVIZ=false
 

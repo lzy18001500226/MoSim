@@ -6,6 +6,7 @@ set -eo pipefail
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
 SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
+PX4_BUILD_DIR="${PX4_BUILD_DIR:-${SUNRAY_PX4_DIR}/build/px4_sitl_default}"
 PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/Results/sunray_ros1/px4ctrl_source_audit_20260621_172313/catkin_ws}"
 GOAL4_EGO_WS="${GOAL4_EGO_WS:-/opt/mosim_work/goal4_ego_ws_px4msg}"
 GOAL4_DIFF_PLANNER_WS="${GOAL4_DIFF_PLANNER_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/goal4_diff_planner_ws_px4msg}"
@@ -389,7 +390,7 @@ PX4CTRL_EKF2_EV_CTRL_OVERRIDE="${PX4CTRL_EKF2_EV_CTRL_OVERRIDE:-}"
 PX4CTRL_EKF2_HGT_REF_OVERRIDE="${PX4CTRL_EKF2_HGT_REF_OVERRIDE:-}"
 PX4CTRL_EXTRA_PARAM_OVERRIDES="${PX4CTRL_EXTRA_PARAM_OVERRIDES:-}"
 case "${PX4CTRL_CORE_PROFILE}" in
-  original|mworks_generated|generated_c|mworks_generated_c|official_pid|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|safety_filter|fault_allocation)
+  original|mworks_generated|generated_c|mworks_generated_c|graphical_c99|official_pid|se3_basic|dfbc_basic|smc_boundary_layer|pid_indi|nmpc_outer|dfbc_high_order|dfbc_jerk_snap|dfbc_smooth_robust|dfbc_smooth_robust_dob|dfbc_wind_robust|dfbc_smooth_robust_indi|l1_awff|l1_residual|awff_l1|safety_filter|fault_allocation)
     ;;
   *)
     echo "Unsupported PX4CTRL_CORE_PROFILE=${PX4CTRL_CORE_PROFILE}" >&2
@@ -1044,7 +1045,7 @@ source_env() {
   source /opt/ros/noetic/setup.bash
   source "${SUNRAY_PX4_DIR}/Tools/simulation/gazebo-classic/setup_gazebo.bash" \
     "${SUNRAY_PX4_DIR}" \
-    "${SUNRAY_PX4_DIR}/build/px4_sitl_default"
+    "${PX4_BUILD_DIR}"
   source "${SUNRAY_WS}/devel/setup.bash"
   if [[ -f "${LIVOX_PLUGIN_WS}/devel/setup.bash" ]]; then
     source "${LIVOX_PLUGIN_WS}/devel/setup.bash"
@@ -1191,8 +1192,24 @@ prepare_swarm_formation_workspace() {
     return
   fi
 
-  local fsm_source="${SWARM_FORMATION_WS}/src/planner/plan_manage/src/ego_replan_fsm.cpp"
-  local grid_map_source="${SWARM_FORMATION_WS}/src/planner/plan_env/src/grid_map.cpp"
+  local workspace_source_root=""
+  local runtime_source_prefix="planner/"
+  local source_linked_workspace=false
+  if [[ -d "${SWARM_FORMATION_WS}/src/planner" ]]; then
+    workspace_source_root="${SWARM_FORMATION_WS}/src"
+  elif [[ -d "${SWARM_FORMATION_WS}/src/planning/fixed_formation" ]]; then
+    workspace_source_root="${SWARM_FORMATION_WS}/src/planning/fixed_formation"
+    runtime_source_prefix=""
+    if [[ "$(readlink -f "${workspace_source_root}")" == "${PROJECT_ROOT}/src/planning/fixed_formation/src/planner" ]]; then
+      source_linked_workspace=true
+    fi
+  else
+    echo "Swarm-Formation workspace source root is missing under ${SWARM_FORMATION_WS}/src" >&2
+    exit 8
+  fi
+
+  local fsm_source="${workspace_source_root}/${runtime_source_prefix}plan_manage/src/ego_replan_fsm.cpp"
+  local grid_map_source="${workspace_source_root}/${runtime_source_prefix}plan_env/src/grid_map.cpp"
   local executable="${SWARM_FORMATION_WS}/devel/lib/ego_planner/ego_planner_node"
   local patch_log="${RESULT_DIR}/swarm_formation_collision_replan_patch.json"
   local map_origin_patch_log="${RESULT_DIR}/swarm_formation_map_origin_patch.json"
@@ -1211,13 +1228,21 @@ prepare_swarm_formation_workspace() {
     planner/traj_opt/src/poly_traj_optimizer.cpp \
     planner/traj_opt/include/optimizer/poly_traj_optimizer.h; do
     local audited_source="${PROJECT_ROOT}/src/planning/fixed_formation/src/${source_rel}"
-    local runtime_source="${SWARM_FORMATION_WS}/src/${source_rel}"
+    local runtime_source_rel="${source_rel}"
+    if [[ -z "${runtime_source_prefix}" ]]; then
+      runtime_source_rel="${source_rel#planner/}"
+    fi
+    local runtime_source="${workspace_source_root}/${runtime_source_rel}"
     if [[ ! -f "${audited_source}" || ! -f "${runtime_source}" ]]; then
       echo "Swarm-Formation audited/runtime source missing: ${source_rel}" >&2
       exit 8
     fi
     runtime_sources+=("${runtime_source}")
     if ! cmp -s "${audited_source}" "${runtime_source}"; then
+      if [[ "${source_linked_workspace}" == "true" ]]; then
+        echo "Swarm-Formation source-linked runtime differs from project source: ${runtime_source}" >&2
+        exit 8
+      fi
       cp "${audited_source}" "${runtime_source}"
       rebuild_required=1
     fi
@@ -1228,10 +1253,27 @@ prepare_swarm_formation_workspace() {
     exit 8
   fi
 
-  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_swarm_formation_collision_replan.py" \
-    "${fsm_source}" > "${patch_log}"
-  python3 "${PROJECT_ROOT}/Scripts/sunray/patch_swarm_formation_map_origin.py" \
-    "${grid_map_source}" > "${map_origin_patch_log}"
+  if [[ "${source_linked_workspace}" == "true" ]]; then
+    if grep -Fq "planFromLocalTraj(true, false)" "${fsm_source}" \
+      || ! grep -Fq "planFromLocalTraj(true, true)" "${fsm_source}"; then
+      echo "Swarm-Formation source-local collision-replan contract is not already applied: ${fsm_source}" >&2
+      exit 8
+    fi
+    if [[ "${SWARM_FORMATION_D3_USE_MAP_ORIGIN_OVERRIDE}" == "true" ]] \
+      && ! grep -Fq "use_map_origin_override" "${grid_map_source}"; then
+      echo "Swarm-Formation source-local map-origin override requires a generated runtime copy; source-local workspace remains read-only" >&2
+      exit 8
+    fi
+    printf '{"status":"source_local_read_only","source":"%s","reason":"project src must not be patched by a generated workspace"}\n' \
+      "${fsm_source}" > "${patch_log}"
+    printf '{"status":"source_local_default_centered_origin","source":"%s","use_map_origin_override":"%s"}\n' \
+      "${grid_map_source}" "${SWARM_FORMATION_D3_USE_MAP_ORIGIN_OVERRIDE}" > "${map_origin_patch_log}"
+  else
+    python3 "${PROJECT_ROOT}/Scripts/sunray/patch_swarm_formation_collision_replan.py" \
+      "${fsm_source}" > "${patch_log}"
+    python3 "${PROJECT_ROOT}/Scripts/sunray/patch_swarm_formation_map_origin.py" \
+      "${grid_map_source}" > "${map_origin_patch_log}"
+  fi
 
   if [[ ! -x "${executable}" ]]; then
     rebuild_required=1
@@ -1741,18 +1783,83 @@ snapshot_px4_params_for_uav() {
   PIDS+=("$!")
 }
 
-prepare_goal5_mid360_csv() {
-  local scan_dir="${LIVOX_PLUGIN_WS}/src/livox_laser_simulation/scan_mode"
-  local source_csv="${scan_dir}/mid360-real-centr.csv"
-  local target_csv="${scan_dir}/${SUNRAY_MID360_CSV_FILE_NAME}"
-  if [[ "${SUNRAY_MID360_CSV_FILE_NAME}" == "mid360-real-centr.csv" ]]; then
+is_project_local_livox_workspace() {
+  local expected actual source_link source_root
+  expected="$(readlink -f "${PROJECT_ROOT}/build/ros1")"
+  actual="$(readlink -f "${LIVOX_PLUGIN_WS}" 2>/dev/null || true)"
+  source_link="${LIVOX_PLUGIN_WS}/src/simulation/gazebo_plugin/livox_laser_simulation"
+  source_root="${PROJECT_ROOT}/src/simulation/gazebo/plugins/sunray/livox_laser_simulation"
+
+  [[ -n "${actual}" && "${actual}" == "${expected}"/* ]] || return 1
+  [[ -f "${LIVOX_PLUGIN_WS}/workspace_manifest.json" && -d "${source_link}" ]] || return 1
+  [[ "$(readlink -f "${source_link}")" == "$(readlink -f "${source_root}")" ]]
+}
+
+verify_project_local_livox_plugin() {
+  local plugin_cpp="${PROJECT_ROOT}/src/simulation/gazebo/plugins/sunray/livox_laser_simulation/src/livox_points_plugin.cpp"
+  local cmake_file="${PROJECT_ROOT}/src/simulation/gazebo/plugins/sunray/livox_laser_simulation/CMakeLists.txt"
+  local proof_path="${RESULT_DIR}/sunray_livox_plugin_setup_stdout.txt"
+
+  [[ -f "${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so" ]] || return 1
+  grep -q "reuse cached csv scan mode" "${plugin_cpp}" || return 1
+  grep -q "collision_name" "${plugin_cpp}" || return 1
+  grep -q "ros::isInitialized" "${plugin_cpp}" || return 1
+  grep -q "MOSIM_LIVOX_SCAN_MODE_DIR" "${plugin_cpp}" || return 1
+  grep -q "find_package(Protobuf REQUIRED)" "${cmake_file}" || return 1
+  grep -q '\${Protobuf_LIBRARIES}' "${cmake_file}" || return 1
+
+  {
+    echo "MODE=project_local_source_plugin"
+    echo "LIVOX_PLUGIN_WS=${LIVOX_PLUGIN_WS}"
+    echo "PLUGIN=${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so"
+    echo "SOURCE=${PROJECT_ROOT}/src/simulation/gazebo/plugins/sunray/livox_laser_simulation"
+    echo "CHECK=csv_cache,unique_collision,ros_init_guard,run_local_scan_dir,protobuf_link"
+  } > "${proof_path}"
+}
+
+resolve_livox_scan_dir() {
+  if [[ -d "${LIVOX_PLUGIN_WS}/src/livox_laser_simulation/scan_mode" ]]; then
+    printf '%s\n' "${LIVOX_PLUGIN_WS}/src/livox_laser_simulation/scan_mode"
     return 0
   fi
-  if [[ ! -f "${source_csv}" ]]; then
+  if [[ -d "${LIVOX_PLUGIN_WS}/src/simulation/gazebo_plugin/livox_laser_simulation/scan_mode" ]]; then
+    printf '%s\n' "${LIVOX_PLUGIN_WS}/src/simulation/gazebo_plugin/livox_laser_simulation/scan_mode"
+    return 0
+  fi
+  return 1
+}
+
+prepare_goal5_mid360_csv() {
+  local source_scan_dir source_csv scan_dir target_csv
+  source_scan_dir="$(resolve_livox_scan_dir)" || {
+    echo "MID360 scan directory missing below ${LIVOX_PLUGIN_WS}" >&2
+    exit 8
+  }
+  source_csv="${source_scan_dir}/mid360-real-centr.csv"
+  [[ -f "${source_csv}" ]] || {
     echo "MID360 source csv missing: ${source_csv}" >&2
     exit 8
+  }
+
+  if ! is_project_local_livox_workspace; then
+    scan_dir="${source_scan_dir}"
+    target_csv="${scan_dir}/${SUNRAY_MID360_CSV_FILE_NAME}"
+    if [[ "${SUNRAY_MID360_CSV_FILE_NAME}" != "mid360-real-centr.csv" ]]; then
+      awk -F',' -v stride="${SUNRAY_MID360_GOAL5_CSV_STRIDE}" 'NR == 1 || ((NR - 2) % stride == 0)' "${source_csv}" > "${target_csv}"
+    fi
+    unset MOSIM_LIVOX_SCAN_MODE_DIR
+    return 0
   fi
-  awk -F',' -v stride="${SUNRAY_MID360_GOAL5_CSV_STRIDE}" 'NR == 1 || ((NR - 2) % stride == 0)' "${source_csv}" > "${target_csv}"
+
+  scan_dir="${RESULT_DIR}/livox_scan_mode"
+  target_csv="${scan_dir}/${SUNRAY_MID360_CSV_FILE_NAME}"
+  mkdir -p "${scan_dir}"
+  if [[ "${SUNRAY_MID360_CSV_FILE_NAME}" == "mid360-real-centr.csv" ]]; then
+    cp -f "${source_csv}" "${target_csv}"
+  else
+    awk -F',' -v stride="${SUNRAY_MID360_GOAL5_CSV_STRIDE}" 'NR == 1 || ((NR - 2) % stride == 0)' "${source_csv}" > "${target_csv}"
+  fi
+  export MOSIM_LIVOX_SCAN_MODE_DIR="${scan_dir}"
 }
 
 prepare_px4_ros1_runtime_overlay() {
@@ -1761,8 +1868,8 @@ prepare_px4_ros1_runtime_overlay() {
     return 0
   fi
 
-  local original_px4_etc="${SUNRAY_PX4_DIR}/build/px4_sitl_default/etc"
-  local original_px4_bin="${SUNRAY_PX4_DIR}/build/px4_sitl_default/bin"
+  local original_px4_etc="${PX4_BUILD_DIR}/etc"
+  local original_px4_bin="${PX4_BUILD_DIR}/bin"
   local original_package="${SUNRAY_PX4_DIR}/package.xml"
   local overlay_root="${RESULT_DIR}/px4_ros1_runtime_overlay_attempt_${GOAL5_STARTUP_ATTEMPT_INDEX}_$$"
   local overlay_pkg="${overlay_root}/px4"
@@ -1850,6 +1957,18 @@ start_uav_instance() {
     > "${RESULT_DIR}/uav${uid}_sunray_px4_basic.log" 2>&1 &
   PIDS+=("$!")
   echo "${PIDS[-1]}" > "${RESULT_DIR}/uav${uid}_sunray_px4_basic.pid"
+}
+
+configure_uav_after_mavros_ready() {
+  local uid="$1"
+  if [[ "${GOAL5_STARTUP_ONLY}" == "true" ]]; then
+    echo "startup-only: skipped stream-rate and PX4 parameter requests for uav${uid}" \
+      > "${RESULT_DIR}/uav${uid}_startup_only_config.log"
+    return 0
+  fi
+  request_stream_rate "${uid}"
+  apply_px4_param_overrides_for_uav "${uid}"
+  snapshot_px4_params_for_uav "${uid}"
 }
 
 write_px4ctrl_launch() {
@@ -1948,7 +2067,12 @@ if [[ ! -d "${PLANNER_WS}/devel" ]]; then
   echo "Planner workspace devel missing: ${PLANNER_WS}/devel; run the matching Goal4 planner overlay setup first" >&2
   exit 2
 fi
-if [[ ! -f "${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so" || ! -f "${LIVOX_PLUGIN_WS}/.mosim_multiuav_livox_patch_v1" ]]; then
+if is_project_local_livox_workspace; then
+  verify_project_local_livox_plugin || {
+    echo "Project-local Livox plugin is missing its compiled binary or required multi-UAV source fixes: ${LIVOX_PLUGIN_WS}" >&2
+    exit 2
+  }
+elif [[ ! -f "${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so" || ! -f "${LIVOX_PLUGIN_WS}/.mosim_multiuav_livox_patch_v1" ]]; then
   LOG_PATH="${RESULT_DIR}/sunray_livox_plugin_build.log" \
     SUNRAY_WS="${SUNRAY_WS}" \
     LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS}" \
@@ -2035,9 +2159,7 @@ if [[ "${SEQUENTIAL_SPAWN}" == "true" ]]; then
       echo "MAVROS did not connect for uav1" >&2
       exit 4
     fi
-    request_stream_rate 1
-    apply_px4_param_overrides_for_uav 1
-    snapshot_px4_params_for_uav 1
+    configure_uav_after_mavros_ready 1
     if ! wait_topic_sample "/uav1/livox/lidar" "${RESULT_DIR}/uav1_raw_lidar_first.txt" "${LIDAR_READY_TIMEOUT_S}"; then
       echo "No raw MID360 point cloud on /uav1/livox/lidar" >&2
       exit 7
@@ -2048,9 +2170,7 @@ if [[ "${SEQUENTIAL_SPAWN}" == "true" ]]; then
       echo "MAVROS did not connect for uav2" >&2
       exit 4
     fi
-    request_stream_rate 2
-    apply_px4_param_overrides_for_uav 2
-    snapshot_px4_params_for_uav 2
+    configure_uav_after_mavros_ready 2
     if ! wait_topic_sample "/uav2/livox/lidar" "${RESULT_DIR}/uav2_raw_lidar_first.txt" "${LIDAR_READY_TIMEOUT_S}"; then
       echo "No raw MID360 point cloud on /uav2/livox/lidar" >&2
     exit 7
@@ -2062,9 +2182,7 @@ if [[ "${SEQUENTIAL_SPAWN}" == "true" ]]; then
         echo "MAVROS did not connect for uav3" >&2
         exit 4
       fi
-      request_stream_rate 3
-      apply_px4_param_overrides_for_uav 3
-      snapshot_px4_params_for_uav 3
+      configure_uav_after_mavros_ready 3
       if ! wait_topic_sample "/uav3/livox/lidar" "${RESULT_DIR}/uav3_raw_lidar_first.txt" "${LIDAR_READY_TIMEOUT_S}"; then
         echo "No raw MID360 point cloud on /uav3/livox/lidar" >&2
       exit 7
@@ -2120,8 +2238,7 @@ elif [[ "${STAGGERED_SPAWN}" == "true" ]]; then
   MAVROS_CONFIG_PIDS=()
   for uid in $(seq 1 "${UAV_NUM}"); do
     (
-      request_stream_rate "${uid}"
-      apply_px4_param_overrides_for_uav "${uid}"
+      configure_uav_after_mavros_ready "${uid}"
     ) &
     MAVROS_CONFIG_PIDS+=("$!")
   done
@@ -2134,9 +2251,6 @@ elif [[ "${STAGGERED_SPAWN}" == "true" ]]; then
   if [[ "${MAVROS_CONFIG_RC}" != "0" ]]; then
     exit "${MAVROS_CONFIG_RC}"
   fi
-  for uid in $(seq 1 "${UAV_NUM}"); do
-    snapshot_px4_params_for_uav "${uid}"
-  done
 else
   if [[ "${PRELOAD_GAZEBO_MODELS}" == "true" ]]; then
     PRELOADED_WORLD_FILE="${RESULT_DIR}/goal5_preloaded_${UAV_NUM}uav.world"
@@ -2191,8 +2305,7 @@ else
   MAVROS_CONFIG_PIDS=()
   for uid in $(seq 1 "${UAV_NUM}"); do
     (
-      request_stream_rate "${uid}"
-      apply_px4_param_overrides_for_uav "${uid}"
+      configure_uav_after_mavros_ready "${uid}"
     ) &
     MAVROS_CONFIG_PIDS+=("$!")
   done
@@ -2205,9 +2318,6 @@ else
   if [[ "${MAVROS_CONFIG_RC}" != "0" ]]; then
     exit "${MAVROS_CONFIG_RC}"
   fi
-  for uid in $(seq 1 "${UAV_NUM}"); do
-    snapshot_px4_params_for_uav "${uid}"
-  done
 fi
 
 if [[ "${PX4CTRL_START_EXTERNAL_FUSION}" == "true" && "${RACER_INPUT_GATE_ONLY}" != "true" ]]; then

@@ -41,6 +41,25 @@ is never supplied directly to px4ctrl. The nominal record uses FAST-LIO
 strict same-parameter performance comparison. QGC, UE, RViz, planners, and
 multi-aircraft behavior are outside this C99 acceptance scope.
 
+### 0.1 C99 Planner And Three-UAV Status
+
+The project-local FUEL, Swarm-Formation, and Diff-Swarm wrappers are development
+gates, not supported acceptance entrypoints yet. Their 2026-08-02 source-local
+status is recorded at
+`Results/sunray_ros1/c99_planner_runtime_closeout_20260802/C99_PLANNER_RUNTIME_CLOSEOUT.json`:
+
+| Route | Local build | Runtime status | Stop condition |
+| --- | --- | --- | --- |
+| FUEL single-aircraft exploration | passed | blocked before an executable exploration trajectory | The generated C99 vertical position/velocity gains are fixed at `1.5/1.5`, while the selected runtime profile advertises `4/4`; the aircraft reaches about `3.53 m` rather than FUEL's `1.2 m` initialization height. |
+| Swarm-Formation three-aircraft | passed | blocked before px4ctrl or formation launch | The three-aircraft PX4/MAVROS bootstrap is not stable. |
+| Diff-Swarm three-aircraft | passed | blocked before px4ctrl or Diff-Planner launch | Shares the same three-aircraft PX4/MAVROS bootstrap blocker. |
+
+Use `Scripts/sunray/run_c99_fuel_gate.sh` and
+`Scripts/sunray/run_c99_multiuav_planner_gate.sh` only to reproduce the stated
+blockers or after their separate controller/bootstrapping repairs. Do not alter
+FAST-LIO map/filter parameters to mask either blocker, and do not claim planner,
+avoidance, trajectory, or swarm-separation success from the local-build result.
+
 ## 1. Goal
 
 Before changing files or running live tools, write the local goal in one

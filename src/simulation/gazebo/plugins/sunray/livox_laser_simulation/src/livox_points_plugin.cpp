@@ -13,6 +13,11 @@
 #include <ignition/math/Vector3.hh>
 #include <livox_laser_simulation/CustomMsg.h>
 #include <limits>
+#include <algorithm>
+#include <cstdlib>
+#include <map>
+#include <memory>
+#include <mutex>
 #include "csv_reader.hpp"
 #include "livox_ode_multiray_shape.h"
 #include "livox_point_xyzrtl.h"
@@ -50,18 +55,49 @@ namespace gazebo
 
     void LivoxPointsPlugin::Load(gazebo::sensors::SensorPtr _parent, sdf::ElementPtr sdf)
     {
-        std::vector<std::vector<double>> datas;
+        std::shared_ptr<const std::vector<std::vector<double>>> datas;
         std::string file_name = sdf->Get<std::string>("csv_file_name");
 
-        std::string filePath(__FILE__);
-        size_t found = filePath.find_last_of("/\\");
-        file_name = std::string(filePath.substr(0, found)) + "/../scan_mode/" + file_name;
+        ROS_INFO_STREAM("[MoSimLivoxLoadEnter] sensor=" << _parent->Name()
+                        << " parent=" << _parent->ParentName()
+                        << " world=" << _parent->WorldName()
+                        << " gazebo_topic=" << _parent->Topic());
+
+        const char *scan_mode_dir = std::getenv("MOSIM_LIVOX_SCAN_MODE_DIR");
+        if (scan_mode_dir != nullptr && scan_mode_dir[0] != '\0')
+        {
+            file_name = std::string(scan_mode_dir) + "/" + file_name;
+        }
+        else
+        {
+            std::string filePath(__FILE__);
+            size_t found = filePath.find_last_of("/\\");
+            file_name = std::string(filePath.substr(0, found)) + "/../scan_mode/" + file_name;
+        }
 
         ROS_INFO_STREAM("load csv file name:" << file_name);
-        if (!CsvReader::ReadCsvFile(file_name, datas))
         {
-            ROS_INFO_STREAM("cannot get csv file!" << file_name << "will return !");
-            return;
+            static std::mutex csv_cache_mutex;
+            static std::map<std::string, std::shared_ptr<const std::vector<std::vector<double>>>> csv_cache;
+
+            std::lock_guard<std::mutex> lock(csv_cache_mutex);
+            auto cache_it = csv_cache.find(file_name);
+            if (cache_it == csv_cache.end())
+            {
+                auto loaded_datas = std::make_shared<std::vector<std::vector<double>>>();
+                if (!CsvReader::ReadCsvFile(file_name, *loaded_datas))
+                {
+                    ROS_INFO_STREAM("cannot get csv file!" << file_name << "will return !");
+                    return;
+                }
+                datas = loaded_datas;
+                csv_cache[file_name] = loaded_datas;
+            }
+            else
+            {
+                datas = cache_it->second;
+                ROS_INFO_STREAM("reuse cached csv scan mode, data size:" << datas->size());
+            }
         }
 
         sdfPtr = sdf;
@@ -126,7 +162,7 @@ namespace gazebo
         node->Init(raySensor->WorldName());
         scanPub = node->Advertise<msgs::LaserScanStamped>(_parent->Topic(), 50);
         aviaInfos.clear();
-        convertDataToRotateInfo(datas, aviaInfos);
+        convertDataToRotateInfo(*datas, aviaInfos);
         ROS_INFO_STREAM("scan info size:" << aviaInfos.size());
         maxPointSize = aviaInfos.size();
 
@@ -135,7 +171,10 @@ namespace gazebo
         parentEntity = world->EntityByName(_parent->ParentName());
         auto physics = world->Physics();
         laserCollision = physics->CreateCollision("multiray", _parent->ParentName());
-        laserCollision->SetName("ray_sensor_collision");
+        std::string collision_name = _parent->ParentName() + "_" + _parent->Name() + "_ray_sensor_collision";
+        std::replace(collision_name.begin(), collision_name.end(), ':', '_');
+        std::replace(collision_name.begin(), collision_name.end(), '/', '_');
+        laserCollision->SetName(collision_name);
         laserCollision->SetRelativePose(_parent->Pose());
         laserCollision->SetInitialRelativePose(_parent->Pose());
         rayShape.reset(new gazebo::physics::LivoxOdeMultiRayShape(laserCollision));
@@ -151,7 +190,10 @@ namespace gazebo
 
         publishPointCloudType = sdfPtr->Get<int>("publish_pointcloud_type");
         ROS_INFO_STREAM("publish_pointcloud_type: " << publishPointCloudType);
-        ros::init(argc, argv, curr_scan_topic);
+        if (!ros::isInitialized())
+        {
+            ros::init(argc, argv, curr_scan_topic, ros::init_options::NoSigintHandler);
+        }
         rosNode.reset(new ros::NodeHandle(this->robot_namespace));
         switch (publishPointCloudType)
         {
