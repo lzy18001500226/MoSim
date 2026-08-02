@@ -442,3 +442,4 @@ Scripts/report/_*.txt
 # Generated uncompressed competition report; source Markdown and builder stay tracked.
 Docs/报告/MoSim_仿真分析报告_国赛版.docx
 Docs/报告/MoSim_仿真分析报告_公式更新版_20260802.docx
+Docs/报告/MoSim_仿真分析报告_正文_20260802.docx
