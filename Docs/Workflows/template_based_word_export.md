@@ -61,13 +61,20 @@ engine until a third report type proves a stable common abstraction.
 
 | Source family | Builder | Intended behavior |
 |---|---|---|
-| Competition simulation report | `Docs/报告/build_competition_report_docx.py` | Uses Pandoc for native Word tables and Office Math, then applies chapter-local Word fields and image-hash validation. |
+| Competition simulation report | `Docs/报告/build_competition_report_docx.py` | Uses Pandoc for native Word tables and display Office Math, converts short inline math to ordinary body runs with sub/superscript, then applies chapter-local Word fields and image-hash validation. |
 | User manual | `Docs/报告/build_user_manual_docx.py` | Parses the manual's declared Markdown blocks and explicit table exceptions, then restores template page chrome after `python-docx` saves. |
 | Competition highlights | `Docs/报告/build_challenge_highlights_docx.py` | Builds the short highlights draft with native tables, original images, and continuous Word caption fields. |
 
 The adapter is part of the source contract. A new report type first needs a
 small adapter selection/design review; it must not be forced through an
 unrelated builder just because both inputs are Markdown.
+
+For the competition report, short expressions embedded in prose remain in the
+same body paragraph and use Word subscript/superscript runs. Only fenced
+display LaTeX is kept as Office Math. Figure and table captions remain ordinary
+caption text with Word `SEQ` fields supplying the automatic number; caption
+text must describe the figure itself rather than carry a separate explanatory
+sentence.
 
 ## 4. Preflight
 
