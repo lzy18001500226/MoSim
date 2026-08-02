@@ -26,7 +26,7 @@
 |---|---:|---|
 | 已完成运行证据分母 | 48/48 | 46 条 G6 记录 + 1 条 `px4ctrl` 基线 + 1 条 PID-AWFF-LINEAR-ESO 50 s 负证据 |
 | `Results/` 中源结果窗口覆盖 | 48/48 控制器 | 46 条 G6 结果截图、`px4ctrl` 的 2 张结果窗口截图和 PID-AWFF-LINEAR-ESO 的 Runner/Result Viewer 截图均可追溯 |
-| 报告目录结构图 | 48/48 | 44 张用户审核历史结构候选 + SMC、NMPC、px4ctrl、PID-AWFF-LINEAR-ESO 4 张当前原生窗口结构图；详见 `CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json` |
+| 报告目录结构图 | 48/48 | 48 张结构图均已归位并作为历史结构展示资产管理；详见 `CONTROLLER_SCREENSHOT_REBUILD_MANIFEST.json` |
 | 报告目录当前源绑定的逐控制器结果图 | 0/48 | 尚未完成逐条复制、哈希、运行记录和证据类别绑定 |
 | 当前 Experimental 整机记录 | 2 条 | `smc_boundary_layer` 与 `nmpc_outer` 各有独立 50 s `RUN_RECORD`、MSR 和 CSV |
 

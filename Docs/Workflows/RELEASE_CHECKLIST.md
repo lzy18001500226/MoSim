@@ -85,7 +85,7 @@ Config/control_platform/model_studio_task_routes_v1.toml
 `apps/model_studio/src/app.jl` 和 `Scripts/ui/model_studio_task_config.py` 的实际
 读取路径确认。
 
-## 4. 44 条 FormalRunner 手动入口索引
+## 4. 48 条 FormalRunner 手动入口索引
 
 下表来自权威 TOML 的 `available=true` 路由。它们的含义是“可以写配置并手动
 打开”，不表示每条已经通过性能门限、七场景或代码生成。
@@ -102,6 +102,7 @@ Config/control_platform/model_studio_task_routes_v1.toml
 | `neural_pid` | `MoSimQuadrotorModel.Experiment.Runners.Formal.NeuralPidFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NeuralPidFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `fopid` | `MoSimQuadrotorModel.Experiment.Runners.Formal.FopidFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FopidFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `fixed_awff_pid` | `MoSimQuadrotorModel.Experiment.Runners.Formal.AwffFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AwffFormalRunner.mo` | `ROTOR_COMMAND` |
+| `pid_awff_linear_eso` | `MoSimQuadrotorModel.Experiment.Runners.Formal.PidAwffLinearEsoFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PidAwffLinearEsoFormalRunner.mo` | `ROTOR_COMMAND` |
 | `fixed_awff_l1_residual` | `MoSimQuadrotorModel.Experiment.Runners.Formal.L1FormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/L1FormalRunner.mo` | `ROTOR_COMMAND` |
 | `fixed_awff_l1_indi` | `MoSimQuadrotorModel.Experiment.Runners.Formal.IndiFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IndiFormalRunner.mo` | `ROTOR_COMMAND` |
 | `lqr_baseline` | `MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqrBaselineFormalRunner.mo` | `ATTITUDE_THRUST` |
@@ -122,6 +123,7 @@ Config/control_platform/model_studio_task_routes_v1.toml
 | `super_twisting_smc` | `MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/SuperTwistingSmcFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `adaptive_smc` | `MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveSmcFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveSmcFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `fuzzy_smc` | `MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzySmcFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzySmcFormalRunner.mo` | `ATTITUDE_THRUST` |
+| `smc_boundary_layer` | `MoSimQuadrotorModel.Experiment.Runners.Experimental.SmcBoundaryLayerFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/SmcBoundaryLayerFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `linear_mpc` | `MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `robust_mpc` | `MoSimQuadrotorModel.Experiment.Runners.Formal.RobustMpcFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RobustMpcFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `adaptive_mpc` | `MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveMpcFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveMpcFormalRunner.mo` | `ATTITUDE_THRUST` |
@@ -129,7 +131,9 @@ Config/control_platform/model_studio_task_routes_v1.toml
 | `explicit_gain_scheduled_mpc` | `MoSimQuadrotorModel.Experiment.Runners.Formal.ExplicitGainScheduledMpcFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/ExplicitGainScheduledMpcFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `ilqr` | `MoSimQuadrotorModel.Experiment.Runners.Formal.IlqrFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IlqrFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `mppi` | `MoSimQuadrotorModel.Experiment.Runners.Formal.MppiFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MppiFormalRunner.mo` | `ATTITUDE_THRUST` |
+| `nmpc_outer` | `MoSimQuadrotorModel.Experiment.Runners.Experimental.NmpcOuterFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/NmpcOuterFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `fixed_linear_mpc_l1_indi` | `MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcRotorFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcRotorFormalRunner.mo` | `ROTOR_COMMAND` |
+| `fixed_qp_nmpc_l1_indi_cbf` | `MoSimQuadrotorModel.Experiment.Runners.Formal.FixedQpNmpcL1IndiCbfFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedQpNmpcL1IndiCbfFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `se3_basic` | `MoSimQuadrotorModel.Experiment.Runners.Formal.Se3BasicFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Se3BasicFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `dfbc_basic` | `MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcBasicFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcBasicFormalRunner.mo` | `ATTITUDE_THRUST` |
 | `dfbc_high_order_attitude` | `MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner` | `Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderFormalRunner.mo` | `ATTITUDE_THRUST` |

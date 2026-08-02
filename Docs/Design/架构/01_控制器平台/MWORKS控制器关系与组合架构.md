@@ -68,9 +68,12 @@ MoSim 不把历史 67 条分层证据路线平铺成 67 个可互换的“控制
 | 新增 | `PidAwffLinearEso` | PID 与智能 PID，`planned` |
 
 当前 `Config/control_platform/controller_route_interface_matrix.json` 仍记录 46 条
-尚未迁移的路线，保留历史分类名以便追溯。第 47 条 `PidAwffLinearEso` 只有已批准的
-文档设计，尚无模型、配置或实验结果。因此 **47 是目标目录，不是当前已实现或已通过的
-证据数量**；模型库原子迁移时必须同步更新配置、Registry、图形模型和证据矩阵。
+尚未迁移的路线，保留历史分类名以便追溯。第 47 条 `PidAwffLinearEso` 在控制器
+目录和 `current_model_entry_map.json` 中仍是 `planned/not_runnable`，尚未完成正式
+Modelica 控制核心映射；但路由表已登记其 FormalRunner，且已有一条 50 s 负性能记录。
+因此 **47 是 MWORKS Profile 目录数，不是当前已实现或已通过的证据数量**；模型库
+原子迁移时仍必须同步更新配置、Registry、图形模型和证据矩阵，不能把这条独立
+FormalRunner 记录写成正式 Profile 已完成。
 
 每个 Profile 至少声明 `profile_id`、`family`、`role`、`nominal_controller`、
 `augmentation_chain`、输出边界、Adapter、场景和 `implementation_status`。其中

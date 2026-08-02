@@ -1,6 +1,6 @@
 {
   "schema": "mosim.controller_screenshot_rebuild_manifest.v2",
-  "scope": "Static screenshot rebuild ledger for all 48 report structure-image slots. Four slots use current native-window captures; 44 retain user-reviewed historical structure candidates. No simulation, code generation, runtime result, or report acceptance is claimed.",
+  "scope": "Static screenshot rebuild ledger for all 48 report structure-image slots. All 48 are managed as historical structure-display assets in the report; acquisition provenance retains the four current-native-window captures and 44 user-reviewed historical candidates. No simulation, code generation, runtime result, or report acceptance is claimed.",
   "source_model_map": "Config/control_platform/current_model_entry_map.json",
   "supplemental_capture_bindings": "Docs/报告/审计/控制器原生截图归位/CURRENT_NATIVE_STRUCTURE_CAPTURE_BINDINGS.json",
   "active_asset_root": "Docs/报告/图/控制器",
@@ -12,6 +12,7 @@
   "summary": {
     "catalog_scheme_count": 48,
     "current_screenshot_scope_count": 48,
+    "historical_structure_asset_count": 48,
     "asset_directory_count": 48,
     "directory_version_marker_count": 48,
     "excluded_from_current_screenshot_scope_count": 0,

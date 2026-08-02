@@ -26,7 +26,7 @@
 用户手册_正文骨架_archived_20260731.md
 ```
 
-根目录的 `RELEASE_CHECKLIST.md` 提供环境核对、44 条 Studio 手动入口索引、
+根目录的 `RELEASE_CHECKLIST.md` 提供环境核对、48 条 Studio 手动入口索引、
 关键哈希、代码生成构建命令、复现步骤和已知限制。
 
 ## 模板化 Word 导出
@@ -67,7 +67,7 @@ python Docs/报告/build_competition_report_docx.py --export-pdf
    权威源为
    `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`。
    冻结历史 `G3_STATUS.json` 的 28/20 是旧 G3 执行快照及现有 28 条图集的来源，
-   不能改写成当前目录状态。48 为目录冻结条目，46 为有 MWORKS 控制模块，44 为
+   不能改写成当前目录状态。48 为目录冻结条目，46 为有 MWORKS 控制模块，48 为
    Studio 可手动打开的 FormalRunner 路由，53 为 FormalRunner 源文件；这些分母均
    不可互换。完整口径见
    `Config/control_platform/climbpath_baseline_count_definition.json` 与
