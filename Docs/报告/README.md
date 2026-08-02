@@ -29,6 +29,19 @@
 根目录的 `RELEASE_CHECKLIST.md` 提供环境核对、44 条 Studio 手动入口索引、
 关键哈希、代码生成构建命令、复现步骤和已知限制。
 
+## 模板化 Word 导出
+
+报告与手册的 Markdown 转 Word 统一遵循
+`Docs/Workflows/template_based_word_export.md`；对应的任务入口为
+`Docs/Skills/Report/template-based-word-export/SKILL.md`。该流程规定：保留模板、
+生成原生 Word 表格、保留原图字节、使用 `SEQ` 域题注、做 OOXML/图像哈希/可视核查，
+并按 GitHub 单文件限制发布成品。
+
+当前保留三个专用适配器：`build_competition_report_docx.py`、
+`build_user_manual_docx.py` 和 `build_challenge_highlights_docx.py`。它们的
+Markdown 细节和 Word 处理路径不同；在出现稳定的第三种共同抽象前，不把它们合并为
+一个泛化脚本。
+
 历史 `build_word_reports.py` 与旧版 `.docx` 仍是辅助材料，不得被当作比当前
 Markdown 更新的权威正文。当前国赛版 Word 由
 `build_competition_report_docx.py` 从 `仿真分析报告_正文骨架.md` 与
