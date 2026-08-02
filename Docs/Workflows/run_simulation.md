@@ -139,7 +139,7 @@ Calling `tools/list` or `tools/call` before this handshake can return
 `Invalid request parameters` even when the wrapper and Sysplorer session are
 healthy.
 
-### Direct MCP Review For The px4ctrl Graphical Formal Entry
+### Direct MCP Review For The px4ctrl Graphical Architecture
 
 For manual review of `MoSimQuadrotorModel.Experiment.CompleteSystemGraphical`,
 use this direct MCP sequence:
@@ -165,10 +165,15 @@ work and return a license/window-evidence blocker.
 Load the canonical root package once. Its embedded `Plant` package contains the
 official baseline plant and resources, so do not load an external
 `QuadrotorModel` package or any legacy facade alongside it. Mixing roots can
-cause `错误(1401): 模型重复定义`; the px4ctrl graphical formal entry is
-`MoSimQuadrotorModel.Experiment.CompleteSystemGraphical`. The older
-`Sunray150CompleteSystemGraphical_Sysblock` remains an architecture-only review
-template and is not the formal entry.
+cause `错误(1401): 模型重复定义`. The public px4ctrl graphical architecture
+entry is `MoSimQuadrotorModel.Experiment.CompleteSystemGraphical`; it extends
+`Experiment.Templates.Architecture.CompleteSystemGraphical`, whose
+`Sunray150CompleteSystemGraphical_Sysblock` template retains the V6X, ORIN NX,
+GPS + Mid360, ESC, four-motor and Sunray150 hierarchy. Its central
+`Px4CtrlControllerModule` is composed from the active
+`Px4CtrlAttitudeThrustAdapter` and `OfflineAttitudeRateAllocator` classes.
+`Px4CtrlFormalRunner` remains the separate whole-aircraft formal simulation
+entry and is not substituted for this review diagram.
 
 Review-result interpretation:
 
@@ -177,8 +182,7 @@ Review-result interpretation:
 | `open ok=true` and no `1401` | The review model loads and opens | Continue visual review |
 | `错误(1401): 模型重复定义` | A duplicate standalone model file exists or was loaded | Delete the standalone file and load only the package |
 | `组件的类型 MoSimQuadrotorModel.Vehicle... 查找不到` | The canonical package did not finish loading | Force-reload only `Models/MoSimQuadrotorModel/package.mo`, then inspect its internal `Plant` entry and package order. Do not add a second package root. |
-| `组件的类型 PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock 查找不到` | The canonical package did not finish loading or its internal px4ctrl controller order is stale | Force-reload only `Models/MoSimQuadrotorModel/package.mo`, then inspect the internal `Control/Bridges` package order. Do not load a standalone controller file as a second root. |
-| `组件引用 x_sum.u1 / y_sum.u1 / thrust_sum.u1 查找不到` | Legacy AWFF architecture-template limitation for embedded graphical Sysblock multi-input ports | This applies only when reviewing the older architecture template, not `Experiment.CompleteSystemGraphical`; do not treat it as an image/load failure. |
+| `组件的类型 PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock 查找不到` | The canonical package did not finish loading or its internal px4ctrl controller order is stale | Force-reload only `Models/MoSimQuadrotorModel/package.mo`, then inspect the internal `Control/Implementations/Sysblocks` package order. Do not load a standalone controller file as a second root. |
 
 Graphical layout acceptance for this model:
 

@@ -39,11 +39,11 @@ package Modules
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end ESCDrive;
 
-  block AWFFController
-    "AWFF 控制器接口模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.AWFFControllerModule;
+  block Px4CtrlController
+    "px4ctrl 控制器与离线控制分配模块"
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.Px4CtrlControllerModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
-  end AWFFController;
+  end Px4CtrlController;
 
   model MotorDrive
     "电机驱动模块"

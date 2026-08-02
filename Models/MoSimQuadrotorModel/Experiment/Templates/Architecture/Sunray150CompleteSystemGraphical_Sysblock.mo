@@ -1,6 +1,6 @@
 within MoSimQuadrotorModel.Experiment.Templates.Architecture;
 model Sunray150CompleteSystemGraphical_Sysblock
-  "Sunray150 complete graphical system with project AWFF Sysblock data flow"
+  "Sunray150 complete graphical system with px4ctrl data flow"
   parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604
     "Original MWORKS-equivalent hover command before Sunray150 SDF motorConstant calibration";
   parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s
@@ -285,79 +285,59 @@ model Sunray150CompleteSystemGraphical_Sysblock
     annotation(__MWORKS(hide=true));
   end ESCDriveModule;
 
-  block AWFFControllerModule
-    "Encapsulated AWFF graphical controller, error generation, hover trim, and motor command scaling"
-    parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s;
-    parameter Real legacy_hover_motor_speed_cmd = 13.985413115099604;
-    parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd;
+  block Px4CtrlControllerModule
+    "px4ctrl ATTITUDE_THRUST outer loop with the shared offline allocator"
     Modelica.Blocks.Interfaces.RealInput reference_position[3]
       annotation (Placement(transformation(origin = {-110, 70}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealInput position_est[3]
       annotation (Placement(transformation(origin = {-110, 25}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealInput attitude_est[3]
       annotation (Placement(transformation(origin = {-110, -20}, extent = {{-5, -5}, {5, 5}})));
-    Modelica.Blocks.Interfaces.RealInput yaw_reference
-      annotation (Placement(transformation(origin = {-110, -60}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealInput z_reference_rate
-      annotation (Placement(transformation(origin = {-110, -90}, extent = {{-5, -5}, {5, 5}})));
+      annotation (Placement(transformation(origin = {-110, -65}, extent = {{-5, -5}, {5, 5}})));
     Modelica.Blocks.Interfaces.RealOutput motor_command[4]
       annotation (Placement(transformation(origin = {110, 0}, extent = {{-5, -5}, {5, 5}})));
 
-    Modelica.Blocks.Math.Feedback x_error;
-    Modelica.Blocks.Math.Feedback y_error;
-    Modelica.Blocks.Math.Feedback z_error;
-    AWFF_FullControllerEquation_Sysblock controller;
-    Modelica.Blocks.Sources.Constant hover_u1(k = hover_motor_speed_cmd);
-    Modelica.Blocks.Sources.Constant hover_u2(k = -hover_motor_speed_cmd);
-    Modelica.Blocks.Sources.Constant hover_u3(k = hover_motor_speed_cmd);
-    Modelica.Blocks.Sources.Constant hover_u4(k = -hover_motor_speed_cmd);
-    Modelica.Blocks.Math.Gain motor1_delta_scale(k = motor_command_scale);
-    Modelica.Blocks.Math.Gain motor2_delta_scale(k = motor_command_scale);
-    Modelica.Blocks.Math.Gain motor3_delta_scale(k = motor_command_scale);
-    Modelica.Blocks.Math.Gain motor4_delta_scale(k = motor_command_scale);
-    Modelica.Blocks.Math.Add motor1_hover_sum;
-    Modelica.Blocks.Math.Add motor2_hover_sum;
-    Modelica.Blocks.Math.Add motor3_hover_sum;
-    Modelica.Blocks.Math.Add motor4_hover_sum;
+    MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter px4ctrl_outer_loop
+      annotation (Placement(transformation(origin = {-30, 45}, extent = {{-34, -24}, {34, 24}})));
+    MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator offline_inner_allocator
+      annotation (Placement(transformation(origin = {55, 20}, extent = {{-34, -24}, {34, 24}})));
+    Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
+      each k = 1,
+      each T = 0.05,
+      each initType = Modelica.Blocks.Types.Init.InitialOutput,
+      each y_start = 0)
+      annotation (Placement(transformation(origin = {-55, -48}, extent = {{-18, -12}, {18, 12}})));
   equation
-    connect(reference_position[1], x_error.u1);
-    connect(position_est[1], x_error.u2);
-    connect(reference_position[2], y_error.u1);
-    connect(position_est[2], y_error.u2);
-    connect(reference_position[3], z_error.u1);
-    connect(position_est[3], z_error.u2);
-    connect(x_error.y, controller.x_error);
-    connect(y_error.y, controller.y_error);
-    connect(z_error.y, controller.z_error);
-    connect(z_reference_rate, controller.z_ref_rate);
-    connect(attitude_est[1], controller.roll_mea);
-    connect(attitude_est[2], controller.pitch_mea);
-    connect(attitude_est[3], controller.yaw_mea);
-    connect(yaw_reference, controller.yaw_ref);
-    connect(controller.y, motor1_delta_scale.u);
-    connect(controller.y1, motor2_delta_scale.u);
-    connect(controller.y2, motor3_delta_scale.u);
-    connect(controller.y3, motor4_delta_scale.u);
-    connect(motor1_delta_scale.y, motor1_hover_sum.u1);
-    connect(motor2_delta_scale.y, motor2_hover_sum.u1);
-    connect(motor3_delta_scale.y, motor3_hover_sum.u1);
-    connect(motor4_delta_scale.y, motor4_hover_sum.u1);
-    connect(hover_u1.y, motor1_hover_sum.u2);
-    connect(hover_u2.y, motor2_hover_sum.u2);
-    connect(hover_u3.y, motor3_hover_sum.u2);
-    connect(hover_u4.y, motor4_hover_sum.u2);
-    connect(motor1_hover_sum.y, motor_command[1]);
-    connect(motor2_hover_sum.y, motor_command[2]);
-    connect(motor3_hover_sum.y, motor_command[3]);
-    connect(motor4_hover_sum.y, motor_command[4]);
+    connect(reference_position, px4ctrl_outer_loop.position_ref)
+      annotation (Line(points = {{-110, 70}, {-64, 70}}, color = {0, 0, 127}));
+    px4ctrl_outer_loop.velocity_ref = {0, 0, z_reference_rate};
+    px4ctrl_outer_loop.acceleration_ref = {0, 0, 0};
+    connect(position_est, px4ctrl_outer_loop.position_mea)
+      annotation (Line(points = {{-110, 25}, {-84, 25}, {-84, 45}, {-64, 45}}, color = {0, 0, 127}));
+    connect(position_est, velocity_estimator.u)
+      annotation (Line(points = {{-110, 25}, {-92, 25}, {-92, -48}, {-73, -48}}, color = {0, 0, 127}));
+    connect(velocity_estimator.y, px4ctrl_outer_loop.velocity_mea)
+      annotation (Line(points = {{-37, -48}, {-20, -48}, {-20, 21}}, color = {0, 0, 127}));
+    connect(attitude_est, px4ctrl_outer_loop.attitude_mea)
+      annotation (Line(points = {{-110, -20}, {-72, -20}, {-72, 21}, {-64, 21}}, color = {0, 0, 127}));
+    connect(px4ctrl_outer_loop.attitude_ref, offline_inner_allocator.attitude_ref)
+      annotation (Line(points = {{4, 55}, {21, 55}}, color = {0, 0, 127}));
+    connect(attitude_est, offline_inner_allocator.attitude_mea)
+      annotation (Line(points = {{-110, -20}, {-2, -20}, {-2, 20}, {21, 20}}, color = {0, 0, 127}));
+    connect(px4ctrl_outer_loop.collective_thrust_delta, offline_inner_allocator.collective_thrust_delta)
+      annotation (Line(points = {{4, 31}, {13, 31}, {13, -4}, {21, -4}}, color = {0, 0, 127}));
+    connect(offline_inner_allocator.rotor_command, motor_command)
+      annotation (Line(points = {{89, 20}, {110, 20}, {110, 0}}, color = {0, 0, 127}));
     annotation (
+      Diagram(coordinateSystem(extent = {{-130, -90}, {130, 90}}, grid = {2, 2})),
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {0, 130, 0}, fillColor = {240, 255, 240}, fillPattern = FillPattern.Solid),
         Rectangle(extent = {{-70, 45}, {70, -45}}, lineColor = {0, 130, 0}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid),
-        Text(origin = {0, 5}, extent = {{-65, 25}, {65, -25}}, textString = "AWFF", textColor = {0, 130, 0}),
-        Text(origin = {0, -72}, extent = {{-90, 15}, {90, -15}}, textString = "controller", textColor = {0, 130, 0})}));
+        Text(origin = {0, 8}, extent = {{-65, 25}, {65, -25}}, textString = "px4ctrl", textColor = {0, 130, 0}),
+        Text(origin = {0, -66}, extent = {{-90, 15}, {90, -15}}, textString = "outer loop + allocator", textColor = {0, 130, 0})}));
     annotation(__MWORKS(hide=true));
-  end AWFFControllerModule;
+  end Px4CtrlControllerModule;
 
   model MotorDriveModule
     "Motor actuator with speed feedback, shown as one top-level motor block"
@@ -398,7 +378,8 @@ model Sunray150CompleteSystemGraphical_Sysblock
     connect(rotor_flange[2], chassis.flange_a1);
     connect(rotor_flange[3], chassis.flange_a2);
     connect(rotor_flange[4], chassis.flange_a3);
-    connect(chassis.frame_a, sensors.frame_a);
+    connect(chassis.frame_a, sensors.frame_a)
+      annotation (Line(points = {{0, 386}, {0, 416}, {-15, 416}}, color = {95, 95, 95}));
     connect(sensors.PosMea, position);
     connect(sensors.AngleMea, attitude);
     annotation (
@@ -430,10 +411,7 @@ extent={{-125,-125},{125,125}})));
     annotation (Placement(transformation(origin = {-455, 300}, extent = {{-70, -70}, {70, 70}})));
   BatteryPowerModule battery(voltage_drop_per_second = system_battery_voltage_drop_per_second)
     annotation (Placement(transformation(origin = {-90, -315}, extent = {{-72, -72}, {72, 72}})));
-  AWFFControllerModule controller(
-    hover_motor_speed_cmd = hover_motor_speed_cmd,
-    legacy_hover_motor_speed_cmd = legacy_hover_motor_speed_cmd,
-    motor_command_scale = motor_command_scale)
+  Px4CtrlControllerModule controller
     annotation (Placement(transformation(origin={-285,149},
 extent={{-110,-110},{110,110}})));
   ESCDriveModule esc
@@ -548,11 +526,6 @@ thickness=0.08));
   connect(flight_controller.attitude_est, controller.attitude_est)
     annotation (Line(origin={0,0},
 points={{-137.5,-217.5},{33.4584,-217.5},{33.4584,261},{-413.5,261},{-413.5,127},{-406,127}},
-color={110,130,145},
-thickness=0.08));
-  connect(mission_computer.yaw_reference, controller.yaw_reference)
-    annotation (Line(origin={0,0},
-points={{-617,176.5},{-413.5,176.5},{-413.5,83},{-406,83}},
 color={110,130,145},
 thickness=0.08));
   connect(mission_computer.z_reference_rate, controller.z_reference_rate)
