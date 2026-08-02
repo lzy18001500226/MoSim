@@ -367,6 +367,7 @@ Use project-local MWORKS skills before generic upstream skills:
 | Syslab/MATLAB porting | `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` |
 | Tests and review | `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` |
 | Report figures/replay | `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` |
+| Template-based Word report or handbook export | `Docs/Skills/Report/template-based-word-export/SKILL.md`; `Docs/Workflows/template_based_word_export.md` |
 | Current Sunray ROS1 / Gazebo / RViz runtime review | `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; `Docs/Workflows/sunray_ros1_execution_checklist.md` |
 | UE/frontend visualization enhancement, S11 display, and review media | `Docs/Workflows/unreal_renderer.md` |
 | Historical/future ROS2 runtime | `Docs/Workflows/ros2_runtime_setup.md` |

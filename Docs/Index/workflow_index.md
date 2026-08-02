@@ -39,6 +39,12 @@
 | Identify Sunray150 parameters | `Docs/Workflows/identify_quadrotor_parameters.md` |
 | Run tests, regression, or review | `Docs/Workflows/run_tests.md`; `Docs/Workflows/regression_test.md`; `Docs/Workflows/code_review.md` |
 
+## Documentation And Release Work
+
+| Need | Owner |
+|---|---|
+| Build or validate a template-based Word report or handbook | `Docs/Workflows/template_based_word_export.md`; `Docs/Skills/Report/template-based-word-export/SKILL.md` |
+
 ## Runtime And Display Work
 
 | Need | Owner |
