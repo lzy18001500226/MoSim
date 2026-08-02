@@ -150,14 +150,44 @@
       ]
     },
     "diff_planner": {
-      "purpose": "Build Diff-Planner from its project-local source tree in an isolated workspace.",
+      "purpose": "Build Diff-Planner from its project-local source packages in an isolated workspace, using the shared extended quadrotor_msgs contract instead of a generated duplicate.",
       "links": [
         {
-          "workspace_path": "planning/diff_planner",
-          "source_path": "src/planning/diff_planner/src"
+          "workspace_path": "planning/diff_planner/diff_planner/plan_manage",
+          "source_path": "src/planning/diff_planner/src/diff_planner/plan_manage"
+        },
+        {
+          "workspace_path": "planning/diff_planner/user_command/multipoint",
+          "source_path": "src/planning/diff_planner/src/user_command/multipoint"
+        },
+        {
+          "workspace_path": "planning/diff_planner/diff_planner/path_searching",
+          "source_path": "src/planning/diff_planner/src/diff_planner/path_searching"
+        },
+        {
+          "workspace_path": "planning/diff_planner/diff_planner/plan_env",
+          "source_path": "src/planning/diff_planner/src/diff_planner/plan_env"
+        },
+        {
+          "workspace_path": "Utils/quadrotor_msgs",
+          "source_path": "src/integration/ros1_launch/quadrotor_msgs"
+        },
+        {
+          "workspace_path": "planning/diff_planner/diff_planner/traj_opt",
+          "source_path": "src/planning/diff_planner/src/diff_planner/traj_opt"
+        },
+        {
+          "workspace_path": "planning/diff_planner/diff_planner/traj_utils",
+          "source_path": "src/planning/diff_planner/src/diff_planner/traj_utils"
         }
       ],
       "build_packages": [
+        "quadrotor_msgs",
+        "multipoint",
+        "path_searching",
+        "plan_env",
+        "traj_opt",
+        "traj_utils",
         "diff_planner"
       ]
     },
@@ -186,11 +216,19 @@
       ]
     },
     "fixed_formation": {
-      "purpose": "Build the fixed-formation planner from project-local sources in an isolated workspace.",
+      "purpose": "Build the fixed-formation planner from project-local sources in an isolated workspace, using the shared extended quadrotor_msgs contract instead of its duplicate legacy message package.",
       "links": [
         {
           "workspace_path": "planning/fixed_formation",
-          "source_path": "src/planning/fixed_formation/src"
+          "source_path": "src/planning/fixed_formation/src/planner"
+        },
+        {
+          "workspace_path": "planning/fixed_formation/Utils/pose_utils",
+          "source_path": "src/planning/fixed_formation/src/Utils/pose_utils"
+        },
+        {
+          "workspace_path": "planning/fixed_formation/Utils/odom_visualization",
+          "source_path": "src/planning/fixed_formation/src/Utils/odom_visualization"
         },
         {
           "workspace_path": "Utils/cmake_utils",
@@ -206,6 +244,9 @@
         }
       ],
       "build_packages": [
+        "quadrotor_msgs",
+        "pose_utils",
+        "odom_visualization",
         "ego_planner",
         "swarm_bridge"
       ]
