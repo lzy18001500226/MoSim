@@ -125,9 +125,23 @@ def shift_heading_levels(markdown: str) -> str:
     return "".join(output)
 
 
+def protect_parenthesized_markers(markdown: str) -> str:
+    """Keep source markers such as ``(1)`` as plain text, not Pandoc lists."""
+    output: list[str] = []
+    in_fenced_block = False
+    for line in markdown.splitlines(keepends=True):
+        if line.lstrip().startswith("```"):
+            in_fenced_block = not in_fenced_block
+        elif not in_fenced_block:
+            line = re.sub(r"^(\s*)\((\d+)\)(?=\s)", r"\1&#40;\2&#41;", line)
+        output.append(line)
+    return "".join(output)
+
+
 def make_pandoc_markdown(source_markdown: str) -> str:
     prepared = LATEX_FENCE_RE.sub(latex_block_to_display_math, source_markdown)
     prepared = shift_heading_levels(prepared)
+    prepared = protect_parenthesized_markers(prepared)
 
     # A lone Markdown image becomes a Pandoc figure using alt text as a second
     # caption.  Keep it as a pure image; the following project caption is the
@@ -201,6 +215,148 @@ def append_field(paragraph, instruction: str, placeholder: str = "0"):
     end.set(qn("w:fldCharType"), "end")
     run._r.extend((begin, instruction_text, separate, text, end))
     return run
+
+
+MATH_NS = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+XML_NS = "http://www.w3.org/XML/1998/namespace"
+
+
+def math_tag(local_name: str) -> str:
+    return f"{{{MATH_NS}}}{local_name}"
+
+
+def linearize_inline_math(
+    node, vertical: str | None = None
+) -> list[tuple[str, str | None]]:
+    """Turn simple inline OMML into text chunks with sub/superscript marks."""
+    tag = node.tag
+    if tag == math_tag("t"):
+        return [(node.text or "", vertical)]
+
+    def child(local_name: str):
+        return node.find(math_tag(local_name))
+
+    if tag == math_tag("sSub"):
+        base = child("e")
+        subscript = child("sub")
+        if base is not None and subscript is not None:
+            return linearize_inline_math(base, vertical) + linearize_inline_math(
+                subscript, "subscript"
+            )
+    elif tag == math_tag("sSup"):
+        base = child("e")
+        superscript = child("sup")
+        if base is not None and superscript is not None:
+            return linearize_inline_math(base, vertical) + linearize_inline_math(
+                superscript, "superscript"
+            )
+    elif tag == math_tag("sSubSup"):
+        base = child("e")
+        subscript = child("sub")
+        superscript = child("sup")
+        if base is not None and subscript is not None and superscript is not None:
+            return (
+                linearize_inline_math(base, vertical)
+                + linearize_inline_math(subscript, "subscript")
+                + linearize_inline_math(superscript, "superscript")
+            )
+    elif tag == math_tag("f"):
+        numerator = child("num")
+        denominator = child("den")
+        if numerator is not None and denominator is not None:
+            return (
+                linearize_inline_math(numerator, vertical)
+                + [("/", vertical)]
+                + linearize_inline_math(denominator, vertical)
+            )
+    elif tag == math_tag("d"):
+        delimiter_properties = child("dPr")
+        begin = ""
+        end = ""
+        if delimiter_properties is not None:
+            begin_node = delimiter_properties.find(math_tag("begChr"))
+            end_node = delimiter_properties.find(math_tag("endChr"))
+            if begin_node is not None:
+                begin = begin_node.get(math_tag("val"), "")
+            if end_node is not None:
+                end = end_node.get(math_tag("val"), "")
+        chunks: list[tuple[str, str | None]] = []
+        if begin:
+            chunks.append((begin, vertical))
+        for child_node in node:
+            if child_node is not delimiter_properties:
+                chunks.extend(linearize_inline_math(child_node, vertical))
+        if end:
+            chunks.append((end, vertical))
+        return chunks
+
+    # OMML properties do not contain visible text. For the remaining inline
+    # constructs, preserve their text-bearing descendants in document order.
+    chunks: list[tuple[str, str | None]] = []
+    for child_node in node:
+        chunks.extend(linearize_inline_math(child_node, vertical))
+    return chunks
+
+
+def merge_math_chunks(
+    chunks: Iterable[tuple[str, str | None]]
+) -> list[tuple[str, str | None]]:
+    merged: list[tuple[str, str | None]] = []
+    for text, vertical in chunks:
+        if not text:
+            continue
+        if merged and merged[-1][1] == vertical:
+            merged[-1] = (merged[-1][0] + text, vertical)
+        else:
+            merged.append((text, vertical))
+    return merged
+
+
+def make_body_text_run(text: str, vertical: str | None):
+    run = OxmlElement("w:r")
+    if vertical is not None:
+        run_properties = OxmlElement("w:rPr")
+        vertical_align = OxmlElement("w:vertAlign")
+        vertical_align.set(qn("w:val"), vertical)
+        run_properties.append(vertical_align)
+        run.append(run_properties)
+    text_element = OxmlElement("w:t")
+    text_element.text = text
+    if text[:1].isspace() or text[-1:].isspace():
+        text_element.set(f"{{{XML_NS}}}space", "preserve")
+    run.append(text_element)
+    return run
+
+
+def convert_inline_math_to_body_text(document: Document) -> int:
+    """Replace inline OMML with ordinary Word runs; keep display OMML intact."""
+    converted = 0
+    math_nodes = list(document.element.body.iter(math_tag("oMath")))
+    for math_node in math_nodes:
+        ancestor = math_node.getparent()
+        if any(
+            parent.tag == math_tag("oMathPara")
+            for parent in iter_ancestors(ancestor)
+        ):
+            continue
+        parent = math_node.getparent()
+        if parent is None or parent.tag == qn("w:r"):
+            continue
+        chunks = merge_math_chunks(linearize_inline_math(math_node))
+        if not chunks:
+            continue
+        index = parent.index(math_node)
+        parent.remove(math_node)
+        for text, vertical in reversed(chunks):
+            parent.insert(index, make_body_text_run(text, vertical))
+        converted += 1
+    return converted
+
+
+def iter_ancestors(node):
+    while node is not None:
+        yield node
+        node = node.getparent()
 
 
 def set_setting(settings_element, tag: str, value: str | None = None) -> None:
@@ -291,6 +447,7 @@ def postprocess_content_docx(
         table.autofit = True
         mark_first_row_as_header(table)
 
+    inline_math_count = convert_inline_math_to_body_text(document)
     set_setting(document.settings.element, "w:doNotCompressPictures")
     set_setting(document.settings.element, "w:updateFields", "true")
     document.save(str(content_docx))
@@ -305,6 +462,7 @@ def postprocess_content_docx(
         "chapters": chapter_count,
         "figures": figure_count,
         "tables": table_count,
+        "inline_math_to_text": inline_math_count,
     }
 
 
