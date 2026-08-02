@@ -237,6 +237,9 @@ def postprocess_content_docx(
     table_count = 0
 
     for paragraph in document.paragraphs:
+        if "<w:drawing" in paragraph._p.xml:
+            paragraph.style = document.styles[caption_style]
+
         text = paragraph.text.strip()
         if paragraph.style.name == heading_style:
             if text == "摘要":
