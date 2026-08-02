@@ -57,7 +57,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
   end PerceptionInterfaceModule;
 
   block V6XFlightControllerModule
-    "Top-level V6X/PX6C flight-controller interface"
+    "Top-level V6X flight-controller interface"
     parameter Real estimator_position_T = 0.08;
     parameter Real estimator_attitude_T = 0.03;
     parameter Real estimator_motor_T = 0.05;
@@ -102,7 +102,7 @@ model Sunray150CompleteSystemGraphical_Sysblock
       Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
         Rectangle(extent = {{-100, -100}, {100, 100}}, lineColor = {100, 70, 20}, fillColor = {255, 248, 235}, fillPattern = FillPattern.Solid),
         Bitmap(origin = {0, 14}, extent = {{-96, -54}, {96, 54}}, fileName = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Images/V6X.png"),
-        Text(origin = {0, -78}, extent = {{-95, 14}, {95, -14}}, textString = "V6X / PX6C", textColor = {100, 70, 20})}));
+        Text(origin = {0, -78}, extent = {{-95, 14}, {95, -14}}, textString = "V6X", textColor = {100, 70, 20})}));
     annotation(__MWORKS(hide=true));
   end V6XFlightControllerModule;
 
