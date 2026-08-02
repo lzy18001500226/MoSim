@@ -139,9 +139,9 @@ Calling `tools/list` or `tools/call` before this handshake can return
 `Invalid request parameters` even when the wrapper and Sysplorer session are
 healthy.
 
-### Direct MCP Review For Graphical System Models
+### Direct MCP Review For The px4ctrl Graphical Formal Entry
 
-For manual review of `MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock`,
+For manual review of `MoSimQuadrotorModel.Experiment.CompleteSystemGraphical`,
 use this direct MCP sequence:
 
 ```text
@@ -149,8 +149,8 @@ python Scripts\agent\check_mworks_gui_sentinel.py --output Results\mworks_gui_in
 capture a maximized or foreground screenshot of the target reusable Sysplorer/MWORKS main window, and verify the image content actually shows that target window
 session_manager(action="health")
 model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
-model_manager(action="open", model_name="MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock")
-check_model(model_name="MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock", stop_on_error=false)
+model_manager(action="open", model_name="MoSimQuadrotorModel.Experiment.CompleteSystemGraphical")
+check_model(model_name="MoSimQuadrotorModel.Experiment.CompleteSystemGraphical", stop_on_error=false)
 ```
 
 Background `PrintWindow` capture, including
@@ -165,8 +165,10 @@ work and return a license/window-evidence blocker.
 Load the canonical root package once. Its embedded `Plant` package contains the
 official baseline plant and resources, so do not load an external
 `QuadrotorModel` package or any legacy facade alongside it. Mixing roots can
-cause `错误(1401): 模型重复定义`; the formal entry is
-`MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock`.
+cause `错误(1401): 模型重复定义`; the px4ctrl graphical formal entry is
+`MoSimQuadrotorModel.Experiment.CompleteSystemGraphical`. The older
+`Sunray150CompleteSystemGraphical_Sysblock` remains an architecture-only review
+template and is not the formal entry.
 
 Review-result interpretation:
 
@@ -175,8 +177,8 @@ Review-result interpretation:
 | `open ok=true` and no `1401` | The review model loads and opens | Continue visual review |
 | `错误(1401): 模型重复定义` | A duplicate standalone model file exists or was loaded | Delete the standalone file and load only the package |
 | `组件的类型 MoSimQuadrotorModel.Vehicle... 查找不到` | The canonical package did not finish loading | Force-reload only `Models/MoSimQuadrotorModel/package.mo`, then inspect its internal `Plant` entry and package order. Do not add a second package root. |
-| `组件的类型 AWFF_FullControllerFlatGraphical_Sysblock 查找不到` | The canonical package did not finish loading or its internal controller order is stale | Force-reload only `Models/MoSimQuadrotorModel/package.mo`, then inspect the internal `Controllers/Sysblocks` package order. Do not load a standalone controller file as a second root. |
-| `组件引用 x_sum.u1 / y_sum.u1 / thrust_sum.u1 查找不到` | Known Sysplorer limitation for embedded graphical Sysblock multi-input ports | Do not treat as image/load failure; keep Equation controller for executable closed-loop evidence |
+| `组件的类型 PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock 查找不到` | The canonical package did not finish loading or its internal px4ctrl controller order is stale | Force-reload only `Models/MoSimQuadrotorModel/package.mo`, then inspect the internal `Control/Bridges` package order. Do not load a standalone controller file as a second root. |
+| `组件引用 x_sum.u1 / y_sum.u1 / thrust_sum.u1 查找不到` | Legacy AWFF architecture-template limitation for embedded graphical Sysblock multi-input ports | This applies only when reviewing the older architecture template, not `Experiment.CompleteSystemGraphical`; do not treat it as an image/load failure. |
 
 Graphical layout acceptance for this model:
 
