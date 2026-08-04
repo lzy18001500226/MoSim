@@ -29,6 +29,10 @@ for an explicit status or historical audit request.
 - After context compaction or resume, recover the current user's latest request
   first. If it is missing or unclear, stop and ask rather than selecting a
   different task from the repository.
+- Context compaction is not task completion. When the latest user objective is
+  recoverable, keep it active and continue it after the required startup reads;
+  do not ask for a replacement task or report completion solely because
+  `AGENTS.md` was re-read or a lifecycle hook added context.
 - Do not read, message, dispatch to, or modify another conversation unless the
   current user explicitly asks for that exact operation.
 - Do not put a live assignment, blocker, next gate, or conversation ID into

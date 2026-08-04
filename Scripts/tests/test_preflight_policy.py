@@ -218,6 +218,15 @@ def main() -> int:
         assert "AGENTS.md" in session_output["additionalContext"], session_output
         assert "Docs/Workflows/new_conversation_context.md" in session_output["additionalContext"], session_output
 
+        compact_output = run_adapter_payload(
+            {"cwd": str(ROOT), "hook_event_name": "SessionStart", "source": "compact"}
+        )["hookSpecificOutput"]
+        assert compact_output["hookEventName"] == "SessionStart", compact_output
+        compact_context = compact_output["additionalContext"]
+        assert "Context compaction is not task completion" in compact_context, compact_output
+        assert "continue the newest direct user task" in compact_context, compact_output
+        assert "replacement task" in compact_context, compact_output
+
         pretool_output = run_adapter_payload(
             {
                 "cwd": str(ROOT),

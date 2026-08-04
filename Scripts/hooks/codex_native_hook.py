@@ -177,11 +177,23 @@ def _pretool(payload: dict[str, Any]) -> int:
 
 
 def _session_start(payload: dict[str, Any]) -> int:
-    message = (
-        "MoSim native Codex hook active. For this project, load AGENTS.md and "
-        "Docs/Workflows/new_conversation_context.md first; hooks are hard "
-        "guardrails, while skills/workflows are loaded on demand."
-    )
+    source = str(payload.get("source") or "")
+    if source == "compact":
+        message = (
+            "MoSim native Codex hook active for a compact continuation. "
+            "Context compaction is not task completion: preserve and continue "
+            "the newest direct user task already in this conversation. Read "
+            "AGENTS.md and Docs/Workflows/new_conversation_context.md as "
+            "required context, then continue the active task in this same "
+            "turn. Do not ask for a replacement task or report completion "
+            "solely because the startup files were re-read."
+        )
+    else:
+        message = (
+            "MoSim native Codex hook active. For this project, load AGENTS.md "
+            "and Docs/Workflows/new_conversation_context.md first; hooks are "
+            "hard guardrails, while skills/workflows are loaded on demand."
+        )
     _json(
         {
             "hookSpecificOutput": {

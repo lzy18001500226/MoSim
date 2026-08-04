@@ -36,9 +36,14 @@ do not create priority or authorize unrelated work.
 ## 3. Context Recovery
 
 After compaction, interruption, or resume, re-read the newest direct user
-request in this conversation and verify the named paths. If the request cannot
-be recovered, stop and ask. Never infer a replacement task from a board,
-`PROGRESS.md`, memory, another conversation, or a historical result.
+request in this conversation and verify the named paths. Compaction is not a
+completion signal: if the request is recoverable, continue the same task after
+the startup reads. If the request cannot be recovered, stop and ask. Never
+infer a replacement task from a board, `PROGRESS.md`, memory, another
+conversation, or a historical result.
+
+Do not ask for a replacement task or report completion solely because a
+lifecycle hook ran or `AGENTS.md` was re-read.
 
 ## 4. Avoid Process Inflation
 
