@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -38,25 +39,58 @@ AGENT_CATEGORY_DIRS = {
 }
 
 
-def collect_expected_paths() -> list[str]:
+def tracked_reference_paths() -> set[str] | None:
+    """Return tracked reference files, or None outside a Git checkout."""
+    if not (ROOT / ".git").exists():
+        return None
+    completed = subprocess.run(
+        ["git", "ls-files", "--cached", "--", "References"],
+        cwd=ROOT,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=30,
+        check=False,
+    )
+    if completed.returncode != 0:
+        raise RuntimeError(completed.stderr.strip() or "git ls-files failed")
+    return {line.strip().replace("\\", "/") for line in completed.stdout.splitlines() if line.strip()}
+
+
+def has_tracked_descendant(path: Path, tracked: set[str] | None) -> bool:
+    if tracked is None:
+        return True
+    prefix = path_text(path).rstrip("/") + "/"
+    return any(item.startswith(prefix) for item in tracked)
+
+
+def collect_expected_paths(tracked: set[str] | None = None) -> list[str]:
     expected: set[str] = set()
     for family_dir in sorted(p for p in REFERENCES.iterdir() if p.is_dir() and not p.name.startswith(".")):
+        if not has_tracked_descendant(family_dir, tracked):
+            continue
         expected.add(path_text(family_dir))
         if family_dir.name == "Agent":
-            expected.update(collect_agent_paths(family_dir))
+            expected.update(collect_agent_paths(family_dir, tracked))
             continue
         if family_dir.name in FAMILIES_WITH_CHILD_PROJECTS:
             for child in sorted(p for p in family_dir.iterdir() if p.is_dir() and not p.name.startswith(".")):
+                if not has_tracked_descendant(child, tracked):
+                    continue
                 expected.add(path_text(child))
     return sorted(expected)
 
 
-def collect_agent_paths(agent_dir: Path) -> set[str]:
+def collect_agent_paths(agent_dir: Path, tracked: set[str] | None = None) -> set[str]:
     paths: set[str] = set()
     for child in sorted(p for p in agent_dir.iterdir() if p.is_dir() and not p.name.startswith(".")):
+        if not has_tracked_descendant(child, tracked):
+            continue
         paths.add(path_text(child))
         if child.name in AGENT_CATEGORY_DIRS:
             for project in sorted(p for p in child.iterdir() if p.is_dir() and not p.name.startswith(".")):
+                if not has_tracked_descendant(project, tracked):
+                    continue
                 paths.add(path_text(project))
     return paths
 
@@ -75,9 +109,15 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="print machine-readable JSON")
     parser.add_argument("--strict", action="store_true", help="return non-zero when coverage is incomplete")
+    parser.add_argument(
+        "--include-untracked",
+        action="store_true",
+        help="include filesystem-only reference imports; default checks the project-tracked tree",
+    )
     args = parser.parse_args()
 
-    expected = set(collect_expected_paths())
+    tracked = None if args.include_untracked else tracked_reference_paths()
+    expected = set(collect_expected_paths(tracked))
     indexed = set(collect_indexed_paths())
 
     missing = sorted(expected - indexed)
@@ -89,6 +129,8 @@ def main() -> int:
         "stale": stale,
         "ok": not missing and not stale,
         "index_path": path_text(INDEX),
+        "tracked_only": tracked is not None,
+        "tracked_file_count": len(tracked) if tracked is not None else None,
     }
 
     if args.json:

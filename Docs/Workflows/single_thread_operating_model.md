@@ -1,66 +1,67 @@
-# Coordinating-Thread Operating Model
+# Task-Local Operating Model
 
-> Current operating rule for MoSim work. This is a practical work loop, not a
-> second architecture document or a historical dispatch handbook.
+> Compatibility path for the former single-thread document. The operating
+> model is now task-local: each conversation works only from its own direct
+> user request.
 
 ## 1. Ownership
 
-One coordinating Codex thread owns task scope, engineering priority,
-integration, user communication, and final claims. Official temporary
-subagents may handle independent bounded research, inspection, or verification;
-the coordinating thread still owns integration and may not use them as durable
-departments, hidden acceptance owners, or parallel writers of shared paths.
+The current conversation owns only the scope explicitly stated by the current
+user. There is no project-wide coordinating thread, integration queue, default
+owner, or automatic handoff between conversations.
 
-Former visible-thread dispatch, patrol automation, R1/R2/R3 departments, and
-task-ledger routing are historical only. Their records belong in `Docs/Cache/`.
+An official temporary subagent may be used only for an independent bounded
+slice that the current user request permits. It cannot become a hidden owner,
+write shared paths in parallel without coordination, or select work for any
+other conversation.
+
+Thread IDs, labels, task boards, and old dispatch records are trace metadata.
+They are never permission to execute or route work.
 
 ## 2. Normal Work Loop
 
 ```text
-user objective
-  -> local goal and owner layer
+current user's direct objective
+  -> task-local scope and stop condition
   -> smallest relevant source/design/workflow/result context
   -> one bounded edit, check, or runtime gate
   -> evidence or precise blocker
-  -> update the owner document only when a reusable fact changed
+  -> update only the task-owned document when a reusable fact changed
 ```
 
-The current board selects the task. Topic workflows explain how to act after a
-task is selected; they do not create priority or authorize unrelated work.
+The retired `mainline_operations_board.md` is not part of this loop. Topic
+workflows explain how to act after the current user has selected a task; they
+do not create priority or authorize unrelated work.
 
-## 3. Avoid Process Inflation
+## 3. Context Recovery
+
+After compaction, interruption, or resume, re-read the newest direct user
+request in this conversation and verify the named paths. If the request cannot
+be recovered, stop and ask. Never infer a replacement task from a board,
+`PROGRESS.md`, memory, another conversation, or a historical result.
+
+## 4. Avoid Process Inflation
 
 Do not turn a straightforward task into a chain of new plans, smoke tests,
-packages, scripts, or progress documents.
+packages, scripts, or progress documents. Before creating an artifact, identify
+its reader, the decision or evidence gap it owns, and why an existing task-local
+file cannot own it.
 
-Before creating any new artifact, identify all three:
-
-1. its reader or executable consumer;
-2. the specific decision, contract, or evidence gap it owns;
-3. why an existing owner file, model, profile, script, test, or result path
-   cannot own it.
-
-If a focused inspection produces no new factual finding, stop widening the
-search. Choose one of: a small observable probe, targeted source/official
-research, an existing recovery action, or the next independent task. Do not
-repeat the same diagnosis or add paperwork to appear active.
-
-New experiments use the canonical model root, existing configuration/profile
-layout, and `Results/` evidence layout. A single experiment never justifies a
-second top-level Modelica package or a new project-wide workflow.
-
-## 4. Quality And Stop Rules
+## 5. Quality And Stop Rules
 
 - Use the narrowest relevant check before broad changes.
-- Separate source/static, GUI/review, and live-runtime claims.
+- Separate source/static, GUI/review, fixture, result-context smoke, and live
+  runtime claims.
 - Stop for architecture changes, unapproved broad deletion/moves, unknown
-  license/login/authorization state, or a required live action outside scope.
-- For a recoverable tool/UI issue, try the documented local recovery first;
-  report a blocker only after the bounded recovery path has produced evidence.
-- Record durable evidence in `Results/`, not in a growing operations narrative.
+  license/login/authorization state, or a live action outside the current
+  user's scope.
+- For a recoverable tool/UI issue, use the documented bounded recovery first;
+  report a blocker when that path produces evidence of the block.
+- Record durable evidence in `Results/`, not in a growing cross-task narrative.
 
-## 5. Completion
+## 6. Completion
 
-For a changed project path: inspect the scoped diff, run the relevant checks,
-stage exact files, commit, push, and verify publication. A documentation cleanup
-does not imply runtime, controller, planner, or simulation acceptance.
+For a changed project path: inspect the scoped diff, run relevant checks, stage
+exact files, commit, push, and verify publication when the current user permits
+that closeout. Documentation cleanup does not imply runtime, controller,
+planner, simulation, or flight acceptance.

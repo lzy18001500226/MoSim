@@ -208,6 +208,7 @@ def main() -> int:
         assert clean["command_policy"]["ok"], clean["command_policy"]
         assert clean["result_packet_evidence"]["ok"], clean["result_packet_evidence"]
         assert clean["runtime_output_ignore"]["ok"], clean["runtime_output_ignore"]
+        assert clean["reference_index"]["ok"], clean["reference_index"]
         assert clean["git_workspace_state"]["ok"], clean["git_workspace_state"]
 
         session_output = run_adapter_payload(

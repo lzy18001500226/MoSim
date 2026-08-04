@@ -44,7 +44,7 @@ Recurring health owner:
 | Item | Owner | Cadence | Evidence |
 |---|---|---|---|
 | Hook trust and smoke tests | Current MoSim maintainer | After Codex upgrade or after hook/preflight edits | Test output plus this file if behavior changes |
-| Windows-native Codex config or hook path repair | `MoSim｜Codex 环境迁移部` | On blocker only | Blocker/result packet plus exact external path reason |
+| Windows-native Codex config or hook path repair | Current task-local maintainer under explicit user scope | On blocker only | Blocker/result packet plus exact external path reason |
 
 Use `Docs/Workflows/documentation_governance.md` for placement rules when hook
 behavior changes.
@@ -57,7 +57,14 @@ python Scripts/hooks/preflight.py --path Scripts/hooks/preflight.py
 python Scripts/hooks/preflight.py --write-path Results/tmp --command "git status" --result-packet Results/agent_packets/example.json
 python Scripts/hooks/preflight.py --full-repo-large-scan
 python Scripts/hooks/codex_native_hook.py
+python Scripts/hooks/recover_git_index_lock.py --json
 ```
+
+`recover_git_index_lock.py` is report-only by default. After confirming that no
+repository writer is running and the lock is older than the safety threshold, an
+explicit `--confirm-stale` invocation may remove only the exact repository
+`.git/index.lock`; it never kills or restarts a process. Unclassified
+repository processes are treated as active and block removal.
 
 Hook smoke tests:
 
@@ -117,6 +124,10 @@ to commit:
   failures unless a separate reviewed import task explicitly owns that batch.
 - staged file counts over the configured threshold are warnings; split or
   delegate large commits instead of one broad `git add -A`.
+
+The reference-index check includes filesystem-only imports. Classify an
+external reference root in `Docs/Index/reference_project_index.md` without
+adding the imported source tree to version control.
 
 Secret-risk checks are path-sensitive. Project return/blocker packet files
 under `Results/agent_packets/returns/` and `Results/agent_packets/blockers/`

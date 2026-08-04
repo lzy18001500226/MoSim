@@ -5,18 +5,19 @@
 > review route to consider for a task. It is an index, not a replacement for the owning
 > workflow, skill, schema, checker, or human approval gate.
 
-Status: current coordinating-thread capability router with machine-readable
-companion, 2026-07-24 CST.
+Status: task-local capability index with machine-readable companion, 2026-07-24
+CST. It does not select work or route conversations.
 
 Use this after `AGENTS.md`, `Docs/Workflows/new_conversation_context.md`, and
-the current PMO board when a task requires capability selection. Do not bulk
-load every linked skill or workflow; load only the row that matches the task.
+the current user's direct request when a task requires capability selection.
+Do not bulk load every linked skill or workflow; load only the row that
+matches the task.
 
 ## 1. Operating Rule
 
-Capabilities are shared across task types. In current coordinating-thread MoSim
-work, choose local tools, skills, MCP surfaces, checkers, and evidence scripts
-first. Official temporary subagents are available for independent bounded
+Capabilities are shared across task types. In the current task, choose local
+tools, skills, MCP surfaces, checkers, and evidence scripts first. Official
+temporary subagents are available for independent bounded
 slices; former visible-thread dispatch, patrol automation, R1/R2/R3 routing,
 and durable department surfaces are legacy/reference only unless the user asks
 for explicit cleanup or historical packet audit.
@@ -48,7 +49,7 @@ visible-thread route.
 | Syslab / Julia | Syslab MCP tools and built-in Syslab skills | Julia calculations, MATLAB/Syslab porting, plotting, installed package docs | Do not guess API details; detect environment before writing/running Julia | Syslab skill policy, `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` | `detect_syslab_toolboxes`, docs search/read before unclear APIs |
 | Unreal Editor MCP | `mosim-unreal` MCP, UE scripts | Explicit S11 UE/frontend display work, scene inspection, command/echo contract, reversible actor probe, or source-static UE checks | Do not claim current ROS1/Gazebo/PX4 control-loop success, localization success, planner truth, runtime ack, or final scene acceptance from screenshots or source-only evidence | `Docs/Workflows/unreal_renderer.md`, `Docs/Skills/Unreal/mosim-unreal/SKILL.md` | capture bundle, validator, reversible probe evidence |
 | Epic/Fab/library inventory | `mosim-epic` MCP, UE library scripts | Scene source discovery, asset inventory, manual import planning | Fab/library visibility is not automated import or planning truth | `Docs/Skills/Unreal/mosim-epic/SKILL.md`, `Docs/Workflows/unreal_renderer.md` | inventory/audit scripts, manual review evidence |
-| Current Sunray ROS1 / Gazebo / PX4 / MAVROS / RViz / MID360 | WSL Ubuntu-20.04 ROS1 Noetic, References/Sunray, Gazebo Classic, PX4, MAVROS, px4ctrl, RViz, `Scripts/sunray/` | Current P0 minimum big system: Sunray150 takeoff/hover/land, trajectory gates, PX4/MAVROS/px4ctrl control, and real MID360/RViz point-cloud, trajectory, map, and frame review | No x500/PX4/ROS2 substitution, no downloaded FAST-LIO replacement while local `References/Lab/localization_slam/FAST_LIO` exists, no fake or empty point cloud, no headless pass as GUI acceptance, no UE screenshot as control-loop proof | `Docs/Design/架构.md`, `Docs/Workflows/sunray_ros1_current_runtime_lane.md`, `Docs/Workflows/sunray_ros1_execution_checklist.md`, `Docs/Index/sunray_migration_index.md` | Sunray ROS1 result dir, nonempty PointCloud2 sample, PX4/MAVROS/px4ctrl logs or metrics, Gazebo/RViz review manifest or blocker |
+| Sunray ROS1 / Gazebo / PX4 / MAVROS / RViz / MID360 runtime lane | WSL Ubuntu-20.04 ROS1 Noetic, References/Sunray, Gazebo Classic, PX4, MAVROS, px4ctrl, RViz, `Scripts/sunray/` | A direct user task requires Sunray150 takeoff/hover/land, trajectory gates, PX4/MAVROS/px4ctrl control, or real MID360/RViz point-cloud, trajectory, map, and frame review | No x500/PX4/ROS2 substitution, no downloaded FAST-LIO replacement while local `References/Lab/localization_slam/FAST_LIO` exists, no fake or empty point cloud, no headless pass as GUI acceptance, no UE screenshot as control-loop proof | `Docs/Design/架构.md`, `Docs/Workflows/sunray_ros1_current_runtime_lane.md`, `Docs/Workflows/sunray_ros1_execution_checklist.md`, `Docs/Index/sunray_migration_index.md` | Sunray ROS1 result dir, nonempty PointCloud2 sample, PX4/MAVROS/px4ctrl logs or metrics, Gazebo/RViz review manifest or blocker |
 | Historical/future ROS2 / RViz2 / FAST-LIO | WSL ROS2 runtime, ROS MCP, RViz2, scripts | Future/reference native robotics transport/localization/map/planner review after explicit route reopening | No fake pointcloud/map/TF/odom, no keyboard pose, no setpoint publication without explicit live gate; not current Sunray ROS1 lane | `Docs/Workflows/ros2_runtime_setup.md` | ROS2 evidence bundle, TF/map/pointcloud checks, blocker packet |
 | Git / DevOps | path-limited Git, GitHub plugin/CLI when available | Review, commit, push, issue/PR work, external reference drain | No broad staging, destructive history rewrite, destructive cleanup, or hidden ignore backlog without approval | `AGENTS.md`, `Docs/Workflows/documentation_governance.md` | path-limited diff/status, diff whitespace check, explicit staged-file review |
 | GitHub issue / PR | GitHub plugin/skill, GitHub CLI when configured | Filing issues, reading PRs/issues, addressing comments | Do not publish external issue/PR without user approval when content is uncertain or private | GitHub skill, task-specific user scope | source links, draft issue text, user confirmation |
@@ -67,9 +68,9 @@ they are not current execution routes.
 
 | Capability Family | Concrete Surface | Use When | Forbidden Or Stop Actions | Owner Doc / Skill | Health Or Checker |
 |---|---|---|---|---|---|
-| Legacy Codex visible thread dispatch | `codex_app.send_message_to_thread`, `read_thread`, thread registry | Explicit legacy cleanup, historical packet review, or user-approved thread lifecycle audit only | Do not use for current coordinating-thread engineering work; do not treat native send success as task success | `Config/protocol/communication_contract.md`, `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` | dispatch ticket under `Results/agent_packets/dispatch_tickets/`; `Scripts/quality/check_dispatch_ticket_slo.py` |
+| Legacy Codex visible thread dispatch | `codex_app.send_message_to_thread`, `read_thread`, thread registry | Explicit legacy cleanup, historical packet review, or user-approved thread lifecycle audit only | Do not use for current task-local engineering work; do not treat native send success as task success | `Config/protocol/communication_contract.md`, `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` | dispatch ticket under `Results/agent_packets/dispatch_tickets/`; `Scripts/quality/check_dispatch_ticket_slo.py` |
 | Legacy Codex App thread lifecycle | `list_threads`, title/archive/fork/handoff tools when exposed | Route discovery, title repair, archive/fork work only when explicitly approved | Do not create/fork/archive/rename visible threads without PMO/user approval; do not use as normal task execution | `AGENTS.md`, `Docs/Cache/agent_legacy/legacy_workflows_20260624/agent_orchestration.md` | registry review in `Config/legacy/department_threads.json` |
-| Legacy automation / recurring patrol | Codex App automation, patrol heartbeat | Explicitly configured reminder, post-restart sweep, or legacy audit only | Do not use as the normal coordinating-thread control loop; do not make automation rewrite PMO policy silently | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` | patrol packet, board update, dispatch ticket SLO |
+| Legacy automation / recurring patrol | Codex App automation, patrol heartbeat | Explicitly configured reminder, post-restart sweep, or legacy audit only | Do not use as a normal task-local control loop; do not make automation rewrite project policy silently | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` | patrol packet, historical status note, dispatch ticket SLO |
 
 ## 4. Stable Capability IDs
 
