@@ -50,6 +50,10 @@ def test_startup_context_is_task_local() -> None:
     assert "Read-only inspection may run in parallel." in agents
     assert "A given path has at most one active writer" in agents
     assert "independent repository worktree and branch" in agents
+    assert "Context compaction is an internal continuation boundary, not task completion." in agents
+    assert "Context compaction is not task completion." in context
+    assert "Compaction is not a completion signal" in operating_model
+    assert "Do not ask for a replacement task or report completion solely because" in operating_model
 
 
 def test_startup_context_cannot_embed_cross_task_routing() -> None:

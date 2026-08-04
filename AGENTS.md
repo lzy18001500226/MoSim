@@ -27,6 +27,13 @@ After context compaction, interruption, or resume:
 3. If the instruction or scope is unavailable or ambiguous, stop and ask the
    user. Do not choose a replacement task from repository documents.
 
+Context compaction is an internal continuation boundary, not task completion.
+When the newest user objective is present in the retained conversation or
+recovery summary, continue that objective immediately after loading the
+required context. Do not ask for a replacement task, emit a completion
+response, or treat hook output as a new user task merely because `AGENTS.md`
+was re-read. Ask only when no recoverable user objective exists.
+
 A task ID or conversation ID in any project file is historical metadata, not a
 routing instruction. Do not inspect, message, dispatch to, or modify another
 conversation unless the current user explicitly requests that exact action.
