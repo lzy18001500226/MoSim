@@ -69,6 +69,17 @@ These rows keep the machine-checkable index aligned with the current
 | UAVStacks family root | `References/UAVStacks` | UAV software stack references |
 | UE_ROS family root | `References/UE_ROS` | Unreal and ROS integration references |
 
+### User-Imported External Trees
+
+These roots are classified for navigation and preflight coverage only. They
+remain external reference material and are not automatically added to version
+control, treated as Codex session state, or used as current runtime authority.
+
+| Imported tree | Path | Classification / use |
+|---|---|---|
+| Pandoc source import | `References/Docs` | User-imported documentation/tooling source under `pandoc-main`; reference-only and separate from the MoSim runtime source tree |
+| 超维空间科技 vendor bundle | `References/超维空间科技` | User-imported vendor/reference bundle containing PX4-Autopilot, QGroundControl, MATLAB notes, and large archives; reference-only and not automatically enrolled in version control |
+
 ### Agent
 
 | Project | Path | Primary Use |

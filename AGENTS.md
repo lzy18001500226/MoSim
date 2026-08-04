@@ -1,443 +1,150 @@
 # AGENTS.md
 
-> Project instructions for Codex / AI assistants working on MoSim, the A8
-> quadrotor attitude and position-control project.
+> Project constitution for Codex and other assistants working in MoSim.
 
-This file is the compact project constitution. Keep durable hard boundaries
-here. Put executable procedures, MWORKS window rules, runtime checks, and
-domain-specific workflows in the linked documents below.
+This file contains durable project boundaries only. Repeatable procedures,
+topic-specific checks, and task evidence belong in the relevant workflow,
+skill, source, or `Results/` path.
 
-## Current Task
+## 1. Task Isolation
 
-> User-assigned thread boundary, 2026-07-30 CST:
->
-> - This coordinating thread owns MWORKS controller/model/evidence work and,
->   after that line is reviewed, MoSim Studio APP work.
-> - A separate user-owned conversation owns QGC and the ROS1/Gazebo/PX4 runtime
->   line, including Factory maps, runtime scripts, sensor/EKF configuration, and
->   all live Gazebo/ROS actions.
-> - This thread may read completed runtime evidence only to prepare a factual
->   handoff. It must not start, modify, diagnose, or extend that runtime line
->   unless the user explicitly reassigns it.
-> - A direct user scope assignment overrides a broad historical "active support
->   lane" statement below. Before acting, name the owner layer and stop when it
->   belongs to the other conversation.
+MoSim has no global conversation mainline, current P0, PMO queue, default
+owner thread, or automatic task handoff.
 
-Fast entry cue, 2026-07-28 CST: G0 of the user-authorized 48-controller
-MWORKS closed-loop line passed. `Px4CtrlFormalRunner` completed `ClimbPath`
-for 50 s with a native `CheckModel` diagnostic of 0 errors and 0 warnings;
-the original baseline evidence is
-`Results/control_platform/px4ctrl_baseline_verification/` (RMSE 0.276705 m,
-terminal position error 0.002734 m). The bounded px4ctrl graphical-completion
-subgate also passed: the native `PX4CTRL_Original_OuterLoop_Graphical_Sysblock`
-diagram has reviewable components and wires, and the hash-bound equation-bridge
-runner replayed `ClimbPath` for 50 s with 5001 finite samples, RMSE 0.276705 m,
-and terminal position error 0.002734 m. Its evidence is
-`Results/control_platform/px4ctrl_graphical_completion_20260728/`; this remains
-MWORKS equation-bridge closure evidence only, not PX4, Gazebo, ROS, or C++
-deployment equivalence. G1-0 reconciled the 48-entry catalog;
-G1 Batch 1 then added seven linear/robust controller routes and passed native
-`CheckModel` for its eight Bridges and seven Adapters without source drift.
-G1 Batch 2 then added five nonlinear/adaptive routes and passed native
-`CheckModel` for its five Bridges and five Adapters without source drift; its
-evidence is `Results/control_platform/g1_batch2_checkmodel_20260728/`. G1
-Batch 3 then added five approved sliding-mode routes and passed native
-`CheckModel` for all five Bridges and five Adapters without source drift; its
-evidence is `Results/control_platform/g1_batch3_checkmodel_20260728/`. G1
-Batch 4 then added six approved predictive/optimization routes through one
-shared kernel, six named Bridges, and six Adapters; native `CheckModel` passed
-all 13 classes without source drift, with evidence at
-`Results/control_platform/g1_batch4_checkmodel_20260728/`. G1 Batch 5 then
-added `SE3 Basic`, `DFBC Basic`, `DFBC SmoothRobust` attitude/body-rate, and
-`DFBC HighOrder` body-rate routes as five named Bridges and five thin Adapters;
-native `CheckModel` passed all 10 classes without source drift, with evidence
-at `Results/control_platform/g1_batch5_checkmodel_20260728/`. G1 Batch 6 then
-added the `GainScheduled PID`, `Fuzzy PID`, `Neural PID`, and `RL GainScheduler`
-routes as four Bridges and four thin Adapters; native `CheckModel` passed all
-eight classes without source drift, with evidence at
-`Results/control_platform/g1_batch6_checkmodel_20260728/`. G1 is structurally
-complete. The user-authorized G1 FormalRunner-completion subgate has passed
-native `CheckModel` for 40 named 100 Hz whole-aircraft runners and four
-reusable interface templates: 29 `ATTITUDE_THRUST`, eight `ROTOR_COMMAND`,
-two `BODY_RATE_THRUST`, and one `WRENCH`. The final check-only evidence is
-`Results/control_platform/g1_formal_runner_checkmodel_20260728/attempt_02_after_rotor_annotation_fix/CHECK_MODEL_RESULTS.json`
-(44/44 passed; no simulation started and no source drift). G1 remains under
-review. On 2026-07-29 CST, the user explicitly authorized one bounded exception:
-run only `OfficialPidFormalRunner` and `Px4CtrlFormalRunner` against all seven
-versioned profiles (14 MWORKS runs), retaining valid and invalid evidence alike.
-At that point the exception did not authorize G2, other-controller runs, gain
-tuning, code export, Gazebo/ROS runtime validation, G7, or R1.
+Every conversation is an independent task surface by default. The newest
+direct user instruction in the current conversation is the only authority for
+the current task's scope, priority, allowed actions, and stopping condition.
 
- The separately authorized `MoSim Studio + QGC
- Factory 2D operation surface` task. It may perform source/UI/build work for
- the native Studio identity, QGC Factory map, published-Profile selection,
- discrete fault requests, rosbag replay, and independent UE pointer release;
- it must not claim controller, planner, or runtime success from that work.
+Never select work from another conversation, a thread ID, a pinned task, a
+board, `PROGRESS.md`, memory, a cached transcript, a screenshot, or a dated
+status paragraph. Those sources can provide background only after the user
+explicitly asks for that background; they never authorize execution.
 
-On 2026-07-29 CST, the user separately authorized the ROS1/Gazebo runtime
-reproducibility closure. It is independent from the MWORKS G3 line and is owned
-by the separate QGC/Gazebo conversation: retain the
-current `Ubuntu-20.04 / ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS /
-px4ctrl / RViz` lane. Its no-flight GPS/EKF state-chain gate passed at
-`Results/sunray_ros1/sunray_ros1_gps_state_chain_20260729_007/` with a
-90.11 s actual capture, valid MAVROS/PX4/Gazebo evidence, and no arming or
-mission publication. P3 then completed its local-source functional lifecycle
-and bounded physical motor-efficiency acknowledgement, but its frozen
-hover/local-state quality gate remains blocked; see
-`Results/sunray_ros1/p3_runtime_closeout_20260730/P3_RUNTIME_STATUS.json`.
-P4 completed its historical Factory FUEL display replay at
-`Results/sunray_ros1/sunray_ros1_p4_factory_fuel_replay_20260730_0945/`:
-the bounded rosbag reached isolated RViz topic probes, the Factory 2D
-operator-map replay, and the one-way UE receiver under one `run_id`. Its
-result is explicitly `completed_with_rviz_window_capture_limitation`; it is
-display/reproducibility evidence only and cannot be presented as P3 controller
-performance, fault-tolerance, MWORKS deployment, QGC command, or UE control
-evidence. Its next executable gate is P5 single-aircraft native Diff baseline.
+After context compaction, interruption, or resume:
 
-The six-candidate recovery record at
-`Results/control_platform/champion_candidate_recovery_20260727/` predates the
-shared reference-velocity/reference-acceleration repair. Its `ClimbPath`
-passes and RMSE are trace-back evidence only, not a valid ranking for the
- current source. The seven-scenario contract is bound through the Plant and four
- shared Runner classes. The report-run audit now separates the 48-entry catalog
- from the completed nominal evidence population: 46 existing MWORKS profiles,
- the independent `px4ctrl` MWORKS baseline, and the completed
- `pid_awff_linear_eso` 50 s record (48 total). The PID-AWFF-LINEAR-ESO run is
- retained as negative performance evidence because its terminal position error
- is `3412.359226529184 m`, not as a pass. The fixed catalog-48 G3 reconciliation
- is `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`:
- 30 passed, 18 completed failures, and zero `not_run`; it accounts for the
- post-freeze `pid_awff_linear_eso`, `smc_boundary_layer`, and `nmpc_outer`
- FormalRunner records without changing the denominator or overwriting the frozen
- historical `G3_STATUS.json`. The G6 screenshot population for the 46
- existing profiles remains mixed: the audit labels its 46 result captures as
- `internal_fixed_input_probe` unless a separate whole-aircraft record says
- otherwise. Official PID retains its native continuous `RotorCommandRunner`
- boundary, while the other routes use their declared 100 Hz boundary. Its
- nominal 50 s `ClimbPath` passed with RMSE `0.1729701479 m` and terminal error
- `0.0065067004 m`. Six Official PID v1 seven-scenario records are valid. The v1
- 50 s motor-efficiency-fault record is invalid; preserve this historical negative evidence at
-`Results/control_platform/seven_scenario_ab/official_pid/motor_efficiency_fault/`
-and do not alter the baseline, fault magnitude, or Plant to relabel it valid.
-On 2026-07-30 CST, the user then authorized and completed a separate frozen
-two-controller seven-scenario v2 MWORKS A/B set. Its contract and Profiles are
-`Config/control_platform/seven_scenario_injection_contract_v2.json` and
-`Config/control_platform/seven_scenario_experiment_profiles_v2.json`; its
-14 records are under `Results/control_platform/seven_scenario_ab_v2/`. Twelve
-records are valid. The PX4CTRL and Official PID 50 percent rotor-1 Figure8
-fault records are retained invalid negative evidence: PX4CTRL exceeds the 5 m
-gate at 17.06 s, while the Official PID primary 50 s run exceeds the 120 s MCP
-bound and its separate 16.6 s diagnostic verifies the fault and unbounded
-response. The v2 task is awaiting user review; do not resume G3 or start other
-controller/scenario work without a new user instruction.
+1. Re-anchor to the newest direct user instruction in this conversation.
+2. Re-check the files and paths named by that instruction.
+3. If the instruction or scope is unavailable or ambiguous, stop and ask the
+   user. Do not choose a replacement task from repository documents.
 
-On 2026-07-29 CST, the user subsequently authorized G2: one nominal 50 s
-`ClimbPath` attempt for every one of the 48
-`MoSimQuadrotorModel.Experiment.Runners.Formal.*` entries, with no scenario
-injection, gain tuning, model edits, or seven-scenario work. The batch is
-complete at `Results/control_platform/phase2_full_48_climbpath/`: all 48
-routes have terminal records against frozen matrix
-`a9f85d8cb8b4b942b88056bf4eb336ba17a9c40b26fe1ae5d21ab12649599d80`.
-Seventeen passed the terminal-error gate and 31 failed: 10 terminal-error
-violations, four simulation-API failures, nine MCP timeouts, and eight
-dedicated Sysplorer-session startup failures. This is a frozen result-screening
-record. The user has subsequently authorized G3: repair the G2 failure set only
-where an interface, coordinate sign, equation-bridge, allocator, or
-execution-chain defect is evidenced, and rerun each repaired route against the
-same nominal 50 s `ClimbPath`. G3 records live only under
-`Results/control_platform/phase2_full_48_climbpath/g3_repair/` and must
-preserve G2 evidence unchanged. The acceptance target is 48/48 effective passes
-with a completed result and terminal position error below 5 m. G3 does not
-authorize seven-scenario work, gain-performance optimization, code export,
-Gazebo/ROS runtime validation, G7, or R1. When 48/48 is reached, commit the
-exact G3 sources and evidence index, push, send a Chinese before/after review
-email, and wait for the next instruction.
+A task ID or conversation ID in any project file is historical metadata, not a
+routing instruction. Do not inspect, message, dispatch to, or modify another
+conversation unless the current user explicitly requests that exact action.
 
-`Docs/Workflows/mainline_operations_board.md` is the sole task authority and
-contains the exact scope, evidence, and stopping/handoff conditions. Update this
-cue whenever that board's current action or next executable gate changes; it is
-an entry summary, not a second task source.
+This file must not contain a dated task assignment, live blocker, next action,
+thread ID, or cross-conversation handoff. Put those facts in task-local
+artifacts only.
 
-## 0. Start Here
+## 2. Startup Context
 
-For every new or resumed MoSim conversation:
+For a new or resumed conversation, load only:
 
 ```text
 1. AGENTS.md
 2. Docs/Workflows/new_conversation_context.md
-3. Docs/Workflows/mainline_operations_board.md
-4. Docs/Workflows/single_thread_operating_model.md when operating mode is unclear
-5. Topic-specific workflow / skill / design docs only as needed
+3. The topic-specific workflow, skill, design file, source, or result named or
+   required by the current user's request
 ```
 
-Use `PROGRESS.md` only for newest active entries, not as a full transcript.
-Read `Docs/Workflows/agent_task_ledger.md` only for legacy trace-back during
-old multi-thread cleanup or historical packet audit.
+Do not load `Docs/Workflows/mainline_operations_board.md` during ordinary
+startup. That path is retained as a read-only historical status archive for
+compatibility; it is not a task selector or permission source. Read it only
+when the user explicitly requests a project-status or historical audit.
 
-Do not load raw Codex session JSONL files or old chat dumps as routine context.
-Historical chat claims must go through
-`Docs/Workflows/session_memory_migration.md` before becoming project
-truth; MoSim cache paths are documented in
-`Docs/Workflows/session_memory_migration.md`.
+Do not routinely load raw Codex session JSONL, old chat dumps, legacy AgentOS
+ledgers, or broad reference trees. Historical claims must be checked against
+current source or evidence before being used.
 
-## 1. Hard Boundaries
+## 3. Workspace And Change Boundaries
 
-1. Work only inside `C:\Users\HP\Desktop\MoSim` unless the user explicitly
-   approves a named infrastructure action outside the repository. Project-local
-   means do not read or modify sibling personal directories, token files,
-   browser profiles, SSH folders, other drives, `/home/linux`, or WSL/user
-   home paths unless the approved infrastructure task names that path and why.
-2. MoSim uses one active coordinating Codex thread. The coordinating thread can
-   use official temporary subagents for independent, bounded work when
-   parallelism materially helps. Legacy multi-thread routing, visible-thread
-   dispatch, and related automation are archive-only material: use them only for
-   explicit trace-back or cleanup, and do not restore them without user approval.
-3. The coordinating thread owns product priority, scope, integration, manual/GUI
-   action decisions, restart decisions, and blocker escalation to the user. If
-   the current task needs an architecture or scope decision not already covered
-   by the board or a design document, stop and report it to the user; do not
-   make that decision independently.
-4. Non-trivial work should record a local goal, inspect the smallest relevant
-   context, run targeted checks, and keep evidence in normal project paths.
-   This is local planning only, not a legacy multi-agent dispatch requirement.
-   Temporary official subagents need an independent bounded scope and a parent
-   integration point; parallel writes, Git mutations, GUI, MCP, or live runtime
-   work need explicit ownership and coordination in the parent task.
-5. Sparse Chinese email is the default human notification channel. When any
-   named small task, goal, gate, or project conversation reaches a completion,
-   blocker, or review-required terminal state, send one short Chinese email
-   through `Scripts/agent/send_gateway_email_alert.py`. Do not email every
-   ordinary chat reply, status update, or intermediate observation. Use a
-   task-specific cooldown key, and disable cooldown for explicit terminal
-   notices when needed so separate small tasks are not suppressed. Deleted
-   WeChat gateway/message-path threads are historical only and must not be
-   scanned, no-oped, recovered, or used unless the user explicitly restores a
-   scoped WeChat diagnosis route.
-6. The current P0 is always the action declared by
-   `Docs/Workflows/mainline_operations_board.md`. The ROS1/Sunray/Gazebo/PX4/
-   MAVROS/px4ctrl/RViz lane is the current runtime evidence authority when the
-   board and its workflow select runtime work. UE/frontend remains a display and
-   experiment-platform layer, not control-loop authority. Do not use the old
-   ROS2/PX4/x500 route, replacement FAST-LIO source, fake point clouds, or an
-   equivalent-substitute runtime as current evidence. Support lanes cannot mask
-   the active engineering blocker.
-7. MWORKS login/license/authorization/GUI-error/unknown blocking states must
-   stop solver/model work and become clear blockers. Bounded login recovery is
-   allowed only when the user explicitly authorizes it and credential
-   redaction, screenshot, and stop-condition rules are satisfied.
-8. Desktop window observation and desktop window action are separate skills:
-   screenshot/capture ability does not imply click/action authority.
-9. For normal MoSim mainline work, request `gpt-5.5` and `thinking=high` when
-    the native tool accepts those settings.
-10. Live/runtime waits must follow the bounded wait policy in the current
-    runtime workflow or execution checklist. Do not let a live probe become an
-    unbounded blocking loop without explicit user authorization and durable
-    partial evidence.
-11. Temporary broad `.gitignore` rules for reference imports are only a drain
-    queue. Durable ignores must be class/exact-risk decisions, not a hidden
-    backlog of ordinary source, docs, scripts, configs, or small assets.
-12. Do not delete or move executable legacy runtime, hook, checker, protocol,
-    skill, or automation code until a separate dependency audit proves it is
-    unused or updates all references. The current cleanup target is active
-    documentation and startup context first.
-13. A task is not complete while task-owned changes remain uncommitted or
-    unpushed. Before reporting terminal success, inspect only the task paths,
-    run the relevant checks, stage exact paths, commit, push, and verify the
-    upstream state. A noisy unrelated worktree or a large `References/` backlog
-    is not a reason to defer normal source, script, config, model, or document
-    changes. If ownership is unclear, checks fail, or publication is blocked,
-    report a Git blocker instead of claiming completion. Never sweep unrelated
-    user changes into the task commit to satisfy this gate.
+1. Work inside `C:\Users\HP\Desktop\MoSim` unless the current user explicitly
+   approves a named infrastructure action outside the repository.
+2. Preserve unrelated user changes. Inspect scoped status and diff before
+   editing; never reset, clean, force-push, or broadly stage the worktree.
+3. Use `apply_patch` for manual edits. Keep changes limited to the paths owned
+   by the current request.
+4. Do not delete or move executable runtime, hook, checker, protocol, skill, or
+   automation code without a dependency audit and an explicit current scope.
+5. A shared worktree does not merge task ownership. Treat unowned changes as
+   user or another-task state and do not rewrite them to make a clean status.
+6. Read-only inspection may run in parallel. A given path has at most one
+   active writer in a shared worktree. Parallel code edits require an
+   independent repository worktree and branch, followed by parent review and
+   integration.
 
-## 2. Current Operating Mode
+## 4. Execution And Evidence
 
-Current MoSim work is coordinated by one active thread. It follows
-`Docs/Workflows/mainline_operations_board.md` and only the relevant domain
-workflow; temporary subagents may own independent bounded slices. Historical
-multi-thread material stays in `Docs/Cache/agent_legacy/` unless trace-back or
-cleanup is explicitly requested.
+- Name a local goal for non-trivial work and inspect the smallest relevant
+  context before changing files.
+- Use project-owned workflows and helper APIs; do not guess model, MCP, or
+  runtime interfaces.
+- Keep source/static checks, GUI/review evidence, fixtures, result-context
+  smoke, and live runtime acceptance clearly separate.
+- MWORKS/Sysplorer/Syslab is the formal model, controller, and simulation
+  evidence authority.
+- The declared robotics runtime evidence lane is Ubuntu 20.04 / ROS1 Noetic /
+  Sunray / Gazebo Classic / PX4 / MAVROS / px4ctrl / RViz. UE, QGC, Flight
+  Console, and Model Studio are display or operation surfaces and do not
+  replace formal or runtime evidence.
+- Do not claim controller, planner, localization, closed-loop, flight, or
+  final scene success without the evidence required by the relevant workflow.
+- MWORKS login, license, authorization, unknown GUI errors, and unknown runtime
+  states are blockers. Do not continue solver/model work through them.
+- Desktop observation and desktop action are separate permissions. A screenshot
+  does not authorize clicking, typing, closing, or restarting a window.
+- Keep live/runtime waits bounded and preserve partial evidence on timeout.
 
-## 3. Operating Documents
+### Unreal Mapping Window Rule
 
-| Need | Source Of Truth |
+Active point-cloud and map review belongs to RViz/RViz2 or an equivalent native robotics viewer. Browser HTML is not an accepted active point-cloud/map review surface. Global UE collision/occupancy truth is a validation oracle only; it is not a substitute for runtime map, localization, planner, or controller evidence.
+
+## 5. Documentation Roles
+
+| Need | Source |
 |---|---|
-| Current PMO board and next action | `Docs/Workflows/mainline_operations_board.md` |
-| Current coordinating-thread operating model | `Docs/Workflows/single_thread_operating_model.md` |
-| Declared ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl runtime evidence lane | `Docs/Design/架构.md`; `Docs/Workflows/mainline_operations_board.md`; `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; execution checklist at `Docs/Workflows/sunray_ros1_execution_checklist.md`; source index at `Docs/Index/sunray_migration_index.md` |
-| Legacy AgentOS / multi-thread cleanup review | `Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md` |
-| Document placement, migration, and archive rules | `Docs/Workflows/documentation_governance.md` |
-| Session-memory promotion/rejection | `Docs/Workflows/session_memory_migration.md` |
-| Workflow index | `Docs/Index/workflow_index.md` |
-| Historical/recovery project memory index | `Docs/Index/project_work_memory_index.md` |
-| API/MCP index | `Docs/Index/api_index.md` |
-| MCP/tooling/native hook governance | `Docs/Workflows/tooling_assets_governance.md`; hook code remains at current executable paths until audited |
-| Desktop window screenshot evidence and explicitly authorized UI actions | `Docs/Skills/Desktop/window-capture-evidence/SKILL.md`; `Docs/Skills/Desktop/window-ui-action-control/SKILL.md` |
-| Final competition packaging checklist | `Docs/Workflows/pre_submit_check.md` |
+| Hard boundaries and startup rules | `AGENTS.md` |
+| Task-neutral fresh context | `Docs/Workflows/new_conversation_context.md` |
+| Task-local work loop | `Docs/Workflows/single_thread_operating_model.md` |
+| Repeatable procedure | `Docs/Workflows/` or `Docs/Skills/` |
+| Stable architecture and interfaces | `Docs/Design/` |
+| Navigation only | `Docs/Index/` |
+| Historical status and migration records | `Docs/Cache/` and the retired board archive |
+| Evidence, logs, metrics, figures, and packets | `Results/` |
 
-## 4. Project Direction
+An index or workflow explains where to work and how to check it; it does not
+create a task, assign an owner, or authorize an unrelated action. A project
+technical direction may describe architecture, but it is not a conversation
+execution queue.
 
-MoSim is for the A8 quadrotor competition. The main contribution is robust
-quadrotor attitude and position control, not a general robotics navigation
-stack.
+Words such as "control mainline" or "runtime lane" in a design document
+describe technical evidence boundaries only. They never choose today's task or
+override the current user's direct request.
 
-Current delivery convergence:
+For a named current task that reaches completion, a blocker, or review-required
+state, send at most one concise Chinese notification through
+`Scripts/agent/send_gateway_email_alert.py`. Do not send notifications for
+ordinary turns, and do not send a notification for another conversation's task.
+
+## 6. Git Closeout
+
+For a task that changes project files:
 
 ```text
-completed: canonical model root, D1-D3 review contract, and the frozen
-           46-route current-root evidence matrix
-  -> six nominal-family champion test-harness promotion and minimum
-     whole-aircraft closure
-  -> same-parameter Official PID seven-scenario A/B for accepted champions
-  -> G7 safety, fault, fixed-formation, and Syslab evidence
-  -> accepted candidate export and declared ROS1/Sunray runtime validation
-  -> report and software-documentation evidence
-  -> R1 old-root archival only after a dependency audit
+inspect scoped status and diff
+-> run targeted checks
+-> stage exact task paths
+-> git diff --cached --check
+-> commit and push when authorized and available
+-> verify the upstream state
 ```
 
-Core principles:
+Do not include unrelated user changes. If a lock, ownership ambiguity, check
+failure, authentication issue, or publication failure prevents closeout,
+report it precisely instead of claiming completion.
 
-1. Keep control as the main line.
-2. Keep planning, formation, MCP automation, safety filtering, fault injection,
-   and metrics as replaceable modules.
-3. Every claim needs evidence: source, simulation logs, result files, metrics,
-   screenshots, figures, or packets.
-4. Documentation fixes are not project completion unless the task is explicitly
-   docs-only; after correcting a workflow, return to the smallest executable
-   evidence gate that moves the current mainline forward.
-5. Prefer reproducible workflows and report-ready outputs.
-6. Do not guess APIs; consult docs, workflows, skills, or MCP documentation.
+## 7. Uncertainty Policy
 
-## 5. Domain Evidence Boundaries
-
-MWORKS/Sysplorer/Syslab is the formal controller/model evidence source.
-Current runtime plant, sensor, and flight-control evidence comes from
-Ubuntu-20.04 / ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS / px4ctrl.
-RViz is the current point-cloud, trajectory, map, and frame review surface.
-UE/frontend work is a display, experiment-platform, video, and review
-enhancement layer; it does not replace Gazebo/PX4/MAVROS/RViz/log evidence and
-does not own controller, localization, or planner success. ROS2/RViz2/PX4 x500
-routes are historical/future reference unless explicitly reopened. None of
-these layers may claim final closed-loop success without the evidence required
-by its current workflow.
-
-Important MWORKS rules:
-
-- Use MCP first for model-level operations when live MWORKS work is authorized.
-- Check current MWORKS activation/window evidence before live MWORKS work.
-- Activation/login/license/authorization acceptance needs foreground or
-  maximized target-main-window evidence when a hidden UI blocker is possible.
-- Ordinary live-simulation phase screenshots use the DPI-aware background
-  capture route. If the target is minimized, restore it only enough to paint,
-  capture, validate size/content, and minimize after; do not maximize except
-  for activation/login/license/authorization evidence.
-- Ordinary graphical/layout/result-window review uses DPI-aware screenshot
-  evidence plus written observations in the coordinating thread. Temporary
-  subagents do not own GUI review unless the current task explicitly scopes it.
-- Do not close or restart reusable Sysplorer/Syslab/MWORKS windows unless the
-  user/PMO explicitly authorizes it or a documented blocker requires it.
-
-Important ROS/Sunray/UE rules:
-
-- Do not claim `planner_ready`, `closed_loop`, runtime success, controller
-  performance, or final material/scene acceptance without the declared evidence
-  gate.
-- Unreal Mapping Window Rule: active point-cloud/map review belongs to
-  RViz/RViz2 or an equivalent native robotics viewer, with the current runtime
-  evidence lane using ROS1 RViz. Browser HTML is not an accepted active
-  point-cloud/map review surface.
-  Global UE collision/occupancy truth is a validation oracle only.
-- Do not publish setpoints, run extra live probes, open foreground RViz/manual
-  review, or start UE editor/build/runtime work unless the current user
-  instruction, local goal, and owning workflow explicitly authorize that live
-  scope.
-- Use local references first for matching UE/UAV simulation behavior patterns
-  before online research.
-
-## 6. Skills And Workflows
-
-Use project-local MWORKS skills before generic upstream skills:
-
-| Need | Skill / Workflow |
-|---|---|
-| MCP/session operations | `Docs/Skills/Mworks/mworks-mcp-operations/SKILL.md` |
-| Model/component context | `Docs/Skills/Mworks/mworks-model-context/SKILL.md` |
-| Simulation evidence | `Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md` |
-| Runtime diagnostics | `Docs/Skills/Mworks/mworks-runtime-diagnostics/SKILL.md` |
-| Sysblock graphical modeling | `Docs/Skills/Mworks/mworks-sysblock-graphical-modeling/SKILL.md` |
-| Syslab/MATLAB porting | `Docs/Skills/Mworks/mworks-syslab-porting/SKILL.md` |
-| Tests and review | `Docs/Skills/Mworks/mworks-test-quality/SKILL.md` |
-| Report figures/replay | `Docs/Skills/Mworks/mworks-report-visualization/SKILL.md` |
-| Template-based Word report or handbook export | `Docs/Skills/Report/template-based-word-export/SKILL.md`; `Docs/Workflows/template_based_word_export.md` |
-| Current Sunray ROS1 / Gazebo / RViz runtime review | `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; `Docs/Workflows/sunray_ros1_execution_checklist.md` |
-| UE/frontend visualization enhancement, S11 display, and review media | `Docs/Workflows/unreal_renderer.md` |
-| Historical/future ROS2 runtime | `Docs/Workflows/ros2_runtime_setup.md` |
-| Parameter identification | `Docs/Workflows/identify_quadrotor_parameters.md` |
-
-Use only the workflow/skill needed for the current task. Do not bulk-load large
-documentation trees.
-
-## 7. Git And Documentation Hygiene
-
-For normal project changes:
-
-```text
-inspect status -> inspect relevant diff -> run targeted checks -> path-limited
-git add -> git diff --cached --check -> commit -> push if auth works
-```
-
-Rules:
-
-1. Use path-limited Git commands; do not use broad `git add -A`, force push,
-   reset, clean, or bulk destructive commands unless explicitly approved.
-2. Do not commit secrets, private tokens, local credentials, or generated files
-   above GitHub limits.
-3. When a task reveals a reusable command, workflow correction, or operating
-   constraint, update the appropriate project document before reporting
-   completion.
-4. Keep `AGENTS.md` small. If a rule becomes executable or detailed, move it
-   to a workflow, skill, checker, packet template, or index and leave only a
-   pointer here.
-5. The per-task Git closeout gate in `Docs/Workflows/pre_submit_check.md` is
-   mandatory for every task that changes project files.
-
-## 8. Directory Map
-
-| Directory | Purpose |
-|---|---|
-| `Docs/Design/` | Algorithm, architecture, scope, and evidence design. |
-| `Docs/Workflows/` | Repeatable procedures, current coordinating-thread operating rules, and domain workflows. |
-| `Docs/Cache/` | Review caches, migration notes, archived workflow bodies, and non-startup historical material. |
-| `Docs/Skills/` | Project-local and reference skills. |
-| `Docs/Index/` | Documentation, API, memory, and workflow indexes. |
-| `Models/` | Project-owned MWORKS/Sysplorer models. |
-| `References/` | Official/reference projects and upstream examples. |
-| `Config/` | Machine-readable project config: scenarios, ExperimentProfiles, capability index, and legacy/design protocol snapshots. |
-| `Scripts/` | Automation, quality checks, evidence scripts, and tests. |
-| `Results/` | Reproducible outputs, packets, metrics, logs, figures, and review assets. |
-
-## 9. Final Development Policy
-
-When uncertain:
-
-1. Prefer current project documents over chat memory.
-2. Prefer small targeted checks over broad assumptions.
-3. Prefer source/current evidence over inherited claims.
-4. Prefer modular, reversible changes over coupled rewrites.
-5. Prefer clear blockers over overclaiming completion.
-6. For runtime/integration failures, do not switch to a substitute mainline to
-   make progress look successful. First inspect local source and official
-   docs; if still unclear, search relevant blogs/community notes. If the issue
-   remains unresolved, the next step would change the agreed architecture, or
-   the fix requires a broad/high-risk runtime change, stop, report the blocker,
-   and ask the user before changing direction.
-
-The project is successful when it forms a reproducible loop:
-
-```text
-scenario configuration
-  -> model simulation
-  -> result extraction
-  -> metric calculation
-  -> figure/replay generation
-  -> report conclusion
-```
+When uncertain, prefer the current user's words and current source/evidence
+over memory or historical documents. Make the smallest reversible change. If
+the next step would change architecture, scope, runtime authority, or a
+destructive boundary not already specified by the current user, stop and ask.

@@ -1,16 +1,38 @@
 # Project Progress
 
-> Current active-progress note only. This file is not a transcript and must not
-> be used for historical recovery. For current operating state, read
-> `Docs/Workflows/mainline_operations_board.md` first. For historical
-> multi-thread or packet trace-back, use `Docs/Workflows/agent_task_ledger.md`
-> only when explicitly auditing legacy material.
+> Historical progress snapshot only. This file is not a transcript, task
+> selector, or authorization source. Work in each conversation starts from the
+> current user's direct request, then the task-local source and workflow it
+> names. Use the retired board or legacy ledger only for an explicit historical
+> audit.
+
+## 2026-08-03 CST - Current-catalog correction and adaptive MPC recovery status
+
+- The fixed current catalog remains **30/48 passed, 18/48 completed failures,
+  0/48 not-run**. Its failure-class breakdown is 9 terminal-position-error
+  failures, 8 simulation timeouts, and 1 `adaptive_mpc` native
+  `simulate_failed` record. The frozen historical G3 snapshot remains
+  **28/48 passed, 20/48 failed** and is not overwritten.
+- `pole_placement_luenberger` is no longer a current CheckModel failure: its
+  2026-08-02 current-session CheckModel passed with 0 errors and one unit
+  metadata warning, followed by a 50 s result with 25,001 finite samples,
+  terminal error `402.1409427651827 m`, and RMSE `63.81822564113234 m`.
+  It is now a current terminal-error failure. Evidence:
+  `Results/mworks_live_gate/failed18_recovery_20260802/pole_placement_reopen/simulation_50s/POLE_PLACEMENT_SIMULATION_50S.json`.
+- `adaptive_mpc` received a narrow adapter-local velocity-reference
+  conditioning patch. The current GUI sentinel was clean, but final-source
+  MWORKS reload timed out after 300 s; no final CheckModel, 50 s result,
+  terminal metric, or catalog pass-count change is claimed. Evidence:
+  `Results/mworks_live_gate/failed18_recovery_20260803/adaptive_mpc/ADAPTIVE_MPC_RECOVERY_20260803.json`.
+- Reporting keeps the evidence layers separate: 48 catalog/run-audit entries,
+  48 structure images, and 0/48 current-source-bound per-controller result
+  images are different counts. This update changes Markdown status only; Word
+  outputs are intentionally untouched.
 
 ## 2026-07-27 CST - Current Snapshot
 
-`Docs/Workflows/mainline_operations_board.md` is the only current-task
-selector. Its active task is the current-root MWORKS evidence regeneration;
-this file does not select a competing task.
+This 2026-07-27 snapshot is historical evidence only. It does not select a
+current task or authorize the MWORKS evidence-regeneration work below.
 
 - The atomic model-library migration is statically complete. The canonical
   eight-layer root is `Models/MoSimQuadrotorModel/package.mo`; the root

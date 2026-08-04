@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "coordinating_thread_machine_readable_index",
+  "status": "task_local_machine_readable_index",
   "updated_at": "2026-07-24",
   "purpose": "Machine-readable companion to Docs/Index/capability_index.md. It routes agents to existing surfaces, skills, scripts, workflows, and checkers. It does not grant authority.",
   "authority_model": "router_not_authority",
@@ -19,7 +19,7 @@
       "family": "codex_threading",
       "use_when": [
         "explicit legacy cleanup, audit, or historical packet review is requested",
-        "current coordinating-thread MoSim work must not select this as the execution route"
+        "current task-local MoSim work must not select this as the execution route"
       ],
       "owner_docs": [
         "Config/protocol/communication_contract.md",
@@ -33,7 +33,7 @@
       "stop_actions": [
         "do_not_treat_native_send_success_as_task_success",
         "do_not_remote_steer_new_work_while_critical_task_runs_without_authority",
-        "do_not_use_for_current_coordinating_thread_engineering_work"
+        "do_not_use_for_current_task_local_engineering_work"
       ],
       "evidence_gates": [
         "dispatch_ticket",
@@ -53,7 +53,7 @@
       "family": "codex_threading",
       "use_when": [
         "explicit legacy cleanup, audit, or historical packet review is requested",
-        "current coordinating-thread MoSim work must not select this as the execution route"
+        "current task-local MoSim work must not select this as the execution route"
       ],
       "owner_docs": [
         "AGENTS.md",
@@ -64,7 +64,7 @@
       ],
       "stop_actions": [
         "do_not_create_fork_archive_or_rename_visible_threads_without_pmo_or_user_approval",
-        "do_not_use_for_current_coordinating_thread_engineering_work"
+        "do_not_use_for_current_task_local_engineering_work"
       ],
       "evidence_gates": [
         "thread_registry_entry",
@@ -82,7 +82,7 @@
       "family": "codex_threading",
       "use_when": [
         "independent bounded research, review, inspection, disjoint implementation, or verification would materially benefit from parallel work",
-        "the coordinating thread can define separate ownership and an integration point"
+        "the current task can define separate ownership and an integration point"
       ],
       "owner_docs": [
         "AGENTS.md",
@@ -113,7 +113,7 @@
       "family": "automation",
       "use_when": [
         "explicit legacy cleanup, audit, or historical packet review is requested",
-        "current coordinating-thread MoSim work must not select this as the execution route"
+        "current task-local MoSim work must not select this as the execution route"
       ],
       "owner_docs": [
         "Docs/Cache/agent_legacy/legacy_coagent_cleanup_plan_20260624.md"
@@ -125,7 +125,7 @@
       "stop_actions": [
         "do_not_rely_on_target_thread_automation_to_interrupt_a_busy_or_wedged_target",
         "do_not_silently_rewrite_pmo_policy",
-        "do_not_use_for_current_coordinating_thread_engineering_work"
+        "do_not_use_for_current_task_local_engineering_work"
       ],
       "evidence_gates": [
         "patrol_packet_or_board_update",
@@ -321,7 +321,7 @@
       "display_name": "Current Sunray ROS1, Gazebo, PX4, MAVROS, RViz, and MID360 review",
       "family": "sunray_ros1",
       "use_when": [
-        "current P0 ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl minimum big system is in scope",
+        "the current user explicitly scopes ROS1 Sunray/Gazebo/PX4/MAVROS/px4ctrl review",
         "current Sunray150 takeoff hover land, figure-8, trajectory, or Gazebo Classic review is in scope",
         "current real MID360 PointCloud2, trajectory, map, frame, or RViz review is in scope"
       ],

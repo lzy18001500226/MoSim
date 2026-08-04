@@ -1,80 +1,67 @@
 # New Conversation Context
 
-> Compact orientation for a fresh MoSim task. It is not a task ledger, a
-> runtime-history dump, or an authorization to start a simulator.
+> Task-neutral startup orientation for a fresh or resumed MoSim conversation.
+> This file is not a task ledger, status board, authorization, or runtime
+> history dump.
 
-Status: current startup context, 2026-07-27 CST.
+Status: task-local startup rules, 2026-08-04 CST.
 
 ## 1. Read Order
 
 ```text
 1. AGENTS.md
 2. Docs/Workflows/new_conversation_context.md
-3. Docs/Workflows/mainline_operations_board.md
-4. Only the topic-specific workflow, skill, design file, source, or result
-   needed for the requested action
+3. Only the topic-specific workflow, skill, design file, source, or result
+   required by the current user's direct request
 ```
 
-Do not bulk-load legacy AgentOS material, raw chat/session dumps, reference
-corpora, or old result narratives during ordinary work.
+Do not read `Docs/Workflows/mainline_operations_board.md` as part of startup.
+It is a retired compatibility path containing historical project status. It
+does not select work, identify a current P0, or grant permission. Read it only
+for an explicit status or historical audit request.
 
-## 2. What This Repository Is
+## 2. Current Conversation Owns Its Task
 
-MoSim is the current A8 quadrotor control and simulation project. Its formal
-controller/model evidence is MWORKS; its current runtime evidence lane is
-ROS1/Sunray/Gazebo Classic/PX4/MAVROS/px4ctrl with RViz review. UE, QGC, Flight
-Console, and Model Studio are display or operation surfaces, not control-loop
-truth.
+- There is no global MoSim conversation mainline or shared active task.
+- Each conversation starts from its newest direct user instruction.
+- A task ID, thread ID, owner label, board entry, `PROGRESS.md` line, memory
+  note, or prior conversation is background only and never an execution route.
+- After context compaction or resume, recover the current user's latest request
+  first. If it is missing or unclear, stop and ask rather than selecting a
+  different task from the repository.
+- Do not read, message, dispatch to, or modify another conversation unless the
+  current user explicitly asks for that exact operation.
+- Do not put a live assignment, blocker, next gate, or conversation ID into
+  this startup file. Those belong in a task-local document or result packet.
 
-`Docs/CoSim/` is a future, multi-vehicle platform blueprint. Its three-phase
-roadmap remains valid future work and must not be collapsed into the current
-competition milestone.
+## 3. Project Orientation
 
-### 2.1 User-Assigned Work Ownership
+MoSim is the A8 quadrotor control and simulation project. MWORKS/Sysplorer/
+Syslab is the formal controller/model evidence authority. The declared runtime
+evidence lane is ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS / px4ctrl
+with RViz review. UE, QGC, Flight Console, and Model Studio are display or
+operation surfaces and do not replace those authorities.
 
-The current user assignment is intentionally split across conversations:
+`Docs/CoSim/` is a future multi-vehicle platform blueprint. Its roadmap is
+reference material, not a task assignment for a new conversation.
 
-```text
-This coordinating thread:
-  MWORKS controller/model/evidence work
-  -> later MoSim Studio APP work
+## 4. Structure Rules
 
-Separate QGC/Gazebo conversation:
-  QGC, ROS1/Gazebo/PX4/MAVROS runtime, Factory maps, sensors, and live runs
-```
-
-Do not infer ownership from a technology's authority boundary. A MWORKS/APP
-thread may read a completed runtime record for a factual handoff, but must not
-start, modify, diagnose, or extend the QGC/Gazebo line unless the user explicitly
-reassigns it. A direct user scope assignment overrides an older broad
-"current runtime lane" statement.
-
-## 3. Current Structure Rules
-
-- The atomic Modelica-root migration is complete: load only
-  `Models/MoSimQuadrotorModel/package.mo` as the project-owned root. Nested
-  `package.mo` files are namespaces, not independent project roots.
-- The broad directory refactor in
-  `Docs/Workflows/project_structure_refactor.md` remains a user-frozen design
-  reference. Do not move models, configs, scripts, results, UE projects, or
-  references unless the user explicitly reopens that refactor. The root-level
-  `Scripts/cmd/` launcher organization is a scoped entrypoint cleanup and does not
-  execute the frozen plan.
-- Put new evidence in `Results/`; put stable design in `Docs/Design/`; put
-  repeatable operating procedures in `Docs/Workflows/`.
+- Load the project-owned Modelica root only from
+  `Models/MoSimQuadrotorModel/package.mo`.
+- Put new evidence in `Results/`, stable design in `Docs/Design/`, and
+  repeatable procedures in `Docs/Workflows/`.
+- Keep historical plans, migration notes, and old task ledgers under
+  `Docs/Cache/`; they are not ordinary startup context.
 - Do not create a new workflow, package root, smoke test, or progress document
-  merely to record routine work.
+  merely to narrate routine work.
 
-## 4. Work Method
+## 5. Task-Local Work Method
 
-For a non-trivial task: name the local goal, inspect the smallest owner set,
-perform the smallest meaningful check, keep evidence in its normal project
-path, and update documentation only when a reusable rule or entry point changes.
-Use the current board for the next action and `Docs/Design/架构.md` for authority
-boundaries.
+For non-trivial work: state the local goal from the user's request, inspect the
+smallest relevant owner set, perform the smallest meaningful check, preserve
+evidence in its normal project path, and update documentation only when a
+reusable rule or entry point changes.
 
-## 5. Legacy Material
-
-Historical AgentOS, old task ledgers, one-off plans, and session migration
-records live under `Docs/Cache/`. Consult them only for explicit trace-back or
-cleanup work; they are not routine startup context.
+Topic workflows describe procedures and stop conditions. They do not create
+priority, assign another conversation, or authorize work by themselves.

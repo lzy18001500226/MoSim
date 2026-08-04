@@ -192,7 +192,15 @@ def check_paths() -> dict:
 
 
 def check_reference_index() -> dict:
-    return run([sys.executable, "Scripts/reference/check_reference_index.py", "--strict"], timeout=30)
+    return run(
+        [
+            sys.executable,
+            "Scripts/reference/check_reference_index.py",
+            "--strict",
+            "--include-untracked",
+        ],
+        timeout=30,
+    )
 
 
 def check_py_compile() -> dict:
