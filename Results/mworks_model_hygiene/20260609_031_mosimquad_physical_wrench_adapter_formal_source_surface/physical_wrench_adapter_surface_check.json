@@ -1,11 +1,11 @@
 {
   "schema": "mosim.mworks.canonical_dynamics_surface_check.v2",
-  "status": "failed_static",
+  "status": "passed_static",
   "static_only": true,
   "live_mworks_touched": false,
   "mworks_window_evidence_touched": false,
-  "formal_target": "MoSimQuadrotorModel.Dynamics.PhysicalWrenchAdapter",
-  "formal_source": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchAdapter.mo",
+  "formal_target": "MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter",
+  "formal_source": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo",
   "retired_predecessor": {
     "class_name": "PhysicalWrenchAdapter",
     "file_name": "Sunray150PhysicalWrenchFrameAdapter.mo",
@@ -22,8 +22,8 @@
       "present": true
     },
     {
-      "anchor": "WrapperSurface wrapper;",
-      "present": false
+      "anchor": "WrapperSurface wrapper(",
+      "present": true
     },
     {
       "anchor": "Modelica.Mechanics.MultiBody.Forces.WorldForceAndTorque forceAndTorque(",
@@ -54,22 +54,15 @@
     {
       "anchor": "model WrapperSurface",
       "present": true,
-      "source": "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
+      "source": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
       "label": "wrapper"
     },
     {
       "anchor": "motor_order_gate_error =",
       "present": true,
-      "source": "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
+      "source": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
       "label": "wrapper"
     }
   ],
-  "findings": [
-    {
-      "severity": "error",
-      "code": "canonical_anchor_missing",
-      "message": "missing canonical source anchor 'WrapperSurface wrapper;'",
-      "target": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchAdapter.mo"
-    }
-  ]
+  "findings": []
 }

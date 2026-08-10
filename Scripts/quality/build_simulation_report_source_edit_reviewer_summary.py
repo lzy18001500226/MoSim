@@ -2,7 +2,7 @@
 """Build a reviewer summary for simulation-report source edit previews.
 
 The summary groups non-applying preview snippets by impact, evidence inputs,
-and review questions. It never edits Docs/simulation_report.md.
+and review questions. It never edits Docs/报告/仿真分析报告_正文骨架.md.
 """
 
 from __future__ import annotations
@@ -166,7 +166,7 @@ def build_summary(preview_path: Path, sequence_path: Path, application_plan_path
         ],
         "claim_boundary": [
             "This summary is a reviewer aid only.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not approve preview snippets.",
             "It does not apply report-source edits.",
             "It does not export PDFs/video or write PMO final acceptance.",

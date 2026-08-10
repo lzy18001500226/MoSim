@@ -19,9 +19,7 @@ This file is not part of ordinary startup. Start ordinary MoSim work with:
 ```text
 1. AGENTS.md
 2. Docs/Workflows/new_conversation_context.md
-3. Docs/Workflows/mainline_operations_board.md
-4. Docs/Workflows/single_thread_operating_model.md when operating mode is unclear
-5. The topic-specific workflow, skill, design doc, source file, or result bundle
+3. The topic-specific workflow, skill, design doc, source file, or result bundle
 ```
 
 Use this index only when a task explicitly needs historical recovery, old
@@ -41,13 +39,13 @@ When sources disagree, use this order:
 1. Current project files, manifests, scripts, model files, and test output.
 2. Current formal design/workflow docs.
 3. Result/evidence bundles and manual-review packets.
-4. Current `mainline_operations_board.md` and newest active `PROGRESS.md`
-   entries. `PROGRESS.md` is not a full transcript or recovery ledger.
+4. Task-local result and status files named by the current user's request.
+   `PROGRESS.md` and the retired board are historical hints only.
 5. Cache audits under Docs/Cache/session_memory_migration/.
 6. Old chat/session memory.
 ```
 
-## 2. Current Mainline
+## 2. Technical Evidence Architecture (Not Task Routing)
 
 The current MoSim technical mainline is:
 
@@ -56,7 +54,8 @@ MWORKS/Sysplorer/Syslab
   -> formal dynamics, controller design, generated C/C++ controller runtime,
      truth, metrics, and report evidence
 Sunray ROS1 / Gazebo Classic / RViz
-  -> current single-thread runtime review lane for assembled Sunray150,
+  -> current runtime review lane for assembled Sunray150; task execution remains
+     local to the conversation,
      PX4/MAVROS/px4ctrl, MID360, project-local FAST-LIO, Diff-Planner,
      point-cloud/local-map review, and MWORKS-generated controller regression
 PX4 + Gazebo
@@ -72,8 +71,8 @@ ROS2 / RViz2 / PX4 x500
 
 Legacy agent runtime and WeChat/gateway material are not current technical
 mainline layers. They are historical/reference only; current notification is
-sparse Chinese email, and current task coordination is the single active Codex
-thread.
+sparse Chinese email, and conversation task coordination is local to each
+conversation. There is no shared execution queue.
 
 Do not resume the rejected toy route:
 
@@ -102,7 +101,7 @@ MWORKS STL/runtime animation as UE vehicle route
 | Controller model library | Many Sysblock/equation controller models exist; claims require current check/simulation and graphical counterpart status | `Docs/Workflows/build_sysblock_graphical_controller.md`, `Docs/Workflows/add_controller.md` | `Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/`, `Models/MoSimQuadrotorModel/Experiment/Templates/Official/` | assuming every model file has current verified performance evidence |
 | Official/robustness scenario matrix | Scenario YAMLs cover official examples, robustness, rotor-loss, wind gust, mass perturbation, planning, formation, and system faults | `Docs/Workflows/run_simulation.md`, `Docs/Workflows/produce_simulation_evidence.md` | `Config/scenarios/`, `Scripts/mworks/run_mworks_batch.py`, `Scripts/mworks/run_mworks_scenario.py` | reporting scenario completion without source/quality labels |
 | Metrics and report evidence | Metrics, figures, replay, and report assets are structured and source-labeled; evidence bundles are required for performance claims | `Docs/Design/架构/03_测试调参与证据/测试与评价.md`, `Docs/Design/架构/01_控制器平台/控制体系总览.md`, `Docs/Workflows/calc_metrics.md`, `Docs/Workflows/generate_report_figures.md` | `Scripts/results/`, `Scripts/quality/audit_evidence_bundle.py`, `Results/*/*/*/metrics/` | using pretty plots or replay HTML as proof without raw/source/quality bundle |
-| Simulation report and evidence audit | Current report contains the historical official, robustness, planning, Sysblock, and quality-gate narrative; re-read result metrics before updating conclusions | `Docs/simulation_report.md`, `Docs/user_manual.md`, `Docs/Workflows/produce_simulation_evidence.md` | `Results/test_reports/evidence_bundle_audit_20260515.md`, `Results/test_reports/evidence_bundle_audit_20260515.json`, `Results/人工审核清单.csv`, `Docs/Cache/session_memory_migration/02_round2_review/round2_core_competition_report_docs_memory_20260604.md` | treating old report tables as current after scenario/model changes without re-audit |
+| Simulation report and evidence audit | Current report contains the historical official, robustness, planning, Sysblock, and quality-gate narrative; re-read result metrics before updating conclusions | `Docs/报告/仿真分析报告_正文骨架.md`, `Docs/报告/用户手册_正文骨架.md`, `Docs/Workflows/produce_simulation_evidence.md` | `Results/test_reports/evidence_bundle_audit_20260515.md`, `Results/test_reports/evidence_bundle_audit_20260515.json`, `Results/人工审核清单.csv`, `Docs/Cache/session_memory_migration/02_round2_review/round2_core_competition_report_docs_memory_20260604.md` | treating old report tables as current after scenario/model changes without re-audit |
 | Official MWORKS docs conversion | Converted/scanned local MWORKS docs live under the current `Docs/MworksDocs/` path and should be entered through indexes | `Docs/Index/doc_index.md`, `Docs/Index/api_index.md`, `Docs/MworksDocs/README.md` | `Docs/MworksDocs/scan/relevant_index.md`, `Docs/MworksDocs/converted/转换索引.md`, `Docs/MinerU/mineru_precise_api.md` | using stale legacy Docs/Mworks paths; loading large docs before checking indexes |
 | Test and quality gates | Tests are split by result family and script family; quality gates own whether a run is pass, smoke-only, or needs iteration | `Docs/Workflows/run_tests.md`, `Docs/Workflows/regression_test.md`, `Docs/Workflows/pre_submit_check.md`, `Docs/Workflows/code_review.md` | `Scripts/tests/`, `Scripts/quality/`, `Scripts/results/evaluate_result_quality.py`, `Docs/Cache/session_memory_migration/02_round2_review/round2_core_competition_report_docs_memory_20260604.md` | calling a runnable script or model check sufficient proof without targeted tests/quality status |
 | Planning and trajectory generation | Planning is for task trajectories and must be trackability-aware; global UE truth is validation oracle, not planner input | `Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`, `Docs/Design/架构/02_感知定位与规划集群/FASTLIO定位闭环.md`, `Docs/Workflows/unreal_renderer.md#native-map-and-point-cloud-windows` | `Scripts/planning/`, `Config/planners/`, `Config/scenarios/planning/` | planning from full hidden global truth; geometry-only path success without control tracking |

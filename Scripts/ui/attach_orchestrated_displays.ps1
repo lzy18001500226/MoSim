@@ -18,6 +18,72 @@ $ProcessFile = Join-Path $SessionDir "DISPLAY_PROCESSES.json"
 $StatusFile = Join-Path $SessionDir "DISPLAY_STATUS.json"
 New-Item -ItemType Directory -Force -Path $SessionDir | Out-Null
 
+function Get-UnixEpochNanoseconds {
+    return [Int64](([DateTimeOffset]::UtcNow.Ticks - [DateTimeOffset]::UnixEpoch.Ticks) * 100)
+}
+
+function Get-WslToWindowsClockCalibration {
+    [Int64]$maximumCaptureWindowNs = 500000000
+    $processInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $processInfo.FileName = "wsl.exe"
+    $processInfo.Arguments = '-d Ubuntu-20.04 -- bash -lc "date +%s%N"'
+    $processInfo.UseShellExecute = $false
+    $processInfo.RedirectStandardOutput = $true
+    $processInfo.RedirectStandardError = $true
+
+    $process = New-Object System.Diagnostics.Process
+    $process.StartInfo = $processInfo
+    try {
+        [Int64]$receiverCaptureStartNs = Get-UnixEpochNanoseconds
+        [void]$process.Start()
+        $sourceTimestampTask = $process.StandardOutput.ReadLineAsync()
+        if (-not $sourceTimestampTask.Wait(30000)) {
+            throw "wsl_clock_timestamp_timeout"
+        }
+        $sourceTimestampText = $sourceTimestampTask.Result
+        [Int64]$receiverCaptureEndNs = Get-UnixEpochNanoseconds
+        if (-not $process.WaitForExit(30000)) {
+            throw "wsl_clock_process_exit_timeout"
+        }
+        if ($process.ExitCode -ne 0) {
+            throw "wsl_clock_process_exit_$($process.ExitCode)"
+        }
+
+        [Int64]$sourceTimestampNs = 0
+        if (-not [Int64]::TryParse($sourceTimestampText, [ref]$sourceTimestampNs) -or $sourceTimestampNs -le 0) {
+            throw "wsl_clock_timestamp_invalid"
+        }
+        [Int64]$captureWindowNs = $receiverCaptureEndNs - $receiverCaptureStartNs
+        [Int64]$midpointCaptureNs = $receiverCaptureStartNs + [Int64]($captureWindowNs / 2)
+        [Int64]$offsetNs = $midpointCaptureNs - $sourceTimestampNs
+        if ([Math]::Abs([double]$offsetNs) -gt 60000000000) {
+            throw "wsl_windows_clock_offset_out_of_range"
+        }
+        [bool]$oneWayLatencyUsable = $captureWindowNs -gt 0 -and $captureWindowNs -le $maximumCaptureWindowNs
+
+        return [pscustomobject]@{
+            schema = "mosim.ue_cross_host_clock_calibration.v1"
+            status = if ($oneWayLatencyUsable) { "bounded" } else { "unavailable" }
+            source_clock = "wsl_unix_epoch_ns"
+            receiver_clock = "windows_unix_epoch_ns"
+            source_timestamp_unix_ns = [string]$sourceTimestampNs
+            receiver_capture_start_unix_ns = [string]$receiverCaptureStartNs
+            receiver_capture_end_unix_ns = [string]$receiverCaptureEndNs
+            clock_capture_window_ns = [string]$captureWindowNs
+            maximum_clock_offset_error_ns = [string][Int64][Math]::Ceiling([double]$captureWindowNs / 2.0)
+            maximum_accepted_capture_window_ns = [string]$maximumCaptureWindowNs
+            midpoint_offset_estimate_ns = [string]$offsetNs
+            source_to_receiver_clock_offset_ns = if ($oneWayLatencyUsable) { [string]$offsetNs } else { $null }
+            one_way_latency_usable = $oneWayLatencyUsable
+            unavailable_reason = if ($oneWayLatencyUsable) { "" } else { "clock_capture_window_exceeds_bound" }
+            calibration_method = "wsl_windows_stdout_bracket_midpoint_v2"
+            captured_at_unix = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds() / 1000.0
+        }
+    } finally {
+        $process.Dispose()
+    }
+}
+
 if ($null -eq ('MoSim.NativeWindow' -as [type])) {
     Add-Type @'
 using System;
@@ -275,27 +341,51 @@ if ($Display -contains "unreal") {
         $ueMetricsWsl = "$RootWsl/Results/ui_platform/orchestrator_runs/$RunId/observability/gazebo_ue_sender.json"
         $ueReceiverMetrics = Join-Path $RunDir "observability\gazebo_ue_receiver.json"
         $ueFrameMetrics = Join-Path $RunDir "observability\ue_frame_timing.json"
-        Start-TrackedProcess "unreal_bridge" "wsl.exe" @(
-            "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper, "unreal_bridge", $hostAddress, $SessionId,
-            $RunId, $ueMetricsWsl
-        ) "unreal_bridge"
-        $editor = "D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe"
-        $project = Join-Path $Root "UE5\MoSimSceneLibrary\MoSimSceneLibrary.uproject"
-        if ((Test-Path -LiteralPath $editor) -and (Test-Path -LiteralPath $project)) {
-            $ueArgs = @(
-                $project, "-game", "-windowed", "-ResX=1440", "-ResY=810", "-NoSplash",
-                "/Game/Maps/Demonstration?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode",
-                "-MoSimSimulationReview", "-MoSimDayReview", "-MoSimPlaybackActorCount=1",
-                "-MoSimPlaybackBaseUdpPort=5005", "-MoSimFollowPlaybackCamera",
-                "-MoSimFollowCameraBackCm=231.25", "-MoSimFollowCameraRightCm=0",
-                "-MoSimFollowCameraUpCm=95", "-MoSimFollowCameraLocationInterpSpeed=0",
-                "-MoSimFollowCameraRotationInterpSpeed=0", "-MoSimNoReviewCollision",
-                "-MoSimObservabilityRunId=$RunId",
-                "-MoSimUeReceiverMetrics=$ueReceiverMetrics", "-MoSimUeFrameMetrics=$ueFrameMetrics"
-            )
-            Start-TrackedProcess "unreal" $editor $ueArgs "unreal"
+        $clockCalibrationPath = Join-Path $SessionDir "UE_CLOCK_CALIBRATION.json"
+        try {
+            $clockCalibration = Get-WslToWindowsClockCalibration
+        } catch {
+            $clockCalibration = [pscustomobject]@{
+                schema = "mosim.ue_cross_host_clock_calibration.v1"
+                status = "unavailable"
+                one_way_latency_usable = $false
+                unavailable_reason = "clock_capture_failed:$($_.Exception.Message)"
+                calibration_method = "wsl_windows_stdout_bracket_midpoint_v2"
+            }
+        }
+        $clockCalibration | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $clockCalibrationPath -Encoding utf8
+        $clockOffsetArgument = if ($clockCalibration.one_way_latency_usable) {
+            [string]$clockCalibration.source_to_receiver_clock_offset_ns
         } else {
-            $results += [pscustomobject]@{ display = "unreal"; state = "blocked"; reason = "unreal_runtime_missing" }
+            "none"
+        }
+        try {
+            Start-TrackedProcess "unreal_bridge" "wsl.exe" @(
+                "-d", "Ubuntu-20.04", "--", "bash", $DisplayHelper, "unreal_bridge", $hostAddress, $SessionId,
+                $RunId, $ueMetricsWsl, $clockOffsetArgument
+            ) "unreal_bridge"
+            $editor = "D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealEditor.exe"
+            $project = Join-Path $Root "UE5\MoSimSceneLibrary\MoSimSceneLibrary.uproject"
+            if ((Test-Path -LiteralPath $editor) -and (Test-Path -LiteralPath $project)) {
+                $ueArgs = @(
+                    $project, "-game", "-windowed", "-ResX=1440", "-ResY=810", "-NoSplash",
+                    "/Game/Maps/Demonstration?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode",
+                    "-MoSimSimulationReview", "-MoSimDayReview", "-MoSimPlaybackActorCount=1",
+                    "-MoSimPlaybackBaseUdpPort=5005", "-MoSimFollowPlaybackCamera",
+                    "-MoSimFollowCameraBackCm=231.25", "-MoSimFollowCameraRightCm=0",
+                    "-MoSimFollowCameraUpCm=95", "-MoSimFollowCameraLocationInterpSpeed=0",
+                    "-MoSimFollowCameraRotationInterpSpeed=0", "-MoSimNoReviewCollision",
+                    "-MoSimLiveTrajectoryTrail",
+                    "-MoSimRequireLiveStateMirror",
+                    "-MoSimObservabilityRunId=$RunId",
+                    "-MoSimUeReceiverMetrics=$ueReceiverMetrics", "-MoSimUeFrameMetrics=$ueFrameMetrics"
+                )
+                Start-TrackedProcess "unreal" $editor $ueArgs "unreal"
+            } else {
+                $results += [pscustomobject]@{ display = "unreal"; state = "blocked"; reason = "unreal_runtime_missing" }
+            }
+        } catch {
+            $results += [pscustomobject]@{ display = "unreal"; state = "blocked"; reason = "unreal_display_launch_failed:$($_.Exception.Message)" }
         }
     }
 }

@@ -61,6 +61,7 @@ Item {
     property var    _vehicleID
     property bool   _triggerSubmit
     property bool   _resetRegisterFlightPlan
+    property bool   _realtimePlanningGoalOnClick:       false
     property string _appliedOperatorMapIdentity: ""
 
     readonly property var       _layers:                    [_layerMission, _layerGeoFence, _layerRallyPoints]
@@ -96,6 +97,27 @@ Item {
 
     function factoryMissionPublicationBlockReason() {
         return qsTr("工厂二维图仅用于任务草案编辑；世界坐标到经纬度的往返校验尚未通过，当前禁止上传至飞控。")
+    }
+
+    function clearRealtimePlanningGoalSelection() {
+        _realtimePlanningGoalOnClick = false
+        realtimePlanningGoalAction.checked = false
+    }
+
+    function realtimePlanningGoalStatusText() {
+        var status = mosimOperator.realtimePlanningGoalStatus || ({})
+        var state = String(status.state || "")
+        if (state === "ready")
+            return qsTr("实时目标桥接：就绪")
+        if (state === "submitted")
+            return qsTr("实时目标桥接：已提交")
+        if (state === "awaiting_subscriber")
+            return qsTr("实时目标桥接：等待规划器订阅")
+        if (state === "forwarded")
+            return qsTr("实时目标桥接：已转发")
+        if (state === "rejected")
+            return qsTr("实时目标桥接：已拒绝")
+        return qsTr("实时目标桥接：未就绪")
     }
 
 
@@ -460,6 +482,24 @@ Item {
                 z: QGroundControl.zOrderWidgets
             }
 
+            Column {
+                anchors.left: factoryPlanMapScale.left
+                anchors.bottom: factoryPlanMapScale.top
+                anchors.bottomMargin: _toolsMargin
+                spacing: _toolsMargin
+                z: QGroundControl.zOrderWidgets
+                visible: mosimOperator.realtimePlanningGoalAvailable
+
+                QGCLabel {
+                    text: _root.realtimePlanningGoalStatusText()
+                }
+
+                QGCButton {
+                    text: qsTr("复制实时目标桥接命令")
+                    onClicked: mosimOperator.copyRealtimePlanningGoalBridgeCommand()
+                }
+            }
+
             Connections {
                 target: mosimOperator
                 function onStateChanged() {
@@ -481,8 +521,19 @@ Item {
                     return
                 }
                 var coordinate = editorMap.toCoordinate(Qt.point(mouse.x, mouse.y), false /* clipToViewPort */)
+                var selectedAltitude = Number(coordinate.altitude)
+                if (!isFinite(selectedAltitude))
+                    selectedAltitude = 0.0
                 coordinate.latitude = coordinate.latitude.toFixed(_decimalPlaces)
                 coordinate.longitude = coordinate.longitude.toFixed(_decimalPlaces)
+                if (_realtimePlanningGoalOnClick) {
+                    mosimOperator.submitRealtimePlanningGoal(
+                                Number(coordinate.latitude),
+                                Number(coordinate.longitude),
+                                selectedAltitude)
+                    _root.clearRealtimePlanningGoalSelection()
+                    return
+                }
                 coordinate.altitude = coordinate.altitude.toFixed(_decimalPlaces)
                 if (_utmspEnabled) {
                     QGroundControl.utmspManager.utmspVehicle.updateLastCoordinates(coordinate.latitude, coordinate.longitude)
@@ -671,10 +722,10 @@ Item {
             readonly property int fileButtonIndex:      0
             readonly property int takeoffButtonIndex:   1
             readonly property int waypointButtonIndex:  2
-            readonly property int roiButtonIndex:       3
-            readonly property int patternButtonIndex:   4
-            readonly property int landButtonIndex:      5
-            readonly property int centerButtonIndex:    6
+            readonly property int roiButtonIndex:       4
+            readonly property int patternButtonIndex:   5
+            readonly property int landButtonIndex:      6
+            readonly property int centerButtonIndex:    7
 
             property bool _isRallyLayer:    _editingLayer == _layerRallyPoints
             property bool _isMissionLayer:  _editingLayer == _layerMission
@@ -710,6 +761,25 @@ Item {
                         enabled:            toolStrip._isRallyLayer ? true : _missionController.flyThroughCommandsAllowed
                         visible:            toolStrip._isRallyLayer || toolStrip._isMissionLayer || toolStrip._isUtmspLayer
                         checkable:          true
+                        onCheckedChanged: {
+                            if (checked)
+                                _root.clearRealtimePlanningGoalSelection()
+                        }
+                    },
+                    ToolStripAction {
+                        id:                 realtimePlanningGoalAction
+                        text:               qsTr("Plan Goal")
+                        iconSource:         "/qmlimages/MapAddMission.svg"
+                        enabled:            mosimOperator.realtimePlanningGoalReady
+                        visible:            mosimOperator.realtimePlanningGoalAvailable
+                        checkable:          true
+                        onCheckedChanged: {
+                            _root._realtimePlanningGoalOnClick = checked
+                            if (checked) {
+                                addWaypointRallyPointAction.checked = false
+                                _addROIOnClick = false
+                            }
+                        }
                     },
                     ToolStripAction {
                         text:               _missionController.isROIActive ? qsTr("Cancel ROI") : qsTr("ROI")
@@ -717,7 +787,11 @@ Item {
                         enabled:            !_missionController.onlyInsertTakeoffValid
                         visible:            toolStrip._isMissionLayer && _planMasterController.controllerVehicle.roiModeSupported
                         checkable:          !_missionController.isROIActive
-                        onCheckedChanged:   _addROIOnClick = checked
+                        onCheckedChanged: {
+                            _addROIOnClick = checked
+                            if (checked)
+                                _root.clearRealtimePlanningGoalSelection()
+                        }
                         onTriggered: {
                             if (_missionController.isROIActive) {
                                 toolStrip.allAddClickBoolsOff()
@@ -1227,7 +1301,7 @@ Item {
                 QGCButton {
                     text:               qsTr("Upload")
                     Layout.fillWidth:   true
-                    enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress && _planMasterController.containsItems
+                    enabled:            !_planMasterController.offline && !_planMasterController.syncInProgress && _planMasterController.containsItems && _root.factoryMissionPublicationAllowed()
                     visible:            !QGroundControl.corePlugin.options.disableVehicleConnection
                     onClicked: {
                         dropPanel.hide()

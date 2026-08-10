@@ -18,6 +18,11 @@
       "has_geofence": true,
       "scenario_path": "Config/scenarios/ui/factory_l2_single_figure8.json"
     },
+    "factory_l2_qgc_realtime_goal_single_v1": {
+      "vehicle_count": 1,
+      "map_type": "factory_known_obstacles",
+      "has_geofence": true
+    },
     "factory_l2_fuel_fixed64_exploration_v1": {
       "vehicle_count": 1,
       "map_type": "factory_unknown_obstacles",
@@ -301,6 +306,34 @@
       },
       "required_for_goal": "Goal 2"
     },
+    "qgc_interactive_goal4_v1": {
+      "source_type": "qgc_realtime_coordinate_input",
+      "provides_reference": ["position"],
+      "reference_rate_hz": 1,
+      "duration_s": 0.0,
+      "continuity_required": {"position": false, "velocity": false, "acceleration": false},
+      "discontinuity_expected": true,
+      "constraints": {"max_velocity_mps": 2.0, "max_acceleration_mps2": 3.0, "max_yaw_rate_radps": 1.0},
+      "required_for_goal": "QGC Diff-Planner interactive target review"
+    },
+    "qgc_realtime_goal_planner_trajectory_v1": {
+      "source_type": "planner_generated_live_goal",
+      "provides_reference": ["position", "velocity", "acceleration", "yaw"],
+      "reference_rate_hz": 100,
+      "duration_s": 600.0,
+      "continuity_required": {"position": true, "velocity": true, "acceleration": true},
+      "constraints": {"max_velocity_mps": 0.6, "max_acceleration_mps2": 0.8, "max_yaw_rate_radps": 1.0},
+      "required_for_goal": "QGC实时目标单机规划闭环"
+    },
+    "rviz_qgc_display_phase1_planner_trajectory_v1": {
+      "source_type": "planner_generated_live_goal",
+      "provides_reference": ["position", "velocity", "acceleration", "yaw"],
+      "reference_rate_hz": 100,
+      "duration_s": 600.0,
+      "continuity_required": {"position": true, "velocity": true, "acceleration": true},
+      "constraints": {"max_velocity_mps": 0.6, "max_acceleration_mps2": 0.8, "max_yaw_rate_radps": 1.0},
+      "required_for_goal": "Phase 1 RViz waypoint planning and QGC same-run trajectory display"
+    },
     "factory_l2_three_uav_obstacle_crossing_v1": {
       "source_type": "multi_uav_formation_reference",
       "provides_reference": ["position", "velocity", "acceleration", "yaw"],
@@ -322,6 +355,13 @@
     "none": {
       "planner_id": "none",
       "owns_mavros_control": false
+    },
+    "diff_planner_interactive_goal4_v1": {
+      "planner_id": "diff_planner_interactive_goal4",
+      "owns_mavros_control": false,
+      "consumes_live_qgc_goal": true,
+      "implementation_status": "source_ready_live_gate_pending",
+      "claim_boundary": "The planner consumes a run-bound live target through the Goal4 adapter. It does not make a QGC request, transport acknowledgement, or review run a planner or flight acceptance result."
     },
     "swarm_formation": {
       "planner_id": "swarm_formation",
@@ -1908,6 +1948,11 @@
       "requires_ue_bridge": true,
       "required_layers": ["mid360_cloud", "actual_trajectory", "uav_body_axes"]
     },
+    "factory_l2_qgc_rviz_planning_v1": {
+      "display_backend": ["qgc", "rviz", "gazebo_gui"],
+      "requires_ue_bridge": false,
+      "required_layers": ["qgc_planned_path", "qgc_actual_track", "rviz_goal_diagnostic"]
+    },
     "rviz_fastlio_map_v1": {
       "display_backend": [
         "rviz",
@@ -1963,6 +2008,16 @@
         "saturation_ratio",
         "state_source_delta"
       ],
+      "requires_truth": true
+    },
+    "qgc_realtime_goal_transport_v1": {
+      "leaderboard_group": "fastlio_px4_ekf_fused",
+      "metrics": ["qgc_goal_forwarded", "planner_future_path_fresh", "qgc_map_actual_track_fresh"],
+      "requires_truth": true
+    },
+    "rviz_qgc_display_phase1_transport_v1": {
+      "leaderboard_group": "fastlio_px4_ekf_fused",
+      "metrics": ["rviz_nav_goal_forwarded", "planner_future_path_fresh", "qgc_map_actual_track_fresh"],
       "requires_truth": true
     },
     "hybrid_z_tracking_metrics_v1": {

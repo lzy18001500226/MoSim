@@ -1,10 +1,9 @@
 # G6 Controller Experiment Execution
 
-> Current execution contract for G6 in
+> Historical/current-task execution contract for G6 in
 > `Docs/Workflows/controller_evidence_closeout.md`. It refines, but does not
 > replace, that G1-G7 workflow; it does not define another G6 or choose the
-> current task. The current task selector is
-> `Docs/Workflows/mainline_operations_board.md`.
+> current task. The current user's direct request must explicitly scope G6.
 
 ## 1. Scope and Claim Boundary
 

@@ -33,6 +33,18 @@
   <arg name="local_update_range_z" default="2.0"/>
   <arg name="use_multipoint" default="false"/>
   <arg name="flight_type" default="1"/>
+  <arg name="uav1_odom_topic" default="/uav1/mavros/local_position/odom"/>
+  <arg name="uav2_odom_topic" default="/uav2/mavros/local_position/odom"/>
+  <arg name="uav3_odom_topic" default="/uav3/mavros/local_position/odom"/>
+  <arg name="uav1_global_pointcloud_topic" default="/uav1/livox_world"/>
+  <arg name="uav2_global_pointcloud_topic" default="/uav2/livox_world"/>
+  <arg name="uav3_global_pointcloud_topic" default="/uav3/livox_world"/>
+  <arg name="uav1_position_cmd_topic" default="/uav1/planner_position_cmd_raw"/>
+  <arg name="uav2_position_cmd_topic" default="/uav2/planner_position_cmd_raw"/>
+  <arg name="uav3_position_cmd_topic" default="/uav3/planner_position_cmd_raw"/>
+  <arg name="uav1_goal_topic" default="/uav1/goal_with_id"/>
+  <arg name="uav2_goal_topic" default="/uav2/goal_with_id"/>
+  <arg name="uav3_goal_topic" default="/uav3/goal_with_id"/>
 
   <include file="$(env PROJECT_ROOT)/Scripts/sunray/diff_planner_single_px4ctrl_goal4.launch">
     <arg name="drone_id" value="0"/>
@@ -61,10 +73,10 @@
     <arg name="local_update_range_x" value="$(arg local_update_range_x)"/>
     <arg name="local_update_range_y" value="$(arg local_update_range_y)"/>
     <arg name="local_update_range_z" value="$(arg local_update_range_z)"/>
-    <arg name="odom_topic" value="/uav1/mavros/local_position/odom"/>
-    <arg name="global_pointcloud_topic" value="/uav1/livox_world"/>
-    <arg name="position_cmd_topic" value="/uav1/planner_position_cmd_raw"/>
-    <arg name="goal_topic" value="/uav1/goal_with_id"/>
+    <arg name="odom_topic" value="$(arg uav1_odom_topic)"/>
+    <arg name="global_pointcloud_topic" value="$(arg uav1_global_pointcloud_topic)"/>
+    <arg name="position_cmd_topic" value="$(arg uav1_position_cmd_topic)"/>
+    <arg name="goal_topic" value="$(arg uav1_goal_topic)"/>
     <arg name="use_multipoint" value="$(arg use_multipoint)"/>
     <arg name="flight_type" value="$(arg flight_type)"/>
   </include>
@@ -97,10 +109,10 @@
       <arg name="local_update_range_x" value="$(arg local_update_range_x)"/>
       <arg name="local_update_range_y" value="$(arg local_update_range_y)"/>
       <arg name="local_update_range_z" value="$(arg local_update_range_z)"/>
-      <arg name="odom_topic" value="/uav2/mavros/local_position/odom"/>
-      <arg name="global_pointcloud_topic" value="/uav2/livox_world"/>
-      <arg name="position_cmd_topic" value="/uav2/planner_position_cmd_raw"/>
-      <arg name="goal_topic" value="/uav2/goal_with_id"/>
+      <arg name="odom_topic" value="$(arg uav2_odom_topic)"/>
+      <arg name="global_pointcloud_topic" value="$(arg uav2_global_pointcloud_topic)"/>
+      <arg name="position_cmd_topic" value="$(arg uav2_position_cmd_topic)"/>
+      <arg name="goal_topic" value="$(arg uav2_goal_topic)"/>
       <arg name="use_multipoint" value="$(arg use_multipoint)"/>
       <arg name="flight_type" value="$(arg flight_type)"/>
     </include>
@@ -134,10 +146,10 @@
       <arg name="local_update_range_x" value="$(arg local_update_range_x)"/>
       <arg name="local_update_range_y" value="$(arg local_update_range_y)"/>
       <arg name="local_update_range_z" value="$(arg local_update_range_z)"/>
-      <arg name="odom_topic" value="/uav3/mavros/local_position/odom"/>
-      <arg name="global_pointcloud_topic" value="/uav3/livox_world"/>
-      <arg name="position_cmd_topic" value="/uav3/planner_position_cmd_raw"/>
-      <arg name="goal_topic" value="/uav3/goal_with_id"/>
+      <arg name="odom_topic" value="$(arg uav3_odom_topic)"/>
+      <arg name="global_pointcloud_topic" value="$(arg uav3_global_pointcloud_topic)"/>
+      <arg name="position_cmd_topic" value="$(arg uav3_position_cmd_topic)"/>
+      <arg name="goal_topic" value="$(arg uav3_goal_topic)"/>
       <arg name="use_multipoint" value="$(arg use_multipoint)"/>
       <arg name="flight_type" value="$(arg flight_type)"/>
     </include>

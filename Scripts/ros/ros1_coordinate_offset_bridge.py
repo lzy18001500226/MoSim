@@ -17,6 +17,11 @@ from sensor_msgs import point_cloud2
 from sensor_msgs.msg import PointCloud2
 from visualization_msgs.msg import Marker, MarkerArray
 
+try:
+    from quadrotor_msgs.msg import PositionCommand
+except ImportError:  # pragma: no cover - only relevant outside a planner ROS overlay.
+    PositionCommand = None
+
 
 class CoordinateOffsetBridge:
     def __init__(self) -> None:
@@ -63,6 +68,11 @@ class CoordinateOffsetBridge:
         elif self.message_type == "cloud":
             self.pub = rospy.Publisher(self.output_topic, PointCloud2, queue_size=10)
             rospy.Subscriber(self.input_topic, PointCloud2, self.on_cloud, queue_size=10)
+        elif self.message_type == "position_cmd":
+            if PositionCommand is None:
+                raise ImportError("quadrotor_msgs.msg.PositionCommand is required for position_cmd mode")
+            self.pub = rospy.Publisher(self.output_topic, PositionCommand, queue_size=50)
+            rospy.Subscriber(self.input_topic, PositionCommand, self.on_position_cmd, queue_size=50)
         elif self.message_type == "marker":
             self.pub = rospy.Publisher(self.output_topic, Marker, queue_size=100)
             rospy.Subscriber(self.input_topic, Marker, self.on_marker, queue_size=100)
@@ -70,7 +80,7 @@ class CoordinateOffsetBridge:
             self.pub = rospy.Publisher(self.output_topic, MarkerArray, queue_size=20)
             rospy.Subscriber(self.input_topic, MarkerArray, self.on_marker_array, queue_size=20)
         else:
-            raise ValueError("~message_type must be pose, odom, cloud, marker, or marker_array")
+            raise ValueError("~message_type must be pose, odom, cloud, position_cmd, marker, or marker_array")
         if self.latch_input_origin and self.message_type not in ("pose", "odom"):
             raise ValueError("~latch_input_origin is supported only for pose or odom messages")
 
@@ -223,6 +233,19 @@ class CoordinateOffsetBridge:
         out.is_dense = msg.is_dense
         self.pub.publish(out)
         self.note(sample, count, self.header_diag(msg, out))
+
+    def on_position_cmd(self, msg: PositionCommand) -> None:
+        out = copy.deepcopy(msg)
+        out.position.x, out.position.y, out.position.z = self.shifted(
+            msg.position.x, msg.position.y, msg.position.z
+        )
+        self.update_header(out)
+        self.pub.publish(out)
+        self.note(
+            [out.position.x, out.position.y, out.position.z],
+            None,
+            self.header_diag(msg, out),
+        )
 
     def shift_marker_pose(self, marker: Marker) -> None:
         marker.pose.position.x, marker.pose.position.y, marker.pose.position.z = self.shifted(

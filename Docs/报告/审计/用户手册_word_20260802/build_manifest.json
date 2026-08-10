@@ -1,13 +1,13 @@
 {
   "source_markdown": "C:\\Users\\HP\\Desktop\\MoSim\\Docs\\报告\\用户手册_正文骨架.md",
-  "source_sha256": "5da3246c1be4259e3a246e222f97a983e6e3c979149cbc677aa78c3317626bf5",
+  "source_sha256": "bbdd247a2837caf98759c2801b8d070646aaa04b289aede09d220bceff926342",
   "template_docx": "C:\\Users\\HP\\Desktop\\MoSim\\Docs\\报告\\国赛论文模版.docx",
   "template_sha256": "8be0bed263cd9ab10d9088855992ed4fa6805ecc03756d2d0c9e02673470d91b",
   "output_docx": "C:\\Users\\HP\\Desktop\\MoSim\\Docs\\报告\\MoSim_用户手册.docx",
-  "output_sha256": "b34b2713afc2337524150210463614a8354cd09e02e07374d9f690a70121f17b",
+  "output_sha256": "861d3b4f61a7cd52c33e584487d313bd3329c1d4180558bb27dfa647a9324a31",
   "title": "基于 MWORKS 的四旋翼位姿控制全链路仿真平台——用户手册",
-  "blocks": 234,
-  "headings": 51,
+  "blocks": 230,
+  "headings": 50,
   "figures": 20,
   "tables": 20,
   "inspection": {

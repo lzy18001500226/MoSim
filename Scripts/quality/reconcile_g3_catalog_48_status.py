@@ -216,6 +216,87 @@ def supplemental_row(catalog_scheme: dict[str, Any], definition: dict[str, Any])
     }
 
 
+def current_override_row(
+    catalog_scheme: dict[str, Any], definition: dict[str, Any], historical_row_value: dict[str, Any]
+) -> dict[str, Any]:
+    """Apply a newer, source-bound 50 s record to a historically mapped catalog row."""
+    source_value = definition.get("run_record")
+    if not isinstance(source_value, str) or not source_value:
+        raise ValueError(f"{catalog_scheme['scheme_id']} override evidence has no run_record")
+    source_path = ROOT / source_value
+    if not source_path.is_file():
+        raise ValueError(f"override run record is missing: {source_value}")
+    record = read_json(source_path)
+    scheme_id = catalog_scheme["scheme_id"]
+
+    expected_model = definition.get("model_name")
+    if not isinstance(expected_model, str) or not expected_model:
+        raise ValueError(f"{scheme_id} override evidence has no model_name")
+    if record.get("model_name") != expected_model:
+        raise ValueError(f"{scheme_id} override model_name does not match the declared formal runner")
+    if record.get("trajectory") != "MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath":
+        raise ValueError(f"{scheme_id} override evidence is not a ClimbPath run")
+
+    check_model = record.get("check_model")
+    simulation_contract = record.get("simulation_contract")
+    native_result = record.get("native_result")
+    metrics = record.get("metrics")
+    if not all(isinstance(value, dict) for value in (check_model, simulation_contract, native_result, metrics)):
+        raise ValueError(f"{scheme_id} override record is missing CheckModel, contract, native result, or metrics")
+    if check_model.get("status") != "pass" or not require_bool(check_model.get("data"), f"{scheme_id}.check_model.data"):
+        raise ValueError(f"{scheme_id} override CheckModel did not pass")
+    if require_number(check_model.get("gui_error_count"), f"{scheme_id}.check_model.gui_error_count") != 0:
+        raise ValueError(f"{scheme_id} override CheckModel has GUI errors")
+    if abs(require_number(simulation_contract.get("start_time_s"), f"{scheme_id}.start_time_s")) > 1e-9:
+        raise ValueError(f"{scheme_id} override must start at 0 s")
+    if abs(require_number(simulation_contract.get("stop_time_s"), f"{scheme_id}.stop_time_s") - 50.0) > 1e-9:
+        raise ValueError(f"{scheme_id} override must target 50 s")
+    for key in ("solver_changed", "parameters_changed", "source_changed"):
+        if require_bool(simulation_contract.get(key), f"{scheme_id}.simulation_contract.{key}"):
+            raise ValueError(f"{scheme_id} override has forbidden {key}")
+    stop_time_s = require_number(native_result.get("time_end_s"), f"{scheme_id}.native_result.time_end_s")
+    if abs(stop_time_s - 50.0) > 1e-9:
+        raise ValueError(f"{scheme_id} override native result did not reach 50 s")
+    sample_count = native_result.get("sample_count")
+    if isinstance(sample_count, bool) or not isinstance(sample_count, int) or sample_count <= 0:
+        raise ValueError(f"{scheme_id} override sample_count must be a positive integer")
+    if not require_bool(native_result.get("finite_series"), f"{scheme_id}.native_result.finite_series"):
+        raise ValueError(f"{scheme_id} override result contains non-finite values")
+    terminal_error_m = require_number(metrics.get("terminal_position_error_m"), f"{scheme_id}.terminal_position_error_m")
+    position_rmse_m = require_number(metrics.get("position_rmse_m"), f"{scheme_id}.position_rmse_m")
+    status = "pass" if terminal_error_m < TERMINAL_ERROR_LIMIT_M else "fail"
+    if definition.get("expected_status") != status:
+        raise ValueError(f"{scheme_id} override status does not match expected_status")
+
+    return {
+        "scheme_id": scheme_id,
+        "display_name_zh": catalog_scheme.get("display_name_zh"),
+        "category": catalog_scheme.get("category"),
+        "status": status,
+        "completion_state": "completed",
+        "evidence_origin": "post_freeze_current_override_record",
+        "historical_g3_controller_id": historical_row_value.get("historical_g3_controller_id"),
+        "runner_class": expected_model,
+        "source_record": repo_path(source_path),
+        "source_record_sha256": sha256_file(source_path),
+        "source_status": "completed",
+        "check_model_status": "passed",
+        "stop_time_s": stop_time_s,
+        "sample_count": sample_count,
+        "terminal_position_error_norm_m": terminal_error_m,
+        "position_rmse_m": position_rmse_m,
+        "failure_class": None if status == "pass" else "terminal_position_error_exceeds_5m",
+        "failure_reasons": []
+        if status == "pass"
+        else [f"terminal position_error_norm {terminal_error_m:.12g} m is not below {TERMINAL_ERROR_LIMIT_M:g} m"],
+        "supersedes_historical_g3_record": {
+            "source_record": historical_row_value.get("source_record"),
+            "failure_class": historical_row_value.get("failure_class"),
+        },
+        "claim_boundary": definition.get("claim_boundary"),
+    }
+
+
 def not_run_row(catalog_scheme: dict[str, Any], definition: dict[str, Any]) -> dict[str, Any]:
     reason = definition.get("reason")
     if not isinstance(reason, str) or not reason:
@@ -264,6 +345,11 @@ def build_status() -> dict[str, Any]:
         "catalog_scheme_id",
         "catalog_current_supplemental_evidence",
     )
+    override_by_catalog = index_unique(
+        alias_map.get("catalog_current_override_evidence", []),
+        "catalog_scheme_id",
+        "catalog_current_override_evidence",
+    )
     missing_by_catalog = index_unique(
         alias_map.get("catalog_only_no_runner"), "catalog_scheme_id", "catalog_only_no_runner"
     )
@@ -302,6 +388,11 @@ def build_status() -> dict[str, Any]:
         else:
             row = not_run_row(catalog_scheme, missing_by_catalog[scheme_id])
             categories["formal_runner_missing"] += 1
+        if scheme_id in override_by_catalog:
+            if row.get("evidence_origin") != "historical_g3_execution":
+                raise ValueError(f"{scheme_id} override must replace a historical G3-mapped current row")
+            row = current_override_row(catalog_scheme, override_by_catalog[scheme_id], row)
+            categories["post_freeze_current_override_record"] += 1
         rows.append(row)
 
     g3_only_ids = set(g3_by_id) - mapped_g3_ids
@@ -345,6 +436,7 @@ def build_status() -> dict[str, Any]:
             "historical_g3_alias_count": categories["historical_g3_alias"],
             "historical_g3_mapped_catalog_count": len(mapped_g3_ids),
             "supplemental_current_record_count": categories["supplemental_current_record"],
+            "post_freeze_current_override_record_count": categories["post_freeze_current_override_record"],
             "formal_runner_missing_count": categories["formal_runner_missing"],
             "historical_g3_only_count": len(historical_g3_only_rows),
             "passed_count": status_counts["pass"],
@@ -389,6 +481,8 @@ def validate_status(status: dict[str, Any]) -> None:
         raise ValueError("historical G3 mapping must account for 41 catalog entries")
     if summary.get("supplemental_current_record_count") != 7:
         raise ValueError("supplemental current evidence must account for exactly seven catalog entries")
+    if summary.get("post_freeze_current_override_record_count") != 2:
+        raise ValueError("two post-freeze current override records must be retained")
     if summary.get("formal_runner_missing_count") != 0:
         raise ValueError("no catalog entry may remain without a FormalRunner")
     if summary.get("historical_g3_only_count") != 7:

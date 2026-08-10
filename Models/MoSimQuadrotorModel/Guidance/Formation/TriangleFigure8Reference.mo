@@ -41,23 +41,23 @@ protected
 
 equation
   elapsed_s = max(0, time - trajectory_start_s);
-  center_position[1] = if time < trajectory_start_s then 0 else
+  center_position[1] = if time < trajectory_start_s then 0 else 
     x_amplitude_m * sin(angular_rate_rad_s * elapsed_s);
-  center_position[2] = if time < trajectory_start_s then 0 else
+  center_position[2] = if time < trajectory_start_s then 0 else 
     y_amplitude_m * sin(2 * angular_rate_rad_s * elapsed_s);
-  center_position[3] = if time < takeoff_duration_s then
+  center_position[3] = if time < takeoff_duration_s then 
     altitude_m * time / takeoff_duration_s else altitude_m;
-  center_velocity[1] = if time < trajectory_start_s then 0 else
+  center_velocity[1] = if time < trajectory_start_s then 0 else 
     x_amplitude_m * angular_rate_rad_s * cos(angular_rate_rad_s * elapsed_s);
-  center_velocity[2] = if time < trajectory_start_s then 0 else
+  center_velocity[2] = if time < trajectory_start_s then 0 else 
     2 * y_amplitude_m * angular_rate_rad_s
       * cos(2 * angular_rate_rad_s * elapsed_s);
-  center_velocity[3] = if time < takeoff_duration_s then
+  center_velocity[3] = if time < takeoff_duration_s then 
     altitude_m / takeoff_duration_s else 0;
-  center_acceleration[1] = if time < trajectory_start_s then 0 else
+  center_acceleration[1] = if time < trajectory_start_s then 0 else 
     -x_amplitude_m * angular_rate_rad_s ^ 2
       * sin(angular_rate_rad_s * elapsed_s);
-  center_acceleration[2] = if time < trajectory_start_s then 0 else
+  center_acceleration[2] = if time < trajectory_start_s then 0 else 
     -4 * y_amplitude_m * angular_rate_rad_s ^ 2
       * sin(2 * angular_rate_rad_s * elapsed_s);
   center_acceleration[3] = 0;

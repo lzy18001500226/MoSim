@@ -10,6 +10,7 @@ from src.orchestration.runtime_sidecar_contract import build_operator_runtime_st
 
 
 ROOT = Path(__file__).resolve().parents[2]
+QGC_CUSTOM = ROOT / "src" / "ground_station" / "qgc" / "mosim_extension" / "custom"
 
 
 def _manifest() -> dict[str, object]:
@@ -103,8 +104,8 @@ def test_sidecar_reads_only_same_run_finite_rt1_metrics(tmp_path: Path) -> None:
 
 
 def test_qgc_status_surface_checks_identity_and_marks_missing_metrics_unmeasured() -> None:
-    bridge = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOperatorBridge.cc").read_text(encoding="utf-8")
-    layer = (ROOT / "apps/flight_console/mosim/custom/src/FlyViewCustomLayer.qml").read_text(encoding="utf-8")
+    bridge = (QGC_CUSTOM / "src" / "MoSimOperatorBridge.cc").read_text(encoding="utf-8")
+    layer = (QGC_CUSTOM / "src" / "FlyViewCustomLayer.qml").read_text(encoding="utf-8")
 
     assert "isReadableOperatorRuntimeStatus" in bridge
     assert "operator_runtime_status_identity_mismatch" in bridge

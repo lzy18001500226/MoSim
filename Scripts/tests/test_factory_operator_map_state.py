@@ -7,6 +7,7 @@ import pytest
 
 from Scripts.ui.runtime_sidecar import (
     _canonical_hash,
+    build_live_operator_map_state_or_rejected,
     build_operator_map_state,
     load_operator_map_snapshot,
     project_live_operator_map_frame,
@@ -22,6 +23,7 @@ from src.orchestration.operator_map_state import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
+QGC_CUSTOM = ROOT / "src" / "ground_station" / "qgc" / "mosim_extension" / "custom"
 
 
 def _manifest() -> dict[str, object]:
@@ -431,6 +433,95 @@ def test_live_sidecar_hides_unverified_or_source_mismatched_geometry_without_sto
     assert rejected_vehicles == [{"vehicle_id": "uav1", "state": {"connected": True}}]
 
 
+def test_live_sidecar_rejects_out_of_bounds_geometry_without_extending_actual_tracks() -> None:
+    manifest = _manifest()
+    snapshot = _snapshot()
+    evidence = validate_coordinate_evidence(
+        _coordinate_evidence(manifest),
+        map_snapshot=manifest["operator_map_snapshot"],
+        snapshot_hash=str(manifest["operator_map_snapshot_hash"]),
+    )
+    existing_tracks = append_operator_map_actual_tracks(
+        {},
+        [
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 7.0, "y": -3.0, "z": 1.0},
+                    "position_frame": "mworks_world",
+                },
+            }
+        ],
+        run_id=str(manifest["run_id"]),
+        world_frame="mworks_world",
+        updated_at=10.0,
+    )
+
+    state, retained_tracks = build_live_operator_map_state_or_rejected(
+        manifest=manifest,
+        map_snapshot=snapshot,
+        transport_mode="live_ros1",
+        sequence=5,
+        received_at_unix_s=1_784_000_300.0,
+        source_timestamp_s=42.0,
+        playback_state="live",
+        playback_time_s=None,
+        bag_id="",
+        vehicles=[
+            {
+                "vehicle_id": "uav1",
+                "state": {
+                    "connected": True,
+                    "position": {"x": 1000.0, "y": 0.0, "z": 0.0},
+                    "position_frame": "factory_odom",
+                },
+            }
+        ],
+        task_paths={
+            "expected": {
+                "status": "available",
+                "semantics": "mission_reference",
+                "vehicle_scope": "uav1",
+                "source_topic": "/mosim/reference_path",
+                "frame_id": "factory_odom",
+                "updated_at": 42.0,
+                "points": [
+                    {"x": 1.0, "y": 1.0, "z": 1.0},
+                    {"x": 3.0, "y": 2.0, "z": 1.0},
+                ],
+            },
+            "future": {
+                "status": "available",
+                "semantics": "planner_sampled_future_trajectory",
+                "vehicle_scope": "uav1",
+                "source_topic": "/mosim/future_path",
+                "frame_id": "factory_odom",
+                "updated_at": 42.0,
+                "points": [
+                    {"x": 2.0, "y": 1.0, "z": 1.0},
+                    {"x": 4.0, "y": 3.0, "z": 1.0},
+                ],
+            },
+        },
+        actual_tracks=existing_tracks,
+        coordinate_evidence=evidence,
+    )
+
+    assert state["map_data_status"] == {
+        "state": "rejected",
+        "reason_code": "operator_map_vehicle_position_invalid",
+    }
+    assert state["vehicles"] == [{"vehicle_id": "uav1", "state": {"connected": True}}]
+    assert state["task_paths"]["expected"]["status"] == "available"
+    assert state["task_paths"]["future"]["status"] == "available"
+    assert state["task_paths"]["expected"]["frame_id"] == "mworks_world"
+    assert state["task_paths"]["future"]["frame_id"] == "mworks_world"
+    assert retained_tracks == existing_tracks
+    assert state["actual_tracks"] == existing_tracks
+    validate_operator_map_state(state, manifest=manifest)
+
+
 def test_map_state_can_report_a_display_only_rejection() -> None:
     state = build_operator_map_state(
         manifest=_manifest(),
@@ -454,15 +545,11 @@ def test_map_state_can_report_a_display_only_rejection() -> None:
 
 
 def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() -> None:
-    bridge = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOperatorBridge.cc").read_text(encoding="utf-8")
-    bridge_header = (ROOT / "apps/flight_console/mosim/custom/src/MoSimOperatorBridge.h").read_text(
-        encoding="utf-8"
-    )
-    fly_map = (ROOT / "apps/flight_console/mosim/custom/src/FactoryFlyMap.qml").read_text(encoding="utf-8")
-    plan_view = (ROOT / "apps/flight_console/mosim/custom/src/PlanView.qml").read_text(encoding="utf-8")
-    plan_overlay = (ROOT / "apps/flight_console/mosim/custom/src/FactoryPlanMapOverlay.qml").read_text(
-        encoding="utf-8"
-    )
+    bridge = (QGC_CUSTOM / "src" / "MoSimOperatorBridge.cc").read_text(encoding="utf-8")
+    bridge_header = (QGC_CUSTOM / "src" / "MoSimOperatorBridge.h").read_text(encoding="utf-8")
+    fly_map = (QGC_CUSTOM / "src" / "FactoryFlyMap.qml").read_text(encoding="utf-8")
+    plan_view = (QGC_CUSTOM / "src" / "PlanView.qml").read_text(encoding="utf-8")
+    plan_overlay = (QGC_CUSTOM / "src" / "FactoryPlanMapOverlay.qml").read_text(encoding="utf-8")
 
     assert 'Q_PROPERTY(QVariantMap operatorMap READ operatorMap NOTIFY stateChanged)' in bridge_header
     assert 'Q_PROPERTY(QVariantList operatorMaps READ operatorMaps NOTIFY stateChanged)' in bridge_header
@@ -478,6 +565,12 @@ def test_qgc_uses_the_frozen_snapshot_and_keeps_native_mission_upload_blocked() 
     assert 'syncSelectedMapFromProfile();' in refresh_body[unlocked_selection:]
     assert 'String(mapMetadata.operator_map_snapshot_hash || "")' in fly_map
     assert 'readonly property bool mapFrameAccepted' in fly_map
+    assert 'readonly property bool mapContractReady' in fly_map
+    assert 'readonly property bool mapStateReady: mapContractReady && mapFrameAccepted' in fly_map
+    assert 'visible: root.mapContractReady && (root.showExpectedPath || root.showFuturePath)' in fly_map
+    assert '飞机和实际轨迹已隐藏' in fly_map
+    assert 'qEnvironmentVariable("MOSIM_QGC_ACTIVE_RUN_POINTER")' in bridge
+    assert 'normalizedPointer.startsWith(QStringLiteral("Results/"))' in bridge
     assert '实时地图坐标系与证据不匹配' in fly_map
     assert 'function sourcePixelForWorld(worldX, worldY)' in fly_map
     assert 'worldToPixelMatrix' in fly_map

@@ -2,7 +2,7 @@
 """Build a non-applying patch preview for the simulation report source.
 
 The preview gives reviewers concrete before/after snippets and insertion
-points, but it never edits `Docs/simulation_report.md`.
+points, but it never edits `Docs/报告/仿真分析报告_正文骨架.md`.
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_REPORT = ROOT / "Docs" / "simulation_report.md"
+DEFAULT_REPORT = ROOT / "Docs" / "报告" / "仿真分析报告_正文骨架.md"
 DEFAULT_EDIT_SEQUENCE = (
     ROOT
     / "Results"
@@ -124,9 +124,9 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
 
     boundary_action = action_by_id.get("preserve_final_acceptance_boundary", {})
     boundary_line_no, boundary_line = find_line(report_text, r"不是最终 PMO 验收")
+    boundary_anchor_found = boundary_line_no is not None
     if boundary_line_no is None:
-        boundary_line_no = boundary_action.get("report_line_hint")
-        boundary_line = line_at(report_text, boundary_line_no)
+        boundary_line = ""
     previews.append(
         {
             "preview_id": "preserve_final_acceptance_boundary_preview",
@@ -134,6 +134,8 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
             "operation": "verify_keep_existing_text",
             "target": boundary_action.get("target_section", "1. 报告范围"),
             "line_hint": boundary_line_no,
+            "historical_line_hint": boundary_action.get("report_line_hint"),
+            "anchor_found": boundary_anchor_found,
             "original": boundary_line,
             "preview": "Keep this boundary near the front matter before any report-source rewrite.",
             "safety_boundary": boundary_action.get("safety_boundary", ""),
@@ -143,9 +145,9 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
 
     formation_action = action_by_id.get("rewrite_formation_next_stage_boundary", {})
     formation_line_no, formation_line = find_line(report_text, r"规划和编队仍保留")
+    formation_anchor_found = formation_line_no is not None
     if formation_line_no is None:
-        formation_line_no = formation_action.get("report_line_hint")
-        formation_line = line_at(report_text, formation_line_no)
+        formation_line = ""
     previews.append(
         {
             "preview_id": "rewrite_formation_next_stage_boundary_preview",
@@ -153,6 +155,8 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
             "operation": "replace_single_sentence_after_review",
             "target": formation_action.get("target_section", "12. 扩展场景状态"),
             "line_hint": formation_line_no,
+            "historical_line_hint": formation_action.get("report_line_hint"),
+            "anchor_found": formation_anchor_found,
             "original": formation_line,
             "preview": (
                 "质量 +20% 参数摄动、15-19 s 横向阵风扰动、1 号旋翼 85% 效率退化、"
@@ -173,13 +177,17 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
         ("multi_uav_formation", "insert_multi_uav_formation_candidate_subsection"),
     ]:
         action = action_by_id.get(action_id, {})
+        target = str(action.get("target_section") or "")
+        target_line_no, _ = find_line(report_text, re.escape(target)) if target else (None, "")
         previews.append(
             {
                 "preview_id": f"{action_id}_preview",
                 "source_action_id": action_id,
                 "operation": "insert_candidate_subsection_after_review",
                 "target": action.get("target_section", ""),
-                "line_hint": action.get("report_line_hint"),
+                "line_hint": target_line_no,
+                "historical_line_hint": action.get("report_line_hint"),
+                "anchor_found": target_line_no is not None,
                 "original": "",
                 "preview": make_candidate_block(sections.get(family, {})),
                 "safety_boundary": action.get("safety_boundary", ""),
@@ -194,7 +202,9 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
             "source_action_id": "condense_smoke_and_legacy_sections",
             "operation": "manual_condense_no_delete",
             "target": condense_action.get("target_section", "5-9 legacy/smoke sections"),
-            "line_hint": condense_action.get("report_line_hint"),
+            "line_hint": None,
+            "historical_line_hint": condense_action.get("report_line_hint"),
+            "anchor_found": False,
             "original": "smoke/staged and legacy comparison sections remain in source until reviewer approves condensation",
             "preview": (
                 "Move detailed smoke/staged and legacy-comparison tables toward a history or appendix "
@@ -207,9 +217,9 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
 
     renumber_action = action_by_id.get("renumber_l1_residual_subsection", {})
     renumber_line_no, renumber_line = find_line(report_text, r"^### 9\.4 ")
+    renumber_anchor_found = renumber_line_no is not None
     if renumber_line_no is None:
-        renumber_line_no = renumber_action.get("report_line_hint")
-        renumber_line = line_at(report_text, renumber_line_no)
+        renumber_line = ""
     previews.append(
         {
             "preview_id": "renumber_l1_residual_subsection_preview",
@@ -217,6 +227,8 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
             "operation": "rename_heading_after_review",
             "target": renumber_action.get("target_section", ""),
             "line_hint": renumber_line_no,
+            "historical_line_hint": renumber_action.get("report_line_hint"),
+            "anchor_found": renumber_anchor_found,
             "original": renumber_line,
             "preview": "### L1-inspired 残差补偿控制器首轮消融",
             "safety_boundary": renumber_action.get("safety_boundary", ""),
@@ -247,7 +259,7 @@ def build_preview(report_path: Path, edit_sequence_path: Path, rewrite_plan_path
         "previews": previews,
         "claim_boundary": [
             "This artifact previews possible report-source edits only.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not delete historical evidence.",
             "It does not generate a patch to apply automatically.",
             "It does not change final PMO acceptance.",

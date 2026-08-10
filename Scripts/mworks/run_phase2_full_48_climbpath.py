@@ -173,12 +173,23 @@ def runner_sources(runner_file: Path) -> tuple[list[dict[str, str]], str | None]
     return list(unique.values()), adapter_class
 
 
-def build_matrix() -> dict[str, Any]:
+def build_matrix(*, expected_runner_ids: set[str] | None = None) -> dict[str, Any]:
     runner_files = sorted(
         path for path in FORMAL_RUNNER_DIR.glob("*.mo") if path.name != "package.mo"
     )
-    if len(runner_files) != 48:
-        raise RuntimeError(f"expected exactly 48 FormalRunner files, found {len(runner_files)}")
+    if expected_runner_ids is not None:
+        runner_files = [
+            path
+            for path in runner_files
+            if path.stem.removesuffix("FormalRunner") in expected_runner_ids
+        ]
+        expected_count = len(expected_runner_ids)
+    else:
+        expected_count = 48
+    if len(runner_files) != expected_count:
+        raise RuntimeError(
+            f"expected exactly {expected_count} selected FormalRunner files, found {len(runner_files)}"
+        )
     rows: list[dict[str, Any]] = []
     for runner_file in runner_files:
         leaf = runner_file.stem

@@ -21,7 +21,7 @@ DEFAULT_OUTPUT = ROOT / "Results" / "control_platform" / "non_frontend_evidence_
 
 REQUIRED_PATHS = [
     "AGENTS.md",
-    "Docs/user_manual.md",
+    "Docs/报告/用户手册_正文骨架.md",
     "Docs/Workflows/pre_submit_check.md",
     "Docs/Workflows/mainline_operations_board.md",
     "Docs/Workflows/sunray_ros1_current_runtime_lane.md",
@@ -50,8 +50,8 @@ EXPLICIT_FILES = [
     "PROGRESS.md",
     "pyproject.toml",
     "uv.lock",
-    "Docs/user_manual.md",
-    "Docs/simulation_report.md",
+    "Docs/报告/用户手册_正文骨架.md",
+    "Docs/报告/仿真分析报告_正文骨架.md",
     "Docs/Design/架构.md",
     "Docs/Workflows/mainline_operations_board.md",
     "Docs/Workflows/pre_submit_check.md",

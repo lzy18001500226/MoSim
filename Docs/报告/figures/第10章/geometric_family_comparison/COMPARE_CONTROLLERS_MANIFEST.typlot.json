@@ -1,18 +1,18 @@
 {
   "radar_scores": {
-    "Control Energy": 0.9777319590711231,
-    "Max Error": 0.9361689186019491,
-    "Position RMSE": 0.9220239521371228,
+    "Control Energy": 0.24800244841263386,
+    "Max Error": 0.9198113875736718,
+    "Position RMSE": 0.899274846046998,
     "Terminal Error": 0.9988989552316484
   },
   "family": "几何/微分平坦族",
   "controllers": [
     "dfbc_basic",
-    "dfbc_high_order",
-    "dfbc_high_order_body_rate",
-    "dfbc_smooth_robust",
-    "dfbc_smooth_robust_body_rate",
-    "se_3_basic"
+    "dfbc_high_order_attitude",
+    "dfbc_high_order_bodyrate",
+    "dfbc_smooth_robust_attitude",
+    "dfbc_smooth_robust_bodyrate",
+    "se3_basic"
   ],
   "figures": [
     "figures/climbpath_rmse_bar.png",
@@ -27,7 +27,7 @@
   "resolution": 600,
   "family_slug": "geometric",
   "schema": "mosim.typlot_controller_comparison.v1",
-  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv",
+  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
   "engine": "Syslab TyPlot",
   "family_median": {
     "position_rmse_m": 0.35758403139443096,
@@ -35,5 +35,5 @@
     "max_position_error_m": 0.8692595964635492,
     "control_energy": 837042.8153108289
   },
-  "metric_source": "Results/control_platform/phase2_full_48_climbpath/<controller>/metrics/metrics.csv（冻结值，未重算）"
+  "metric_source": "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）"
 }

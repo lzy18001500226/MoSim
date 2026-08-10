@@ -2,7 +2,7 @@
 """Build a pre/post audit checklist for future report-source edit application.
 
 This artifact documents what must be true before a future authorized edit may
-touch Docs/simulation_report.md, and which checks must run after editing. It
+touch Docs/报告/仿真分析报告_正文骨架.md, and which checks must run after editing. It
 does not create backups, edit files, run patches, or execute guard commands.
 """
 
@@ -58,7 +58,7 @@ PRE_EDIT_CHECKS = [
     {
         "check_id": "pre_edit_diff_captured",
         "required": True,
-        "evidence": "git diff -- Docs/simulation_report.md captured before edits",
+        "evidence": "git diff -- Docs/报告/仿真分析报告_正文骨架.md captured before edits",
         "current_status": "not_captured_by_this_artifact",
         "why": "The operator must know whether the report already has unrelated edits.",
     },
@@ -72,7 +72,7 @@ PRE_EDIT_CHECKS = [
     {
         "check_id": "target_file_scope_limited",
         "required": True,
-        "evidence": "write scope limited to Docs/simulation_report.md and generated audit outputs",
+        "evidence": "write scope limited to Docs/报告/仿真分析报告_正文骨架.md and generated audit outputs",
         "current_status": "planned_only",
         "why": "A report-source application step must not drift into final output generation.",
     },
@@ -144,7 +144,7 @@ def build_checklist(application_plan_path: Path, reviewer_summary_path: Path, de
         "checklist_id": "simulation_report_source_edit_application_audit_checklist_20260610",
         "status": "source_edit_application_audit_checklist_not_execution",
         "inputs": {
-            "simulation_report": "Docs/simulation_report.md",
+            "simulation_report": "Docs/报告/仿真分析报告_正文骨架.md",
             "source_edit_application_plan": rel(application_plan_path),
             "source_edit_reviewer_summary": rel(reviewer_summary_path),
             "report_source_edit_decision_check": rel(decision_check_path),
@@ -166,14 +166,14 @@ def build_checklist(application_plan_path: Path, reviewer_summary_path: Path, de
         "pre_edit_checks": checks,
         "post_edit_guard_commands": POST_EDIT_GUARD_COMMANDS,
         "forbidden_now": [
-            "Do not edit Docs/simulation_report.md from this checklist.",
+            "Do not edit Docs/报告/仿真分析报告_正文骨架.md from this checklist.",
             "Do not create or overwrite backups from this checklist.",
             "Do not run patch/apply commands from this checklist.",
             "Do not export PDFs, record video, or write PMO final acceptance.",
         ],
         "claim_boundary": [
             "This checklist is a static audit plan only.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not create backups or restore points.",
             "It does not execute post-edit guard commands.",
             "It does not export PDFs/video or write PMO final acceptance.",

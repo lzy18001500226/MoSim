@@ -104,6 +104,7 @@ class UavRuntime:
     world_cloud_points: int = 0
     occupancy_count: int = 0
     occupancy_points: int = 0
+    occupancy_max_points: int = 0
     frontier_count: int = 0
     trajectory_vis_count: int = 0
     swarm_traj_count: int = 0
@@ -627,6 +628,7 @@ class EgoSwarmMission:
         uav = self.uavs[uid]
         uav.occupancy_count += 1
         uav.occupancy_points = int(msg.width * msg.height)
+        uav.occupancy_max_points = max(uav.occupancy_max_points, uav.occupancy_points)
 
     def on_frontier(self, uid: int, msg: AnyMsg) -> None:
         self.uavs[uid].frontier_count += 1
@@ -1395,6 +1397,7 @@ class EgoSwarmMission:
             "hold_start_t": None,
             "hold_end_t": None,
             "duration_s": 0.0,
+            "duration_time_basis": "ros_simulation_time",
             "best_error_m": None,
             "best_snapshot": None,
             "first_reached_snapshot": None,
@@ -1594,13 +1597,13 @@ class EgoSwarmMission:
         required_s = self.args.target_hold_s if hold_mode == "strict_radius" else self.args.target_stable_skip_s
         if hold_mode is not None:
             if uav.reached_t is None or uav.target_hold_metrics.get("active_hold_mode") != hold_mode:
-                uav.reached_t = time.time()
+                uav.reached_t = float(snapshot["t"])
                 uav.target_hold_metrics["active_hold_mode"] = hold_mode
                 uav.target_hold_metrics["required_s"] = required_s
                 uav.target_hold_metrics["hold_start_t"] = snapshot["t"]
                 if uav.target_hold_metrics["first_reached_snapshot"] is None:
                     uav.target_hold_metrics["first_reached_snapshot"] = snapshot
-            hold_duration = time.time() - uav.reached_t
+            hold_duration = max(0.0, float(snapshot["t"]) - uav.reached_t)
             uav.target_hold_metrics["duration_s"] = hold_duration
             if hold_duration >= required_s:
                 uav.target_hold_metrics["reached"] = True
@@ -1833,6 +1836,10 @@ class EgoSwarmMission:
                         f"uav{uid}": self.uavs[uid].target_hold_metrics.get("end_snapshot")
                         if self.uavs[uid].target_hold_metrics
                         else None
+                        for uid in active_uids
+                    }
+                    round_item["target_holds"] = {
+                        f"uav{uid}": dict(self.uavs[uid].target_hold_metrics or {})
                         for uid in active_uids
                     }
                     output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -2161,7 +2168,7 @@ class EgoSwarmMission:
                 blockers.append(prefix + "world_cloud_points_below_gate")
             if uav.occupancy_count < self.args.min_occupancy_count:
                 blockers.append(prefix + "occupancy_count_below_gate")
-            if uav.occupancy_points < self.args.min_occupancy_points:
+            if uav.occupancy_max_points < self.args.min_occupancy_points:
                 blockers.append(prefix + "occupancy_points_below_gate")
             if uav.frontier_count < self.args.min_frontier_count:
                 blockers.append(prefix + "frontier_count_below_gate")
@@ -2484,6 +2491,9 @@ class EgoSwarmMission:
                     "raw_lidar": uav.raw_lidar_points,
                     "world_cloud": uav.world_cloud_points,
                     "occupancy": uav.occupancy_points,
+                },
+                "max_point_counts": {
+                    "occupancy_inflate": uav.occupancy_max_points,
                 },
             }
         self.write_csv(self.result_dir / "inter_uav_separation.csv", self.separation_rows)

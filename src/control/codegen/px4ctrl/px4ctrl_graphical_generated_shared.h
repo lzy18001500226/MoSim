@@ -6,6 +6,23 @@ extern "C" {
 #endif
 
 /*
+ * Bind the deployed px4ctrl Profile before evaluating the generated outer
+ * loop.  The generated model keeps these values in its block-state storage;
+ * this wrapper leaves the generated equations unchanged while preventing the
+ * compiled defaults from diverging from the ROS runtime Profile.
+ */
+void MosimPx4ctrlGeneratedGraphConfigure(
+  double kp_x,
+  double kv_x,
+  double kp_y,
+  double kv_y,
+  double kp_z,
+  double kv_z,
+  double mass_kg,
+  double gravity_mps2,
+  double hover_fraction);
+
+/*
  * Scalar C ABI for the generated 100 Hz px4ctrl graphical outer loop.
  * Every output pointer must reference writable storage.
  */

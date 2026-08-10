@@ -99,7 +99,7 @@ equation
   attitude_ref[1] = -roll_ref;
   pitch_argument = 2 * (core.desired_attitude_w_out * core.desired_attitude_y_out
     - core.desired_attitude_z_out * core.desired_attitude_x_out);
-  attitude_ref[2] = if pitch_argument >= 1 then Modelica.Constants.pi / 2
+  attitude_ref[2] = if pitch_argument >= 1 then Modelica.Constants.pi / 2 
     else if pitch_argument <= -1 then -Modelica.Constants.pi / 2 else asin(pitch_argument);
   attitude_ref[3] = atan2(2 * (core.desired_attitude_w_out * core.desired_attitude_z_out
     + core.desired_attitude_x_out * core.desired_attitude_y_out),

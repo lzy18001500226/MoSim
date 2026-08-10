@@ -73,6 +73,7 @@ def test_parameter_mismatch_synchronizes_mass_and_all_inertias(tmp_path: Path) -
     harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
     assert "mass_scale = 1.3" in harness
     assert "inertia_scale = {1.3, 1.3, 1.3}" in harness
+    assert "extends MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner(" in harness
 
 
 def test_motor_task_keeps_a_single_delayed_rotor_fault(tmp_path: Path) -> None:
@@ -125,7 +126,7 @@ def test_task_writer_rejects_out_of_contract_parameter_combinations(tmp_path: Pa
             writer,
             tmp_path,
             task_id="hover",
-            controller_id="smc_boundary_layer",
+            controller_id="unregistered_controller",
             gust_force_x_n=0.0,
             mass_inertia_scale=1.0,
             motor_effectiveness=[1.0, 1.0, 1.0, 1.0],
@@ -158,11 +159,11 @@ def test_registered_formal_route_writes_a_manual_task_for_any_controller(tmp_pat
 def test_manual_route_catalog_covers_the_controller_catalog_without_evidence_gating() -> None:
     writer = load_module(WRITER_PATH, "model_studio_task_writer_route_catalog")
     assert len(writer.FORMAL_CONTROLLER_ROUTES) == 48
-    assert len(writer.FORMAL_CONTROLLER_IDS) == 44
+    assert len(writer.FORMAL_CONTROLLER_IDS) == 48
     for controller_id in ("adaptive_backstepping", "fixed_awff_pid", "fixed_linear_mpc_l1_indi", "px4ctrl"):
         assert controller_id in writer.FORMAL_CONTROLLER_IDS
     for controller_id in ("pid_awff_linear_eso", "smc_boundary_layer", "nmpc_outer", "fixed_qp_nmpc_l1_indi_cbf"):
-        assert controller_id not in writer.FORMAL_CONTROLLER_IDS
+        assert controller_id in writer.FORMAL_CONTROLLER_IDS
 
 
 def test_baseline_is_a_separate_climbpath_handoff(tmp_path: Path) -> None:

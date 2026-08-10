@@ -19,7 +19,7 @@ DEFAULT_OUTPUT_DIR = (
 )
 PRIMARY_ANCHORS = [
     "inner Modelica.Mechanics.MultiBody.World world(",
-    "WrapperSurface wrapper;",
+    "WrapperSurface wrapper(",
     "Modelica.Mechanics.MultiBody.Forces.WorldForceAndTorque forceAndTorque(",
     "applied_force_body = {0, 0, wrapper.total_thrust}",
     "applied_torque_body = wrapper.total_moment_body",

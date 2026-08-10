@@ -7,7 +7,7 @@ model ParameterMismatch
     "Magnitude of the mass and inertia bias";
   parameter Boolean use_negative_bias = false
     "False applies +20 percent; true applies -20 percent";
-  parameter Real mass_scale = if use_negative_bias then
+  parameter Real mass_scale = if use_negative_bias then 
     1 - mismatch_fraction else 1 + mismatch_fraction;
   parameter Real inertia_scale[3] = {mass_scale, mass_scale, mass_scale}
     "Principal-inertia scale read by a Runner when this scenario is bound";

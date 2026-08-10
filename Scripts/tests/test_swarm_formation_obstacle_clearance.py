@@ -11,12 +11,14 @@ ROOT = Path(__file__).resolve().parents[2]
 ANALYZER = ROOT / "Scripts/sunray/analyze_swarm_formation_obstacle_clearance.py"
 
 
-def write_truth(path: Path, points: list[tuple[float, float]]) -> None:
+def write_truth(
+    path: Path, points: list[tuple[float, float]], *, phase: str = "ego_execute"
+) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=("t", "phase", "x", "y", "z"))
         writer.writeheader()
         for index, (x, y) in enumerate(points):
-            writer.writerow({"t": index * 0.02, "phase": "ego_execute", "x": x, "y": y, "z": 1.2})
+            writer.writerow({"t": index * 0.02, "phase": phase, "x": x, "y": y, "z": 1.2})
 
 
 def write_fixture(run_dir: Path, direct: bool) -> tuple[Path, Path]:
@@ -45,9 +47,14 @@ def write_fixture(run_dir: Path, direct: bool) -> tuple[Path, Path]:
     return scenario_path, scene_truth
 
 
-def run_analyzer(run_dir: Path, scenario_path: Path) -> tuple[subprocess.CompletedProcess[str], dict]:
+def run_analyzer(
+    run_dir: Path, scenario_path: Path, extra_args: list[str] | None = None
+) -> tuple[subprocess.CompletedProcess[str], dict]:
+    command = [sys.executable, str(ANALYZER), "--run", str(run_dir), "--scenario", str(scenario_path)]
+    if extra_args:
+        command.extend(extra_args)
     completed = subprocess.run(
-        [sys.executable, str(ANALYZER), "--run", str(run_dir), "--scenario", str(scenario_path)],
+        command,
         text=True,
         capture_output=True,
         check=False,
@@ -67,6 +74,35 @@ def test_obstacle_clearance_gate_accepts_a_real_detour(tmp_path: Path) -> None:
     assert packet["per_uav"]["1"]["expected_proxy_minimum_axis_linf_clearance_m"]["Cargo"] > 0.2
     assert packet["per_uav"]["1"]["expected_proxy_minimum_euclidean_clearance_m"]["Cargo"] > 0.2
     assert packet["per_uav"]["1"]["clearance_violation_count"] == 0
+
+
+def test_obstacle_clearance_gate_accepts_single_uav_truth_and_phase_override(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run"
+    scenario, _ = write_fixture(run_dir, direct=False)
+    write_truth(
+        run_dir / "truth.csv",
+        [(0.0, 0.0), (0.0, 1.0), (4.0, 1.0), (4.0, 0.0)],
+        phase="interactive_goal_review",
+    )
+
+    completed, packet = run_analyzer(
+        run_dir,
+        scenario,
+        [
+            "--uav-ids",
+            "1",
+            "--truth-file-template",
+            "truth.csv",
+            "--execute-phases",
+            "interactive_goal_review",
+        ],
+    )
+
+    assert completed.returncode == 0
+    assert packet["status"] == "passed"
+    assert packet["selected_uav_ids"] == ["1"]
+    assert packet["truth_file_template"] == "truth.csv"
+    assert packet["execute_phases"] == ["interactive_goal_review"]
 
 
 def test_obstacle_clearance_gate_rejects_a_direct_collision(tmp_path: Path) -> None:

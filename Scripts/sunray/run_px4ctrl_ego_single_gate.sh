@@ -382,6 +382,25 @@ DIFF_CMD_SAFETY_MAX_POSITION_JUMP_M="${DIFF_CMD_SAFETY_MAX_POSITION_JUMP_M:-0.0}
 DIFF_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS="${DIFF_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS:-3.0}"
 DIFF_CMD_SAFETY_JUMP_GUARD_MIN_DT_S="${DIFF_CMD_SAFETY_JUMP_GUARD_MIN_DT_S:-0.05}"
 DIFF_CMD_ADAPTER_ENABLE_TOPIC="${DIFF_CMD_ADAPTER_ENABLE_TOPIC:-/mosim/goal4/position_cmd_adapter_enable}"
+DIFF_CMD_SMOOTH_ENABLE="${DIFF_CMD_SMOOTH_ENABLE:-false}"
+DIFF_CMD_SMOOTH_MAX_SPEED_MPS="${DIFF_CMD_SMOOTH_MAX_SPEED_MPS:-0}"
+DIFF_CMD_SMOOTH_MAX_STEP_M="${DIFF_CMD_SMOOTH_MAX_STEP_M:-0}"
+DIFF_CMD_SMOOTH_ZERO_DYNAMICS="${DIFF_CMD_SMOOTH_ZERO_DYNAMICS:-true}"
+DIFF_CMD_MOTION_TIME_BASIS="${DIFF_CMD_MOTION_TIME_BASIS:-wall}"
+DIFF_CMD_RECOMPUTE_VELOCITY_FROM_POSITION="${DIFF_CMD_RECOMPUTE_VELOCITY_FROM_POSITION:-false}"
+DIFF_CMD_MAX_VELOCITY_MPS="${DIFF_CMD_MAX_VELOCITY_MPS:-0}"
+DIFF_CMD_MAX_ACCELERATION_MPS2="${DIFF_CMD_MAX_ACCELERATION_MPS2:-0}"
+DIFF_CMD_MAX_LATERAL_ACCELERATION_MPS2="${DIFF_CMD_MAX_LATERAL_ACCELERATION_MPS2:-0}"
+DIFF_CMD_MAX_JERK_MPS3="${DIFF_CMD_MAX_JERK_MPS3:-0}"
+DIFF_CMD_ZERO_ALL_DYNAMICS="${DIFF_CMD_ZERO_ALL_DYNAMICS:-false}"
+DIFF_CMD_ODOM_TARGET_GUARD_ENABLE="${DIFF_CMD_ODOM_TARGET_GUARD_ENABLE:-false}"
+DIFF_CMD_ODOM_TARGET_GUARD_TOPIC="${DIFF_CMD_ODOM_TARGET_GUARD_TOPIC:-/uav1/mavros/local_position/odom}"
+DIFF_CMD_ODOM_TARGET_GUARD_TIMEOUT_S="${DIFF_CMD_ODOM_TARGET_GUARD_TIMEOUT_S:-0.3}"
+DIFF_CMD_MAX_TARGET_DISTANCE_FROM_ODOM_M="${DIFF_CMD_MAX_TARGET_DISTANCE_FROM_ODOM_M:-0}"
+DIFF_CMD_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M="${DIFF_CMD_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M:-0}"
+DIFF_CMD_ODOM_DISTANCE_POLICY="${DIFF_CMD_ODOM_DISTANCE_POLICY:-project_toward_raw}"
+DIFF_CMD_ODOM_GUARD_ZERO_DYNAMICS="${DIFF_CMD_ODOM_GUARD_ZERO_DYNAMICS:-true}"
+DIFF_CMD_SEED_FROM_ODOM_ON_ENABLE="${DIFF_CMD_SEED_FROM_ODOM_ON_ENABLE:-false}"
 PLANNER_CMD_ADAPTER_INITIAL_ENABLED="${PLANNER_CMD_ADAPTER_INITIAL_ENABLED:-true}"
 PLANNER_CMD_REQUIRE_FRESH_RAW_AFTER_ENABLE="${PLANNER_CMD_REQUIRE_FRESH_RAW_AFTER_ENABLE:-true}"
 PLANNER_CMD_ODOM_TARGET_GUARD_ENABLE="${PLANNER_CMD_ODOM_TARGET_GUARD_ENABLE:-false}"
@@ -476,6 +495,7 @@ DIFF_PUBLISH_HOVER_DURING_TAKEOFF_DELAY_S="${DIFF_PUBLISH_HOVER_DURING_TAKEOFF_D
 DIFF_EXECUTE_MIN_TRUTH_Z_M="${DIFF_EXECUTE_MIN_TRUTH_Z_M:-0.50}"
 DIFF_EXECUTE_MIN_ODOM_Z_M="${DIFF_EXECUTE_MIN_ODOM_Z_M:-0.50}"
 DIFF_EXECUTE_MAX_ROLL_PITCH_DEG="${DIFF_EXECUTE_MAX_ROLL_PITCH_DEG:-45.0}"
+DIFF_EXECUTE_MAX_TRUTH_ODOM_Z_ERROR_M="${DIFF_EXECUTE_MAX_TRUTH_ODOM_Z_ERROR_M:-0.0}"
 LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
 SUNRAY_STRIP_PX4_MODEL_PATH="${SUNRAY_STRIP_PX4_MODEL_PATH:-false}"
 SUNRAY_MID360_PLUGIN_DOWNSAMPLE="${SUNRAY_MID360_PLUGIN_DOWNSAMPLE:-4}"
@@ -512,6 +532,17 @@ SUNRAY_UAV_INIT_X="${SUNRAY_UAV_INIT_X:-0.0}"
 SUNRAY_UAV_INIT_Y="${SUNRAY_UAV_INIT_Y:-0.0}"
 SUNRAY_UAV_INIT_Z="${SUNRAY_UAV_INIT_Z:-0.2}"
 SUNRAY_UAV_INIT_YAW="${SUNRAY_UAV_INIT_YAW:-0.0}"
+DIFF_GOAL4_COMMON_WORLD_FRAME="${DIFF_GOAL4_COMMON_WORLD_FRAME:-false}"
+DIFF_GOAL4_PLANNER_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC:-/uav1/mosim/diff_goal4/planner_odom_world}"
+DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC="${DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC:-/uav1/mosim/diff_goal4/planner_position_cmd_world}"
+DIFF_GOAL4_PATH_ODOM_TOPIC=""
+case "${DIFF_GOAL4_COMMON_WORLD_FRAME}" in
+  true|false) ;;
+  *)
+    echo "DIFF_GOAL4_COMMON_WORLD_FRAME must be true or false" >&2
+    exit 2
+    ;;
+esac
 if [[ "${PLANNER_VARIANT}" == "highstar" && ( "${WORLD_FILE}" == *"factory_l2_static_import"* || "${WORLD_FILE}" == *"factoryenvironmentcollect_l2"* || "${FACTORY_MODEL_PATH}" == *"factory_l2_static_import"* ) ]]; then
   if [[ -z "${HIGHSTAR_MAP_MIN_X_USER_SET}" || -z "${HIGHSTAR_MAP_MAX_X_USER_SET}" ]]; then
     read -r HIGHSTAR_FACTORY_MIN_X HIGHSTAR_FACTORY_MAX_X < <(python3 - "${SUNRAY_UAV_INIT_X}" "${HIGHSTAR_FACTORY_WINDOW_X_M}" <<'PY'
@@ -847,7 +878,9 @@ FASTLIO_CUSTOM_POINT_TIME_MODE="${FASTLIO_CUSTOM_POINT_TIME_MODE:-instantaneous}
 FASTLIO_FILTER_SIZE_SURF="${FASTLIO_FILTER_SIZE_SURF:-0.02}"
 FASTLIO_FILTER_SIZE_MAP="${FASTLIO_FILTER_SIZE_MAP:-0.02}"
 FASTLIO_SENSOR_START_TIMEOUT_S="${FASTLIO_SENSOR_START_TIMEOUT_S:-120}"
+RAW_LIDAR_READY_TIMEOUT_S="${RAW_LIDAR_READY_TIMEOUT_S:-${FASTLIO_SENSOR_START_TIMEOUT_S}}"
 FASTLIO_START_TIMEOUT_S="${FASTLIO_START_TIMEOUT_S:-90}"
+FASTLIO_PATH_START_TIMEOUT_S="${FASTLIO_PATH_START_TIMEOUT_S:-${FASTLIO_START_TIMEOUT_S}}"
 FASTLIO_REVIEW_FILTER_MIN_Z="${FASTLIO_REVIEW_FILTER_MIN_Z:-0.20}"
 FASTLIO_ALIGNED_ODOM_TOPIC="${FASTLIO_ALIGNED_ODOM_TOPIC:-/mosim/fastlio/odom_aligned}"
 FASTLIO_ALIGNED_PATH_TOPIC="${FASTLIO_ALIGNED_PATH_TOPIC:-/mosim/fastlio/odom_aligned_path}"
@@ -991,6 +1024,25 @@ case "${PLANNER_VARIANT}" in
     PLANNER_ENABLE_CMD_SAFETY_ADAPTER="${DIFF_ENABLE_CMD_SAFETY_ADAPTER}"
     PLANNER_RAW_CMD_MAX_POSITION_JUMP_M="${DIFF_CMD_SAFETY_MAX_POSITION_JUMP_M}"
     PLANNER_RAW_CMD_MAX_POSITION_JUMP_SPEED_MPS="${DIFF_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS}"
+    PLANNER_CMD_SMOOTH_ENABLE="${DIFF_CMD_SMOOTH_ENABLE}"
+    PLANNER_CMD_SMOOTH_MAX_SPEED_MPS="${DIFF_CMD_SMOOTH_MAX_SPEED_MPS}"
+    PLANNER_CMD_SMOOTH_MAX_STEP_M="${DIFF_CMD_SMOOTH_MAX_STEP_M}"
+    PLANNER_CMD_SMOOTH_ZERO_DYNAMICS="${DIFF_CMD_SMOOTH_ZERO_DYNAMICS}"
+    PLANNER_CMD_MOTION_TIME_BASIS="${DIFF_CMD_MOTION_TIME_BASIS}"
+    PLANNER_CMD_RECOMPUTE_VELOCITY_FROM_POSITION="${DIFF_CMD_RECOMPUTE_VELOCITY_FROM_POSITION}"
+    PLANNER_CMD_MAX_VELOCITY_MPS="${DIFF_CMD_MAX_VELOCITY_MPS}"
+    PLANNER_CMD_MAX_ACCELERATION_MPS2="${DIFF_CMD_MAX_ACCELERATION_MPS2}"
+    PLANNER_CMD_MAX_LATERAL_ACCELERATION_MPS2="${DIFF_CMD_MAX_LATERAL_ACCELERATION_MPS2}"
+    PLANNER_CMD_MAX_JERK_MPS3="${DIFF_CMD_MAX_JERK_MPS3}"
+    PLANNER_CMD_ZERO_ALL_DYNAMICS="${DIFF_CMD_ZERO_ALL_DYNAMICS}"
+    PLANNER_CMD_ODOM_TARGET_GUARD_ENABLE="${DIFF_CMD_ODOM_TARGET_GUARD_ENABLE}"
+    PLANNER_CMD_ODOM_TARGET_GUARD_TOPIC="${DIFF_CMD_ODOM_TARGET_GUARD_TOPIC}"
+    PLANNER_CMD_ODOM_TARGET_GUARD_TIMEOUT_S="${DIFF_CMD_ODOM_TARGET_GUARD_TIMEOUT_S}"
+    PLANNER_CMD_MAX_TARGET_DISTANCE_FROM_ODOM_M="${DIFF_CMD_MAX_TARGET_DISTANCE_FROM_ODOM_M}"
+    PLANNER_CMD_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M="${DIFF_CMD_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M}"
+    PLANNER_CMD_ODOM_DISTANCE_POLICY="${DIFF_CMD_ODOM_DISTANCE_POLICY}"
+    PLANNER_CMD_ODOM_GUARD_ZERO_DYNAMICS="${DIFF_CMD_ODOM_GUARD_ZERO_DYNAMICS}"
+    PLANNER_CMD_SEED_FROM_ODOM_ON_ENABLE="${DIFF_CMD_SEED_FROM_ODOM_ON_ENABLE}"
     PLANNER_NAME="Diff-Planner multipoint planner/traj_server minimal overlay"
     ;;
   fuel|fuel_d3|fuel-d3)
@@ -1225,6 +1277,14 @@ if [[ -n "${REQUESTED_PLANNER_MISSION_MODE}" ]]; then
   esac
 fi
 
+if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME}" == "true" ]]; then
+  # Factory L2 cloud and QGC goals are expressed in Gazebo world coordinates.
+  # Keep px4ctrl on its PX4-local frame and bridge only the planner boundary.
+  PLANNER_EFFECTIVE_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC}"
+  PLANNER_POSITION_CMD_TOPIC="${DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC}"
+  DIFF_GOAL4_PATH_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC}"
+fi
+
 mkdir -p "${RESULT_DIR}"
 # Keep each bounded gate's ROS logs with its evidence.  A shared ~/.ros/log
 # grows across long Gazebo runs and can destabilize later spawn/transport calls.
@@ -1324,8 +1384,10 @@ cleanup() {
   pkill -f "mavros_node" >/dev/null 2>&1 || true
   pkill -f "/opt/mosim_work/sunray_px4.*/px4" >/dev/null 2>&1 || true
   pkill -f "px4_ros1_runtime_overlay_.*px4" >/dev/null 2>&1 || true
-  pkill -f "rosmaster" >/dev/null 2>&1 || true
-  pkill -f "rosout" >/dev/null 2>&1 || true
+  if [[ "${PRESERVE_EXISTING_ROSCORE:-false}" != "true" ]]; then
+    pkill -f "rosmaster" >/dev/null 2>&1 || true
+    pkill -f "rosout" >/dev/null 2>&1 || true
+  fi
 }
 trap cleanup EXIT
 
@@ -1581,35 +1643,29 @@ start_fuel_native_traj_server() {
 }
 
 discover_nonempty_pointcloud_topic() {
-  local topic safe sample_file topic_type
+  local topic safe sample_file readiness_file
   rostopic list | sort > "${RESULT_DIR}/topic_list_before_goal4_nodes.txt" 2>/dev/null || true
   grep -Ei "livox|cloud|point|scan|imu|mavros|gazebo" "${RESULT_DIR}/topic_list_before_goal4_nodes.txt" \
     > "${RESULT_DIR}/topic_list_before_goal4_nodes_filtered.txt" 2>/dev/null || true
 
   for topic in ${RAW_LIDAR_TOPIC:-} ${RAW_LIDAR_TOPIC_CANDIDATES}; do
     [[ -n "${topic}" ]] || continue
-    sample_pointcloud_topic "${topic}"
     safe="$(topic_file_name "${topic}")"
     sample_file="${RESULT_DIR}/topic_audit_${safe}.txt"
-    topic_type="$(timeout 5s rostopic type "${topic}" 2>/dev/null | tr -d '\r' || true)"
-    if [[ "${topic_type}" != "sensor_msgs/PointCloud2" ]] \
-      && ! grep -q "^sensor_msgs/PointCloud2$" "${sample_file}"; then
-      # Under heavy Gazebo startup load, rosservice-backed `rostopic type` can
-      # time out even after a complete PointCloud2 sample has arrived.
-      if ! grep -q "^[[:space:]]*height:" "${sample_file}" \
-        || ! grep -q "^[[:space:]]*fields:" "${sample_file}" \
-        || ! grep -q "^[[:space:]]*point_step:" "${sample_file}" \
-        || ! grep -q "^[[:space:]]*row_step:" "${sample_file}" \
-        || ! grep -q "^[[:space:]]*data:" "${sample_file}" \
-        || ! grep -q "^[[:space:]]*is_dense:" "${sample_file}"; then
-        continue
-      fi
+    readiness_file="${RESULT_DIR}/raw_lidar_readiness_${safe}.json"
+    if ! grep -Fxq "${topic}" "${RESULT_DIR}/topic_list_before_goal4_nodes.txt"; then
+      sample_pointcloud_topic "${topic}"
+      continue
     fi
-    if grep -Eq "^[[:space:]]*width:[[:space:]]*[1-9][0-9]*" "${sample_file}" \
-      && ! grep -q "data: \\[\\]" "${sample_file}"; then
+    if python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_nonempty_pointcloud2.py" \
+      --topic "${topic}" \
+      --timeout-s "${RAW_LIDAR_READY_TIMEOUT_S}" \
+      --output "${readiness_file}"; then
+      sample_pointcloud_topic "${topic}"
       echo "${topic}"
       return 0
     fi
+    sample_pointcloud_topic "${topic}"
   done
   return 1
 }
@@ -1760,11 +1816,19 @@ start_fastlio_stack() {
     > "${RESULT_DIR}/fastlio_uav_axes_marker_node.log" 2>&1 &
   PIDS+=("$!")
 
+  # /path is published at a lower cadence than /Odometry and is not latched.
+  # Subscribe before the odometry gate so the first path sample is not missed.
   local fastlio_ready=false
+  local fastlio_path_wait_pid
+  python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_topic_sample.py" \
+    --topic /path \
+    --timeout-s "${FASTLIO_PATH_START_TIMEOUT_S}" \
+    --output "${RESULT_DIR}/fastlio_path_first_live.txt" &
+  fastlio_path_wait_pid=$!
+  PIDS+=("${fastlio_path_wait_pid}")
   deadline=$((SECONDS + FASTLIO_START_TIMEOUT_S))
   while (( SECONDS < deadline )); do
-    if python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_topic_sample.py" --topic /Odometry --timeout-s 5 --output "${RESULT_DIR}/fastlio_odometry_first_live.txt" &&
-       python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_topic_sample.py" --topic /path --timeout-s 5 --output "${RESULT_DIR}/fastlio_path_first_live.txt"; then
+    if python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_topic_sample.py" --topic /Odometry --timeout-s 5 --output "${RESULT_DIR}/fastlio_odometry_first_live.txt"; then
       fastlio_ready=true
       break
     fi
@@ -1773,6 +1837,10 @@ start_fastlio_stack() {
 
   if [[ "${fastlio_ready}" != "true" && "${PX4CTRL_ENABLE_FASTLIO_EKF_FUSION}" == "true" ]]; then
     echo "FAST-LIO /Odometry did not publish before EKF fusion timeout." >&2
+    exit 8
+  fi
+  if ! wait "${fastlio_path_wait_pid}"; then
+    echo "FAST-LIO /path did not publish before FAST-LIO startup timeout." >&2
     exit 8
   fi
 
@@ -1963,13 +2031,37 @@ apply_px4_int_param_override() {
   fi
   {
     echo "PARAM_OVERRIDE ${param_id}=${value}"
-    if [[ "${PX4CTRL_PARAM_PULL_BEFORE_OVERRIDE}" == "true" ]]; then
-      echo "PARAM_PULL_BEFORE_OVERRIDE"
+    # EKF2 boot values are injected through px4-rc.params before EKF2 starts.
+    # Refresh MAVROS first so a matching boot value does not require a
+    # redundant post-boot param/set service call.
+    if [[ "${PX4CTRL_PARAM_CACHE_REFRESHED:-false}" != "true" ]]; then
+      echo "PARAM_PULL_BEFORE_VERIFY"
       if ! timeout 30s rosservice call /uav1/mavros/param/pull "force_pull: true"; then
         echo "PARAM_PULL_FAILED before ${param_id}" >&2
         return 1
       fi
+      PX4CTRL_PARAM_CACHE_REFRESHED=true
+    else
+      echo "PARAM_PULL_SKIPPED_CACHE_REFRESHED"
     fi
+    local verify_output=""
+    local verify_attempt
+    for verify_attempt in 1 2 3; do
+      echo "PARAM_VERIFY_BOOT_SERVICE ${param_id} attempt=${verify_attempt}"
+      if verify_output="$(timeout 5s rosservice call /uav1/mavros/param/get "param_id: '${param_id}'" 2>&1)"; then
+        printf '%s\n' "${verify_output}"
+        if printf '%s\n' "${verify_output}" | grep -Eq "integer: ${value}([[:space:]]|$)"; then
+          echo "PARAM_BOOT_VALUE_VERIFIED ${param_id}=${value}"
+          return 0
+        fi
+      else
+        printf '%s\n' "${verify_output}"
+      fi
+      if (( verify_attempt < 3 )); then
+        sleep 1
+      fi
+    done
+    echo "PARAM_BOOT_VALUE_MISMATCH ${param_id}: expected=${value}"
     echo "PARAM_SET_SERVICE ${param_id}=${value}"
     if ! timeout 8s rosservice call /uav1/mavros/param/set "param_id: '${param_id}'
 value:
@@ -1978,18 +2070,22 @@ value:
       echo "PARAM_SET_FAILED ${param_id}=${value}" >&2
       return 1
     fi
-    echo "PARAM_VERIFY_SERVICE ${param_id}"
-    local verify_output
-    verify_output="$(timeout 5s rosservice call /uav1/mavros/param/get "param_id: '${param_id}'" 2>&1)" || {
-      printf '%s\n' "${verify_output}"
-      echo "PARAM_VERIFY_FAILED ${param_id}" >&2
-      return 1
-    }
-    printf '%s\n' "${verify_output}"
-    if ! printf '%s\n' "${verify_output}" | grep -Eq "integer: ${value}([[:space:]]|$)"; then
-      echo "PARAM_VERIFY_MISMATCH ${param_id}: expected=${value}" >&2
-      return 1
-    fi
+    for verify_attempt in 1 2 3; do
+      echo "PARAM_VERIFY_SERVICE ${param_id} attempt=${verify_attempt}"
+      if verify_output="$(timeout 5s rosservice call /uav1/mavros/param/get "param_id: '${param_id}'" 2>&1)"; then
+        printf '%s\n' "${verify_output}"
+        if printf '%s\n' "${verify_output}" | grep -Eq "integer: ${value}([[:space:]]|$)"; then
+          return 0
+        fi
+      else
+        printf '%s\n' "${verify_output}"
+      fi
+      if (( verify_attempt < 3 )); then
+        sleep 1
+      fi
+    done
+    echo "PARAM_VERIFY_MISMATCH ${param_id}: expected=${value}" >&2
+    return 1
   } >> "${RESULT_DIR}/px4_param_overrides.txt" 2>&1
 }
 
@@ -2102,7 +2198,23 @@ if [[ "${SUNRAY_SPLIT_WORLD_BASIC_LAUNCH}" == "true" ]]; then
   echo "${PIDS[-1]}" > "${RESULT_DIR}/sunray_gazebo_world.pid"
   sleep 8
 
-  roslaunch sunray_simulator sunray_px4_basic.launch \
+  # A split world launch already owns the ROS Master's run_id.  Reuse it for
+  # the model/PX4 launch; otherwise roslaunch rejects the second launch before
+  # spawn_model can create uav1.
+  ROS_MASTER_RUN_ID=""
+  run_id_deadline=$((SECONDS + 30))
+  while (( SECONDS < run_id_deadline )); do
+    ROS_MASTER_RUN_ID="$(rosparam get /run_id 2>/dev/null | tr -d '\r\n')"
+    [[ -n "${ROS_MASTER_RUN_ID}" ]] && break
+    sleep 1
+  done
+  if [[ -z "${ROS_MASTER_RUN_ID}" ]]; then
+    echo "ROS Master run_id is unavailable after Gazebo world startup" >&2
+    timeout 5s rosnode list >&2 || true
+    exit 3
+  fi
+
+  roslaunch --run_id "${ROS_MASTER_RUN_ID}" sunray_simulator sunray_px4_basic.launch \
     uav_id:=1 vehicle:="${VEHICLE}" \
     uav_init_x:="${SUNRAY_UAV_INIT_X}" uav_init_y:="${SUNRAY_UAV_INIT_Y}" \
     uav_init_z:="${SUNRAY_UAV_INIT_Z}" uav_init_yaw:="${SUNRAY_UAV_INIT_YAW}" \
@@ -2387,6 +2499,30 @@ python3 "${PROJECT_ROOT}/Scripts/sunray/goal4_pointcloud_to_world_node.py" \
   _history_path:="${RESULT_DIR}/pointcloud_to_world_history.jsonl" \
   > "${RESULT_DIR}/pointcloud_to_world.log" 2>&1 &
 PIDS+=("$!")
+
+if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME}" == "true" ]]; then
+  # This bridge adds the Factory L2 spawn offset, so its numeric pose is in
+  # the same world frame as QGC goals and the planner cloud.
+  python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+    _message_type:=odom \
+    _direction:=local_to_world \
+    _input_topic:=/uav1/mavros/local_position/odom \
+    _output_topic:="${DIFF_GOAL4_PLANNER_ODOM_TOPIC}" \
+    _offset_x:="${SUNRAY_UAV_INIT_X}" \
+    _offset_y:="${SUNRAY_UAV_INIT_Y}" \
+    _offset_z:=0.0 \
+    _output_frame_id:=world \
+    _diagnostics_path:="${RESULT_DIR}/diff_goal4_planner_odom_world_bridge.json" \
+    > "${RESULT_DIR}/diff_goal4_planner_odom_world_bridge.log" 2>&1 &
+  PIDS+=("$!")
+  if ! python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_topic_sample.py" \
+    --topic "${DIFF_GOAL4_PLANNER_ODOM_TOPIC}" \
+    --timeout-s "${ODOM_BRIDGE_READY_TIMEOUT_S}" \
+    --output "${RESULT_DIR}/diff_goal4_planner_odom_world_first.txt"; then
+    echo "Diff Goal4 planner world odometry bridge did not produce a sample" >&2
+    exit 64
+  fi
+fi
 
 if [[ "${PLANNER_VARIANT}" == "fuel" && "${FUEL_SENSOR_POSE_SOURCE}" == "fastlio" ]]; then
   start_fastlio_stack
@@ -3023,6 +3159,28 @@ if [[ "${PLANNER_LAUNCH_STATUS}" != "started" ]]; then
   exit 63
 fi
 
+if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME}" == "true" ]]; then
+  # The inverse bridge restores PX4/MAVROS-local coordinates for px4ctrl.
+  python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+    _message_type:=position_cmd \
+    _direction:=world_to_local \
+    _input_topic:="${DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC}" \
+    _output_topic:="${DIFF_RAW_POSITION_CMD_TOPIC}" \
+    _offset_x:="${SUNRAY_UAV_INIT_X}" \
+    _offset_y:="${SUNRAY_UAV_INIT_Y}" \
+    _offset_z:=0.0 \
+    _output_frame_id:=map \
+    _diagnostics_path:="${RESULT_DIR}/diff_goal4_planner_position_cmd_local_bridge.json" \
+    > "${RESULT_DIR}/diff_goal4_planner_position_cmd_local_bridge.log" 2>&1 &
+  DIFF_GOAL4_COMMAND_BRIDGE_PID=$!
+  PIDS+=("${DIFF_GOAL4_COMMAND_BRIDGE_PID}")
+  sleep 1
+  if ! kill -0 "${DIFF_GOAL4_COMMAND_BRIDGE_PID}" >/dev/null 2>&1; then
+    echo "Diff Goal4 planner world-to-local command bridge exited during startup" >&2
+    exit 64
+  fi
+fi
+
 if [[ "${PLANNER_VARIANT}" == "highstar" ]]; then
   python3 "${PROJECT_ROOT}/Scripts/sunray/highstar_swarmtraj_position_cmd_bridge.py" \
     _input_topic:="${HIGHSTAR_TRAJ_TOPIC}" \
@@ -3048,6 +3206,7 @@ if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_INTERACTIVE_CLICK_GOAL}"
     _require_mission_ready:="${DIFF_INTERACTIVE_REQUIRE_MISSION_READY}" \
     _target_path_topic:=/mosim/goal4/target_path \
     _odom_topic:=/uav1/mavros/local_position/odom \
+    _path_odom_topic:="${DIFF_GOAL4_PATH_ODOM_TOPIC}" \
     _frame_id:=world \
     _target_z:="${TARGET_Z}" \
     _enable_clicked_point:=false \
@@ -3228,6 +3387,7 @@ fi
 MISSION_ADAPTER_ARGS+=(--execute-min-truth-z-m "${DIFF_EXECUTE_MIN_TRUTH_Z_M}")
 MISSION_ADAPTER_ARGS+=(--execute-min-odom-z-m "${DIFF_EXECUTE_MIN_ODOM_Z_M}")
 MISSION_ADAPTER_ARGS+=(--execute-max-roll-pitch-deg "${DIFF_EXECUTE_MAX_ROLL_PITCH_DEG}")
+MISSION_ADAPTER_ARGS+=(--execute-max-truth-odom-z-error-m "${DIFF_EXECUTE_MAX_TRUTH_ODOM_Z_ERROR_M}")
 if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_INTERACTIVE_CLICK_GOAL}" == "true" ]]; then
   MISSION_ADAPTER_ARGS+=(--interactive-goal-review)
   MISSION_ADAPTER_ARGS+=(--interactive-goal-ready-topic "${DIFF_INTERACTIVE_GOAL_READY_TOPIC}")
@@ -3335,6 +3495,7 @@ MISSION_CMD=(
   python3 "${PROJECT_ROOT}/Scripts/sunray/px4ctrl_ego_single_mission_node.py" \
   --result-dir "${RESULT_DIR}" \
   --target-x "${TARGET_X}" --target-y "${TARGET_Y}" --target-z "${TARGET_Z}" \
+  --path-odom-topic "${DIFF_GOAL4_PATH_ODOM_TOPIC}" \
   --raw-lidar-topic "${RAW_LIDAR_TOPIC}" \
   --world-cloud-topic "${WORLD_CLOUD_TOPIC}" \
   --occupancy-topic "${OCCUPANCY_TOPIC}" \
@@ -3903,6 +4064,15 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "smoothing_max_speed_mps": ${PLANNER_CMD_SMOOTH_MAX_SPEED_MPS},
     "smoothing_max_step_m": ${PLANNER_CMD_SMOOTH_MAX_STEP_M},
     "smoothing_zero_dynamics": "${PLANNER_CMD_SMOOTH_ZERO_DYNAMICS}",
+    "motion_time_basis": "${PLANNER_CMD_MOTION_TIME_BASIS}",
+    "recompute_velocity_from_position": "${PLANNER_CMD_RECOMPUTE_VELOCITY_FROM_POSITION}",
+    "max_velocity_mps": ${PLANNER_CMD_MAX_VELOCITY_MPS},
+    "max_acceleration_mps2": ${PLANNER_CMD_MAX_ACCELERATION_MPS2},
+    "max_lateral_acceleration_mps2": ${PLANNER_CMD_MAX_LATERAL_ACCELERATION_MPS2},
+    "max_jerk_mps3": ${PLANNER_CMD_MAX_JERK_MPS3},
+    "odom_target_guard_enabled": "${PLANNER_CMD_ODOM_TARGET_GUARD_ENABLE}",
+    "max_target_distance_from_odom_m": ${PLANNER_CMD_MAX_TARGET_DISTANCE_FROM_ODOM_M},
+    "max_xy_target_distance_from_odom_m": ${PLANNER_CMD_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M},
     "zero_all_dynamics": "${PLANNER_CMD_ZERO_ALL_DYNAMICS}",
     "raw_planner_max_position_jump_m": ${PLANNER_RAW_CMD_MAX_POSITION_JUMP_M},
     "raw_planner_max_position_jump_speed_mps": ${PLANNER_RAW_CMD_MAX_POSITION_JUMP_SPEED_MPS},
@@ -3921,7 +4091,8 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
   "execute_safety_gate": {
     "min_truth_z_m": ${DIFF_EXECUTE_MIN_TRUTH_Z_M},
     "min_odom_z_m": ${DIFF_EXECUTE_MIN_ODOM_Z_M},
-    "max_roll_pitch_deg": ${DIFF_EXECUTE_MAX_ROLL_PITCH_DEG}
+    "max_roll_pitch_deg": ${DIFF_EXECUTE_MAX_ROLL_PITCH_DEG},
+    "max_truth_odom_z_error_m": ${DIFF_EXECUTE_MAX_TRUTH_ODOM_Z_ERROR_M}
   },
   "pointcloud_to_world": {
     "odom_topic": "${POINTCLOUD_ODOM_TOPIC}",

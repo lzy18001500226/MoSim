@@ -22,55 +22,55 @@ model ThreeUavPairwiseEcbfReferenceSafetyFilter
     "Fixed sequential half-space projection passes for the three pair constraints";
   parameter Real epsilon = 1e-8;
 
-  Modelica.Blocks.Interfaces.RealInput nominal_position_1[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_position_1[3] 
     annotation(Placement(transformation(origin = {-120, 84}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput nominal_velocity_1[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_velocity_1[3] 
     annotation(Placement(transformation(origin = {-120, 60}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput nominal_acceleration_1[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_acceleration_1[3] 
     annotation(Placement(transformation(origin = {-120, 36}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput nominal_position_2[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_position_2[3] 
     annotation(Placement(transformation(origin = {-120, 12}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput nominal_velocity_2[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_velocity_2[3] 
     annotation(Placement(transformation(origin = {-120, -12}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput nominal_acceleration_2[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_acceleration_2[3] 
     annotation(Placement(transformation(origin = {-120, -36}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput nominal_position_3[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_position_3[3] 
     annotation(Placement(transformation(origin = {-120, -60}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput nominal_velocity_3[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_velocity_3[3] 
     annotation(Placement(transformation(origin = {-120, -84}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput nominal_acceleration_3[3]
+  Modelica.Blocks.Interfaces.RealInput nominal_acceleration_3[3] 
     annotation(Placement(transformation(origin = {-120, -108}, extent = {{-12, -12}, {12, 12}})));
 
-  Modelica.Blocks.Interfaces.RealInput actual_position_1[3]
+  Modelica.Blocks.Interfaces.RealInput actual_position_1[3] 
     annotation(Placement(transformation(origin = {-72, 84}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput actual_velocity_1[3]
+  Modelica.Blocks.Interfaces.RealInput actual_velocity_1[3] 
     annotation(Placement(transformation(origin = {-72, 60}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput actual_position_2[3]
+  Modelica.Blocks.Interfaces.RealInput actual_position_2[3] 
     annotation(Placement(transformation(origin = {-72, 12}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput actual_velocity_2[3]
+  Modelica.Blocks.Interfaces.RealInput actual_velocity_2[3] 
     annotation(Placement(transformation(origin = {-72, -12}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput actual_position_3[3]
+  Modelica.Blocks.Interfaces.RealInput actual_position_3[3] 
     annotation(Placement(transformation(origin = {-72, -60}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealInput actual_velocity_3[3]
+  Modelica.Blocks.Interfaces.RealInput actual_velocity_3[3] 
     annotation(Placement(transformation(origin = {-72, -84}, extent = {{-12, -12}, {12, 12}})));
 
-  Modelica.Blocks.Interfaces.RealOutput safe_position_1[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_position_1[3] 
     annotation(Placement(transformation(origin = {120, 84}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealOutput safe_velocity_1[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_velocity_1[3] 
     annotation(Placement(transformation(origin = {120, 60}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealOutput safe_acceleration_1[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_acceleration_1[3] 
     annotation(Placement(transformation(origin = {120, 36}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealOutput safe_position_2[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_position_2[3] 
     annotation(Placement(transformation(origin = {120, 12}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealOutput safe_velocity_2[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_velocity_2[3] 
     annotation(Placement(transformation(origin = {120, -12}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealOutput safe_acceleration_2[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_acceleration_2[3] 
     annotation(Placement(transformation(origin = {120, -36}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealOutput safe_position_3[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_position_3[3] 
     annotation(Placement(transformation(origin = {120, -60}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealOutput safe_velocity_3[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_velocity_3[3] 
     annotation(Placement(transformation(origin = {120, -84}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Interfaces.RealOutput safe_acceleration_3[3]
+  Modelica.Blocks.Interfaces.RealOutput safe_acceleration_3[3] 
     annotation(Placement(transformation(origin = {120, -108}, extent = {{-12, -12}, {12, 12}})));
 
   Real minimum_actual_pair_distance_m(unit = "m");

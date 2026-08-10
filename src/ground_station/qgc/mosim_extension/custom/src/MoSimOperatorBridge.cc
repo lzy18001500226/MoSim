@@ -1,6 +1,7 @@
 #include "MoSimOperatorBridge.h"
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QDateTime>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
@@ -8,8 +9,11 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QRegularExpression>
+#include <QtCore/QSaveFile>
 #include <QtGui/QClipboard>
 #include <QtGui/QGuiApplication>
+
+#include <cmath>
 
 namespace {
 
@@ -121,6 +125,18 @@ bool isReadableOperatorRuntimeStatus(const QVariantMap &status, const QVariantMa
         && (!alerts.isValid() || alerts.canConvert<QVariantList>());
 }
 
+bool isReadableRealtimePlanningGoalStatus(const QVariantMap &status, const QString &runId)
+{
+    const QString state = status.value(QStringLiteral("state")).toString();
+    return status.value(QStringLiteral("schema")).toString() == QStringLiteral("mosim.qgc_realtime_goal_status.v1")
+        && status.value(QStringLiteral("run_id")).toString() == runId
+        && (state == QStringLiteral("ready") || state == QStringLiteral("submitted")
+            || state == QStringLiteral("awaiting_subscriber") || state == QStringLiteral("forwarded")
+            || state == QStringLiteral("rejected"))
+        && !status.value(QStringLiteral("reason_code")).toString().isEmpty()
+        && status.value(QStringLiteral("updated_at_unix_s")).canConvert<double>();
+}
+
 QString bashQuote(const QString &value)
 {
     return QStringLiteral("'%1'").arg(value);
@@ -141,6 +157,16 @@ QString wslPath(const QString &windowsPath)
     return path;
 }
 
+bool writeJsonObjectAtomically(const QString &path, const QVariantMap &value)
+{
+    QSaveFile file(path);
+    if (!file.open(QIODevice::WriteOnly)) {
+        return false;
+    }
+    const QByteArray payload = QJsonDocument(QJsonObject::fromVariantMap(value)).toJson(QJsonDocument::Indented);
+    return file.write(payload) == payload.size() && file.commit();
+}
+
 } // namespace
 
 MoSimOperatorBridge::MoSimOperatorBridge(QObject *parent)
@@ -158,6 +184,35 @@ QVariantMap MoSimOperatorBridge::selectedProfile() const
 bool MoSimOperatorBridge::profileSelectionLocked() const
 {
     return isActiveRunState(_activeRunState);
+}
+
+bool MoSimOperatorBridge::realtimePlanningGoalAvailable() const
+{
+    const QVariantMap snapshot = _runManifest.value(QStringLiteral("operator_map_snapshot")).toMap();
+    const QString profileId = _runManifest.value(QStringLiteral("experiment_profile_id")).toString();
+    const QString runtimeProfileId = _runManifest.value(QStringLiteral("runtime_profile_id")).toString();
+    const QVariantMap backend = runtimeBackendForProfile(profileId);
+    const QVariantMap realtimeGoal = backend.value(QStringLiteral("realtime_goal")).toMap();
+    return _activeRunState == QStringLiteral("running") && !_runId.isEmpty()
+        && !_activePointerRelativePath.isEmpty()
+        && !activeRunDirectory().isEmpty() && QDir(activeRunDirectory()).exists()
+        && snapshot.value(QStringLiteral("map_id")).toString() == QStringLiteral("factory_l2")
+        && !snapshot.value(QStringLiteral("world_frame")).toString().isEmpty()
+        && !_runManifest.value(QStringLiteral("operator_map_snapshot_hash")).toString().isEmpty()
+        && backend.value(QStringLiteral("runtime_profile_id")).toString() == runtimeProfileId
+        && realtimeGoal.value(QStringLiteral("input")).toString() == QStringLiteral("qgc_plan_view")
+        && realtimeGoal.value(QStringLiteral("goal_topic")).toString() == QStringLiteral("/move_base_simple/goal")
+        && realtimeGoal.value(QStringLiteral("goal_frame")).toString()
+            == snapshot.value(QStringLiteral("world_frame")).toString();
+}
+
+bool MoSimOperatorBridge::realtimePlanningGoalReady() const
+{
+    if (!realtimePlanningGoalAvailable()) {
+        return false;
+    }
+    const QString state = _realtimePlanningGoalStatus.value(QStringLiteral("state")).toString();
+    return state == QStringLiteral("ready") || state == QStringLiteral("forwarded");
 }
 
 QString MoSimOperatorBridge::discoverProjectRoot() const
@@ -402,15 +457,31 @@ void MoSimOperatorBridge::loadCatalogs()
 void MoSimOperatorBridge::loadActiveRun()
 {
     _runId.clear();
+    _activePointerRelativePath.clear();
     _activeRunState.clear();
     _runManifest.clear();
     _runtimeTelemetry.clear();
     _faultAcks.clear();
+    _realtimePlanningGoalStatus.clear();
     if (_projectRoot.isEmpty()) {
         return;
     }
 
-    const QVariantMap active = readJsonObject(projectPath(QStringLiteral("Results/ui_platform/qgc_active_run.json")));
+    const QString configuredPointer = qEnvironmentVariable("MOSIM_QGC_ACTIVE_RUN_POINTER").trimmed();
+    QString activePointerRelativePath = QStringLiteral("Results/ui_platform/qgc_active_run.json");
+    if (!configuredPointer.isEmpty()) {
+        const QString normalizedPointer = QDir::cleanPath(configuredPointer)
+                                              .replace(QLatin1Char('\\'), QLatin1Char('/'));
+        if (QDir::isAbsolutePath(configuredPointer)
+            || normalizedPointer == QStringLiteral(".")
+            || normalizedPointer == QStringLiteral("..")
+            || normalizedPointer.startsWith(QStringLiteral("../"))
+            || !normalizedPointer.startsWith(QStringLiteral("Results/"))) {
+            return;
+        }
+        activePointerRelativePath = normalizedPointer;
+    }
+    const QVariantMap active = readJsonObject(projectPath(activePointerRelativePath));
     const QString activeState = active.value(QStringLiteral("state")).toString();
     if (active.value(QStringLiteral("schema")).toString() != QStringLiteral("mosim.qgc_active_run_pointer.v1")
         || !isDisplayableRunState(activeState)) {
@@ -441,6 +512,7 @@ void MoSimOperatorBridge::loadActiveRun()
     }
 
     _runId = runId;
+    _activePointerRelativePath = activePointerRelativePath;
     _activeRunState = activeState;
     _runManifest = manifest;
     _selectedProfileId = frozenProfileId;
@@ -455,6 +527,36 @@ void MoSimOperatorBridge::loadActiveRun()
     const QVariantMap telemetry = readJsonObject(QDir(runDirectory).filePath(QStringLiteral("telemetry.json")));
     if (telemetry.value(QStringLiteral("run_id")).toString() == _runId) {
         QVariantMap acceptedTelemetry = telemetry;
+        QVariantMap mapState = acceptedTelemetry.value(QStringLiteral("map_state")).toMap();
+        QVariantMap mapTransport = mapState.value(QStringLiteral("transport")).toMap();
+        const double mapSequence = mapTransport.value(QStringLiteral("sequence")).toDouble();
+        if (mapState.value(QStringLiteral("run_id")).toString() == _runId && mapSequence > 0.0
+            && (_lastMapReceiptRunId != _runId || mapSequence != _lastMapSequence)) {
+            _lastMapReceiptRunId = _runId;
+            _lastMapSequence = mapSequence;
+            _lastMapReceiptUnixS = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch() / 1000.0;
+        }
+        if (_lastMapReceiptRunId == _runId && _lastMapReceiptUnixS > 0.0) {
+            mapTransport.insert(QStringLiteral("qgc_received_at_unix_s"), _lastMapReceiptUnixS);
+            mapState.insert(QStringLiteral("transport"), mapTransport);
+        }
+        QVariantMap taskPaths = mapState.value(QStringLiteral("task_paths")).toMap();
+        QVariantMap futurePath = taskPaths.value(QStringLiteral("future")).toMap();
+        const double futurePathUpdatedAt = futurePath.value(QStringLiteral("updated_at")).toDouble();
+        if (futurePath.value(QStringLiteral("status")).toString() == QStringLiteral("available")
+            && futurePathUpdatedAt > 0.0
+            && (_lastFuturePathReceiptRunId != _runId
+                || futurePathUpdatedAt != _lastFuturePathUpdatedAt)) {
+            _lastFuturePathReceiptRunId = _runId;
+            _lastFuturePathUpdatedAt = futurePathUpdatedAt;
+            _lastFuturePathReceiptUnixS = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch() / 1000.0;
+        }
+        if (_lastFuturePathReceiptRunId == _runId && _lastFuturePathReceiptUnixS > 0.0) {
+            futurePath.insert(QStringLiteral("qgc_received_at_unix_s"), _lastFuturePathReceiptUnixS);
+            taskPaths.insert(QStringLiteral("future"), futurePath);
+            mapState.insert(QStringLiteral("task_paths"), taskPaths);
+        }
+        acceptedTelemetry.insert(QStringLiteral("map_state"), mapState);
         const QVariantMap runtimeStatus = telemetry.value(QStringLiteral("operator_runtime_status")).toMap();
         if (!runtimeStatus.isEmpty() && !isReadableOperatorRuntimeStatus(runtimeStatus, manifest)) {
             acceptedTelemetry.remove(QStringLiteral("operator_runtime_status"));
@@ -465,6 +567,7 @@ void MoSimOperatorBridge::loadActiveRun()
         _runtimeTelemetry = acceptedTelemetry;
     }
     loadFaultAcks();
+    loadRealtimePlanningGoalStatus();
 }
 
 void MoSimOperatorBridge::loadFaultAcks()
@@ -482,6 +585,19 @@ void MoSimOperatorBridge::loadFaultAcks()
         if (isReadableFaultAck(ack, _runId, vehicleCount)) {
             _faultAcks.append(ack);
         }
+    }
+}
+
+void MoSimOperatorBridge::loadRealtimePlanningGoalStatus()
+{
+    _realtimePlanningGoalStatus.clear();
+    if (_runId.isEmpty()) {
+        return;
+    }
+    const QVariantMap status = readJsonObject(
+        QDir(activeRunDirectory()).filePath(QStringLiteral("operator_goal/STATUS.json")));
+    if (isReadableRealtimePlanningGoalStatus(status, _runId)) {
+        _realtimePlanningGoalStatus = status;
     }
 }
 
@@ -872,7 +988,8 @@ void MoSimOperatorBridge::copySelectedLaunchCommand()
         setStatus(QStringLiteral("profile_disabled"), profile.value(QStringLiteral("disabled_reason")).toString());
         return;
     }
-    const QVariantMap backend = runtimeBackendForProfile(_selectedProfileId);
+    const QVariantMap backend = runtimeBackendForProfile(
+        profile.value(QStringLiteral("profile_id")).toString());
     copyCommand(renderRuntimeCommand(profile, backend), QStringLiteral("运行命令"));
 }
 
@@ -971,10 +1088,158 @@ void MoSimOperatorBridge::copyRosbagReplayCommand()
     }
     const QString command = QStringLiteral(
         "python \"%1\" --run-dir \"%2\" --manifest \"%2\\RUN_MANIFEST.json\" "
-        "--bag \"C:\\path\\to\\run.bag\" --odom-topic \"uav1=/uav1/mavros/local_position/odom\" "
+        "--bag \"C:\\path\\to\\run.bag\" --odom-topic \"uav1=/uav1/sunray/gazebo_pose\" "
+        "--expected-path-topic \"/mosim/px4ctrl/reference_path\" --max-update-rate-hz 20 "
         "--coordinate-evidence \"C:\\path\\to\\coordinate_evidence.json\"")
         .arg(nativePath(projectPath(QStringLiteral("Scripts/ui/replay_rosbag_operator_map.py"))), nativePath(runDirectory));
     copyCommand(command, QStringLiteral("rosbag 回放命令"));
+}
+
+void MoSimOperatorBridge::copyRealtimePlanningGoalBridgeCommand()
+{
+    if (!realtimePlanningGoalAvailable()) {
+        setStatus(
+            QStringLiteral("realtime_goal_run_not_running"),
+            QStringLiteral("实时规划目标需要正在运行且已冻结的 RunManifest"));
+        return;
+    }
+    const QString runDirectory = activeRunDirectory();
+    const QString activePointerPath = projectPath(_activePointerRelativePath);
+    const QString wslRoot = wslPath(_projectRoot);
+    const QString wslRunDirectory = wslPath(runDirectory);
+    const QString evidencePath = QDir(runDirectory).filePath(QStringLiteral("OPERATOR_MAP_COORDINATE_EVIDENCE.json"));
+    const QString wslEvidencePath = wslPath(evidencePath);
+    const QString wslActivePointerPath = wslPath(activePointerPath);
+    const QString profileId = _runManifest.value(QStringLiteral("experiment_profile_id")).toString();
+    const QVariantMap backend = runtimeBackendForProfile(profileId);
+    const QString distribution = backend.value(
+        QStringLiteral("wsl_distribution"), QStringLiteral("Ubuntu-20.04")).toString();
+    if (!QFileInfo::exists(activePointerPath)) {
+        setStatus(
+            QStringLiteral("realtime_goal_active_pointer_missing"),
+            QStringLiteral("实时规划目标需要当前活动运行指针"));
+        return;
+    }
+    if (!QFileInfo::exists(evidencePath)) {
+        setStatus(
+            QStringLiteral("realtime_goal_coordinate_evidence_missing"),
+            QStringLiteral("实时规划目标需要已验证的坐标证据"));
+        return;
+    }
+    if (wslRoot.isEmpty() || wslRunDirectory.isEmpty() || wslEvidencePath.isEmpty()
+        || wslActivePointerPath.isEmpty()
+        || wslRoot.contains(QLatin1Char('\'')) || wslRunDirectory.contains(QLatin1Char('\''))
+        || wslEvidencePath.contains(QLatin1Char('\'')) || wslActivePointerPath.contains(QLatin1Char('\''))
+        || !isSafeInvocationToken(distribution)) {
+        setStatus(QStringLiteral("realtime_goal_command_unavailable"), QStringLiteral("实时规划桥接命令不可用"));
+        return;
+    }
+    const QString commandBody = QStringLiteral(
+        "source /opt/ros/noetic/setup.bash && cd %1 && python3 %2 --run-dir %3 "
+        "--coordinate-evidence %4 --active-pointer %5 --goal-topic %6 --goal-frame %7")
+        .arg(
+            bashQuote(wslRoot),
+            bashQuote(QStringLiteral("Scripts/sunray/qgc_realtime_goal_bridge.py")),
+            bashQuote(wslRunDirectory),
+            bashQuote(wslEvidencePath),
+            bashQuote(wslActivePointerPath),
+            bashQuote(QStringLiteral("/move_base_simple/goal")),
+            bashQuote(QStringLiteral("world")));
+    if (commandBody.contains(QLatin1Char('"')) || commandBody.contains(QLatin1Char('\r'))
+        || commandBody.contains(QLatin1Char('\n'))) {
+        setStatus(QStringLiteral("realtime_goal_command_unavailable"), QStringLiteral("实时规划桥接命令不可用"));
+        return;
+    }
+    copyCommand(
+        QStringLiteral("wsl.exe -d \"%1\" -- bash -lc \"%2\"").arg(distribution, commandBody),
+        QStringLiteral("实时规划目标桥接命令"));
+}
+
+void MoSimOperatorBridge::submitRealtimePlanningGoal(double latitudeDeg, double longitudeDeg, double altitudeM)
+{
+    if (!realtimePlanningGoalReady()) {
+        setStatus(
+            QStringLiteral("realtime_goal_bridge_not_ready"),
+            QStringLiteral("实时规划目标桥接尚未就绪"));
+        return;
+    }
+    if (!std::isfinite(latitudeDeg) || !std::isfinite(longitudeDeg) || !std::isfinite(altitudeM)
+        || latitudeDeg < -90.0 || latitudeDeg > 90.0 || longitudeDeg < -180.0 || longitudeDeg > 180.0) {
+        setStatus(QStringLiteral("realtime_goal_coordinate_invalid"), QStringLiteral("实时规划目标坐标无效"));
+        return;
+    }
+    const QString runDirectory = activeRunDirectory();
+    const QVariantMap snapshot = _runManifest.value(QStringLiteral("operator_map_snapshot")).toMap();
+    const QString snapshotHash = _runManifest.value(QStringLiteral("operator_map_snapshot_hash")).toString();
+    const QString profileId = _runManifest.value(QStringLiteral("experiment_profile_id")).toString();
+    const QString profileHash = _runManifest.value(QStringLiteral("experiment_profile_hash")).toString();
+    const QString runtimeProfileId = _runManifest.value(QStringLiteral("runtime_profile_id")).toString();
+    if (runDirectory.isEmpty() || snapshotHash.isEmpty() || profileId.isEmpty() || profileHash.isEmpty()
+        || runtimeProfileId.isEmpty() || snapshot.value(QStringLiteral("map_id")).toString().isEmpty()
+        || snapshot.value(QStringLiteral("map_version")).toString().isEmpty()
+        || snapshot.value(QStringLiteral("world_frame")).toString().isEmpty()
+        || snapshot.value(QStringLiteral("coordinate_contract_id")).toString().isEmpty()) {
+        setStatus(
+            QStringLiteral("realtime_goal_manifest_incomplete"),
+            QStringLiteral("实时规划目标缺少冻结地图或运行身份"));
+        return;
+    }
+    const double submittedAt = QDateTime::currentDateTimeUtc().toMSecsSinceEpoch() / 1000.0;
+    const QString requestId = QStringLiteral("qgc-goal-%1-%2")
+        .arg(_runId, QString::number(QDateTime::currentDateTimeUtc().toMSecsSinceEpoch()));
+    const QVariantMap mapIdentity {
+        {QStringLiteral("map_id"), snapshot.value(QStringLiteral("map_id"))},
+        {QStringLiteral("map_version"), snapshot.value(QStringLiteral("map_version"))},
+        {QStringLiteral("asset_sha256"), snapshot.value(QStringLiteral("asset_sha256"))},
+        {QStringLiteral("world_frame"), snapshot.value(QStringLiteral("world_frame"))},
+        {QStringLiteral("coordinate_contract_id"), snapshot.value(QStringLiteral("coordinate_contract_id"))},
+        {QStringLiteral("operator_map_snapshot_hash"), snapshotHash},
+    };
+    const QVariantMap goal {
+        {QStringLiteral("latitude_deg"), latitudeDeg},
+        {QStringLiteral("longitude_deg"), longitudeDeg},
+        {QStringLiteral("qgc_altitude_m"), altitudeM},
+    };
+    const QVariantMap request {
+        {QStringLiteral("schema"), QStringLiteral("mosim.qgc_realtime_goal_request.v1")},
+        {QStringLiteral("state"), QStringLiteral("submitted")},
+        {QStringLiteral("request_id"), requestId},
+        {QStringLiteral("run_id"), _runId},
+        {QStringLiteral("experiment_profile_id"), profileId},
+        {QStringLiteral("experiment_profile_hash"), profileHash},
+        {QStringLiteral("runtime_profile_id"), runtimeProfileId},
+        {QStringLiteral("source"), QStringLiteral("qgc_plan_view")},
+        {QStringLiteral("submitted_at_unix_s"), submittedAt},
+        {QStringLiteral("operator_map"), mapIdentity},
+        {QStringLiteral("goal"), goal},
+        {QStringLiteral("claim_boundary"),
+         QStringLiteral("QGC submitted a live planner-input request only; it did not upload a mission or command PX4/MAVROS.")},
+    };
+    const QVariantMap status {
+        {QStringLiteral("schema"), QStringLiteral("mosim.qgc_realtime_goal_status.v1")},
+        {QStringLiteral("run_id"), _runId},
+        {QStringLiteral("request_id"), requestId},
+        {QStringLiteral("state"), QStringLiteral("submitted")},
+        {QStringLiteral("reason_code"), QStringLiteral("qgc_realtime_goal_submitted")},
+        {QStringLiteral("updated_at_unix_s"), submittedAt},
+    };
+    const QDir goalDirectory(runDirectory);
+    if (!goalDirectory.mkpath(QStringLiteral("operator_goal"))) {
+        setStatus(QStringLiteral("realtime_goal_write_failed"), QStringLiteral("无法创建实时规划目标目录"));
+        return;
+    }
+    const QString requestPath = goalDirectory.filePath(QStringLiteral("operator_goal/REQUEST.json"));
+    const QString statusPath = goalDirectory.filePath(QStringLiteral("operator_goal/STATUS.json"));
+    // Publish the submitted state before the request becomes visible to the
+    // polling bridge, so a fast ROS forward cannot be overwritten afterward.
+    if (!writeJsonObjectAtomically(statusPath, status) || !writeJsonObjectAtomically(requestPath, request)) {
+        setStatus(QStringLiteral("realtime_goal_write_failed"), QStringLiteral("无法写入实时规划目标请求"));
+        return;
+    }
+    _realtimePlanningGoalStatus = status;
+    setStatus(
+        QStringLiteral("realtime_goal_submitted"),
+        QStringLiteral("实时规划目标已提交，等待 ROS1 桥接和规划器输入"));
 }
 
 void MoSimOperatorBridge::copyLastCommand()

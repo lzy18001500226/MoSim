@@ -226,6 +226,11 @@ def main() -> int:
         assert "Context compaction is not task completion" in compact_context, compact_output
         assert "continue the newest direct user task" in compact_context, compact_output
         assert "replacement task" in compact_context, compact_output
+        assert "recovered Codex local goal" in compact_context, compact_output
+        assert "non-authoritative tracking state" in compact_context, compact_output
+        assert "injected during compaction" in compact_context, compact_output
+        assert "ignore it on conflict" in compact_context, compact_output
+        assert "rather than using recovered state as a fallback" in compact_context, compact_output
 
         pretool_output = run_adapter_payload(
             {

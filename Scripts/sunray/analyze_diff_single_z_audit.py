@@ -359,9 +359,12 @@ def main() -> int:
         pre_diff_snapshot = pre_diff_gate.get("last_snapshot")
 
     metric_status = metrics.get("status") if isinstance(metrics, dict) else None
+    run_terminal_status = metrics.get("run_terminal_status") if isinstance(metrics, dict) else None
     metric_blockers = metrics.get("blockers") if isinstance(metrics, dict) else None
     accepted_statuses = {"passed", "interactive_passed"}
-    successful_interactive = metric_status == "interactive_passed"
+    successful_interactive = metric_status == "interactive_passed" or (
+        metric_status == "passed" and run_terminal_status == "interactive_passed"
+    )
     if isinstance(metric_blockers, list) and "pre_diff_hover_not_stable" in metric_blockers:
         pre_diff_blocked = True
         blockers.append("pre_diff_hover_not_stable")
@@ -457,7 +460,7 @@ def main() -> int:
             and float(execute_truth["max_abs_roll_pitch_deg"]) > args.max_execute_roll_pitch_deg
         ):
             blockers.append("execute_truth_roll_pitch_peak_above_gate")
-    if isinstance(metrics, dict) and metric_status == "passed":
+    if isinstance(metrics, dict) and metric_status == "passed" and not successful_interactive:
         target_hold = metrics.get("target_hold")
         if isinstance(target_hold, dict):
             if target_hold.get("reached") is not True:
@@ -487,6 +490,11 @@ def main() -> int:
             else:
                 blockers.append("execute_target_error_summary_missing")
     elif isinstance(metrics, dict) and successful_interactive:
+        required_interactive_hold = None
+        if isinstance(manifest, dict):
+            diff_interactive = manifest.get("diff_interactive")
+            if isinstance(diff_interactive, dict):
+                required_interactive_hold = finite_float(diff_interactive.get("target_hold_s"))
         forwarded_goal_count = int(metrics.get("forwarded_goal_count") or 0)
         if forwarded_goal_count <= 0:
             blockers.append("interactive_forwarded_goal_count_missing")
@@ -512,6 +520,10 @@ def main() -> int:
                     blockers.append(f"interactive_goal_{goal_key}_z_error_missing")
                 elif abs(z_err) > thresholds["target_z_tol"]:
                     blockers.append(f"interactive_goal_{goal_key}_z_error_above_gate")
+                if required_interactive_hold is not None and required_interactive_hold > 0.0:
+                    hold_duration = finite_float(goal_metrics.get("hold_duration_s"))
+                    if hold_duration is None or hold_duration + 1e-6 < required_interactive_hold:
+                        blockers.append(f"interactive_goal_{goal_key}_hold_duration_below_gate")
                 handoff = goal_metrics.get("handoff")
                 handoff_ok = False
                 if isinstance(handoff, dict):
@@ -519,6 +531,25 @@ def main() -> int:
                     handoff_ok = handoff.get("adapter_disabled") is True or handoff_mode == "adapter_hold"
                 if not handoff_ok:
                     blockers.append(f"interactive_goal_{goal_key}_handoff_missing")
+        final_hover = metrics.get("interactive_final_hover")
+        if not isinstance(final_hover, dict):
+            blockers.append("interactive_final_hover_metrics_missing")
+        else:
+            if final_hover.get("reached") is not True:
+                blockers.append("interactive_final_hover_not_reached")
+            hold_duration = finite_float(final_hover.get("duration_s"))
+            required_hold = finite_float(final_hover.get("required_s"))
+            if hold_duration is None or required_hold is None or hold_duration + 1e-6 < required_hold:
+                blockers.append("interactive_final_hover_duration_below_gate")
+            end_snapshot = final_hover.get("end_snapshot")
+            if not isinstance(end_snapshot, dict):
+                blockers.append("interactive_final_hover_end_snapshot_missing")
+            else:
+                end_error = finite_float(end_snapshot.get("error_xyz_m"))
+                if end_error is None:
+                    blockers.append("interactive_final_hover_end_error_missing")
+                elif end_error > thresholds["max_final_target_error_m"]:
+                    blockers.append("interactive_final_hover_end_error_above_gate")
 
     audit = {
         "schema": "mosim.sunray_ros1.diff_single_z_audit.v1",
@@ -530,11 +561,13 @@ def main() -> int:
         "target": list(target) if target is not None else None,
         "mission_metrics": {
             "status": metric_status,
+            "run_terminal_status": run_terminal_status,
             "blockers": metric_blockers if isinstance(metric_blockers, list) else [],
             "final_target_error_m": metrics.get("final_target_error_m") if isinstance(metrics, dict) else None,
             "post_land_final_target_error_m": metrics.get("post_land_final_target_error_m") if isinstance(metrics, dict) else None,
             "execute_target_error_m": metrics.get("execute_target_error_m") if isinstance(metrics, dict) else None,
             "target_hold": metrics.get("target_hold") if isinstance(metrics, dict) else None,
+            "interactive_final_hover": metrics.get("interactive_final_hover") if isinstance(metrics, dict) else None,
             "land": metrics.get("land") if isinstance(metrics, dict) else None,
         },
         "pre_diff_gate": {

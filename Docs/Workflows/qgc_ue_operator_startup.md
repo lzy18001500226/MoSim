@@ -65,8 +65,64 @@ QGC 原生飞控交互，不得与程控任务并行争抢控制权。
   QGC 只显示底图，源 frame 不匹配时显示“实时地图坐标系与证据不匹配”，但不会重启或干预飞控。
 - Plan View 可编辑原生 QGC 航点和边界草案。Factory 世界坐标到地理坐标的往返门禁未通过前，
   禁止把 Upload 视为飞控任务发布或飞行执行。
+- Fly View 地图的“定位轨迹”只根据当前已接受的实际轨迹、任务路径和任务终点调整本地视口；“全图”
+  恢复地图视野。两者都不启动命令、不发送飞控指令，也不改变任务发布门禁。
+- 对保存的 QGC `Plan` 文件执行离线几何门时，在可见终端运行：
+  `python Scripts/ui/validate_qgc_factory_waypoint_roundtrip.py --plan <Plan文件> --map-config Config/control_platform/operator_map_catalog.json --require-task-boundary --output <结果JSON>`。
+  `status=offline_round_trip_passed` 只证明支持的 `SimpleItem` 全局航点、Home、Factory L2 边界和
+  经纬度往返误差满足阈值；复杂任务项会被拒绝。即使通过，`mission_publication.allowed` 仍必须保持
+  `false`，直到同一运行的地理锚点和坐标契约完成 runtime 验证。
 - 新城市地图或其他楼层必须新增 Map Registry 条目和坐标契约；不得用截图、临时比例尺或 FUEL
   子区域替换 Factory L2。
+
+### 在线航点显示审核夹具
+
+需要审核 QGC 的在线路径叠加而不启动飞控时，在可见 PowerShell 中运行：
+
+```text
+.\Scripts\ui\start_qgc_online_waypoint_audit.ps1
+```
+
+该入口会为本次审核创建 `Results/` 内的独立活动指针，启动受控的只读 ROS1 发布器和 sidecar，并打开独立
+QGC 实例。审核应确认 Factory L2 上同时出现任务预期路径和更新中的未来路径；结束时关闭夹具终端或按
+`Ctrl+C`。它不启动 PX4、Gazebo、MAVROS 控制、任务上传或规划器验收，不能据此声称飞行或规划成功。
+
+### 第一阶段：RViz 规划与 QGC 航迹显示
+
+已发布的“RViz规划-QGC航迹显示（阶段一）”Profile 是 QGC 闭环的第一次人工测试入口。它启动同一条
+ROS1/Gazebo/PX4/规划器/sidecar 运行，但 RViz 的 `2D Nav Goal` 是唯一目标输入，QGC 只显示同一
+`run_id` 的未来路径和实际轨迹。该 Profile 的运行后端声明为 `rviz_2d_nav_goal`，因此 QGC 的 `Plan Goal`
+控件和实时目标桥不会在此阶段出现，避免把第二阶段输入混入第一阶段。
+
+从启动 QGC、选择 Profile、等待运行就绪到 RViz 点击、QGC 视觉确认、停止和证据保留的完整操作见
+[`qgc_rviz_phase1_manual_test_tutorial.md`](qgc_rviz_phase1_manual_test_tutorial.md)。
+
+运行端达到就绪后会生成 `RVIZ_QGC_DISPLAY_PHASE1_MANUAL_TEST.json`，其中固定了 RViz 配置、目标 topic、
+sidecar telemetry 和结果路径。操作者只需在 RViz 使用一次 `2D Nav Goal`，然后在 QGC 观察同一运行的
+future path 与 actual track。自动产物可以核对 RViz topic、规划器输出和 sidecar 地图数据，但人工的 QGC
+视觉观察仍须由操作者确认；这一步不证明 QGC 发起规划、飞行成功或控制器验收。
+
+### 第二阶段：实时规划目标桥
+
+已发布的“QGC实时目标单机规划闭环”Profile 才会显示并接受 `Plan Goal`；普通 8 字任务、手动定点任务、回放运行以及仅供诊断的 Diff-Planner Profile 都不会把它作为交付入口。当前源内的 Planner Adapter 仍是 Diff-Planner，这只是实现后端事实，不会把 QGC 输入、路径回显或本闭环的验收范围降格为“Diff 测试”。
+
+QGC Plan View 中的 `Plan Goal` 是一条独立于原生 Mission Waypoint 草案的单点输入：操作者先复制并在
+一个可见 WSL 终端运行实时目标桥命令，待 QGC 显示“实时目标桥接：就绪”后，在 Factory L2 图上点击一次。
+QGC 只向当前 `run_id` 的 `operator_goal/REQUEST.json` 原子写入地图身份、经纬度和提交时间；它不上传
+Mission、不调用 rosbag，也不直接发送 PX4、MAVROS 或电机命令。
+
+目标桥使用 QGC 当前活动指针（不回退到其他 run），并必须同时核验该指针为 `running`、冻结 `RUN_MANIFEST.json` 和同一快照的
+`OPERATOR_MAP_COORDINATE_EVIDENCE.json=status: verified`。通过后它把 QGC 的地理坐标转换为 Factory
+世界坐标，并实时发布与 RViz `2D Nav Goal` 相同的
+`geometry_msgs/PoseStamped` 到 `/move_base_simple/goal`。消息是地平面目标；运行中的规划器 Adapter
+仍拥有目标飞行高度和后续重规划语义。
+
+`forwarded` 仅表示桥看到该 ROS topic 的订阅者并已发布输入。实时规划的后续验收还必须在同一 `run_id`
+观察到规划器的目标接收、更新后的未来轨迹/路径时间戳和运行日志；它不能由 QGC 页面、请求文件或 rosbag
+回放代替。请求超过 5 秒、坐标契约不匹配、运行不再是 `running` 或没有规划器订阅者时，桥必须拒绝而不是
+延迟回放旧目标。
+
+RViz 的 `2D Nav Goal` 可作为一次性下游诊断：它和桥发布到同一 `/move_base_simple/goal`，因此能检查规划器输出是否能被 sidecar 写入并由 QGC 显示未来/实际轨迹。该检查不证明 QGC 的请求写入、桥接或地图点击；正式闭环必须再完成 QGC `Plan Goal` 的同运行验证。
 
 ## 4. rosbag 回放
 
@@ -130,6 +186,18 @@ MWORKS 模型、原生结果和代码生成一致性证据判定。
 | Q6 故障与恢复 | 在活动 run 内暂存故障，复制并在可见终端执行应用/恢复命令 | 运行端或 sidecar 写回同一 run_id 的 ACK、当前生效值和失败原因；恢复 ACK 证明风扰归零、四电机效率为 100% | 命令复制或请求文件写入即代表故障已生效 |
 | Q7 Plan View 发布 | 编辑航点或边界草案，并执行世界坐标与经纬度往返验收 | 未通过往返门禁时上传明确保持阻止；通过后才允许单独审核任务发布 | 二维底图或草案可见即代表飞控航点已发布 |
 | Q8 UE 独立展示 | 仅在需要视频/展示且相关运行时已授权后单独打开 UE | UE 不嵌入 QGC；鼠标可通过 `Esc` 或失焦释放；其画面与 run bundle 对应 | UE 画面替代 Gazebo/PX4/MAVROS/RViz 的运行真值 |
+| Q9-P1 RViz 规划与 QGC 显示 | 启动“RViz规划-QGC航迹显示（阶段一）”Profile，在 RViz 使用一次 `2D Nav Goal`，并在 QGC 观察同一 run | `RVIZ_QGC_DISPLAY_PHASE1_MANUAL_TEST.json`、RViz adapter、规划器未来轨迹、sidecar actual track，以及操作者的 QGC 视觉确认 | QGC 发起规划、QGC `Plan Goal`、飞行或控制器验收 |
+| Q9-P2 QGC 实时规划目标 | 启动已发布的 QGC 实时目标单机规划闭环，复制桥接命令后在 Plan View 选择 `Plan Goal` 并点击一次 | 同一 `run_id` 的 `STATUS.json=forwarded`、规划器更新后的未来路径/轨迹、sidecar 的实际轨迹和 QGC 地图显示 | 单独 RViz 目标、请求文件、桥接就绪状态或 QGC 截图即代表闭环、飞行或控制器验收 |
 
 Q5 至 Q8 的控制、规划、避障、故障容错和显示结论分别由各自运行工作流的日志、指标和结果包
 判定。一次 QGC 页面刷新、回放画面或 UE 视频都不跨越这些证据边界。
+
+对已完成的单机 QGC run 及独立 Diff 评审包，可执行下列只读审计以生成单机、多机和 Diff
+变体的并列矩阵：
+
+```text
+python Scripts/ui/audit_qgc_variant_acceptance_matrix.py --qgc-run-dir Results/runs/<run_id> --diff-review Results/sunray_ros1/<diff-review>/FACTORY_L2_C99_DIFF_SINGLE_AND_SWARM_REVIEW.json --output Results/ui_platform/qgc_variant_acceptance_matrix_<run_id>.json
+```
+
+该矩阵只比较 QGC 发布状态、实时传输证据与独立 ROS1 运行包；它不会将 Diff 的运行通过、
+二维遥测文件或 QGC 截图升级为另一条控制、规划或 GUI 验收结论。

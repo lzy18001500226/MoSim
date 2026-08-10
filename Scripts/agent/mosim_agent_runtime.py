@@ -6,7 +6,7 @@ from __future__ import annotations
 
 def main() -> int:
     print(
-        "The old durable agent runtime is retired for current single-thread "
+        "The old durable agent runtime is retired for current task-local "
         "MoSim work. Use the current project workflows under Docs/Workflows/."
     )
     return 2

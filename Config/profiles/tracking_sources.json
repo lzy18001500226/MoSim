@@ -181,7 +181,9 @@
       "description": "CSV pair contract for FAST-LIO odometry fused through PX4 EKF and exposed to px4ctrl through MAVROS local state.",
       "compatible_experiment_ids": [
         "fastlio_px4_ekf_ab_figure8_v1",
-        "factory_l2_fuel_fixed64_exploration_v1"
+        "factory_l2_fuel_fixed64_exploration_v1",
+        "px4ctrl_graphical_c99_factory_qgc_realtime_goal_v1",
+        "px4ctrl_graphical_c99_factory_rviz_qgc_display_phase1_v1"
       ],
       "state_source_profile": "fastlio_px4_ekf_fused_v1",
       "height_source_profile": "fastlio_height_v1",

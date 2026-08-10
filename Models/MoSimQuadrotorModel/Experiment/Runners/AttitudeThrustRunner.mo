@@ -2,7 +2,7 @@ within MoSimQuadrotorModel.Experiment.Runners;
 model AttitudeThrustRunner
   "Exploratory/debug ATTITUDE_THRUST runner with continuous direct wiring; not for formal comparisons"
 
-  replaceable model Controller = MoSimQuadrotorModel.Control.Baselines.OfflineAttitudeThrustController
+  replaceable model Controller = MoSimQuadrotorModel.Control.Baselines.OfflineAttitudeThrustController 
     constrainedby MoSimQuadrotorModel.Control.Interfaces.PartialAttitudeThrustController;
   parameter Real gust_force[3](each unit = "N") = {0, 0, 0};
   parameter Real gust_start_s(unit = "s") = 0;
@@ -13,9 +13,9 @@ model AttitudeThrustRunner
   parameter Real fault_start_s(unit = "s") = 1e9;
   parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
   parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
-  Controller controller
+  Controller controller 
     annotation(Placement(transformation(origin = {-75, 55}, extent = {{-38, -28}, {38, 28}})));
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator offline_inner_allocator
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator offline_inner_allocator 
     annotation(Placement(transformation(origin = {55, 55}, extent = {{-45, -28}, {45, 28}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant(
     rotor_effectiveness = rotor_effectiveness,
@@ -26,10 +26,10 @@ model AttitudeThrustRunner
     inertia_scale = inertia_scale,
     fault_start_s = fault_start_s,
     fault_rotor_index = fault_rotor_index,
-    fault_rotor_effectiveness = fault_rotor_effectiveness)
+    fault_rotor_effectiveness = fault_rotor_effectiveness) 
     annotation(Placement(transformation(origin = {160, 0}, extent = {{-52, -75}, {52, 75}})));
   replaceable model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
-  Trajectory reference
+  Trajectory reference 
     annotation(Placement(transformation(origin = {-175, 55}, extent = {{-20, -15}, {20, 15}})));
   Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
     each k = 1,
@@ -43,23 +43,23 @@ model AttitudeThrustRunner
   Real rotor_command[4];
   Real position_error_norm;
 equation
-  connect(reference.position_command, controller.position_ref)
+  connect(reference.position_command, controller.position_ref) 
     annotation(Line(points = {{-155, 55}, {-113, 55}}, color = {0, 0, 127}));
   connect(reference.velocity_command, controller.velocity_ref);
   connect(reference.acceleration_command, controller.acceleration_ref);
-  connect(plant.position, controller.position_mea)
+  connect(plant.position, controller.position_mea) 
     annotation(Line(points = {{108, -20}, {75, -20}, {75, -100}, {-135, -100}, {-135, 45}, {-113, 45}}, color = {0, 0, 127}));
   connect(plant.position, velocity_estimator.u);
   connect(velocity_estimator.y, controller.velocity_mea);
-  connect(plant.attitude, controller.attitude_mea)
+  connect(plant.attitude, controller.attitude_mea) 
     annotation(Line(points = {{108, -35}, {60, -35}, {60, -120}, {-150, -120}, {-150, 30}, {-113, 30}}, color = {0, 0, 127}));
-  connect(controller.attitude_ref, offline_inner_allocator.attitude_ref)
+  connect(controller.attitude_ref, offline_inner_allocator.attitude_ref) 
     annotation(Line(points = {{-37, 70}, {10, 70}}, color = {0, 0, 127}));
-  connect(plant.attitude, offline_inner_allocator.attitude_mea)
+  connect(plant.attitude, offline_inner_allocator.attitude_mea) 
     annotation(Line(points = {{108, -45}, {92, -45}, {92, -75}, {-2, -75}, {-2, 50}, {10, 50}}, color = {0, 0, 127}));
-  connect(controller.collective_thrust_delta, offline_inner_allocator.collective_thrust_delta)
+  connect(controller.collective_thrust_delta, offline_inner_allocator.collective_thrust_delta) 
     annotation(Line(points = {{-37, 40}, {10, 40}}, color = {0, 0, 127}));
-  connect(offline_inner_allocator.rotor_command, plant.rotor_command)
+  connect(offline_inner_allocator.rotor_command, plant.rotor_command) 
     annotation(Line(points = {{100, 55}, {108, 55}}, color = {0, 0, 127}));
   position_ref = reference.position_command;
   position = plant.position;

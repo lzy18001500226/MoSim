@@ -21,7 +21,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from Scripts.ui.runtime_sidecar import (
-    build_operator_map_state,
+    build_operator_map_state_or_rejected,
     project_live_operator_map_frame,
     resolve_runtime_operator_map,
 )
@@ -32,7 +32,6 @@ from src.orchestration.operator_map_replay import (
     load_coordinate_evidence,
     sha256_file,
 )
-from src.orchestration.operator_map_state import append_operator_map_actual_tracks
 from src.orchestration.runtime_sidecar_contract import atomic_write_json, build_operator_runtime_status
 
 
@@ -424,9 +423,9 @@ def _replay_timeline(
 def _display_update_times(timeline: list[float], max_update_rate_hz: float) -> list[float]:
     """Select bounded UI write times while retaining every raw replay event.
 
-    The caller still walks the complete timeline to retain all recorded state,
-    task-path, and actual-track samples. This only bounds cross-process
-    telemetry writes for an operator display such as QGC.
+    The caller still walks the complete timeline to retain the latest recorded
+    state and task-path events. Geometry validation, actual-track sampling, and
+    cross-process telemetry writes are bounded to these display times.
     """
 
     if max_update_rate_hz <= 0.0 or len(timeline) <= 2:
@@ -443,10 +442,12 @@ def _display_update_times(timeline: list[float], max_update_rate_hz: float) -> l
 
 def _telemetry_payload(manifest: dict[str, Any], map_state: dict[str, Any], *, now: float) -> dict[str, Any]:
     vehicles = map_state["vehicles"]
+    playback_state = str(map_state["transport"]["playback_state"])
+    runtime_state = "completed" if playback_state == "completed" else "replaying"
     readiness = {
         "schema": "mosim.runtime_status.v1",
         "run_id": manifest["run_id"],
-        "status": "replaying",
+        "status": runtime_state,
         "reason_code": "operator_map_rosbag_replay",
         "vehicle_count": manifest["vehicle_count"],
         "updated_at": now,
@@ -463,14 +464,14 @@ def _telemetry_payload(manifest: dict[str, Any], map_state: dict[str, Any], *, n
         "mission_status": {
             "transport_state": "replay",
             "fresh": True,
-            "terminal": map_state["transport"]["playback_state"] == "completed",
+            "terminal": runtime_state == "completed",
             "reason_code": "rosbag_replay_display_only",
         },
     }
     if manifest.get("controller_backend"):
         payload["operator_runtime_status"] = build_operator_runtime_status(
             manifest=manifest,
-            state="replaying",
+            state=runtime_state,
             reason_code="operator_map_rosbag_replay",
             updated_at_unix_s=now,
         )
@@ -613,19 +614,11 @@ def run_replay(args: argparse.Namespace) -> int:
                 coordinate_evidence=coordinate_evidence,
                 run_id=str(manifest["run_id"]),
             )
-        if frame is not None:
-            actual_tracks = append_operator_map_actual_tracks(
-                actual_tracks,
-                last_vehicles,
-                run_id=str(manifest["run_id"]),
-                world_frame=str(map_snapshot["world_frame"]),
-                updated_at=now,
-            )
         if bag_time_s not in display_times:
             last_playback_time_s = playback_time_s
             continue
         sequence += 1
-        map_state = build_operator_map_state(
+        map_state, actual_tracks = build_operator_map_state_or_rejected(
             manifest=manifest,
             map_snapshot=map_snapshot,
             transport_mode="rosbag_replay",
@@ -638,6 +631,7 @@ def run_replay(args: argparse.Namespace) -> int:
             vehicles=last_vehicles,
             task_paths=projected_task_paths,
             actual_tracks=actual_tracks,
+            map_data_status={"state": "accepted", "reason_code": ""},
         )
         atomic_write_json(args.run_dir / "telemetry.json", _telemetry_payload(manifest, map_state, now=now))
         _write_status(
@@ -658,7 +652,7 @@ def run_replay(args: argparse.Namespace) -> int:
 
     sequence += 1
     now = time.time()
-    completed_state = build_operator_map_state(
+    completed_state, actual_tracks = build_operator_map_state_or_rejected(
         manifest=manifest,
         map_snapshot=map_snapshot,
         transport_mode="rosbag_replay",
@@ -671,6 +665,7 @@ def run_replay(args: argparse.Namespace) -> int:
         vehicles=last_vehicles,
         task_paths=projected_task_paths,
         actual_tracks=actual_tracks,
+        map_data_status={"state": "accepted", "reason_code": ""},
     )
     atomic_write_json(args.run_dir / "telemetry.json", _telemetry_payload(manifest, completed_state, now=now))
     _write_status(

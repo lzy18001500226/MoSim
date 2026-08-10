@@ -72,8 +72,15 @@ FAMILY_ORDER = [
 # The seven semantic families currently occupy six physical implementation
 # packages: linear/robust and nonlinear/adaptive cores share the existing
 # ClassicRobust storage package until a separately approved source move.
-# Sysblocks remains a project-owned sibling package, not a semantic family.
-IMPLEMENTATIONS_PACKAGE_ORDER = [*FAMILY_ORDER, "Sysblocks"]
+# Sysblocks and Graphical remain project-owned sibling packages, not semantic
+# families. Graphical owns strict whole-aircraft review cores and must stay
+# discoverable without being folded into a historical controller-import family.
+IMPLEMENTATIONS_PACKAGE_ORDER = [
+    "PidFamily",
+    "Graphical",
+    *FAMILY_ORDER[1:],
+    "Sysblocks",
+]
 
 SPECIAL_PRIMARY_SOURCES = {
     "official_pid": ROOT
@@ -987,10 +994,16 @@ def package_file_texts(
         GRAPHICAL_ROOT / "package.order": "\n".join(IMPLEMENTATIONS_PACKAGE_ORDER) + "\n",
     }
     for family in FAMILY_ORDER:
+        package_description = (
+            "Graphical controller cores; route selection follows "
+            "controller_route_interface_matrix.json, not batch prefixes"
+            if family == "ClassicRobust"
+            else "G4 imported graphical controller cores; not whole-aircraft entries"
+        )
         files[GRAPHICAL_ROOT / family / "package.mo"] = (
             f"within {GRAPHICAL_PACKAGE};\n"
             f"package {family}\n"
-            "  \"G4 imported graphical controller cores; not whole-aircraft entries\"\n"
+            f"  \"{package_description}\"\n"
             "  extends Modelica.Icons.Package;\n"
             f"  annotation(__MWORKS(version=\"{MWORKS_MODEL_VERSION}\"));\n"
             f"end {family};"

@@ -30,8 +30,8 @@ model ActuatorCommandMapper
 equation
   for i in 1:4 loop
     saturated_normalized_command[i] =
-      if normalized_command[i] < normalized_command_min then normalized_command_min
-      else if normalized_command[i] > normalized_command_max then normalized_command_max
+      if normalized_command[i] < normalized_command_min then normalized_command_min 
+      else if normalized_command[i] > normalized_command_max then normalized_command_max 
       else normalized_command[i];
     actuator_saturation_error[i] = normalized_command[i] - saturated_normalized_command[i];
     visual_rotor_speed_unsigned[i] =

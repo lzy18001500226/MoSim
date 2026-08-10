@@ -186,7 +186,7 @@ def build_plan(scaffold_path: Path, outline_gap_path: Path) -> dict[str, Any]:
         "sections": sections,
         "claim_boundary": [
             "This plan provides patch-ready wording only.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not generate final PDFs/video or PMO final acceptance.",
             "All wording keeps candidate_report_evidence_only_not_final_pmo_acceptance boundaries.",
         ],

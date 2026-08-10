@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 
 import pytest
+
+from Scripts.ui.runtime_sidecar import sample_polytraj_points
 
 from src.orchestration.runtime_sidecar_contract import (
     evaluate_readiness_status,
@@ -198,6 +201,9 @@ def test_sidecar_exports_only_real_reference_and_future_path_sources() -> None:
     assert '"semantics": "planner_sampled_future_trajectory"' in sidecar
     assert 'msg.ns != "B-Spline"' in sidecar
     assert "msg.id >= 50" in sidecar
+    assert "def sample_polytraj_points(" in sidecar
+    assert '"source_type": "traj_utils/PolyTraj"' in sidecar
+    assert '"--future-polytraj-topic"' in sidecar
     assert '"mission_status": load_mission_status(' in sidecar
     assert 'payload.get("run_id") == expected_run_id' in sidecar
     assert '"transport_state": "terminal" if terminal' in sidecar
@@ -207,6 +213,36 @@ def test_sidecar_exports_only_real_reference_and_future_path_sources() -> None:
     assert "self.actual_tracks" in sidecar
     assert "actual_tracks=self.actual_tracks" in sidecar
     assert "coordinate evidence cannot be combined with a status override" in sidecar
+
+
+def test_sidecar_samples_diff_polytraj_in_the_publisher_coefficient_order() -> None:
+    trajectory = SimpleNamespace(
+        order=5,
+        duration=[1.0],
+        coef_x=[0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+        coef_y=[0.0, 0.0, 0.0, 0.0, 2.0, 0.0],
+        coef_z=[0.0, 0.0, 0.0, 0.0, 0.0, 1.0],
+    )
+
+    points = sample_polytraj_points(trajectory, sample_period_s=0.5)
+
+    assert points == [
+        {"x": 0.0, "y": 0.0, "z": 1.0},
+        {"x": 0.5, "y": 1.0, "z": 1.0},
+        {"x": 1.0, "y": 2.0, "z": 1.0},
+    ]
+
+
+def test_sidecar_rejects_malformed_polytraj_before_publishing_a_future_path() -> None:
+    trajectory = SimpleNamespace(
+        order=5,
+        duration=[1.0],
+        coef_x=[0.0],
+        coef_y=[0.0],
+        coef_z=[0.0],
+    )
+
+    assert sample_polytraj_points(trajectory) == []
 
 
 def test_generated_backend_ensure_is_fail_closed() -> None:

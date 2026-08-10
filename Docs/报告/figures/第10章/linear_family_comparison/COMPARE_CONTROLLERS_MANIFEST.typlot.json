@@ -1,15 +1,15 @@
 {
   "radar_scores": {
-    "Control Energy": 0.9809949268346672,
-    "Max Error": 1.0,
-    "Position RMSE": 0.9983235576753202,
+    "Control Energy": 0.24883010264541483,
+    "Max Error": 0.9825271586107502,
+    "Position RMSE": 0.9736919106631294,
     "Terminal Error": 0.9998304307174493
   },
   "family": "线性/鲁棒族",
   "controllers": [
-    "h_2_state_feedback",
+    "h2_state_feedback",
     "lqg",
-    "lqi",
+    "lqi_baseline",
     "lqr_baseline"
   ],
   "figures": [
@@ -25,7 +25,7 @@
   "resolution": 600,
   "family_slug": "linear",
   "schema": "mosim.typlot_controller_comparison.v1",
-  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv",
+  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
   "engine": "Syslab TyPlot",
   "family_median": {
     "position_rmse_m": 0.20825691536112856,
@@ -33,5 +33,5 @@
     "max_position_error_m": 0.7003842008881261,
     "control_energy": 836583.258849536
   },
-  "metric_source": "Results/control_platform/phase2_full_48_climbpath/<controller>/metrics/metrics.csv（冻结值，未重算）"
+  "metric_source": "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）"
 }

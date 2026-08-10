@@ -56,7 +56,7 @@ def test_current_audit_checklist_blocks_application(tmp_path: Path) -> None:
     assert checklist["summary"]["creates_backup_now"] is False
     assert checklist["summary"]["edits_report_source"] is False
     assert checklist["summary"]["runs_post_edit_guards_now"] is False
-    assert "It does not edit Docs/simulation_report.md." in checklist["claim_boundary"]
+    assert "It does not edit Docs/报告/仿真分析报告_正文骨架.md." in checklist["claim_boundary"]
 
 
 def test_safe_inputs_still_do_not_apply(tmp_path: Path) -> None:

@@ -1,13 +1,14 @@
 {
+  "current_catalog_entry_count": 48,
   "control_energy_baseline_legacy": {
     "controller_id": "official_pid",
     "value": 838825.6055603315
   },
-  "accepted_controller_count": 28,
+  "accepted_controller_count": 30,
   "figure_count_written": 33,
   "count_definition_authority": "Config/control_platform/climbpath_baseline_count_definition.json",
   "status_matrix_removed_20260731": {
-    "resolution": "整体删除，三态计数（28/10/10）改由正文文字叙述；报告需同步删除对 controller_status_matrix.png 的引用",
+    "resolution": "整体删除，三态计数由当前 48 条对账正文文字叙述；报告需同步删除对 controller_status_matrix.png 的引用",
     "rejected_encodings": [
       "2/1/0 单列热图：连续色标为三态离散值造出 1.2/1.8 中间刻度，且单列无从横向比较",
       "三色互斥堆叠横条：48 行在 14 in 高度下 y 标签竖向压字，x 轴全为 1.0 零信息量"
@@ -18,7 +19,7 @@
     "minmax_range": {
       "position_rmse_m": {
         "max": 2.162091102107092,
-        "min": 0.20497592464335546
+        "min": 0.1554664548762124
       },
       "terminal_position_error_m": {
         "max": 2.7120917380559404,
@@ -26,11 +27,11 @@
       },
       "max_position_error_m": {
         "max": 3.3460450901705006,
-        "min": 0.7003842008881261
+        "min": 0.6533349028783533
       },
       "control_energy": {
         "max": 974746.6088400864,
-        "min": 833906.5838703794
+        "min": 419494.8586632419
       }
     },
     "legacy_limits": {
@@ -50,7 +51,6 @@
     "Scripts/syslab/generate_status_matrix.py",
     "Scripts/syslab/generate_heatmap.py"
   ],
-  "g3_frozen_entry_count": 48,
   "resolution": 600,
   "family_breakdown": {
     "geometric": 6,
@@ -58,10 +58,11 @@
     "pid": 2,
     "linear": 4,
     "nonlinear": 5,
-    "optimal": 5,
+    "optimal": 7,
     "baseline": 1,
     "learning": 0
   },
+  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
   "schema": "mosim.typlot_chapter10_comparison.v1",
   "engine": "Syslab TyPlot",
   "radar_dimension_change_20260731": {
@@ -75,6 +76,7 @@
     ]
   },
   "figure_count_expected": 33,
-  "rmse_heatmap_removed_20260731": "单列 N×1 热图与 controller_ranking_rmse.png 同为 28 条 RMSE 排序，后者可直读数值、比长短，前者仅凭颜色估大小；属重复，删除。",
-  "status_matrix_scope_note": "原 controller_status_matrix.svg 为 28 条全 accepted 的文本表格（status 列恒等，作图无信息量）；TyPlot 版改为 G3 全 48 条状态矩阵（28 accepted / 20 executed-blocked）。"
+  "rmse_heatmap_removed_20260731": "单列 N×1 热图与 controller_ranking_rmse.png 同为 30 条 RMSE 排序，后者可直读数值、比长短，前者仅凭颜色估大小；属重复，删除。",
+  "status_matrix_scope_note": "原 controller_status_matrix.svg 为历史全 accepted 的文本表格（status 列恒等，作图无信息量）；当前图集保留 48 条状态索引供审计，但不再生成该重复图。",
+  "metric_source": "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）"
 }

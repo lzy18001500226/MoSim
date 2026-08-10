@@ -2,9 +2,9 @@ within MoSimQuadrotorModel.Experiment.Probes;
 model OfficialPidFullFeedbackZeroReferenceSmoke
   "Zero-reference full-feedback control using the official PID on the shared plant"
 
-  MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter controller
+  MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter controller 
     annotation(Placement(transformation(origin = {-48, 0}, extent = {{-32, -26}, {32, 26}})));
-  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
+  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant 
     annotation(Placement(transformation(origin = {70, 0}, extent = {{-42, -58}, {42, 58}})));
   Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
     each k = 1,
@@ -19,13 +19,13 @@ model OfficialPidFullFeedbackZeroReferenceSmoke
 
 equation
   controller.position_ref = {0.0, 0.0, 0.0};
-  connect(plant.position, controller.position_mea)
+  connect(plant.position, controller.position_mea) 
     annotation(Line(points = {{28, -18}, {8, -18}, {8, -34}, {-48, -34}, {-48, -26}}, color = {0, 0, 127}));
   connect(plant.position, velocity_estimator.u);
   connect(velocity_estimator.y, controller.velocity_mea);
-  connect(plant.attitude, controller.attitude_mea)
+  connect(plant.attitude, controller.attitude_mea) 
     annotation(Line(points = {{28, -18}, {8, -18}, {8, -34}, {-48, -34}, {-48, -26}}, color = {0, 0, 127}));
-  connect(controller.rotor_command, plant.rotor_command)
+  connect(controller.rotor_command, plant.rotor_command) 
     annotation(Line(points = {{-16, 0}, {28, 0}}, color = {0, 0, 127}));
 
   position = plant.position;

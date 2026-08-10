@@ -51,9 +51,24 @@ def test_startup_context_is_task_local() -> None:
     assert "A given path has at most one active writer" in agents
     assert "independent repository worktree and branch" in agents
     assert "Context compaction is an internal continuation boundary, not task completion." in agents
+    assert "A direct request to explain why execution stopped" in agents
     assert "Context compaction is not task completion." in context
+    assert "A direct request to explain why execution stopped" in context
     assert "Compaction is not a completion signal" in operating_model
+    assert "A direct request to explain why execution stopped" in operating_model
     assert "Do not ask for a replacement task or report completion solely because" in operating_model
+    assert "active Goal from the same in-flight session" in agents
+    assert "A recovered goal, task plan, completion marker" in agents
+    assert "A newer direct user instruction always wins." in agents
+    assert "active same-session Goal" in context
+    assert "A recovered goal, plan, completion marker" in context
+    assert "The newest direct user instruction always wins." in context
+    assert "active Goal from the same in-flight session" in operating_model
+    assert "A recovered goal, task plan, completion marker" in operating_model
+    assert "a newer direct user request still wins." in operating_model
+    for startup_text in (agents, context, operating_model):
+        assert "Do not silently end after the startup reads." in startup_text
+        assert "before asking the user for it or marking the task blocked" in " ".join(startup_text.split())
 
 
 def test_startup_context_cannot_embed_cross_task_routing() -> None:

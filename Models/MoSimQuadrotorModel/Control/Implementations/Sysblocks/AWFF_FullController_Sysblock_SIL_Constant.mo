@@ -7,33 +7,33 @@ model AWFF_FullController_Sysblock_SIL_Constant "AWFF full controller constant-i
     experiment(DoublePrecision=false,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.01,StoreEventValue=0),
     Diagram(coordinateSystem(extent={{-260,-220},{220,220}},grid={2,2})));
 
-  SysplorerEmbeddedCoder.Sources.Constant x_error_source(k=0.05)
+  SysplorerEmbeddedCoder.Sources.Constant x_error_source(k=0.05) 
     annotation(Placement(transformation(origin={-220,180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
-  SysplorerEmbeddedCoder.Sources.Constant y_error_source(k=-0.03)
+  SysplorerEmbeddedCoder.Sources.Constant y_error_source(k=-0.03) 
     annotation(Placement(transformation(origin={-220,130},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
-  SysplorerEmbeddedCoder.Sources.Constant z_error_source(k=0.1)
+  SysplorerEmbeddedCoder.Sources.Constant z_error_source(k=0.1) 
     annotation(Placement(transformation(origin={-220,80},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
-  SysplorerEmbeddedCoder.Sources.Constant z_ref_rate_source(k=0.0)
+  SysplorerEmbeddedCoder.Sources.Constant z_ref_rate_source(k=0.0) 
     annotation(Placement(transformation(origin={-220,30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
-  SysplorerEmbeddedCoder.Sources.Constant roll_mea_source(k=0.01)
+  SysplorerEmbeddedCoder.Sources.Constant roll_mea_source(k=0.01) 
     annotation(Placement(transformation(origin={-220,-30},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
-  SysplorerEmbeddedCoder.Sources.Constant pitch_mea_source(k=-0.01)
+  SysplorerEmbeddedCoder.Sources.Constant pitch_mea_source(k=-0.01) 
     annotation(Placement(transformation(origin={-220,-80},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
-  SysplorerEmbeddedCoder.Sources.Constant yaw_mea_source(k=0.02)
+  SysplorerEmbeddedCoder.Sources.Constant yaw_mea_source(k=0.02) 
     annotation(Placement(transformation(origin={-220,-130},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
-  SysplorerEmbeddedCoder.Sources.Constant yaw_ref_source(k=0.0)
+  SysplorerEmbeddedCoder.Sources.Constant yaw_ref_source(k=0.0) 
     annotation(Placement(transformation(origin={-220,-180},extent={{-10,-10},{10,10}})),__MWORKS(BlockSystem(SampleTime(auto=true,group="D1")=0.01,Instance(y(Type(inherit=InheritType.constantValue,ref="double"),Dimension=1),k(Type(ref="double"),Dimension=1)))));
 
-  MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_FullController_Sysblock controller
+  MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_FullController_Sysblock controller 
     annotation(Placement(transformation(origin={-20,0},extent={{-55,-55},{55,55}})));
 
-  SysplorerEmbeddedCoder.Port.Outport y
+  SysplorerEmbeddedCoder.Port.Outport y 
     annotation(Placement(transformation(origin={160,120},extent={{-10,-10},{10,10}}),iconTransformation(origin={101.8,75},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport y1
+  SysplorerEmbeddedCoder.Port.Outport y1 
     annotation(Placement(transformation(origin={160,40},extent={{-10,-10},{10,10}}),iconTransformation(origin={101.8,25},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport y2
+  SysplorerEmbeddedCoder.Port.Outport y2 
     annotation(Placement(transformation(origin={160,-40},extent={{-10,-10},{10,10}}),iconTransformation(origin={101.8,-25},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport y3
+  SysplorerEmbeddedCoder.Port.Outport y3 
     annotation(Placement(transformation(origin={160,-120},extent={{-10,-10},{10,10}}),iconTransformation(origin={101.8,-75},extent={{-1.8,-1.8},{1.8,1.8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
 
   model ModelWorkspace

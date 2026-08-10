@@ -14,7 +14,6 @@ In the current MoSim workflow, ordinary work starts from:
 ```text
 AGENTS.md
 Docs/Workflows/new_conversation_context.md
-Docs/Workflows/mainline_operations_board.md
 Docs/Workflows/single_thread_operating_model.md
 task-specific Docs/Workflows or Docs/Skills entries
 ```

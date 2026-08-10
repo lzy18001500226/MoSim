@@ -41,6 +41,12 @@ report's builder without a bounded adapter-design review.
    the Git host limit remains local or uses an explicitly approved LFS/release
    route; it is not compressed merely to force a Git commit.
 
+For disposable MathType pilot work, use the standing authorization and stop
+conditions in `Docs/Workflows/template_based_word_export.md`. Routine
+pilot-owned Word/MathType lifecycle actions and one-formula pilot validation
+are authorized without a new per-action prompt; the authoritative report and
+unrelated processes remain outside that authorization.
+
 ## Stop Conditions
 
 Stop and report the exact blocker for missing source/template/image paths,

@@ -1242,7 +1242,7 @@ const OFFLINE_PROFILES = Dict(
             return "当前控制器不可写入：" * reason
         end
         if controller.id == "official_pid"
-            return "ROTOR_COMMAND / OfficialPidFormalRunner"
+            return "ROTOR_COMMAND / OfficialPidSingleUavGoldenRunner"
         elseif controller.id == "px4ctrl"
             return task.vehicle_count == 3 ?
                 "ROTOR_COMMAND / Px4CtrlThreeUavFigure8Runner" :

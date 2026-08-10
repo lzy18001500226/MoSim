@@ -11,7 +11,7 @@
   "source_authorities": {
     "seven_scenario_profiles": "Config/control_platform/seven_scenario_experiment_profiles.json",
     "formal_harness_policy": "Config/control_platform/formal_closed_loop_harness_map.json",
-    "current_task_board": "Docs/Workflows/mainline_operations_board.md",
+    "historical_status_archive": "Docs/Workflows/mainline_operations_board.md",
     "formal_runner_directory": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal"
   },
   "app_boundary": {

@@ -5,6 +5,7 @@
 
   <arg name="vehicle" default="sunray150_with_mid360"/>
   <arg name="uav_id" default="1"/>
+  <arg name="mavros_conn_timeout_s" default="60.0"/>
   <arg name="ID" value="$(eval arg('uav_id') - 1)"/>
   <arg name="interactive" default="true"/>
   <arg unless="$(arg interactive)" name="px4_command_arg1" value=""/>
@@ -17,5 +18,7 @@
     <include file="$(find sunray_simulator)/launch_basic/sunray_mavros_sim.launch">
       <arg name="ID" value="$(arg ID)"/>
     </include>
+    <!-- Apply the project-owned startup timeout after the upstream config load. -->
+    <param name="mavros/conn/timeout" value="$(arg mavros_conn_timeout_s)"/>
   </group>
 </launch>

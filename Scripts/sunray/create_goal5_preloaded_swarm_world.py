@@ -16,6 +16,41 @@ import subprocess
 from pathlib import Path
 
 
+P3D_PLUGIN_PATTERN = re.compile(
+    r"(?P<opening><plugin\b(?=[^>]*\bname=(?P<quote>['\"])p3d_base_controller(?P=quote))[^>]*>)"
+    r"(?P<body>.*?)"
+    r"(?P<closing></plugin>)",
+    re.DOTALL,
+)
+P3D_NAMESPACE_PATTERN = re.compile(
+    r"(?P<opening><robotNamespace\b[^>]*>).*?(?P<closing></robotNamespace>)",
+    re.DOTALL,
+)
+
+
+def namespace_p3d_truth_topic(model: str, uid: int) -> str:
+    """Bind the preloaded P3D truth publisher to its UAV ROS namespace."""
+
+    def replace_plugin(match: re.Match[str]) -> str:
+        body = match.group("body")
+        namespace = f"/uav{uid}"
+        if P3D_NAMESPACE_PATTERN.search(body):
+            body = P3D_NAMESPACE_PATTERN.sub(
+                rf"\g<opening>{namespace}\g<closing>", body, count=1
+            )
+        else:
+            body = f"\n      <robotNamespace>{namespace}</robotNamespace>{body}"
+        return f"{match.group('opening')}{body}{match.group('closing')}"
+
+    namespaced_model, replacements = P3D_PLUGIN_PATTERN.subn(replace_plugin, model)
+    if replacements != 1:
+        raise RuntimeError(
+            f"expected one p3d_base_controller plugin in rendered SDF for uav{uid}; "
+            f"found {replacements}"
+        )
+    return namespaced_model
+
+
 def render_model(
     sunray_ws: Path,
     vehicle: str,
@@ -55,6 +90,7 @@ def render_model(
         f"<model name='uav{uid}'>\n    <pose>{x:.6f} {y:.6f} {z:.6f} 0 0 {yaw:.6f}</pose>",
         1,
     )
+    model = namespace_p3d_truth_topic(model, uid)
     return "\n".join("    " + line if line.strip() else line for line in model.splitlines())
 
 

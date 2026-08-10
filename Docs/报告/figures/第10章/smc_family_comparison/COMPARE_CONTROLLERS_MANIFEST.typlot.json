@@ -2,7 +2,7 @@
   "radar_scores": {
     "Control Energy": 0.0,
     "Max Error": 0.0,
-    "Position RMSE": 0.05645144724506297,
+    "Position RMSE": 0.05505862012886672,
     "Terminal Error": 0.0
   },
   "family": "滑模族",
@@ -26,7 +26,7 @@
   "resolution": 600,
   "family_slug": "sliding",
   "schema": "mosim.typlot_controller_comparison.v1",
-  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv",
+  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
   "engine": "Syslab TyPlot",
   "family_median": {
     "position_rmse_m": 2.0516091179139857,
@@ -34,5 +34,5 @@
     "max_position_error_m": 3.3460450901705006,
     "control_energy": 974746.6088400864
   },
-  "metric_source": "Results/control_platform/phase2_full_48_climbpath/<controller>/metrics/metrics.csv（冻结值，未重算）"
+  "metric_source": "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）"
 }

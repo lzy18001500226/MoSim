@@ -40,6 +40,8 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
         bSceneReviewOnly || bSimulationReview || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPreviewMap"));
     const bool bDisablePlayback =
         bSceneReviewOnly || FParse::Param(FCommandLine::Get(), TEXT("MoSimNoPlayback"));
+    const bool bLiveTrajectoryTrail = FParse::Param(FCommandLine::Get(), TEXT("MoSimLiveTrajectoryTrail"));
+    const bool bRequireLiveStateMirror = FParse::Param(FCommandLine::Get(), TEXT("MoSimRequireLiveStateMirror"));
     FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackActorCount="), PlaybackActorCount);
     FParse::Value(FCommandLine::Get(), TEXT("MoSimPlaybackBaseUdpPort="), PlaybackBaseUdpPort);
     FParse::Value(FCommandLine::Get(), TEXT("MoSimObservabilityRunId="), ObservabilityRunId);
@@ -157,12 +159,19 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
                 PlaybackActor->SetActorLabel(FString::Printf(TEXT("MWORKS_Quadrotor_Playback_%d"), Index + 1));
 #endif
                 PlaybackActor->MapActor = SpawnedMapActor;
+                if (bLiveTrajectoryTrail)
+                {
+                    PlaybackActor->bUpdateVisualHelpers = true;
+                    PlaybackActor->bShowTrajectoryTrail = true;
+                    PlaybackActor->bShowLocalPlan = false;
+                }
                 if (PlaybackActor->Receiver)
                 {
                     PlaybackActor->Receiver->StopReceiver();
                     PlaybackActor->Receiver->ListenPort = PlaybackBaseUdpPort + Index;
                     PlaybackActor->Receiver->ObservabilityRunId = ObservabilityRunId;
                     PlaybackActor->Receiver->MetricsOutputPath = Index == 0 ? UeReceiverMetricsOutputPath : FString();
+                    PlaybackActor->Receiver->bRequireLiveStateMirror = bRequireLiveStateMirror;
                     PlaybackActor->Receiver->StartReceiver();
                 }
                 SpawnedPlaybackActors.Add(PlaybackActor);
@@ -173,10 +182,11 @@ void AMoSimSceneLibraryGameMode::BeginPlay()
                 UE_LOG(
                     LogTemp,
                     Display,
-                    TEXT("MWORKS renderer spawned playback actor %d/%d udp_port=%d and linked map actor."),
+                    TEXT("MWORKS renderer spawned playback actor %d/%d udp_port=%d live_trajectory_trail=%s and linked map actor."),
                     Index + 1,
                     ClampedPlaybackActorCount,
-                    PlaybackBaseUdpPort + Index);
+                    PlaybackBaseUdpPort + Index,
+                    bLiveTrajectoryTrail ? TEXT("true") : TEXT("false"));
             }
             else
             {

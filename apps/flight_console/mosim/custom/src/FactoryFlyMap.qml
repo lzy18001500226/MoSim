@@ -15,7 +15,7 @@ Item {
     required property string runId
 
     property real minZoom: 1.0
-    property real maxZoom: 12.0
+    property real maxZoom: 48.0
     property real zoomFactor: minZoom
     property int maxTrackPoints: 1200
     property var actualTracksByVehicle: ({})

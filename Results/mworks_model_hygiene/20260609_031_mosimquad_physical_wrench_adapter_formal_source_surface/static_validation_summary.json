@@ -1,19 +1,12 @@
 {
-  "status": "failed",
+  "status": "passed",
   "static_only": true,
   "live_mworks_touched": false,
   "mworks_window_evidence_touched": false,
   "formal_source_materialized": true,
   "canonical_implementation_owned": true,
   "retired_predecessor_recorded": true,
-  "findings": [
-    {
-      "severity": "error",
-      "code": "canonical_anchor_missing",
-      "message": "missing canonical source anchor 'WrapperSurface wrapper;'",
-      "target": "Models/MoSimQuadrotorModel/Dynamics/PhysicalWrenchAdapter.mo"
-    }
-  ],
+  "findings": [],
   "evidence_files": [
     "Results/mworks_model_hygiene/20260609_031_mosimquad_physical_wrench_adapter_formal_source_surface/physical_wrench_adapter_surface_check.json",
     "Results/mworks_model_hygiene/20260609_031_mosimquad_physical_wrench_adapter_formal_source_surface/physical_wrench_adapter_surface_check.md"

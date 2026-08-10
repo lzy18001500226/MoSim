@@ -71,10 +71,14 @@ def test_px4ctrl_engineering_baseline_is_hash_bound_separately_from_shared_runne
     assert binding["formal_adapter"]["output_boundary"] == "ATTITUDE_THRUST"
     assert_source_hashes(binding)
 
-    runner_source = (ROOT / binding["target"]["model_file"]).read_text(encoding="utf-8")
-    assert "replaceable model Trajectory" in runner_source
-    assert "connect(reference.velocity_command, sampled_velocity_ref.u)" in runner_source
-    assert "connect(reference.acceleration_command, sampled_acceleration_ref.u)" in runner_source
+    public_runner_source = (ROOT / binding["target"]["model_file"]).read_text(encoding="utf-8")
+    effective_runner_source = (
+        ROOT / binding["formal_harness_feedback_boundary"]["effective_model_file"]
+    ).read_text(encoding="utf-8")
+    assert "extends Px4CtrlEquationBridgeFormalRunner;" in public_runner_source
+    assert "replaceable model Trajectory" in effective_runner_source
+    assert "connect(reference.velocity_command, sampled_velocity_ref.u)" in effective_runner_source
+    assert "connect(reference.acceleration_command, sampled_acceleration_ref.u)" in effective_runner_source
     roles = {source["role"] for source in binding["source_bindings"]}
     assert {
         "shared_sunray150_assembly",

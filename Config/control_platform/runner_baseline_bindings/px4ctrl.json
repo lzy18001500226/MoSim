@@ -10,26 +10,28 @@
   "target": {
     "model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo",
     "model_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
-    "model_sha256": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b"
+    "model_sha256": "46d22c5ec4b8052a04dcab17e696de08caffc16b3de4af27105cc9190cddd1a1"
   },
   "formal_adapter": {
-    "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlAttitudeThrustAdapter.mo",
-    "model_class": "MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter",
-    "model_sha256": "e3c97cd09041c2e53e744c74c49dec69383b462cdbe916fac3f5cb777f58e057",
+    "role": "active_formal_runner_baseline",
+    "model_file": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlEquationBridgeReportBaselineAdapter.mo",
+    "model_class": "MoSimQuadrotorModel.Control.Adapters.Px4CtrlEquationBridgeReportBaselineAdapter",
+    "model_sha256": "83bd5eba94eb5c8804c4ee4544d254ecefc380b57b57ddcc928793467e0291e3",
     "output_boundary": "ATTITUDE_THRUST",
     "implementation": {
-      "kind": "graphical_outer_loop_plus_equation_bridge",
+      "kind": "equation_bridge_report_baseline_reconstruction",
       "graphical_outer_loop_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
       "graphical_outer_loop_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock",
-      "graphical_outer_loop_sha256": "b021acd243d696bb3c99265e500b5cfbb95548938bf5f434c9f386d464046a8b",
+      "graphical_outer_loop_sha256": "bca781c657b77d93ad7d92343d75bf6fb16ee58f6d12c885bc3b90a2c2e10cbf",
       "bridge_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock",
-      "reason": "The native Sysblock graphical outer loop is the reviewable MWORKS controller artifact. The separately checked equation bridge is retained only to bind that outer-loop law to the shared ATTITUDE_THRUST whole-aircraft harness; this does not assert ROS1/C++ deployment equivalence."
+      "reason": "Px4CtrlFormalRunner restores the report-compatible EquationBridge closure. The native graphical outer loop remains an independent comparison route; neither route asserts ROS1/C++ deployment equivalence."
     }
   },
   "formal_harness_feedback_boundary": {
     "kind": "sampled_controller_inputs",
     "sample_period_s": 0.01,
     "initial_measurement": "zero",
+    "effective_model_file": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlEquationBridgeFormalRunner.mo",
     "signals": [
       "reference.position_command -> controller.position_ref",
       "reference.velocity_command -> controller.velocity_ref",
@@ -40,48 +42,61 @@
     "continuous_inner_loop_signals": [
       "plant.attitude -> offline_inner_allocator.attitude_mea"
     ],
-    "reason": "The px4ctrl MWORKS equation bridge receives 100 Hz sampled position, velocity, acceleration, and measurement inputs. The shared inner attitude-rate allocator remains directly connected to plant attitude."
+    "reason": "The report-compatible EquationBridge runner samples controller inputs at 100 Hz while preserving the continuous attitude measurement to the offline inner allocator."
+  },
+  "report_export_binding": {
+    "roll": "-controller.roll_mea",
+    "reason": "The report MSR export records roll as signed index column -17; all other named report columns use their direct source sign."
+  },
+  "execution_metadata": {
+    "kind": "runner_boundary_baseline",
+    "status_file_name": "RUNNER_BASELINE_STATUS.json"
   },
   "source_bindings": [
     {
       "role": "formal_runner",
       "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo",
-      "expected_sha256": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b"
+      "expected_sha256": "46d22c5ec4b8052a04dcab17e696de08caffc16b3de4af27105cc9190cddd1a1"
+    },
+    {
+      "role": "effective_equation_bridge_runner",
+      "path": "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlEquationBridgeFormalRunner.mo",
+      "expected_sha256": "ecb951604b6b95fa53baea5cf8fd43dba3ddc9611fa4d9000483b79187817c5e"
     },
     {
       "role": "formal_adapter",
-      "path": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlAttitudeThrustAdapter.mo",
-      "expected_sha256": "e3c97cd09041c2e53e744c74c49dec69383b462cdbe916fac3f5cb777f58e057"
+      "path": "Models/MoSimQuadrotorModel/Control/Adapters/Px4CtrlEquationBridgeReportBaselineAdapter.mo",
+      "expected_sha256": "83bd5eba94eb5c8804c4ee4544d254ecefc380b57b57ddcc928793467e0291e3"
     },
     {
       "role": "px4ctrl_equation_bridge",
       "path": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock.mo",
-      "expected_sha256": "8d0ddf71a58e0d2be5e8a8f8322fd6477bc8387ba687d308bf6a6f4812156bb4"
+      "expected_sha256": "4f82a8c1693baf0781d76523fe937a01eff737eec801c210980c1903847c81a7"
     },
     {
       "role": "px4ctrl_graphical_outer_loop",
       "path": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo",
-      "expected_sha256": "b021acd243d696bb3c99265e500b5cfbb95548938bf5f434c9f386d464046a8b"
+      "expected_sha256": "bca781c657b77d93ad7d92343d75bf6fb16ee58f6d12c885bc3b90a2c2e10cbf"
     },
     {
       "role": "shared_attitude_rate_allocator",
-      "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateAllocator.mo",
-      "expected_sha256": "9845d78c135f8a04431b1dafc80cf4e8e5eadf35f86904607e336b0264a75018"
+      "path": "Models/MoSimQuadrotorModel/Control/Allocation/OfflineAttitudeRateReportBaselineAllocator.mo",
+      "expected_sha256": "209d0db86347471f7754bd3b8da6dc5f7a616d859622ad52759a20f1096bea32"
     },
     {
       "role": "shared_sunray150_assembly",
-      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150Assembly.mo",
-      "expected_sha256": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6"
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sunray150EquationBridgeBaselineAssembly.mo",
+      "expected_sha256": "ec5c58eca7599c3821ed0885448a2d67652d37efdaa1b3ac66091d48f86dc0ab"
     },
     {
       "role": "physical_wrench_adapter",
       "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/PhysicalWrenchAdapter.mo",
-      "expected_sha256": "8dcd99a7115be813e3c50035085461e6c312db3546f880330d269887e4ed6222"
+      "expected_sha256": "a734da0774b811450ccf039d5d3dbdd817ae7c0d1dc35f41b173159914d9fd9f"
     },
     {
       "role": "wrapper_surface",
       "path": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
-      "expected_sha256": "b7b6293549224d22f7525d4b1c5a815c992f6a77fc3b8ab7dd9c2ca1b8dc3314"
+      "expected_sha256": "80b6bb66529aa72e6ec1e82934ea1cd31a976fd806528663e24c426dffb70cd8"
     },
     {
       "role": "rotor_actuator_core",
@@ -90,8 +105,8 @@
     },
     {
       "role": "plant_sensor_surface",
-      "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/package.mo",
-      "expected_sha256": "9c48815be7fd728f1f23d018a7059633f137035670767bea8e096f6a2856810b"
+      "path": "Models/MoSimQuadrotorModel/Vehicle/Sensors/ReportBaselineSensors.mo",
+      "expected_sha256": "4b76da9caff18e7b2198cc9316c29af52dd297e9d11c331beb813f7552f3c681"
     },
     {
       "role": "virtual_px4_classic_profile",
@@ -105,8 +120,17 @@
     }
   ],
   "model_layout_boundary": {
-    "state": "formal_runner_and_equation_bridge_not_deployment_equivalence_proof",
-    "reason": "The runner captures the sampled MWORKS whole-aircraft closure of the named px4ctrl equation bridge. It does not replace graphical-controller evidence or establish ROS1/C++ deployment equivalence."
+    "state": "report_compatible_equation_bridge_baseline_with_independent_graphical_comparison",
+    "reason": "The active formal runner is a behaviorally verified report-compatible EquationBridge closure. The graphical real-state runner remains independently testable and is not promoted by this binding."
   },
-  "claim_boundary": "Real offline MWORKS 50 s ClimbPath closure for the px4ctrl equation bridge. It establishes bounded MWORKS behavior only, not PX4, Gazebo, ROS, or flight-runtime behavior."
+  "report_provenance": {
+    "frozen_source_snapshot_available": false,
+    "frozen_source_hashes": {
+      "formal_runner": "4bd71540e637876ff886db5514d10d26ec970ceea05983ccc68dc4ded58b997b",
+      "sunray150_assembly": "ce05da3138643bca9041e4a226111b4c6b44131312b5c64f323933123c41b8d6",
+      "px4ctrl_adapter": "e3c97cd09041c2e53e744c74c49dec69383b462cdbe916fac3f5cb777f58e057"
+    },
+    "behavioral_regression": "Results/mworks_live_gate/px4ctrl_r1_equationbridge_regression_019e9868_20260807/formal_public_20260808/metrics/public_vs_report_binding_aware.json"
+  },
+  "claim_boundary": "Real offline MWORKS 50 s ClimbPath closure for the EquationBridge PX4CTRL report baseline. It establishes bounded MWORKS behavior only, not PX4, Gazebo, ROS, or flight-runtime behavior."
 }

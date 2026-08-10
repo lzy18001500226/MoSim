@@ -30,7 +30,7 @@ equation
   desired_body_rate[1] = angle_to_rate_gain * (desired_attitude[1] - attitude_mea[1]);
   desired_body_rate[2] = angle_to_rate_gain * (desired_attitude[2] - attitude_mea[2]);
   desired_body_rate[3] = -angle_to_rate_gain * attitude_mea[3];
-  der(altitude_integral) = if (altitude_integral >= integral_limit and position_error[3] > 0)
+  der(altitude_integral) = if (altitude_integral >= integral_limit and position_error[3] > 0) 
     or (altitude_integral <= -integral_limit and position_error[3] < 0) then 0 else position_error[3];
   collective_unsaturated = kp_z * position_error[3] + ki_z * altitude_integral
     - kd_z * velocity_mea[3];

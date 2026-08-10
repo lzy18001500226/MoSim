@@ -2,7 +2,7 @@
 """Validate a report-source edit decision artifact.
 
 This checker validates the human/PMO decision surface for applying previewed
-edits to `Docs/simulation_report.md`. It does not create or apply edits.
+edits to `Docs/报告/仿真分析报告_正文骨架.md`. It does not create or apply edits.
 """
 
 from __future__ import annotations
@@ -38,6 +38,8 @@ DEFAULT_OUTPUT_JSON = (
 )
 
 VALID_DECISIONS = ["pending_review", "approved", "rejected", "narrowed"]
+CANONICAL_REPORT_SOURCE = "Docs/报告/仿真分析报告_正文骨架.md"
+LEGACY_REPORT_SOURCE = "Docs/simulation_report.md"
 REQUIRED_BOUNDARIES = [
     "Do not claim final PMO acceptance.",
     "Do not claim final submission ready.",
@@ -179,8 +181,17 @@ def validate_decision_template(
     if not isinstance(applies_to, dict):
         issues.append("applies_to must be an object")
     else:
-        if applies_to.get("simulation_report") != "Docs/simulation_report.md":
-            issues.append("applies_to.simulation_report must be Docs/simulation_report.md")
+        report_source = applies_to.get("simulation_report")
+        if report_source not in {CANONICAL_REPORT_SOURCE, LEGACY_REPORT_SOURCE}:
+            issues.append(
+                "applies_to.simulation_report must be "
+                f"{CANONICAL_REPORT_SOURCE} (or the preserved historical {LEGACY_REPORT_SOURCE})"
+            )
+        elif report_source == LEGACY_REPORT_SOURCE:
+            warnings.append(
+                "decision artifact uses the preserved historical report path; "
+                f"new artifacts must use {CANONICAL_REPORT_SOURCE}"
+            )
         if applies_to.get("patch_preview") != rel(patch_preview_path):
             issues.append("applies_to.patch_preview must match the checked patch preview path")
 
@@ -206,7 +217,7 @@ def validate_decision_template(
         "warnings": warnings,
         "claim_boundary": [
             "This checker validates a decision artifact only.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not approve pending_review decisions.",
             "It does not export PDFs/video or write PMO final acceptance.",
         ],
@@ -234,7 +245,7 @@ def validate_paths(decision_path: Path, patch_preview_path: Path) -> dict[str, A
             "warnings": [],
             "claim_boundary": [
                 "This checker validates a decision artifact only.",
-                "It does not edit Docs/simulation_report.md.",
+                "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
                 "It does not approve pending_review decisions.",
                 "It does not export PDFs/video or write PMO final acceptance.",
             ],

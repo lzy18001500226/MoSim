@@ -31,6 +31,7 @@ class ClickedGoalAdapter:
         self.mission_ready_topic = rospy.get_param("~mission_ready_topic", "/mosim/goal4/interactive_goal_ready")
         self.require_mission_ready = bool(rospy.get_param("~require_mission_ready", True))
         self.odom_topic = rospy.get_param("~odom_topic", "/uav1/mavros/local_position/odom")
+        self.path_odom_topic = str(rospy.get_param("~path_odom_topic", "")).strip()
         self.frame_id = rospy.get_param("~frame_id", "world")
         self.target_z = float(rospy.get_param("~target_z", 1.0))
         self.use_clicked_z = bool(rospy.get_param("~use_clicked_z", False))
@@ -72,6 +73,7 @@ class ClickedGoalAdapter:
 
         self.last_odom: Odometry | None = None
         self.last_odom_wall: float | None = None
+        self.last_path_odom: Odometry | None = None
         self.ready_stable_since_wall: float | None = None
         self.last_ready_snapshot: dict | None = None
         self.mission_ready = not self.require_mission_ready
@@ -109,6 +111,8 @@ class ClickedGoalAdapter:
         rospy.Subscriber(self.nav_goal_topic, PoseStamped, self.on_nav_goal, queue_size=10)
         rospy.Subscriber(self.mission_ready_topic, Bool, self.on_mission_ready, queue_size=5)
         rospy.Subscriber(self.odom_topic, Odometry, self.on_odom, queue_size=20)
+        if self.path_odom_topic:
+            rospy.Subscriber(self.path_odom_topic, Odometry, self.on_path_odom, queue_size=20)
 
     @staticmethod
     def optional_float_param(name: str) -> float | None:
@@ -141,6 +145,9 @@ class ClickedGoalAdapter:
         else:
             self.ready_stable_since_wall = None
         self.try_release_queued_goal()
+
+    def on_path_odom(self, msg: Odometry) -> None:
+        self.last_path_odom = msg
 
     def on_mission_ready(self, msg: Bool) -> None:
         self.mission_ready = bool(msg.data)
@@ -902,13 +909,14 @@ class ClickedGoalAdapter:
 
         path = RosPath()
         path.header = Header(stamp=visual_goal.header.stamp, frame_id=self.frame_id)
-        if self.last_odom is not None:
+        path_odom = self.last_path_odom or self.last_odom
+        if path_odom is not None:
             current = PoseStamped()
             current.header = path.header
-            current.pose.position.x = self.last_odom.pose.pose.position.x
-            current.pose.position.y = self.last_odom.pose.pose.position.y
-            current.pose.position.z = self.last_odom.pose.pose.position.z
-            current.pose.orientation = self.last_odom.pose.pose.orientation
+            current.pose.position.x = path_odom.pose.pose.position.x
+            current.pose.position.y = path_odom.pose.pose.position.y
+            current.pose.position.z = path_odom.pose.pose.position.z
+            current.pose.orientation = path_odom.pose.pose.orientation
             path.poses.append(current)
         if self.last_path_goal is not None:
             prev_x, prev_y, prev_z = self.last_path_goal
@@ -945,6 +953,7 @@ class ClickedGoalAdapter:
                 None if self.last_mission_ready_wall is None else time.time() - self.last_mission_ready_wall
             ),
             "odom_topic": self.odom_topic,
+            "path_odom_topic": self.path_odom_topic,
             "frame_id": self.frame_id,
             "target_z": self.target_z,
             "use_clicked_z": self.use_clicked_z,

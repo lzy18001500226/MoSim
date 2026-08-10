@@ -62,6 +62,7 @@ GOAL5_STARTUP_ATTEMPT_INDEX="${GOAL5_STARTUP_ATTEMPT_INDEX:-1}"
 GOAL5_STARTUP_ATTEMPT_MAX="${GOAL5_STARTUP_ATTEMPT_MAX:-${GOAL5_STARTUP_ATTEMPTS}}"
 SWARM_BASELINE_ONLY="${SWARM_BASELINE_ONLY:-false}"
 GOAL5_STARTUP_ONLY="${GOAL5_STARTUP_ONLY:-false}"
+GOAL5_COMPONENTS_ONLY="${GOAL5_COMPONENTS_ONLY:-false}"
 POINTCLOUD_MAX_WORLD_Z_M_USER_SET="${POINTCLOUD_MAX_WORLD_Z_M+x}"
 POINTCLOUD_MAX_ABS_ODOM_XY_M_USER_SET="${POINTCLOUD_MAX_ABS_ODOM_XY_M+x}"
 RACER_FRAME_BRIDGE_ENABLED_USER_SET="${RACER_FRAME_BRIDGE_ENABLED+x}"
@@ -163,8 +164,10 @@ EGO_ENABLE_VIRTUAL_WALL="${EGO_ENABLE_VIRTUAL_WALL:-true}"
 EGO_CLOUD_ENABLE_RAYCAST="${EGO_CLOUD_ENABLE_RAYCAST:-true}"
 EGO_GOAL5_FLIGHT_TYPE="${EGO_GOAL5_FLIGHT_TYPE:-4}"
 EGO_GOAL5_PLANNER_TARGET_MODE="${EGO_GOAL5_PLANNER_TARGET_MODE:-goal}"
-DIFF_GOAL5_FLIGHT_TYPE="${DIFF_GOAL5_FLIGHT_TYPE:-2}"
-DIFF_GOAL5_PLANNER_TARGET_MODE="${DIFF_GOAL5_PLANNER_TARGET_MODE:-trigger}"
+# Diff-Planner C99/Diff-Swarm uses three independent known targets here.
+# Keep the sequential preset-trigger mode as an explicit caller override.
+DIFF_GOAL5_FLIGHT_TYPE="${DIFF_GOAL5_FLIGHT_TYPE:-1}"
+DIFF_GOAL5_PLANNER_TARGET_MODE="${DIFF_GOAL5_PLANNER_TARGET_MODE:-goal}"
 DIFF_GOAL5_GRID_INIT_X="${DIFF_GOAL5_GRID_INIT_X:-0.0}"
 DIFF_GOAL5_GRID_INIT_Y="${DIFF_GOAL5_GRID_INIT_Y:-0.0}"
 DIFF_GOAL5_GRID_INIT_Z="${DIFF_GOAL5_GRID_INIT_Z:-0.0}"
@@ -174,6 +177,19 @@ DIFF_GOAL5_MAP_SIZE_Z="${DIFF_GOAL5_MAP_SIZE_Z:-2.5}"
 DIFF_GOAL5_LOCAL_UPDATE_RANGE_X="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_X:-5.5}"
 DIFF_GOAL5_LOCAL_UPDATE_RANGE_Y="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_Y:-5.5}"
 DIFF_GOAL5_LOCAL_UPDATE_RANGE_Z="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_Z:-2.0}"
+DIFF_GOAL5_COMMON_WORLD_FRAME="${DIFF_GOAL5_COMMON_WORLD_FRAME:-false}"
+if [[ -z "${DIFF_GOAL5_PLANNER_ODOM_TOPIC_TEMPLATE+x}" ]]; then
+  DIFF_GOAL5_PLANNER_ODOM_TOPIC_TEMPLATE='/uav{uid}/mosim/diff_swarm/planner_odom_world'
+fi
+if [[ -z "${DIFF_GOAL5_PLANNER_GOAL_TOPIC_TEMPLATE+x}" ]]; then
+  DIFF_GOAL5_PLANNER_GOAL_TOPIC_TEMPLATE='/uav{uid}/mosim/diff_swarm/planner_goal_world'
+fi
+if [[ -z "${DIFF_GOAL5_PLANNER_POSITION_CMD_TOPIC_TEMPLATE+x}" ]]; then
+  DIFF_GOAL5_PLANNER_POSITION_CMD_TOPIC_TEMPLATE='/uav{uid}/mosim/diff_swarm/planner_position_cmd_world'
+fi
+if [[ -z "${DIFF_GOAL5_PLANNER_CLOUD_TOPIC_TEMPLATE+x}" ]]; then
+  DIFF_GOAL5_PLANNER_CLOUD_TOPIC_TEMPLATE='/uav{uid}/mosim/diff_swarm/planner_cloud_world'
+fi
 RACER_D3_EXPLORATION_DURATION_S="${RACER_D3_EXPLORATION_DURATION_S:-30.0}"
 RACER_D3_EXPLORATION_MAX_TRAJECTORY_STALE_S="${RACER_D3_EXPLORATION_MAX_TRAJECTORY_STALE_S:-10.0}"
 GOAL_PUBLISH_STAGGER_S="${GOAL_PUBLISH_STAGGER_S:-$(if [[ "${PLANNER_VARIANT}" == "racer" && "${UAV_NUM}" -gt 1 ]]; then echo 3.0; else echo 0.0; fi)}"
@@ -483,6 +499,23 @@ PY
     ;;
 esac
 
+case "${GOAL5_COMPONENTS_ONLY}" in
+  true|false)
+    ;;
+  *)
+    echo "GOAL5_COMPONENTS_ONLY must be true or false, got ${GOAL5_COMPONENTS_ONLY}" >&2
+    exit 2
+    ;;
+esac
+if [[ "${GOAL5_COMPONENTS_ONLY}" == "true" && "${GOAL5_STARTUP_ONLY}" == "true" ]]; then
+  echo "GOAL5_COMPONENTS_ONLY=true conflicts with GOAL5_STARTUP_ONLY=true" >&2
+  exit 2
+fi
+if [[ "${GOAL5_COMPONENTS_ONLY}" == "true" && "${PLANNER_VARIANT}" != "diff_planner" ]]; then
+  echo "GOAL5_COMPONENTS_ONLY currently supports PLANNER_VARIANT=diff_planner only" >&2
+  exit 2
+fi
+
 FACTORY_L2_MODEL_PATH_ACTIVE=false
 if [[ "${GOAL5_FACTORY_MODEL_PATH_MODE}" == "true" || ( "${GOAL5_FACTORY_MODEL_PATH_MODE}" == "auto" && "${WORLD_FILE}" == *"factory_l2_static_import"* ) ]]; then
   FACTORY_L2_MODEL_PATH_ACTIVE=true
@@ -561,6 +594,20 @@ PY
   "planner_variant": "${PLANNER_VARIANT}",
   "planner_workspace": "${PLANNER_WS}",
   "planner_launch": "${PLANNER_SWARM_LAUNCH}",
+  "target_coordinate_contract": "${C99_DIFF_TARGET_CONTRACT_FILE:-}",
+  "diff_planner_common_world_frame": {
+    "enabled": ${DIFF_GOAL5_COMMON_WORLD_FRAME},
+    "mission_target_frame": "$(if [[ "${DIFF_GOAL5_COMMON_WORLD_FRAME}" == "true" ]]; then echo mavros_local; else echo common_world; fi)",
+    "planner_target_frame": "common_world",
+    "planner_odom_topic_template": "${DIFF_GOAL5_PLANNER_ODOM_TOPIC_TEMPLATE}",
+    "planner_cloud_input_topic_template": "/uav{uid}/livox_world",
+    "planner_cloud_world_topic_template": "${DIFF_GOAL5_PLANNER_CLOUD_TOPIC_TEMPLATE}",
+    "mission_goal_topic_template": "${PLANNER_GOAL_TOPIC_TEMPLATE}",
+    "planner_goal_topic_template": "${DIFF_GOAL5_PLANNER_GOAL_TOPIC_TEMPLATE}",
+    "planner_position_cmd_world_topic_template": "${DIFF_GOAL5_PLANNER_POSITION_CMD_TOPIC_TEMPLATE}",
+    "px4_local_raw_position_cmd_topic_template": "/uav{uid}/planner_position_cmd_raw",
+    "bridge_claim_boundary": "When enabled, the Diff-Planner-only frame bridge translates local odom and local point cloud to common-world planner inputs, a local mission goal to a common-world planner goal, and a common-world planner PositionCommand back to PX4-local raw command. When disabled, these inputs and commands are already common-world. point-cloud and grid-map parameters are unchanged."
+  },
   "planner_launch_args": ${launch_args_json},
   "swarm_formation_command_topology": {
     "enabled": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi),
@@ -647,6 +694,7 @@ write_startup_run_inputs_manifest() {
   "uav_num": ${UAV_NUM},
   "planner_workspace": "${PLANNER_WS}",
   "planner_launch": "${PLANNER_SWARM_LAUNCH}",
+  "target_coordinate_contract": "${C99_DIFF_TARGET_CONTRACT_FILE:-}",
   "planner_launch_args": null,
   "swarm_formation_command_topology": {
     "enabled": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi),
@@ -699,8 +747,8 @@ topic_for_uid() {
   local template="$1"
   local uid="$2"
   local drone_id=$((uid - 1))
-  local topic="${template//\{uid\}/${uid}}"
-  topic="${topic//\{drone_id\}/${drone_id}}"
+  local topic="${template}"
+  topic="$(printf '%s' "${topic}" | sed "s/{uid}/${uid}/g; s/{drone_id}/${drone_id}/g")"
   printf '%s' "${topic}"
 }
 
@@ -2275,6 +2323,7 @@ else
 
   roslaunch "${GOAL5_GAZEBO_LAUNCH}" \
     uav_num:="${UAV_NUM}" vehicle:="${VEHICLE}" gui:="${GUI}" world:="${GOAL5_WORLD_FILE}" use_sim_time:="${USE_SIM_TIME}" \
+    mavros_conn_timeout_s:="${MAVROS_CONN_TIMEOUT_S}" \
     uav1_init_x:="${START1_X}" uav1_init_y:="${START1_Y}" \
     uav2_init_x:="${START2_X}" uav2_init_y:="${START2_Y}" \
     uav3_init_x:="${START3_X}" uav3_init_y:="${START3_Y}" \
@@ -2851,6 +2900,70 @@ EOF
   exit "${MISSION_EXIT_CODE}"
 fi
 
+if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL5_COMMON_WORLD_FRAME}" == "true" ]]; then
+  for uid in $(seq 1 "${UAV_NUM}"); do
+    read -r start_x start_y <<< "$(start_xy_for_uid "${uid}")"
+    planner_odom_topic="$(topic_for_uid "${DIFF_GOAL5_PLANNER_ODOM_TOPIC_TEMPLATE}" "${uid}")"
+    planner_cloud_topic="$(topic_for_uid "${DIFF_GOAL5_PLANNER_CLOUD_TOPIC_TEMPLATE}" "${uid}")"
+    planner_goal_topic="$(topic_for_uid "${DIFF_GOAL5_PLANNER_GOAL_TOPIC_TEMPLATE}" "${uid}")"
+    planner_cmd_world_topic="$(topic_for_uid "${DIFF_GOAL5_PLANNER_POSITION_CMD_TOPIC_TEMPLATE}" "${uid}")"
+    mission_goal_topic="$(topic_for_uid "${PLANNER_GOAL_TOPIC_TEMPLATE}" "${uid}")"
+
+    python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+      _message_type:=odom \
+      _direction:=local_to_world \
+      _input_topic:="/uav${uid}/mavros/local_position/odom" \
+      _output_topic:="${planner_odom_topic}" \
+      _offset_x:="${start_x}" \
+      _offset_y:="${start_y}" \
+      _offset_z:=0.0 \
+      _output_frame_id:=world \
+      _diagnostics_path:="${RESULT_DIR}/uav${uid}_diff_planner_odom_world_bridge.json" \
+      > "${RESULT_DIR}/uav${uid}_diff_planner_odom_world_bridge.log" 2>&1 &
+    PIDS+=("$!")
+
+    python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+      _message_type:=cloud \
+      _direction:=local_to_world \
+      _input_topic:="/uav${uid}/livox_world" \
+      _output_topic:="${planner_cloud_topic}" \
+      _offset_x:="${start_x}" \
+      _offset_y:="${start_y}" \
+      _offset_z:=0.0 \
+      _output_frame_id:=world \
+      _diagnostics_path:="${RESULT_DIR}/uav${uid}_diff_planner_cloud_world_bridge.json" \
+      > "${RESULT_DIR}/uav${uid}_diff_planner_cloud_world_bridge.log" 2>&1 &
+    PIDS+=("$!")
+
+    python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+      _message_type:=pose \
+      _direction:=local_to_world \
+      _input_topic:="${mission_goal_topic}" \
+      _output_topic:="${planner_goal_topic}" \
+      _offset_x:="${start_x}" \
+      _offset_y:="${start_y}" \
+      _offset_z:=0.0 \
+      _output_frame_id:=world \
+      _diagnostics_path:="${RESULT_DIR}/uav${uid}_diff_planner_goal_world_bridge.json" \
+      > "${RESULT_DIR}/uav${uid}_diff_planner_goal_world_bridge.log" 2>&1 &
+    PIDS+=("$!")
+
+    python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+      _message_type:=position_cmd \
+      _direction:=world_to_local \
+      _input_topic:="${planner_cmd_world_topic}" \
+      _output_topic:="/uav${uid}/planner_position_cmd_raw" \
+      _offset_x:="${start_x}" \
+      _offset_y:="${start_y}" \
+      _offset_z:=0.0 \
+      _output_frame_id:=world \
+      _diagnostics_path:="${RESULT_DIR}/uav${uid}_diff_planner_position_cmd_local_bridge.json" \
+      > "${RESULT_DIR}/uav${uid}_diff_planner_position_cmd_local_bridge.log" 2>&1 &
+    PIDS+=("$!")
+  done
+  sleep 1
+fi
+
 if [[ "${EGO_CMD_SAFETY_ENABLE}" == "true" ]]; then
   SAFETY_ADAPTER_UIDS=($(seq 1 "${UAV_NUM}"))
   if [[ "${PLANNER_VARIANT}" == "swarm_formation" && "${SWARM_FORMATION_D3_LEADER_FOLLOWER_COMMANDS}" == "true" ]]; then
@@ -3045,16 +3158,68 @@ elif [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then
     rigid_leader_follower_mode:="${SWARM_FORMATION_D3_RIGID_LEADER_FOLLOWER_MODE}"
   )
 else
+  DIFF_PLANNER_TARGET1_X="${TARGET1_X}"
+  DIFF_PLANNER_TARGET1_Y="${TARGET1_Y}"
+  DIFF_PLANNER_TARGET1_Z="${TARGET1_Z}"
+  DIFF_PLANNER_TARGET2_X="${TARGET2_X}"
+  DIFF_PLANNER_TARGET2_Y="${TARGET2_Y}"
+  DIFF_PLANNER_TARGET2_Z="${TARGET2_Z}"
+  DIFF_PLANNER_TARGET3_X="${TARGET3_X}"
+  DIFF_PLANNER_TARGET3_Y="${TARGET3_Y}"
+  DIFF_PLANNER_TARGET3_Z="${TARGET3_Z}"
+  if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL5_COMMON_WORLD_FRAME}" == "true" ]]; then
+    read -r DIFF_PLANNER_TARGET1_X DIFF_PLANNER_TARGET1_Y DIFF_PLANNER_TARGET1_Z \
+      DIFF_PLANNER_TARGET2_X DIFF_PLANNER_TARGET2_Y DIFF_PLANNER_TARGET2_Z \
+      DIFF_PLANNER_TARGET3_X DIFF_PLANNER_TARGET3_Y DIFF_PLANNER_TARGET3_Z < <(
+      python3 - "${START1_X}" "${START1_Y}" "${START2_X}" "${START2_Y}" "${START3_X}" "${START3_Y}" \
+        "${TARGET1_X}" "${TARGET1_Y}" "${TARGET1_Z}" \
+        "${TARGET2_X}" "${TARGET2_Y}" "${TARGET2_Z}" \
+        "${TARGET3_X}" "${TARGET3_Y}" "${TARGET3_Z}" <<'PY'
+import sys
+
+starts = [
+    (float(sys.argv[1]), float(sys.argv[2])),
+    (float(sys.argv[3]), float(sys.argv[4])),
+    (float(sys.argv[5]), float(sys.argv[6])),
+]
+targets = [
+    (float(sys.argv[7]), float(sys.argv[8]), float(sys.argv[9])),
+    (float(sys.argv[10]), float(sys.argv[11]), float(sys.argv[12])),
+    (float(sys.argv[13]), float(sys.argv[14]), float(sys.argv[15])),
+]
+planner_targets = []
+for (sx, sy), (tx, ty, tz) in zip(starts, targets):
+    planner_targets.extend((tx + sx, ty + sy, tz))
+print(*planner_targets)
+PY
+    )
+  fi
   PLANNER_SWARM_LAUNCH_ARGS+=(
-    target1_x:="${TARGET1_X}" target1_y:="${TARGET1_Y}" target1_z:="${TARGET1_Z}"
-    target2_x:="${TARGET2_X}" target2_y:="${TARGET2_Y}" target2_z:="${TARGET2_Z}"
-    target3_x:="${TARGET3_X}" target3_y:="${TARGET3_Y}" target3_z:="${TARGET3_Z}"
+    target1_x:="${DIFF_PLANNER_TARGET1_X}" target1_y:="${DIFF_PLANNER_TARGET1_Y}" target1_z:="${DIFF_PLANNER_TARGET1_Z}"
+    target2_x:="${DIFF_PLANNER_TARGET2_X}" target2_y:="${DIFF_PLANNER_TARGET2_Y}" target2_z:="${DIFF_PLANNER_TARGET2_Z}"
+    target3_x:="${DIFF_PLANNER_TARGET3_X}" target3_y:="${DIFF_PLANNER_TARGET3_Y}" target3_z:="${DIFF_PLANNER_TARGET3_Z}"
     max_vel:="${EGO_MAX_VEL}" max_acc:="${EGO_MAX_ACC}" planning_horizon:="${EGO_PLANNING_HORIZON}"
     grid_init_x:="${DIFF_GOAL5_GRID_INIT_X}" grid_init_y:="${DIFF_GOAL5_GRID_INIT_Y}" grid_init_z:="${DIFF_GOAL5_GRID_INIT_Z}"
     map_size_x:="${DIFF_GOAL5_MAP_SIZE_X}" map_size_y:="${DIFF_GOAL5_MAP_SIZE_Y}" map_size_z:="${DIFF_GOAL5_MAP_SIZE_Z}"
     local_update_range_x:="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_X}" local_update_range_y:="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_Y}" local_update_range_z:="${DIFF_GOAL5_LOCAL_UPDATE_RANGE_Z}"
     flight_type:="${PLANNER_FLIGHT_TYPE}"
   )
+  if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL5_COMMON_WORLD_FRAME}" == "true" ]]; then
+    PLANNER_SWARM_LAUNCH_ARGS+=(
+      uav1_odom_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_ODOM_TOPIC_TEMPLATE}" 1)"
+      uav2_odom_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_ODOM_TOPIC_TEMPLATE}" 2)"
+      uav3_odom_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_ODOM_TOPIC_TEMPLATE}" 3)"
+      uav1_global_pointcloud_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_CLOUD_TOPIC_TEMPLATE}" 1)"
+      uav2_global_pointcloud_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_CLOUD_TOPIC_TEMPLATE}" 2)"
+      uav3_global_pointcloud_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_CLOUD_TOPIC_TEMPLATE}" 3)"
+      uav1_position_cmd_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_POSITION_CMD_TOPIC_TEMPLATE}" 1)"
+      uav2_position_cmd_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_POSITION_CMD_TOPIC_TEMPLATE}" 2)"
+      uav3_position_cmd_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_POSITION_CMD_TOPIC_TEMPLATE}" 3)"
+      uav1_goal_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_GOAL_TOPIC_TEMPLATE}" 1)"
+      uav2_goal_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_GOAL_TOPIC_TEMPLATE}" 2)"
+      uav3_goal_topic:="$(topic_for_uid "${DIFF_GOAL5_PLANNER_GOAL_TOPIC_TEMPLATE}" 3)"
+    )
+  fi
 fi
 if [[ "${PLANNER_VARIANT}" == "diff_planner" ]]; then
   PLANNER_SWARM_LAUNCH_ARGS+=(
@@ -3075,6 +3240,144 @@ roslaunch "${PLANNER_SWARM_LAUNCH}" \
   > "${RESULT_DIR}/planner_swarm_px4ctrl_goal5.log" 2>&1 &
 PIDS+=("$!")
 sleep 4
+
+if [[ "${GOAL5_COMPONENTS_ONLY}" == "true" ]]; then
+  if [[ "${KEEP_ALIVE:-false}" != "true" ]]; then
+    echo "GOAL5_COMPONENTS_ONLY=true requires KEEP_ALIVE=true so this runner retains ownership of its runtime processes" >&2
+    exit 2
+  fi
+
+  cat > "${RESULT_DIR}/c99_diff_swarm_component_contract.env" <<EOF
+RUN_ID=${RUN_ID}
+RESULT_DIR=${RESULT_DIR}
+PROJECT_ROOT=${PROJECT_ROOT}
+LOCAL_ROS1_WS=${LOCAL_ROS1_WS}
+PX4CTRL_WS=${PX4CTRL_WS}
+PLANNER_WS=${PLANNER_WS}
+PLANNER_VARIANT=${PLANNER_VARIANT}
+UAV_NUM=${UAV_NUM}
+START1_X=${START1_X}
+START1_Y=${START1_Y}
+START2_X=${START2_X}
+START2_Y=${START2_Y}
+START3_X=${START3_X}
+START3_Y=${START3_Y}
+TARGET1_X=${TARGET1_X}
+TARGET1_Y=${TARGET1_Y}
+TARGET1_Z=${TARGET1_Z}
+TARGET2_X=${TARGET2_X}
+TARGET2_Y=${TARGET2_Y}
+TARGET2_Z=${TARGET2_Z}
+TARGET3_X=${TARGET3_X}
+TARGET3_Y=${TARGET3_Y}
+TARGET3_Z=${TARGET3_Z}
+TARGET1_CHAIN_FILE=${TARGET1_CHAIN_FILE}
+TARGET2_CHAIN_FILE=${TARGET2_CHAIN_FILE}
+TARGET3_CHAIN_FILE=${TARGET3_CHAIN_FILE}
+FORMATION_CENTER_CHAIN_FILE=${FORMATION_CENTER_CHAIN_FILE}
+TARGET_CHAIN_MAX_GOALS=${TARGET_CHAIN_MAX_GOALS}
+TARGET_CHAIN_GOAL_TIMEOUT_S=${TARGET_CHAIN_GOAL_TIMEOUT_S}
+TARGET_CHAIN_GOAL_WALL_TIMEOUT_S=${TARGET_CHAIN_GOAL_WALL_TIMEOUT_S}
+PLANNER_TARGET_MODE=${PLANNER_TARGET_MODE}
+PLANNER_GOAL_TOPIC_TEMPLATE=${PLANNER_GOAL_TOPIC_TEMPLATE}
+GOAL_PUBLISH_STAGGER_S=${GOAL_PUBLISH_STAGGER_S}
+EGO_GATE_FORMATION_TARGET_RECOVERY_MAX_ATTEMPTS=${EGO_GATE_FORMATION_TARGET_RECOVERY_MAX_ATTEMPTS}
+EGO_GATE_FORMATION_TARGET_RECOVERY_STALL_S=${EGO_GATE_FORMATION_TARGET_RECOVERY_STALL_S}
+EGO_GATE_FORMATION_TARGET_RECOVERY_WALL_STALL_S=${EGO_GATE_FORMATION_TARGET_RECOVERY_WALL_STALL_S}
+EGO_GATE_FORMATION_TARGET_RECOVERY_MIN_IMPROVEMENT_M=${EGO_GATE_FORMATION_TARGET_RECOVERY_MIN_IMPROVEMENT_M}
+EGO_GATE_TAKEOFF_HEIGHT=${EGO_GATE_TAKEOFF_HEIGHT}
+EGO_CMD_SAFETY_MIN_Z=${EGO_CMD_SAFETY_MIN_Z}
+EGO_CMD_SAFETY_MAX_POSITION_JUMP_M=${EGO_CMD_SAFETY_MAX_POSITION_JUMP_M}
+EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS=${EGO_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS}
+EGO_GATE_MIN_INTER_UAV_DISTANCE=${EGO_GATE_MIN_INTER_UAV_DISTANCE}
+EGO_GATE_INTER_UAV_EMERGENCY_HOLD_ENABLE=${EGO_GATE_INTER_UAV_EMERGENCY_HOLD_ENABLE}
+EGO_GATE_INTER_UAV_EMERGENCY_DECELERATION_MPS2=${EGO_GATE_INTER_UAV_EMERGENCY_DECELERATION_MPS2}
+EGO_GATE_INTER_UAV_EMERGENCY_MARGIN_M=${EGO_GATE_INTER_UAV_EMERGENCY_MARGIN_M}
+EGO_GATE_INTER_UAV_EMERGENCY_MIN_CLOSING_SPEED_MPS=${EGO_GATE_INTER_UAV_EMERGENCY_MIN_CLOSING_SPEED_MPS}
+EGO_GATE_INTER_UAV_EMERGENCY_ODOM_TIMEOUT_S=${EGO_GATE_INTER_UAV_EMERGENCY_ODOM_TIMEOUT_S}
+EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY=${EGO_GATE_BLOCK_ON_RAW_CMD_DISCONTINUITY}
+EGO_GATE_READY_TIMEOUT_S=${EGO_GATE_READY_TIMEOUT_S}
+MAVROS_READY_MIN_STATE_SAMPLES=${MAVROS_READY_MIN_STATE_SAMPLES}
+MAVROS_READY_STABLE_WALL_S=${MAVROS_READY_STABLE_WALL_S}
+EGO_GATE_TAKEOFF_TIMEOUT_S=${EGO_GATE_TAKEOFF_TIMEOUT_S}
+EGO_GATE_TAKEOFF_WALL_TIMEOUT_S=${EGO_GATE_TAKEOFF_WALL_TIMEOUT_S}
+EGO_GATE_EGO_TAKEOVER_TIMEOUT_S=${EGO_GATE_EGO_TAKEOVER_TIMEOUT_S}
+EGO_GATE_EXECUTE_TIMEOUT_S=${EGO_GATE_EXECUTE_TIMEOUT_S}
+EGO_GATE_EXECUTE_WALL_TIMEOUT_S=${EGO_GATE_EXECUTE_WALL_TIMEOUT_S}
+EGO_GATE_LAND_TIMEOUT_S=${EGO_GATE_LAND_TIMEOUT_S}
+EGO_GATE_LAND_WALL_TIMEOUT_S=${EGO_GATE_LAND_WALL_TIMEOUT_S}
+EGO_GATE_PRE_LAND_HOVER_S=${EGO_GATE_PRE_LAND_HOVER_S}
+EGO_GATE_PRE_LAND_NO_CMD_S=${EGO_GATE_PRE_LAND_NO_CMD_S}
+EGO_GATE_PRE_LAND_NO_CMD_WALL_TIMEOUT_S=${EGO_GATE_PRE_LAND_NO_CMD_WALL_TIMEOUT_S}
+EGO_GATE_LANDED_Z_MAX=${EGO_GATE_LANDED_Z_MAX}
+EGO_GATE_LANDED_Z_TOLERANCE_M=${EGO_GATE_LANDED_Z_TOLERANCE_M}
+EGO_GATE_PRE_TAKEOFF_SETTLE_S=${EGO_GATE_PRE_TAKEOFF_SETTLE_S}
+EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S=${EGO_GATE_PRE_TAKEOFF_SETTLE_TIMEOUT_S}
+EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S=${EGO_GATE_PRE_TAKEOFF_ODOM_TIMEOUT_S}
+EGO_GATE_PRE_TAKEOFF_TRUTH_TIMEOUT_S=${EGO_GATE_PRE_TAKEOFF_TRUTH_TIMEOUT_S}
+EGO_GATE_PRE_TAKEOFF_MAX_SPEED_MPS=${EGO_GATE_PRE_TAKEOFF_MAX_SPEED_MPS}
+EGO_GATE_PRE_TAKEOFF_MAX_VZ_MPS=${EGO_GATE_PRE_TAKEOFF_MAX_VZ_MPS}
+EGO_GATE_PRE_TAKEOFF_MAX_ROLL_PITCH_DEG=${EGO_GATE_PRE_TAKEOFF_MAX_ROLL_PITCH_DEG}
+EGO_GATE_PRE_TAKEOFF_MIN_TARGET_ATTITUDE_COUNT=${EGO_GATE_PRE_TAKEOFF_MIN_TARGET_ATTITUDE_COUNT}
+EGO_GATE_PRE_TAKEOFF_MIN_DEBUG_COUNT=${EGO_GATE_PRE_TAKEOFF_MIN_DEBUG_COUNT}
+EGO_GATE_TAKEOFF_UAV_STAGGER_S=${EGO_GATE_TAKEOFF_UAV_STAGGER_S}
+EGO_GATE_TAKEOFF_RETRY_INTERVAL_S=${EGO_GATE_TAKEOFF_RETRY_INTERVAL_S}
+EGO_GATE_TAKEOFF_RETRY_REPEATS=${EGO_GATE_TAKEOFF_RETRY_REPEATS}
+EGO_GATE_TAKEOFF_RETRY_MAX=${EGO_GATE_TAKEOFF_RETRY_MAX}
+EGO_GATE_TAKEOFF_RISE_DETECT_M=${EGO_GATE_TAKEOFF_RISE_DETECT_M}
+EGO_GATE_PRE_STABLE_S=${EGO_GATE_PRE_STABLE_S}
+EGO_GATE_PRE_MAX_XY_ERROR_M=${EGO_GATE_PRE_MAX_XY_ERROR_M}
+EGO_GATE_PRE_MAX_Z_ERROR_M=${EGO_GATE_PRE_MAX_Z_ERROR_M}
+EGO_GATE_PRE_MAX_SPEED_MPS=${EGO_GATE_PRE_MAX_SPEED_MPS}
+EGO_GATE_PRE_MAX_VZ_MPS=${EGO_GATE_PRE_MAX_VZ_MPS}
+EGO_GATE_PRE_MAX_ROLL_PITCH_DEG=${EGO_GATE_PRE_MAX_ROLL_PITCH_DEG}
+EGO_GATE_TARGET_HOLD_S=${EGO_GATE_TARGET_HOLD_S}
+EGO_GATE_TARGET_HOLD_MAX_SPEED_MPS=${EGO_GATE_TARGET_HOLD_MAX_SPEED_MPS}
+EGO_GATE_TARGET_REACHED_RADIUS_M=${EGO_GATE_TARGET_REACHED_RADIUS_M}
+EGO_GATE_TARGET_HOLD_MAX_VZ_MPS=${EGO_GATE_TARGET_HOLD_MAX_VZ_MPS}
+EGO_GATE_TARGET_STABLE_SKIP_RADIUS_M=${EGO_GATE_TARGET_STABLE_SKIP_RADIUS_M}
+EGO_GATE_TARGET_STABLE_SKIP_S=${EGO_GATE_TARGET_STABLE_SKIP_S}
+EGO_GATE_TARGET_STABLE_SKIP_MAX_SPEED_MPS=${EGO_GATE_TARGET_STABLE_SKIP_MAX_SPEED_MPS}
+EGO_GATE_TARGET_STABLE_SKIP_MAX_VZ_MPS=${EGO_GATE_TARGET_STABLE_SKIP_MAX_VZ_MPS}
+EGO_GATE_MIN_OCCUPANCY_COUNT=${EGO_GATE_MIN_OCCUPANCY_COUNT}
+EGO_GATE_MIN_OCCUPANCY_POINTS=${EGO_GATE_MIN_OCCUPANCY_POINTS}
+EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF=${EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF}
+TOTAL_TIMEOUT_S=${TOTAL_TIMEOUT_S}
+C99_DIFF_TARGET_CONTRACT_FILE=${C99_DIFF_TARGET_CONTRACT_FILE:-}
+EOF
+
+  python3 - "${RESULT_DIR}/C99_DIFF_SWARM_COMPONENTS_READY.json" \
+    "${RUN_ID}" "${RESULT_DIR}" "${UAV_NUM}" "${PLANNER_SWARM_LAUNCH}" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+output = Path(sys.argv[1])
+packet = {
+    "schema": "mosim.sunray_ros1.c99_diff_swarm_components_ready.v1",
+    "status": "passed",
+    "run_id": sys.argv[2],
+    "result_dir": sys.argv[3],
+    "uav_num": int(sys.argv[4]),
+    "planner_launch": sys.argv[5],
+    "component_contract": str(output.with_name("c99_diff_swarm_component_contract.env")),
+    "components": [
+        "Gazebo Classic world",
+        "PX4 and MAVROS per UAV",
+        "px4ctrl per UAV",
+        "world point-cloud conversion",
+        "Diff-Planner bridges and safety adapters",
+        "Diff-Planner three-UAV launch",
+    ],
+    "claim_boundary": "Components-ready only: the runtime is intentionally held for a separate mission stage. No takeoff, target hold, landing, separation, or RViz review is claimed.",
+}
+output.write_text(json.dumps(packet, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+PY
+  echo "${RESULT_DIR}"
+  while true; do
+    sleep 1
+  done
+fi
 
 set +e
 MISSION_TOPOLOGY_ARGS=()
@@ -3251,6 +3554,20 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
   "planner_launch": "${PLANNER_SWARM_LAUNCH}",
   "planner_target_mode": "${PLANNER_TARGET_MODE}",
   "planner_flight_type": ${PLANNER_FLIGHT_TYPE},
+  "target_coordinate_contract": "${C99_DIFF_TARGET_CONTRACT_FILE:-}",
+  "diff_planner_common_world_frame": {
+    "enabled": ${DIFF_GOAL5_COMMON_WORLD_FRAME},
+    "mission_target_frame": "$(if [[ "${DIFF_GOAL5_COMMON_WORLD_FRAME}" == "true" ]]; then echo mavros_local; else echo common_world; fi)",
+    "planner_target_frame": "common_world",
+    "planner_odom_topic_template": "${DIFF_GOAL5_PLANNER_ODOM_TOPIC_TEMPLATE}",
+    "planner_cloud_input_topic_template": "/uav{uid}/livox_world",
+    "planner_cloud_world_topic_template": "${DIFF_GOAL5_PLANNER_CLOUD_TOPIC_TEMPLATE}",
+    "mission_goal_topic_template": "${PLANNER_GOAL_TOPIC_TEMPLATE}",
+    "planner_goal_topic_template": "${DIFF_GOAL5_PLANNER_GOAL_TOPIC_TEMPLATE}",
+    "planner_position_cmd_world_topic_template": "${DIFF_GOAL5_PLANNER_POSITION_CMD_TOPIC_TEMPLATE}",
+    "px4_local_raw_position_cmd_topic_template": "/uav{uid}/planner_position_cmd_raw",
+    "bridge_claim_boundary": "When enabled, the Diff-Planner-only frame bridge translates local odom and local point cloud to common-world planner inputs, a local mission goal to a common-world planner goal, and a common-world planner PositionCommand back to PX4-local raw command. When disabled, these inputs and commands are already common-world. point-cloud and grid-map parameters are unchanged."
+  },
   "swarm_formation_d3_constraints": {
     "enabled": $(if [[ "${PLANNER_VARIANT}" == "swarm_formation" ]]; then echo true; else echo false; fi),
     "formation_center": {

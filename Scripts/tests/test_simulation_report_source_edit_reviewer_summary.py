@@ -55,7 +55,7 @@ def test_current_reviewer_summary_builds(tmp_path: Path) -> None:
     assert summary["summary"]["applies_report_source_edits_now"] is False
     assert summary["summary"]["final_acceptance"] is False
     assert all(item["applies_now"] is False for item in summary["review_items"])
-    assert "It does not edit Docs/simulation_report.md." in summary["claim_boundary"]
+    assert "It does not edit Docs/报告/仿真分析报告_正文骨架.md." in summary["claim_boundary"]
 
 
 def test_missing_sequence_action_is_reported() -> None:

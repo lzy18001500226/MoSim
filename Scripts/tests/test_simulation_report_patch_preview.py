@@ -52,9 +52,11 @@ def test_current_simulation_report_patch_preview_builds(tmp_path: Path) -> None:
     } == preview_ids
     assert all(item["applies_patch_now"] is False for item in preview["previews"])
     items = {item["preview_id"]: item for item in preview["previews"]}
-    assert "规划和编队仍保留" in items["rewrite_formation_next_stage_boundary_preview"]["original"]
-    assert items["renumber_l1_residual_subsection_preview"]["original"].startswith("### 9.4 ")
-    assert "does not edit Docs/simulation_report.md" in " ".join(preview["claim_boundary"])
+    assert items["rewrite_formation_next_stage_boundary_preview"]["anchor_found"] is False
+    assert items["rewrite_formation_next_stage_boundary_preview"]["original"] == ""
+    assert items["renumber_l1_residual_subsection_preview"]["anchor_found"] is False
+    assert items["renumber_l1_residual_subsection_preview"]["original"] == ""
+    assert "does not edit Docs/报告/仿真分析报告_正文骨架.md" in " ".join(preview["claim_boundary"])
     joined_preview = "\n".join(item["preview"] for item in preview["previews"])
     assert "ROS2/PX4/QGC" in joined_preview
     assert "UE build/runtime/editor" in joined_preview

@@ -49,7 +49,7 @@ simulation evidence bundle unless the official model is run through MWORKS.
 7. Compute metrics under `Results/{group}/{scene}/{experiment}/metrics/` or `Results/{group}/{scene}/{experiment}/logs/`.
 8. Run `Scripts/results/evaluate_result_quality.py <scenario> --write-metrics`.
 9. Generate figures or replay assets under `Results/{group}/{scene}/{experiment}/figures/`, `Results/{group}/{scene}/{experiment}/replay/`, `Results/{group}/{scene}/{experiment}/replay_html/`, or `Docs/figures/`.
-10. Update `Docs/simulation_report.md` only when `quality_status=pass` or when the limitation is explicitly documented.
+10. Update `Docs/报告/仿真分析报告_正文骨架.md` only when `quality_status=pass` or when the limitation is explicitly documented.
 11. For every live simulation, save phase screenshots and a screenshot manifest under the formal result bundle:
 
 ```text

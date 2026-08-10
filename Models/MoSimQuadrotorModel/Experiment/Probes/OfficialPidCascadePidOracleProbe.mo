@@ -2,13 +2,13 @@ within MoSimQuadrotorModel.Experiment.Probes;
 model OfficialPidCascadePidOracleProbe
   "Compare cascade PID commands against an Official PID controlled shared plant"
 
-  MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter official_pid
+  MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter official_pid 
     annotation(Placement(transformation(origin = {-90, 35}, extent = {{-32, -26}, {32, 26}})));
-  MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter cascade_pid
+  MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter cascade_pid 
     annotation(Placement(transformation(origin = {-90, -40}, extent = {{-32, -26}, {32, 26}})));
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator cascade_allocator
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator cascade_allocator 
     annotation(Placement(transformation(origin = {10, -40}, extent = {{-32, -26}, {32, 26}})));
-  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
+  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant 
     annotation(Placement(transformation(origin = {115, 0}, extent = {{-42, -58}, {42, 58}})));
   Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
     each k = 1,
@@ -31,24 +31,24 @@ model OfficialPidCascadePidOracleProbe
 equation
   official_pid.position_ref = {0.0, 0.0, 0.0};
   cascade_pid.position_ref = {0.0, 0.0, 0.0};
-  connect(plant.position, official_pid.position_mea)
+  connect(plant.position, official_pid.position_mea) 
     annotation(Line(points = {{73, -18}, {52, -18}, {52, 15}, {-90, 15}, {-90, 9}}, color = {0, 0, 127}));
   connect(plant.position, velocity_estimator.u);
   connect(velocity_estimator.y, official_pid.velocity_mea);
   connect(velocity_estimator.y, cascade_pid.velocity_mea);
-  connect(plant.attitude, official_pid.attitude_mea)
+  connect(plant.attitude, official_pid.attitude_mea) 
     annotation(Line(points = {{73, -30}, {46, -30}, {46, 2}, {-90, 2}, {-90, 9}}, color = {0, 0, 127}));
-  connect(plant.position, cascade_pid.position_mea)
+  connect(plant.position, cascade_pid.position_mea) 
     annotation(Line(points = {{73, -18}, {52, -18}, {52, -65}, {-90, -65}, {-90, -66}}, color = {0, 0, 127}));
-  connect(plant.attitude, cascade_pid.attitude_mea)
+  connect(plant.attitude, cascade_pid.attitude_mea) 
     annotation(Line(points = {{73, -30}, {45, -30}, {45, -74}, {-90, -74}, {-90, -66}}, color = {0, 0, 127}));
-  connect(cascade_pid.attitude_ref, cascade_allocator.attitude_ref)
+  connect(cascade_pid.attitude_ref, cascade_allocator.attitude_ref) 
     annotation(Line(points = {{-58, -27}, {-22, -27}}, color = {0, 0, 127}));
-  connect(plant.attitude, cascade_allocator.attitude_mea)
+  connect(plant.attitude, cascade_allocator.attitude_mea) 
     annotation(Line(points = {{73, -30}, {45, -30}, {45, -47}, {10, -47}, {10, -66}}, color = {0, 0, 127}));
-  connect(cascade_pid.collective_thrust_delta, cascade_allocator.collective_thrust_delta)
+  connect(cascade_pid.collective_thrust_delta, cascade_allocator.collective_thrust_delta) 
     annotation(Line(points = {{-58, -53}, {-22, -53}}, color = {0, 0, 127}));
-  connect(official_pid.rotor_command, plant.rotor_command)
+  connect(official_pid.rotor_command, plant.rotor_command) 
     annotation(Line(points = {{-58, 35}, {73, 35}}, color = {0, 0, 127}));
 
   position = plant.position;

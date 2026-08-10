@@ -1,4 +1,12 @@
-set(QGC_APP_NAME "MoSimGroundControl" CACHE STRING "CMake-safe app target name" FORCE)
+set(MOSIM_QGC_AUDIT_APP_NAME "" CACHE STRING "Optional isolated MoSim QGC audit identity")
+if(MOSIM_QGC_AUDIT_APP_NAME)
+    if(NOT MOSIM_QGC_AUDIT_APP_NAME STREQUAL "MoSimGroundControlAudit")
+        message(FATAL_ERROR "Unsupported MoSim QGC audit identity: ${MOSIM_QGC_AUDIT_APP_NAME}")
+    endif()
+    set(QGC_APP_NAME "${MOSIM_QGC_AUDIT_APP_NAME}" CACHE STRING "CMake-safe app target name" FORCE)
+else()
+    set(QGC_APP_NAME "MoSimGroundControl" CACHE STRING "CMake-safe app target name" FORCE)
+endif()
 set(QGC_STABLE_BUILD ON CACHE BOOL "Use the MoSim Ground Control product identity" FORCE)
 # QGC v5.0.8 leaves this dependency on main. Use the private, hash-verified
 # source installed by install_flight_console_toolchain.ps1.

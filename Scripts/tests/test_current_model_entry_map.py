@@ -79,3 +79,31 @@ def test_approved_project_variant_is_exactly_hash_bound() -> None:
     key = library.import_item_identity(item)
     mutated[key]["current_model_sha256"] = "0" * 64
     assert library.approved_graphical_import_variant(item, target, expected, variants=mutated) is None
+
+
+def test_implementation_package_order_keeps_strict_graphical_sibling_discoverable() -> None:
+    library = load_library()
+
+    assert library.IMPLEMENTATIONS_PACKAGE_ORDER == [
+        "PidFamily",
+        "Graphical",
+        "ClassicRobust",
+        "SlidingMode",
+        "Optimization",
+        "GeometricFlatness",
+        "Learning",
+        "Sysblocks",
+    ]
+
+
+def test_classic_robust_package_metadata_retains_its_route_selection_note() -> None:
+    library = load_library()
+    catalog = library.read_json(library.CATALOG_PATH)
+    inventory = library.read_json(library.INVENTORY_PATH)
+    expected_files = library.package_file_texts(library.import_plan(catalog, inventory))
+
+    classic = expected_files[library.GRAPHICAL_ROOT / "ClassicRobust" / "package.mo"]
+    pid = expected_files[library.GRAPHICAL_ROOT / "PidFamily" / "package.mo"]
+
+    assert "route selection follows controller_route_interface_matrix.json" in classic
+    assert "G4 imported graphical controller cores" in pid

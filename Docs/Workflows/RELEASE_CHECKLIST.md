@@ -268,6 +268,9 @@ px4ctrl C 源、构建文件与共享库证据的完整哈希清单位于
      trained_neural_residual；
    - `simulate_failed`（2）：adaptive_mpc、improved_pid；
    - `check_model_failed`（1）：pole_placement_luenberger。
+   以上是冻结历史 G3 快照，不是当前固定 48 条目录的失败分类。2026-08-02 的
+   `pole_placement_luenberger` 当前会话重跑已通过 CheckModel 并完成 50 s，当前
+   目录按终端位置误差 `402.1409427651827 m` 的性能失败保留。
 2. 七场景是 14 条总记录、12 条有效、2 条无效电机效率故障负样本；不是 14 条
    全部有效记录。
 3. 灵敏度 24 条中有 3 条物理门限失败与 4 条执行阻塞；`sensitivity_wind_v1`

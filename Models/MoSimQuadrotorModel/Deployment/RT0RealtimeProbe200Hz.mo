@@ -5,7 +5,7 @@ model RT0RealtimeProbe200Hz
 
   impure function requestHighResolutionTimer
     output Integer status;
-    external "C" status = mosim_mworks_live_request_1ms_timer_resolution()
+    external "C" status = mosim_mworks_live_request_1ms_timer_resolution() 
       annotation(
         Include="#include \"mosim_mworks_live_rt0_timer_resolution.h\"",
         IncludeDirectory="modelica://MoSimQuadrotorModel/Deployment/Resources/Include",

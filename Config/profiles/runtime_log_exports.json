@@ -121,7 +121,9 @@
       "description": "Runtime artifact collection contract for FAST-LIO through PX4 EKF fused-state runs.",
       "compatible_experiment_ids": [
         "fastlio_px4_ekf_ab_figure8_v1",
-        "factory_l2_fuel_fixed64_exploration_v1"
+        "factory_l2_fuel_fixed64_exploration_v1",
+        "px4ctrl_graphical_c99_factory_qgc_realtime_goal_v1",
+        "px4ctrl_graphical_c99_factory_rviz_qgc_display_phase1_v1"
       ],
       "tracking_source_profile": "fastlio_px4_ekf_fused_reference_state_csv_v1",
       "tracking_reference_slot": "reference_csv",

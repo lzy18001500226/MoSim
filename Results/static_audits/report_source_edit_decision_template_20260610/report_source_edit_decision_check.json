@@ -16,11 +16,12 @@
   "authorizes_application": false,
   "issues": [],
   "warnings": [
-    "decision is pending_review and does not authorize report-source edits"
+    "decision is pending_review and does not authorize report-source edits",
+    "decision artifact uses the preserved historical report path; new artifacts must use Docs/报告/仿真分析报告_正文骨架.md"
   ],
   "claim_boundary": [
     "This checker validates a decision artifact only.",
-    "It does not edit Docs/simulation_report.md.",
+    "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
     "It does not approve pending_review decisions.",
     "It does not export PDFs/video or write PMO final acceptance."
   ]

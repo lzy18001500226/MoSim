@@ -11,7 +11,8 @@
 | Understand the repository and its product boundary | `README.md` |
 | Understand documentation roles and reading paths | `Docs/README.md` |
 | Follow hard project boundaries | `AGENTS.md` |
-| Select the current task | `Docs/Workflows/mainline_operations_board.md` |
+| Start the current task | `AGENTS.md`, `Docs/Workflows/new_conversation_context.md`, and the current user's direct request |
+| Read historical project status | `Docs/Workflows/mainline_operations_board.md` (explicit request only) |
 | Understand current MoSim architecture | `Docs/Design/架构.md` |
 | Read competition scope and requirements | `Docs/Design/赛题.md`, `Docs/Design/需求.md` |
 | Read future CoSim platform direction | `Docs/CoSim/README.md`, `Docs/CoSim/research/raw/CoSim设计.md` |
@@ -33,8 +34,8 @@
 | Need | Owner |
 |---|---|
 | Result layout and review rule | `Results/README.md` |
-| Simulation analysis narrative | `Docs/simulation_report.md` |
-| User-facing operation guide | `Docs/user_manual.md` |
+| Simulation analysis narrative | `Docs/报告/仿真分析报告_正文骨架.md` |
+| User-facing operation guide | `Docs/报告/用户手册_正文骨架.md` |
 | P0 report/manual/delivery evidence numbers and claim boundaries | `Docs/Design/报告手册交付证据总账_P0_20260731.md` |
 | Active report, manual, formulas, figures, and asset routing | `Docs/报告/README.md`; figure asset index: `Docs/报告/图/README.md` |
 | Final package gate | `Docs/Workflows/pre_submit_check.md` |

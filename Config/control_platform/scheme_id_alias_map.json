@@ -134,6 +134,24 @@
       "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. The API timeout remains explicit; native completion is separately verified. This enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     }
   ],
+  "catalog_current_override_evidence": [
+    {
+      "catalog_scheme_id": "pole_placement_luenberger",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.PolePlacementLuenbergerFormalRunner",
+      "run_record": "Results/mworks_live_gate/failed18_recovery_20260802/pole_placement_reopen/simulation_50s/POLE_PLACEMENT_SIMULATION_50S.json",
+      "expected_status": "fail",
+      "evidence": "A 2026-08-02 current-session CheckModel recheck passed with 0 errors and one unit metadata warning, then a source/parameter/solver-stable nominal ClimbPath run completed to 50 s with 25001 finite samples. Terminal position error was 402.1409427651827 m, above the 5 m gate.",
+      "claim_boundary": "This post-freeze current-session evidence supersedes only the current catalog status for pole_placement_luenberger. It preserves the frozen G3 CheckModel authorization record and does not claim controller acceptance, tuning, permanent activation, runtime acknowledgement, or closed-loop success."
+    },
+    {
+      "catalog_scheme_id": "adaptive_mpc",
+      "model_name": "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveMpcFormalRunner",
+      "run_record": "Results/mworks_live_gate/failed18_recovery_20260803/adaptive_mpc/final_formal_50s/RUN_RECORD.json",
+      "expected_status": "pass",
+      "evidence": "A 2026-08-03 isolated-session CheckModel passed with zero GUI errors. The existing adapter-local velocity-reference conditioning patch then produced a complete finite 50 s ClimbPath result with 25001 samples and terminal position error 0.003614672230764729 m, below the 5 m gate.",
+      "claim_boundary": "This post-freeze current-session evidence supersedes only the current catalog status for adaptive_mpc. It preserves the frozen G3 simulate_failed record and prior recovery packet, and does not claim gain optimization, seven-scenario work, code generation, Gazebo, PX4, ROS, QGC, permanent activation, or flight-runtime acceptance."
+    }
+  ],
   "catalog_only_no_runner": [],
   "runner_only_no_catalog_entry": [
     {

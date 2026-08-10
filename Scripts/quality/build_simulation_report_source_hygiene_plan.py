@@ -15,7 +15,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_REPORT = ROOT / "Docs" / "simulation_report.md"
+DEFAULT_REPORT = ROOT / "Docs" / "报告" / "仿真分析报告_正文骨架.md"
 DEFAULT_OUTLINE_GAP = (
     ROOT
     / "Results"
@@ -218,7 +218,7 @@ def build_plan(report_path: Path, outline_gap_path: Path, rewrite_plan_path: Pat
         ],
         "claim_boundary": [
             "This plan is a review aid only.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not delete report content.",
             "It does not change final PMO acceptance or live-runtime status.",
         ],

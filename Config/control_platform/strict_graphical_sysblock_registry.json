@@ -1,0 +1,1857 @@
+{
+  "schema": "mosim.strict_graphical_sysblock_registry.v1",
+  "version": 1,
+  "authority": "Derived strict-graphical migration registry. It does not replace the catalog, current-model map, formal-harness map, or MWORKS runtime evidence.",
+  "sources": {
+    "catalog": {
+      "path": "Config/control_platform/control_scheme_catalog.json",
+      "sha256": "75915325a93575f81c23fbc8b8f276614c8548cb9ce99f91400c3139a6dab7de"
+    },
+    "current_model_entry_map": {
+      "path": "Config/control_platform/current_model_entry_map.json",
+      "sha256": "247aa6741bb3aba5371d400522755ec2068d6e1e17e82fcd6ba523404e4bb2fe"
+    },
+    "formal_closed_loop_harness_map": {
+      "path": "Config/control_platform/formal_closed_loop_harness_map.json",
+      "sha256": "784abf512502068ae970e5da30c94439486d7e7c28dffa40258d7a2c1c35691a"
+    }
+  },
+  "migration_policy": {
+    "golden_reference": "official_pid",
+    "project_owned_sequence": [
+      "fixed_awff_pid",
+      "fixed_awff_l1_residual",
+      "fixed_awff_l1_indi",
+      "fixed_linear_mpc_l1_indi",
+      "fixed_qp_nmpc_l1_indi_cbf",
+      "pid_awff_linear_eso",
+      "px4ctrl"
+    ],
+    "wave_order": [
+      "golden_pid_reference",
+      "project_owned_fixed_chains",
+      "pid_and_intelligent_pid",
+      "linear_robust_state_feedback",
+      "sliding_mode",
+      "nonlinear_adaptive",
+      "geometric_flatness",
+      "optimization_predictive",
+      "learning"
+    ],
+    "strict_completion_rule": "A route becomes complete only after a strict core or explicit exception, a nonblank whole-aircraft graphical entry, SG-0 through SG-4 records, and current model/parameter/scenario evidence are present."
+  },
+  "summary": {
+    "active_entry_count": 48,
+    "strict_graphical_status_counts": {
+      "blocked_mworks_compiler_internal_error": 1,
+      "blocked_native_sysblock_modelica_embedding": 1,
+      "explicit_exception_fixed_input_probe": 2,
+      "explicit_exception_pending_mworks_equivalent_core": 1,
+      "explicit_exception_planned_profile": 1,
+      "not_started_strict_graphical_migration": 38,
+      "strict_core_rebuild_required": 4
+    },
+    "migration_wave_counts": {
+      "geometric_flatness": 6,
+      "golden_pid_reference": 1,
+      "learning": 2,
+      "linear_robust_state_feedback": 6,
+      "nonlinear_adaptive": 6,
+      "optimization_predictive": 8,
+      "pid_and_intelligent_pid": 5,
+      "project_owned_fixed_chains": 7,
+      "sliding_mode": 7
+    }
+  },
+  "schemes": [
+    {
+      "scheme_id": "official_pid",
+      "display_name_zh": "官方 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 0,
+        "id": "golden_pid_reference",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "blocked_native_sysblock_modelica_embedding",
+      "claim_boundary": "The current Golden PID graph reuses a text-backed Modelica controller base. A native Sysblock compiles alone, but MWORKS cannot flatten its ports into the shared Modelica plant, so no strict whole-aircraft claim is allowed.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/PID",
+        "strict_core_class": "MoSimQuadrotorModel.Control.Implementations.Graphical.PID.OfficialPidNativeSysblockCore",
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
+        "legacy_modelica_graphical_candidate_class": "MoSimQuadrotorModel.Control.Implementations.Graphical.PID.OfficialPidCoreSysblock",
+        "legacy_modelica_graphical_adapter_class": "MoSimQuadrotorModel.Control.Adapters.OfficialPIDGraphicalRotorAdapter",
+        "legacy_modelica_graphical_runner_class": "MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner",
+        "evidence": {
+          "legacy_modelica_graphical": "Results/mworks_live_gate/official_pid_strict_graphical_20260805/golden_pid_gate_status.json",
+          "strict_native_blocker": "Results/mworks_live_gate/native_sysblock_modelica_embedding_20260805/native_sysblock_modelica_embedding_blocker.json"
+        }
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/AWFF_PID_Sysblock_Demo.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.AWFF_PID_Sysblock_Demo",
+        "current_model_sha256": "c4173126d27aa834595f0e781118270d97a45dc6e03e526bc930c7fcc8f3ece6",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "fixed_awff_pid",
+      "display_name_zh": "抗积分饱和与参考前馈 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 1,
+        "id": "project_owned_fixed_chains",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "blocked_mworks_compiler_internal_error",
+      "claim_boundary": "AWFF source surface passes, but core and adapter CheckModel remain blocked; no runtime claim is allowed.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/ProjectOwned",
+        "strict_core_class": "MoSimQuadrotorModel.Control.Implementations.Graphical.ProjectOwned.AWFFCoreSysblock",
+        "adapter_class": "MoSimQuadrotorModel.Control.Adapters.AWFFGraphicalRotorAdapter",
+        "whole_aircraft_runner_class": "MoSimQuadrotorModel.Experiment.Runners.Graphical.AwffSingleUavGraphicalRunner",
+        "formal_runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AwffFormalRunner",
+        "evidence": "Results/mworks_live_gate/awff_strict_graphical_20260805/awff_strict_graphical_blocker.json"
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "full_profile_whole_aircraft_closed_loop",
+        "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo",
+        "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffPid",
+        "current_model_sha256": "aabc69ad0eb27b9c27464fc197b28a30987b4f770a23aa78d4a4f7e318843cac",
+        "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop."
+      },
+      "formal_reference": {
+        "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": {
+          "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo",
+          "public_entry_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffPid",
+          "public_entry_sha256": "aabc69ad0eb27b9c27464fc197b28a30987b4f770a23aa78d4a4f7e318843cac",
+          "whole_aircraft_source_file": "Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1AWFFSysblockClosedLoop.mo",
+          "whole_aircraft_source_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1AWFFSysblockClosedLoop",
+          "whole_aircraft_source_sha256": "8d20cea177a53d8dd8325b900ffdbb720a2d44c2d51de057ce191c4136d0891a",
+          "binding_kind": "formal_public_alias_extends_project_root_whole_aircraft_model"
+        },
+        "formal_adapter": {
+          "kind": "embedded_sysblock_and_physical_plant",
+          "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
+        }
+      }
+    },
+    {
+      "scheme_id": "fixed_awff_l1_residual",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 1,
+        "id": "project_owned_fixed_chains",
+        "within_wave": 1
+      },
+      "strict_graphical_status": "strict_core_rebuild_required",
+      "claim_boundary": "The existing L1 graphical candidate omits Formal filter, estimator, and anti-windup state relations, so it cannot be promoted as an equivalent strict core.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/ProjectOwned",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": "Results/control_platform/strict_graphical_sysblock_registry_20260805/l1_strict_graphical_candidate_audit.json"
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "full_profile_whole_aircraft_closed_loop",
+        "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Residual.mo",
+        "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Residual",
+        "current_model_sha256": "e9c4eb5a8dd08bb45db715d409564fac2ea9440f8e3f71d14c21203c06d14655",
+        "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop."
+      },
+      "formal_reference": {
+        "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": {
+          "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Residual.mo",
+          "public_entry_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Residual",
+          "public_entry_sha256": "e9c4eb5a8dd08bb45db715d409564fac2ea9440f8e3f71d14c21203c06d14655",
+          "whole_aircraft_source_file": "Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1L1SysblockClosedLoop.mo",
+          "whole_aircraft_source_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop",
+          "whole_aircraft_source_sha256": "1f35c9b11ddf260a53db4f41b17efa956133c0b75461bbd03b9d6d6a5512d9e9",
+          "binding_kind": "formal_public_alias_extends_project_root_whole_aircraft_model"
+        },
+        "formal_adapter": {
+          "kind": "embedded_sysblock_and_physical_plant",
+          "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
+        }
+      }
+    },
+    {
+      "scheme_id": "fixed_awff_l1_indi",
+      "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 1,
+        "id": "project_owned_fixed_chains",
+        "within_wave": 2
+      },
+      "strict_graphical_status": "strict_core_rebuild_required",
+      "claim_boundary": "The existing L1/INDI graphical candidate omits Formal L1 states and substitutes a delayed-command path for measured-rate and acceleration-estimator INDI relations.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/ProjectOwned",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": "Results/control_platform/strict_graphical_sysblock_registry_20260805/l1_indi_strict_graphical_candidate_audit.json"
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "full_profile_whole_aircraft_closed_loop",
+        "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Indi.mo",
+        "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Indi",
+        "current_model_sha256": "5a31cc2822c3be194d2db8242600f66b71a7704d79789be5d4a3f67e07e8e800",
+        "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop."
+      },
+      "formal_reference": {
+        "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": {
+          "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Indi.mo",
+          "public_entry_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffL1Indi",
+          "public_entry_sha256": "5a31cc2822c3be194d2db8242600f66b71a7704d79789be5d4a3f67e07e8e800",
+          "whole_aircraft_source_file": "Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1INDISysblockClosedLoop.mo",
+          "whole_aircraft_source_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1INDISysblockClosedLoop",
+          "whole_aircraft_source_sha256": "55e5c15475bd04f20f5128cd01b5b21d8b59f8fc878564e5c58a68260ffc846f",
+          "binding_kind": "formal_public_alias_extends_project_root_whole_aircraft_model"
+        },
+        "formal_adapter": {
+          "kind": "embedded_sysblock_and_physical_plant",
+          "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
+        }
+      }
+    },
+    {
+      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 1,
+        "id": "project_owned_fixed_chains",
+        "within_wave": 3
+      },
+      "strict_graphical_status": "strict_core_rebuild_required",
+      "claim_boundary": "The existing LinearMPC graphical candidate substitutes discrete delays and ordinary integrators for Formal filter, estimator, anti-windup, and measured-acceleration INDI state relations.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/ProjectOwned",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": "Results/control_platform/strict_graphical_sysblock_registry_20260805/linear_mpc_strict_graphical_candidate_audit.json"
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "full_profile_whole_aircraft_closed_loop",
+        "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedLinearMpcL1Indi.mo",
+        "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedLinearMpcL1Indi",
+        "current_model_sha256": "7fb0d81a65124a99e1c357e3ef3b87428e570b71f404977eb8587fa662ca49d6",
+        "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop."
+      },
+      "formal_reference": {
+        "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": {
+          "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedLinearMpcL1Indi.mo",
+          "public_entry_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedLinearMpcL1Indi",
+          "public_entry_sha256": "7fb0d81a65124a99e1c357e3ef3b87428e570b71f404977eb8587fa662ca49d6",
+          "whole_aircraft_source_file": "Models/MoSimQuadrotorModel/Experiment/Templates/Official/Example1LinearMPCSysblockClosedLoop.mo",
+          "whole_aircraft_source_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1LinearMPCSysblockClosedLoop",
+          "whole_aircraft_source_sha256": "fbba8b256488f97299e4d77ff95d33702358aabddc0548281d844f07c6e96d13",
+          "binding_kind": "formal_public_alias_extends_project_root_whole_aircraft_model"
+        },
+        "formal_adapter": {
+          "kind": "embedded_sysblock_and_physical_plant",
+          "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
+        }
+      }
+    },
+    {
+      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 1,
+        "id": "project_owned_fixed_chains",
+        "within_wave": 4
+      },
+      "strict_graphical_status": "strict_core_rebuild_required",
+      "claim_boundary": "The existing QP/NMPC graphical candidate is a fixed-input design reference and omits the Formal nominal LinearMPC, exact QP projection, mode-event, and return-reference relations.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/ProjectOwned",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": "Results/control_platform/strict_graphical_sysblock_registry_20260805/qp_nmpc_strict_graphical_candidate_audit.json"
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "full_profile_whole_aircraft_closed_loop",
+        "current_model_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
+        "current_model_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedQpNmpcL1IndiCbf",
+        "current_model_sha256": "f5a0d32afa08e10dc69c49a85f120907fbfd5056e73110c9a7b29644fcbed3fc",
+        "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop."
+      },
+      "formal_reference": {
+        "formal_harness_state": "resolved_canonical_whole_aircraft_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": {
+          "public_entry_file": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedQpNmpcL1IndiCbf.mo",
+          "public_entry_class": "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedQpNmpcL1IndiCbf",
+          "public_entry_sha256": "f5a0d32afa08e10dc69c49a85f120907fbfd5056e73110c9a7b29644fcbed3fc",
+          "whole_aircraft_source_file": "Models/MoSimQuadrotorModel/Experiment/Scenarios/Robustness/Example1QPNMPCSafetySysblockClosedLoop.mo",
+          "whole_aircraft_source_class": "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1QPNMPCSafetySysblockClosedLoop",
+          "whole_aircraft_source_sha256": "296930950754fe8f7e8bb96a8aa197f423d59449faeb0c3652e0475132f2ac6f",
+          "binding_kind": "formal_public_alias_extends_project_root_whole_aircraft_model"
+        },
+        "formal_adapter": {
+          "kind": "embedded_sysblock_and_physical_plant",
+          "claim_boundary": "The route is eligible for a real MWORKS whole-aircraft minimum closure only through this named formal alias/source pair."
+        }
+      }
+    },
+    {
+      "scheme_id": "pid_awff_linear_eso",
+      "display_name_zh": "AWFF PID 加线性 ESO 扰动观测补偿",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 1,
+        "id": "project_owned_fixed_chains",
+        "within_wave": 5
+      },
+      "strict_graphical_status": "explicit_exception_planned_profile",
+      "claim_boundary": "No project-owned Modelica core, adapter, or formal runner exists yet.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/ProjectOwned",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "planned_profile_no_model",
+        "current_model_role": null,
+        "current_model_file": null,
+        "current_model_class": null,
+        "current_model_sha256": null,
+        "next_gate": "Implement the approved profile, Adapter, formal Runner, and minimum-closure evidence before any screening or comparison."
+      },
+      "formal_reference": {
+        "formal_harness_state": "planned_profile_no_model",
+        "whole_aircraft_tier": "tier1_only",
+        "tier2_closure_eligibility": "excluded",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "px4ctrl",
+      "display_name_zh": "px4ctrl 工程基线",
+      "category": "engineering_deployment_baseline",
+      "entry_type": "engineering_deployment_baseline",
+      "migration_wave": {
+        "ordinal": 1,
+        "id": "project_owned_fixed_chains",
+        "within_wave": 6
+      },
+      "strict_graphical_status": "explicit_exception_pending_mworks_equivalent_core",
+      "claim_boundary": "The engineering/deployment baseline needs a C++ behavior/interface-equivalent MWORKS core before strict graphical review.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/ProjectOwned",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "pending_mworks_equivalent_core",
+        "current_model_role": null,
+        "current_model_file": null,
+        "current_model_class": null,
+        "current_model_sha256": null,
+        "next_gate": "Implement and validate the MWORKS-equivalent px4ctrl core with C++ behavior/interface equivalence before formal seven-scenario comparison."
+      },
+      "formal_reference": {
+        "formal_harness_state": "pending_mworks_equivalent_core",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "cascade_pid",
+      "display_name_zh": "串级 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 2,
+        "id": "pid_and_intelligent_pid",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/PID",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_CASCADE_PID_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_CASCADE_PID_GRAPHICAL_MIL",
+        "current_model_sha256": "3f282db51fd7411c01b018bc19ab07e95380f3a0e30cdcc023148ce317dd04e6",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "fopid",
+      "display_name_zh": "分数阶 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 2,
+        "id": "pid_and_intelligent_pid",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/PID",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "0e40874de02cb98cac39af2f76e8e950ed668d473a705cd940293cc59711c705",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "fuzzy_pid",
+      "display_name_zh": "模糊 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 2,
+        "id": "pid_and_intelligent_pid",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/PID",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_FUZZY_PID_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_FUZZY_PID_GRAPHICAL_MIL",
+        "current_model_sha256": "04445fd51d4e53d89163e895b8dffa5b337a548714cc86b8b95e9bf77473a367",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "gain_scheduled_pid",
+      "display_name_zh": "增益调度 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 2,
+        "id": "pid_and_intelligent_pid",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/PID",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_GAIN_SCHEDULED_PID_GRAPHICAL_MIL",
+        "current_model_sha256": "064e82602d0d642b06c42d95dc031d3a9ac4ea049385537c11e057e62f4ef795",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "neural_pid",
+      "display_name_zh": "神经 PID",
+      "category": "pid_family",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 2,
+        "id": "pid_and_intelligent_pid",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/PID",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/PidFamily/MoSim_PID_NEURAL_PID_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.PidFamily.MoSim_PID_NEURAL_PID_GRAPHICAL_MIL",
+        "current_model_sha256": "ad4d64ee72961ce944dedfc60407cb198b345c837177da16ccd29cc79354a9c8",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "h2_state_feedback",
+      "display_name_zh": "H2 状态反馈",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 3,
+        "id": "linear_robust_state_feedback",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/LinearRobust",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "4c29a87128d8e8cb4ad762ee85088b28f6bbc7405bab650f22cee6ed0040927c",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "hinf_hover_wrench",
+      "display_name_zh": "H 无穷悬停控制",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 3,
+        "id": "linear_robust_state_feedback",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/LinearRobust",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "a37b0b507d871aa1f18b16e27a89f6ee5403f45f534193eb23e6ac6c650698d3",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "lqg",
+      "display_name_zh": "LQG",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 3,
+        "id": "linear_robust_state_feedback",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/LinearRobust",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_LQG_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_LQG_GRAPHICAL_MIL",
+        "current_model_sha256": "3247d271e5b3c87f2df71327231bbb20e36ee95d09c5cab4fd306351f302d45b",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "lqi_baseline",
+      "display_name_zh": "LQI",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 3,
+        "id": "linear_robust_state_feedback",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/LinearRobust",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "09d7ed43c3c2ecdb7f6280b3920a9664af7dc3a0b4d73dbdd406be178e27e43e",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "lqr_baseline",
+      "display_name_zh": "LQR",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 3,
+        "id": "linear_robust_state_feedback",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/LinearRobust",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "b991cd5a9d77ec8cb9afbc83e83e390d0ef502fbb24b7ae12d622f3e6a6799d4",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "pole_placement_luenberger",
+      "display_name_zh": "极点配置与 Luenberger 观测器",
+      "category": "linear_robust_state_feedback",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 3,
+        "id": "linear_robust_state_feedback",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/LinearRobust",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "9ff511dc6ef30399f9614e41403f1f2d957e975ba6790fe5be8e54e84aa35d75",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "adaptive_smc",
+      "display_name_zh": "自适应滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 4,
+        "id": "sliding_mode",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/SlidingMode",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_ADAPTIVE_SMC_GRAPHICAL_MIL",
+        "current_model_sha256": "0678b181a8d13c455ceb5522d3aaf275c79e7603c5fcdffdf85082b5ddd15a03",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "fuzzy_smc",
+      "display_name_zh": "模糊滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 4,
+        "id": "sliding_mode",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/SlidingMode",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_FUZZY_SMC_GRAPHICAL_MIL",
+        "current_model_sha256": "f44a784cc150e1563eff9b032dd2ba817e7e1f7eb9c76259925338f1fb09a24e",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "integral_smc",
+      "display_name_zh": "积分滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 4,
+        "id": "sliding_mode",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/SlidingMode",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_INTEGRAL_SMC_GRAPHICAL_MIL",
+        "current_model_sha256": "494028dd7f2d3b03964ed3364c1b4da4bb80a699c4b890e746734e537d572c19",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "nonsingular_terminal_smc",
+      "display_name_zh": "非奇异终端滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 4,
+        "id": "sliding_mode",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/SlidingMode",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_NONSINGULAR_TERMINAL_SMC_GRAPHICAL_MIL",
+        "current_model_sha256": "033063b80a62b017dc11ee02902fcdddc7a32af6f73648d5df22e08cc2317c42",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "smc_boundary_layer",
+      "display_name_zh": "边界层滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 4,
+        "id": "sliding_mode",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "explicit_exception_fixed_input_probe",
+      "claim_boundary": "The current graphical probe has no public reference and measurement controller boundary.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/SlidingMode",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW",
+        "current_model_sha256": "42cb305a3df9de94ce9335a6dce9b684268aec7363af00a476bccb196e66a8b4",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_only",
+        "tier2_closure_eligibility": "excluded",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "super_twisting_smc",
+      "display_name_zh": "Super-Twisting 滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 4,
+        "id": "sliding_mode",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/SlidingMode",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_SUPER_TWISTING_SMC_GRAPHICAL_MIL",
+        "current_model_sha256": "fb9527f47fce76e2ef5f77a9ea907d1315a6c56bbb6959672fd4d95cea539f3d",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "terminal_smc",
+      "display_name_zh": "终端滑模控制",
+      "category": "sliding_mode",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 4,
+        "id": "sliding_mode",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/SlidingMode",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/SlidingMode/MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.SlidingMode.MoSim_P3_TERMINAL_SMC_GRAPHICAL_MIL",
+        "current_model_sha256": "038bc37ae1b79de102fd0f5709270bace168da74758bffb4919f9c05f7c59369",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "adaptive_backstepping",
+      "display_name_zh": "自适应反步控制",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 5,
+        "id": "nonlinear_adaptive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/NonlinearAdaptive",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_ADAPTIVE_BACKSTEPPING_GRAPHICAL_MIL",
+        "current_model_sha256": "ce67f5b2f8b92fe02262825be63b2d297b2972cdc1c7706f90e3790037ea7372",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "backstepping_baseline",
+      "display_name_zh": "反步控制",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 5,
+        "id": "nonlinear_adaptive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/NonlinearAdaptive",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "dc48965156e70db3e13d7b71e4a109b206d1f415271f81e5c15c71cf241d5da9",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "feedback_linearization",
+      "display_name_zh": "反馈线性化",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 5,
+        "id": "nonlinear_adaptive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/NonlinearAdaptive",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_FEEDBACK_LINEARIZATION_GRAPHICAL_MIL",
+        "current_model_sha256": "c037370469a36b0bfb99278ca06b9c985e7525e238ddd5cfc774cf5962beb838",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "mrac",
+      "display_name_zh": "模型参考自适应控制",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 5,
+        "id": "nonlinear_adaptive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/NonlinearAdaptive",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "0f3a073a8a62a6fbdcbde3f36a5833ce860aa8ed565633ffb930dc57ff93beb4",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "ndi",
+      "display_name_zh": "非线性动态逆",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 5,
+        "id": "nonlinear_adaptive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/NonlinearAdaptive",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "3645fa9a6eaf2f482e3404af076c9556d827570cf7aca2d081e276af589d7077",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "passivity_based_control",
+      "display_name_zh": "无源控制",
+      "category": "nonlinear_adaptive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 5,
+        "id": "nonlinear_adaptive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/NonlinearAdaptive",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/ClassicRobust/MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.ClassicRobust.MoSim_P2_PASSIVITY_BASED_CONTROL_GRAPHICAL_MIL",
+        "current_model_sha256": "dcf04c348276fd4106c33aa9dae5e576f5907c56c80869ef0d49b2bbe3d94a30",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "dfbc_basic",
+      "display_name_zh": "基础微分平坦控制",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 6,
+        "id": "geometric_flatness",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/GeometricFlatness",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G9_DFBC_GRAPHICAL_OVERVIEW.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G9_DFBC_GRAPHICAL_OVERVIEW",
+        "current_model_sha256": "5c3e45fad198b13098dc333bc73bd6533b6b0e4df29ed7fd961411f664f25a37",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "dfbc_high_order_attitude",
+      "display_name_zh": "高阶微分平坦姿态输出",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 6,
+        "id": "geometric_flatness",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/GeometricFlatness",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "7ed96eb2d51a911abc77e54e45cf280ba0abbd56840e0af05d8ea4d7592c07fe",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "dfbc_high_order_bodyrate",
+      "display_name_zh": "高阶微分平坦角速度输出",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 6,
+        "id": "geometric_flatness",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/GeometricFlatness",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "7466fa62e2ac3ff846998c071077ca326e62d79be4628f826e1193688ace6cd4",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_attitude",
+      "display_name_zh": "平滑鲁棒微分平坦姿态输出",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 6,
+        "id": "geometric_flatness",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/GeometricFlatness",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "055bc1abd18056076c86d9a3bf462b4e5d739f9775a6e3313b47cafc91765378",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "dfbc_smooth_robust_bodyrate",
+      "display_name_zh": "平滑鲁棒微分平坦角速度输出",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 6,
+        "id": "geometric_flatness",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/GeometricFlatness",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL",
+        "current_model_sha256": "3af86b0077144fa692367db21680cf9636d6619ed603a4c45f83092d8e154145",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "se3_basic",
+      "display_name_zh": "SE(3) 几何控制",
+      "category": "geometric_flatness",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 6,
+        "id": "geometric_flatness",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/GeometricFlatness",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/GeometricFlatness/MoSim_G9_SE3_GRAPHICAL_OVERVIEW.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.GeometricFlatness.MoSim_G9_SE3_GRAPHICAL_OVERVIEW",
+        "current_model_sha256": "8cbc0f5b1fc425d7e87bc5c87ea2db9a31f40fdcd2dc1f5d931e2bd3fa897473",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "adaptive_mpc",
+      "display_name_zh": "自适应 MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 7,
+        "id": "optimization_predictive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Optimization",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ADAPTIVE_MPC_GRAPHICAL_MIL",
+        "current_model_sha256": "ad8aea2e840f7423613caa3752accb6901b47289699377181315fddea6893636",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "explicit_gain_scheduled_mpc",
+      "display_name_zh": "显式增益调度 MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 7,
+        "id": "optimization_predictive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Optimization",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_EXPLICIT_GAIN_SCHEDULED_MPC_GRAPHICAL_MIL",
+        "current_model_sha256": "b73f99e0d5ce292a9aab9aa7fd9fd7dc54f22cde5743663136f13e42b46acd48",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "ilqr",
+      "display_name_zh": "iLQR",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 7,
+        "id": "optimization_predictive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Optimization",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ILQR_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ILQR_GRAPHICAL_MIL",
+        "current_model_sha256": "6a7d15ea2c12c4b165ca1a21ee69c98c32b0683e3c3bdc857ac07afd9aef2898",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "linear_mpc",
+      "display_name_zh": "线性 MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 7,
+        "id": "optimization_predictive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Optimization",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_LINEAR_MPC_GRAPHICAL_MIL",
+        "current_model_sha256": "1f4dc37c6a1f9328ed3618126adc9bfc1069caded25c6d9a9bf16e5a00d7dd7e",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "mppi",
+      "display_name_zh": "MPPI",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 7,
+        "id": "optimization_predictive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Optimization",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_MPPI_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_MPPI_GRAPHICAL_MIL",
+        "current_model_sha256": "37e05419ee3d439ed7071206876efbf72439d1491e8b83335d422432483b7efc",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "nmpc_outer",
+      "display_name_zh": "NMPC 外环",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 7,
+        "id": "optimization_predictive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "explicit_exception_fixed_input_probe",
+      "claim_boundary": "The current graphical probe has no public reference and measurement controller boundary.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Optimization",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW",
+        "current_model_sha256": "9e36df1677ae5e7850d04d36c0976cc591635609817994c71dac93d1dcfc7d32",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_only",
+        "tier2_closure_eligibility": "excluded",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "robust_mpc",
+      "display_name_zh": "鲁棒 MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 7,
+        "id": "optimization_predictive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Optimization",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_ROBUST_MPC_GRAPHICAL_MIL",
+        "current_model_sha256": "45e6e4e7c00b36276ee3b5f3a90b24bd437a16429853a012508ed82629a1841e",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "tube_mpc",
+      "display_name_zh": "管束 MPC",
+      "category": "optimization_predictive",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 7,
+        "id": "optimization_predictive",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Optimization",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_P4_TUBE_MPC_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_P4_TUBE_MPC_GRAPHICAL_MIL",
+        "current_model_sha256": "d89404d404cc8f1a92a9c94618f00147cb7247f02afea99bdcbed0c581f49d2c",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "rl_gain_scheduler",
+      "display_name_zh": "强化学习增益调度",
+      "category": "learning",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 8,
+        "id": "learning",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Learning",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Learning/MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Learning.MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL",
+        "current_model_sha256": "d63ec026341845cecb2f8dce35b15d02736703353acd31e714d89f2cbd5b0413",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    },
+    {
+      "scheme_id": "trained_neural_residual",
+      "display_name_zh": "训练神经残差控制",
+      "category": "learning",
+      "entry_type": "mworks_control_profile",
+      "migration_wave": {
+        "ordinal": 8,
+        "id": "learning",
+        "within_wave": 0
+      },
+      "strict_graphical_status": "not_started_strict_graphical_migration",
+      "claim_boundary": "A current graphical review target exists, but strict core, adapter, whole-aircraft entry, and SG evidence are not yet registered.",
+      "strict_targets": {
+        "owner_directory": "Models/MoSimQuadrotorModel/Control/Implementations/Graphical/Learning",
+        "strict_core_class": null,
+        "adapter_class": null,
+        "whole_aircraft_runner_class": null,
+        "formal_runner_class": null,
+        "evidence": null
+      },
+      "current_source": {
+        "mapping_state": "resolved_current_model",
+        "current_model_role": "graphical_controller_core",
+        "current_model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Learning/MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL.mo",
+        "current_model_class": "MoSimQuadrotorModel.Control.Implementations.Learning.MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL",
+        "current_model_sha256": "e1266350d91b8780599e89456c280374e371c21dcff612ef3ec36f90c2413ba4",
+        "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
+      },
+      "formal_reference": {
+        "formal_harness_state": "missing_closed_loop_harness",
+        "whole_aircraft_tier": "tier1_and_tier2",
+        "tier2_closure_eligibility": "included",
+        "canonical_closed_loop_harness": null,
+        "formal_adapter": null
+      }
+    }
+  ]
+}

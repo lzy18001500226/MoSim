@@ -40,8 +40,8 @@ DEFAULT_SOURCE_EDIT_APPLICATION_PLAN = (
 DEFAULT_OUTPUT_DIR = ROOT / "Results" / "static_audits" / "submission_source_output_readiness_20260610"
 
 SOURCE_DOCS = {
-    "user_manual_source": "Docs/user_manual.md",
-    "simulation_report_source": "Docs/simulation_report.md",
+    "user_manual_source": "Docs/报告/用户手册_正文骨架.md",
+    "simulation_report_source": "Docs/报告/仿真分析报告_正文骨架.md",
 }
 EXPECTED_FINAL_OUTPUTS = {
     "user_manual_pdf": "Results/submission/user_manual.pdf",
@@ -175,7 +175,7 @@ def build_readiness(
         blockers.append(
             {
                 "blocker_id": "report_source_edit_application_not_applied",
-                "reason": "no evidence shows the approved report-source application plan has been applied to Docs/simulation_report.md",
+                "reason": "no evidence shows the approved report-source application plan has been applied to Docs/报告/仿真分析报告_正文骨架.md",
                 "needed_action": "apply approved report-source edits in a separate authorized step, then regenerate source-output readiness",
             }
         )
@@ -232,7 +232,7 @@ def build_readiness(
             "It does not export PDFs.",
             "It does not record or render demo video.",
             "It does not write PMO final acceptance.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
         ],
     }
 

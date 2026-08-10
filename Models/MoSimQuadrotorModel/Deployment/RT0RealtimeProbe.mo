@@ -26,7 +26,7 @@ model RT0RealtimeProbe
       desiredQz,
       desiredQw,
       collectiveThrustN,
-      outputValid)
+      outputValid) 
       annotation(
         Include="#include \"mosim_mworks_live_rt0_bridge.h\"",
         IncludeDirectory="modelica://MoSimQuadrotorModel/Deployment/Resources/Include",

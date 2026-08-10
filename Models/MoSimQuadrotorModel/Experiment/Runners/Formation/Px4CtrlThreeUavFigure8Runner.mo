@@ -11,31 +11,31 @@ model Px4CtrlThreeUavFigure8Runner
     "Fixed world-frame triangle slots; each plant starts in its own slot";
 
   MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8Reference reference(
-    slot_offset_m = formation_slot_m)
+    slot_offset_m = formation_slot_m) 
     annotation(Placement(transformation(origin = {-220, 0}, extent = {{-28, -24}, {28, 24}})));
 
-  MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter controller_1
+  MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter controller_1 
     annotation(Placement(transformation(origin = {-100, 85}, extent = {{-38, -24}, {38, 24}})));
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator_1
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator_1 
     annotation(Placement(transformation(origin = {45, 85}, extent = {{-45, -24}, {45, 24}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_1(
-    initial_position_m = {formation_slot_m[1, 1], formation_slot_m[1, 2], formation_slot_m[1, 3]})
+    initial_position_m = {formation_slot_m[1, 1], formation_slot_m[1, 2], formation_slot_m[1, 3]}) 
     annotation(Placement(transformation(origin = {170, 85}, extent = {{-45, -52}, {45, 52}})));
 
-  MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter controller_2
+  MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter controller_2 
     annotation(Placement(transformation(origin = {-100, 0}, extent = {{-38, -24}, {38, 24}})));
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator_2
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator_2 
     annotation(Placement(transformation(origin = {45, 0}, extent = {{-45, -24}, {45, 24}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_2(
-    initial_position_m = {formation_slot_m[2, 1], formation_slot_m[2, 2], formation_slot_m[2, 3]})
+    initial_position_m = {formation_slot_m[2, 1], formation_slot_m[2, 2], formation_slot_m[2, 3]}) 
     annotation(Placement(transformation(origin = {170, 0}, extent = {{-45, -52}, {45, 52}})));
 
-  MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter controller_3
+  MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter controller_3 
     annotation(Placement(transformation(origin = {-100, -85}, extent = {{-38, -24}, {38, 24}})));
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator_3
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator_3 
     annotation(Placement(transformation(origin = {45, -85}, extent = {{-45, -24}, {45, 24}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_3(
-    initial_position_m = {formation_slot_m[3, 1], formation_slot_m[3, 2], formation_slot_m[3, 3]})
+    initial_position_m = {formation_slot_m[3, 1], formation_slot_m[3, 2], formation_slot_m[3, 3]}) 
     annotation(Placement(transformation(origin = {170, -85}, extent = {{-45, -52}, {45, 52}})));
 
   Modelica.Blocks.Discrete.UnitDelay sampled_position_ref_1[3](

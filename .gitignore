@@ -47,7 +47,8 @@ UE5/MoSimSceneLibrary/*.sln
 *.VC.db
 
 # Codex local state
-.codex/
+.codex/*
+!.codex/hooks.json
 .mcp.json
 .tmp/
 
@@ -445,3 +446,10 @@ Docs/报告/MoSim_仿真分析报告_公式更新版_20260802.docx
 Docs/报告/MoSim_仿真分析报告_正文_20260802.docx
 Docs/报告/MoSim_仿真分析报告_题注公式修正版_20260802.docx
 Docs/报告/MoSim_仿真分析报告_题注公式修正版_v2_20260802.docx
+Docs/报告/MoSim_仿真分析报告_题注公式修正版_v3_20260802.docx
+Docs/报告/MoSim_仿真分析报告_题注公式修正版_v4_20260802.docx
+Docs/报告/MoSim_仿真分析报告_题注公式修正版_v5_20260802.docx
+Docs/报告/MoSim_仿真分析报告_题注公式修正版_v6_20260802.docx
+Docs/报告/MoSim_仿真分析报告_当前口径更新版_20260803.docx
+Docs/报告/MoSim_仿真分析报告_当前口径更新版_v2_20260803.docx
+Docs/报告/MoSim_仿真分析报告_当前口径更新版_v3_20260803.docx

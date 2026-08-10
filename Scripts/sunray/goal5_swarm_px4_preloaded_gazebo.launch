@@ -9,6 +9,7 @@
   <arg name="verbose" default="false"/>
   <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="true"/>
+  <arg name="mavros_conn_timeout_s" default="60.0"/>
   <arg name="uav1_init_x" default="0.0"/>
   <arg name="uav1_init_y" default="-1.0"/>
   <arg name="uav2_init_x" default="0.0"/>
@@ -30,12 +31,14 @@
   <include file="$(env PROJECT_ROOT)/Scripts/sunray/goal5_px4_mavros_no_spawn.launch">
     <arg name="uav_id" value="1"/>
     <arg name="vehicle" value="$(arg vehicle)"/>
+    <arg name="mavros_conn_timeout_s" value="$(arg mavros_conn_timeout_s)"/>
   </include>
 
   <group if="$(eval int(arg('uav_num')) >= 2)">
     <include file="$(env PROJECT_ROOT)/Scripts/sunray/goal5_px4_mavros_no_spawn.launch">
       <arg name="uav_id" value="2"/>
       <arg name="vehicle" value="$(arg vehicle)"/>
+      <arg name="mavros_conn_timeout_s" value="$(arg mavros_conn_timeout_s)"/>
     </include>
   </group>
 
@@ -43,6 +46,7 @@
     <include file="$(env PROJECT_ROOT)/Scripts/sunray/goal5_px4_mavros_no_spawn.launch">
       <arg name="uav_id" value="3"/>
       <arg name="vehicle" value="$(arg vehicle)"/>
+      <arg name="mavros_conn_timeout_s" value="$(arg mavros_conn_timeout_s)"/>
     </include>
   </group>
 </launch>

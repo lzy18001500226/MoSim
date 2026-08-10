@@ -1,10 +1,24 @@
-# Mainline Operations Board
+# Project Status Archive (Former Mainline Operations Board)
 
-> Current task selector for MoSim. Keep this file short: it records only the
-> active work, the next decision, and blockers. It is not a history ledger or
-> a result archive.
+> RETIRED ROUTING PATH. This file is not a task selector, current P0, PMO
+> queue, owner registry, authorization source, or startup context.
 
-Status: P0a repaired the shared velocity-estimation and collective-thrust unit
+MoSim has no global conversation mainline. Each conversation is independent and
+works only from its newest direct user instruction. The historical material
+below is retained for status and evidence trace-back because existing reports,
+quality checks, and links still reference this compatibility path. It must not
+be used to start, continue, hand off, or reprioritize work.
+
+Historical catalog snapshot retained for report/evidence checks:
+
+- `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`
+  records 30 passes, 18 completed failures, and zero `not_run` entries.
+- `G3_STATUS.json` is a separate frozen historical snapshot and must not be
+  confused with the catalog record.
+- Detailed historical controller, runtime, and report notes remain below;
+  their dates and task labels do not authorize a new action.
+
+Historical engineering snapshot: P0a repaired the shared velocity-estimation and collective-thrust unit
 boundary; P0b then passed Official PID and four shared Runner 50 s regressions
 before the later reference-velocity/reference-acceleration contract repair.
 Phase 1 completed its user-approved frozen 46-route matrix on 2026-07-27 CST.
@@ -37,6 +51,16 @@ to the PID or optimization/predictive family; `mu_synthesis` and `neural_smc`
 remain historical 67-route trace-back records only. This vocabulary changes no
 historical result or current runtime state.
 
+Latest adaptive_mpc recovery attempt, 2026-08-03 CST: the native failure was
+diagnosed as correlated with the `ClimbPath` velocity-reference transition,
+and a narrow adapter-local first-order conditioning boundary was staged. The
+existing MWORKS GUI sentinel remained clean, but final-source reload timed out
+after 300 s in the reusable result-viewer/MCP session. This attempt therefore
+does not add a pass, change the 30/48 versus 28/48 distinction, add a current
+source-bound result figure, or alter the fixed catalog. Evidence and the next
+single reload/CheckModel/50 s gate are recorded at
+`Results/mworks_live_gate/failed18_recovery_20260803/adaptive_mpc/ADAPTIVE_MPC_RECOVERY_20260803.json`.
+
 For report screenshots, do not use the catalog denominator as a whole-aircraft
 simulation completion claim. The 48-entry run-evidence audit is at
 `Docs/报告/审计/控制器原生截图归位/FORMAL_RUN_SCREENSHOT_COVERAGE_20260731.md`.
@@ -45,32 +69,95 @@ and report-directory assets; all 48 report structure images are now present,
 while current-source-bound per-controller result-image materialization remains
 separate work.
 
-## 0. Task Authority and Evidence Snapshot
+## 0. Non-Authority Notice And Historical Evidence Snapshot
 
-This board is the sole selector of the current task. `PROGRESS.md` is only a
-dated snapshot and must not select or supersede current work. The detailed G6
-execution contract is `Docs/Workflows/g6_controller_experiment_execution.md`;
-`Docs/Workflows/controller_evidence_closeout.md` defines the G1-G7 completion
-contract. Neither creates another task line or gate meaning.
+This file never selects the current task. `PROGRESS.md`, task IDs, owner labels,
+and the historical entries below never select it either. The current
+conversation's newest direct user instruction is the only execution authority.
+The detailed workflows linked below describe procedures only; they do not
+create a task or grant permission.
 
-### User-Assigned Thread Boundary (2026-07-30 CST)
+There is no shared owner-thread boundary in the current operating model. Do not
+compare the current conversation with a historical thread ID, and do not start
+or resume a task because it appears in this archive.
 
-```text
-This coordinating thread:
-  MWORKS controller/model/evidence work
-  -> later MoSim Studio APP work
+## 1. Historical Task Records (Read-Only)
 
-Separate QGC/Gazebo conversation:
-  QGC and ROS1/Gazebo/PX4/MAVROS runtime work
-```
+Every section below is historical evidence or a former plan. It is not a
+current action, next gate, handoff, or authorization. The report, controller,
+runtime, and graphical-golden records must be reopened only by a new direct
+user request in the conversation that will perform that work.
 
-The separate conversation owns live runtime execution, Factory-map work,
-runtime scripts, PX4/EKF/sensor configuration, and QGC operations. This thread
-may prepare a factual handoff from completed `Results/sunray_ros1/` evidence,
-but must not run, change, or diagnose that lane. Direct user ownership takes
-precedence over historical runtime status below.
+Latest blocker, 2026-08-04 14:13 CST: the newly authorized read-only
+disposable OLE probe opened the golden pilot without touching the authoritative
+report or pilot bytes, but Word returned a null `OLEFormat.Object` before
+`IDataObject.EnumFormatEtc` or any MathML query could run. The pilot-owned Word
+process remained responding after the bounded COM quit, so it must be closed
+or recovered manually; do not kill or restart it from automation without fresh
+explicit authorization. Do not retry `SetData` or a conversion batch. The next
+decision is a user-assisted MathType OLE activation or the documented MathType
+UI conversion route on a disposable pilot. Evidence:
+`Results/report_word_layout_20260804/mathtype_conversion_pilot/mathtype_mathml_ole_format_probe_20260804.json`.
 
-## 1. Current Action
+The authoritative working document is the user's manually formatted
+`Docs/报告/MoSim_仿真分析报告.docx`. Do not rebuild or overwrite it as the
+first step. Preserve its corrected body text, headings, tables, figures,
+captions, and first manually rebuilt MathType equation. Make experiments on a
+new copy.
+
+Priority order:
+
+1. Inspect the first corrected equation as the golden layout: a borderless
+   1-row/2-column table, editable MathType equation on the left, and a
+   chapter-numbered Word field on the right.
+2. Replace every remaining native Word display equation with an editable
+   MathType equation and a correct equation number while preserving formula
+   meaning and surrounding content. Validate counts, object types, field
+   results, package integrity, and Word rendering before proposing replacement
+   of the authoritative document.
+3. Diagnose the duplicate Heading 1 numbering and the resulting `0-` figure/
+   table captions. Compare the user-corrected report with the user-manual
+   builder before changing field logic.
+4. After the submission document is accepted, encode the accepted table style
+   and formula layout in the report-specific builder. Table cells must inherit
+   the accepted body font at the size measured from the current report, use no
+   first-line indent, and use single line spacing. Do not guess a point size
+   from prose when the formatted DOCX can be measured directly.
+
+The first acceptance gate is the formula-converted review copy, not a generic
+Pandoc refactor. If MathType automation cannot create editable, stable objects
+without damaging the document, stop with the exact supported/unsupported split
+and the remaining manual workload. The supplied WeChat article is supporting
+research only; an inaccessible or unverified page must not override the local
+document and OOXML evidence.
+
+### Historical Official PID Single-UAV Graphical Golden Loop Record
+
+Direct user assignment on 2026-08-03 is to establish the formal, expandable,
+simulatable MWORKS entry
+`MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner`.
+The design and implementation plan is
+`Docs/Design/Official_PID_单机黄金图形化闭环重构规划_20260803.md`.
+The entry reuses `Sunray150Assembly`, its physical Sensors and visual shell, the
+existing `Vehicle.Blocks.Controller.Controller` Official PID core, and an
+explicit nominal Battery/ESC/four-rotor command path. The existing
+`OfficialPidFormalRunner` and its `OfficialPIDRotorAdapter` remain unchanged.
+
+The static contract and regression evidence are
+`Results/mworks_live_gate/official_pid_golden_20260803/OFFICIAL_PID_GOLDEN_STATIC_CHECK.json`.
+The existing `MWORKS_MCP` result bundle at
+`Results/mworks_live_gate/official_pid_golden_20260803/live_attempt_20260803_1911/`
+contains a completed 50 s Golden export, a Formal reference export, and four
+graphical screenshots. Its `post_yaw_fix` result is retained as pre-layout
+regression evidence; it is not a current-source CheckModel record. After the
+graphical layout repair, the current-turn read-only MCP `probe` and the bounded
+final-source `CheckModel` both timed out without a model error or an
+authorization message. The visible Sysplorer main window remains `教育版`.
+Therefore do not claim current-source CheckModel, current-layout screenshot
+acceptance, or a new 50 s replay from that historical bundle.
+Its next executable gate remains one bounded CheckModel followed by one
+independent 50 s `ClimbPath` replay for the Golden entry, but it is not
+authorized while report P0 is active.
 
 ### Seven-Scenario v2 Official PID / PX4CTRL A/B - Completed, Awaiting Review
 
@@ -102,9 +189,9 @@ controller experiments, gain tuning, or Gazebo/ROS/QGC runtime action. The
 later direct P0 report/manual/codegen-delivery authorization is tracked below
 and is document/build work only; it does not alter this frozen matrix.
 
-### P0 Report / Manual / Delivery Evidence Convergence - In Progress
+### Historical Broader Report / Manual / Delivery Evidence Scope
 
-Direct user authorization on 2026-07-31 CST permits only the evidence-driven
+The earlier direct user authorization on 2026-07-31 CST permitted only the evidence-driven
 rewrite of `Docs/报告/` and the named documentation locations, plus the
 px4ctrl C delivery material under `src/control/codegen/px4ctrl/` and root
 `RELEASE_CHECKLIST.md`. The source of truth is
@@ -213,7 +300,7 @@ source drift; the compact result record is
 This completes G1 structural validation only; it is not a closed-loop run or a
 controller-performance claim.
 
-Current action:
+Historical action record:
 
 ### Historical v1 Official PID Native-Continuous Motor-Fault Record - Retained
 
@@ -223,13 +310,14 @@ correctly wired, but the unchanged baseline becomes unbounded after the fault;
 the 50 s solver call cannot produce a valid full trace. The bounded diagnostic
 at `Results/control_platform/seven_scenario_ab/official_pid/motor_efficiency_fault/diagnostic_stop_16_6/`
 proves that this is not an MCP timeout or an injection error. This is retained
-as historical v1 negative evidence, not the current task selector; use the
-v2 entry above for the active review packet.
+as historical v1 negative evidence. It does not select a task; use the v2 entry
+only as historical evidence when the current user explicitly requests that
+review.
 
-### G3 ClimbPath Status - Historical Execution and Current Catalog Reconciliation
+### G3 ClimbPath Status - Historical Execution And Catalog Reconciliation
 
-The direct P0 documentation task does not resume G3 execution. Preserve the
-existing repair records. The immutable historical execution authority is
+This historical documentation record does not resume G3 execution. Preserve
+the existing repair records. The immutable historical execution authority is
 `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json`:
 G2 has 17/48 frozen passes; the historical G3 runner namespace has 28/48
 effective passes and 20/48 effective failures. The 20 failures are nine
@@ -238,8 +326,9 @@ API failures, and one CheckModel failure.
 
 For the active fixed catalog terminology, use
 `Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`.
-It maps 33 exact historical identities plus eight aliases and accounts for
-seven post-freeze FormalRunner records. The four former no-runner fixed
+It maps 33 exact historical identities plus eight aliases, seven post-freeze
+supplemental FormalRunner records, and one post-freeze current-state override.
+The four former no-runner fixed
 composite entries now have thin whole-aircraft FormalRunners and one native
 nominal 50 s ClimbPath record each: `fixed_awff_l1_indi` and
 `fixed_linear_mpc_l1_indi` pass the terminal 5 m gate, while
@@ -250,6 +339,16 @@ is not represented as an API-success call. The current result is 30/48 passes,
 18/48 completed failures, and 0/48 not-run entries; `completed=false`. The
 seven historical G3-only execution rows remain preserved in the artifact but
 are not silently substituted for catalog entries.
+
+The current catalog failure classes are 9
+`terminal_position_error_exceeds_5m`, 8 `simulation_timeout`, and 1
+`simulate_failed` (`adaptive_mpc`). The 2026-08-02
+`pole_placement_luenberger` override supersedes only its current status: its
+CheckModel passed and its source/parameter/solver-stable 50 s result reached
+`402.1409427651827 m` terminal error, so it is a terminal-error failure rather
+than a current CheckModel failure. The 2026-08-03 adaptive_mpc recovery attempt
+remains outside this reconciliation until its final source is reloaded,
+checked, simulated for 50 s, and read back for `position_error_norm`.
 
 All 48 public
 `Runners.Formal.*` entries received one nominal 50 s `ClimbPath` attempt with
@@ -275,7 +374,7 @@ result and terminal `position_error_norm < 5 m`. It is not an acceptance claim
 for the present current-catalog 30/48 state or the frozen historical 28/48 snapshot. No G3 rerun, gain-performance optimization, or
 Gazebo/ROS work is authorized by the P0 documentation task.
 
-### User-Authorized Operator Surface - Separate Support Lane
+### Historical Operator Surface Record - Separate Support Lane
 
 The user authorized the long-running `MoSim Studio + QGC Factory 2D operation
 surface` task on 2026-07-28 CST. It is a support-layer task and does not change
@@ -297,7 +396,7 @@ This task may perform source/UI/build checks, but it must not start MWORKS,
 Gazebo, ROS, PX4, MAVROS, QGC, UE or RViz until its relevant execution gate is
 opened. It must not claim controller, planner or runtime success from UI work.
 
-### User-Authorized ROS1/Gazebo Reproducibility Closure - Active Support Lane
+### Historical ROS1/Gazebo Reproducibility Closure - Support Lane
 
 On 2026-07-29 CST, the user authorized a separate runtime closure whose goal
 is that a reviewer can obtain the project source, configure the documented
@@ -448,21 +547,35 @@ future CoSim three-phase platform roadmap is owned by
 `Docs/CoSim/research/raw/CoSim设计.md`; do not rewrite it as a statement of
 current completion.
 
-## 3. Next Engineering Selection
+## 3. No Global Next Action
 
-The active bounded action is P0 report/manual/codegen-delivery evidence
-convergence. It uses the fixed 48-route denominator and
-`Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_CATALOG_48_CURRENT_STATUS.json`
-for current catalog state, with `G3_STATUS.json` retained as the immutable
-historical execution record. Do not infer an additional runnable route from a
-historical `adapter_missing` row; the ESO route already has a current source,
-FormalRunner and result record. G2 remains
-trace-back evidence; no live rerun is part of P0.
+There is no project-wide next action in the current operating model. A
+conversation may perform work only when its current user request states the
+scope and permits that action. Read this archive for historical facts only;
+never use its next-gate wording as an instruction.
 
 Before a live MWORKS, Gazebo, ROS, UE, or desktop action, load the relevant
-topic workflow and declare the evidence path under `Results/`.
+topic workflow and declare the evidence path under `Results/` in the current
+task's scope.
 
-## 4. Stopping And Handoff Conditions
+## 4. Historical Stopping And Handoff Contracts
+
+The bullets below preserve former acceptance boundaries for trace-back. They
+are not active stopping conditions or handoffs for any conversation.
+
+For the historical report gate:
+
+- Never overwrite the user's manually formatted report during experimentation.
+- Preserve all text, images, existing table formatting, heading corrections,
+  caption fields, and the first corrected MathType formula.
+- A converted formula is accepted only when it remains editable as MathType,
+  appears in the approved borderless 1-row/2-column layout, has a correct
+  chapter-local number, and survives save/reopen plus Word visual review.
+- Stop and report a blocker if MathType automation is unavailable, conversion
+  changes formula semantics, numbering resolves to zero, Word shows repair or
+  compatibility prompts, or layout damage cannot be bounded.
+- Do not begin the post-submission generic builder/template cleanup until the
+  formula review copy is accepted or the user explicitly changes priority.
 
 For the historical bounded seven-scenario A/B gate:
 
@@ -487,22 +600,18 @@ For the later G0-G3 controller line:
   of less than 5 m. A completed solver call with a divergent signal is a fail.
 - The old P0b and pre-repair six-candidate RMSE values are trace-back evidence,
   not current-source ranking data.
-- A future G3 repair may rerun only the G2 failure set under its separate
-  evidence root after a new direct user instruction. The current P0 task
-  permits documentation and px4ctrl C build verification only; it does not
-  permit broader experiment or runtime work.
+- A future G3 repair required a separate direct user instruction and evidence
+  root. No archived P0 or G3 wording authorizes a new experiment or runtime
+  action.
 
-## 5. Board Update Rule
+## 5. Archive Maintenance Rule
 
-Update this board only when one of these changes:
-
-- current task or next executable gate;
-- declared architecture/runtime authority;
-- terminal blocker and its required resolution;
-- accepted evidence pointer.
+Update this compatibility archive only when a user explicitly requests a
+historical/status correction and the change is limited to the named evidence.
+Do not use it to record a current task, owner, next gate, or handoff.
 
 Put detailed run history in `Results/`, stable design in `Docs/Design/`, and
-historical plans in `Docs/Cache/`. Do not append progress narration here.
+historical plans in `Docs/Cache/`.
 
 ## 6. Historical Board
 

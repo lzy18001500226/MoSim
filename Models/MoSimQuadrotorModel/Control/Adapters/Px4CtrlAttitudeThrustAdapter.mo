@@ -82,7 +82,7 @@ equation
   pitch_argument_safe = min(1 - pitch_argument_domain_margin,
     max(-1 + pitch_argument_domain_margin, pitch_argument));
   pitch_argument_clipped = abs(pitch_argument - pitch_argument_safe) > 0;
-  pitch_ref = if pitch_argument >= 1 then Modelica.Constants.pi / 2
+  pitch_ref = if pitch_argument >= 1 then Modelica.Constants.pi / 2 
     else if pitch_argument <= -1 then -Modelica.Constants.pi / 2 else asin(pitch_argument_safe);
   yaw_ref = atan2(2 * (core.qd_w * core.qd_z + core.qd_x * core.qd_y),
     1 - 2 * (core.qd_y ^ 2 + core.qd_z ^ 2));

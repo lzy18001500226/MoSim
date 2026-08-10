@@ -25,6 +25,40 @@ MISSION_ADAPTER_MARKERS = (
     "SafeStopChannel",
     "mission_status.finish",
 )
+FACTORY_L2_GRAPHICAL_C99_OPERATION = "factory_l2_graphical_px4ctrl_c99_figure8"
+FACTORY_L2_FASTLIO_ALIGNMENT_Z_M = 0.035
+QGC_DIFF_REALTIME_GOAL_SCRIPT = "Scripts/sunray/run_qgc_diff_realtime_goal_gate.sh"
+QGC_REALTIME_GOAL_CONTRACT = {
+    "input": "qgc_plan_view",
+    "goal_topic": "/move_base_simple/goal",
+    "goal_frame": "world",
+}
+QGC_REALTIME_GOAL_ROUTES = {
+    "factory_l2_graphical_px4ctrl_c99_qgc_realtime_goal": {
+        "runtime_profile_id": "sunray_ros1_factory_l2_graphical_px4ctrl_c99_qgc_realtime_goal_v1",
+        "experiment_profile_id": "px4ctrl_graphical_c99_factory_qgc_realtime_goal_v1",
+        "argument": "qgc_realtime_goal",
+        "result_gate": "QGC_REALTIME_GOAL_RUNTIME_STATUS.json",
+    },
+    "factory_l2_graphical_px4ctrl_c99_diff_interactive_goal": {
+        "runtime_profile_id": "sunray_ros1_factory_l2_graphical_px4ctrl_c99_diff_interactive_goal_v1",
+        "experiment_profile_id": "px4ctrl_graphical_c99_factory_diff_interactive_goal_v1",
+        "argument": "interactive_goal",
+        "result_gate": "QGC_DIFF_REALTIME_GOAL_RUNTIME_STATUS.json",
+    },
+}
+RVIZ_QGC_DISPLAY_PHASE1_ROUTE = {
+    "operation_id": "factory_l2_graphical_px4ctrl_c99_rviz_qgc_display_phase1",
+    "runtime_profile_id": "sunray_ros1_factory_l2_graphical_px4ctrl_c99_rviz_qgc_display_phase1_v1",
+    "experiment_profile_id": "px4ctrl_graphical_c99_factory_rviz_qgc_display_phase1_v1",
+    "argument": "rviz_qgc_display_phase1",
+    "result_gate": "RVIZ_QGC_DISPLAY_PHASE1_RUNTIME_STATUS.json",
+    "contract": {
+        "input": "rviz_2d_nav_goal",
+        "goal_topic": "/move_base_simple/goal",
+        "goal_frame": "world",
+    },
+}
 
 
 def _read_object(path: Path) -> dict[str, Any]:
@@ -110,6 +144,94 @@ def _validate_operator_invocation(identifier: str, invocation: Any, errors: list
             if not _safe_token(value):
                 errors.append(f"operator_invocation_argument_invalid:{identifier}:{index}")
     return True
+
+
+def _numbers_match(left: Any, right: Any) -> bool:
+    try:
+        return abs(float(left) - float(right)) <= 1e-6
+    except (TypeError, ValueError):
+        return False
+
+
+def _validate_factory_l2_fastlio_alignment(
+    identifier: str,
+    operation_id: str,
+    invocation: Any,
+    errors: list[str],
+) -> None:
+    if operation_id != FACTORY_L2_GRAPHICAL_C99_OPERATION:
+        return
+    environment = invocation.get("shell_environment") if isinstance(invocation, dict) else None
+    if not isinstance(environment, dict):
+        return
+
+    required = (
+        "SUNRAY_UAV_INIT_X",
+        "SUNRAY_UAV_INIT_Y",
+        "FASTLIO_ALIGNMENT_ORIGIN_X",
+        "FASTLIO_ALIGNMENT_ORIGIN_Y",
+        "FASTLIO_ALIGNMENT_ORIGIN_Z",
+    )
+    missing = [name for name in required if name not in environment]
+    for name in missing:
+        errors.append(f"factory_l2_fastlio_alignment_origin_missing:{identifier}:{name}")
+    if missing:
+        return
+
+    if not _numbers_match(
+        environment["SUNRAY_UAV_INIT_X"], environment["FASTLIO_ALIGNMENT_ORIGIN_X"]
+    ):
+        errors.append(f"factory_l2_fastlio_alignment_origin_x_mismatch:{identifier}")
+    if not _numbers_match(
+        environment["SUNRAY_UAV_INIT_Y"], environment["FASTLIO_ALIGNMENT_ORIGIN_Y"]
+    ):
+        errors.append(f"factory_l2_fastlio_alignment_origin_y_mismatch:{identifier}")
+    if not _numbers_match(environment["FASTLIO_ALIGNMENT_ORIGIN_Z"], FACTORY_L2_FASTLIO_ALIGNMENT_Z_M):
+        errors.append(f"factory_l2_fastlio_alignment_origin_z_mismatch:{identifier}")
+    if environment.get("ORCHESTRATOR_REQUIRE_ACTUATOR_TELEMETRY") != "false":
+        errors.append(f"factory_l2_graphical_c99_no_fault_actuator_readiness_must_be_disabled:{identifier}")
+
+
+def _validate_qgc_realtime_goal_route(identifier: str, entry: dict[str, Any], errors: list[str]) -> None:
+    expected = QGC_REALTIME_GOAL_ROUTES.get(str(entry.get("operation_id", "")))
+    if expected is None:
+        return
+    if identifier != expected["runtime_profile_id"]:
+        errors.append(f"qgc_realtime_goal_runtime_profile_mismatch:{identifier}")
+    if entry.get("experiment_profile_ids") != [expected["experiment_profile_id"]]:
+        errors.append(f"qgc_realtime_goal_experiment_profile_mismatch:{identifier}")
+    if entry.get("controller_ids") != ["px4ctrl"] or entry.get("vehicle_counts") != [1]:
+        errors.append(f"qgc_realtime_goal_vehicle_or_controller_mismatch:{identifier}")
+    if entry.get("project_script") != QGC_DIFF_REALTIME_GOAL_SCRIPT:
+        errors.append(f"qgc_realtime_goal_wrapper_mismatch:{identifier}")
+    invocation = entry.get("operator_invocation")
+    if not isinstance(invocation, dict) or invocation.get("arguments") != [expected["argument"]]:
+        errors.append(f"qgc_realtime_goal_invocation_mismatch:{identifier}")
+    if entry.get("result_gate") != expected["result_gate"]:
+        errors.append(f"qgc_realtime_goal_result_gate_mismatch:{identifier}")
+    if entry.get("realtime_goal") != QGC_REALTIME_GOAL_CONTRACT:
+        errors.append(f"qgc_realtime_goal_contract_mismatch:{identifier}")
+
+
+def _validate_rviz_qgc_display_phase1_route(identifier: str, entry: dict[str, Any], errors: list[str]) -> None:
+    if entry.get("operation_id") != RVIZ_QGC_DISPLAY_PHASE1_ROUTE["operation_id"]:
+        return
+    expected = RVIZ_QGC_DISPLAY_PHASE1_ROUTE
+    if identifier != expected["runtime_profile_id"]:
+        errors.append(f"rviz_qgc_display_phase1_runtime_profile_mismatch:{identifier}")
+    if entry.get("experiment_profile_ids") != [expected["experiment_profile_id"]]:
+        errors.append(f"rviz_qgc_display_phase1_experiment_profile_mismatch:{identifier}")
+    if entry.get("controller_ids") != ["px4ctrl"] or entry.get("vehicle_counts") != [1]:
+        errors.append(f"rviz_qgc_display_phase1_vehicle_or_controller_mismatch:{identifier}")
+    if entry.get("project_script") != QGC_DIFF_REALTIME_GOAL_SCRIPT:
+        errors.append(f"rviz_qgc_display_phase1_wrapper_mismatch:{identifier}")
+    invocation = entry.get("operator_invocation")
+    if not isinstance(invocation, dict) or invocation.get("arguments") != [expected["argument"]]:
+        errors.append(f"rviz_qgc_display_phase1_invocation_mismatch:{identifier}")
+    if entry.get("result_gate") != expected["result_gate"]:
+        errors.append(f"rviz_qgc_display_phase1_result_gate_mismatch:{identifier}")
+    if entry.get("realtime_goal") != expected["contract"]:
+        errors.append(f"rviz_qgc_display_phase1_contract_mismatch:{identifier}")
 
 
 def _operator_mode_matches_contract(mode: str, contract: Any) -> bool:
@@ -200,6 +322,11 @@ def check(
             errors.append(f"unaccepted_vehicle_scale:{identifier}")
 
         _validate_operator_contract(identifier, entry.get("operator_contract"), errors)
+        _validate_factory_l2_fastlio_alignment(
+            identifier, operation_id, entry.get("operator_invocation"), errors
+        )
+        _validate_qgc_realtime_goal_route(identifier, entry, errors)
+        _validate_rviz_qgc_display_phase1_route(identifier, entry, errors)
         for profile_id in entry.get("experiment_profile_ids", []):
             profile_path = ROOT / "Config" / "profiles" / "experiments" / f"{profile_id}.json"
             if not profile_path.is_file():
@@ -222,6 +349,7 @@ def check(
     enabled_controller_scheme_ids: set[str] = set()
     enabled_count = 0
     enabled_invocation_count = 0
+    operator_publication_matrix: list[dict[str, Any]] = []
     for item in profiles:
         if not isinstance(item, dict):
             errors.append("operator_profile_not_object")
@@ -237,6 +365,8 @@ def check(
         experiment = _read_object(profile_path).get("experiment_profile", {})
         if experiment.get("id") != profile_id:
             errors.append(f"operator_profile_id_mismatch:{profile_id}:{experiment.get('id', '')}")
+        if item.get("enabled") is True and experiment.get("profile_status") == "blocked":
+            errors.append(f"operator_profile_enabled_while_experiment_blocked:{profile_id}")
 
         controller_scheme_id = str(item.get("controller_scheme_id", ""))
         if not controller_scheme_id:
@@ -266,6 +396,30 @@ def check(
             errors.append(f"operator_profile_authority_mismatch:{profile_id}:{mode}")
 
         invocation = backend.get("operator_invocation")
+        operator_contract = backend.get("operator_contract")
+        operator_contract = operator_contract if isinstance(operator_contract, dict) else {}
+        backend_vehicle_counts = backend.get("vehicle_counts")
+        matrix_vehicle_count = experiment.get("vehicle_count")
+        if (
+            not isinstance(matrix_vehicle_count, int)
+            and isinstance(backend_vehicle_counts, list)
+            and len(backend_vehicle_counts) == 1
+        ):
+            matrix_vehicle_count = backend_vehicle_counts[0]
+        operator_publication_matrix.append(
+            {
+                "experiment_profile_id": profile_id,
+                "publication_state": "enabled" if item.get("enabled") is True else "disabled",
+                "disabled_reason": str(item.get("disabled_reason", "")),
+                "experiment_profile_status": str(experiment.get("profile_status", "not_declared")),
+                "vehicle_count": matrix_vehicle_count,
+                "operator_mode": mode,
+                "runtime_profile_id": str(backend.get("runtime_profile_id", "")),
+                "operation_id": str(backend.get("operation_id", "")),
+                "flight_authority": str(operator_contract.get("flight_authority", "")),
+                "evidence_classification": "source_static_only",
+            }
+        )
         if item.get("enabled") is True:
             enabled_count += 1
             if _validate_operator_invocation(str(backend.get("runtime_profile_id", "")), invocation, errors):
@@ -299,6 +453,7 @@ def check(
         "operator_profile_count": len(seen_operator_profiles),
         "enabled_operator_profile_count": enabled_count,
         "enabled_operator_invocation_count": enabled_invocation_count,
+        "operator_publication_matrix": operator_publication_matrix,
         "controller_scheme_count": len(controller_scheme_ids),
         "published_controller_scheme_count": len(published_controller_scheme_ids),
         "enabled_controller_scheme_count": len(enabled_controller_scheme_ids),

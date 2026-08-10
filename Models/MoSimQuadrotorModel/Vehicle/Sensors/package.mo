@@ -2,13 +2,13 @@ within MoSimQuadrotorModel.Vehicle;
 package Sensors "传感器系统"
   extends Modelica.Icons.SensorsPackage;
   model Sensors
-    AbsoluteAngles absoluteAngles
+    AbsoluteAngles absoluteAngles 
       annotation (Placement(transformation(origin = {0.0, 20.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
 
 
 
-    Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_a
+    Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_a 
       annotation (Placement(transformation(origin = {-100.0, 0.0},
         extent = {{-16.0, -16.0}, {16.0, 16.0}}),
         iconTransformation(origin = {-100.0, 0.0},
@@ -21,6 +21,22 @@ package Sensors "传感器系统"
       extent = {{-10.0, -10.0}, {10.0, 10.0}}),
       iconTransformation(origin = {110.0, -38.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+    Modelica.Blocks.Interfaces.RealOutput VelMea[3](each unit = "m/s")
+      "World-frame linear velocity measurement" annotation (Placement(transformation(origin = {110.0, -55.0},
+        extent = {{-10.0, -10.0}, {10.0, 10.0}}),
+        iconTransformation(origin = {110.0, -58.0},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+    Modelica.Blocks.Interfaces.RealOutput BodyRateMea[3](each unit = "rad/s")
+      "Body-frame angular velocity measurement" annotation (Placement(transformation(origin = {110.0, -80.0},
+        extent = {{-10.0, -10.0}, {10.0, 10.0}}),
+        iconTransformation(origin = {110.0, -78.0},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+    // QuatMea follows Modelica MultiBody order {x, y, z, w}; the scalar component is last.
+    Modelica.Blocks.Interfaces.RealOutput QuatMea[4]
+      "World-to-body orientation quaternion in Modelica order {x, y, z, w}" annotation (Placement(transformation(origin = {110.0, 60.0},
+        extent = {{-10.0, -10.0}, {10.0, 10.0}}),
+        iconTransformation(origin = {110.0, 78.0},
+          extent = {{-10.0, -10.0}, {10.0, 10.0}})));
     annotation (Icon(coordinateSystem(extent = {{-100.0, -100.0}, {100.0, 100.0}},
       grid = {2.0, 2.0}), graphics = {Rectangle(origin = {-7.105427357601002e-15, 0.0},
       lineColor = {200, 200, 200},
@@ -37,26 +53,53 @@ package Sensors "传感器系统"
       resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world) annotation (Placement(transformation(origin = {0.0, -23.974440894568694},
         extent = {{10.0, 10.0}, {-10.0, -10.0}},
         rotation = 180.0)));
+    Modelica.Mechanics.MultiBody.Sensors.AbsoluteVelocity absoluteVelocity(
+      resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world) 
+      annotation (Placement(transformation(origin = {0.0, -55.0},
+        extent = {{-10.0, -10.0}, {10.0, 10.0}})));
+    Modelica.Mechanics.MultiBody.Sensors.AbsoluteAngularVelocity absoluteAngularVelocity(
+      resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.frame_a) 
+      annotation (Placement(transformation(origin = {0.0, -80.0},
+        extent = {{-10.0, -10.0}, {10.0, 10.0}})));
   equation
-    connect(frame_a, absoluteAngles.frame_a)
+    connect(frame_a, absoluteAngles.frame_a) 
       annotation (Line(origin = {-55.0, 10.0},
         points = {{-45.0, -10.0}, {-5.0, -10.0}, {-5.0, 10.0}, {45.0, 10.0}},
         color = {95, 95, 95},
         thickness = 0.5));
 
-    connect(absoluteAngles.angles, AngleMea)
+    connect(absoluteAngles.angles, AngleMea) 
       annotation (Line(origin = {61.0, 19.0},
         points = {{-50.0, 1.0}, {49.0, 1.0}},
         color = {0, 0, 127}));
-    connect(absolutePosition1.frame_a, frame_a)
+    connect(absolutePosition1.frame_a, frame_a) 
       annotation (Line(origin = {-55.0, -12.0},
         points = {{45.0, -12.0}, {-5.0, -12.0}, {-5.0, 12.0}, {-45.0, 12.0}},
         color = {95, 95, 95},
         thickness = 0.5));
-    connect(absolutePosition1.r, PosMea)
+    connect(absolutePosition1.r, PosMea) 
       annotation (Line(origin = {61.0, -23.0},
         points = {{-50.0, -1.0}, {49.0, -1.0}},
         color = {0, 0, 127}));
+    connect(absoluteVelocity.frame_a, frame_a) 
+      annotation (Line(origin = {-55.0, -35.0},
+        points = {{45.0, -20.0}, {-5.0, -20.0}, {-5.0, 35.0}, {-45.0, 35.0}},
+        color = {95, 95, 95},
+        thickness = 0.5));
+    connect(absoluteVelocity.v, VelMea) 
+      annotation (Line(origin = {61.0, -55.0},
+        points = {{-50.0, 0.0}, {49.0, 0.0}},
+        color = {0, 0, 127}));
+    connect(absoluteAngularVelocity.frame_a, frame_a) 
+      annotation (Line(origin = {-55.0, -50.0},
+        points = {{45.0, -30.0}, {-5.0, -30.0}, {-5.0, 50.0}, {-45.0, 50.0}},
+        color = {95, 95, 95},
+        thickness = 0.5));
+    connect(absoluteAngularVelocity.w, BodyRateMea) 
+      annotation (Line(origin = {61.0, -80.0},
+        points = {{-50.0, 0.0}, {49.0, 0.0}},
+        color = {0, 0, 127}));
+    QuatMea = Modelica.Mechanics.MultiBody.Frames.to_Q(frame_a.R);
   end Sensors;
   model AbsoluteAngles
     "Measure absolute angles between frame connector and the world frame"
@@ -66,14 +109,14 @@ package Sensors "传感器系统"
       each final quantity = "Angle",
       each final unit = "rad",
       each displayUnit = "deg")
-      "Angles to rotate world frame into frame_a via 'sequence'"
+      "Angles to rotate world frame into frame_a via 'sequence'" 
       annotation (Placement(transformation(
         origin = {110, 0},
         extent = {{-10, -10}, {10, 10}})));
     parameter Modelica.Mechanics.MultiBody.Types.RotationSequence sequence(
       min = {1, 1, 1},
       max = {3, 3, 3}) = {1, 2, 3}
-      "Angles are returned to rotate world frame around axes sequence[1], sequence[2] and finally sequence[3] into frame_a"
+      "Angles are returned to rotate world frame around axes sequence[1], sequence[2] and finally sequence[3] into frame_a" 
       annotation (Evaluate = true);
     parameter Modelica.Units.SI.Angle guessAngle1 = 0
       "Select angles[1] such that abs(angles[1] - guessAngle1) is a minimum";
@@ -138,13 +181,13 @@ sequence = <strong>{1,2,3}</strong>  // Cardan or Tait-Bryan angle sequence
     Modelica.Blocks.Interfaces.RealOutput r[3](
       each final quantity = "Length",
       each final unit = "m")
-      "Absolute position vector resolved in frame defined by resolveInFrame"
+      "Absolute position vector resolved in frame defined by resolveInFrame" 
       annotation (Placement(transformation(
         extent = {{-10, -10}, {10, 10}},
         origin = {110, 0})));
-    Modelica.Mechanics.MultiBody.Interfaces.Frame_resolve frame_resolve if
+    Modelica.Mechanics.MultiBody.Interfaces.Frame_resolve frame_resolve if 
       resolveInFrame == Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.frame_resolve
-      "Coordinate system in which output vector r is optionally resolved"
+      "Coordinate system in which output vector r is optionally resolved" 
       annotation (Placement(transformation(extent = {{-16, -16}, {16, 16}},
         rotation = -90,
         origin = {0, -100})));
@@ -153,18 +196,18 @@ sequence = <strong>{1,2,3}</strong>  // Cardan or Tait-Bryan angle sequence
       Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.frame_a
       "Frame in which output vector r shall be resolved (world, frame_a, or frame_resolve)";
   protected
-    Modelica.Mechanics.MultiBody.Sensors.Internal.BasicAbsolutePosition position(resolveInFrame = resolveInFrame)
+    Modelica.Mechanics.MultiBody.Sensors.Internal.BasicAbsolutePosition position(resolveInFrame = resolveInFrame) 
       annotation (Placement(transformation(extent = {{-10, -10}, {10, 10}})));
 
-    Modelica.Mechanics.MultiBody.Interfaces.ZeroPosition zeroPosition if
-      not (resolveInFrame == Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.frame_resolve)
+    Modelica.Mechanics.MultiBody.Interfaces.ZeroPosition zeroPosition if 
+      not (resolveInFrame == Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.frame_resolve) 
       annotation (Placement(transformation(extent = {{20, -40}, {40, -20}})));
   equation
     connect(position.frame_resolve, frame_resolve) annotation (Line(
       points = {{0, -10}, {0, -100}},
       color = {95, 95, 95},
       pattern = LinePattern.Dot));
-    connect(zeroPosition.frame_resolve, position.frame_resolve)
+    connect(zeroPosition.frame_resolve, position.frame_resolve) 
       annotation (Line(
         points = {{20, -30}, {0, -30}, {0, -10}},
         color = {95, 95, 95},

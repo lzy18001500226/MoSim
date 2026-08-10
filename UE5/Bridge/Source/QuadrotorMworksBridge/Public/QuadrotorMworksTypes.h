@@ -149,6 +149,25 @@ struct FQuadrotorMworksFrame
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     double TimeSeconds = 0.0;
 
+    // Unix-epoch wall-clock stamps for display-path observability. They are
+    // distinct from TimeSeconds, which remains the ROS/Gazebo time value.
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS|Observability")
+    int64 SourceReceivedUnixNanoseconds = 0;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS|Observability")
+    int64 UdpSentUnixNanoseconds = 0;
+
+    // The launch-time Windows receiver clock minus the WSL source clock. This
+    // must be present before using cross-host one-way timing measurements.
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS|Observability")
+    int64 SourceToReceiverClockOffsetNanoseconds = 0;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS|Observability")
+    bool bSourceToReceiverClockOffsetCalibrated = false;
+
+    UPROPERTY(BlueprintReadOnly, Category = "MWORKS|Observability")
+    int64 UeReceivedUnixNanoseconds = 0;
+
     UPROPERTY(BlueprintReadOnly, Category = "MWORKS")
     FVector PositionMeters = FVector::ZeroVector;
 

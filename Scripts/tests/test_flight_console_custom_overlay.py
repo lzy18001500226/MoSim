@@ -73,6 +73,10 @@ def test_custom_overlay_uses_read_only_operator_bridge_and_native_qgc_layers() -
     assert "runtime_backend_catalog.json" in bridge_source
     assert "operator_invocation" in bridge_source
     assert "prepare_operator_run.py" in bridge_source
+    assert 'uav1=/uav1/sunray/gazebo_pose' in bridge_source
+    assert "--expected-path-topic" in bridge_source
+    assert "/mosim/px4ctrl/reference_path" in bridge_source
+    assert '--max-update-rate-hz 20' in bridge_source
     assert "qgc_active_run.json" in bridge_source
     assert "MOSIM_OPERATOR_PROFILE_ID" in bridge_source
     assert "MOSIM_CONTROLLER_PROFILE" in bridge_source
@@ -217,16 +221,32 @@ def test_factory_floorplan_is_packaged_for_the_flight_console() -> None:
     assert "world_bounds_m" in fly_map
     assert "function zoomAt(viewX, viewY, wheelDelta)" in fly_map
     assert "function fitMap()" in fly_map
+    assert "function hasDisplayData()" in fly_map
+    assert "function displayWorldPoints()" in fly_map
+    assert "function focusDisplay()" in fly_map
+    assert 'text: "定位轨迹"' in fly_map
+    assert 'onClicked: root.focusDisplay()' in fly_map
+    assert 'text: "全图"' in fly_map
+    assert 'onClicked: root.fitMap()' in fly_map
+    assert "mosimOperator" not in fly_map
     assert "onWheel: function(wheel)" in fly_map
     assert "metersPerPixel" in fly_map and "niceScaleMeters" in fly_map
+    assert "property real maxZoom: 48.0" in fly_map
+    assert "defaultZoomFactor" in fly_map
+    assert "readonly property real defaultZoomFactor: minZoom" in fly_map
+    assert "Math.min(targetWidth / baseSpanX, targetHeight / baseSpanY)" in fly_map
     assert "taskBoundaryCanvas" in fly_map
     assert "taskPathCanvas" in fly_map
-    assert "missionTargetCanvas" in fly_map
+    assert "taskEndpointCanvas" in fly_map
     assert "actualTrackCanvas" in fly_map
     assert "actualTrackSourceIdentity" in fly_map
     assert "hasPlanarExtent" in fly_map
     assert "rosbag_replay" in fly_map
-    assert "missionTarget" in fly_map and "paintMissionTarget" in fly_map
+    assert "taskEndpoint" in fly_map and "paintTaskEndpoint" in fly_map
+    assert "任务终点（非返航点）" in fly_map
+    assert "悬停目标" not in fly_map
+    assert "operator_map_vehicle_position_invalid" in fly_map
+    assert "实时地图位置超出 Factory L2 范围" in fly_map
     assert "formationTarget" in fly_map and "explorationBoundary" in fly_map
 
     catalog = json.loads(
@@ -260,6 +280,8 @@ def test_plan_view_uses_georeferenced_factory_overlay_without_orchestrator() -> 
     assert "runManifest: mosimOperator.runManifest || ({})" in plan_view
     assert "target: mosimOperator" in plan_view
     assert "function onStateChanged()" in plan_view
+    assert "&& _root.factoryMissionPublicationAllowed()" in plan_view
+    assert "if (!_root.factoryMissionPublicationAllowed())" in plan_view
     assert "mosimOrchestrator" not in plan_view
     assert "editorMap.center = factoryPlanMap.mapCenter" in plan_view
     assert "factoryMissionPublicationAllowed" in plan_view
@@ -299,6 +321,17 @@ def test_operator_console_exposes_profiles_fault_staging_and_visible_commands() 
     assert "copySelectedLaunchCommand" in qml
     assert "copyClearActiveRunCommand" in qml
     assert "copyRosbagReplayCommand" in qml
+    assert "可见终端命令（仅复制）" in qml
+    assert "QGC 不执行这些命令" in qml
+    for command in (
+        "copySelectedLaunchCommand",
+        "copyClearActiveRunCommand",
+        "copyStagedFaultCommand",
+        "copyRestoreNormalCommand",
+        "copyRosbagReplayCommand",
+        "copyLastCommand",
+    ):
+        assert f"onClicked: mosimOperator.{command}()" in qml or f"onClicked: mosimOperator.{command}" in qml
     assert "TextArea" in qml and "mosimOperator.lastCommand" in qml
     assert "agentSuggest" in qml
     assert "mosimOrchestrator" not in qml

@@ -8,7 +8,8 @@
     <!-- 对应文件：ROMFS/px4fmu_common/init.d-posix/airframes/10020_gazebo-classic_sunray，可以在这个文件里面更改默认PX4仿真参数 -->
     <env name="PX4_SIM_MODEL" value="gazebo-classic_sunray" />
 	<!-- 仿真速度因子 1.0代表与真实时间同步，大于1加快仿真速度，小于1则减慢 （电脑性能较差，可选择减小该参数）-->
-	<env name="PX4_SIM_SPEED_FACTOR" value="1.0" />
+	<arg name="px4_sim_speed_factor" default="$(optenv PX4_SIM_SPEED_FACTOR 1.0)" />
+	<env name="PX4_SIM_SPEED_FACTOR" value="$(arg px4_sim_speed_factor)" />
     <!-- PX4滤波器参数 -->
     <arg name="est" default="ekf2"/>
     <!-- 无人机模型名字 -->

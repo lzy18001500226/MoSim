@@ -51,7 +51,7 @@ def test_current_unmapped_claim_rewrite_plan_builds(tmp_path: Path) -> None:
     assert plan["status"] == "draft_rewrite_plan_not_final_report_acceptance"
     families = {section["claim_family"] for section in plan["sections"]}
     assert families == {"fault_tolerance", "multi_uav_formation", "visual_trajectory_review"}
-    assert "does not edit Docs/simulation_report.md" in " ".join(plan["claim_boundary"])
+    assert "does not edit Docs/报告/仿真分析报告_正文骨架.md" in " ".join(plan["claim_boundary"])
 
 
 def test_family_markdown_table_contains_metrics_and_figure() -> None:

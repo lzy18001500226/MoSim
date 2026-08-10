@@ -7,7 +7,7 @@
 
 ## 编号与任务指针（唯一解释）
 
-- 当前任务只由 `Docs/Workflows/mainline_operations_board.md` 选择。
+- 当前任务只由当前对话中用户最新的直接指令选择；本文件不分配任务。
 - 当前控制器证据 gate 只使用本文件定义的 G1-G7；它们的顺序和完成条件以本文件为准。
 - `Docs/Workflows/g6_controller_experiment_execution.md` 是当前 G6 的执行合同，
   不新建另一套 G 编号，也不选择当前任务。

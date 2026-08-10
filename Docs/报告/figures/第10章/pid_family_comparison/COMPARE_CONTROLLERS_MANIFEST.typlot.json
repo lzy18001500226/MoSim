@@ -1,14 +1,14 @@
 {
   "radar_scores": {
-    "Control Energy": 0.9249664072914214,
-    "Max Error": 0.9301713438166951,
-    "Position RMSE": 0.9738683341040353,
-    "Terminal Error": 0.9898346476179531
+    "Control Energy": 1.0,
+    "Max Error": 1.0,
+    "Position RMSE": 1.0,
+    "Terminal Error": 0.9997014933142677
   },
   "family": "PID族",
   "controllers": [
-    "official_pid",
-    "official_pid_yaw_authority_mapped"
+    "fixed_awff_l1_indi",
+    "official_pid"
   ],
   "figures": [
     "figures/climbpath_rmse_bar.png",
@@ -23,13 +23,13 @@
   "resolution": 600,
   "family_slug": "pid",
   "schema": "mosim.typlot_controller_comparison.v1",
-  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv",
+  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
   "engine": "Syslab TyPlot",
   "family_median": {
-    "position_rmse_m": 0.25611860458075925,
-    "terminal_position_error_m": 0.030224950515507193,
-    "max_position_error_m": 0.885127145503442,
-    "control_energy": 844474.3169410224
+    "position_rmse_m": 0.1554664548762124,
+    "terminal_position_error_m": 0.0034916311329089614,
+    "max_position_error_m": 0.6533349028783533,
+    "control_energy": 419494.8586632419
   },
-  "metric_source": "Results/control_platform/phase2_full_48_climbpath/<controller>/metrics/metrics.csv（冻结值，未重算）"
+  "metric_source": "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）"
 }

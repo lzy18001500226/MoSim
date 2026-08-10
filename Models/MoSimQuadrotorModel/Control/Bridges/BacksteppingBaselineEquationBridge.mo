@@ -55,7 +55,7 @@ equation
   for axis in 1:3 loop
     virtual_velocity_error[axis] = velocity_error[axis]
       + position_gain[axis] * position_error[axis];
-    desired_acceleration[axis] = (if axis == 3 then reference_acceleration_z
+    desired_acceleration[axis] = (if axis == 3 then reference_acceleration_z 
       else if axis == 2 then reference_acceleration_y else reference_acceleration_x)
       + position_gain[axis] * velocity_error[axis]
       + virtual_velocity_gain[axis] * virtual_velocity_error[axis]

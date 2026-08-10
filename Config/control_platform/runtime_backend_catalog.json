@@ -1,6 +1,6 @@
 {
   "schema": "mosim.runtime_backend_catalog.v2",
-  "version": 5,
+  "version": 7,
   "claim_boundary": "Only project-owned, reviewed runtime wrappers may appear here. QGC renders a copyable foreground terminal command from operator_invocation; it does not launch, supervise, or accept runtime execution.",
   "runtime_profiles": [
     {
@@ -195,8 +195,12 @@
           "GUI": "false",
           "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
           "MAVROS_READY_TIMEOUT_S": "180",
+          "ORCHESTRATOR_REQUIRE_ACTUATOR_TELEMETRY": "false",
           "FASTLIO_FILTER_SIZE_SURF": "0.5",
           "FASTLIO_FILTER_SIZE_MAP": "0.5",
+          "FASTLIO_ALIGNMENT_ORIGIN_X": "-10.575025",
+          "FASTLIO_ALIGNMENT_ORIGIN_Y": "-19.36313",
+          "FASTLIO_ALIGNMENT_ORIGIN_Z": "0.035",
           "MOSIM_UE_STATE_STREAM": "true",
           "MOSIM_UE_STATE_STREAM_RATE_HZ": "100",
           "PX4CTRL_CORE_PROFILE": "graphical_c99",
@@ -222,6 +226,99 @@
         "flight_authority": "mission_adapter",
         "takeoff_owner": "mission_adapter",
         "mission_adapter_source": "Scripts/sunray/px4ctrl_basic_mission_node.py",
+        "terminal_ack": "mission_status_channel_v1",
+        "safe_stop": "safe_stop_channel_v1"
+      },
+      "status": "source_ready_live_gate_pending"
+    },
+    {
+      "runtime_profile_id": "sunray_ros1_factory_l2_graphical_px4ctrl_c99_rviz_qgc_display_phase1_v1",
+      "experiment_profile_ids": ["px4ctrl_graphical_c99_factory_rviz_qgc_display_phase1_v1"],
+      "controller_ids": ["px4ctrl"],
+      "vehicle_counts": [1],
+      "launcher": "wsl_project_script",
+      "wsl_distribution": "Ubuntu-20.04",
+      "operation_id": "factory_l2_graphical_px4ctrl_c99_rviz_qgc_display_phase1",
+      "project_script": "Scripts/sunray/run_qgc_diff_realtime_goal_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false"
+        },
+        "arguments": ["rviz_qgc_display_phase1"]
+      },
+      "result_gate": "RVIZ_QGC_DISPLAY_PHASE1_RUNTIME_STATUS.json",
+      "realtime_goal": {
+        "input": "rviz_2d_nav_goal",
+        "goal_topic": "/move_base_simple/goal",
+        "goal_frame": "world"
+      },
+      "operator_contract": {
+        "flight_authority": "mission_adapter",
+        "takeoff_owner": "mission_adapter",
+        "mission_adapter_source": "Scripts/sunray/px4ctrl_ego_single_mission_node.py",
+        "terminal_ack": "mission_status_channel_v1",
+        "safe_stop": "safe_stop_channel_v1"
+      },
+      "status": "source_ready_live_gate_pending"
+    },
+    {
+      "runtime_profile_id": "sunray_ros1_factory_l2_graphical_px4ctrl_c99_diff_interactive_goal_v1",
+      "experiment_profile_ids": ["px4ctrl_graphical_c99_factory_diff_interactive_goal_v1"],
+      "controller_ids": ["px4ctrl"],
+      "vehicle_counts": [1],
+      "launcher": "wsl_project_script",
+      "wsl_distribution": "Ubuntu-20.04",
+      "operation_id": "factory_l2_graphical_px4ctrl_c99_diff_interactive_goal",
+      "project_script": "Scripts/sunray/run_qgc_diff_realtime_goal_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false"
+        },
+        "arguments": ["interactive_goal"]
+      },
+      "result_gate": "QGC_DIFF_REALTIME_GOAL_RUNTIME_STATUS.json",
+      "realtime_goal": {
+        "input": "qgc_plan_view",
+        "goal_topic": "/move_base_simple/goal",
+        "goal_frame": "world"
+      },
+      "operator_contract": {
+        "flight_authority": "mission_adapter",
+        "takeoff_owner": "mission_adapter",
+        "mission_adapter_source": "Scripts/sunray/px4ctrl_ego_single_mission_node.py",
+        "terminal_ack": "mission_status_channel_v1",
+        "safe_stop": "safe_stop_channel_v1"
+      },
+      "status": "source_ready_live_gate_pending"
+    },
+    {
+      "runtime_profile_id": "sunray_ros1_factory_l2_graphical_px4ctrl_c99_qgc_realtime_goal_v1",
+      "experiment_profile_ids": ["px4ctrl_graphical_c99_factory_qgc_realtime_goal_v1"],
+      "controller_ids": ["px4ctrl"],
+      "vehicle_counts": [1],
+      "launcher": "wsl_project_script",
+      "wsl_distribution": "Ubuntu-20.04",
+      "operation_id": "factory_l2_graphical_px4ctrl_c99_qgc_realtime_goal",
+      "project_script": "Scripts/sunray/run_qgc_diff_realtime_goal_gate.sh",
+      "operator_invocation": {
+        "schema": "mosim.operator_invocation.v1",
+        "shell_environment": {
+          "GUI": "false"
+        },
+        "arguments": ["qgc_realtime_goal"]
+      },
+      "result_gate": "QGC_REALTIME_GOAL_RUNTIME_STATUS.json",
+      "realtime_goal": {
+        "input": "qgc_plan_view",
+        "goal_topic": "/move_base_simple/goal",
+        "goal_frame": "world"
+      },
+      "operator_contract": {
+        "flight_authority": "mission_adapter",
+        "takeoff_owner": "mission_adapter",
+        "mission_adapter_source": "Scripts/sunray/px4ctrl_ego_single_mission_node.py",
         "terminal_ack": "mission_status_channel_v1",
         "safe_stop": "safe_stop_channel_v1"
       },

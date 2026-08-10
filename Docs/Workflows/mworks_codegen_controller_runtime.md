@@ -7,10 +7,9 @@ for the MoSim controller deployment path: first through the current
 ROS1/Sunray/MAVROS regression lane, and later through the gated PX4-native
 deployment branch.
 
-Current-mainline boundary: this workflow is retained for MWORKS
-code-generation, generated-runtime promotion, and later PX4-native deployment
-design. The execution selector is
-`Docs/Workflows/mainline_operations_board.md`. The current active runtime
+Scope boundary: this workflow is retained for MWORKS code-generation,
+generated-runtime promotion, and later PX4-native deployment design. It may be
+run only when the current user's direct request names that scope. The current runtime
 evidence lane remains ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS /
 px4ctrl / RViz. The G9 family has passed `GenerateModelCode`, generated-C
 offline equivalence, and static ROS/Sunray adapter gates. Its six-controller
@@ -52,8 +51,8 @@ These gates are still static/offline evidence. They prove generated source,
 same-input numerical equivalence, finite/unit attitude target, bounded
 normalized thrust, and the px4ctrl/MAVROS attitude-plus-thrust command shape.
 They did not by themselves prove ROS node replacement, PX4 Offboard behavior,
-Gazebo motion, Diff-Planner compatibility, or flight metrics. The current board
-records later reversible Sunray/ROS wrapper and Gazebo/Diff runs for the named
+Gazebo motion, Diff-Planner compatibility, or flight metrics. Historical records
+contain later reversible Sunray/ROS wrapper and Gazebo/Diff runs for the named
 profiles. Those runs remain regression evidence, but they are not final
 generated-runtime closure until the provenance contract in the G9 closeout
 workflow passes. Future uses of this workflow should apply the same evidence
@@ -170,9 +169,9 @@ MWORKS generates controller C/C++, the generated code is wrapped for PX4
 Offboard or PX4 module/uORB integration, PX4 owns flight mode, estimator,
 failsafe, control allocation, and actuator pipeline, and Gazebo remains the
 plant/sensor simulator. This branch is not the current execution surface.
-Current work follows the mainline board; use this workflow only when a
-board-selected controller or enhancement needs generated-code promotion through
-ROS1/Sunray/MAVROS reinjection and Gazebo regression.
+Use this workflow only when the current task explicitly names a controller or
+enhancement for generated-code promotion through ROS1/Sunray/MAVROS
+reinjection and Gazebo regression.
 
 The old `ControllerOutput -> Gazebo actuator` path is retained only as a
 fixture for plant, mixer, and bridge debugging. It is not the formal
@@ -541,7 +540,7 @@ PX4-native deployment levels for the later gated branch:
 When the later PX4-native branch is explicitly opened, its priority is L1 or
 L2. Do not start from L3 unless the user explicitly chooses direct
 actuator-level replacement after L1/L2 evidence exists. This does not override
-the current board-selected path; do not repeat an already closed G9
+the current user's explicitly scoped path; do not repeat an already closed G9
 generated-family reinjection gate just because this workflow describes that
 evidence chain.
 
@@ -724,10 +723,9 @@ Do not use it as proof that the MWORKS generated controller is deployed.
 In the historical 2026-06-20 PX4-native branch, the accepted diagnostic
 continuation was PX4 trajectory setpoint control for baseline plant/flight
 evidence, plus generated MWORKS C/C++ SIL and shadow evidence until a designed
-L1 trajectory-setpoint or L2 uORB module adapter existed. Current work is
-selected by the mainline board; MWORKS/codegen, offline equivalence,
-ROS1/Sunray/MAVROS reinjection, and Gazebo regression apply to the
-board-selected controller or enhancement promotion step.
+L1 trajectory-setpoint or L2 uORB module adapter existed. A current task must
+explicitly scope the MWORKS/codegen, offline-equivalence, ROS1/Sunray/MAVROS
+reinjection, and Gazebo-regression step; this workflow does not select it.
 ```
 
 Reasoning:
@@ -786,11 +784,10 @@ signals through a same-run takeoff-hover-land loop. It is not generated
 C/C++ deployment, not SIL equivalence, and not the final competition controller
 runtime.
 
-Do not continue the current mainline from this gate. If a later task needs a
+Do not infer a next task from this gate. If a later user-scoped task needs a
 visual plant sanity check, use this route only after labeling it as fixture
-evidence and then return to the board-selected ROS1/Sunray reinjection or
-enhancement validation gate, or to the deferred PX4-native gates only when that
-branch is explicitly opened.
+evidence, and enter the requested ROS1/Sunray reinjection, enhancement, or
+deferred PX4-native gate only when that scope is explicitly opened.
 
 The `gazebo_ref_adapter` boundary is intentional. The AWFF equation model
 produces MWORKS-plant-oriented references and internal control axes; the
@@ -982,11 +979,9 @@ Historical/future ROS2 / RViz2 lane
 ```
 
 Do not resume hand-built point-cloud/grid demos or ROS2-direct-to-Gazebo motor
-control as the product route. The current implementation path is whatever the
-mainline board selects: at present, bounded L1/AWFF, safety-filter, and
-fault-allocation enhancement reopening through minimal Gazebo evidence,
-followed by MWORKS/codegen promotion only for accepted enhancements. PX4
-Offboard or PX4 module/uORB integration is a later gated branch.
+control as product evidence. Any implementation path must be explicitly named
+by the current user and must preserve the bounded L1/AWFF, safety-filter,
+fault-allocation, MWORKS/codegen, and PX4 branch boundaries described here.
 
 ## 8. 2026-06-02 Source Check
 

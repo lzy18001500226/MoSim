@@ -1,15 +1,17 @@
 {
   "radar_scores": {
-    "Control Energy": 0.9727063046913548,
-    "Max Error": 0.9263036295521909,
-    "Position RMSE": 1.0,
+    "Control Energy": 0.24681546326537748,
+    "Max Error": 0.9101184731547391,
+    "Position RMSE": 0.975326990109752,
     "Terminal Error": 0.999395349306909
   },
   "family": "优化/预测族",
   "controllers": [
     "explicit_gain_scheduled_mpc",
+    "fixed_linear_mpc_l1_indi",
     "ilqr",
     "mppi",
+    "nmpc_outer",
     "robust_mpc",
     "tube_mpc"
   ],
@@ -19,20 +21,20 @@
     "figures/control_energy_bar.png",
     "figures/climbpath_trajectory_overlay.png"
   ],
-  "controller_count": 5,
+  "controller_count": 7,
   "count_definition_authority": "Config/control_platform/climbpath_baseline_count_definition.json",
   "family_label_en": "Optimization",
   "generator": "Scripts/syslab/plot_chapter10_comparison_typlot.jl",
   "resolution": 600,
   "family_slug": "optimal",
   "schema": "mosim.typlot_controller_comparison.v1",
-  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv",
+  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
   "engine": "Syslab TyPlot",
   "family_median": {
     "position_rmse_m": 0.20497592464335546,
     "terminal_position_error_m": 0.004321100426104121,
     "max_position_error_m": 0.8953598058639601,
-    "control_energy": 837750.6285991645
+    "control_energy": 837701.8908912769
   },
-  "metric_source": "Results/control_platform/phase2_full_48_climbpath/<controller>/metrics/metrics.csv（冻结值，未重算）"
+  "metric_source": "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）"
 }

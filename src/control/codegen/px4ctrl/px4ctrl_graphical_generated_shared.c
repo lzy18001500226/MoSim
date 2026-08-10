@@ -18,6 +18,45 @@
 #define MOSIM_PX4CTRL_EXPORT __attribute__((visibility("default")))
 #endif
 
+static int mosim_px4ctrl_generated_initialized = 0;
+
+static void MosimPx4ctrlGeneratedGraphEnsureInitialized(void)
+{
+  if (!mosim_px4ctrl_generated_initialized) {
+    MosimPx4ctrlGraphicalGeneratedInit();
+    mosim_px4ctrl_generated_initialized = 1;
+  }
+}
+
+void MosimPx4ctrlGeneratedGraphConfigure(
+  double kp_x,
+  double kv_x,
+  double kp_y,
+  double kv_y,
+  double kp_z,
+  double kv_z,
+  double mass_kg,
+  double gravity_mps2,
+  double hover_fraction)
+{
+  MosimPx4ctrlGeneratedGraphEnsureInitialized();
+
+  /*
+   * These names are emitted by MWORKS for the corresponding graphical Gain
+   * and Constant blocks.  Keep the generated equation file untouched: the
+   * deployment wrapper binds one published runtime Profile to that model.
+   */
+  raphical_sysblockGbDw.k_hb = kp_x;
+  raphical_sysblockGbDw.k_f = kv_x;
+  raphical_sysblockGbDw.k_l = kp_y;
+  raphical_sysblockGbDw.k_r = kv_y;
+  raphical_sysblockGbDw.k_x = kp_z;
+  raphical_sysblockGbDw.k_ea = kv_z;
+  raphical_sysblockGbDw.k_fc = mass_kg;
+  raphical_sysblockGbDw.k_dc = gravity_mps2;
+  raphical_sysblockGbDw.k_hc = hover_fraction;
+}
+
 MOSIM_PX4CTRL_EXPORT void MosimPx4ctrlGeneratedGraphStepScalar(
   double ref_px,
   double px,
@@ -45,11 +84,7 @@ MOSIM_PX4CTRL_EXPORT void MosimPx4ctrlGeneratedGraphStepScalar(
   double *collective_thrust_n,
   double *normalized_thrust)
 {
-  static int mosim_px4ctrl_generated_initialized = 0;
-  if (!mosim_px4ctrl_generated_initialized) {
-    MosimPx4ctrlGraphicalGeneratedInit();
-    mosim_px4ctrl_generated_initialized = 1;
-  }
+  MosimPx4ctrlGeneratedGraphEnsureInitialized();
   graphical_sysblockGbIn.ref_px = ref_px;
   graphical_sysblockGbIn.px = px;
   graphical_sysblockGbIn.ref_vx = ref_vx;

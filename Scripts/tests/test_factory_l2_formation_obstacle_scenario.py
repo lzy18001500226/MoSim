@@ -687,6 +687,18 @@ def test_target_chain_executes_live_inter_uav_emergency_guard() -> None:
     assert 'round_item["emergency_event"] = emergency_event' in target_chain
 
 
+def test_target_chain_dwell_uses_simulation_time_and_is_retained_per_round() -> None:
+    mission = SWARM_MISSION.read_text(encoding="utf-8")
+    target_hold = mission[mission.index("def update_target_hold"):mission.index("def formation_target_progress_snapshot")]
+    target_chain = mission[mission.index("def run_target_chains"):mission.index("def run(self)")]
+
+    assert '"duration_time_basis": "ros_simulation_time"' in mission
+    assert 'uav.reached_t = float(snapshot["t"])' in target_hold
+    assert 'hold_duration = max(0.0, float(snapshot["t"]) - uav.reached_t)' in target_hold
+    assert "time.time() - uav.reached_t" not in target_hold
+    assert 'round_item["target_holds"]' in target_chain
+
+
 def test_swarm_emergency_guard_freezes_a_low_speed_noise_floor() -> None:
     mission = SWARM_MISSION.read_text(encoding="utf-8")
     runner = SWARM_RUNNER.read_text(encoding="utf-8")

@@ -214,9 +214,9 @@ result_paths
 first_blocker
 ```
 
-Only after the matrix is complete may
-`Docs/Workflows/mainline_operations_board.md` and the permanent code-generation
-workflow state that the six-controller generated-runtime route is closed.
+Only after the matrix is complete may the task-owned closeout note and the
+permanent code-generation workflow state that the six-controller
+generated-runtime route is closed.
 
 ## 9. Current Closeout Execution Plan
 
@@ -243,9 +243,9 @@ alone is not closure.
    evidence only after the competition-minimum gates pass. Generate
    `CONTROLLER_MATRIX.json` and `SUMMARY.md` with explicit `pass`, `blocked`,
    or `not_run` values for every column.
-6. **Publish the closeout.** Update the mainline board and permanent codegen
-   workflow only from the matrix, run path-limited checks, stage only task-owned
-   paths, commit, push when available, and verify the upstream state.
+6. **Publish the closeout.** Update only the task-owned closeout and permanent
+   codegen workflow from the matrix, run path-limited checks, stage only
+   task-owned paths, commit, push when available, and verify the upstream state.
 
 ### 9.1 Current Evidence State
 

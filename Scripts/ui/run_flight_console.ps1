@@ -4,6 +4,7 @@ param(
     [string]$Executable = "",
     [switch]$PassThru,
     [switch]$ResolveOnly,
+    [switch]$AuditInstance,
     [ValidateRange(1, 60)]
     [int]$StartupTimeoutSeconds = 15
 )
@@ -16,8 +17,15 @@ if (-not $Preflight) {
 $ExecutableWasSpecified = [bool]$Executable
 $FormalExecutable = Join-Path $ProjectRoot "build/flight-console-qgc/Release/MoSimGroundControl.exe"
 $CandidateExecutable = Join-Path $ProjectRoot "build/flight-console-qgc-candidate/Release/MoSimGroundControl.exe"
+$AuditExecutable = Join-Path $ProjectRoot "build/flight-console-qgc-audit/Release/MoSimGroundControlAudit.exe"
 
-if (-not $ExecutableWasSpecified) {
+if ($AuditInstance) {
+    if (-not $ExecutableWasSpecified) {
+        $Executable = $AuditExecutable
+    } elseif (-not [String]::Equals([IO.Path]::GetFullPath($Executable), [IO.Path]::GetFullPath($AuditExecutable), [StringComparison]::OrdinalIgnoreCase)) {
+        throw "-AuditInstance is restricted to $AuditExecutable"
+    }
+} elseif (-not $ExecutableWasSpecified) {
     $Executable = $FormalExecutable
     if (Test-Path -LiteralPath $CandidateExecutable) {
         $candidateItem = Get-Item -LiteralPath $CandidateExecutable
@@ -41,7 +49,11 @@ if ($ResolveOnly) {
     exit 0
 }
 
-$existing = Get-Process -Name "MoSimGroundControl" -ErrorAction SilentlyContinue | Select-Object -First 1
+$existing = if ($AuditInstance) {
+    Get-Process -Name "MoSimGroundControlAudit" -ErrorAction SilentlyContinue | Select-Object -First 1
+} else {
+    Get-Process -Name "MoSimGroundControl" -ErrorAction SilentlyContinue | Select-Object -First 1
+}
 if ($existing) {
     Write-Output "MoSim Ground Control is already running (PID $($existing.Id))."
     if ($PassThru) { $existing }

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 import json
 import re
 from pathlib import Path
@@ -11,6 +12,228 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
+MODEL_DECLARATION_RE = re.compile(r"^\s*model\s+([A-Za-z_][A-Za-z0-9_]*)\b")
+MODEL_END_RE = re.compile(r"^\s*end\s+([A-Za-z_][A-Za-z0-9_]*)\s*;")
+EXTENDS_RE = re.compile(r"^\s*extends\s+([^;(\s]+)", re.MULTILINE)
+
+
+@dataclass(eq=False)
+class ModelicaModel:
+    path: Path
+    name: str
+    start_line: int
+    end_line: int | None = None
+    parent: "ModelicaModel | None" = None
+
+
+def modelica_models(base: Path) -> tuple[list[ModelicaModel], dict[Path, list[str]]]:
+    """Return named Modelica model blocks with their direct lexical parents."""
+
+    models: list[ModelicaModel] = []
+    sources: dict[Path, list[str]] = {}
+    for path in sorted(base.glob("*.mo")):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        sources[path] = lines
+        stack: list[ModelicaModel] = []
+        for line_number, line in enumerate(lines, start=1):
+            declaration = MODEL_DECLARATION_RE.match(line)
+            if declaration:
+                model = ModelicaModel(
+                    path=path,
+                    name=declaration.group(1),
+                    start_line=line_number,
+                    parent=stack[-1] if stack else None,
+                )
+                models.append(model)
+                stack.append(model)
+
+            ending = MODEL_END_RE.match(line)
+            if ending:
+                for index in range(len(stack) - 1, -1, -1):
+                    if stack[index].name == ending.group(1):
+                        stack[index].end_line = line_number
+                        del stack[index:]
+                        break
+        unclosed = [model.name for model in stack]
+        if unclosed:
+            raise ValueError(f"unclosed Modelica model(s) in {path}: {', '.join(unclosed)}")
+    return models, sources
+
+
+def model_own_text(
+    model: ModelicaModel,
+    models: list[ModelicaModel],
+    sources: dict[Path, list[str]],
+) -> str:
+    """Return a model body without direct nested models contaminating its metadata."""
+
+    if model.end_line is None:
+        raise ValueError(f"model has no end marker: {model.path}:{model.start_line}")
+    lines = list(sources[model.path][model.start_line - 1 : model.end_line])
+    for child in models:
+        if child.parent is not model or child.end_line is None:
+            continue
+        start = child.start_line - model.start_line
+        end = child.end_line - model.start_line
+        lines[start : end + 1] = [""] * (end - start + 1)
+    return "\n".join(lines)
+
+
+def model_label(model: ModelicaModel, base: Path) -> str:
+    names: list[str] = []
+    current: ModelicaModel | None = model
+    while current is not None:
+        names.append(current.name)
+        current = current.parent
+    return f"{model.path.relative_to(base).as_posix()}:{'.'.join(reversed(names))}"
+
+
+def direct_extends(text: str) -> list[str]:
+    return EXTENDS_RE.findall(text)
+
+
+def base_name(base_class: str) -> str:
+    return base_class.rsplit(".", maxsplit=1)[-1]
+
+
+def sysblock_metadata_audit(base: Path) -> dict[str, Any]:
+    """Audit real Sysblock classes by class body, not by file name.
+
+    Package-navigation aliases are reported separately. They intentionally do
+    not own a graphical diagram, so copying a base class's full annotation into
+    them would turn navigation wrappers into misleading independent Sysblocks.
+    """
+
+    models, sources = modelica_models(base)
+    own_texts = {id(model): model_own_text(model, models, sources) for model in models}
+    is_sysblock = {
+        id(model): (
+            "SysblockVersion" in own_texts[id(model)]
+            and "BlockSystem(blockKind=BlockKind.userModel" in own_texts[id(model)]
+        )
+        for model in models
+    }
+    sysblocks = [model for model in models if is_sysblock[id(model)]]
+    by_name: dict[str, list[ModelicaModel]] = {}
+    for model in sysblocks:
+        by_name.setdefault(model.name, []).append(model)
+
+    def resolves_model_workspace(model: ModelicaModel, visited: set[int] | None = None) -> bool:
+        visited = set() if visited is None else visited
+        if id(model) in visited:
+            return False
+        visited.add(id(model))
+        bases = direct_extends(own_texts[id(model)])
+        if any(base_name(base) == "ModelWorkspace" for base in bases):
+            return True
+        for base in bases:
+            for parent_model in by_name.get(base_name(base), []):
+                if resolves_model_workspace(parent_model, visited):
+                    return True
+        return False
+
+    def resolves_base_workspace_import(
+        model: ModelicaModel,
+        visited: set[int] | None = None,
+    ) -> bool:
+        visited = set() if visited is None else visited
+        if id(model) in visited:
+            return False
+        visited.add(id(model))
+        if re.search(r"^\s*import\s+BaseWorkspace\.\*;", own_texts[id(model)], re.MULTILINE):
+            return True
+        if model.parent is not None and resolves_base_workspace_import(model.parent, visited):
+            return True
+        for base in direct_extends(own_texts[id(model)]):
+            for parent_model in by_name.get(base_name(base), []):
+                if resolves_base_workspace_import(parent_model, visited):
+                    return True
+        return False
+
+    missing_model_workspace = [
+        model_label(model, base)
+        for model in sysblocks
+        if not resolves_model_workspace(model)
+    ]
+    missing_base_workspace_import = [
+        model_label(model, base)
+        for model in sysblocks
+        if not resolves_base_workspace_import(model)
+    ]
+
+    # Duplicate declarations are illegal within one class body. Matching
+    # declarations on a parent chain are legal and remain resolver-only.
+    duplicate_model_workspace_extends: list[str] = []
+    duplicate_base_workspace_import: list[str] = []
+    for model in sysblocks:
+        own = own_texts[id(model)]
+        workspace_count = sum(
+            1 for parent in direct_extends(own) if base_name(parent) == "ModelWorkspace"
+        )
+        if workspace_count >= 2:
+            lines = [
+                model.start_line + offset
+                for offset, line in enumerate(own.splitlines())
+                if re.match(r"^\s*extends\s+ModelWorkspace\s*(\(|;)", line)
+            ]
+            duplicate_model_workspace_extends.append(
+                f"{model_label(model, base)} count={workspace_count} lines={lines}"
+            )
+        import_count = len(
+            re.findall(r"^\s*import\s+BaseWorkspace\.\*;", own, re.MULTILINE)
+        )
+        if import_count >= 2:
+            duplicate_base_workspace_import.append(
+                f"{model_label(model, base)} count={import_count}"
+            )
+
+    missing_derived_metadata: list[str] = []
+    package_navigation_aliases: list[str] = []
+    for model in models:
+        if is_sysblock[id(model)]:
+            continue
+        base_targets = [
+            base
+            for base in direct_extends(own_texts[id(model)])
+            if base_name(base) in by_name
+        ]
+        if not base_targets or "SysblockVersion" in own_texts[id(model)]:
+            continue
+        is_navigation_alias = (
+            model.path.name == "package.mo"
+            and "connect(" not in own_texts[id(model)]
+            and "SysplorerEmbeddedCoder.Port." not in own_texts[id(model)]
+        )
+        label = model_label(model, base)
+        if is_navigation_alias:
+            package_navigation_aliases.append(label)
+        else:
+            missing_derived_metadata.append(label)
+
+    by_file: dict[str, int] = {}
+    for model in sysblocks:
+        filename = model.path.relative_to(base).as_posix()
+        by_file[filename] = by_file.get(filename, 0) + 1
+    innovation_count = by_file.get("AWFF_InnovationGraphicalControllers.mo", 0)
+    return {
+        "scope": base.as_posix(),
+        "sysblock_class_count": len(sysblocks),
+        "sysblock_class_count_by_file": by_file,
+        "awff_innovation_graphical_controllers_class_count": innovation_count,
+        "missing_model_workspace": missing_model_workspace,
+        "missing_base_workspace_import": missing_base_workspace_import,
+        "duplicate_model_workspace_extends": duplicate_model_workspace_extends,
+        "duplicate_base_workspace_import": duplicate_base_workspace_import,
+        "derived_sysblock_missing_own_metadata": missing_derived_metadata,
+        "package_navigation_aliases_excluded": package_navigation_aliases,
+        "pass": not (
+            missing_model_workspace
+            or missing_base_workspace_import
+            or missing_derived_metadata
+            or duplicate_model_workspace_extends
+            or duplicate_base_workspace_import
+        ),
+    }
 
 
 BEHAVIOR_EXPECTATIONS: dict[str, list[str]] = {
@@ -426,19 +649,30 @@ def behavior_contract_checks(base: Path) -> list[dict[str, Any]]:
 
 
 def run_checks() -> dict[str, Any]:
-    base = ROOT / "Models" / "MoSimQuadrotorModel" / "Controllers" / "Sysblocks"
+    base = (
+        ROOT
+        / "Models"
+        / "MoSimQuadrotorModel"
+        / "Control"
+        / "Implementations"
+        / "Sysblocks"
+    )
     results = [check_model(base / filename, spec) for filename, spec in REQUIRED_MODELS.items()]
     for filename, specs in PACKAGE_MODELS.items():
         results.extend(check_package_models(base / filename, specs))
     behavior_results = behavior_contract_checks(base)
+    metadata_audit = sysblock_metadata_audit(base)
     structure_ok = all(item["ok"] for item in results)
     behavior_equivalence_ok = all(item["ok"] for item in behavior_results)
+    metadata_ok = bool(metadata_audit["pass"])
     return {
         "source": "static_model_contract",
         "scope": "graphical_awff_sysblock_controller",
-        "ok": structure_ok,
+        "ok": structure_ok and behavior_equivalence_ok and metadata_ok,
         "structure_ok": structure_ok,
         "behavior_equivalence_ok": behavior_equivalence_ok,
+        "metadata_ok": metadata_ok,
+        "metadata_audit": metadata_audit,
         "Results": results,
         "behavior_results": behavior_results,
     }

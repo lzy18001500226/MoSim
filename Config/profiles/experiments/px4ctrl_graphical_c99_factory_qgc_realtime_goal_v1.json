@@ -1,0 +1,39 @@
+{
+  "experiment_profile": {
+    "id": "px4ctrl_graphical_c99_factory_qgc_realtime_goal_v1",
+    "version": 1,
+    "description": "Factory L2 single-UAV QGC map goal, planner trajectory, and QGC map feedback closure using the MWORKS graphical PX4CTRL C99 export",
+    "operator_map_id": "factory_l2",
+    "goal": "QGC实时目标单机规划闭环",
+    "scenario_profile": "factory_l2_qgc_realtime_goal_single_v1",
+    "vehicle_count": 1,
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "fastlio_px4_ekf_fused_v1",
+    "height_source_profile": "fastlio_height_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "qgc_realtime_goal_planner_trajectory_v1",
+    "planner_profile": "diff_planner_interactive_goal4_v1",
+    "controller_profile": "px4ctrl_attitude_thrust_v1",
+    "controller_backend": "mworks_graphical_px4ctrl_c99_runtime_v1",
+    "augmentation_profile": "none",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "factory_l2_qgc_rviz_planning_v1",
+    "evaluation_profile": "qgc_realtime_goal_transport_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_fastlio_px4_ekf_runtime_export_v1",
+    "evidence_profile": "standard_run_packet_v1",
+    "generated_controller_source": "src/control/codegen/px4ctrl",
+    "forbidden_claims": [
+      "formal controller-performance acceptance",
+      "QGC request or bridge forwarding as planner acceptance",
+      "QGC trajectory display as flight acceptance",
+      "Gazebo truth as px4ctrl control input",
+      "UE as control-loop authority"
+    ]
+  }
+}

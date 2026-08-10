@@ -7,11 +7,11 @@ block PlannedQuinticReference
   parameter Real p_z[91] = fill(1.0, 91);
   parameter Real segment_duration[90] = fill(1.0, 90);
 
-  Modelica.Blocks.Interfaces.RealOutput position_command[3]
+  Modelica.Blocks.Interfaces.RealOutput position_command[3] 
     annotation(Placement(transformation(origin = {100, 40}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput z_ref_rate
+  Modelica.Blocks.Interfaces.RealOutput z_ref_rate 
     annotation(Placement(transformation(origin = {100, 0}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput yaw_ref
+  Modelica.Blocks.Interfaces.RealOutput yaw_ref 
     annotation(Placement(transformation(origin = {100, -40}, extent = {{-10, -10}, {10, 10}})));
 
 protected

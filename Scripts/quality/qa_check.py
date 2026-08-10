@@ -57,8 +57,8 @@ REQUIRED_DOCS = [
 ]
 
 RECOMMENDED_DOCS = [
-    "Docs/user_manual.md",
-    "Docs/simulation_report.md",
+    "Docs/报告/用户手册_正文骨架.md",
+    "Docs/报告/仿真分析报告_正文骨架.md",
     "Docs/Index/doc_index.md",
     "Docs/Index/api_index.md",
     "Docs/Index/variable_mapping.md",

@@ -1,6 +1,6 @@
 # Sunray ROS1 Current Runtime Lane
 
-> Current executable lane for single-thread Sunray150 review work. This file
+> Current executable lane for task-local Sunray150 review work. This file
 > exists to prevent fallback to old ROS2/PX4/x500 or downloaded substitute
 > stacks when the active task is Sunray ROS1/Gazebo/RViz review.
 
@@ -96,7 +96,7 @@ Runtime entry decision, frozen after the 2026-06-27 WSL-distro incident:
 Windows command entry:
   wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && bash Scripts/sunray/check_sunray_ros1_runtime_preflight.sh'
 
-Forbidden for current P0 live runtime:
+Forbidden for any user-scoped live runtime task:
   bare/default wsl
   Ubuntu-22.04
   Ignition/Gazebo Sim route
@@ -1610,7 +1610,7 @@ UE scene/material acceptance
 ## 7. First Read Order For This Lane
 
 When a task mentions current Sunray, ROS1, Gazebo Classic, RViz, MID360, or the
-current single-thread visual review, read:
+current task-local visual review, read:
 
 ```text
 1. AGENTS.md

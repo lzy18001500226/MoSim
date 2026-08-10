@@ -16,7 +16,7 @@ model RTTelemetryScope50Hz
     output Real values[32];
     external "C" processedFrames = mosim_mworks_live_telemetry_scope_receive(
       sequence, sourceStampNs, senderMonotonicNs, flags, frameValid,
-      socketInitStatus, socketErrorCode, values)
+      socketInitStatus, socketErrorCode, values) 
       annotation(
         Include="#include \"mosim_mworks_live_telemetry_scope.h\"",
         IncludeDirectory="modelica://MoSimQuadrotorModel/Deployment/Resources/Include",

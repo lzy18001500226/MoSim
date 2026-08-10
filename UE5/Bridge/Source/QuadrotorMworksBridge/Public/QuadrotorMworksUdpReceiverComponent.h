@@ -42,6 +42,11 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS UDP|Observability")
     FString MetricsOutputPath;
 
+    // A live display session opts in explicitly, leaving replay review support
+    // available to the separate replay launch path.
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MWORKS UDP|Observability")
+    bool bRequireLiveStateMirror = false;
+
     UPROPERTY(BlueprintAssignable, Category = "MWORKS UDP")
     FQuadrotorMworksFrameReceived OnFrameReceived;
 
@@ -56,6 +61,10 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "MWORKS UDP")
     bool HasFrame() const;
+
+    // Call on the game thread immediately after the received frame is applied
+    // to the display actor. This measures application, not GPU presentation.
+    void RecordGameThreadFrameApplied(const FQuadrotorMworksFrame& Frame);
 
 protected:
     virtual void BeginPlay() override;
@@ -77,6 +86,14 @@ private:
     FString ActiveStreamId;
     double LastAcceptedFrameSeconds = 0.0;
     double LastRejectedFrameLogSeconds = 0.0;
+
+    FCriticalSection MetricsMutex;
+    TArray<double> SourceToReceiverLatencySamplesMs;
+    TArray<double> SourceToActorApplicationLatencySamplesMs;
+    TArray<double> ReceiverToActorApplicationLatencySamplesMs;
+    double MinimumObservedUdpToReceiverClockDeltaMilliseconds = TNumericLimits<double>::Max();
+    FString LastApplicationMetricsStreamId;
+    int32 LastApplicationMetricsSequence = TNumericLimits<int32>::Min();
 
     mutable FCriticalSection FrameMutex;
     FQuadrotorMworksFrame LatestFrame;

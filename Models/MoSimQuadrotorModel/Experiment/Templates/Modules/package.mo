@@ -5,55 +5,55 @@ package Modules
 
   block PerceptionInterface
     "感知接口模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.PerceptionInterfaceModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.PerceptionInterfaceModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end PerceptionInterface;
 
   block FlightController
     "V6X 飞控模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.V6XFlightControllerModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.V6XFlightControllerModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end FlightController;
 
   block MissionComputer
     "ORIN NX 任务计算机模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.ORINNXMissionComputerModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.ORINNXMissionComputerModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end MissionComputer;
 
   block Supervisor
     "系统监督与模式管理模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.SystemSupervisorModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.SystemSupervisorModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end Supervisor;
 
   block BatteryPower
     "电池与供电模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.BatteryPowerModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.BatteryPowerModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end BatteryPower;
 
   block ESCDrive
     "电调驱动模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.ESCDriveModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.ESCDriveModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end ESCDrive;
 
   block Px4CtrlController
     "px4ctrl 控制器与离线控制分配模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.Px4CtrlControllerModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.Px4CtrlControllerModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end Px4CtrlController;
 
   model MotorDrive
     "电机驱动模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.MotorDriveModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.MotorDriveModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end MotorDrive;
 
   model AirframeSensor
     "机体与传感器模块"
-    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical_Sysblock.Sunray150AirframeSensorModule;
+    extends MoSimQuadrotorModel.Experiment.Templates.Architecture.Sunray150CompleteSystemGraphical.Sunray150AirframeSensorModule;
     annotation(__MWORKS(hide=false,version="26.3.0"));
   end AirframeSensor;
   annotation(__MWORKS(version="26.3.0"));

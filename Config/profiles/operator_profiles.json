@@ -33,6 +33,37 @@
       "agent_keywords": ["c99", "图形化", "mworks", "px4ctrl", "8字", "八字"]
     },
     {
+      "profile_id": "px4ctrl_graphical_c99_factory_rviz_qgc_display_phase1_v1",
+      "profile_path": "Config/profiles/experiments/px4ctrl_graphical_c99_factory_rviz_qgc_display_phase1_v1.json",
+      "label": "RViz规划-QGC航迹显示（阶段一）",
+      "controller_scheme_id": "px4ctrl",
+      "task_key": "rviz_qgc_display_phase1",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["rviz", "2d nav goal", "阶段一", "qgc", "航迹", "显示"]
+    },
+    {
+      "profile_id": "px4ctrl_graphical_c99_factory_qgc_realtime_goal_v1",
+      "profile_path": "Config/profiles/experiments/px4ctrl_graphical_c99_factory_qgc_realtime_goal_v1.json",
+      "label": "QGC实时目标单机规划闭环",
+      "controller_scheme_id": "px4ctrl",
+      "task_key": "qgc_realtime_goal",
+      "enabled": true,
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["qgc", "实时目标", "plan goal", "规划", "航迹", "导航目标"]
+    },
+    {
+      "profile_id": "px4ctrl_graphical_c99_factory_diff_interactive_goal_v1",
+      "profile_path": "Config/profiles/experiments/px4ctrl_graphical_c99_factory_diff_interactive_goal_v1.json",
+      "label": "Diff-Planner 接口诊断（非交付入口）",
+      "controller_scheme_id": "px4ctrl",
+      "task_key": "diff_interactive_goal",
+      "enabled": false,
+      "disabled_reason": "仅保留为底层规划器接口诊断；QGC 单机规划闭环请使用已发布的 QGC 实时目标 Profile。",
+      "operator_mode": "mission_adapter",
+      "agent_keywords": ["diff", "接口诊断", "导航目标"]
+    },
+    {
       "profile_id": "px4ctrl_fastlio_motor_efficiency_fault_recovery_v1",
       "profile_path": "Config/profiles/experiments/px4ctrl_fastlio_motor_efficiency_fault_recovery_v1.json",
       "label": "单机起飞悬停故障恢复",
@@ -68,7 +99,8 @@
       "label": "FUEL单机自主探索",
       "controller_scheme_id": "px4ctrl",
       "task_key": "fuel_exploration",
-      "enabled": true,
+      "enabled": false,
+      "disabled_reason": "当前 FUEL 运行仍依赖未迁移的历史 planner adapter，未通过 source-local runtime gate。",
       "operator_mode": "mission_adapter",
       "agent_keywords": ["fuel", "自主探索", "探索"]
     },
@@ -78,7 +110,8 @@
       "label": "三机固定编队避障",
       "controller_scheme_id": "px4ctrl",
       "task_key": "swarm_formation",
-      "enabled": true,
+      "enabled": false,
+      "disabled_reason": "当前三机编队运行未完成 source-local formation controller 和 metrics gate。",
       "operator_mode": "mission_adapter",
       "agent_keywords": ["三机", "编队", "formation", "swarm"]
     },

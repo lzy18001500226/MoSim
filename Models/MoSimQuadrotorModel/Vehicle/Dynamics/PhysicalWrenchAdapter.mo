@@ -28,7 +28,8 @@ model PhysicalWrenchAdapter
     final axisShowLabels = false,
     n = {0, 0, -1},
     gravityType = Modelica.Mechanics.MultiBody.Types.GravityTypes.UniformGravity,
-    g = profile.gravity_mps2);
+    g = profile.gravity_mps2) 
+    annotation(Placement(transformation(origin = {-150, 90}, extent = {{-24, -24}, {24, 24}})));
   WrapperSurface wrapper(
     profile = profile,
     expected_yaw_direction = yaw_reaction_direction,
@@ -42,7 +43,8 @@ model PhysicalWrenchAdapter
       mass_kg = profile.takeoff_mass_kg * mass_scale,
       fault_start_s = fault_start_s,
       fault_rotor_index = fault_rotor_index,
-      fault_rotor_effectiveness = fault_rotor_effectiveness));
+      fault_rotor_effectiveness = fault_rotor_effectiveness)) 
+    annotation(Placement(transformation(origin = {-95, -15}, extent = {{-42, -42}, {42, 42}})));
   Modelica.Mechanics.MultiBody.Parts.Body body(
     animation = false,
     r_CM = {0, 0, 0},
@@ -59,10 +61,12 @@ model PhysicalWrenchAdapter
     angles_start = {0, 0, 0},
     w_0_fixed = true,
     w_0_start = {0, 0, 0},
-    enforceStates = true);
+    enforceStates = true) 
+    annotation(Placement(transformation(origin = {95, -15}, extent = {{-42, -42}, {42, 42}})));
   Modelica.Mechanics.MultiBody.Forces.WorldForceAndTorque forceAndTorque(
     resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.frame_b,
-    animation = false);
+    animation = false) 
+    annotation(Placement(transformation(origin = {20, 65}, extent = {{-35, -35}, {35, 35}})));
   Real applied_force_body[3](each unit = "N");
   Real applied_torque_body[3](each unit = "N.m");
   Real applied_force_z_body(unit = "N");
@@ -79,7 +83,8 @@ equation
   applied_torque_body = wrapper.total_moment_body;
   forceAndTorque.force = applied_force_body;
   forceAndTorque.torque = applied_torque_body;
-  connect(forceAndTorque.frame_b, body.frame_a);
+  connect(forceAndTorque.frame_b, body.frame_a) 
+    annotation(Line(points = {{55, 65}, {75, 65}, {75, 25}}, color = {95, 95, 95}, thickness = 0.5));
 
   applied_force_z_body = applied_force_body[3];
   applied_yaw_torque_body = applied_torque_body[3];
@@ -90,5 +95,14 @@ equation
   hover_weight_balance_error = wrapper.total_thrust - wrapper.dynamics.mass_kg * world.g;
   motor_order_gate_error = wrapper.motor_order_gate_error;
   yaw_direction_gate_error = wrapper.yaw_direction_gate_error;
-  annotation(__MWORKS(hide=true,version="26.3.0"));
+  annotation(
+    Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
+      Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {100, 55, 0},
+        fillColor = {255, 246, 230}, fillPattern = FillPattern.Solid),
+      Text(origin = {0, 28}, extent = {{-90, 24}, {90, -24}},
+        textString = "Physical Wrench", textColor = {100, 55, 0}),
+      Text(origin = {0, -36}, extent = {{-90, 18}, {90, -18}},
+        textString = "wrapper -> F/T -> body", textColor = {100, 55, 0})}),
+    Diagram(coordinateSystem(extent = {{-200, -130}, {180, 130}}, grid = {2, 2})),
+    __MWORKS(hide=false,version="26.3.0"));
 end PhysicalWrenchAdapter;

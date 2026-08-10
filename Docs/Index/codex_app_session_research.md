@@ -5,9 +5,10 @@ Date: 2026-05-26
 Status: historical/reference research. This file explains why Codex App/WSL/
 VSCode session stores and visible-thread mechanics should not be treated as
 durable project truth. It is not the current MoSim operating model after the
-2026-06-24 coordinating-thread reset. For current execution, start from
-`Docs/Workflows/single_thread_operating_model.md`,
-`Docs/Workflows/mainline_operations_board.md`, and the task-specific workflow.
+the task-local operating reset. For current execution, start from `AGENTS.md`,
+`Docs/Workflows/new_conversation_context.md`, and the task-specific workflow
+named by the current user. The former board is a historical compatibility
+archive and is not a routing surface.
 
 Purpose: clarify how to use Codex App, VSCode Codex, WSL, sessions, MCP, skills,
 and automations in MoSim without losing task state or creating conflicting
@@ -85,7 +86,7 @@ The reliable state source must be project files, especially:
 
 - `PROGRESS.md`
 - `AGENTS.md`
-- `Docs/Workflows/mainline_operations_board.md`
+- `Docs/Workflows/new_conversation_context.md`
 - `Docs/Workflows/single_thread_operating_model.md`
 - task-specific workflow, skill, design, result, and cache files
 
@@ -126,9 +127,9 @@ expose Codex App native thread-management or automation tools in that
 conversation. In the historical multi-thread model, App-native visible threads
 were the intended surface for `create_thread`, `read_thread`,
 `send_message_to_thread`, `set_thread_title`, `set_thread_archived`, and
-`automation_update` work. In current coordinating-thread MoSim work, these
-tools are not a normal execution route. This does not prohibit official
-temporary subagents, which remain a separate bounded delegation surface. If a
+`automation_update` work. In current task-local MoSim work, these tools are not
+a normal execution route. This does not prohibit official temporary subagents,
+which remain a separate bounded delegation surface. If a
 migrated or WSL-origin conversation cannot see those tools after `tool_search`,
 it must not edit Codex private state or click through the UI as a substitute.
 
@@ -136,14 +137,14 @@ Historical adoption priority for MoSim:
 
 | Priority | Surface | Operating Rule |
 | --- | --- | --- |
-| P0 | Worktrees | Historical note for visible threads that wrote code/assets. Current coordinating-thread work still uses path-limited Git hygiene, not multi-thread worktree routing by default. |
-| P0 | Visible threads | Legacy/reference only after the 2026-06-24 coordinating-thread reset. |
+| P0 | Worktrees | Historical note for visible threads that wrote code/assets. Current task-local work still uses path-limited Git hygiene, not cross-conversation worktree routing by default. |
+| P0 | Visible threads | Legacy/reference only; each current conversation is an independent task surface. |
 | P0 | Goals | Use for long-running PMO or department tasks, not for every small implementation step. |
 | P0 | Skills/plugins | Load on demand. They are context reducers, not hard constraints. |
 | P0 | MCP/apps | Use native live tool surfaces for Sysplorer/Syslab/Unreal/Blender/ROS2/Windows desktop work before inventing ad-hoc automation. |
 | P0 | Browser / Windows MCP | Use Browser for browser/local UI review and Windows MCP/Win32 scripts for desktop GUI screenshot and manual-review support. Do not use Computer Use for MoSim desktop GUI incidents, especially MWORKS/Sysplorer/Syslab. |
 | P1 | App automations/thread wakeups | Legacy/reference only unless explicitly configured for a scoped reminder or audit. Every output must become project evidence before it is trusted. |
-| P1 | `codex review` | Use as a bounded review gate. It does not replace owner-thread integration or targeted tests. |
+| P1 | `codex review` | Use as a bounded review gate. It does not replace current-task integration or targeted tests. |
 | P1 | `codex exec` | Use for one-shot background audits, packet generation, and narrow department prompts. |
 | P1 | Workspace dependencies | Use for docs/sheets/slides/report assets and bundled runtimes. |
 | P1 | Native notify | Use as local signal; use sparse email for user-facing long-task intervention. |
@@ -280,18 +281,19 @@ surface on 2026-06-08 CST after a Codex App / VSCode history-title drift. Use
 `Config/legacy/department_threads.json` only for historical routing and audit;
 it is not a current dispatch allowlist. Titles ending
 in `-历史` or `-旧` are display hygiene for restored archived/legacy threads and
-do not make those threads dispatchable:
+do not make those threads dispatchable. No ID in this table assigns work to a
+current conversation:
 
 | Thread | ID | Use |
 | --- | --- | --- |
-| `MoSim｜主线 PMO` | `019e9868-83ea-70f0-92c5-a3a408bd78c6` | Current mainline PMO task conversation for Sunray150/MoSim dynamics work |
+| `MoSim｜主线 PMO` | `019e9868-83ea-70f0-92c5-a3a408bd78c6` | Former PMO label; historical only, not a current task route |
 | `MoSim｜Git仓库代码管理部` | `019e74de-a452-7a50-99e7-ca9a247b32f1` | Git split, path-limited staging, commits, push hygiene |
 | `MoSim｜UE实验控制台与场景交互部-R1` | `019e9b24-50aa-7cd3-9e7c-4c43b224d993` | Primary UE operator console, scene interaction, command/echo schema, render-review integration, build-gate, and authorized runtime-review thread |
 | `MoSim｜UE实验控制台与场景交互部-R2` | `019eab9f-b0ef-7433-893d-3235ea9f3c7e` | Auxiliary UE source/static review, implementation-surface backup, UI/command/echo contract review, source-only fixture/checker work, and bounded parallel support thread |
 | `MoSim｜Sunray150资产与PBR审核部` | `019e9b25-066e-7372-8152-209c2b1322a4` | Durable Sunray150 visual asset, DAE/FBX/GLB, material/PBR, and manual visual-review thread |
 | `MoSim｜MWORKS动力学与控制验证部-R1` | `019e9be5-334b-76b1-93f9-8b02caebf376` | Durable MWORKS mainline dynamics/control/model-integration evidence thread |
 | `MoSim｜MWORKS动力学与控制验证部-R2` | `019e9999-b0d3-7682-bccd-faef08fcf1df` | Historical MWORKS auxiliary model organization, graphical interface, connection/layout/readability, and model-hygiene thread. This ID had old dispatch/UI-submit incidents; do not use as current route unless the user explicitly reopens legacy visible-thread operation. |
-| `MoSim｜ROS2感知定位与规划运行部-R1` | `019e9c72-ee74-79d1-b9fe-621d3c6fc99e` | Durable ROS2/RViz2/FAST-LIO/local-map/planner runtime integration thread; historical/default registry route after deleted old ROS2 thread `019e9917-6181-7ec2-b3d6-4b624d6d3348`. It is not the current Sunray ROS1 execution selector; check the PMO board before using it. |
+| `MoSim｜ROS2感知定位与规划运行部-R1` | `019e9c72-ee74-79d1-b9fe-621d3c6fc99e` | Historical ROS2/RViz2/FAST-LIO/local-map/planner thread; do not use it as a route unless the current user explicitly requests a historical audit or new scoped work. |
 | `MoSim｜ROS2感知定位与规划运行部-R2` | `019e9b85-d4d8-7bf3-8afd-a65697cd3889` | Historical visible ROS2 department thread. Do not use for current Sunray ROS1 execution; only explicit legacy audit or user-approved route reopening may consult it. |
 | `MoSim｜微信网关运维部-R3-已删除` | `019e9c7d-a8bd-7dd1-ad94-6feef5a07e9c` | Archived by the user on 2026-06-07 after MoSim moved to email-only notifications, then deleted by the user on 2026-06-08; not visible, not `active_visible`, no scheduled health checks, no routine no-op/canary/diagnosis/recovery dispatch unless explicitly restored with a new scoped route |
 | `MoSim｜Codex 环境迁移部-旧` | `019e8181-6653-73b3-9685-f5bc9a24b947` | Historical Windows-native Codex environment migration, bridge-residue audit, config/MCP launcher cleanup, and related one-time environment repair history; user restored it only to repair its title and will re-archive |

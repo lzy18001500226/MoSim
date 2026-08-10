@@ -143,17 +143,20 @@ def g2_record(row: dict[str, Any]) -> tuple[Path, dict[str, Any]]:
     return path, record
 
 
-def current_routes_by_id() -> dict[str, dict[str, Any]]:
-    current = phase2.build_matrix()
+def current_routes_by_id(expected_runner_ids: set[str]) -> dict[str, dict[str, Any]]:
+    current = phase2.build_matrix(expected_runner_ids=expected_runner_ids)
     rows = current.get("rows")
-    if not isinstance(rows, list) or len(rows) != 48:
-        raise RuntimeError("current Formal runner catalog must contain exactly 48 entries")
+    if not isinstance(rows, list) or len(rows) != len(expected_runner_ids):
+        raise RuntimeError(
+            "current Formal runner catalog is missing one or more frozen G3 runner identities"
+        )
     return {str(row["controller_id"]): row for row in rows}
 
 
 def build_g3_matrix() -> dict[str, Any]:
     baseline = g2_matrix()
-    current = current_routes_by_id()
+    expected_runner_ids = {str(row["runner_id"]) for row in baseline["rows"]}
+    current = current_routes_by_id(expected_runner_ids)
     rows: list[dict[str, Any]] = []
     for frozen in baseline["rows"]:
         controller_id = str(frozen["controller_id"])

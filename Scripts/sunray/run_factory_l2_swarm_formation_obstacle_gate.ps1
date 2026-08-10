@@ -8,6 +8,10 @@ param(
     [string]$CommandMode = "leader_follower",
     [ValidateSet("r6_baseline_v1", "conservative_v1")]
     [string]$DynamicsProfile = "conservative_v1",
+    # C99 and the accepted original formation run both complete takeoff before
+    # the mission starts publishing the final hover command. Keep the
+    # historical early-publish behavior opt-in for diagnosis only.
+    [switch]$PublishHoverDuringTakeoff,
     [switch]$KeepAlive,
     [switch]$DryRun
 )
@@ -189,13 +193,19 @@ $environment = @(
     "RESULT_DIR=$ResultDirWsl",
     "DISABLE_ROS1_EOL_WARNINGS=1",
     "PLANNER_VARIANT=swarm_formation",
+    "PX4CTRL_CORE_PROFILE=graphical_c99",
+    "PX4CTRL_HOVER_PERCENTAGE=0.456",
+    "EGO_GATE_TAKEOFF_LAND_SPEED=0.12",
     "UAV_NUM=3",
     "KEEP_ALIVE=$($KeepAlive.IsPresent.ToString().ToLowerInvariant())",
     "WORLD_FILE=$RootWsl/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
     "FACTORY_L2_MODEL_PATH=$RootWsl/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
     "SUNRAY_GAZEBO_LAUNCH_FILE=$RootWsl/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
-    "PRELOAD_GAZEBO_MODELS=false",
-    "STAGGERED_SPAWN=true",
+    # The C99 route uses a preloaded world so every UAV retains its Livox
+    # sensor plugin. Dynamic staggered spawn remains available through the
+    # lower-level diagnostic gate, but is not the formation default.
+    "PRELOAD_GAZEBO_MODELS=true",
+    "STAGGERED_SPAWN=false",
     "STAGGERED_SPAWN_INTERVAL_S=12",
     "GOAL5_STARTUP_ATTEMPTS=1",
     "MAVROS_READY_TIMEOUT_S=150",
@@ -267,9 +277,11 @@ $environment = @(
     "EGO_GATE_INTER_UAV_EMERGENCY_MIN_CLOSING_SPEED_MPS=0.05",
     "EGO_GATE_TAKEOFF_HEIGHT=1.0",
     # px4ctrl changes from AUTO_TAKEOFF to AUTO_HOVER after the target height.
-    # Keep the mission's absolute hover stream active after arming so the
-    # three vehicles retain their measured home-relative takeoff altitude.
-    "EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF=true",
+    # Do not publish the final mission hover command before that transition;
+    # this matches the passing C99 single-aircraft and original formation
+    # contracts. The switch above keeps the old behavior available for a
+    # controlled comparison.
+    "EGO_GATE_PUBLISH_HOVER_DURING_TAKEOFF=$($PublishHoverDuringTakeoff.ToString().ToLowerInvariant())",
     "EGO_GATE_EXECUTE_TIMEOUT_S=420",
     "EGO_GATE_EXECUTE_WALL_TIMEOUT_S=900",
     "EGO_GATE_EGO_TAKEOVER_TIMEOUT_S=120",
@@ -287,7 +299,12 @@ $environment = @(
     "TOTAL_TIMEOUT_S=$TotalTimeoutS"
 )
 
-$command = "cd $RootWsl && env " + ($environment -join " ") + " bash Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh"
+# Route the Factory C99 gate through the source-local multi-UAV wrapper. That
+# wrapper resolves PX4CTRL_WS, planner workspaces, the Livox plugin workspace,
+# and the generated runtime overlay under build/ros1 before starting the
+# shared mission gate. Calling the shared gate directly would fall back to
+# historical Results workspaces when those variables are not supplied.
+$command = "cd $RootWsl && env " + ($environment -join " ") + " bash Scripts/sunray/run_c99_multiuav_planner_gate.sh"
 $manifest = [pscustomobject]@{
     schema = "mosim.factory_l2_swarm_formation_obstacle_gate.v1"
     status = if ($DryRun) { "dry_run" } else { "runtime_pending" }
@@ -306,6 +323,7 @@ $manifest = [pscustomobject]@{
         minimum_inter_uav_distance_m = 1.0
         predictive_margin_m = 0.10
     }
+    publish_hover_during_takeoff = [bool]$PublishHoverDuringTakeoff
     acceptance = [pscustomobject]@{
         backend_mission_status = "passed"
         minimum_inter_uav_distance_m = 1.0

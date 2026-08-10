@@ -23,6 +23,46 @@ from typing import Any
 
 
 IPV4_UDP_HEADER_BYTES = 28
+TIMING_CLOCK = "unix_epoch_ns"
+
+
+def latency_summary_ms(samples: list[float]) -> dict[str, float | int]:
+    """Return bounded-window latency percentiles without retaining raw samples."""
+
+    if not samples:
+        return {"sample_count": 0, "p50_ms": 0.0, "p95_ms": 0.0, "p99_ms": 0.0, "max_ms": 0.0}
+    ordered = sorted(float(value) for value in samples)
+
+    def percentile(percent: float) -> float:
+        index = (len(ordered) - 1) * percent / 100.0
+        lower = int(math.floor(index))
+        upper = int(math.ceil(index))
+        if lower == upper:
+            return ordered[lower]
+        return ordered[lower] + (ordered[upper] - ordered[lower]) * (index - lower)
+
+    return {
+        "sample_count": len(ordered),
+        "p50_ms": percentile(50.0),
+        "p95_ms": percentile(95.0),
+        "p99_ms": percentile(99.0),
+        "max_ms": ordered[-1],
+    }
+
+
+def source_sample_is_fresh(
+    received_monotonic: float,
+    timeout_s: float,
+    *,
+    now_monotonic: float | None = None,
+) -> bool:
+    """Reject callbacks that waited in-process long enough to be stale."""
+
+    if timeout_s <= 0.0:
+        return False
+    now = time.monotonic() if now_monotonic is None else now_monotonic
+    age_s = now - received_monotonic
+    return 0.0 <= age_s <= timeout_s
 
 
 def atomic_json(path: Path, value: dict[str, Any]) -> None:
@@ -44,6 +84,10 @@ def transport_metrics(
     send_error_count: int,
     source_updates: int,
     source_age_ms: float,
+    source_timeout_s: float,
+    source_to_udp_send_samples_ms: list[float],
+    stale_odom_callback_drops: int,
+    source_to_receiver_clock_offset_ns: int | None,
 ) -> dict[str, Any]:
     elapsed_s = max(elapsed_s, 1e-9)
     wire_bytes = sent_payload_bytes + sent_frames * IPV4_UDP_HEADER_BYTES
@@ -63,9 +107,20 @@ def transport_metrics(
         "payload_bytes_per_s": sent_payload_bytes / elapsed_s,
         "estimated_ipv4_udp_wire_bytes_per_s": wire_bytes / elapsed_s,
         "source_pose_age_ms": source_age_ms,
+        "source_freshness": {
+            "timeout_s": source_timeout_s,
+            "stale_callback_drop_count": stale_odom_callback_drops,
+            "policy": "queued ROS callbacks older than source_timeout_s are dropped before display",
+        },
+        "source_to_udp_send_latency_ms": latency_summary_ms(source_to_udp_send_samples_ms),
+        "timing_clock": TIMING_CLOCK,
+        "source_to_receiver_clock_offset_ns": source_to_receiver_clock_offset_ns,
+        "cross_host_clock_calibration": (
+            "wsl_windows_stdout_bracket_midpoint_v2" if source_to_receiver_clock_offset_ns is not None else "unavailable"
+        ),
         "receiver_metrics_available": False,
         "unavailable_metrics": ["receive_rate_hz", "receiver_drop_rate", "rtt_ms", "ue_fps"],
-        "claim_boundary": "Sender-side measurement only. One-way UDP cannot prove UE receive rate, receiver loss, RTT, or render FPS.",
+        "claim_boundary": "Sender-side measurement only. Source-to-UDP-send latency ends before socket delivery; one-way UDP cannot prove UE receive rate, receiver loss, RTT, actor application, or render FPS.",
         "updated_at_unix": time.time(),
     }
 
@@ -141,6 +196,7 @@ class Ros1ToUeStreamer:
         self.latest_motors: list[float] | None = None
         self.latest_motors_monotonic = 0.0
         self.source_updates_since_report = 0
+        self.stale_odom_callback_drops_since_report = 0
         self.armed: bool | None = None
         self.last_reported_motor_source = ""
         self.send_error_count = 0
@@ -165,18 +221,30 @@ class Ros1ToUeStreamer:
         )
 
     def on_odom(self, msg: Any) -> None:
+        received_monotonic = time.monotonic()
+        received_unix_ns = time.time_ns()
         q = msg.pose.pose.orientation
         position = vector3(msg.pose.pose.position)
         rpy = quat_to_rpy(float(q.x), float(q.y), float(q.z), float(q.w))
         velocity = vector3(msg.twist.twist.linear)
+        if not source_sample_is_fresh(received_monotonic, self.args.source_timeout_s):
+            with self.lock:
+                self.stale_odom_callback_drops_since_report += 1
+            self.rospy.logwarn_throttle(
+                5.0,
+                "Dropping queued stale odom callback before UE display; age exceeded %.3fs",
+                self.args.source_timeout_s,
+            )
+            return
         with self.lock:
             self.latest_state = {
                 "position": finite_vector(position),
                 "rpy": finite_vector(rpy),
                 "velocity": finite_vector(velocity),
                 "stamp": msg.header.stamp.to_sec() if msg.header.stamp else self.rospy.Time.now().to_sec(),
+                "received_unix_ns": received_unix_ns,
             }
-            self.latest_state_monotonic = time.monotonic()
+            self.latest_state_monotonic = received_monotonic
             self.source_updates_since_report += 1
             if not self.actual_trail or self.distance(self.actual_trail[-1], position) >= self.args.trail_min_distance_m:
                 self.actual_trail.append(finite_vector(position))
@@ -264,6 +332,13 @@ class Ros1ToUeStreamer:
         reference = cmd["position"] if cmd else position
         yaw = state["rpy"][2]
         motor_command, motor_source = self.motor_visual_state()
+        timing = {
+            "clock": TIMING_CLOCK,
+            "source_received_unix_ns": str(state["received_unix_ns"]),
+            "udp_sent_unix_ns": "",
+        }
+        if self.args.source_to_receiver_clock_offset_ns is not None:
+            timing["source_to_receiver_clock_offset_ns"] = str(self.args.source_to_receiver_clock_offset_ns)
         frame = {
             "schema": "quadrotor.unreal_state.v1",
             "type": "frame",
@@ -274,6 +349,7 @@ class Ros1ToUeStreamer:
             "seq": self.sequence,
             "t": state["stamp"],
             "units": {"position": "m", "angle": "rad", "time": "s"},
+            "timing": timing,
             "coordinate_policy": self.args.coordinate_policy,
             "uav": {
                 "id": self.args.vehicle_id,
@@ -344,18 +420,23 @@ class Ros1ToUeStreamer:
     def encode_frame(self, frame: dict[str, Any]) -> tuple[bytes, int, int]:
         points = frame["local_plan"]["points_m"]
         original_count = len(points)
-        data = json.dumps(frame, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+        def serialize_for_send() -> bytes:
+            frame["timing"]["udp_sent_unix_ns"] = str(time.time_ns())
+            return json.dumps(frame, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+
+        data = serialize_for_send()
         while len(data) > self.args.max_datagram_bytes and len(points) > 2:
             reduced = points[::2]
             if reduced[-1] != points[-1]:
                 reduced.append(points[-1])
             points = reduced
             frame["local_plan"]["points_m"] = points
-            data = json.dumps(frame, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+            data = serialize_for_send()
         if len(data) > self.args.max_datagram_bytes:
             frame["local_plan"]["points_m"] = []
             frame["local_plan"]["valid"] = False
-            data = json.dumps(frame, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+            data = serialize_for_send()
         return data, original_count, len(frame["local_plan"]["points_m"])
 
     def spin(self) -> None:
@@ -366,6 +447,7 @@ class Ros1ToUeStreamer:
         report_frames = 0
         report_bytes = 0
         report_send_errors = 0
+        report_source_to_udp_send_samples_ms: list[float] = []
         while not self.rospy.is_shutdown():
             frame = self.make_frame()
             if frame is None:
@@ -398,6 +480,17 @@ class Ros1ToUeStreamer:
             else:
                 report_frames += 1
                 report_bytes += sent_bytes
+                timing = frame.get("timing", {})
+                try:
+                    source_received_ns = int(timing.get("source_received_unix_ns", "0"))
+                    udp_sent_ns = int(timing.get("udp_sent_unix_ns", "0"))
+                except (TypeError, ValueError):
+                    source_received_ns = 0
+                    udp_sent_ns = 0
+                if udp_sent_ns >= source_received_ns > 0:
+                    source_to_udp_send_ms = (udp_sent_ns - source_received_ns) / 1_000_000.0
+                    if source_to_udp_send_ms <= 60_000.0:
+                        report_source_to_udp_send_samples_ms.append(source_to_udp_send_ms)
             motor_source = str(frame["status"]["rotor_visual_source"])
             if motor_source != self.last_reported_motor_source:
                 self.rospy.loginfo(
@@ -411,6 +504,8 @@ class Ros1ToUeStreamer:
                 with self.lock:
                     source_updates = self.source_updates_since_report
                     self.source_updates_since_report = 0
+                    stale_odom_callback_drops = self.stale_odom_callback_drops_since_report
+                    self.stale_odom_callback_drops_since_report = 0
                     source_age_ms = max(0.0, (time.monotonic() - self.latest_state_monotonic) * 1000.0)
                 metrics = transport_metrics(
                     run_id=self.args.run_id,
@@ -423,6 +518,10 @@ class Ros1ToUeStreamer:
                     send_error_count=report_send_errors,
                     source_updates=source_updates,
                     source_age_ms=source_age_ms,
+                    source_timeout_s=self.args.source_timeout_s,
+                    source_to_udp_send_samples_ms=report_source_to_udp_send_samples_ms,
+                    stale_odom_callback_drops=stale_odom_callback_drops,
+                    source_to_receiver_clock_offset_ns=self.args.source_to_receiver_clock_offset_ns,
                 )
                 if self.args.metrics_output:
                     atomic_json(Path(self.args.metrics_output), metrics)
@@ -441,6 +540,7 @@ class Ros1ToUeStreamer:
                 report_frames = 0
                 report_bytes = 0
                 report_send_errors = 0
+                report_source_to_udp_send_samples_ms = []
 
             next_send_monotonic += period_s
             remaining_s = next_send_monotonic - time.monotonic()
@@ -465,6 +565,12 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--stream-id", default="")
     parser.add_argument("--run-id", default="")
     parser.add_argument("--metrics-output", default="")
+    parser.add_argument(
+        "--source-to-receiver-clock-offset-ns",
+        type=int,
+        default=None,
+        help="Windows receiver Unix time minus WSL source Unix time, captured by the launcher before streaming.",
+    )
     parser.add_argument("--lease-dir", default="/tmp/mosim_ue_udp_bridge")
     parser.add_argument("--max-datagram-bytes", type=int, default=60000)
     parser.add_argument("--motor-timeout-s", type=float, default=0.5)
@@ -495,6 +601,8 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         parser.error("--source-timeout-s must be positive")
     if args.max_datagram_bytes < 1024 or args.max_datagram_bytes > 65507:
         parser.error("--max-datagram-bytes must be between 1024 and 65507")
+    if args.source_to_receiver_clock_offset_ns is not None and abs(args.source_to_receiver_clock_offset_ns) > 60_000_000_000:
+        parser.error("--source-to-receiver-clock-offset-ns must be within +/-60 seconds")
     if not args.stream_id:
         args.stream_id = f"{args.vehicle_id}-{os.getpid()}-{time.time_ns()}"
     return args

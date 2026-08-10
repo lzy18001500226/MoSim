@@ -15,19 +15,20 @@
 #   rmse_heatmap 已于 2026-07-31 废弃（与 controller_ranking_rmse 重复）
 #   controller_status_matrix 已于 2026-07-31 废弃（48 条堆单列，无分析价值，转文字说明）
 #
-# 数据源（不重算，直接取冻结值）：
-#   .tmp/chapter10_typlot/accepted_controller_index.csv  28 条达标控制器 + metrics.csv 冻结指标
-#   .tmp/chapter10_typlot/g3_status_index.csv            G3 全 48 条状态
+# 数据源（不重算，直接取当前记录中的已有值）：
+#   .tmp/chapter10_typlot/accepted_controller_index.csv  当前 30 条达标控制器
+#   .tmp/chapter10_typlot/g3_status_index.csv            当前目录全 48 条状态
 #   由 Scripts/syslab/build_chapter10_typlot_index.py 生成，指标全部来自
-#   Results/control_platform/phase2_full_48_climbpath 下各控制器 metrics/metrics.csv。
+#   各 source_record 绑定的 metrics.csv/metrics.json 与 raw CSV。
 #
-# 口径：28 = performance_accepted（终端位置误差 < 5 m）；48 = catalog_frozen_entries。
-#   权威：Config/control_platform/climbpath_baseline_count_definition.json
-#   awff 已归档为负性能样本，不在 28 内。
+# 口径：30 = current catalog performance_accepted（终端位置误差 < 5 m）；
+#   48 = current catalog entries。历史 28 条 G3 快照只作追溯，不进入本图集。
+#   权威：Results/control_platform/phase2_full_48_climbpath/g3_repair/
+#   G3_CATALOG_48_CURRENT_STATUS.json
 #
-# 与原 SVG 的唯一内容差异：controller_status_matrix 原为 28 条全 accepted 的文本表格
-#   （status 列恒等，作图无信息量），此处改为 G3 全 48 条状态矩阵（28 pass / 20 fail），
-#   范围变化在图注与 manifest 中标注。
+# 与原 SVG 的唯一内容差异：controller_status_matrix 原为历史全 accepted 的文本表格
+#   （status 列恒等，作图无信息量）；当前图集保留 48 条状态索引供审计，
+#   但不再生成该重复图。
 
 using TyPlot
 using JSON
@@ -65,7 +66,7 @@ const FAMILIES = [
 # 雷达五维与 generate_radar_chart.py 的 DIMENSIONS 一致（越小越好，除算力效率）
 # 雷达四维。相对原 generate_radar_chart.py 的两处口径变更（记入 manifest）：
 #   1. 删掉 Compute Efficiency —— 无实测数据、恒取 1.0，八族全同，不构成区分度。
-#   2. 归一化从"固定阈值"改为"28 条达标控制器族系中位数的 min-max"。
+#   2. 归一化从"固定阈值"改为"当前 30 条达标控制器族系中位数的 min-max"。
 #      固定阈值下 Control Energy 是死轴：基准取 official_pid 自身能量，
 #      七族得分极差仅 0.006，肉眼无法分辨；min-max 后极差 0.362。
 const RADAR_DIMS  = ["Position RMSE", "Terminal Error", "Control Energy", "Max Error"]
@@ -108,6 +109,13 @@ function read_raw_csv(path::String)
     return Dict(header[j] => cols[j] for j in 1:length(header))
 end
 
+function raw_series(data, names::Vector{String})
+    for name in names
+        haskey(data, name) && return data[name]
+    end
+    error("原始 CSV 缺少列: $(join(names, " / "))")
+end
+
 # ===== 样式 =====
 # 字体/字号/画布/导出/抽稀统一由 typlot_figure_style.jl 提供。
 # ticklab_x / ticklab_y / ticklab_theta 内部封死"先建标签→后设字体"的顺序，
@@ -118,14 +126,16 @@ save_fig(dir::String, name::String) = save_fig(joinpath(dir, name))
 # 竖版 + xtickangle(30) 在长控制器名下会互相压字，统一改横条：
 # 名字沿 y 轴自然排开，与已过审的 28 条排名图同一形式。
 function fig_metric_bar(rows, metric::String, ylab::String, outdir::String, fname::String)
-    ids = [r["controller_id"] for r in rows]
-    vals = [num(r, metric) for r in rows]
+    valid_rows = [r for r in rows if isfinite(num(r, metric))]
+    isempty(valid_rows) && error("族系没有可用的 $metric 指标")
+    ids = [r["controller_id"] for r in valid_rows]
+    vals = [num(r, metric) for r in valid_rows]
     fig(CV_FBAR...)
     y = 1:length(vals)
     barh(y, vals)
     ticklab_y(y, ids)
     styled(xlabel(ylab))
-    styled(ylabel("Controller (n = $(length(ids)))"))
+    styled(ylabel("Controller (available n = $(length(ids)) / $(length(rows)))"))
     grid("on")
     save_fig(outdir, fname)
 end
@@ -134,13 +144,15 @@ end
 function fig_trajectory_overlay(rows, outdir::String)
     fig(CV_OVERLAY...)
     first_raw = read_raw_csv(rows[1]["raw_csv"])
-    plot(thin(first_raw["x_ref"]), thin(first_raw["y_ref"]),
+    plot(thin(raw_series(first_raw, ["x_ref", "position_ref_x_m"])),
+         thin(raw_series(first_raw, ["y_ref", "position_ref_y_m"])),
          linestyle="--", linewidth=2.0, color="#222222")
     hold("on")
     items = ["Reference"]
     for r in rows
         d = read_raw_csv(r["raw_csv"])
-        plot(thin(d["x"]), thin(d["y"]), linewidth=1.8)
+        plot(thin(raw_series(d, ["x", "position_x_m"])),
+             thin(raw_series(d, ["y", "position_y_m"])), linewidth=1.8)
         push!(items, r["controller_id"])
     end
     axes_font()
@@ -242,7 +254,7 @@ function fig_combined_radar(by_family, medians_by_family, rng, outdir::String)
 end
 
 # ===== rmse_heatmap 已于 2026-07-31 废弃 =====
-# 单列 N×1 热图与 controller_ranking_rmse.png 是同一份 28 条 RMSE 排序数据，
+# 单列 N×1 热图与 controller_ranking_rmse.png 是同一份 30 条 RMSE 排序数据，
 # 后者直读数值、可比长短，前者只能凭颜色估大小。属重复，删除。
 # 旧文件 rmse_heatmap.png 需从磁盘与报告引用中移除。
 
@@ -293,9 +305,9 @@ end
 accepted_rows = read_index(joinpath(INDEX_DIR, "accepted_controller_index.csv"))
 status_rows   = read_index(joinpath(INDEX_DIR, "g3_status_index.csv"))
 
-@assert length(accepted_rows) == 28 "达标数应为 28，实际 $(length(accepted_rows))"
+@assert length(accepted_rows) == 30 "当前达标数应为 30，实际 $(length(accepted_rows))"
 @assert length(status_rows) == 48 "G3 冻结条目应为 48，实际 $(length(status_rows))"
-@assert !any(r -> r["controller_id"] == "awff", accepted_rows) "awff 不应出现在达标集合"
+@assert !any(r -> r["controller_id"] == "pid_awff_linear_eso", accepted_rows) "负性能 ESO 不应出现在达标集合"
 
 by_family = Dict{String,Vector{Dict{String,String}}}()
 for r in accepted_rows
@@ -315,7 +327,7 @@ const MEDIANS = Dict(slug => family_medians(get(by_family, slug, Dict{String,Str
 const MED_NONEMPTY = Dict(k => v for (k, v) in MEDIANS if !isempty(v))
 const RADAR_RANGE = build_radar_scaler(MED_NONEMPTY)
 
-println("TyPlot 第10章对比图：6 族系 × 4 + 雷达 8 + 根目录 1 = 33 张 PNG @ resolution=$RESOLUTION")
+println("TyPlot 第10章当前对比图：6 族系 × 4 + 雷达 8 + 根目录 1 = 33 张 PNG @ resolution=$RESOLUTION")
 println("雷达归一化跨族 min-max 区间：")
 for k in RADAR_KEYS
     lo, hi = RADAR_RANGE[k]
@@ -387,8 +399,8 @@ for (slug, label, label_zh, dirname, _) in FAMILIES
         "controllers" => [r["controller_id"] for r in rows],
         "figures" => ["figures/climbpath_rmse_bar.png", "figures/terminal_error_bar.png",
                       "figures/control_energy_bar.png", "figures/climbpath_trajectory_overlay.png"],
-        "metric_source" => "Results/control_platform/phase2_full_48_climbpath/<controller>/metrics/metrics.csv（冻结值，未重算）",
-        "index_source"  => ".tmp/chapter10_typlot/accepted_controller_index.csv",
+        "metric_source" => "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）",
+        "index_source"  => ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
         "family_median" => agg,
         "radar_scores"  => Dict(RADAR_DIMS[i] => scores[i] for i in 1:length(RADAR_DIMS)),
         "count_definition_authority" => "Config/control_platform/climbpath_baseline_count_definition.json",
@@ -408,7 +420,9 @@ summary = Dict(
     "figure_count_written"  => total_ok,
     "failures"   => failures,
     "accepted_controller_count" => length(accepted_rows),
-    "g3_frozen_entry_count"     => length(status_rows),
+    "current_catalog_entry_count" => length(status_rows),
+    "metric_source" => "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）",
+    "index_source"  => ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
     "family_breakdown" => Dict(slug => length(get(by_family, slug, Dict{String,String}[]))
                                for (slug, _, _, _, _) in FAMILIES),
     "replaces_handwritten_svg" => [
@@ -418,8 +432,8 @@ summary = Dict(
         "Scripts/syslab/generate_heatmap.py",
     ],
     "status_matrix_scope_note" =>
-        "原 controller_status_matrix.svg 为 28 条全 accepted 的文本表格（status 列恒等，" *
-        "作图无信息量）；TyPlot 版改为 G3 全 48 条状态矩阵（28 accepted / 20 executed-blocked）。",
+        "原 controller_status_matrix.svg 为历史全 accepted 的文本表格（status 列恒等，" *
+        "作图无信息量）；当前图集保留 48 条状态索引供审计，但不再生成该重复图。",
     "radar_dimension_change_20260731" => Dict(
         "removed_dimension" => "Compute Efficiency",
         "reason" => "无实测数据，原口径恒取 1.0，八族全同，不构成区分度；五维降为四维。",
@@ -434,13 +448,13 @@ summary = Dict(
                                for k in RADAR_KEYS),
         "degenerate_rule" => "单族或极差为 0 时该维退化为 0.5，明示无区分度而非误报满分"),
     "rmse_heatmap_removed_20260731" =>
-        "单列 N×1 热图与 controller_ranking_rmse.png 同为 28 条 RMSE 排序，" *
+        "单列 N×1 热图与 controller_ranking_rmse.png 同为 30 条 RMSE 排序，" *
         "后者可直读数值、比长短，前者仅凭颜色估大小；属重复，删除。",
     "status_matrix_removed_20260731" => Dict(
         "rejected_encodings" => [
             "2/1/0 单列热图：连续色标为三态离散值造出 1.2/1.8 中间刻度，且单列无从横向比较",
             "三色互斥堆叠横条：48 行在 14 in 高度下 y 标签竖向压字，x 轴全为 1.0 零信息量"],
-        "resolution" => "整体删除，三态计数（28/10/10）改由正文文字叙述；" *
+                        "resolution" => "整体删除，三态计数由当前 48 条对账正文文字叙述；" *
                         "报告需同步删除对 controller_status_matrix.png 的引用"),
     "control_energy_baseline_legacy" => Dict("controller_id" => "official_pid", "value" => OFFICIAL_ENERGY),
     "count_definition_authority" => "Config/control_platform/climbpath_baseline_count_definition.json",

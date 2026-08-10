@@ -183,7 +183,7 @@ def test_model_task_scope_uses_registered_single_and_three_uav_routes() -> None:
     assert "当前控制器不可写入" in source
     assert "当前数量、任务与控制器组合没有已登记的 MWORKS 模型入口" in source
     assert "当前数量无已登记模型入口" in source
-    assert "ROTOR_COMMAND / OfficialPidFormalRunner" in source
+    assert "ROTOR_COMMAND / OfficialPidSingleUavGoldenRunner" in source
     assert "ATTITUDE_THRUST / Px4CtrlFormalRunner" in source
     assert "ROTOR_COMMAND / Px4CtrlThreeUavFigure8Runner" in source
     assert "ROTOR_COMMAND / 已登记多机规划模型" in source

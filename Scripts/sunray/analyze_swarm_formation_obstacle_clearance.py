@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gate actual three-UAV detours against Factory collision-proxy truth.
+"""Gate actual UAV detours against Factory collision-proxy truth.
 
 This is a post-flight evidence check.  It never supplies collision truth to a
 planner or controller: the live MID360 -> world cloud -> grid-map route remains
@@ -27,6 +27,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--scenario", required=True)
     parser.add_argument("--scene-truth", default="")
     parser.add_argument("--output", default="")
+    parser.add_argument(
+        "--uav-ids",
+        default="1,2,3",
+        help="Comma-separated member IDs to evaluate; defaults to the complete formation.",
+    )
+    parser.add_argument(
+        "--truth-file-template",
+        default="uav{uid}_truth.csv",
+        help="Run-relative truth CSV name, optionally containing {uid}.",
+    )
+    parser.add_argument(
+        "--execute-phases",
+        default="ego_execute",
+        help="Comma-separated truth phases that constitute obstacle traversal.",
+    )
     parser.add_argument("--planner-clearance-m", type=float, default=0.20)
     parser.add_argument("--vertical-margin-m", type=float, default=0.0)
     parser.add_argument("--max-segment-sample-m", type=float, default=0.05)
@@ -48,11 +63,26 @@ def resolve_path(value: str, scenario_path: Path) -> Path:
     return (ROOT / candidate).resolve()
 
 
-def read_execute_rows(path: Path) -> list[dict[str, float]]:
+def parse_csv_tokens(raw: str, label: str) -> list[str]:
+    values = [token.strip() for token in raw.split(",") if token.strip()]
+    if not values:
+        raise SystemExit(f"{label} must contain at least one value")
+    return values
+
+
+def parse_uav_ids(raw: str) -> list[str]:
+    values = parse_csv_tokens(raw, "uav IDs")
+    invalid = [value for value in values if value not in {"1", "2", "3"}]
+    if invalid:
+        raise SystemExit(f"unsupported UAV IDs: {', '.join(invalid)}")
+    return list(dict.fromkeys(values))
+
+
+def read_execute_rows(path: Path, execute_phases: set[str]) -> list[dict[str, float]]:
     rows: list[dict[str, float]] = []
     with path.open("r", encoding="utf-8", newline="") as handle:
         for raw in csv.DictReader(handle):
-            if raw.get("phase") != "ego_execute":
+            if raw.get("phase") not in execute_phases:
                 continue
             try:
                 rows.append({axis: float(raw[axis]) for axis in ("t", "x", "y", "z")})
@@ -155,6 +185,8 @@ def main() -> None:
     args = parse_args()
     if args.planner_clearance_m <= 0.0 or args.max_segment_sample_m <= 0.0:
         raise SystemExit("planner clearance and segment sample spacing must be positive")
+    selected_uav_ids = parse_uav_ids(args.uav_ids)
+    execute_phases = set(parse_csv_tokens(args.execute_phases, "execute phases"))
 
     run_dir = Path(args.run).resolve()
     scenario_path = Path(args.scenario).resolve()
@@ -178,7 +210,7 @@ def main() -> None:
     target_positions = formation.get("target_positions_xy_m") or {}
     contract = scenario.get("obstacle_crossing_contract") or {}
     member_hits = contract.get("member_intersecting_proxies") or {}
-    expected_blocked_uavs = [str(uid) for uid, names in member_hits.items() if names]
+    expected_blocked_uavs = [uid for uid in selected_uav_ids if member_hits.get(uid)]
     blockers: list[str] = []
     if not contract.get("direct_center_segment_blocked"):
         blockers.append("scenario_does_not_require_obstacle_detour")
@@ -188,12 +220,18 @@ def main() -> None:
     per_uav: dict[str, dict] = {}
     all_violations: list[dict] = []
     direct_contract: dict[str, dict] = {}
-    for uid in ("1", "2", "3"):
-        truth_csv = run_dir / f"uav{uid}_truth.csv"
+    for uid in selected_uav_ids:
+        try:
+            truth_relative = Path(args.truth_file_template.format(uid=uid))
+        except (KeyError, ValueError) as error:
+            raise SystemExit(f"invalid truth file template: {error}") from error
+        if truth_relative.is_absolute() or ".." in truth_relative.parts:
+            raise SystemExit("truth file template must resolve under the run directory")
+        truth_csv = run_dir / truth_relative
         if not truth_csv.exists():
             blockers.append(f"uav{uid}_truth_csv_missing")
             continue
-        rows = read_execute_rows(truth_csv)
+        rows = read_execute_rows(truth_csv, execute_phases)
         if len(rows) < 2:
             blockers.append(f"uav{uid}_execute_truth_missing")
             continue
@@ -287,7 +325,7 @@ def main() -> None:
         }
 
     packet = {
-        "schema": "mosim.sunray_ros1.swarm_formation_obstacle_clearance_gate.v2",
+        "schema": "mosim.sunray_ros1.swarm_formation_obstacle_clearance_gate.v3",
         "status": "passed" if not blockers else "blocked",
         "blockers": list(dict.fromkeys(blockers)),
         "scenario": str(scenario_path),
@@ -295,6 +333,9 @@ def main() -> None:
         "planner_clearance_m": args.planner_clearance_m,
         "vertical_margin_m": args.vertical_margin_m,
         "max_segment_sample_m": args.max_segment_sample_m,
+        "selected_uav_ids": selected_uav_ids,
+        "truth_file_template": args.truth_file_template,
+        "execute_phases": sorted(execute_phases),
         "expected_blocked_uavs": expected_blocked_uavs,
         "flight_obstacle_proxy_count": len(flight_obstacles),
         "direct_path_contract": direct_contract,

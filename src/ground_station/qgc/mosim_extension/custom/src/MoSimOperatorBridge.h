@@ -4,8 +4,9 @@
 #include <QtCore/QVariantList>
 #include <QtCore/QVariantMap>
 
-// QGC owns flight interaction. This bridge only reads frozen local artifacts
-// and places explicitly rendered commands on the user's clipboard.
+// QGC owns flight interaction. This bridge reads frozen local artifacts,
+// copies explicit terminal commands, and may write one bounded planner-goal
+// request for an already-running, evidence-bound ROS runtime.
 class MoSimOperatorBridge final : public QObject
 {
     Q_OBJECT
@@ -22,8 +23,11 @@ class MoSimOperatorBridge final : public QObject
     Q_PROPERTY(QVariantMap runtimeTelemetry READ runtimeTelemetry NOTIFY stateChanged)
     Q_PROPERTY(QVariantList faultAcks READ faultAcks NOTIFY stateChanged)
     Q_PROPERTY(QVariantMap pendingFault READ pendingFault NOTIFY stateChanged)
+    Q_PROPERTY(QVariantMap realtimePlanningGoalStatus READ realtimePlanningGoalStatus NOTIFY stateChanged)
     Q_PROPERTY(QString runId READ runId NOTIFY stateChanged)
     Q_PROPERTY(bool profileSelectionLocked READ profileSelectionLocked NOTIFY stateChanged)
+    Q_PROPERTY(bool realtimePlanningGoalAvailable READ realtimePlanningGoalAvailable NOTIFY stateChanged)
+    Q_PROPERTY(bool realtimePlanningGoalReady READ realtimePlanningGoalReady NOTIFY stateChanged)
     Q_PROPERTY(QString statusText READ statusText NOTIFY stateChanged)
     Q_PROPERTY(QString reasonCode READ reasonCode NOTIFY stateChanged)
     Q_PROPERTY(QString lastCommand READ lastCommand NOTIFY stateChanged)
@@ -44,8 +48,11 @@ public:
     QVariantMap runtimeTelemetry() const { return _runtimeTelemetry; }
     QVariantList faultAcks() const { return _faultAcks; }
     QVariantMap pendingFault() const { return _pendingFault; }
+    QVariantMap realtimePlanningGoalStatus() const { return _realtimePlanningGoalStatus; }
     QString runId() const { return _runId; }
     bool profileSelectionLocked() const;
+    bool realtimePlanningGoalAvailable() const;
+    bool realtimePlanningGoalReady() const;
     QString statusText() const { return _statusText; }
     QString reasonCode() const { return _reasonCode; }
     QString lastCommand() const { return _lastCommand; }
@@ -63,6 +70,8 @@ public:
     Q_INVOKABLE void copyStagedFaultCommand();
     Q_INVOKABLE void copyRestoreNormalCommand(const QString &vehicleId);
     Q_INVOKABLE void copyRosbagReplayCommand();
+    Q_INVOKABLE void copyRealtimePlanningGoalBridgeCommand();
+    Q_INVOKABLE void submitRealtimePlanningGoal(double latitudeDeg, double longitudeDeg, double altitudeM);
     Q_INVOKABLE void copyLastCommand();
 
 signals:
@@ -75,6 +84,7 @@ private:
     void loadCatalogs();
     void loadActiveRun();
     void loadFaultAcks();
+    void loadRealtimePlanningGoalStatus();
     QVariantMap profileForId(const QString &profileId) const;
     QVariantMap controllerForId(const QString &schemeId) const;
     QVariantMap mapForId(const QString &mapId) const;
@@ -97,12 +107,20 @@ private:
     QVariantMap _runtimeTelemetry;
     QVariantList _faultAcks;
     QVariantMap _pendingFault;
+    QVariantMap _realtimePlanningGoalStatus;
     QString _selectedProfileId;
     QString _selectedControllerSchemeId;
     QString _selectedMapId;
     QString _defaultMapId;
     QString _runId;
+    QString _activePointerRelativePath;
     QString _activeRunState;
+    QString _lastMapReceiptRunId;
+    double _lastMapSequence = -1.0;
+    double _lastMapReceiptUnixS = 0.0;
+    QString _lastFuturePathReceiptRunId;
+    double _lastFuturePathUpdatedAt = -1.0;
+    double _lastFuturePathReceiptUnixS = 0.0;
     QString _statusText = QStringLiteral("正在读取 MoSim 操作配置");
     QString _reasonCode = QStringLiteral("initializing");
     QString _lastCommand;

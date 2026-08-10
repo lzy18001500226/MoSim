@@ -8,6 +8,9 @@ result_dir="${2:?usage: run_factory_l2_fuel_speed_gate.sh EXECUTE_S RESULT_DIR}"
 
 export PROJECT_ROOT="${project_root}"
 export RESULT_DIR="${result_dir}"
+# The source-local Factory gate must resolve px4ctrl from the checked-out
+# workspace unless a caller explicitly supplies another workspace.
+export PX4CTRL_WS="${PX4CTRL_WS:-${PROJECT_ROOT}/build/ros1/local_source_ws}"
 export FACTORY_WORLD_MODE=clean
 export PLANNER_VARIANT=fuel
 export MISSION_MODE=exploration_stream
@@ -20,7 +23,13 @@ export TARGET_Y=-19.36313
 export TARGET_Z=1.2
 export GOAL4_TAKEOFF_HEIGHT=1.2
 export GOAL4_TAKEOFF_TIMEOUT_S=90
-export PX4CTRL_AUTO_TAKEOFF_HEIGHT=1.0
+# Keep the PX4CTRL auto-takeoff target identical to the mission gate target.
+# A lower internal target lets the FSM enter hover before the mission gate is
+# satisfied and caused both original and C99 runs to overshoot the 1.2 m gate.
+# Keep the PX4CTRL auto-takeoff target identical to the mission gate by
+# default, while allowing a controller-specific frozen profile to provide its
+# already-validated relative takeoff height.
+export PX4CTRL_AUTO_TAKEOFF_HEIGHT="${PX4CTRL_AUTO_TAKEOFF_HEIGHT:-${GOAL4_TAKEOFF_HEIGHT}}"
 export GOAL4_EGO_TAKEOVER_TIMEOUT_S=90
 export DIFF_PUBLISH_HOVER_DURING_TAKEOFF=true
 export DIFF_PUBLISH_HOVER_DURING_TAKEOFF_DELAY_S=0.5

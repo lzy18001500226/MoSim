@@ -148,16 +148,16 @@ equation
         + mppi_weight[4, axis] + mppi_weight[5, axis] + mppi_weight[6, axis]
         + mppi_weight[7, axis]);
 
-    selected_core_acceleration[axis] = if algorithm_variant == 1 then
-      robust_acceleration[axis] else if algorithm_variant == 2 then
-      adaptive_acceleration[axis] else if algorithm_variant == 3 then
-      tube_acceleration[axis] else if algorithm_variant == 4 then
-      scheduled_acceleration[axis] else if algorithm_variant == 5 then
+    selected_core_acceleration[axis] = if algorithm_variant == 1 then 
+      robust_acceleration[axis] else if algorithm_variant == 2 then 
+      adaptive_acceleration[axis] else if algorithm_variant == 3 then 
+      tube_acceleration[axis] else if algorithm_variant == 4 then 
+      scheduled_acceleration[axis] else if algorithm_variant == 5 then 
       ilqr_acceleration[6, axis] else mppi_solution[axis];
     unconstrained_acceleration_out[axis] = selected_core_acceleration[axis]
       + reference_acceleration[axis];
-    selected_acceleration_limit[axis] = if algorithm_variant == 3 then
-      max(0.1, acceleration_limit[axis] - robust_bound[axis])
+    selected_acceleration_limit[axis] = if algorithm_variant == 3 then 
+      max(0.1, acceleration_limit[axis] - robust_bound[axis]) 
       else acceleration_limit[axis];
     absolute_limited_acceleration[axis] = min(max(
       unconstrained_acceleration_out[axis], -selected_acceleration_limit[axis]),
@@ -165,12 +165,12 @@ equation
     constrained_acceleration[axis] = min(max(absolute_limited_acceleration[axis],
       previous_acceleration[axis] - increment_limit[axis]),
       previous_acceleration[axis] + increment_limit[axis]);
-    desired_acceleration_out[axis] = if axis == 3 then
+    desired_acceleration_out[axis] = if axis == 3 then 
       constrained_acceleration[axis] + gravity_mps2 else constrained_acceleration[axis];
-    auxiliary_out[axis] = if algorithm_variant == 1 then robust_bound[axis]
-      else if algorithm_variant == 2 then adaptive_scale
-      else if algorithm_variant == 3 then selected_acceleration_limit[axis]
-      else if algorithm_variant == 4 then schedule[axis]
+    auxiliary_out[axis] = if algorithm_variant == 1 then robust_bound[axis] 
+      else if algorithm_variant == 2 then adaptive_scale 
+      else if algorithm_variant == 3 then selected_acceleration_limit[axis] 
+      else if algorithm_variant == 4 then schedule[axis] 
       else if algorithm_variant == 6 then mppi_minimum_cost[axis] else 0;
     stage_cost[axis] = position_weight[axis]
       * (position_error[axis] + horizon_s * velocity_error[axis]
@@ -209,7 +209,7 @@ equation
   solver_cost_out = if algorithm_variant == 6 then mppi_minimum_cost[1]
     + mppi_minimum_cost[2] + mppi_minimum_cost[3] else stage_cost[1]
     + stage_cost[2] + stage_cost[3];
-  solver_iterations_out = if algorithm_variant == 5 then 5
+  solver_iterations_out = if algorithm_variant == 5 then 5 
     else if algorithm_variant == 6 then 7 else 0;
   enabled = enable >= 0.5;
   desired_roll_rad_out = if enabled then desired_roll_rad else 0;

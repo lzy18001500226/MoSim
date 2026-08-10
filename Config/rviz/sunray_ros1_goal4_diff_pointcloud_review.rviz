@@ -183,9 +183,9 @@ Visualization Manager:
       Class: rviz/Orbit
       Distance: 18
       Focal Point:
-        X: -72.40496
-        Y: 1.63709
-        Z: 2
+        X: 0
+        Y: 120
+        Z: 1
       Name: Current View
       Pitch: 0.62
       Target Frame: world

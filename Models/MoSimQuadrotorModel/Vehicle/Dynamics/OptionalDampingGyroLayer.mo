@@ -84,16 +84,16 @@ equation
 
   for i in 1:4 loop
     rotor_angular_momentum_body_z[i] =
-      if enable_rotor_gyro then
-        rotor_polar_inertia[i] * gyro_axis_sign[i] * mapped_wrapper.wrapper.dynamics.omega[i]
+      if enable_rotor_gyro then 
+        rotor_polar_inertia[i] * gyro_axis_sign[i] * mapped_wrapper.wrapper.dynamics.omega[i] 
       else 0;
     rotor_gyro_moment_body[i, 1] =
-      if enable_rotor_gyro then
-        gyro_convention_sign * body_angular_velocity_body[2] * rotor_angular_momentum_body_z[i]
+      if enable_rotor_gyro then 
+        gyro_convention_sign * body_angular_velocity_body[2] * rotor_angular_momentum_body_z[i] 
       else 0;
     rotor_gyro_moment_body[i, 2] =
-      if enable_rotor_gyro then
-        -gyro_convention_sign * body_angular_velocity_body[1] * rotor_angular_momentum_body_z[i]
+      if enable_rotor_gyro then 
+        -gyro_convention_sign * body_angular_velocity_body[1] * rotor_angular_momentum_body_z[i] 
       else 0;
     rotor_gyro_moment_body[i, 3] = 0;
   end for;
@@ -101,12 +101,12 @@ equation
   for j in 1:3 loop
     rotor_gyro_total_moment_body[j] = sum({rotor_gyro_moment_body[i, j] for i in 1:4});
     body_drag_force_body[j] =
-      if enable_body_drag then
-        -body_drag_coefficient[j] * body_velocity_body[j]
+      if enable_body_drag then 
+        -body_drag_coefficient[j] * body_velocity_body[j] 
       else 0;
     angular_damping_moment_body[j] =
-      if enable_angular_damping then
-        -angular_damping_coefficient[j] * body_angular_velocity_body[j]
+      if enable_angular_damping then 
+        -angular_damping_coefficient[j] * body_angular_velocity_body[j] 
       else 0;
     optional_force_body[j] = body_drag_force_body[j];
     optional_moment_body[j] = rotor_gyro_total_moment_body[j] + angular_damping_moment_body[j];

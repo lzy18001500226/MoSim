@@ -150,12 +150,25 @@ def _load_scenario_snapshot(root: Path, experiment: dict[str, Any]) -> dict[str,
     return _read_object(scenario_path)
 
 
-def _active_pointer_path(root: Path) -> Path:
-    return _root_path(root, ACTIVE_POINTER_RELATIVE_PATH)
+def _pointer_relative_path(value: str | Path) -> Path:
+    relative = Path(value)
+    if (
+        relative.is_absolute()
+        or not relative.parts
+        or relative.parts[0] != "Results"
+        or ".." in relative.parts
+        or relative.suffix != ".json"
+    ):
+        raise ValueError("operator_run_active_pointer_path_invalid")
+    return relative
 
 
-def _active_pointer_is_live(root: Path) -> bool:
-    pointer_path = _active_pointer_path(root)
+def _active_pointer_path(root: Path, relative_path: str | Path = ACTIVE_POINTER_RELATIVE_PATH) -> Path:
+    return _root_path(root, _pointer_relative_path(relative_path))
+
+
+def _active_pointer_is_live(root: Path, relative_path: str | Path = ACTIVE_POINTER_RELATIVE_PATH) -> bool:
+    pointer_path = _active_pointer_path(root, relative_path)
     if not pointer_path.is_file():
         return False
     try:
@@ -176,9 +189,11 @@ def prepare_run(
     root: Path = ROOT,
     run_id: str | None = None,
     now: float | None = None,
+    active_pointer_relative_path: str | Path = ACTIVE_POINTER_RELATIVE_PATH,
 ) -> dict[str, Any]:
     root = root.resolve()
-    if _active_pointer_is_live(root):
+    pointer_relative_path = _pointer_relative_path(active_pointer_relative_path)
+    if _active_pointer_is_live(root, pointer_relative_path):
         raise ValueError("operator_run_already_active")
     selected_run_id = run_id or _generated_run_id()
     if not RUN_ID_PATTERN.fullmatch(selected_run_id):
@@ -300,8 +315,71 @@ def prepare_run(
         "updated_at_unix_s": timestamp,
         "source": "qgc_visible_terminal",
     }
-    _atomic_write_json(_active_pointer_path(root), pointer)
-    return {"run_id": selected_run_id, "run_directory": run_directory, "manifest": manifest, "pointer": pointer}
+    pointer_path = _active_pointer_path(root, pointer_relative_path)
+    _atomic_write_json(pointer_path, pointer)
+    return {
+        "run_id": selected_run_id,
+        "run_directory": run_directory,
+        "manifest": manifest,
+        "pointer": pointer,
+        "pointer_path": pointer_path,
+    }
+
+
+def activate_active_run(
+    *,
+    expected_run_id: str,
+    source: str,
+    root: Path = ROOT,
+    now: float | None = None,
+) -> dict[str, Any]:
+    """Expose a prepared run to QGC after its runtime launcher is ready.
+
+    The immutable RunManifest remains the identity authority. A launcher may
+    advance only its own ``launch_prepared`` pointer after it has established
+    the ROS-side readiness needed by its declared operator mode.
+    """
+
+    root = root.resolve()
+    if not RUN_ID_PATTERN.fullmatch(expected_run_id):
+        raise ValueError("operator_run_id_invalid")
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+", source):
+        raise ValueError("operator_run_activation_source_invalid")
+
+    pointer_path = _active_pointer_path(root)
+    if not pointer_path.is_file():
+        raise ValueError("operator_run_active_pointer_missing")
+    pointer = _read_object(pointer_path)
+    if (
+        pointer.get("schema") != "mosim.qgc_active_run_pointer.v1"
+        or pointer.get("state") != "launch_prepared"
+        or pointer.get("run_id") != expected_run_id
+    ):
+        raise ValueError("operator_run_active_pointer_not_launch_prepared")
+
+    run_directory_relative = f"Results/runs/{expected_run_id}"
+    if pointer.get("run_directory") != run_directory_relative:
+        raise ValueError("operator_run_active_pointer_directory_invalid")
+    manifest = _read_object(_root_path(root, run_directory_relative) / "RUN_MANIFEST.json")
+    if (
+        manifest.get("run_id") != expected_run_id
+        or manifest.get("experiment_profile_id") != pointer.get("experiment_profile_id")
+        or manifest.get("experiment_profile_hash") != pointer.get("experiment_profile_hash")
+        or manifest.get("runtime_profile_id") != pointer.get("runtime_profile_id")
+    ):
+        raise ValueError("operator_run_activation_manifest_identity_mismatch")
+    validate_run_manifest_v2(manifest)
+
+    timestamp = time.time() if now is None else now
+    if not isinstance(timestamp, (int, float)) or timestamp < 0:
+        raise ValueError("operator_run_timestamp_invalid")
+    activated = dict(pointer)
+    activated["state"] = "running"
+    activated["updated_at_unix_s"] = float(timestamp)
+    activated["activated_at_unix_s"] = float(timestamp)
+    activated["source"] = source
+    _atomic_write_json(pointer_path, activated)
+    return activated
 
 
 def clear_active_run(*, root: Path = ROOT, now: float | None = None) -> dict[str, Any]:
@@ -424,10 +502,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--profile-id")
     parser.add_argument("--runtime-profile-id")
     parser.add_argument("--run-id")
+    parser.add_argument("--active-pointer-path")
     parser.add_argument("--print-run-id", action="store_true")
     parser.add_argument("--clear-active", action="store_true")
+    parser.add_argument("--activate-active", action="store_true")
     parser.add_argument("--finalize-active", action="store_true")
     parser.add_argument("--expected-run-id")
+    parser.add_argument("--activation-source", default="terminal_runtime")
     parser.add_argument("--terminal-state", choices=tuple(sorted(TERMINAL_STATES)))
     parser.add_argument("--reason-code")
     parser.add_argument("--terminal-source", default="terminal_runtime")
@@ -438,7 +519,8 @@ def main() -> int:
     args = parse_args()
     try:
         if args.finalize_active:
-            if args.clear_active or args.profile_id or args.runtime_profile_id or args.run_id or args.print_run_id:
+            if (args.clear_active or args.activate_active or args.profile_id or args.runtime_profile_id or args.run_id
+                    or args.print_run_id or args.active_pointer_path):
                 raise ValueError("operator_run_finalize_arguments_invalid")
             if not args.expected_run_id or not args.terminal_state or not args.reason_code:
                 raise ValueError("operator_run_finalize_arguments_missing")
@@ -459,11 +541,41 @@ def main() -> int:
                 )
             )
             return 0
-        if args.clear_active:
+        if args.activate_active:
             if (
-                args.profile_id
+                args.clear_active
+                or args.profile_id
                 or args.runtime_profile_id
                 or args.run_id
+                or args.active_pointer_path
+                or args.print_run_id
+                or args.terminal_state
+                or args.reason_code
+            ):
+                raise ValueError("operator_run_activate_arguments_invalid")
+            if not args.expected_run_id:
+                raise ValueError("operator_run_activate_arguments_missing")
+            result = activate_active_run(
+                expected_run_id=args.expected_run_id,
+                source=args.activation_source,
+            )
+            print(
+                json.dumps(
+                    {
+                        "schema": "mosim.qgc_operator_run_result.v1",
+                        "state": result["state"],
+                        "run_id": result["run_id"],
+                    }
+                )
+            )
+            return 0
+        if args.clear_active:
+            if (
+                args.activate_active
+                or args.profile_id
+                or args.runtime_profile_id
+                or args.run_id
+                or args.active_pointer_path
                 or args.print_run_id
                 or args.expected_run_id
                 or args.terminal_state
@@ -479,6 +591,7 @@ def main() -> int:
             profile_id=args.profile_id,
             runtime_profile_id=args.runtime_profile_id,
             run_id=args.run_id,
+            active_pointer_relative_path=args.active_pointer_path or ACTIVE_POINTER_RELATIVE_PATH,
         )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(str(exc), file=sys.stderr)

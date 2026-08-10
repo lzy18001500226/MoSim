@@ -13,6 +13,11 @@ void GridMap::initMap(ros::NodeHandle &nh)
   node_.param("grid_map/map_size_x", x_size, -1.0);
   node_.param("grid_map/map_size_y", y_size, -1.0);
   node_.param("grid_map/map_size_z", z_size, -1.0);
+  bool use_map_origin_override;
+  double map_origin_x, map_origin_y;
+  node_.param("grid_map/use_map_origin_override", use_map_origin_override, false);
+  node_.param("grid_map/map_origin_x", map_origin_x, -x_size / 2.0);
+  node_.param("grid_map/map_origin_y", map_origin_y, -y_size / 2.0);
   node_.param("grid_map/local_update_range_x", mp_.local_update_range_(0), -1.0);
   node_.param("grid_map/local_update_range_y", mp_.local_update_range_(1), -1.0);
   node_.param("grid_map/local_update_range_z", mp_.local_update_range_(2), -1.0);
@@ -59,7 +64,14 @@ void GridMap::initMap(ros::NodeHandle &nh)
 
   mp_.local_bound_inflate_ = max(mp_.resolution_, mp_.local_bound_inflate_);
   mp_.resolution_inv_ = 1 / mp_.resolution_;
-  mp_.map_origin_ = Eigen::Vector3d(-x_size / 2.0, -y_size / 2.0, mp_.ground_height_);
+  if (use_map_origin_override)
+  {
+    mp_.map_origin_ = Eigen::Vector3d(map_origin_x, map_origin_y, mp_.ground_height_);
+  }
+  else
+  {
+    mp_.map_origin_ = Eigen::Vector3d(-x_size / 2.0, -y_size / 2.0, mp_.ground_height_);
+  }
   mp_.map_size_ = Eigen::Vector3d(x_size, y_size, z_size);
 
   mp_.prob_hit_log_ = logit(mp_.p_hit_);

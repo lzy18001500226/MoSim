@@ -9,11 +9,11 @@ model OfficialPidFixedInputProbe "G6 fixed-input probe for the graphical Officia
     Diagram(coordinateSystem(extent={{-260,-100},{260,100}},grid={2,2}))
   );
 
-  SysplorerEmbeddedCoder.Sources.Constant altitude_error(k=0.15)
+  SysplorerEmbeddedCoder.Sources.Constant altitude_error(k=0.15) 
     annotation(Placement(transformation(origin={-190,20},extent={{-20,-15},{20,15}})));
-  MoSimQuadrotorModel.Control.Implementations.PidFamily.AWFF_PID_Sysblock_Demo official_pid
+  MoSimQuadrotorModel.Control.Implementations.PidFamily.AWFF_PID_Sysblock_Demo official_pid 
     annotation(Placement(transformation(origin={0,20},extent={{-55,-35},{55,35}})));
-  SysplorerEmbeddedCoder.Port.Outport thrust_command
+  SysplorerEmbeddedCoder.Port.Outport thrust_command 
     annotation(Placement(transformation(origin={210,20},extent={{-20,-15},{20,15}})));
 
   model ModelWorkspace
@@ -21,8 +21,8 @@ model OfficialPidFixedInputProbe "G6 fixed-input probe for the graphical Officia
   end ModelWorkspace;
 
 equation
-  connect(altitude_error.y, official_pid.z_error)
+  connect(altitude_error.y, official_pid.z_error) 
     annotation(Line(points={{-170,20},{-55,20}},color={0,0,0}));
-  connect(official_pid.thrust_cmd, thrust_command)
+  connect(official_pid.thrust_cmd, thrust_command) 
     annotation(Line(points={{55,20},{190,20}},color={0,0,0}));
 end OfficialPidFixedInputProbe;

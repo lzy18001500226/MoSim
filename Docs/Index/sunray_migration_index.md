@@ -327,7 +327,7 @@ Sysplorer 迁移建议：
 
 | 优先级 | 任务 | 输出位置 |
 |---|---|---|
-| P0 | 维持单机控制器结果收尾和人工审核清单更新 | `Results/人工审核清单.csv`、`Docs/simulation_report.md` |
+| P0 | 维持单机控制器结果收尾和人工审核清单更新 | `Results/人工审核清单.csv`、`Docs/报告/仿真分析报告_正文骨架.md` |
 | P1 | 建立 `PlannerCommand`、`GridMap`、`TrajectoryReference`、`FormationCommand` 标准接口 | `Docs/Design/架构/01_控制器平台/统一控制接口.md`、`Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`、`Docs/Index/variable_mapping.md`；旧细节缓存于 `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/02_模型接口与运行流程.md` |
 | P1 | 从 EGO 抽取 A*/B-spline/minimum-snap 迁移设计 | `Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`；旧细节缓存于 `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/05_路径规划与轨迹生成.md` |
 | P1 | 从 ORCA/formation_control 抽取多机避障和队形状态机 | `Docs/Design/架构/02_感知定位与规划集群/规划与编队控制接口.md`；旧细节缓存于 `Docs/Cache/design/historical_snapshots/pre_rebuild_20260610/06_多机编队控制.md` |

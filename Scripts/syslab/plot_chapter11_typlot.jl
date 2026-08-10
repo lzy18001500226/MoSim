@@ -123,6 +123,7 @@ function fig_scenario_comparison(scenario::String, label::String,
     styled(ylabel("Position Error Norm (m)"))
     grid("on")
     styled_legend(items; loc="best")
+    axes_font()
     hold("off")
     save_fig(outdir, "$(scenario)_position_error_comparison.png")
 end
@@ -190,6 +191,7 @@ function fig_sensitivity(scenario::String, batch::String, xlabel_str::String,
     styled(ylabel("Position RMSE (m)"))
     grid("on")
     isempty(items) || styled_legend(items; loc="best")
+    axes_font()
     hold("off")
     save_fig(outdir, "$(scenario)_sensitivity.png")
 end
@@ -216,6 +218,7 @@ function fig_formation_xy(d::Dict, outdir::String)
     grid("on"); axis("equal")
     styled_legend(["UAV 1", "UAV 2", "UAV 3", "Reference (UAV 1-3)"];
                   loc="eastoutside")
+    axes_font()
     hold("off")
     save_fig(outdir, "formation_trajectory_xy.png")
 end
@@ -231,6 +234,7 @@ function fig_inter_uav_distance(d::Dict, outdir::String)
     styled(ylabel("Minimum Inter-UAV Distance (m)"))
     grid("on")
     styled_legend(["Min pair distance", "Safety threshold (1.0 m)"]; loc="best")
+    axes_font()
     hold("off")
     save_fig(outdir, "inter_uav_distance.png")
 end
@@ -241,6 +245,7 @@ function fig_formation_error(d::Dict, outdir::String)
     styled(xlabel("Time (s)"))
     styled(ylabel("Formation Error (m)"))
     grid("on")
+    axes_font()
     save_fig(outdir, "formation_error.png")
 end
 
@@ -272,6 +277,7 @@ function fig_ecbf_divergence(d::Dict, outdir::String)
     styled_legend(["UAV 1 (RMSE 0.2926 m)",
                    "UAV 2 (RMSE 2229.64 m — diverged)",
                    "UAV 3 (RMSE 0.1988 m)"]; loc="best")
+    axes_font()
     hold("off")
     save_fig(outdir, "tracking_error_divergence.png")
 end

@@ -2,7 +2,7 @@
 """Build a blocked application plan for simulation-report source edits.
 
 The plan consumes the non-applying patch preview and the A1 decision artifact.
-It never edits Docs/simulation_report.md.
+It never edits Docs/报告/仿真分析报告_正文骨架.md.
 """
 
 from __future__ import annotations
@@ -98,7 +98,7 @@ def build_plan(preview_path: Path, decision_path: Path, decision_check_path: Pat
             else "source_edit_application_plan_blocked_pending_human_review"
         ),
         "inputs": {
-            "simulation_report": "Docs/simulation_report.md",
+            "simulation_report": "Docs/报告/仿真分析报告_正文骨架.md",
             "patch_preview": rel(preview_path),
             "report_source_edit_decision": rel(decision_path),
             "report_source_edit_decision_check": rel(decision_check_path),
@@ -125,7 +125,7 @@ def build_plan(preview_path: Path, decision_path: Path, decision_check_path: Pat
         else "A1 report-source edit decision is not approved or readiness gate is still blocked.",
         "claim_boundary": [
             "This plan is a non-applying source-edit application plan.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not delete content.",
             "It does not run a patch command.",
             "It does not export PDFs/video or write PMO final acceptance.",

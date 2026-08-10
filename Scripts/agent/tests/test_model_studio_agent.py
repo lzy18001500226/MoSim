@@ -59,7 +59,7 @@ class ModelStudioAgentTests(unittest.TestCase):
                 tools.read_project_document(path)
 
     def test_project_document_and_capability_queries_are_read_only(self) -> None:
-        document = tools.read_project_document("Docs/Workflows/mainline_operations_board.md", 1, 10)
+        document = tools.read_project_document("Docs/Workflows/run_simulation.md", 1, 10)
         self.assertEqual(document["line_start"], 1)
         capabilities = tools.get_agent_capabilities()
         self.assertTrue(capabilities["read_only"])

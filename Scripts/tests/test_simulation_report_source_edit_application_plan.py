@@ -54,7 +54,7 @@ def test_current_application_plan_is_blocked(tmp_path: Path) -> None:
     assert plan["summary"]["generates_final_outputs"] is False
     assert plan["summary"]["final_acceptance"] is False
     assert all(step["applies_now"] is False for step in plan["application_steps"])
-    assert "It does not edit Docs/simulation_report.md." in plan["claim_boundary"]
+    assert "It does not edit Docs/报告/仿真分析报告_正文骨架.md." in plan["claim_boundary"]
 
 
 def test_ready_plan_still_does_not_apply(tmp_path: Path) -> None:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Send sparse MoSim gateway alert email via SMTP.
+"""Send opt-in MoSim task or gateway alert email via SMTP.
 
 Secrets are read only from environment variables. Do not put SMTP passwords or
 QQ authorization codes in project files, command arguments, or chat messages.
@@ -8,6 +8,7 @@ QQ authorization codes in project files, command arguments, or chat messages.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import smtplib
@@ -21,11 +22,12 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT_DIR = ROOT / "Results" / "coagent_gateway" / "email"
+OUT_DIR = Path(os.environ.get("MOSIM_EMAIL_ALERT_ROOT") or ROOT / "Results" / "coagent_gateway" / "email").expanduser()
 DEFAULT_TO = "1062771286@qq.com"
 DEFAULT_HOST = "smtp.qq.com"
 DEFAULT_PORT = 465
 DEFAULT_COOLDOWN_MINUTES = 240
+TERMINAL_TASK_STATUSES = frozenset({"blocked", "complete", "completed"})
 WIN_ENV_SOURCES = (
     ("windows_user_env", "HKEY_CURRENT_USER\\Environment"),
     (
@@ -155,32 +157,131 @@ def send_email(subject: str, body: str, config: dict[str, Any], timeout: int) ->
     return {"ok": True, "message_id": message_id, "refused_recipients": refused}
 
 
+def status_label(value: str) -> str:
+    labels = {
+        "blocked": "已阻塞",
+        "complete": "已完成",
+        "completed": "已完成",
+        "review_required": "等待审核",
+        "unhealthy": "异常",
+        "healthy": "正常",
+    }
+    return labels.get(value.lower(), value or "未知")
+
+
+def display_path(value: str | Path) -> str:
+    path = Path(value)
+    try:
+        return str(path.resolve().relative_to(ROOT)).replace("\\", "/")
+    except (OSError, ValueError):
+        return str(path).replace("\\", "/")
+
+
+def is_task_status(status_path: Path) -> bool:
+    return bool(str(load_json(status_path).get("task") or "").strip())
+
+
+def is_terminal_task_status(status_path: Path) -> bool:
+    status = str(load_json(status_path).get("status") or "").strip().lower()
+    return status in TERMINAL_TASK_STATUSES
+
+
+def task_delivery_key(status_path: Path) -> str:
+    payload = load_json(status_path)
+    status = str(payload.get("status") or "").strip().lower()
+    conversation_id = str(payload.get("conversation_id") or "").strip()
+    if conversation_id:
+        return f"conversation:{conversation_id}|{status}"
+    try:
+        identity = str(status_path.resolve())
+    except OSError:
+        identity = str(status_path)
+    return f"{identity}|{status}"
+
+
+def claim_task_delivery(key: str) -> tuple[bool, Path, dict[str, Any]]:
+    digest = hashlib.sha256(key.encode("utf-8")).hexdigest()
+    claim_path = OUT_DIR / "task_delivery" / f"{digest}.json"
+    claim = {"key": key, "state": "claiming", "claimed_at": now_local().isoformat(timespec="seconds")}
+    claim_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with claim_path.open("x", encoding="utf-8") as handle:
+            json.dump(claim, handle, ensure_ascii=False, indent=2, sort_keys=True)
+            handle.write("\n")
+    except FileExistsError:
+        return False, claim_path, load_json(claim_path)
+    return True, claim_path, claim
+
+
+def complete_task_delivery(claim_path: Path, key: str, result: dict[str, Any]) -> None:
+    write_json(
+        claim_path,
+        {
+            "key": key,
+            "state": "sent",
+            "sent_at": now_local().isoformat(timespec="seconds"),
+            "message_id": str(result.get("message_id") or ""),
+        },
+    )
+
+
+def release_task_delivery(claim_path: Path) -> None:
+    try:
+        claim_path.unlink()
+    except FileNotFoundError:
+        pass
+
+
 def body_from_status(status_path: Path) -> tuple[str, str, str]:
     status = load_json(status_path)
     failure_kind = str(status.get("failure_kind") or "gateway_alert")
     status_text = str(status.get("status") or "unknown")
     minimal_action = str(status.get("minimal_user_action") or "")
     latest_snapshot = str(status.get("latest_snapshot") or status_path)
-    subject = f"MoSim gateway alert: {failure_kind}"
+    task = str(status.get("task") or "").strip()
+    observed_error = str(status.get("observed_error") or "").strip()
+    is_task = bool(task)
+    normalized_status = status_text.lower()
+    if is_task:
+        subject_label = {
+            "blocked": "任务已阻塞",
+            "complete": "任务已完成",
+            "completed": "任务已完成",
+        }.get(normalized_status, "任务通知")
+    else:
+        subject_label = "网关告警"
+    detail_label = "原因" if normalized_status == "blocked" or not is_task else "摘要"
+    subject = f"MoSim {subject_label}：{task or failure_kind}"
     body = "\n".join(
         [
-            "MoSim gateway alert",
+            f"MoSim {'任务通知' if is_task else '网关告警'}",
             "",
-            f"status: {status_text}",
-            f"failure_kind: {failure_kind}",
-            f"minimal_action: {minimal_action}",
-            f"status_file: {latest_snapshot}",
-            f"generated_at: {now_local().isoformat(timespec='seconds')}",
-            "",
-            "This is a sparse fallback email. Check project files for details.",
+            f"状态：{status_label(status_text)}",
+            *( [f"任务：{task}"] if task else [] ),
+            f"{detail_label}：{observed_error or failure_kind}",
+            *( [f"处理：{minimal_action}"] if minimal_action else [] ),
+            f"证据：{display_path(latest_snapshot)}",
+            f"时间：{now_local().isoformat(timespec='seconds')}",
         ]
     )
-    return subject, body, failure_kind
+    default_key = f"task:{task}:{failure_kind}" if is_task else f"gateway:{failure_kind}"
+    return subject, body, default_key
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--status-json", type=Path, help="gateway status JSON to summarize")
+    parser.add_argument("--status-json", type=Path, help="task or gateway status JSON to summarize")
+    notification_kind = parser.add_mutually_exclusive_group()
+    notification_kind.add_argument(
+        "--task-notification",
+        action="store_true",
+        help="allow delivery for a task status JSON after the current user explicitly requested notification",
+    )
+    notification_kind.add_argument(
+        "--incident-alert",
+        action="store_true",
+        help="allow delivery for an automated gateway or watchdog incident",
+    )
     parser.add_argument("--subject", default="")
     parser.add_argument("--body", default="")
     parser.add_argument("--cooldown-key", default="")
@@ -189,6 +290,8 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
+    task_status = bool(args.status_json and is_task_status(args.status_json))
+    conversation_id = str(load_json(args.status_json).get("conversation_id") or "").strip() if args.status_json else ""
     if args.status_json:
         subject, body, default_key = body_from_status(args.status_json)
     else:
@@ -197,10 +300,10 @@ def main() -> int:
         default_key = subject
     key = args.cooldown_key or default_key
     config = env_config()
-    stamp = now_local().strftime("%Y%m%d_%H%M%S")
+    terminal_task_status = bool(args.status_json and is_terminal_task_status(args.status_json))
+    stamp = now_local().strftime("%Y%m%d_%H%M%S_%f")
     audit_path = OUT_DIR / f"email_alert_{stamp}.json"
 
-    allowed, cooldown_reason = cooldown_allows(key, args.cooldown_minutes)
     record: dict[str, Any] = {
         "timestamp": now_local().isoformat(timespec="seconds"),
         "status_json": str(args.status_json) if args.status_json else "",
@@ -219,10 +322,42 @@ def main() -> int:
         "host": config["host"],
         "port": config["port"],
         "cooldown_key": key,
-        "cooldown_allowed": allowed,
-        "cooldown_reason": cooldown_reason,
+        "cooldown_allowed": None,
+        "cooldown_reason": "not_checked",
+        "task_status": task_status,
+        "conversation_id": conversation_id,
+        "terminal_task_status": terminal_task_status,
+        "task_notification_opt_in": args.task_notification,
+        "incident_alert_opt_in": args.incident_alert,
         "dry_run": args.dry_run,
     }
+
+    if args.task_notification and not task_status:
+        record.update({"ok": True, "skipped": True, "reason": "task_notification_requires_task_status_json"})
+        write_json(audit_path, record)
+        print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": record["reason"]}, ensure_ascii=False))
+        return 0
+    if args.task_notification and not terminal_task_status:
+        record.update({"ok": True, "skipped": True, "reason": "task_notification_requires_terminal_status"})
+        write_json(audit_path, record)
+        print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": record["reason"]}, ensure_ascii=False))
+        return 0
+    if task_status and not args.task_notification:
+        record.update({"ok": True, "skipped": True, "reason": "task_notification_requires_explicit_opt_in"})
+        write_json(audit_path, record)
+        print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": record["reason"]}, ensure_ascii=False))
+        return 0
+    if not args.task_notification and not args.incident_alert:
+        record.update({"ok": True, "skipped": True, "reason": "notification_requires_explicit_opt_in"})
+        write_json(audit_path, record)
+        print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": record["reason"]}, ensure_ascii=False))
+        return 0
+
+    if args.dry_run:
+        record.update({"ok": True, "skipped": True, "reason": "dry_run"})
+        write_json(audit_path, record)
+        print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": "dry_run"}, ensure_ascii=False))
+        return 0
 
     missing = missing_config(config)
     if missing:
@@ -230,18 +365,39 @@ def main() -> int:
         write_json(audit_path, record)
         print(json.dumps({"ok": False, "path": str(audit_path), "reason": "missing_config", "missing_env": missing}, ensure_ascii=False))
         return 2
-    if not allowed:
-        record.update({"ok": True, "skipped": True, "reason": cooldown_reason})
-        write_json(audit_path, record)
-        print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": cooldown_reason}, ensure_ascii=False))
-        return 0
-    if args.dry_run:
-        record.update({"ok": True, "skipped": True, "reason": "dry_run"})
-        write_json(audit_path, record)
-        print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": "dry_run"}, ensure_ascii=False))
-        return 0
+
+    claim_path: Path | None = None
+    if args.task_notification:
+        key = task_delivery_key(args.status_json)
+        claimed, claim_path, existing_claim = claim_task_delivery(key)
+        record.update(
+            {
+                "task_delivery_key": key,
+                "task_delivery_state": str(existing_claim.get("state") or ""),
+                "cooldown_key": "",
+                "cooldown_reason": "task_delivery_deduplication",
+            }
+        )
+        if not claimed:
+            record.update({"ok": True, "skipped": True, "reason": "task_notification_already_claimed_or_sent"})
+            write_json(audit_path, record)
+            print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": record["reason"]}, ensure_ascii=False))
+            return 0
+    else:
+        allowed, cooldown_reason = cooldown_allows(key, args.cooldown_minutes)
+        record.update({"cooldown_allowed": allowed, "cooldown_reason": cooldown_reason})
+        if not allowed:
+            record.update({"ok": True, "skipped": True, "reason": cooldown_reason})
+            write_json(audit_path, record)
+            print(json.dumps({"ok": True, "path": str(audit_path), "skipped": True, "reason": cooldown_reason}, ensure_ascii=False))
+            return 0
 
     result = send_email(subject, body, config, args.timeout)
+    if claim_path:
+        if result.get("ok"):
+            complete_task_delivery(claim_path, key, result)
+        else:
+            release_task_delivery(claim_path)
     record.update(result)
     write_json(audit_path, record)
     print(json.dumps({"ok": bool(result.get("ok")), "path": str(audit_path)}, ensure_ascii=False))

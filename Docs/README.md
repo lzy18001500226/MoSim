@@ -8,7 +8,7 @@ reference material. It does not replace the repository [README](../README.md).
 | Reader | First path | Then read |
 |---|---|---|
 | New reviewer | `../README.md` | `Design/赛题.md`, `Design/架构.md`, `Index/simulation_model_structure_index.md` |
-| Engineer selecting work | `../AGENTS.md` | `Workflows/new_conversation_context.md`, `Workflows/mainline_operations_board.md` |
+| Engineer starting a task | `../AGENTS.md` | `Workflows/new_conversation_context.md`, then only the topic docs named by the current user |
 | MWORKS controller task | `Design/架构/01_控制器平台/` | matching `Skills/Mworks/` entry and topic workflow |
 | ROS1/Sunray runtime task | `Workflows/sunray_ros1_current_runtime_lane.md` | `Workflows/sunray_ros1_execution_checklist.md` |
 | Report or user manual review | `报告/README.md` | `报告/用户手册_正文骨架.md`、`报告/仿真分析报告_正文骨架.md` and the cited evidence bundle |

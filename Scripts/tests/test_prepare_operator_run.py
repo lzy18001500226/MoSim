@@ -163,6 +163,60 @@ def test_prepare_refuses_to_replace_a_live_pointer_until_operator_clears_it(tmp_
     assert result["run_id"] == "qgc-second-run"
 
 
+def test_activate_only_advances_the_matching_prepared_run_after_launcher_readiness(tmp_path: Path) -> None:
+    module = _module()
+    root = _fixture_root(tmp_path)
+    prepared = module.prepare_run(
+        root=root,
+        profile_id="factory_demo_v1",
+        runtime_profile_id="factory_demo_runtime_v1",
+        run_id="qgc-activate-run",
+        now=1.0,
+    )
+
+    activated = module.activate_active_run(
+        root=root,
+        expected_run_id="qgc-activate-run",
+        source="test_runtime_ready",
+        now=2.0,
+    )
+
+    pointer = json.loads((root / "Results/ui_platform/qgc_active_run.json").read_text(encoding="utf-8"))
+    manifest = json.loads((prepared["run_directory"] / "RUN_MANIFEST.json").read_text(encoding="utf-8"))
+    assert activated["state"] == "running"
+    assert pointer["state"] == "running"
+    assert pointer["activated_at_unix_s"] == 2.0
+    assert pointer["source"] == "test_runtime_ready"
+    assert manifest["state"] == "launch_prepared"
+
+    with pytest.raises(ValueError, match="operator_run_active_pointer_not_launch_prepared"):
+        module.activate_active_run(
+            root=root,
+            expected_run_id="qgc-activate-run",
+            source="test_runtime_ready",
+            now=3.0,
+        )
+
+
+def test_prepare_can_write_an_isolated_audit_pointer_without_replacing_default(tmp_path: Path) -> None:
+    module = _module()
+    root = _fixture_root(tmp_path)
+
+    result = module.prepare_run(
+        root=root,
+        profile_id="factory_demo_v1",
+        runtime_profile_id="factory_demo_runtime_v1",
+        run_id="qgc-isolated-audit-run",
+        active_pointer_relative_path="Results/ui_platform/audits/qgc_isolated_audit_pointer.json",
+        now=1.0,
+    )
+
+    pointer_path = root / "Results/ui_platform/audits/qgc_isolated_audit_pointer.json"
+    assert result["pointer_path"] == pointer_path
+    assert json.loads(pointer_path.read_text(encoding="utf-8"))["run_id"] == "qgc-isolated-audit-run"
+    assert not (root / "Results/ui_platform/qgc_active_run.json").exists()
+
+
 def test_finalize_marks_the_last_map_frame_terminal_and_releases_the_next_run(tmp_path: Path) -> None:
     module = _module()
     root = _fixture_root(tmp_path)
@@ -223,6 +277,25 @@ def test_prepare_rejects_non_matching_runtime_backend(tmp_path: Path) -> None:
             runtime_profile_id="other_runtime_v1",
             run_id="qgc-invalid-runtime",
         )
+
+
+def test_prepare_rejects_disabled_operator_profile_before_creating_a_run_directory(tmp_path: Path) -> None:
+    module = _module()
+    root = _fixture_root(tmp_path)
+    profiles_path = root / "Config/profiles/operator_profiles.json"
+    profiles = json.loads(profiles_path.read_text(encoding="utf-8"))
+    profiles["profiles"][0]["enabled"] = False
+    profiles_path.write_text(json.dumps(profiles), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="operator_run_profile_disabled"):
+        module.prepare_run(
+            root=root,
+            profile_id="factory_demo_v1",
+            runtime_profile_id="factory_demo_runtime_v1",
+            run_id="qgc-disabled-profile",
+        )
+
+    assert not (root / "Results/runs/qgc-disabled-profile").exists()
 
 
 def test_prepare_validates_scenario_before_creating_a_run_directory(tmp_path: Path) -> None:

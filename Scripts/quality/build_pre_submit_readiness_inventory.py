@@ -40,8 +40,8 @@ CORE_PATHS = {
 }
 
 FINAL_REVIEW_ARTIFACTS = {
-    "user_manual_source": "Docs/user_manual.md",
-    "simulation_report_source": "Docs/simulation_report.md",
+    "user_manual_source": "Docs/报告/用户手册_正文骨架.md",
+    "simulation_report_source": "Docs/报告/仿真分析报告_正文骨架.md",
     "user_manual_pdf": "Results/submission/user_manual.pdf",
     "simulation_report_pdf": "Results/submission/simulation_analysis_report.pdf",
     "demo_video": "Results/submission/demo_video.mp4",

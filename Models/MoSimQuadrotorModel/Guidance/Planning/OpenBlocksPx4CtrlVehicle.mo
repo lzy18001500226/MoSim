@@ -6,23 +6,23 @@ model OpenBlocksPx4CtrlVehicle
   parameter Real controller_sample_period_s(unit = "s") = 0.01
     "Sampled controller-input boundary required by the px4ctrl loop";
 
-  Modelica.Blocks.Interfaces.RealInput position_reference[3]
+  Modelica.Blocks.Interfaces.RealInput position_reference[3] 
     annotation(Placement(transformation(origin = {-140, 65}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealInput velocity_reference[3]
+  Modelica.Blocks.Interfaces.RealInput velocity_reference[3] 
     annotation(Placement(transformation(origin = {-140, 10}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealInput acceleration_reference[3]
+  Modelica.Blocks.Interfaces.RealInput acceleration_reference[3] 
     annotation(Placement(transformation(origin = {-140, -45}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealOutput position[3]
+  Modelica.Blocks.Interfaces.RealOutput position[3] 
     annotation(Placement(transformation(origin = {140, 65}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealOutput tracking_error_m(unit = "m")
+  Modelica.Blocks.Interfaces.RealOutput tracking_error_m(unit = "m") 
     annotation(Placement(transformation(origin = {140, 5}, extent = {{-20, -20}, {20, 20}})));
 
-  MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter controller
+  MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter controller 
     annotation(Placement(transformation(origin = {-42, 56}, extent = {{-38, -24}, {38, 24}})));
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator 
     annotation(Placement(transformation(origin = {55, 56}, extent = {{-38, -24}, {38, 24}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant(
-    initial_position_m = initial_position)
+    initial_position_m = initial_position) 
     annotation(Placement(transformation(origin = {104, -45}, extent = {{-28, -42}, {28, 42}})));
 
   Modelica.Blocks.Discrete.UnitDelay sampled_position_ref[3](

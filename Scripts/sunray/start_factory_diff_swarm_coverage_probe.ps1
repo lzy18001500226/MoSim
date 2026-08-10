@@ -354,7 +354,9 @@ $uav3InitialTarget = Get-FirstWaypoint $effectiveUav3ChainWin $fallback3
 $openRvizValue = if ($WithRviz) { "true" } else { "false" }
 $keepAliveValue = if ($KeepAlive -or $WithRviz) { "true" } else { "false" }
 $sequentialSpawnValue = if ($SequentialSpawn) { "true" } else { "false" }
-$staggeredSpawnValue = if ((-not $DisableStaggeredSpawn) -and (-not $SequentialSpawn)) { "true" } else { "false" }
+$c99PreloadedDefault = ($ControllerCoreProfile -eq "graphical_c99") -and (-not $SequentialSpawn)
+$staggeredSpawnValue = if ($c99PreloadedDefault) { "false" } elseif ((-not $DisableStaggeredSpawn) -and (-not $SequentialSpawn)) { "true" } else { "false" }
+$preloadGazeboModelsValue = if ($c99PreloadedDefault -or $PreloadGazeboModels) { "true" } else { "false" }
 
 $dryManifest = [pscustomobject]@{
     schema = "mosim.factory_l2_diff_swarm_coverage_probe.v1"
@@ -415,6 +417,15 @@ if ($DryRun) {
     exit 0
 }
 
+$livoxPluginWsWsl = if ($ControllerCoreProfile -eq "graphical_c99") {
+    "$ProjectRootWsl/build/ros1/livox_swarm_ws_c99"
+} else {
+    "$ProjectRootWsl/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws"
+}
+$livoxPluginFilenameWsl = "$livoxPluginWsWsl/devel/lib/liblivox_laser_simulation.so"
+$livoxPluginWsEnv = if ($ControllerCoreProfile -eq "graphical_c99") { $livoxPluginWsWsl } else { $null }
+$px4HoverPercentageEnv = if ($ControllerCoreProfile -eq "graphical_c99") { "0.456" } else { "0.37" }
+
 $envParts = @(
     "RUN_ID=$RunId",
     "RESULT_DIR=$ResultDirWsl",
@@ -425,8 +436,9 @@ $envParts = @(
     "SEQUENTIAL_SPAWN=$sequentialSpawnValue",
     "STAGGERED_SPAWN=$staggeredSpawnValue",
     "STAGGERED_SPAWN_INTERVAL_S=$StaggeredSpawnIntervalS",
-    "PRELOAD_GAZEBO_MODELS=$($PreloadGazeboModels.ToString().ToLowerInvariant())",
+    "PRELOAD_GAZEBO_MODELS=$preloadGazeboModelsValue",
     "PX4CTRL_CORE_PROFILE=$ControllerCoreProfile",
+    "PX4CTRL_HOVER_PERCENTAGE=$px4HoverPercentageEnv",
     "PX4CTRL_EKF2_EV_CTRL_OVERRIDE=$Px4Ekf2EvCtrlOverride",
     "PX4CTRL_EKF2_HGT_REF_OVERRIDE=$Px4Ekf2HgtRefOverride",
     "PX4CTRL_EXTRA_PARAM_OVERRIDES=$Px4ExtraParamOverrides",
@@ -439,7 +451,8 @@ $envParts = @(
     "SUNRAY_GAZEBO_LAUNCH_FILE=$ProjectRootWsl/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
     "SUNRAY_STRIP_PX4_MODEL_PATH=true",
     "SUNRAY_MID360_PLUGIN_DOWNSAMPLE=4",
-    "SUNRAY_LIVOX_PLUGIN_FILENAME=$ProjectRootWsl/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws/devel/lib/liblivox_laser_simulation.so",
+    "SUNRAY_LIVOX_PLUGIN_FILENAME=$livoxPluginFilenameWsl",
+    "LIVOX_PLUGIN_WS=$livoxPluginWsEnv",
     "SUNRAY_MID360_CSV_FILE_NAME=mid360-real-centr.csv",
     "SUNRAY_MID360_GOAL5_CSV_STRIDE=4",
     "START1_X=$($uav1Start[0])",
@@ -528,7 +541,12 @@ $preflight = if ($SkipPreflight) {
 $bashStatus = '$?'
 $bashScriptWin = Join-Path $ResultDirWin "start_factory_diff_swarm_coverage_probe.sh"
 $bashScriptWsl = $ResultDirWsl + "/start_factory_diff_swarm_coverage_probe.sh"
-$runnerCommand = "$($envParts -join " " ) bash Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh > '$ResultDirWsl/background_launcher.log' 2>&1"
+$runnerScript = if ($ControllerCoreProfile -eq "graphical_c99") {
+    "Scripts/sunray/run_c99_multiuav_planner_gate.sh"
+} else {
+    "Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh"
+}
+$runnerCommand = "$($envParts -join " " ) bash $runnerScript > '$ResultDirWsl/background_launcher.log' 2>&1"
 $runtimeBlock = if ($WithRviz) {
 @"
 $runnerCommand &

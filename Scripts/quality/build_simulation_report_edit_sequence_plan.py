@@ -238,7 +238,7 @@ def build_plan(outline_gap_path: Path, rewrite_plan_path: Path, hygiene_plan_pat
         ],
         "claim_boundary": [
             "This plan sequences report-source edits only.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not delete historical evidence.",
             "It does not generate PDFs/video or PMO final acceptance.",
         ],

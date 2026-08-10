@@ -86,6 +86,7 @@ function Send-RestartEmail {
         $EmailScript,
         '--subject', $subject,
         '--body', $body,
+        '--incident-alert',
         '--cooldown-key', $CooldownKey,
         '--cooldown-minutes', '0',
         '--timeout', '20'

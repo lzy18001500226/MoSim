@@ -51,14 +51,17 @@ def main() -> int:
                     "stamp": {"secs": int(msg.header.stamp.secs), "nsecs": int(msg.header.stamp.nsecs)},
                 }
             )
-            rospy.signal_shutdown("nonempty PointCloud2 received")
 
     try:
         rospy.init_node("mosim_wait_for_nonempty_pointcloud2", anonymous=True, disable_signals=True)
         rospy.Subscriber(args.topic, PointCloud2, on_cloud, queue_size=1)
         deadline = time.monotonic() + max(args.timeout_s, 0.0)
         rate = rospy.Rate(20)
-        while not rospy.is_shutdown() and time.monotonic() < deadline:
+        while (
+            not rospy.is_shutdown()
+            and state.get("status") != "passed"
+            and time.monotonic() < deadline
+        ):
             rate.sleep()
     except Exception as exc:  # rospy startup errors need to become actionable artifacts.
         state.update({"status": "error", "error": str(exc)})

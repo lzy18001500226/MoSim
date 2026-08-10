@@ -1,3 +1,5 @@
 OfflineAttitudeRateAllocator
+OfflineAttitudeRateReportBaselineAllocator
 OfflineBodyRateAllocator
 OfflineWrenchAllocator
+OfficialPidRotorCommandMapper

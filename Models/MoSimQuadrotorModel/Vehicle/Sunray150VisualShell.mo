@@ -5,9 +5,11 @@ model Sunray150VisualShell
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
 
   Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_a
-    "Physical body frame; this shell applies neither force nor torque";
+    "Physical body frame; this shell applies neither force nor torque" 
+    annotation(Placement(transformation(origin = {-140, 35}, extent = {{-14, -14}, {14, 14}})));
   Modelica.Blocks.Interfaces.RealInput rotor_speed[4](each unit = "rad/s")
-    "Signed physical rotor speeds used only to animate the propellers";
+    "Signed physical rotor speeds used only to animate the propellers" 
+    annotation(Placement(transformation(origin = {-140, -70}, extent = {{-14, -14}, {14, 14}})));
   Real rotor_phase[4](each unit = "rad", each start = 0, each fixed = true)
     "Visual-only propeller phase; it does not feed the plant";
 
@@ -27,7 +29,8 @@ model Sunray150VisualShell
     height = 1,
     extra = 0,
     color = {255, 141, 11},
-    specularCoefficient = 1);
+    specularCoefficient = 1) 
+    annotation(Placement(transformation(origin = {0, 35}, extent = {{-42, -30}, {42, 30}})));
   // These files are the accepted Gazebo rotor-link-local meshes copied without
   // a coordinate conversion. They are deliberately four named Shape instances
   // rather than a Shape[4] array: Sysplorer 2026a evaluated the previous array
@@ -48,7 +51,8 @@ model Sunray150VisualShell
     height = 1,
     extra = 0,
     color = {192, 192, 192},
-    specularCoefficient = 1);
+    specularCoefficient = 1) 
+    annotation(Placement(transformation(origin = {-70, -15}, extent = {{-25, -18}, {25, 18}})));
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape propeller_front_left_visual(
     shapeType = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Visualization/sunray150_propeller_rotor_2_link_local.stl",
     R = Modelica.Mechanics.MultiBody.Frames.absoluteRotation(
@@ -64,7 +68,8 @@ model Sunray150VisualShell
     height = 1,
     extra = 0,
     color = {192, 192, 192},
-    specularCoefficient = 1);
+    specularCoefficient = 1) 
+    annotation(Placement(transformation(origin = {70, -15}, extent = {{-25, -18}, {25, 18}})));
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape propeller_back_left_visual(
     shapeType = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Visualization/sunray150_propeller_rotor_1_link_local.stl",
     R = Modelica.Mechanics.MultiBody.Frames.absoluteRotation(
@@ -80,7 +85,8 @@ model Sunray150VisualShell
     height = 1,
     extra = 0,
     color = {192, 192, 192},
-    specularCoefficient = 1);
+    specularCoefficient = 1) 
+    annotation(Placement(transformation(origin = {-70, -65}, extent = {{-25, -18}, {25, 18}})));
   Modelica.Mechanics.MultiBody.Visualizers.Advanced.Shape propeller_back_right_visual(
     shapeType = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Visualization/sunray150_propeller_rotor_3_link_local.stl",
     R = Modelica.Mechanics.MultiBody.Frames.absoluteRotation(
@@ -96,7 +102,8 @@ model Sunray150VisualShell
     height = 1,
     extra = 0,
     color = {192, 192, 192},
-    specularCoefficient = 1);
+    specularCoefficient = 1) 
+    annotation(Placement(transformation(origin = {70, -65}, extent = {{-25, -18}, {25, 18}})));
 
 equation
   // The visual shell is a measurement-only MultiBody branch and cannot alter
@@ -107,5 +114,14 @@ equation
     der(rotor_phase[i]) = rotor_speed[i];
   end for;
 
-  annotation(__MWORKS(hide = true, version = "26.3.0"));
+  annotation(
+    Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
+      Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {160, 80, 0},
+        fillColor = {255, 250, 240}, fillPattern = FillPattern.Solid),
+      Bitmap(origin = {0, 18}, extent = {{-75, -61.6}, {75, 61.6}},
+        fileName = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Images/Sunray150-Side.png"),
+      Text(origin = {0, -74}, extent = {{-92, 16}, {92, -16}},
+        textString = "Visual Shell", textColor = {160, 80, 0})}),
+    Diagram(coordinateSystem(extent = {{-165, -105}, {165, 105}}, grid = {2, 2})),
+    __MWORKS(hide = false, version = "26.3.0"));
 end Sunray150VisualShell;

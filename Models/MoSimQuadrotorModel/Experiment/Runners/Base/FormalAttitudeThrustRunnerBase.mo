@@ -3,7 +3,7 @@ model FormalAttitudeThrustRunnerBase
   "Reusable 100 Hz formal whole-aircraft runner for ATTITUDE_THRUST adapters and formal experiments"
 
   replaceable model Controller =
-      MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter
+      MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter 
     constrainedby MoSimQuadrotorModel.Control.Interfaces.PartialAttitudeThrustController;
   parameter Real controller_sample_period_s(unit = "s") = 0.01
     "External reference and measurement hold period";
@@ -17,9 +17,9 @@ model FormalAttitudeThrustRunnerBase
   parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
   parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
 
-  Controller controller
+  Controller controller 
     annotation(Placement(transformation(origin = {-100, 50}, extent = {{-38, -28}, {38, 28}})));
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator offline_inner_allocator
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator offline_inner_allocator 
     annotation(Placement(transformation(origin = {55, 50}, extent = {{-45, -28}, {45, 28}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant(
     rotor_effectiveness = rotor_effectiveness,
@@ -30,26 +30,26 @@ model FormalAttitudeThrustRunnerBase
     inertia_scale = inertia_scale,
     fault_start_s = fault_start_s,
     fault_rotor_index = fault_rotor_index,
-    fault_rotor_effectiveness = fault_rotor_effectiveness)
+    fault_rotor_effectiveness = fault_rotor_effectiveness) 
     annotation(Placement(transformation(origin = {165, 0}, extent = {{-52, -75}, {52, 75}})));
   replaceable model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
-  Trajectory reference
+  Trajectory reference 
     annotation(Placement(transformation(origin = {-205, 50}, extent = {{-20, -15}, {20, 15}})));
   Modelica.Blocks.Discrete.UnitDelay sampled_position_ref[3](
     each samplePeriod = controller_sample_period_s,
-    each y_start = 0)
+    each y_start = 0) 
     annotation(Placement(transformation(origin = {-150, 0}, extent = {{-18, -12}, {18, 12}})));
   Modelica.Blocks.Discrete.UnitDelay sampled_velocity_ref[3](
     each samplePeriod = controller_sample_period_s,
-    each y_start = 0)
+    each y_start = 0) 
     annotation(Placement(transformation(origin = {-150, -35}, extent = {{-18, -12}, {18, 12}})));
   Modelica.Blocks.Discrete.UnitDelay sampled_acceleration_ref[3](
     each samplePeriod = controller_sample_period_s,
-    each y_start = 0)
+    each y_start = 0) 
     annotation(Placement(transformation(origin = {-150, -70}, extent = {{-18, -12}, {18, 12}})));
   Modelica.Blocks.Discrete.UnitDelay sampled_position[3](
     each samplePeriod = controller_sample_period_s,
-    each y_start = 0)
+    each y_start = 0) 
     annotation(Placement(transformation(origin = {-15, -35}, extent = {{-18, -12}, {18, 12}})));
   Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
     each k = 1,
@@ -59,7 +59,7 @@ model FormalAttitudeThrustRunnerBase
     "Runner-owned filtered velocity from the sampled position boundary";
   Modelica.Blocks.Discrete.UnitDelay sampled_attitude[3](
     each samplePeriod = controller_sample_period_s,
-    each y_start = 0)
+    each y_start = 0) 
     annotation(Placement(transformation(origin = {65, -55}, extent = {{-18, -12}, {18, 12}})));
   Real position_ref[3];
   Real position[3];

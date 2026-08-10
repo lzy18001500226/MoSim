@@ -170,16 +170,16 @@ equation
   pitch_ref_raw = x_command_nominal - eso_x_comp;
   roll_ref_raw = y_command_nominal - eso_y_comp;
   thrust_ref_raw = z_command_nominal - eso_z_comp;
-  pitch_ref = if pitch_ref_raw > roll_pitch_cmd_limit then roll_pitch_cmd_limit
-    else if pitch_ref_raw < -roll_pitch_cmd_limit then -roll_pitch_cmd_limit
+  pitch_ref = if pitch_ref_raw > roll_pitch_cmd_limit then roll_pitch_cmd_limit 
+    else if pitch_ref_raw < -roll_pitch_cmd_limit then -roll_pitch_cmd_limit 
     else pitch_ref_raw;
-  roll_ref = if roll_ref_raw > roll_pitch_cmd_limit then roll_pitch_cmd_limit
-    else if roll_ref_raw < -roll_pitch_cmd_limit then -roll_pitch_cmd_limit
+  roll_ref = if roll_ref_raw > roll_pitch_cmd_limit then roll_pitch_cmd_limit 
+    else if roll_ref_raw < -roll_pitch_cmd_limit then -roll_pitch_cmd_limit 
     else roll_ref_raw;
-  thrust_ref = if thrust_ref_raw > output_limit then output_limit
-    else if thrust_ref_raw < -output_limit then -output_limit
+  thrust_ref = if thrust_ref_raw > output_limit then output_limit 
+    else if thrust_ref_raw < -output_limit then -output_limit 
     else thrust_ref_raw;
-  der(z_integral) = if abs(thrust_ref_raw) < output_limit
+  der(z_integral) = if abs(thrust_ref_raw) < output_limit 
     or z_error * thrust_ref_raw < 0 then z_error else 0;
 
   roll_error = roll_ref + roll_mea;
@@ -192,11 +192,11 @@ equation
   roll_cmd_raw = kp_roll * roll_error + kd_roll * roll_error_rate;
   pitch_cmd_raw = kp_pitch * pitch_error + kd_pitch * pitch_error_rate;
   yaw_cmd_raw = kp_yaw * yaw_error;
-  roll_cmd = if roll_cmd_raw > attitude_cmd_limit then attitude_cmd_limit
+  roll_cmd = if roll_cmd_raw > attitude_cmd_limit then attitude_cmd_limit 
     else if roll_cmd_raw < -attitude_cmd_limit then -attitude_cmd_limit else roll_cmd_raw;
-  pitch_cmd = if pitch_cmd_raw > attitude_cmd_limit then attitude_cmd_limit
+  pitch_cmd = if pitch_cmd_raw > attitude_cmd_limit then attitude_cmd_limit 
     else if pitch_cmd_raw < -attitude_cmd_limit then -attitude_cmd_limit else pitch_cmd_raw;
-  yaw_cmd = if yaw_cmd_raw > yaw_cmd_limit then yaw_cmd_limit
+  yaw_cmd = if yaw_cmd_raw > yaw_cmd_limit then yaw_cmd_limit 
     else if yaw_cmd_raw < -yaw_cmd_limit then -yaw_cmd_limit else yaw_cmd_raw;
 
   yaw_mix = 0.707 * yaw_cmd;

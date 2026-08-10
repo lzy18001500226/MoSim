@@ -35,6 +35,12 @@ if [[ -n "${OPERATOR_RUN_ID}" || -n "${OPERATOR_RUN_DIR}" || -n "${OPERATOR_RUN_
 fi
 RUN_ID="${RUN_ID:-sunray_ros1_fastlio_operator_live_$(date +%Y%m%d_%H%M%S)}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
+RUNTIME_RESULT_DIR="${RESULT_DIR}"
+if [[ "${OPERATOR_RUN_ENABLED}" == "true" ]]; then
+  # The prepared operator RunManifest is immutable for the life of this run.
+  # Keep the inner PX4CTRL gate's similarly named artifacts below this directory.
+  RUNTIME_RESULT_DIR="${RESULT_DIR}/runtime"
+fi
 RUNTIME_LOCK_DIR="${PROJECT_ROOT}/Results/sunray_ros1/.sunray_ros1_runtime.lock"
 RECORD_ROSBAG="${RECORD_ROSBAG:-true}"
 GUI="${GUI:-false}"
@@ -67,8 +73,41 @@ SUNRAY_UAV_INIT_YAW="${SUNRAY_UAV_INIT_YAW:-0}"
 FASTLIO_FILTER_SIZE_SURF="${FASTLIO_FILTER_SIZE_SURF:-0.5}"
 FASTLIO_FILTER_SIZE_MAP="${FASTLIO_FILTER_SIZE_MAP:-0.5}"
 REVIEW_START_OCCUPANCY_NODE="${REVIEW_START_OCCUPANCY_NODE:-true}"
+FASTLIO_ALIGNMENT_ORIGIN_X="${FASTLIO_ALIGNMENT_ORIGIN_X:-${SUNRAY_UAV_INIT_X}}"
+FASTLIO_ALIGNMENT_ORIGIN_Y="${FASTLIO_ALIGNMENT_ORIGIN_Y:-${SUNRAY_UAV_INIT_Y}}"
+FASTLIO_ALIGNMENT_ORIGIN_Z="${FASTLIO_ALIGNMENT_ORIGIN_Z:-0.035}"
+FASTLIO_ALIGNMENT_ORIGIN_XYZ="${FASTLIO_ALIGNMENT_ORIGIN_X} ${FASTLIO_ALIGNMENT_ORIGIN_Y} ${FASTLIO_ALIGNMENT_ORIGIN_Z}"
 
-mkdir -p "${RESULT_DIR}"
+validate_factory_l2_fastlio_alignment_origin() {
+  python3 - \
+    "${SUNRAY_UAV_INIT_X}" \
+    "${SUNRAY_UAV_INIT_Y}" \
+    "${FASTLIO_ALIGNMENT_ORIGIN_X}" \
+    "${FASTLIO_ALIGNMENT_ORIGIN_Y}" <<'PY'
+import math
+import sys
+
+try:
+    spawn_x, spawn_y, origin_x, origin_y = (float(value) for value in sys.argv[1:])
+except ValueError as exc:
+    raise SystemExit(f"Factory L2 FAST-LIO alignment origin is not numeric: {exc}") from exc
+
+if not (
+    math.isclose(spawn_x, origin_x, rel_tol=0.0, abs_tol=1e-6)
+    and math.isclose(spawn_y, origin_y, rel_tol=0.0, abs_tol=1e-6)
+):
+    raise SystemExit(
+        "Factory L2 FAST-LIO config alignment origin XY must match SUNRAY_UAV_INIT_X/Y "
+        f"(spawn=({spawn_x}, {spawn_y}), origin=({origin_x}, {origin_y}))"
+    )
+PY
+}
+
+# The FAST-LIO config reference is expressed in Factory world coordinates.
+# Reject a mismatched copy-only invocation before any ROS/PX4 process starts.
+validate_factory_l2_fastlio_alignment_origin
+
+mkdir -p "${RESULT_DIR}" "${RUNTIME_RESULT_DIR}"
 
 BASIC_PID=""
 QGC_SIDECAR_PID=""
@@ -122,7 +161,8 @@ write_demo_status() {
     "${basic_exit_code}" \
     "${RECORD_ROSBAG}" \
     "${ROSBAG_FILE}" \
-    "${OPERATOR_RUN_ENABLED}" <<'PY'
+    "${OPERATOR_RUN_ENABLED}" \
+    "${RUNTIME_RESULT_DIR}" <<'PY'
 import json
 import pathlib
 import sys
@@ -134,7 +174,8 @@ basic_exit_code = int(sys.argv[4])
 record_requested = sys.argv[5].lower() == "true"
 rosbag_path = pathlib.Path(sys.argv[6])
 operator_display_requested = sys.argv[7].lower() == "true"
-metrics_path = root / "PX4CTRL_BASIC_MISSION_METRICS.json"
+runtime_root = pathlib.Path(sys.argv[8])
+metrics_path = runtime_root / "PX4CTRL_BASIC_MISSION_METRICS.json"
 try:
     metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
 except (OSError, json.JSONDecodeError):
@@ -282,8 +323,10 @@ trap 'exit 143' TERM
   echo "mission=${MISSION}"
   echo "run_id=${RUN_ID}"
   echo "result_dir=${RESULT_DIR}"
+  echo "runtime_result_dir=${RUNTIME_RESULT_DIR}"
   echo "controller_authority=px4ctrl_only"
   echo "state_chain=fastlio_to_px4_ekf_to_mavros_local_odom"
+  echo "fastlio_alignment_origin_xyz=${FASTLIO_ALIGNMENT_ORIGIN_XYZ}"
   echo "fault_mode=none"
   echo "record_rosbag=${RECORD_ROSBAG}"
   echo "qgc_display_bridge=${OPERATOR_RUN_ENABLED}"
@@ -297,11 +340,12 @@ source "${LOCAL_ROS1_WS}/devel/setup.bash"
 set -u
 
 run_inner_gate() {
-  export PROJECT_ROOT RUN_ID RESULT_DIR GUI REVIEW_OPEN_RVIZ REVIEW_START_CLOUD_NODE
+  export PROJECT_ROOT RUN_ID GUI REVIEW_OPEN_RVIZ REVIEW_START_CLOUD_NODE
   export REVIEW_PRESTART_HOLD_S MAVROS_READY_TIMEOUT_S TOTAL_TIMEOUT_S WORLD_FILE GAZEBO_MODEL_PATH
   export SUNRAY_GAZEBO_LAUNCH_FILE SUNRAY_UAV_INIT_X SUNRAY_UAV_INIT_Y
   export SUNRAY_UAV_INIT_Z SUNRAY_UAV_INIT_YAW FASTLIO_FILTER_SIZE_SURF
   export FASTLIO_FILTER_SIZE_MAP REVIEW_START_OCCUPANCY_NODE
+  export FASTLIO_ALIGNMENT_ORIGIN_XYZ
   export SUNRAY_GPS_SENSOR_MODE=removed
   export PX4CTRL_ENABLE_FASTLIO_EKF_FUSION=true
   export PX4CTRL_START_EXTERNAL_FUSION=true
@@ -318,10 +362,10 @@ run_inner_gate() {
   fi
   if [[ "${MISSION}" == "takeoff_hover_land" ]]; then
     export PX4CTRL_ACCEPTANCE_MODE=operational_lifecycle
-    exec bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh" takeoff_hover_land
+    RESULT_DIR="${RUNTIME_RESULT_DIR}" exec bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh" takeoff_hover_land
   fi
   export PX4CTRL_MISSION_EXTRA_ARGS
-  exec bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_basic_gate.sh" "${MISSION}"
+  RESULT_DIR="${RUNTIME_RESULT_DIR}" exec bash "${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_basic_gate.sh" "${MISSION}"
 }
 
 run_inner_gate > "${RESULT_DIR}/basic_gate_runner.log" 2>&1 &
@@ -352,6 +396,15 @@ if [[ "${MASTER_READY}" != "true" ]]; then
 fi
 
 if [[ "${OPERATOR_RUN_ENABLED}" == "true" ]]; then
+  QGC_SIDECAR_READINESS_ARGS=()
+  case "${ORCHESTRATOR_REQUIRE_ACTUATOR_TELEMETRY:-true}" in
+    true) ;;
+    false) QGC_SIDECAR_READINESS_ARGS+=(--skip-actuator-telemetry-readiness) ;;
+    *)
+      echo "ORCHESTRATOR_REQUIRE_ACTUATOR_TELEMETRY must be true or false" >&2
+      exit 2
+      ;;
+  esac
   python3 "${PROJECT_ROOT}/Scripts/ui/prepare_factory_live_operator_map.py" \
     --run-dir "${OPERATOR_RUN_DIR}" \
     --manifest "${OPERATOR_RUN_MANIFEST}" \
@@ -367,6 +420,7 @@ if [[ "${OPERATOR_RUN_ENABLED}" == "true" ]]; then
     --expected-path-topic /mosim/px4ctrl/reference_path \
     --coordinate-evidence "${OPERATOR_RUN_DIR}/OPERATOR_MAP_COORDINATE_EVIDENCE.json" \
     --read-only \
+    "${QGC_SIDECAR_READINESS_ARGS[@]}" \
     > "${RESULT_DIR}/qgc_runtime_sidecar.log" 2>&1 &
   QGC_SIDECAR_PID=$!
   sleep 0.5

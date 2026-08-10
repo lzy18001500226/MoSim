@@ -31,7 +31,7 @@ model RT1OfficialPidShadow200Hz
     external "C" processedFrames = mosim_mworks_live_rt1_exchange_official_pid(
       mass, gravity, hoverPercentage, kpX, kpY, kpZ, kvX, kvY, kvZ,
       sentFrames, lastStateSequence, lastCollectiveThrustN,
-      lastOutputValid, socketInitStatus, socketErrorCode, socketLocalPort)
+      lastOutputValid, socketInitStatus, socketErrorCode, socketLocalPort) 
       annotation(
         Include="#include \"mosim_mworks_live_rt1_bridge.h\"",
         IncludeDirectory="modelica://MoSimQuadrotorModel/Deployment/Resources/Include",
@@ -40,7 +40,7 @@ model RT1OfficialPidShadow200Hz
 
   impure function requestHighResolutionTimer
     output Integer status;
-    external "C" status = mosim_mworks_live_request_1ms_timer_resolution()
+    external "C" status = mosim_mworks_live_request_1ms_timer_resolution() 
       annotation(
         Include="#include \"mosim_mworks_live_rt0_timer_resolution.h\"",
         IncludeDirectory="modelica://MoSimQuadrotorModel/Deployment/Resources/Include",

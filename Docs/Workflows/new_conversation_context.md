@@ -27,12 +27,32 @@ for an explicit status or historical audit request.
 - A task ID, thread ID, owner label, board entry, `PROGRESS.md` line, memory
   note, or prior conversation is background only and never an execution route.
 - After context compaction or resume, recover the current user's latest request
-  first. If it is missing or unclear, stop and ask rather than selecting a
-  different task from the repository.
+  first. Inspect the retained conversation or recovery summary before doing
+  anything else.
+- Recover in this order: direct-user recovery pack; active same-session Goal;
+  then, when exposed, `get_goal` and a bounded `codex_app__read_thread` for the
+  current thread. When an exact source identity needed for execution is missing,
+  this read is mandatory before asking the user for it or marking the task
+  blocked. Thread history adds detail but cannot override a newer direct user
+  message. An active Goal may resume only its own outcome, constraints, and
+  verification; it cannot invent missing sources, expand scope, select another
+  conversation's work, or revive a completed/blocked goal.
+- If every recovery source is unavailable, record `continuity_unresolved`.
+  Do not report completion or demand a full task restatement. In the current
+  turn, ask only for one minimum recovery input: the original prompt, current
+  goal text, or a named task packet. Do not silently end after the startup
+  reads.
+- A recovered goal, plan, completion marker, thread preview, board, memory, or
+  historical result is never a general task selector. The newest direct user
+  instruction always wins.
 - Context compaction is not task completion. When the latest user objective is
   recoverable, keep it active and continue it after the required startup reads;
   do not ask for a replacement task or report completion solely because
   `AGENTS.md` was re-read or a lifecycle hook added context.
+- A direct request to explain why execution stopped or to repair continuation
+  behavior is a self-contained diagnostic task. Inspect the active recovery
+  hook and task-continuity rules before asking for a source from the interrupted
+  business task; do not alter that business source merely to diagnose the stop.
 - Do not read, message, dispatch to, or modify another conversation unless the
   current user explicitly asks for that exact operation.
 - Do not put a live assignment, blocker, next gate, or conversation ID into
@@ -62,10 +82,13 @@ reference material, not a task assignment for a new conversation.
 
 ## 5. Task-Local Work Method
 
-For non-trivial work: state the local goal from the user's request, inspect the
-smallest relevant owner set, perform the smallest meaningful check, preserve
-evidence in its normal project path, and update documentation only when a
-reusable rule or entry point changes.
+For non-trivial work: create a concise Goal contract when the client exposes
+Goal mode, then inspect the smallest relevant owner set, perform the smallest
+meaningful check, preserve evidence in its normal project path, and update
+documentation only when a reusable rule or entry point changes. Never pass
+`token_budget` unless the current direct user explicitly requests a numeric
+budget. The Goal holds the active task's outcome, constraints, and verification;
+it is not a global queue or cross-conversation handoff.
 
 Topic workflows describe procedures and stop conditions. They do not create
 priority, assign another conversation, or authorize work by themselves.

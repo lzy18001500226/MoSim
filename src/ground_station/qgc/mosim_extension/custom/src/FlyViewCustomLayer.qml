@@ -514,6 +514,13 @@ Item {
                             wrapMode: Text.Wrap
                             color: qgcPal.colorOrange
                         }
+                        QGCLabel { text: "可见终端命令（仅复制）"; font.bold: true }
+                        QGCLabel {
+                            Layout.fillWidth: true
+                            text: "QGC 不执行这些命令；请在可见终端中运行已复制的命令。"
+                            wrapMode: Text.Wrap
+                            color: qgcPal.colorOrange
+                        }
                         QGCButton {
                             Layout.fillWidth: true
                             visible: mosimOperator.profileSelectionLocked

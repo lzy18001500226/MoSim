@@ -11,10 +11,10 @@ Docs/Design/架构.md
 Docs/Design/赛题.md
 ```
 
-进入专题前，先用 `Docs/Workflows/mainline_operations_board.md` 选择当前
-下一步，再用 `00_架构与任务/任务路线图.md` 判断任务属于哪个能力块，最后
-读取对应一级目录的 `README.md` 和一个具体规范或算法卡片。路线图定义能力
-和门禁，不替代看板选择今天要做哪一步。
+进入专题前，先根据当前用户的直接请求确定任务范围，再用
+`00_架构与任务/任务路线图.md` 判断任务属于哪个能力块，最后读取对应
+一级目录的 `README.md` 和一个具体规范或算法卡片。路线图定义技术能力和
+门禁，不负责跨对话调度。
 
 ## 一级目录
 
@@ -28,8 +28,8 @@ Docs/Design/赛题.md
 
 ## 路线图摘要
 
-以下是能力/门禁摘要。当前执行入口以
-`Docs/Workflows/mainline_operations_board.md` 的 Next Action 为准：
+以下是能力/门禁摘要。当天执行什么只由当前用户的直接请求决定；本摘要
+只定义技术能力和证据边界：
 
 ```text
 Goal 1  Sunray/PX4/MAVROS/Gazebo/RViz基础链路和px4ctrl起飞悬停降落

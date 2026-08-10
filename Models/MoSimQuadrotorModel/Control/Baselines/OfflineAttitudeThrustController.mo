@@ -21,7 +21,7 @@ model OfflineAttitudeThrustController
   annotation(__MWORKS(version="26.3.0"));
 equation
   position_error = position_ref - position_mea;
-  der(altitude_integral) = if (altitude_integral >= integral_limit and position_error[3] > 0)
+  der(altitude_integral) = if (altitude_integral >= integral_limit and position_error[3] > 0) 
     or (altitude_integral <= -integral_limit and position_error[3] < 0) then 0 else position_error[3];
   attitude_ref[1] = min(max(kp_xy * position_error[2] - kd_xy * velocity_mea[2], -max_tilt), max_tilt);
   attitude_ref[2] = min(max(kp_xy * position_error[1] - kd_xy * velocity_mea[1], -max_tilt), max_tilt);

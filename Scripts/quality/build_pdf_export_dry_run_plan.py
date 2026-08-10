@@ -34,12 +34,12 @@ DEFAULT_OUTPUT_DIR = ROOT / "Results" / "static_audits" / "pdf_export_dry_run_pl
 
 PDF_EXPORTS = {
     "user_manual_pdf": {
-        "source": "Docs/user_manual.md",
+        "source": "Docs/报告/用户手册_正文骨架.md",
         "output": "Results/submission/user_manual.pdf",
         "title": "MoSim user manual",
     },
     "simulation_analysis_report_pdf": {
-        "source": "Docs/simulation_report.md",
+        "source": "Docs/报告/仿真分析报告_正文骨架.md",
         "output": "Results/submission/simulation_analysis_report.pdf",
         "title": "MoSim simulation analysis report",
     },

@@ -1,13 +1,13 @@
 schema = "mosim.model_studio_task_routes.v1"
 version = 1
-scope = "Manual MWORKS task handoff routes for Model Studio. Availability means a named whole-aircraft FormalRunner and declared output boundary exist. It is not simulation, performance, seven-scenario evidence, code-generation, or runtime acceptance."
+scope = "Manual MWORKS task handoff routes for Model Studio. Availability means a named whole-aircraft review runner and declared output boundary exist. It is not simulation, performance, seven-scenario evidence, code-generation, or runtime acceptance."
 formal_task_ids = ["climb_path_50s", "hover", "step_response", "figure8", "spiral"]
 
 [[route]]
 controller_id = "official_pid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/OfficialPidFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Golden/OfficialPidSingleUavGoldenRunner.mo"
 boundary = "ROTOR_COMMAND"
 
 [[route]]

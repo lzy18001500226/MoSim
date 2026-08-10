@@ -6,8 +6,8 @@
 
 ## Current Phase 1 Minimum Closure
 
-Use this workflow when `Docs/Workflows/mainline_operations_board.md` selects
-the Phase 1 46-route minimum-closure matrix. The matrix owner is
+Use this workflow only when the current user's direct request scopes the Phase
+1 46-route minimum-closure matrix. The matrix owner is
 `Scripts/mworks/run_phase1_minimum_closure.py`; its contract test is
 `Scripts/tests/test_phase1_minimum_closure.py`.
 

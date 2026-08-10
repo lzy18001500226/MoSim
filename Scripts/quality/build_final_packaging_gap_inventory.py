@@ -19,8 +19,8 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_OUTPUT_DIR = ROOT / "Results" / "static_audits" / "final_packaging_gap_20260610"
 
 SOURCE_INPUTS = {
-    "user_manual_source": "Docs/user_manual.md",
-    "simulation_report_source": "Docs/simulation_report.md",
+    "user_manual_source": "Docs/报告/用户手册_正文骨架.md",
+    "simulation_report_source": "Docs/报告/仿真分析报告_正文骨架.md",
     "candidate_manifest": "Results/static_audits/submission_evidence_manifest_20260610/candidate_submission_evidence_manifest.json",
     "candidate_figure_readiness": "Results/static_audits/candidate_figure_readiness_20260610/candidate_figure_readiness_inventory.json",
     "pre_submit_readiness": "Results/static_audits/pre_submit_readiness_inventory_20260610/pre_submit_readiness_inventory.json",

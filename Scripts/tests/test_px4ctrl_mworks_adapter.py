@@ -9,6 +9,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ADAPTER = ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Adapters" / "Px4CtrlAttitudeThrustAdapter.mo"
+REPORT_BASELINE_ADAPTER = (
+    ROOT
+    / "Models"
+    / "MoSimQuadrotorModel"
+    / "Control"
+    / "Adapters"
+    / "Px4CtrlEquationBridgeReportBaselineAdapter.mo"
+)
 PACKAGE_ORDER = ADAPTER.with_name("package.order")
 RUNNER = ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Runners" / "Formal" / "Px4CtrlFormalRunner.mo"
 RUNNER_PACKAGE_ORDER = RUNNER.with_name("package.order")
@@ -89,6 +97,15 @@ def test_px4ctrl_adapter_keeps_inverse_sine_evaluations_inside_the_real_domain()
         assert token in source
 
 
+def test_px4ctrl_report_baseline_adapter_uses_the_report_pitch_branch() -> None:
+    source = REPORT_BASELINE_ADAPTER.read_text(encoding="utf-8")
+
+    assert "extends MoSimQuadrotorModel.Control.Interfaces.PartialAttitudeThrustController" in source
+    assert "PX4CTRL_Core_AttitudeThrust_EquationBridge_Sysblock core" in source
+    assert "else asin(pitch_argument);" in source
+    assert "pitch_argument_safe" not in source
+
+
 def test_px4ctrl_adapter_is_registered_in_the_package_order() -> None:
     assert "Px4CtrlAttitudeThrustAdapter" in PACKAGE_ORDER.read_text(encoding="utf-8").splitlines()
 
@@ -97,13 +114,28 @@ def test_px4ctrl_formal_runner_is_registered_in_the_package_order() -> None:
     assert "Px4CtrlFormalRunner" in RUNNER_PACKAGE_ORDER.read_text(encoding="utf-8").splitlines()
 
 
+def test_px4ctrl_formal_runner_uses_the_equation_bridge_baseline() -> None:
+    source = RUNNER.read_text(encoding="utf-8")
+
+    assert "extends Px4CtrlEquationBridgeFormalRunner;" in source
+    assert "extends Px4CtrlGraphicalRealStateFormalRunner;" not in source
+
+
 def test_px4ctrl_baseline_binding_declares_the_shared_sampled_boundary() -> None:
     binding = json.loads(BASELINE_BINDING.read_text(encoding="utf-8"))
 
     assert binding["schema"] == "mosim.runner_boundary_baseline_binding.v1"
     assert binding["controller_id"] == "px4ctrl"
     assert binding["target"]["model_class"] == "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner"
-    assert binding["formal_adapter"]["model_class"] == "MoSimQuadrotorModel.Control.Adapters.Px4CtrlAttitudeThrustAdapter"
+    assert binding["formal_adapter"]["model_class"] == (
+        "MoSimQuadrotorModel.Control.Adapters.Px4CtrlEquationBridgeReportBaselineAdapter"
+    )
+    assert binding["formal_adapter"]["role"] == "active_formal_runner_baseline"
+    assert binding["formal_harness_feedback_boundary"]["kind"] == "sampled_controller_inputs"
+    assert binding["formal_harness_feedback_boundary"]["effective_model_file"] == (
+        "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/"
+        "Px4CtrlEquationBridgeFormalRunner.mo"
+    )
     assert binding["formal_harness_feedback_boundary"]["signals"] == [
         "reference.position_command -> controller.position_ref",
         "reference.velocity_command -> controller.velocity_ref",
@@ -111,6 +143,10 @@ def test_px4ctrl_baseline_binding_declares_the_shared_sampled_boundary() -> None
         "plant.position -> controller.position_mea",
         "plant.attitude -> controller.attitude_mea",
     ]
+    assert binding["formal_harness_feedback_boundary"]["continuous_inner_loop_signals"] == [
+        "plant.attitude -> offline_inner_allocator.attitude_mea",
+    ]
+    assert binding["report_export_binding"]["roll"] == "-controller.roll_mea"
 
 
 def test_px4ctrl_active_plant_preserves_lift_coefficient_units() -> None:
@@ -126,8 +162,10 @@ def main() -> int:
     test_px4ctrl_adapter_shares_odometry_and_imu_quaternions()
     test_px4ctrl_adapter_emits_newton_increment_about_hover()
     test_px4ctrl_adapter_keeps_inverse_sine_evaluations_inside_the_real_domain()
+    test_px4ctrl_report_baseline_adapter_uses_the_report_pitch_branch()
     test_px4ctrl_adapter_is_registered_in_the_package_order()
     test_px4ctrl_formal_runner_is_registered_in_the_package_order()
+    test_px4ctrl_formal_runner_uses_the_equation_bridge_baseline()
     test_px4ctrl_baseline_binding_declares_the_shared_sampled_boundary()
     test_px4ctrl_active_plant_preserves_lift_coefficient_units()
     print("[OK] px4ctrl MWORKS adapter")

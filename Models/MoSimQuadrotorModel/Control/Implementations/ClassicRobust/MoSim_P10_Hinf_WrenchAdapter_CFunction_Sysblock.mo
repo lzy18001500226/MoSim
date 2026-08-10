@@ -6,119 +6,119 @@ model MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock
   annotation(__MWORKS(modelType=Control,PortArrangement(Left(state_roll_in, state_pitch_in, state_yaw_in, state_p_in, state_q_in, state_r_in, state_u_in, state_v_in, state_w_in, state_x_in, state_y_in, state_z_in, reference_roll_in, reference_pitch_in, reference_yaw_in, reference_p_in, reference_q_in, reference_r_in, reference_u_in, reference_v_in, reference_w_in, reference_x_in, reference_y_in, reference_z_in, enable_in, reset_in, mass_in, gravity_in, force_min_n_in, force_max_n_in, torque_limit_nm_in, roll_stiffness_nm_per_rad_in, pitch_stiffness_nm_per_rad_in, yaw_stiffness_nm_per_rad_in, hover_percentage_in, tilt_limit_rad_in, yaw_correction_limit_rad_in, min_normalized_thrust_in, max_normalized_thrust_in), Right(wrench_force_n_out, wrench_tau_x_nm_out, wrench_tau_y_nm_out, wrench_tau_z_nm_out, desired_attitude_w_out, desired_attitude_x_out, desired_attitude_y_out, desired_attitude_z_out, normalized_thrust_out, collective_thrust_n_out, adapted_roll_rad_out, adapted_pitch_rad_out, adapted_yaw_rad_out, saturated_out, status_code_out, source_command_variant_out, adapted_command_variant_out)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0",version="26.3.0",CodeGeneration(Config = {"code_placement":{"mode":"Compact"},"code_replacement":{"standard_c_library":"C99"},"custom_code":{"code":{"function_declare":{"head":"","item_head":"","item_tail":"","tail":""},"function_define":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_declare":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_define":{"head":"","item_head":"","item_tail":"","tail":""},"include":{"head":"","item_head":"","item_tail":"","tail":""},"macro":{"head":"","item_head":"","item_tail":"","tail":""},"type":{"head":"","item_head":"","item_tail":"","tail":""}},"code_protection":{"integer_division_by_zero":false,"overflow":false}},"data_type":{"real_as_float":false},"experiment":{"task_and_sample":{"muti_task_mode"
 :false,"whether_to_use_prefix":false}},"hardware_platform":{"largest_atomic_size":{"floating_point":"64","integer":"32"}},"identifier":{"max_length":32,"style":{"function":"camelCase","local_variable":"camelCase","macro":"camelCase","mem_var":"camelCase","type":"camelCase"}},"interface":{"function_name":{"initialize":"Init","step":"Step"}},"is_expand":{"is_expand":false},"optimization":{"array_loop_threshold":5,"logical_operator":"logical"}}, Sim_seting = {"sim_seting":{"output":"C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\p10_mworks_gap_closeout_20260718\\hinf_hover_wrench\\codegen"}})),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.03,StoreEventValue=0),Diagram(coordinateSystem(extent={{-620,-516.00},{620,516.00}},grid={2,2})));
 
-  CFunction cFunction
+  CFunction cFunction 
     annotation (Placement(transformation(origin={0,0}, extent={{-80,-456.00},{80,456.00}})),__MWORKS(BlockSystem(SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_roll_in
+  SysplorerEmbeddedCoder.Port.Inport state_roll_in 
     annotation (Placement(transformation(origin={-500,456.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_pitch_in
+  SysplorerEmbeddedCoder.Port.Inport state_pitch_in 
     annotation (Placement(transformation(origin={-500,432.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_yaw_in
+  SysplorerEmbeddedCoder.Port.Inport state_yaw_in 
     annotation (Placement(transformation(origin={-500,408.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_p_in
+  SysplorerEmbeddedCoder.Port.Inport state_p_in 
     annotation (Placement(transformation(origin={-500,384.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_q_in
+  SysplorerEmbeddedCoder.Port.Inport state_q_in 
     annotation (Placement(transformation(origin={-500,360.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_r_in
+  SysplorerEmbeddedCoder.Port.Inport state_r_in 
     annotation (Placement(transformation(origin={-500,336.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_u_in
+  SysplorerEmbeddedCoder.Port.Inport state_u_in 
     annotation (Placement(transformation(origin={-500,312.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_v_in
+  SysplorerEmbeddedCoder.Port.Inport state_v_in 
     annotation (Placement(transformation(origin={-500,288.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_w_in
+  SysplorerEmbeddedCoder.Port.Inport state_w_in 
     annotation (Placement(transformation(origin={-500,264.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_x_in
+  SysplorerEmbeddedCoder.Port.Inport state_x_in 
     annotation (Placement(transformation(origin={-500,240.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_y_in
+  SysplorerEmbeddedCoder.Port.Inport state_y_in 
     annotation (Placement(transformation(origin={-500,216.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport state_z_in
+  SysplorerEmbeddedCoder.Port.Inport state_z_in 
     annotation (Placement(transformation(origin={-500,192.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_roll_in
+  SysplorerEmbeddedCoder.Port.Inport reference_roll_in 
     annotation (Placement(transformation(origin={-500,168.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_pitch_in
+  SysplorerEmbeddedCoder.Port.Inport reference_pitch_in 
     annotation (Placement(transformation(origin={-500,144.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_yaw_in
+  SysplorerEmbeddedCoder.Port.Inport reference_yaw_in 
     annotation (Placement(transformation(origin={-500,120.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_p_in
+  SysplorerEmbeddedCoder.Port.Inport reference_p_in 
     annotation (Placement(transformation(origin={-500,96.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_q_in
+  SysplorerEmbeddedCoder.Port.Inport reference_q_in 
     annotation (Placement(transformation(origin={-500,72.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_r_in
+  SysplorerEmbeddedCoder.Port.Inport reference_r_in 
     annotation (Placement(transformation(origin={-500,48.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_u_in
+  SysplorerEmbeddedCoder.Port.Inport reference_u_in 
     annotation (Placement(transformation(origin={-500,24.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_v_in
+  SysplorerEmbeddedCoder.Port.Inport reference_v_in 
     annotation (Placement(transformation(origin={-500,0.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_w_in
+  SysplorerEmbeddedCoder.Port.Inport reference_w_in 
     annotation (Placement(transformation(origin={-500,-24.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_x_in
+  SysplorerEmbeddedCoder.Port.Inport reference_x_in 
     annotation (Placement(transformation(origin={-500,-48.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_y_in
+  SysplorerEmbeddedCoder.Port.Inport reference_y_in 
     annotation (Placement(transformation(origin={-500,-72.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_z_in
+  SysplorerEmbeddedCoder.Port.Inport reference_z_in 
     annotation (Placement(transformation(origin={-500,-96.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport enable_in
+  SysplorerEmbeddedCoder.Port.Inport enable_in 
     annotation (Placement(transformation(origin={-500,-120.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reset_in
+  SysplorerEmbeddedCoder.Port.Inport reset_in 
     annotation (Placement(transformation(origin={-500,-144.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport mass_in
+  SysplorerEmbeddedCoder.Port.Inport mass_in 
     annotation (Placement(transformation(origin={-500,-168.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport gravity_in
+  SysplorerEmbeddedCoder.Port.Inport gravity_in 
     annotation (Placement(transformation(origin={-500,-192.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport force_min_n_in
+  SysplorerEmbeddedCoder.Port.Inport force_min_n_in 
     annotation (Placement(transformation(origin={-500,-216.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport force_max_n_in
+  SysplorerEmbeddedCoder.Port.Inport force_max_n_in 
     annotation (Placement(transformation(origin={-500,-240.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport torque_limit_nm_in
+  SysplorerEmbeddedCoder.Port.Inport torque_limit_nm_in 
     annotation (Placement(transformation(origin={-500,-264.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport roll_stiffness_nm_per_rad_in
+  SysplorerEmbeddedCoder.Port.Inport roll_stiffness_nm_per_rad_in 
     annotation (Placement(transformation(origin={-500,-288.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport pitch_stiffness_nm_per_rad_in
+  SysplorerEmbeddedCoder.Port.Inport pitch_stiffness_nm_per_rad_in 
     annotation (Placement(transformation(origin={-500,-312.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport yaw_stiffness_nm_per_rad_in
+  SysplorerEmbeddedCoder.Port.Inport yaw_stiffness_nm_per_rad_in 
     annotation (Placement(transformation(origin={-500,-336.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport hover_percentage_in
+  SysplorerEmbeddedCoder.Port.Inport hover_percentage_in 
     annotation (Placement(transformation(origin={-500,-360.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport tilt_limit_rad_in
+  SysplorerEmbeddedCoder.Port.Inport tilt_limit_rad_in 
     annotation (Placement(transformation(origin={-500,-384.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport yaw_correction_limit_rad_in
+  SysplorerEmbeddedCoder.Port.Inport yaw_correction_limit_rad_in 
     annotation (Placement(transformation(origin={-500,-408.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport min_normalized_thrust_in
+  SysplorerEmbeddedCoder.Port.Inport min_normalized_thrust_in 
     annotation (Placement(transformation(origin={-500,-432.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport max_normalized_thrust_in
+  SysplorerEmbeddedCoder.Port.Inport max_normalized_thrust_in 
     annotation (Placement(transformation(origin={-500,-456.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport wrench_force_n_out
+  SysplorerEmbeddedCoder.Port.Outport wrench_force_n_out 
     annotation (Placement(transformation(origin={500,456.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport wrench_tau_x_nm_out
+  SysplorerEmbeddedCoder.Port.Outport wrench_tau_x_nm_out 
     annotation (Placement(transformation(origin={500,399.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport wrench_tau_y_nm_out
+  SysplorerEmbeddedCoder.Port.Outport wrench_tau_y_nm_out 
     annotation (Placement(transformation(origin={500,342.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport wrench_tau_z_nm_out
+  SysplorerEmbeddedCoder.Port.Outport wrench_tau_z_nm_out 
     annotation (Placement(transformation(origin={500,285.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_attitude_w_out
+  SysplorerEmbeddedCoder.Port.Outport desired_attitude_w_out 
     annotation (Placement(transformation(origin={500,228.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_attitude_x_out
+  SysplorerEmbeddedCoder.Port.Outport desired_attitude_x_out 
     annotation (Placement(transformation(origin={500,171.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_attitude_y_out
+  SysplorerEmbeddedCoder.Port.Outport desired_attitude_y_out 
     annotation (Placement(transformation(origin={500,114.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_attitude_z_out
+  SysplorerEmbeddedCoder.Port.Outport desired_attitude_z_out 
     annotation (Placement(transformation(origin={500,57.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport normalized_thrust_out
+  SysplorerEmbeddedCoder.Port.Outport normalized_thrust_out 
     annotation (Placement(transformation(origin={500,0.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport collective_thrust_n_out
+  SysplorerEmbeddedCoder.Port.Outport collective_thrust_n_out 
     annotation (Placement(transformation(origin={500,-57.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport adapted_roll_rad_out
+  SysplorerEmbeddedCoder.Port.Outport adapted_roll_rad_out 
     annotation (Placement(transformation(origin={500,-114.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport adapted_pitch_rad_out
+  SysplorerEmbeddedCoder.Port.Outport adapted_pitch_rad_out 
     annotation (Placement(transformation(origin={500,-171.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport adapted_yaw_rad_out
+  SysplorerEmbeddedCoder.Port.Outport adapted_yaw_rad_out 
     annotation (Placement(transformation(origin={500,-228.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport saturated_out
+  SysplorerEmbeddedCoder.Port.Outport saturated_out 
     annotation (Placement(transformation(origin={500,-285.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport status_code_out
+  SysplorerEmbeddedCoder.Port.Outport status_code_out 
     annotation (Placement(transformation(origin={500,-342.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport source_command_variant_out
+  SysplorerEmbeddedCoder.Port.Outport source_command_variant_out 
     annotation (Placement(transformation(origin={500,-399.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport adapted_command_variant_out
+  SysplorerEmbeddedCoder.Port.Outport adapted_command_variant_out 
     annotation (Placement(transformation(origin={500,-456.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
 
   model ModelWorkspace
@@ -189,7 +189,7 @@ model MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock
       output SysplorerEmbeddedCoder.Types.Auto status_code annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)));
       output SysplorerEmbeddedCoder.Types.Auto source_command_variant annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)));
       output SysplorerEmbeddedCoder.Types.Auto adapted_command_variant annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)));
-    external "C" MosimP10HinfWrenchAdapterStepScalar(state_roll,state_pitch,state_yaw,state_p,state_q,state_r,state_u,state_v,state_w,state_x,state_y,state_z,reference_roll,reference_pitch,reference_yaw,reference_p,reference_q,reference_r,reference_u,reference_v,reference_w,reference_x,reference_y,reference_z,enable,reset,mass,gravity,force_min_n,force_max_n,torque_limit_nm,roll_stiffness_nm_per_rad,pitch_stiffness_nm_per_rad,yaw_stiffness_nm_per_rad,hover_percentage,tilt_limit_rad,yaw_correction_limit_rad,min_normalized_thrust,max_normalized_thrust,wrench_force_n,wrench_tau_x_nm,wrench_tau_y_nm,wrench_tau_z_nm,desired_attitude_w,desired_attitude_x,desired_attitude_y,desired_attitude_z,normalized_thrust,collective_thrust_n,adapted_roll_rad,adapted_pitch_rad,adapted_yaw_rad,saturated,status_code,source_command_variant,adapted_command_variant)
+    external "C" MosimP10HinfWrenchAdapterStepScalar(state_roll,state_pitch,state_yaw,state_p,state_q,state_r,state_u,state_v,state_w,state_x,state_y,state_z,reference_roll,reference_pitch,reference_yaw,reference_p,reference_q,reference_r,reference_u,reference_v,reference_w,reference_x,reference_y,reference_z,enable,reset,mass,gravity,force_min_n,force_max_n,torque_limit_nm,roll_stiffness_nm_per_rad,pitch_stiffness_nm_per_rad,yaw_stiffness_nm_per_rad,hover_percentage,tilt_limit_rad,yaw_correction_limit_rad,min_normalized_thrust,max_normalized_thrust,wrench_force_n,wrench_tau_x_nm,wrench_tau_y_nm,wrench_tau_z_nm,desired_attitude_w,desired_attitude_x,desired_attitude_y,desired_attitude_z,normalized_thrust,collective_thrust_n,adapted_roll_rad,adapted_pitch_rad,adapted_yaw_rad,saturated,status_code,source_command_variant,adapted_command_variant) 
       annotation (Include="typedef struct {
     double state[12];
     double reference[12];
@@ -612,117 +612,117 @@ void MosimP10HinfWrenchAdapterStepScalar(
 ");
     end func_CFunction;
 
-    SysplorerEmbeddedCoder.Port.Inport state_roll
+    SysplorerEmbeddedCoder.Port.Inport state_roll 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_pitch
+    SysplorerEmbeddedCoder.Port.Inport state_pitch 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_yaw
+    SysplorerEmbeddedCoder.Port.Inport state_yaw 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_p
+    SysplorerEmbeddedCoder.Port.Inport state_p 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_q
+    SysplorerEmbeddedCoder.Port.Inport state_q 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_r
+    SysplorerEmbeddedCoder.Port.Inport state_r 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_u
+    SysplorerEmbeddedCoder.Port.Inport state_u 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_v
+    SysplorerEmbeddedCoder.Port.Inport state_v 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_w
+    SysplorerEmbeddedCoder.Port.Inport state_w 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_x
+    SysplorerEmbeddedCoder.Port.Inport state_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_y
+    SysplorerEmbeddedCoder.Port.Inport state_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport state_z
+    SysplorerEmbeddedCoder.Port.Inport state_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_roll
+    SysplorerEmbeddedCoder.Port.Inport reference_roll 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_pitch
+    SysplorerEmbeddedCoder.Port.Inport reference_pitch 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_yaw
+    SysplorerEmbeddedCoder.Port.Inport reference_yaw 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_p
+    SysplorerEmbeddedCoder.Port.Inport reference_p 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_q
+    SysplorerEmbeddedCoder.Port.Inport reference_q 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_r
+    SysplorerEmbeddedCoder.Port.Inport reference_r 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_u
+    SysplorerEmbeddedCoder.Port.Inport reference_u 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_v
+    SysplorerEmbeddedCoder.Port.Inport reference_v 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_w
+    SysplorerEmbeddedCoder.Port.Inport reference_w 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_x
+    SysplorerEmbeddedCoder.Port.Inport reference_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_y
+    SysplorerEmbeddedCoder.Port.Inport reference_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_z
+    SysplorerEmbeddedCoder.Port.Inport reference_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport enable
+    SysplorerEmbeddedCoder.Port.Inport enable 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reset
+    SysplorerEmbeddedCoder.Port.Inport reset 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport mass
+    SysplorerEmbeddedCoder.Port.Inport mass 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport gravity
+    SysplorerEmbeddedCoder.Port.Inport gravity 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport force_min_n
+    SysplorerEmbeddedCoder.Port.Inport force_min_n 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport force_max_n
+    SysplorerEmbeddedCoder.Port.Inport force_max_n 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport torque_limit_nm
+    SysplorerEmbeddedCoder.Port.Inport torque_limit_nm 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport roll_stiffness_nm_per_rad
+    SysplorerEmbeddedCoder.Port.Inport roll_stiffness_nm_per_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport pitch_stiffness_nm_per_rad
+    SysplorerEmbeddedCoder.Port.Inport pitch_stiffness_nm_per_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport yaw_stiffness_nm_per_rad
+    SysplorerEmbeddedCoder.Port.Inport yaw_stiffness_nm_per_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport hover_percentage
+    SysplorerEmbeddedCoder.Port.Inport hover_percentage 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport tilt_limit_rad
+    SysplorerEmbeddedCoder.Port.Inport tilt_limit_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport yaw_correction_limit_rad
+    SysplorerEmbeddedCoder.Port.Inport yaw_correction_limit_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport min_normalized_thrust
+    SysplorerEmbeddedCoder.Port.Inport min_normalized_thrust 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport max_normalized_thrust
+    SysplorerEmbeddedCoder.Port.Inport max_normalized_thrust 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport wrench_force_n
+    SysplorerEmbeddedCoder.Port.Outport wrench_force_n 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport wrench_tau_x_nm
+    SysplorerEmbeddedCoder.Port.Outport wrench_tau_x_nm 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport wrench_tau_y_nm
+    SysplorerEmbeddedCoder.Port.Outport wrench_tau_y_nm 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport wrench_tau_z_nm
+    SysplorerEmbeddedCoder.Port.Outport wrench_tau_z_nm 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_attitude_w
+    SysplorerEmbeddedCoder.Port.Outport desired_attitude_w 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_attitude_x
+    SysplorerEmbeddedCoder.Port.Outport desired_attitude_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_attitude_y
+    SysplorerEmbeddedCoder.Port.Outport desired_attitude_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_attitude_z
+    SysplorerEmbeddedCoder.Port.Outport desired_attitude_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport normalized_thrust
+    SysplorerEmbeddedCoder.Port.Outport normalized_thrust 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport collective_thrust_n
+    SysplorerEmbeddedCoder.Port.Outport collective_thrust_n 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport adapted_roll_rad
+    SysplorerEmbeddedCoder.Port.Outport adapted_roll_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport adapted_pitch_rad
+    SysplorerEmbeddedCoder.Port.Outport adapted_pitch_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport adapted_yaw_rad
+    SysplorerEmbeddedCoder.Port.Outport adapted_yaw_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport saturated
+    SysplorerEmbeddedCoder.Port.Outport saturated 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport status_code
+    SysplorerEmbeddedCoder.Port.Outport status_code 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport source_command_variant
+    SysplorerEmbeddedCoder.Port.Outport source_command_variant 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport adapted_command_variant
+    SysplorerEmbeddedCoder.Port.Outport adapted_command_variant 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
   equation
     (wrench_force_n, wrench_tau_x_nm, wrench_tau_y_nm, wrench_tau_z_nm, desired_attitude_w, desired_attitude_x, desired_attitude_y, desired_attitude_z, normalized_thrust, collective_thrust_n, adapted_roll_rad, adapted_pitch_rad, adapted_yaw_rad, saturated, status_code, source_command_variant, adapted_command_variant) = func_CFunction(state_roll, state_pitch, state_yaw, state_p, state_q, state_r, state_u, state_v, state_w, state_x, state_y, state_z, reference_roll, reference_pitch, reference_yaw, reference_p, reference_q, reference_r, reference_u, reference_v, reference_w, reference_x, reference_y, reference_z, enable, reset, mass, gravity, force_min_n, force_max_n, torque_limit_nm, roll_stiffness_nm_per_rad, pitch_stiffness_nm_per_rad, yaw_stiffness_nm_per_rad, hover_percentage, tilt_limit_rad, yaw_correction_limit_rad, min_normalized_thrust, max_normalized_thrust);

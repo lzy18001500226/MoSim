@@ -19,13 +19,13 @@ DEFAULT_OUTPUT_DIR = (
 )
 PRIMARY_ANCHORS = [
     "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
-    "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
-    "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
+    "thrust[i] = fault_effectiveness[i] * thrust_effectiveness[i] * nominal_thrust[i]",
+    "yaw_reaction_moment[i] = fault_effectiveness[i] * yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust_effectiveness[i] * nominal_thrust[i]",
     "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
     "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
     "total_thrust = sum(thrust)",
-    "minimum_thrust_effectiveness = min(thrust_effectiveness)",
-    "minimum_reaction_moment_effectiveness = min(reaction_moment_effectiveness)",
+    "minimum_thrust_effectiveness = min({fault_effectiveness[i] * thrust_effectiveness[i] for i in 1:4})",
+    "minimum_reaction_moment_effectiveness = min({fault_effectiveness[i] * reaction_moment_effectiveness[i] for i in 1:4})",
 ]
 
 

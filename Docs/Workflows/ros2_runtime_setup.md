@@ -23,7 +23,6 @@ For current work, use:
 
 ```text
 Docs/Design/架构.md
-Docs/Workflows/mainline_operations_board.md
 Docs/Workflows/sunray_ros1_current_runtime_lane.md
 Docs/Workflows/sunray_ros1_execution_checklist.md
 Docs/Index/sunray_migration_index.md
@@ -52,7 +51,6 @@ Read the archived full workflow only after all of the following are true:
 
 ```text
 the user explicitly reopens ROS2/PX4/RViz2 work
-Docs/Workflows/mainline_operations_board.md is updated for that route
 Docs/Design/架构.md or a scoped design note states the new authority boundary
 the task names whether it is source-static, diagnostic-only, or live runtime
 ```

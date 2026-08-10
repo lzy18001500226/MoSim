@@ -48,11 +48,11 @@ model Example1Rotor4Loss15WindGustLinearMPCOnlineFaultAllocationSysblockClosedLo
   AWFF_LinearMPCMultiFaultAllocationController_Sysblock controller3_2;
 
 equation
-  gustForce.force[1] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then
-    gust_force_x_N + gust_sine_amplitude_x_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s))
+  gustForce.force[1] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then 
+    gust_force_x_N + gust_sine_amplitude_x_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s)) 
     else 0;
-  gustForce.force[2] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then
-    gust_force_y_N + gust_sine_amplitude_y_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s))
+  gustForce.force[2] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then 
+    gust_force_y_N + gust_sine_amplitude_y_N * sin(2 * Modelica.Constants.pi * gust_sine_frequency_Hz * (time - gust_start_s)) 
     else 0;
   gustForce.force[3] = 0;
 

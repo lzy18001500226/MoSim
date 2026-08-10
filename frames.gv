@@ -1,0 +1,18 @@
+digraph G {
+"map" -> "map_ned"[label="Broadcaster: /uav1/mavros\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 4099.846 sec old)\nBuffer length: 0.000 sec\n"];
+"odom" -> "odom_ned"[label="Broadcaster: /uav1/mavros\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 4099.846 sec old)\nBuffer length: 0.000 sec\n"];
+"base_link" -> "base_link_frd"[label="Broadcaster: /uav1/mavros\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 4099.846 sec old)\nBuffer length: 0.000 sec\n"];
+"base_link" -> "uav1/base_link"[label="Broadcaster: /static_transform_publisher_1786290467238859147\nAverage rate: 12.469 Hz\nMost recent transform: 4099.872 ( -0.026 sec old)\nBuffer length: 0.401 sec\n"];
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 4099.846"[ shape=plaintext ] ;
+ }->"map";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 4099.846"[ shape=plaintext ] ;
+ }->"odom";
+edge [style=invis];
+ subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
+"Recorded at time: 4099.846"[ shape=plaintext ] ;
+ }->"base_link";
+}

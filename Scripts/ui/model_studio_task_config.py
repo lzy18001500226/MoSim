@@ -516,7 +516,17 @@ def write_task_config(
     resolved_output = output.resolve()
     harness_path = resolved_output.parent / "harness" / name / f"{name}.mo"
     if route_kind == "formal":
-        if controller_id in V2_EVIDENCE_CONTROLLER_IDS:
+        if controller_id == "official_pid":
+            # The graphical golden runner is the App review surface. The unchanged
+            # Formal runner remains the numerical reference outside this manual path.
+            harness_text = rendered_generic_formal_harness(
+                task_id=task_id,
+                route=route,
+                profile=profile,
+                name=name,
+            )
+            kind = configuration_kind(task_id, profile, source_profile or profile)
+        elif controller_id in V2_EVIDENCE_CONTROLLER_IDS:
             harness_text = rendered_formal_harness(driver, controller_id, task_id, profile, name)
             kind = configuration_kind(task_id, profile, source_profile or profile)
         else:

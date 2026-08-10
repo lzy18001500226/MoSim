@@ -1,94 +1,24 @@
 {
-  "schema": "mosim.mworks.wrapper_surface_source_check.v1",
-  "request_id": "PMO-MWORKS-R1-MOSIMQUAD-WRAPPER-SURFACE-FORMAL-SOURCE-SURFACE-20260608-026",
+  "schema": "mosim.mworks.canonical_dynamics_surface_check.v2",
   "status": "passed_static",
+  "static_only": true,
   "live_mworks_touched": false,
   "mworks_window_evidence_touched": false,
-  "formal_target": "MoSimQuadrotorModel.Dynamics.WrapperSurface",
-  "formal_source": "Models/MoSimQuadrotorModel/Dynamics/WrapperSurface.mo",
-  "formal_package": "Models/MoSimQuadrotorModel/Dynamics/package.mo",
-  "formal_package_order": "Models/MoSimQuadrotorModel/Dynamics/package.order",
-  "legacy_alias": "QuadrotorExperiments.DynamicsUpgrade.WrapperSurface",
-  "legacy_package": "Models/QuadrotorExperiments/DynamicsUpgrade/package.mo",
-  "legacy_package_order": "Models/QuadrotorExperiments/DynamicsUpgrade/package.order",
-  "legacy_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150DynamicsWrapperSurface.mo",
-  "legacy_core_implementation": "Models/QuadrotorExperiments/DynamicsUpgrade/Sunray150RflyStyleRotorDynamics.mo",
-  "behavior_preservation": {
-    "formal_source_is_extends_only": true,
-    "formal_source_duplicates_wrapper_behavior": false,
-    "legacy_alias_preserved": true,
-    "legacy_implementation_preserved": true,
-    "legacy_core_preserved": true,
-    "dynamics_equations_changed_by_026": false,
-    "numeric_parameters_changed_by_026": false
+  "formal_target": "MoSimQuadrotorModel.Vehicle.Dynamics.WrapperSurface",
+  "formal_source": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/WrapperSurface.mo",
+  "retired_predecessor": {
+    "class_name": "WrapperSurface",
+    "file_name": "Sunray150DynamicsWrapperSurface.mo",
+    "model_name": "Sunray150DynamicsWrapperSurface"
   },
-  "wrapper_anchors": [
+  "source_authority": {
+    "canonical_source_owns_implementation": true,
+    "retired_roots_absent": true,
+    "formal_package_order_contains_target": true
+  },
+  "canonical_anchors": [
     {
-      "anchor": "Sunray150RflyStyleRotorDynamics dynamics",
-      "present": true
-    },
-    {
-      "anchor": "Real motor_command[4](each unit = \"rad/s\")",
-      "present": true
-    },
-    {
-      "anchor": "Real commanded_thrust[4](each unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real commanded_yaw_reaction_moment[4](each unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real commanded_rotor_arm_moment[4, 3](each unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real total_thrust(unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real total_moment_body[3](each unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real commanded_total_thrust(unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real commanded_total_moment_body[3](each unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real hover_thrust_error(unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real commanded_hover_thrust_error(unit = \"N\")",
-      "present": true
-    },
-    {
-      "anchor": "Real yaw_moment_gate(unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real commanded_yaw_moment_gate(unit = \"N.m\")",
-      "present": true
-    },
-    {
-      "anchor": "Real motor_order_gate_error",
-      "present": true
-    },
-    {
-      "anchor": "Real yaw_direction_gate_error",
-      "present": true
-    },
-    {
-      "anchor": "Real minimum_thrust_effectiveness",
-      "present": true
-    },
-    {
-      "anchor": "Real minimum_reaction_moment_effectiveness",
+      "anchor": "RotorActuatorCore dynamics(",
       "present": true
     },
     {
@@ -96,162 +26,34 @@
       "present": true
     },
     {
-      "anchor": "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+      "anchor": "commanded_thrust[i] = dynamics.fault_effectiveness[i] * dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
       "present": true
     },
     {
-      "anchor": "commanded_yaw_reaction_moment[i] = dynamics.yaw_direction[i] * dynamics.reaction_moment_effectiveness[i] * dynamics.moment_constant * commanded_thrust[i]",
+      "anchor": "commanded_total_moment_body[3]",
       "present": true
     },
     {
-      "anchor": "commanded_rotor_arm_moment[i, 1] = dynamics.rotor_center[i, 2] * commanded_thrust[i]",
+      "anchor": "motor_order_gate_error =",
       "present": true
     },
     {
-      "anchor": "commanded_rotor_arm_moment[i, 2] = -dynamics.rotor_center[i, 1] * commanded_thrust[i]",
-      "present": true
-    },
-    {
-      "anchor": "commanded_rotor_arm_moment[i, 3] = commanded_yaw_reaction_moment[i]",
-      "present": true
-    },
-    {
-      "anchor": "total_thrust = dynamics.total_thrust",
-      "present": true
-    },
-    {
-      "anchor": "total_moment_body = dynamics.total_moment_body",
-      "present": true
-    },
-    {
-      "anchor": "hover_thrust_error = dynamics.hover_thrust_error",
-      "present": true
-    },
-    {
-      "anchor": "minimum_thrust_effectiveness = dynamics.minimum_thrust_effectiveness",
-      "present": true
-    },
-    {
-      "anchor": "minimum_reaction_moment_effectiveness = dynamics.minimum_reaction_moment_effectiveness",
-      "present": true
-    },
-    {
-      "anchor": "commanded_total_thrust = sum(commanded_thrust)",
-      "present": true
-    },
-    {
-      "anchor": "commanded_total_moment_body[1] = sum({commanded_rotor_arm_moment[i, 1] for i in 1:4})",
-      "present": true
-    },
-    {
-      "anchor": "commanded_total_moment_body[2] = sum({commanded_rotor_arm_moment[i, 2] for i in 1:4})",
-      "present": true
-    },
-    {
-      "anchor": "commanded_total_moment_body[3] = sum({commanded_rotor_arm_moment[i, 3] for i in 1:4})",
-      "present": true
-    },
-    {
-      "anchor": "commanded_hover_thrust_error = commanded_total_thrust - dynamics.mass_kg * 9.81",
-      "present": true
-    },
-    {
-      "anchor": "yaw_moment_gate = total_moment_body[3]",
-      "present": true
-    },
-    {
-      "anchor": "commanded_yaw_moment_gate = commanded_total_moment_body[3]",
-      "present": true
-    },
-    {
-      "anchor": "motor_order_gate_error = sum({abs(dynamics.rotor_center[i, j] - expected_rotor_center[i, j]) for i in 1:4, j in 1:3})",
-      "present": true
-    },
-    {
-      "anchor": "yaw_direction_gate_error = sum({abs(dynamics.yaw_direction[i] - expected_yaw_direction[i]) for i in 1:4})",
+      "anchor": "yaw_direction_gate_error =",
       "present": true
     }
   ],
-  "underlying_core_anchors": [
+  "related_canonical_anchors": [
     {
-      "anchor": "der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i]",
-      "present": true
+      "anchor": "model RotorActuatorCore",
+      "present": true,
+      "source": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
+      "label": "rotor core"
     },
     {
-      "anchor": "thrust[i] = thrust_effectiveness[i] * lift_coefficient * omega[i] * omega[i]",
-      "present": true
-    },
-    {
-      "anchor": "yaw_reaction_moment[i] = yaw_direction[i] * reaction_moment_effectiveness[i] * moment_constant * thrust[i]",
-      "present": true
-    },
-    {
-      "anchor": "rotor_arm_moment[i, 1] = rotor_center[i, 2] * thrust[i]",
-      "present": true
-    },
-    {
-      "anchor": "rotor_arm_moment[i, 2] = -rotor_center[i, 1] * thrust[i]",
-      "present": true
-    },
-    {
-      "anchor": "rotor_arm_moment[i, 3] = yaw_reaction_moment[i]",
-      "present": true
-    },
-    {
-      "anchor": "total_thrust = sum(thrust)",
-      "present": true
-    },
-    {
-      "anchor": "total_moment_body[3] = sum({rotor_arm_moment[i, 3] for i in 1:4})",
-      "present": true
-    }
-  ],
-  "provenance_anchors": [
-    {
-      "anchor": "source=user-reviewed DAE screw-pair fit, in MWORKS Dronefixed1..4 order",
-      "present": true
-    },
-    {
-      "anchor": "source=user-reviewed DAE screw-pair fit, mapped to MWORKS Dronefixed1..4 order",
-      "present": true
-    },
-    {
-      "anchor": "source=SDF_migration; not a measured Sunray150 takeoff mass",
-      "present": true
-    },
-    {
-      "anchor": "source=SDF_migration; Sunray motorConstant scaled by rotorVelocitySlowdownSim^2",
-      "present": true
-    },
-    {
-      "anchor": "source=SDF_migration; Gazebo/Sunray yaw moment ratio seed, not ULog identified",
-      "present": true
-    },
-    {
-      "anchor": "source=SDF_migration; Sunray SDF motor plugin timeConstantUp",
-      "present": true
-    },
-    {
-      "anchor": "source=SDF_migration; Sunray SDF motor plugin timeConstantDown",
-      "present": true
-    }
-  ],
-  "rotor_center_anchors": [
-    {
-      "row": "0.053745, -0.053740, -0.014052",
-      "present_in_wrapper_core_and_parameters": true
-    },
-    {
-      "row": "0.053746,  0.053759, -0.014052",
-      "present_in_wrapper_core_and_parameters": true
-    },
-    {
-      "row": "-0.053761,  0.053760, -0.014052",
-      "present_in_wrapper_core_and_parameters": true
-    },
-    {
-      "row": "-0.053761, -0.053739, -0.014052",
-      "present_in_wrapper_core_and_parameters": true
+      "anchor": "total_moment_body[3]",
+      "present": true,
+      "source": "Models/MoSimQuadrotorModel/Vehicle/Dynamics/RotorActuatorCore.mo",
+      "label": "rotor core"
     }
   ],
   "findings": []

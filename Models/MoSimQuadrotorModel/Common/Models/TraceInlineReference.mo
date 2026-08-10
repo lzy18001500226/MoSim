@@ -232,11 +232,11 @@ block TraceInlineReference
     9.94389552700159, -0.0869372653653645, 0.0109691579062575, 1.2062590385804, -0.251020067830244, -0.0111615069356689
   ];
 
-  Modelica.Blocks.Interfaces.RealOutput position_command[3]
+  Modelica.Blocks.Interfaces.RealOutput position_command[3] 
     annotation(Placement(transformation(origin = {100, 40}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput z_ref_rate
+  Modelica.Blocks.Interfaces.RealOutput z_ref_rate 
     annotation(Placement(transformation(origin = {100, 0}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput yaw_ref
+  Modelica.Blocks.Interfaces.RealOutput yaw_ref 
     annotation(Placement(transformation(origin = {100, -40}, extent = {{-10, -10}, {10, 10}})));
 
 protected

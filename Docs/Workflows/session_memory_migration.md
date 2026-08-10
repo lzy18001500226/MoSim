@@ -132,7 +132,7 @@ Promote to formal docs only when the target is the right owner:
 | Item Type | Formal Target |
 |---|---|
 | Current operating rule | `AGENTS.md` or the relevant `Docs/Workflows/*.md` |
-| Active task state | `Docs/Workflows/mainline_operations_board.md`, `PROGRESS.md`, or a task-local `Docs/Cache/session_memory_migration/*.md` note |
+| Active task state | the current conversation's direct user request plus a task-local result/status note; `PROGRESS.md` and the retired board are historical hints only |
 | Algorithm/system architecture | `Docs/Design/*.md` |
 | Simulation evidence | `Results/...` manifest plus report/workflow reference |
 | MWORKS/Sysplorer procedure | `Docs/Workflows/*.md` or `Docs/Skills/Mworks/*/SKILL.md` |

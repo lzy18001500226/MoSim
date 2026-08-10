@@ -16,6 +16,128 @@
 
 namespace
 {
+constexpr int32 MaxLatencySamplesPerWindow = 2048;
+constexpr int64 NanosecondsPerMillisecond = 1000 * 1000;
+constexpr int64 MaxMeasuredLatencyNanoseconds = 60LL * 1000LL * 1000LL * 1000LL;
+static_assert(MaxMeasuredLatencyNanoseconds == 60000000000LL, "Latency cutoff must remain 60 seconds.");
+
+int64 UtcNowUnixNanoseconds()
+{
+    static const int64 UnixEpochTicks = FDateTime(1970, 1, 1).GetTicks();
+    return (FDateTime::UtcNow().GetTicks() - UnixEpochTicks) * 100;
+}
+
+bool TryParseInt64Field(const TSharedPtr<FJsonObject>& Object, const FString& FieldName, int64& OutValue)
+{
+    FString EncodedValue;
+    if (!Object.IsValid() || !Object->TryGetStringField(FieldName, EncodedValue))
+    {
+        return false;
+    }
+    const TCHAR* Cursor = *EncodedValue;
+    if (*Cursor == TEXT('-') || *Cursor == TEXT('+'))
+    {
+        ++Cursor;
+    }
+    if (*Cursor == 0)
+    {
+        return false;
+    }
+    while (*Cursor != 0)
+    {
+        if (!FChar::IsDigit(*Cursor))
+        {
+            return false;
+        }
+        ++Cursor;
+    }
+    OutValue = FCString::Strtoi64(*EncodedValue, nullptr, 10);
+    return true;
+}
+
+int64 ParseUnixNanoseconds(const TSharedPtr<FJsonObject>& Object, const FString& FieldName)
+{
+    int64 ParsedValue = 0;
+    TryParseInt64Field(Object, FieldName, ParsedValue);
+    return ParsedValue;
+}
+
+bool TryConvertSourceClockToReceiverClock(
+    int64 SourceUnixNanoseconds,
+    int64 SourceToReceiverClockOffsetNanoseconds,
+    int64& OutReceiverUnixNanoseconds)
+{
+    if (SourceUnixNanoseconds <= 0)
+    {
+        return false;
+    }
+    if ((SourceToReceiverClockOffsetNanoseconds > 0
+            && SourceUnixNanoseconds > TNumericLimits<int64>::Max() - SourceToReceiverClockOffsetNanoseconds)
+        || (SourceToReceiverClockOffsetNanoseconds < 0
+            && SourceUnixNanoseconds < TNumericLimits<int64>::Min() - SourceToReceiverClockOffsetNanoseconds))
+    {
+        return false;
+    }
+    OutReceiverUnixNanoseconds = SourceUnixNanoseconds + SourceToReceiverClockOffsetNanoseconds;
+    return true;
+}
+
+bool TryMeasureLatencyMilliseconds(int64 StartUnixNanoseconds, int64 EndUnixNanoseconds, double& OutLatencyMilliseconds)
+{
+    if (StartUnixNanoseconds <= 0 || EndUnixNanoseconds < StartUnixNanoseconds)
+    {
+        return false;
+    }
+    const int64 LatencyNanoseconds = EndUnixNanoseconds - StartUnixNanoseconds;
+    if (LatencyNanoseconds > MaxMeasuredLatencyNanoseconds)
+    {
+        return false;
+    }
+    OutLatencyMilliseconds = static_cast<double>(LatencyNanoseconds) / NanosecondsPerMillisecond;
+    return true;
+}
+
+void AddLatencySample(TArray<double>& Samples, double LatencyMilliseconds)
+{
+    if (Samples.Num() >= MaxLatencySamplesPerWindow)
+    {
+        Samples.RemoveAt(0, 1, EAllowShrinking::No);
+    }
+    Samples.Add(LatencyMilliseconds);
+}
+
+double Percentile(const TArray<double>& Samples, double Percent)
+{
+    if (Samples.IsEmpty())
+    {
+        return 0.0;
+    }
+    TArray<double> SortedSamples = Samples;
+    SortedSamples.Sort();
+    const double Position = (SortedSamples.Num() - 1) * Percent / 100.0;
+    const int32 LowerIndex = FMath::FloorToInt(Position);
+    const int32 UpperIndex = FMath::CeilToInt(Position);
+    if (LowerIndex == UpperIndex)
+    {
+        return SortedSamples[LowerIndex];
+    }
+    return FMath::Lerp(SortedSamples[LowerIndex], SortedSamples[UpperIndex], Position - LowerIndex);
+}
+
+void AddLatencySummary(
+    const TSharedRef<FJsonObject>& Metrics,
+    const TCHAR* FieldName,
+    const TArray<double>& Samples)
+{
+    const TSharedPtr<FJsonObject> Summary = MakeShared<FJsonObject>();
+    Summary->SetNumberField(TEXT("sample_count"), Samples.Num());
+    Summary->SetNumberField(TEXT("p50_ms"), Percentile(Samples, 50.0));
+    Summary->SetNumberField(TEXT("p95_ms"), Percentile(Samples, 95.0));
+    Summary->SetNumberField(TEXT("p99_ms"), Percentile(Samples, 99.0));
+    Summary->SetNumberField(TEXT("max_ms"), Percentile(Samples, 100.0));
+    Metrics->SetObjectField(FieldName, Summary);
+}
+
 FIntVector ParseIntVector3(const TSharedPtr<FJsonObject>& Object, const FString& FieldName, const FIntVector& Fallback)
 {
     if (!Object.IsValid())
@@ -68,6 +190,14 @@ bool UQuadrotorMworksUdpReceiverComponent::StartReceiver()
     ActiveStreamId.Reset();
     LastAcceptedFrameSeconds = 0.0;
     LastRejectedFrameLogSeconds = 0.0;
+    {
+        FScopeLock Lock(&MetricsMutex);
+        SourceToReceiverLatencySamplesMs.Reset();
+        SourceToActorApplicationLatencySamplesMs.Reset();
+        ReceiverToActorApplicationLatencySamplesMs.Reset();
+        LastApplicationMetricsStreamId.Reset();
+        LastApplicationMetricsSequence = TNumericLimits<int32>::Min();
+    }
 
     FIPv4Address Address;
     if (!FIPv4Address::Parse(ListenAddress, Address))
@@ -123,6 +253,40 @@ bool UQuadrotorMworksUdpReceiverComponent::HasFrame() const
     return LatestFrame.bIsValid;
 }
 
+void UQuadrotorMworksUdpReceiverComponent::RecordGameThreadFrameApplied(const FQuadrotorMworksFrame& Frame)
+{
+    const int64 AppliedUnixNanoseconds = UtcNowUnixNanoseconds();
+    FScopeLock Lock(&MetricsMutex);
+    if (Frame.StreamId == LastApplicationMetricsStreamId && Frame.Sequence == LastApplicationMetricsSequence)
+    {
+        return;
+    }
+    LastApplicationMetricsStreamId = Frame.StreamId;
+    LastApplicationMetricsSequence = Frame.Sequence;
+
+    double LatencyMilliseconds = 0.0;
+    int64 SourceReceivedReceiverClockNanoseconds = 0;
+    if (Frame.bSourceToReceiverClockOffsetCalibrated
+        && TryConvertSourceClockToReceiverClock(
+            Frame.SourceReceivedUnixNanoseconds,
+            Frame.SourceToReceiverClockOffsetNanoseconds,
+            SourceReceivedReceiverClockNanoseconds)
+        && TryMeasureLatencyMilliseconds(
+            SourceReceivedReceiverClockNanoseconds,
+            AppliedUnixNanoseconds,
+            LatencyMilliseconds))
+    {
+        AddLatencySample(SourceToActorApplicationLatencySamplesMs, LatencyMilliseconds);
+    }
+    if (TryMeasureLatencyMilliseconds(
+            Frame.UeReceivedUnixNanoseconds,
+            AppliedUnixNanoseconds,
+            LatencyMilliseconds))
+    {
+        AddLatencySample(ReceiverToActorApplicationLatencySamplesMs, LatencyMilliseconds);
+    }
+}
+
 void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr& Data, const FIPv4Endpoint& Endpoint)
 {
     if (!Data.IsValid() || Data->Num() <= 0)
@@ -133,11 +297,33 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
     FString Text;
     FFileHelper::BufferToString(Text, Data->GetData(), Data->Num());
 
+    const int64 ReceivedUnixNanoseconds = UtcNowUnixNanoseconds();
     FQuadrotorMworksFrame Frame;
     if (!ParseFrameJson(Text, Frame))
     {
         return;
     }
+    if (!ObservabilityRunId.IsEmpty() && Frame.RunId != ObservabilityRunId)
+    {
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("MoSim UE rejected UDP frame run_id=%s expected_run_id=%s"),
+            *Frame.RunId,
+            *ObservabilityRunId);
+        return;
+    }
+    if (bRequireLiveStateMirror
+        && Frame.Status.EvidenceLevel != TEXT("live_ros1_gazebo_px4_mavros_px4ctrl_state_mirror"))
+    {
+        UE_LOG(
+            LogTemp,
+            Warning,
+            TEXT("MoSim UE rejected non-live UDP frame evidence_level=%s"),
+            *Frame.Status.EvidenceLevel);
+        return;
+    }
+    Frame.UeReceivedUnixNanoseconds = ReceivedUnixNanoseconds;
 
     const double NowSeconds = FPlatformTime::Seconds();
     if (!Frame.StreamId.IsEmpty())
@@ -184,6 +370,21 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
         SequenceGapsInWindow += Frame.Sequence - LastReceivedSequence - 1;
     }
     LastReceivedSequence = Frame.Sequence;
+    double SourceToReceiverLatencyMilliseconds = 0.0;
+    int64 UdpSentReceiverClockNanoseconds = 0;
+    if (Frame.bSourceToReceiverClockOffsetCalibrated
+        && TryConvertSourceClockToReceiverClock(
+            Frame.UdpSentUnixNanoseconds,
+            Frame.SourceToReceiverClockOffsetNanoseconds,
+            UdpSentReceiverClockNanoseconds)
+        && TryMeasureLatencyMilliseconds(
+            UdpSentReceiverClockNanoseconds,
+            Frame.UeReceivedUnixNanoseconds,
+            SourceToReceiverLatencyMilliseconds))
+    {
+        FScopeLock Lock(&MetricsMutex);
+        AddLatencySample(SourceToReceiverLatencySamplesMs, SourceToReceiverLatencyMilliseconds);
+    }
     const double RateElapsedSeconds = NowSeconds - ReceiveRateWindowStartSeconds;
     if (RateElapsedSeconds >= 5.0)
     {
@@ -194,6 +395,15 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
         const double PayloadBytesPerSecond = ReceivedPayloadBytesInWindow / RateElapsedSeconds;
         const double WireBytesPerSecond =
             (ReceivedPayloadBytesInWindow + static_cast<int64>(ReceivedFramesInWindow) * 28) / RateElapsedSeconds;
+        TArray<double> SourceToReceiverSamples;
+        TArray<double> SourceToActorApplicationSamples;
+        TArray<double> ReceiverToActorApplicationSamples;
+        {
+            FScopeLock Lock(&MetricsMutex);
+            SourceToReceiverSamples = MoveTemp(SourceToReceiverLatencySamplesMs);
+            SourceToActorApplicationSamples = MoveTemp(SourceToActorApplicationLatencySamplesMs);
+            ReceiverToActorApplicationSamples = MoveTemp(ReceiverToActorApplicationLatencySamplesMs);
+        }
         UE_LOG(
             LogTemp,
             Display,
@@ -220,8 +430,48 @@ void UQuadrotorMworksUdpReceiverComponent::HandleDatagram(const FArrayReaderPtr&
                 static_cast<double>(ReceivedPayloadBytesInWindow) / FMath::Max(1, ReceivedFramesInWindow));
             Metrics->SetNumberField(TEXT("payload_bytes_per_s"), PayloadBytesPerSecond);
             Metrics->SetNumberField(TEXT("estimated_ipv4_udp_wire_bytes_per_s"), WireBytesPerSecond);
+            Metrics->SetStringField(TEXT("timing_clock"), TEXT("unix_epoch_ns"));
+            Metrics->SetBoolField(
+                TEXT("source_to_receiver_clock_offset_calibrated"),
+                Frame.bSourceToReceiverClockOffsetCalibrated);
+            Metrics->SetStringField(
+                TEXT("source_to_receiver_clock_offset_ns"),
+                FString::Printf(TEXT("%lld"), Frame.SourceToReceiverClockOffsetNanoseconds));
+            Metrics->SetStringField(
+                TEXT("last_source_received_unix_ns"),
+                FString::Printf(TEXT("%lld"), Frame.SourceReceivedUnixNanoseconds));
+            Metrics->SetStringField(
+                TEXT("last_udp_sent_unix_ns"),
+                FString::Printf(TEXT("%lld"), Frame.UdpSentUnixNanoseconds));
+            Metrics->SetStringField(
+                TEXT("last_ue_received_unix_ns"),
+                FString::Printf(TEXT("%lld"), Frame.UeReceivedUnixNanoseconds));
+            int64 CalibratedUdpSentUnixNanoseconds = 0;
+            double LastUdpToUeReceiveLatencyMilliseconds = 0.0;
+            if (Frame.bSourceToReceiverClockOffsetCalibrated
+                && TryConvertSourceClockToReceiverClock(
+                    Frame.UdpSentUnixNanoseconds,
+                    Frame.SourceToReceiverClockOffsetNanoseconds,
+                    CalibratedUdpSentUnixNanoseconds)
+                && TryMeasureLatencyMilliseconds(
+                    CalibratedUdpSentUnixNanoseconds,
+                    Frame.UeReceivedUnixNanoseconds,
+                    LastUdpToUeReceiveLatencyMilliseconds))
+            {
+                Metrics->SetNumberField(
+                    TEXT("last_udp_to_ue_receive_clock_delta_ms"),
+                    LastUdpToUeReceiveLatencyMilliseconds);
+            }
+            AddLatencySummary(Metrics, TEXT("udp_send_to_ue_receive_latency_ms"), SourceToReceiverSamples);
+            AddLatencySummary(Metrics, TEXT("source_to_ue_actor_apply_latency_ms"), SourceToActorApplicationSamples);
+            AddLatencySummary(Metrics, TEXT("ue_receive_to_actor_apply_latency_ms"), ReceiverToActorApplicationSamples);
             Metrics->SetNumberField(TEXT("updated_at_unix"), FDateTime::UtcNow().ToUnixTimestamp());
-            Metrics->SetStringField(TEXT("claim_boundary"), TEXT("UE receiver-side rate and sequence loss only; one-way UDP does not provide RTT."));
+            Metrics->SetStringField(
+                TEXT("claim_boundary"),
+                TEXT("UE receiver rate, sequence loss, calibrated UDP receipt, and game-thread actor application. Actor application excludes GPU rendering, OS compositing, and monitor scanout; one-way UDP does not provide RTT."));
+            Metrics->SetStringField(
+                TEXT("clock_calibration"),
+                TEXT("Cross-host timing requires a launch-time Windows-minus-WSL clock offset embedded in each frame; missing or invalid offsets leave cross-host sample counts at zero."));
             FString Json;
             const TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&Json);
             FJsonSerializer::Serialize(Metrics, Writer);
@@ -385,6 +635,17 @@ bool UQuadrotorMworksUdpReceiverComponent::ParseFrameJson(const FString& Text, F
     Root->TryGetStringField(TEXT("run_id"), OutFrame.RunId);
     OutFrame.Sequence = static_cast<int32>(Root->GetIntegerField(TEXT("seq")));
     OutFrame.TimeSeconds = Root->GetNumberField(TEXT("t"));
+
+    const TSharedPtr<FJsonObject>* Timing = nullptr;
+    if (Root->TryGetObjectField(TEXT("timing"), Timing) && Timing && Timing->IsValid())
+    {
+        OutFrame.SourceReceivedUnixNanoseconds = ParseUnixNanoseconds(*Timing, TEXT("source_received_unix_ns"));
+        OutFrame.UdpSentUnixNanoseconds = ParseUnixNanoseconds(*Timing, TEXT("udp_sent_unix_ns"));
+        OutFrame.bSourceToReceiverClockOffsetCalibrated = TryParseInt64Field(
+            *Timing,
+            TEXT("source_to_receiver_clock_offset_ns"),
+            OutFrame.SourceToReceiverClockOffsetNanoseconds);
+    }
 
     const TSharedPtr<FJsonObject>* Uav = nullptr;
     if (Root->TryGetObjectField(TEXT("uav"), Uav) && Uav && Uav->IsValid())

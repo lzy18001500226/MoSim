@@ -6,15 +6,15 @@ model OpenBlocksLinearMPCVehicle
   parameter Real hover_motor_speed_cmd = MoSimQuadrotorModel.Parameters.sunray150_virtual_px4_classic_hover_visual_rotor_speed_rad_s;
   parameter Real motor_command_scale = hover_motor_speed_cmd / legacy_hover_motor_speed_cmd;
 
-  Modelica.Blocks.Interfaces.RealInput position_reference[3]
+  Modelica.Blocks.Interfaces.RealInput position_reference[3] 
     annotation(Placement(transformation(origin = {-120, 60}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealInput z_reference_rate
+  Modelica.Blocks.Interfaces.RealInput z_reference_rate 
     annotation(Placement(transformation(origin = {-120, 10}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealInput yaw_reference
+  Modelica.Blocks.Interfaces.RealInput yaw_reference 
     annotation(Placement(transformation(origin = {-120, -40}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealOutput position[3]
+  Modelica.Blocks.Interfaces.RealOutput position[3] 
     annotation(Placement(transformation(origin = {120, 60}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealOutput tracking_error_m
+  Modelica.Blocks.Interfaces.RealOutput tracking_error_m 
     annotation(Placement(transformation(origin = {120, 10}, extent = {{-20, -20}, {20, 20}})));
 
   MoSimQuadrotorModel.Vehicle.Mechanics.QuadChassis chassis(

@@ -22,6 +22,12 @@ from mavros_msgs.msg import State
 from nav_msgs.msg import Odometry
 from sunray_msgs.msg import PX4State
 
+from fastlio_fusion_evidence_contract import (
+    DEFAULT_MAX_ALIGNED_TRUTH_POSITION_P95_M,
+    DEFAULT_MIN_ARMED_FUSION_SUCCESS_RATIO,
+    evaluate_goal3_gate,
+)
+
 
 def stamp_to_sec(stamp: Any) -> float | None:
     try:
@@ -116,6 +122,7 @@ class Goal3FusionRecorder:
         self.latest_px4_state: PX4State | None = None
         self.latest_mavros_state: State | None = None
         self.fusion_success: list[bool] = []
+        self.armed_fusion_success: list[bool] = []
         self.odom_valid: list[bool] = []
         self.armed: list[bool] = []
         self.aligned_vs_vision_pos: list[float] = []
@@ -158,9 +165,13 @@ class Goal3FusionRecorder:
     def on_px4_state(self, msg: PX4State) -> None:
         self.latest_px4_state = msg
         self.ts("sunray_px4_state").add(stamp_to_sec(msg.header.stamp), "", "")
-        self.fusion_success.append(bool(msg.external_odom.fusion_success))
+        fusion_success = bool(msg.external_odom.fusion_success)
+        armed = bool(msg.armed)
+        self.fusion_success.append(fusion_success)
+        if armed:
+            self.armed_fusion_success.append(fusion_success)
         self.odom_valid.append(bool(msg.external_odom.odom_valid))
-        self.armed.append(bool(msg.armed))
+        self.armed.append(armed)
 
     def on_mavros_state(self, msg: State) -> None:
         self.latest_mavros_state = msg
@@ -239,10 +250,20 @@ class Goal3FusionRecorder:
             "fusion_success_seen": any(self.fusion_success),
             "fusion_success_ratio": (sum(1 for v in self.fusion_success if v) / len(self.fusion_success)) if self.fusion_success else None,
             "fusion_success_last": self.fusion_success[-1] if self.fusion_success else False,
+            "armed_fusion_sample_count": len(self.armed_fusion_success),
+            "armed_fusion_success_seen": any(self.armed_fusion_success),
+            "armed_fusion_success_ratio": (
+                sum(1 for value in self.armed_fusion_success if value) / len(self.armed_fusion_success)
+                if self.armed_fusion_success
+                else None
+            ),
+            "armed_fusion_success_last": (
+                self.armed_fusion_success[-1] if self.armed_fusion_success else False
+            ),
             "armed_seen": any(self.armed),
             "negative_header_gaps": negative_header_gaps,
         }
-        gate_pass = (
+        required_topics_present = (
             checks["aligned_odom_present"]
             and checks["vision_pose_present"]
             and checks["px4_state_present"]
@@ -251,9 +272,19 @@ class Goal3FusionRecorder:
             and checks["aligned_frame_world"]
             and checks["aligned_child_base_link"]
             and checks["external_odom_valid_seen"]
-            and checks["fusion_success_seen"]
-            and all(count == 0 for count in negative_header_gaps.values())
         )
+        thresholds = {
+            "min_armed_fusion_success_ratio": self.args.min_armed_fusion_success_ratio,
+            "max_aligned_truth_position_p95_m": self.args.max_aligned_truth_position_p95_m,
+        }
+        continuous_fusion = evaluate_goal3_gate(
+            checks,
+            comparisons,
+            min_armed_fusion_success_ratio=thresholds["min_armed_fusion_success_ratio"],
+            max_aligned_truth_position_p95_m=thresholds["max_aligned_truth_position_p95_m"],
+        )
+        checks.update(continuous_fusion)
+        gate_pass = required_topics_present and continuous_fusion["gate_pass"]
         return {
             "schema": "mosim.sunray_ros1.fastlio_ekf_fusion_goal3.v1",
             "status": "passed" if gate_pass else "blocked",
@@ -263,6 +294,7 @@ class Goal3FusionRecorder:
             "topics": topics,
             "comparisons": comparisons,
             "checks": checks,
+            "thresholds": thresholds,
             "gate_pass": gate_pass,
         }
 
@@ -277,6 +309,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--truth-topic", default="/uav1/sunray/gazebo_pose")
     parser.add_argument("--px4-state-topic", default="/uav1/sunray/px4_state")
     parser.add_argument("--mavros-state-topic", default="/uav1/mavros/state")
+    parser.add_argument(
+        "--min-armed-fusion-success-ratio",
+        type=float,
+        default=DEFAULT_MIN_ARMED_FUSION_SUCCESS_RATIO,
+    )
+    parser.add_argument(
+        "--max-aligned-truth-position-p95-m",
+        type=float,
+        default=DEFAULT_MAX_ALIGNED_TRUTH_POSITION_P95_M,
+    )
     return parser
 
 

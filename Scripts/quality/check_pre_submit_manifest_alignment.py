@@ -64,7 +64,7 @@ REQUIRED_DETAIL_TERMS = [
     "simulation report source hygiene plan",
     "simulation_report_source_hygiene_plan.json",
     "draft_hygiene_plan_not_report_edit",
-    "does not edit Docs/simulation_report.md",
+    "does not edit Docs/报告/仿真分析报告_正文骨架.md",
     "simulation report edit sequence plan",
     "simulation_report_edit_sequence_plan.json",
     "draft_edit_sequence_not_report_edit",

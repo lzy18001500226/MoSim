@@ -55,7 +55,7 @@ def test_current_simulation_report_edit_sequence_plan_builds(tmp_path: Path) -> 
     assert families == {"fault_tolerance", "multi_uav_formation", "visual_trajectory_review"}
     assert all(action["edits_now"] is False for action in plan["actions"])
     assert all(action["requires_human_review_before_apply"] is True for action in plan["actions"])
-    assert "does not edit Docs/simulation_report.md" in " ".join(plan["claim_boundary"])
+    assert "does not edit Docs/报告/仿真分析报告_正文骨架.md" in " ".join(plan["claim_boundary"])
 
 
 def main() -> int:

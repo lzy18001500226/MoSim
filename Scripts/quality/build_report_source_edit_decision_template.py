@@ -2,7 +2,7 @@
 """Build a report-source edit decision template and validate its blocked state.
 
 This creates a reviewable decision template only. It does not approve edits and
-does not modify Docs/simulation_report.md.
+does not modify Docs/报告/仿真分析报告_正文骨架.md.
 """
 
 from __future__ import annotations
@@ -83,7 +83,7 @@ def build_template(patch_preview_path: Path, readiness_path: Path) -> dict[str, 
         "decision_owner": "<user_or_PMO>",
         "decided_at": "<ISO8601_after_review>",
         "applies_to": {
-            "simulation_report": "Docs/simulation_report.md",
+            "simulation_report": "Docs/报告/仿真分析报告_正文骨架.md",
             "patch_preview": rel(patch_preview_path),
             "source_edit_readiness_gate": rel(readiness_path),
         },
@@ -134,7 +134,7 @@ def build_artifacts(patch_preview_path: Path, readiness_path: Path) -> dict[str,
         "claim_boundary": [
             "This artifact is a decision template only.",
             "It does not approve report-source edits.",
-            "It does not edit Docs/simulation_report.md.",
+            "It does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not generate final PDFs/video or PMO final acceptance.",
         ],
     }

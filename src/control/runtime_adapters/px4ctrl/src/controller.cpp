@@ -1055,6 +1055,15 @@ LinearControl::calculateGraphicalC99Control(const Desired_State_t &des,
   double collective_thrust_n = 0.0;
   double generated_normalized_thrust = 0.0;
 
+  // Bind the generated graphical model to the exact ROS runtime Profile. The
+  // wrapper only writes exported block parameters; it does not replace the
+  // MWORKS-generated control equations.
+  MosimPx4ctrlGeneratedGraphConfigure(
+      param_.gain.Kp0, param_.gain.Kv0,
+      param_.gain.Kp1, param_.gain.Kv1,
+      param_.gain.Kp2, param_.gain.Kv2,
+      param_.mass, param_.gra, param_.thr_map.hover_percentage);
+
   MosimPx4ctrlGeneratedGraphStepScalar(
       des.p(0), odom.p(0), des.v(0), odom.v(0), des.a(0),
       des.p(1), odom.p(1), des.v(1), odom.v(1), des.a(1),

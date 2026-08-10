@@ -5,6 +5,9 @@ from pathlib import Path
 from types import SimpleNamespace
 
 
+QGC_CUSTOM = Path("src/ground_station/qgc/mosim_extension/custom")
+
+
 def test_ros1_display_launcher_gates_real_d6_topics_and_frames() -> None:
     launcher = Path("Scripts/ui/launch_ros1_display.sh").read_text(encoding="utf-8")
     fastlio_runtime = Path("Scripts/sunray/run_px4ctrl_fastlio_hover_gate.sh").read_text(encoding="utf-8")
@@ -48,6 +51,13 @@ def test_ue_live_bridge_has_single_sender_and_stale_source_guards() -> None:
     assert "estimated_ipv4_udp_wire_bytes_per_s" in streamer
     assert '"run_id": self.args.run_id' in streamer
     assert "Sender-side measurement only" in streamer
+    assert '"source_received_unix_ns": str(state["received_unix_ns"])' in streamer
+    assert '"udp_sent_unix_ns"' in streamer
+    assert "source_sample_is_fresh" in streamer
+    assert "stale_callback_drop_count" in streamer
+    assert "source_to_udp_send_latency_ms" in streamer
+    assert "source_to_receiver_clock_offset_ns" in streamer
+    assert "--source-to-receiver-clock-offset-ns" in launcher
     assert '"unreal_bridge", $hostAddress, $SessionId' in helper
     assert '"unreal_bridge_stop"' in helper
     assert "stop_project_ue_bridge 5005" in launcher
@@ -60,8 +70,17 @@ def test_ue_live_bridge_has_single_sender_and_stale_source_guards() -> None:
     assert '--stream-id "${owner_id}"' in launcher
     assert '"/Game/Maps/Demonstration?game=/Script/MoSimSceneLibrary.MoSimSceneLibraryGameMode"' in unreal_launcher
     assert "StreamTakeoverTimeoutSeconds = 1.0" in receiver_header
+    assert "RecordGameThreadFrameApplied" in receiver_header
+    assert "bRequireLiveStateMirror" in receiver_header
     assert "rejected competing UDP stream" in receiver
     assert "rejected non-monotonic UDP frame" in receiver
+    assert "udp_send_to_ue_receive_latency_ms" in receiver
+    assert "source_to_ue_actor_apply_latency_ms" in receiver
+    assert "Actor application excludes GPU rendering" in receiver
+    assert "source_to_receiver_clock_offset_calibrated" in receiver
+    assert "clock_sync_assumption" not in receiver
+    assert "rejected UDP frame run_id" in receiver
+    assert "rejected non-live UDP frame" in receiver
 
 
 def test_unreal_receiver_and_frame_metrics_are_run_scoped() -> None:
@@ -70,9 +89,28 @@ def test_unreal_receiver_and_frame_metrics_are_run_scoped() -> None:
     launcher = Path("Scripts/ui/attach_orchestrated_displays.ps1").read_text(encoding="utf-8-sig")
     assert "mosim.gazebo_ue_receiver_metrics.v1" in receiver
     assert "receiver_drop_rate" in receiver
+    assert "ue_receive_to_actor_apply_latency_ms" in receiver
     assert "mosim.unreal_frame_timing.v1" in game_mode
     assert "ue_fps" in game_mode
     assert "-MoSimObservabilityRunId=$RunId" in launcher
+
+
+def test_orchestrated_unreal_launch_enables_actual_pose_trajectory_trail() -> None:
+    launcher = Path("Scripts/ui/attach_orchestrated_displays.ps1").read_text(encoding="utf-8-sig")
+    game_mode = Path(
+        "UE5/MoSimSceneLibrary/Source/MoSimSceneLibrary/MoSimSceneLibraryGameMode.cpp"
+    ).read_text(encoding="utf-8")
+
+    assert '"-MoSimLiveTrajectoryTrail"' in launcher
+    assert 'TEXT("MoSimLiveTrajectoryTrail")' in game_mode
+    assert "PlaybackActor->bUpdateVisualHelpers = true;" in game_mode
+    assert "PlaybackActor->bShowTrajectoryTrail = true;" in game_mode
+    assert "PlaybackActor->bShowLocalPlan = false;" in game_mode
+    assert "Get-WslToWindowsClockCalibration" in launcher
+    assert "UE_CLOCK_CALIBRATION.json" in launcher
+    assert "clock_capture_window_ns" in launcher
+    assert "one_way_latency_usable" in launcher
+    assert "-MoSimRequireLiveStateMirror" in launcher
 
 
 def test_fuel_ue_smoothing_uses_arrival_timing_without_changing_runtime_truth() -> None:
@@ -123,6 +161,48 @@ def test_ue_live_bridge_does_not_retransmit_stale_pose() -> None:
     assert streamer.make_frame() is None
 
 
+def test_ue_sender_latency_summary_reports_window_percentiles() -> None:
+    path = Path("Scripts/UE5/stream_ros1_state_to_ue_udp.py")
+    spec = importlib.util.spec_from_file_location("mosim_ue_streamer_timing_test", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    summary = module.latency_summary_ms([1.0, 3.0, 5.0, 7.0])
+
+    assert summary["sample_count"] == 4
+    assert abs(summary["p50_ms"] - 4.0) < 1e-9
+    assert abs(summary["p95_ms"] - 6.7) < 1e-9
+    assert abs(summary["p99_ms"] - 6.94) < 1e-9
+    assert abs(summary["max_ms"] - 7.0) < 1e-9
+
+    args = module.parse_args(["--source-to-receiver-clock-offset-ns", "-123"])
+    assert args.source_to_receiver_clock_offset_ns == -123
+
+    now = time.monotonic()
+    assert module.source_sample_is_fresh(now - 0.49, 0.5, now_monotonic=now)
+    assert not module.source_sample_is_fresh(now - 0.51, 0.5, now_monotonic=now)
+
+    metrics = module.transport_metrics(
+        run_id="run-test",
+        stream_id="stream-test",
+        host="127.0.0.1",
+        port=5005,
+        elapsed_s=1.0,
+        sent_frames=1,
+        sent_payload_bytes=100,
+        send_error_count=0,
+        source_updates=1,
+        source_age_ms=10.0,
+        source_timeout_s=0.25,
+        source_to_udp_send_samples_ms=[2.0],
+        stale_odom_callback_drops=3,
+        source_to_receiver_clock_offset_ns=None,
+    )
+    assert metrics["source_freshness"]["timeout_s"] == 0.25
+    assert metrics["source_freshness"]["stale_callback_drop_count"] == 3
+
+
 def test_ue_rotors_remain_stopped_while_mavros_is_disarmed() -> None:
     path = Path("Scripts/UE5/stream_ros1_state_to_ue_udp.py")
     spec = importlib.util.spec_from_file_location("mosim_ue_streamer_motor_test", path)
@@ -153,10 +233,8 @@ def test_ue_default_uav_pose_matches_gazebo_ground_spawn_height() -> None:
 
 
 def test_qgc_does_not_embed_or_control_the_unreal_window() -> None:
-    qml = Path("apps/flight_console/mosim/custom/src/FlyViewCustomLayer.qml").read_text(encoding="utf-8")
-    bridge = Path("apps/flight_console/mosim/custom/src/MoSimOrchestratorBridge.cc").read_text(
-        encoding="utf-8"
-    )
+    qml = (QGC_CUSTOM / "src" / "FlyViewCustomLayer.qml").read_text(encoding="utf-8")
+    bridge = (QGC_CUSTOM / "src" / "MoSimOrchestratorBridge.cc").read_text(encoding="utf-8")
 
     assert "WindowContainer" not in qml
     assert "mosimOrchestrator.unrealWindow" not in qml

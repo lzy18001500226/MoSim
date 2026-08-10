@@ -2,7 +2,7 @@ within MoSimQuadrotorModel.Experiment.Runners;
 model RotorCommandRunner
   "Offline ROTOR_COMMAND runner; controller output connects directly to the shared plant"
 
-  replaceable model Controller = MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter
+  replaceable model Controller = MoSimQuadrotorModel.Control.Adapters.OfficialPIDRotorAdapter 
     constrainedby MoSimQuadrotorModel.Control.Interfaces.PartialRotorCommandController;
   parameter Real gust_force[3](each unit = "N") = {0, 0, 0};
   parameter Real gust_start_s(unit = "s") = 0;
@@ -13,7 +13,7 @@ model RotorCommandRunner
   parameter Real fault_start_s(unit = "s") = 1e9;
   parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
   parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
-  Controller controller
+  Controller controller 
     annotation(Placement(transformation(origin = {-70, 55}, extent = {{-40, -28}, {40, 28}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant(
     rotor_effectiveness = rotor_effectiveness,
@@ -24,10 +24,10 @@ model RotorCommandRunner
     inertia_scale = inertia_scale,
     fault_start_s = fault_start_s,
     fault_rotor_index = fault_rotor_index,
-    fault_rotor_effectiveness = fault_rotor_effectiveness)
+    fault_rotor_effectiveness = fault_rotor_effectiveness) 
     annotation(Placement(transformation(origin = {150, 0}, extent = {{-52, -75}, {52, 75}})));
   replaceable model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.ClimbPath;
-  Trajectory reference
+  Trajectory reference 
     annotation(Placement(transformation(origin = {-175, 55}, extent = {{-20, -15}, {20, 15}})));
   Modelica.Blocks.Continuous.Derivative velocity_estimator[3](
     each k = 1,
@@ -42,17 +42,17 @@ model RotorCommandRunner
   Real rotor_speed[4];
   Real position_error_norm;
 equation
-  connect(reference.position_command, controller.position_ref)
+  connect(reference.position_command, controller.position_ref) 
     annotation(Line(points = {{-155, 55}, {-110, 55}}, color = {0, 0, 127}));
   connect(reference.velocity_command, controller.velocity_ref);
   connect(reference.acceleration_command, controller.acceleration_ref);
-  connect(plant.position, controller.position_mea)
+  connect(plant.position, controller.position_mea) 
     annotation(Line(points = {{98, -20}, {72, -20}, {72, -100}, {-125, -100}, {-125, 45}, {-110, 45}}, color = {0, 0, 127}));
   connect(plant.position, velocity_estimator.u);
   connect(velocity_estimator.y, controller.velocity_mea);
-  connect(plant.attitude, controller.attitude_mea)
+  connect(plant.attitude, controller.attitude_mea) 
     annotation(Line(points = {{98, -35}, {58, -35}, {58, -120}, {-140, -120}, {-140, 30}, {-110, 30}}, color = {0, 0, 127}));
-  connect(controller.rotor_command, plant.rotor_command)
+  connect(controller.rotor_command, plant.rotor_command) 
     annotation(Line(points = {{-30, 55}, {98, 55}}, color = {0, 0, 127}));
   position_ref = reference.position_command;
   position = plant.position;

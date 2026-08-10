@@ -23,6 +23,10 @@ be reused:
 python3 Scripts/reference/check_reference_index.py --strict
 ```
 
+The default check covers only Git-tracked reference paths. Filesystem-only
+imports can be audited explicitly with `--include-untracked`; they are not
+automatically promoted into the project index.
+
 3. Run the local scanner:
 
 ```bash

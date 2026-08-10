@@ -3,14 +3,13 @@
 Date: 2026-05-28
 
 Status: legacy visible-thread communication contract. It was active before the
-2026-06-24 single-thread reset and is retained for historical packet review,
+task-local operating reset and is retained for historical packet review,
 checker maintenance, and explicitly reopened protocol work only.
 
 Current MoSim execution must start from:
 
 ```text
 Docs/Workflows/single_thread_operating_model.md
-Docs/Workflows/mainline_operations_board.md
 Docs/Index/capability_index.md
 task-specific Docs/Workflows or Docs/Skills entries
 ```
@@ -83,8 +82,7 @@ below is true; when they are all true, dispatch is required in that patrol run:
 ```text
 target thread status is active_visible in Config/legacy/department_threads.json
 target thread is routable through the native visible-thread send/read surface
-task is already inside the current P0 queue, mainline_operations_board.md,
-  latest active PROGRESS entry, or latest accepted return/blocker
+task is explicitly assigned by the current user's newest direct request
 task class is static/source-static, diagnostic_only, recovery_validation,
   packet_contract_fix, rule_sync_only, preflight_drill_only, or another
   explicitly pre-authorized low-risk follow-up
@@ -290,7 +288,7 @@ detect global pending-approval/review/provider indicators, such as a green
 or PMO notice. It must not click the badge or treat the badge as a dead-thread
 failure.
 
-PMO board entries for active dispatch monitoring must stay short. The board
+Historical PMO board entries retained for audit must stay short. The archive
 shows only these columns:
 
 ```text
@@ -356,7 +354,7 @@ a checker, schema, or hook over prose-only workflow text.
 
 ## Capability Resolution
 
-For current single-thread work, capability resolution remains useful when a
+For current task-local work, capability resolution remains useful when a
 task involves selecting or creating a skill, workflow, MCP/plugin
 surface, script, checker, desktop-window capability, or other reusable tool
 asset. Use `Config/protocol/templates/capability_resolution.json` as a small

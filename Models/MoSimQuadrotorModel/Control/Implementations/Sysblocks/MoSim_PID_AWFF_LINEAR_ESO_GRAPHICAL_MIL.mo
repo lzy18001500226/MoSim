@@ -1,8 +1,9 @@
 within MoSimQuadrotorModel.Control.Implementations.Sysblocks;
 model MoSim_PID_AWFF_LINEAR_ESO_GRAPHICAL_MIL "AWFF base controller with x/y/z third-order linear ESO and rotor mixer"
-  import BaseWorkspace.*;
+  extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
-  annotation(__MWORKS(version="26.3.0",PortArrangement(Left(x_position_error, y_position_error, z_position_error, z_reference_rate), Right(rotor_1, rotor_2, rotor_3, rotor_4)),modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true)),SysblockVersion="1.0"),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(Algorithm=Euler,Interval=-1));
+  import BaseWorkspace.*;
+  annotation(__MWORKS(version="26.3.0",PortArrangement(Left(x_position_error, y_position_error, z_position_error, z_reference_rate), Right(rotor_1, rotor_2, rotor_3, rotor_4)),modelType=Control,BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true),OutputInterval=0.02),SysblockVersion="1.0"),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(Algorithm=Euler,Interval=-1));
   SysplorerEmbeddedCoder.Port.Inport x_position_error
     "x position error" annotation (Placement(transformation(origin = {-760, 330}, extent = {{-16, -12}, {16, 12}})));
   SysplorerEmbeddedCoder.Port.Inport y_position_error
@@ -211,276 +212,279 @@ model MoSim_PID_AWFF_LINEAR_ESO_GRAPHICAL_MIL "AWFF base controller with x/y/z t
     "rotor 3 command" annotation (Placement(transformation(origin = {1020, 0}, extent = {{-16, -12}, {16, 12}})));
   SysplorerEmbeddedCoder.Port.Outport rotor_4
     "rotor 4 command" annotation (Placement(transformation(origin = {1020, -120}, extent = {{-16, -12}, {16, 12}})));
+  model ModelWorkspace
+    annotation(__MWORKS(hide = true,BlockSystem(blockKind=BlockKind.modelWorkspace)));
+  end ModelWorkspace;
 equation
-  connect(x_position_error, AWFF_x_P.u)
+  connect(x_position_error, AWFF_x_P.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(x_position_error, AWFF_x_error_delta.u1)
+  connect(x_position_error, AWFF_x_error_delta.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_x_previous_error.y, AWFF_x_error_delta.u2)
+  connect(AWFF_x_previous_error.y, AWFF_x_error_delta.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_x_error_delta.y, AWFF_x_derivative_rate.u)
+  connect(AWFF_x_error_delta.y, AWFF_x_derivative_rate.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_x_derivative_rate.y, AWFF_x_D.u)
+  connect(AWFF_x_derivative_rate.y, AWFF_x_D.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_x_P.y, AWFF_x_base.u1)
+  connect(AWFF_x_P.y, AWFF_x_base.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_x_D.y, AWFF_x_base.u2)
+  connect(AWFF_x_D.y, AWFF_x_base.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(x_position_error, AWFF_x_previous_error.u1)
+  connect(x_position_error, AWFF_x_previous_error.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(y_position_error, AWFF_y_P.u)
+  connect(y_position_error, AWFF_y_P.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(y_position_error, AWFF_y_error_delta.u1)
+  connect(y_position_error, AWFF_y_error_delta.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_y_previous_error.y, AWFF_y_error_delta.u2)
+  connect(AWFF_y_previous_error.y, AWFF_y_error_delta.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_y_error_delta.y, AWFF_y_derivative_rate.u)
+  connect(AWFF_y_error_delta.y, AWFF_y_derivative_rate.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_y_derivative_rate.y, AWFF_y_D.u)
+  connect(AWFF_y_derivative_rate.y, AWFF_y_D.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_y_P.y, AWFF_y_base.u1)
+  connect(AWFF_y_P.y, AWFF_y_base.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_y_D.y, AWFF_y_base.u2)
+  connect(AWFF_y_D.y, AWFF_y_base.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(y_position_error, AWFF_y_previous_error.u1)
+  connect(y_position_error, AWFF_y_previous_error.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(z_position_error, AWFF_z_P.u)
+  connect(z_position_error, AWFF_z_P.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(z_position_error, AWFF_z_error_delta.u1)
+  connect(z_position_error, AWFF_z_error_delta.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_previous_error.y, AWFF_z_error_delta.u2)
+  connect(AWFF_z_previous_error.y, AWFF_z_error_delta.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_error_delta.y, AWFF_z_derivative_rate.u)
+  connect(AWFF_z_error_delta.y, AWFF_z_derivative_rate.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_derivative_rate.y, AWFF_z_D.u)
+  connect(AWFF_z_derivative_rate.y, AWFF_z_D.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(z_position_error, AWFF_z_integral_increment.u)
+  connect(z_position_error, AWFF_z_integral_increment.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_integral_state.y, AWFF_z_integral_next.u1)
+  connect(AWFF_z_integral_state.y, AWFF_z_integral_next.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_integral_increment.y, AWFF_z_integral_next.u2)
+  connect(AWFF_z_integral_increment.y, AWFF_z_integral_next.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_integral_next.y, AWFF_z_integral_limit.u)
+  connect(AWFF_z_integral_next.y, AWFF_z_integral_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_integral_state.y, AWFF_z_I.u)
+  connect(AWFF_z_integral_state.y, AWFF_z_I.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(z_reference_rate, AWFF_z_feedforward.u)
+  connect(z_reference_rate, AWFF_z_feedforward.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_P.y, AWFF_z_PI.u1)
+  connect(AWFF_z_P.y, AWFF_z_PI.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_I.y, AWFF_z_PI.u2)
+  connect(AWFF_z_I.y, AWFF_z_PI.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_PI.y, AWFF_z_PID.u1)
+  connect(AWFF_z_PI.y, AWFF_z_PID.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_D.y, AWFF_z_PID.u2)
+  connect(AWFF_z_D.y, AWFF_z_PID.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_PID.y, AWFF_z_base.u1)
+  connect(AWFF_z_PID.y, AWFF_z_base.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_feedforward.y, AWFF_z_base.u2)
+  connect(AWFF_z_feedforward.y, AWFF_z_base.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(z_position_error, AWFF_z_previous_error.u1)
+  connect(z_position_error, AWFF_z_previous_error.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_integral_limit.y, AWFF_z_integral_state.u1)
+  connect(AWFF_z_integral_limit.y, AWFF_z_integral_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(x_position_error, ESO_x_innovation.u1)
+  connect(x_position_error, ESO_x_innovation.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z1_feedback.y, ESO_x_innovation.u2)
+  connect(ESO_x_z1_feedback.y, ESO_x_innovation.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_innovation.y, ESO_x_beta1_innovation.u)
+  connect(ESO_x_innovation.y, ESO_x_beta1_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z2_feedback.y, ESO_x_z1_dot.u1)
+  connect(ESO_x_z2_feedback.y, ESO_x_z1_dot.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_beta1_innovation.y, ESO_x_z1_dot.u2)
+  connect(ESO_x_beta1_innovation.y, ESO_x_z1_dot.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z1_dot.y, ESO_x_z1_state.u1)
+  connect(ESO_x_z1_dot.y, ESO_x_z1_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_innovation.y, ESO_x_beta2_innovation.u)
+  connect(ESO_x_innovation.y, ESO_x_beta2_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z3_feedback.y, ESO_x_z2_plus_z3.u1)
+  connect(ESO_x_z3_feedback.y, ESO_x_z2_plus_z3.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_x_base.y, ESO_x_z2_plus_z3.u2)
+  connect(AWFF_x_base.y, ESO_x_z2_plus_z3.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z2_plus_z3.y, ESO_x_z2_dot.u1)
+  connect(ESO_x_z2_plus_z3.y, ESO_x_z2_dot.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_beta2_innovation.y, ESO_x_z2_dot.u2)
+  connect(ESO_x_beta2_innovation.y, ESO_x_z2_dot.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z2_dot.y, ESO_x_z2_state.u1)
+  connect(ESO_x_z2_dot.y, ESO_x_z2_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_innovation.y, ESO_x_beta3_innovation.u)
+  connect(ESO_x_innovation.y, ESO_x_beta3_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_beta3_innovation.y, ESO_x_z3_state.u1)
+  connect(ESO_x_beta3_innovation.y, ESO_x_z3_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z1_state.y, ESO_x_z1_feedback.u1)
+  connect(ESO_x_z1_state.y, ESO_x_z1_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z2_state.y, ESO_x_z2_feedback.u1)
+  connect(ESO_x_z2_state.y, ESO_x_z2_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z3_state.y, ESO_x_z3_feedback.u1)
+  connect(ESO_x_z3_state.y, ESO_x_z3_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_z3_state.y, ESO_x_disturbance_over_b0.u)
+  connect(ESO_x_z3_state.y, ESO_x_disturbance_over_b0.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_disturbance_over_b0.y, ESO_x_comp_limit.u)
+  connect(ESO_x_disturbance_over_b0.y, ESO_x_comp_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(y_position_error, ESO_y_innovation.u1)
+  connect(y_position_error, ESO_y_innovation.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z1_feedback.y, ESO_y_innovation.u2)
+  connect(ESO_y_z1_feedback.y, ESO_y_innovation.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_innovation.y, ESO_y_beta1_innovation.u)
+  connect(ESO_y_innovation.y, ESO_y_beta1_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z2_feedback.y, ESO_y_z1_dot.u1)
+  connect(ESO_y_z2_feedback.y, ESO_y_z1_dot.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_beta1_innovation.y, ESO_y_z1_dot.u2)
+  connect(ESO_y_beta1_innovation.y, ESO_y_z1_dot.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z1_dot.y, ESO_y_z1_state.u1)
+  connect(ESO_y_z1_dot.y, ESO_y_z1_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_innovation.y, ESO_y_beta2_innovation.u)
+  connect(ESO_y_innovation.y, ESO_y_beta2_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z3_feedback.y, ESO_y_z2_plus_z3.u1)
+  connect(ESO_y_z3_feedback.y, ESO_y_z2_plus_z3.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_y_base.y, ESO_y_z2_plus_z3.u2)
+  connect(AWFF_y_base.y, ESO_y_z2_plus_z3.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z2_plus_z3.y, ESO_y_z2_dot.u1)
+  connect(ESO_y_z2_plus_z3.y, ESO_y_z2_dot.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_beta2_innovation.y, ESO_y_z2_dot.u2)
+  connect(ESO_y_beta2_innovation.y, ESO_y_z2_dot.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z2_dot.y, ESO_y_z2_state.u1)
+  connect(ESO_y_z2_dot.y, ESO_y_z2_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_innovation.y, ESO_y_beta3_innovation.u)
+  connect(ESO_y_innovation.y, ESO_y_beta3_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_beta3_innovation.y, ESO_y_z3_state.u1)
+  connect(ESO_y_beta3_innovation.y, ESO_y_z3_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z1_state.y, ESO_y_z1_feedback.u1)
+  connect(ESO_y_z1_state.y, ESO_y_z1_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z2_state.y, ESO_y_z2_feedback.u1)
+  connect(ESO_y_z2_state.y, ESO_y_z2_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z3_state.y, ESO_y_z3_feedback.u1)
+  connect(ESO_y_z3_state.y, ESO_y_z3_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_z3_state.y, ESO_y_disturbance_over_b0.u)
+  connect(ESO_y_z3_state.y, ESO_y_disturbance_over_b0.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_disturbance_over_b0.y, ESO_y_comp_limit.u)
+  connect(ESO_y_disturbance_over_b0.y, ESO_y_comp_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(z_position_error, ESO_z_innovation.u1)
+  connect(z_position_error, ESO_z_innovation.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z1_feedback.y, ESO_z_innovation.u2)
+  connect(ESO_z_z1_feedback.y, ESO_z_innovation.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_innovation.y, ESO_z_beta1_innovation.u)
+  connect(ESO_z_innovation.y, ESO_z_beta1_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z2_feedback.y, ESO_z_z1_dot.u1)
+  connect(ESO_z_z2_feedback.y, ESO_z_z1_dot.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_beta1_innovation.y, ESO_z_z1_dot.u2)
+  connect(ESO_z_beta1_innovation.y, ESO_z_z1_dot.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z1_dot.y, ESO_z_z1_state.u1)
+  connect(ESO_z_z1_dot.y, ESO_z_z1_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_innovation.y, ESO_z_beta2_innovation.u)
+  connect(ESO_z_innovation.y, ESO_z_beta2_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z3_feedback.y, ESO_z_z2_plus_z3.u1)
+  connect(ESO_z_z3_feedback.y, ESO_z_z2_plus_z3.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_base.y, ESO_z_z2_plus_z3.u2)
+  connect(AWFF_z_base.y, ESO_z_z2_plus_z3.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z2_plus_z3.y, ESO_z_z2_dot.u1)
+  connect(ESO_z_z2_plus_z3.y, ESO_z_z2_dot.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_beta2_innovation.y, ESO_z_z2_dot.u2)
+  connect(ESO_z_beta2_innovation.y, ESO_z_z2_dot.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z2_dot.y, ESO_z_z2_state.u1)
+  connect(ESO_z_z2_dot.y, ESO_z_z2_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_innovation.y, ESO_z_beta3_innovation.u)
+  connect(ESO_z_innovation.y, ESO_z_beta3_innovation.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_beta3_innovation.y, ESO_z_z3_state.u1)
+  connect(ESO_z_beta3_innovation.y, ESO_z_z3_state.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z1_state.y, ESO_z_z1_feedback.u1)
+  connect(ESO_z_z1_state.y, ESO_z_z1_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z2_state.y, ESO_z_z2_feedback.u1)
+  connect(ESO_z_z2_state.y, ESO_z_z2_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z3_state.y, ESO_z_z3_feedback.u1)
+  connect(ESO_z_z3_state.y, ESO_z_z3_feedback.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_z3_state.y, ESO_z_disturbance_over_b0.u)
+  connect(ESO_z_z3_state.y, ESO_z_disturbance_over_b0.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_disturbance_over_b0.y, ESO_z_comp_limit.u)
+  connect(ESO_z_disturbance_over_b0.y, ESO_z_comp_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_x_base.y, pitch_base_minus_eso.u1)
+  connect(AWFF_x_base.y, pitch_base_minus_eso.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_x_comp_limit.y, pitch_base_minus_eso.u2)
+  connect(ESO_x_comp_limit.y, pitch_base_minus_eso.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_y_base.y, roll_base_minus_eso.u1)
+  connect(AWFF_y_base.y, roll_base_minus_eso.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_y_comp_limit.y, roll_base_minus_eso.u2)
+  connect(ESO_y_comp_limit.y, roll_base_minus_eso.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(AWFF_z_base.y, thrust_base_minus_eso.u1)
+  connect(AWFF_z_base.y, thrust_base_minus_eso.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(ESO_z_comp_limit.y, thrust_base_minus_eso.u2)
+  connect(ESO_z_comp_limit.y, thrust_base_minus_eso.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(pitch_base_minus_eso.y, pitch_command_limit.u)
+  connect(pitch_base_minus_eso.y, pitch_command_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(roll_base_minus_eso.y, roll_command_limit.u)
+  connect(roll_base_minus_eso.y, roll_command_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(thrust_base_minus_eso.y, thrust_command_limit.u)
+  connect(thrust_base_minus_eso.y, thrust_command_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(thrust_command_limit.y, mixer_rotor_1_stage_2.u1)
+  connect(thrust_command_limit.y, mixer_rotor_1_stage_2.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(roll_command_limit.y, mixer_rotor_1_stage_2.u2)
+  connect(roll_command_limit.y, mixer_rotor_1_stage_2.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_1_stage_2.y, mixer_rotor_1_stage_3.u1)
+  connect(mixer_rotor_1_stage_2.y, mixer_rotor_1_stage_3.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(pitch_command_limit.y, mixer_rotor_1_stage_3.u2)
+  connect(pitch_command_limit.y, mixer_rotor_1_stage_3.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_1_stage_3.y, mixer_rotor_1.u1)
+  connect(mixer_rotor_1_stage_3.y, mixer_rotor_1.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(yaw_command_zero.y, mixer_rotor_1.u2)
+  connect(yaw_command_zero.y, mixer_rotor_1.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(thrust_command_limit.y, mixer_rotor_2_inner_stage_2.u1)
+  connect(thrust_command_limit.y, mixer_rotor_2_inner_stage_2.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(roll_command_limit.y, mixer_rotor_2_inner_stage_2.u2)
+  connect(roll_command_limit.y, mixer_rotor_2_inner_stage_2.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_2_inner_stage_2.y, mixer_rotor_2_inner_stage_3.u1)
+  connect(mixer_rotor_2_inner_stage_2.y, mixer_rotor_2_inner_stage_3.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(pitch_command_limit.y, mixer_rotor_2_inner_stage_3.u2)
+  connect(pitch_command_limit.y, mixer_rotor_2_inner_stage_3.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_2_inner_stage_3.y, mixer_rotor_2_inner.u1)
+  connect(mixer_rotor_2_inner_stage_3.y, mixer_rotor_2_inner.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(yaw_command_zero.y, mixer_rotor_2_inner.u2)
+  connect(yaw_command_zero.y, mixer_rotor_2_inner.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_2_inner.y, mixer_rotor_2_negate.u)
+  connect(mixer_rotor_2_inner.y, mixer_rotor_2_negate.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(thrust_command_limit.y, mixer_rotor_3_stage_2.u1)
+  connect(thrust_command_limit.y, mixer_rotor_3_stage_2.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(roll_command_limit.y, mixer_rotor_3_stage_2.u2)
+  connect(roll_command_limit.y, mixer_rotor_3_stage_2.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_3_stage_2.y, mixer_rotor_3_stage_3.u1)
+  connect(mixer_rotor_3_stage_2.y, mixer_rotor_3_stage_3.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(pitch_command_limit.y, mixer_rotor_3_stage_3.u2)
+  connect(pitch_command_limit.y, mixer_rotor_3_stage_3.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_3_stage_3.y, mixer_rotor_3.u1)
+  connect(mixer_rotor_3_stage_3.y, mixer_rotor_3.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(yaw_command_zero.y, mixer_rotor_3.u2)
+  connect(yaw_command_zero.y, mixer_rotor_3.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(thrust_command_limit.y, mixer_rotor_4_inner_stage_2.u1)
+  connect(thrust_command_limit.y, mixer_rotor_4_inner_stage_2.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(roll_command_limit.y, mixer_rotor_4_inner_stage_2.u2)
+  connect(roll_command_limit.y, mixer_rotor_4_inner_stage_2.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_4_inner_stage_2.y, mixer_rotor_4_inner_stage_3.u1)
+  connect(mixer_rotor_4_inner_stage_2.y, mixer_rotor_4_inner_stage_3.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(pitch_command_limit.y, mixer_rotor_4_inner_stage_3.u2)
+  connect(pitch_command_limit.y, mixer_rotor_4_inner_stage_3.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_4_inner_stage_3.y, mixer_rotor_4_inner.u1)
+  connect(mixer_rotor_4_inner_stage_3.y, mixer_rotor_4_inner.u1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(yaw_command_zero.y, mixer_rotor_4_inner.u2)
+  connect(yaw_command_zero.y, mixer_rotor_4_inner.u2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_4_inner.y, mixer_rotor_4_negate.u)
+  connect(mixer_rotor_4_inner.y, mixer_rotor_4_negate.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_1.y, rotor_1_limit.u)
+  connect(mixer_rotor_1.y, rotor_1_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_2_negate.y, rotor_2_limit.u)
+  connect(mixer_rotor_2_negate.y, rotor_2_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_3.y, rotor_3_limit.u)
+  connect(mixer_rotor_3.y, rotor_3_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(mixer_rotor_4_negate.y, rotor_4_limit.u)
+  connect(mixer_rotor_4_negate.y, rotor_4_limit.u) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(rotor_1_limit.y, rotor_1)
+  connect(rotor_1_limit.y, rotor_1) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(rotor_2_limit.y, rotor_2)
+  connect(rotor_2_limit.y, rotor_2) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(rotor_3_limit.y, rotor_3)
+  connect(rotor_3_limit.y, rotor_3) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
-  connect(rotor_4_limit.y, rotor_4)
+  connect(rotor_4_limit.y, rotor_4) 
     annotation(Line(origin = {0.0, 0.0}, points = {{0, 0}, {0, 0}}));
 
 end MoSim_PID_AWFF_LINEAR_ESO_GRAPHICAL_MIL;

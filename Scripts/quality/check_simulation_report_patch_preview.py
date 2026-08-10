@@ -10,7 +10,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_REPORT = ROOT / "Docs" / "simulation_report.md"
+DEFAULT_REPORT = ROOT / "Docs" / "报告" / "仿真分析报告_正文骨架.md"
 DEFAULT_PREVIEW = (
     ROOT
     / "Results"
@@ -30,7 +30,7 @@ REQUIRED_PREVIEW_IDS = {
 }
 
 REQUIRED_BOUNDARY_TERMS = [
-    "does not edit Docs/simulation_report.md",
+    "does not edit Docs/报告/仿真分析报告_正文骨架.md",
     "does not delete historical evidence",
     "does not generate a patch to apply automatically",
     "does not change final PMO acceptance",
@@ -122,8 +122,16 @@ def validate(report_path: Path, preview_path: Path) -> dict[str, Any]:
             "verify_keep_existing_text",
             "replace_single_sentence_after_review",
             "rename_heading_after_review",
-        } and original and original not in report_text:
-            issues.append(f"{item.get('preview_id')} original anchor no longer appears in report source")
+        }:
+            if item.get("anchor_found") is True and not original:
+                issues.append(f"{item.get('preview_id')} marks anchor_found=true but original is empty")
+            if item.get("anchor_found") is True and original not in report_text:
+                issues.append(f"{item.get('preview_id')} original anchor no longer appears in report source")
+            if item.get("anchor_found") is False:
+                warnings.append(
+                    f"{item.get('preview_id')} source anchor was not found; "
+                    "historical line hints are not treated as current evidence"
+                )
 
     joined_preview = "\n".join(
         str(item.get("preview") or "") + "\n" + str(item.get("safety_boundary") or "")

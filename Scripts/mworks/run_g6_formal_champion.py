@@ -195,7 +195,21 @@ def validate_feedback_boundary(binding: dict[str, Any], target_file: Path) -> No
     expected_continuous_signals = ["plant.attitude -> offline_inner_allocator.attitude_mea"]
     if boundary.get("continuous_inner_loop_signals") != expected_continuous_signals:
         raise ValueError("continuous inner-loop formal boundary signals are incomplete or reordered")
-    source = target_file.read_text(encoding="utf-8")
+    target_source = target_file.read_text(encoding="utf-8")
+    effective_source_file = target_file
+    effective_model_file = boundary.get("effective_model_file")
+    if effective_model_file is not None:
+        effective_source_file = project_file(
+            require_text(effective_model_file, label="effective formal boundary model file"),
+            label="effective formal boundary model file",
+        )
+        expected_alias = f"extends {effective_source_file.stem};"
+        if expected_alias not in target_source:
+            raise ValueError(
+                "formal runner does not extend the configured effective boundary model: "
+                f"{expected_alias}"
+            )
+    source = effective_source_file.read_text(encoding="utf-8")
     required_fragments = (
         "parameter Real controller_sample_period_s = 0.01",
         "Modelica.Blocks.Discrete.UnitDelay sampled_position_ref[3]",

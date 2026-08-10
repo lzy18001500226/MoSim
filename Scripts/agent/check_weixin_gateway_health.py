@@ -433,6 +433,7 @@ def send_email_alert(status_path: Path, cooldown_key: str) -> dict[str, object]:
         str(EMAIL_ALERT),
         "--status-json",
         str(status_path),
+        "--incident-alert",
         "--cooldown-key",
         incident_key,
         "--cooldown-minutes",

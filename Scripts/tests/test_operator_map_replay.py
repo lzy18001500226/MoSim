@@ -251,7 +251,7 @@ def test_replay_entry_writes_completed_run_bound_telemetry(
         "experiment_profile_id": manifest["experiment_profile_id"],
         "experiment_profile_hash": manifest["experiment_profile_hash"],
         "controller_backend": "fixture_replay_backend_v1",
-        "state": "replaying",
+        "state": "completed",
         "reason_code": "operator_map_rosbag_replay",
         "updated_at_unix_s": pytest.approx(telemetry["timestamp"]),
     }
@@ -261,6 +261,83 @@ def test_replay_entry_writes_completed_run_bound_telemetry(
     assert replay_manifest["odom_frame_count"] == 3
     assert replay_manifest["duration_s"] == pytest.approx(0.4)
     assert status["state"] == "completed"
+
+
+def test_replay_entry_rejects_out_of_bounds_frame_and_retains_previous_track(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run_dir = tmp_path / "run"
+    run_dir.mkdir()
+    manifest = _manifest()
+    (run_dir / "RUN_MANIFEST.json").write_text(json.dumps(manifest), encoding="utf-8")
+    evidence_path = tmp_path / "coordinate_evidence.json"
+    evidence_path.write_text(json.dumps(_evidence(manifest)), encoding="utf-8")
+    records_path = tmp_path / "records.jsonl"
+    records_path.write_text(
+        "\n".join(
+            json.dumps(record)
+            for record in [
+                _sample("uav1", 2.0, 0.0, 0.0),
+                _sample("uav1", 2.1, 0.0, -400.0),
+                _sample("uav1", 2.2, 1.0, 0.0),
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    args = argparse.Namespace(
+        run_dir=run_dir,
+        manifest=None,
+        bag=None,
+        records_jsonl=records_path,
+        odom_topic=[],
+        coordinate_evidence=evidence_path,
+        speed=1.0,
+        max_update_rate_hz=0.0,
+        no_wait=True,
+    )
+
+    original_atomic_write = replay_entry.atomic_write_json
+    written_map_states: list[dict[str, object]] = []
+
+    def capture_atomic_write(path: Path, payload: object) -> None:
+        original_atomic_write(path, payload)
+        if path.name == "telemetry.json" and isinstance(payload, dict):
+            written_map_states.append(json.loads(json.dumps(payload["map_state"])))
+
+    monkeypatch.setattr(replay_entry, "atomic_write_json", capture_atomic_write)
+    assert run_replay(args) == 0
+
+    telemetry = json.loads((run_dir / "telemetry.json").read_text(encoding="utf-8"))
+    rejected_states = [
+        state for state in written_map_states if state["map_data_status"]["state"] == "rejected"
+    ]
+    assert len(rejected_states) == 1
+    rejected = rejected_states[0]
+    assert rejected["map_data_status"]["reason_code"] == "operator_map_vehicle_position_invalid"
+    assert rejected["vehicles"] == [{"vehicle_id": "uav1", "state": {"connected": True}}]
+    assert rejected["actual_tracks"]["uav1"]["points"] == [{"x": 0.0, "y": 0.0, "z": 1.2}]
+    assert telemetry["map_state"]["transport"]["playback_state"] == "completed"
+    assert telemetry["map_state"]["actual_tracks"]["uav1"]["points"] == [
+        {"x": 0.0, "y": 0.0, "z": 1.2},
+        {"x": 1.0, "y": 0.0, "z": 1.2},
+    ]
+
+
+def test_replay_telemetry_status_tracks_terminal_playback_state() -> None:
+    manifest = _manifest()
+    manifest["controller_backend"] = "fixture_replay_backend_v1"
+
+    for playback_state, expected_runtime_state in (("playing", "replaying"), ("completed", "completed")):
+        telemetry = _telemetry_payload(
+            manifest,
+            {"vehicles": [], "task_paths": {}, "transport": {"playback_state": playback_state}},
+            now=123.0,
+        )
+
+        assert telemetry["readiness"]["status"] == expected_runtime_state
+        assert telemetry["operator_runtime_status"]["state"] == expected_runtime_state
+        assert telemetry["mission_status"]["terminal"] is (playback_state == "completed")
 
 
 def test_legacy_manifest_replay_keeps_map_data_without_runtime_status() -> None:

@@ -5,9 +5,9 @@ model AllocatorPitchAxisSignPlantSmoke
   parameter Real pitch_reference_rad = 0.08
     "Positive command used only to identify the plant pitch-axis sign";
 
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator 
     annotation(Placement(transformation(extent={{-66,-20},{-26,20}})));
-  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
+  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant 
     annotation(Placement(transformation(extent={{26,-20},{66,20}})));
   Real position[3];
   Real attitude[3];
@@ -17,7 +17,7 @@ equation
   allocator.attitude_ref = {0.0, pitch_reference_rad, 0.0};
   allocator.attitude_mea = {0.0, 0.0, 0.0};
   allocator.collective_thrust_delta = 0.0;
-  connect(allocator.rotor_command, plant.rotor_command)
+  connect(allocator.rotor_command, plant.rotor_command) 
     annotation(Line(points={{-26,0},{26,0}}, color={0,0,127}));
   position = plant.position;
   attitude = plant.attitude;

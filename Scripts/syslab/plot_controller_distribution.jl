@@ -1,13 +1,11 @@
-# 控制器性能分布可视化（基于 G3_STATUS.json，28 条性能达标）
+# 控制器性能分布可视化（基于当前目录 48 条对账，30 条性能达标）
 # 生成5张分布图：2个箱线图 + 2个直方图 + 1个排名柱状图
 #
-# 口径：数据源为 G3 有效状态，status=="pass" 即 28 条性能达标
-# （终端位置误差 < 5 m），等于 effective_passed_count。
-# 不要改回 G2_STATUS.json —— 那是 17 条的第一轮冻结结果，与报告正文口径不一致。
-# 口径权威：Config/control_platform/climbpath_baseline_count_definition.json
+# 口径：数据源为当前 G3_CATALOG_48_CURRENT_STATUS.json 的 accepted index，
+# status=="pass" 即当前 30 条性能达标（终端位置误差 < 5 m）。
+# 不要改回历史 G3_STATUS.json；它是 28 条快照，只用于追溯。
 
 using TyPlot
-using JSON
 using Statistics
 
 include(joinpath(@__DIR__, "typlot_figure_style.jl"))
@@ -16,20 +14,35 @@ include(joinpath(@__DIR__, "typlot_figure_style.jl"))
 const OUTDIR = isdefined(Main, :DIST_OUTPUT_ROOT) ? Main.DIST_OUTPUT_ROOT :
                raw"C:\Users\HP\Desktop\MoSim\Docs\报告\figures\第10章"
 
-# 读取G3有效状态文件
-status_path = raw"C:\Users\HP\Desktop\MoSim\Results\control_platform\phase2_full_48_climbpath\g3_repair\G3_STATUS.json"
-data = JSON.parsefile(status_path)
+const INDEX_PATH = raw"C:\Users\HP\Desktop\MoSim\.tmp\chapter10_typlot\accepted_controller_index.csv"
 
-# 提取所有性能达标的控制器数据
-passed_controllers = filter(row -> row["status"] == "pass", data["rows"])
+function read_index(path::String)
+    isfile(path) || error("当前 accepted index 不存在，请先运行 build_chapter10_typlot_index.py: $path")
+    lines = readlines(path)
+    header = [strip(value) for value in split(lines[1], ',')]
+    rows = Dict{String,String}[]
+    for line in lines[2:end]
+        isempty(strip(line)) && continue
+        values = split(line, ',')
+        length(values) == length(header) || error("accepted index 含有无法解析的行")
+        push!(rows, Dict(header[i] => strip(String(values[i])) for i in eachindex(header)))
+    end
+    rows
+end
 
-println("成功读取 $(length(passed_controllers)) 条性能达标控制器数据（应为 28）")
-@assert length(passed_controllers) == 28 "达标数应为 28，实际 $(length(passed_controllers))；检查 G3_STATUS.json"
+num(row, key) = (value = get(row, key, ""); isempty(value) ? NaN : something(tryparse(Float64, value), NaN))
+
+# 提取当前目录对账中的 30 条性能达标控制器数据
+passed_controllers = read_index(INDEX_PATH)
+println("成功读取 $(length(passed_controllers)) 条当前性能达标控制器数据（应为 30）")
+@assert length(passed_controllers) == 30 "当前达标数应为 30，实际 $(length(passed_controllers))；检查 current catalog index"
 
 # 收集指标数据
-all_rmse = [r["position_rmse_m"] for r in passed_controllers]
-all_terminal = [r["terminal_position_error_norm_m"] for r in passed_controllers]
+all_rmse = [num(r, "position_rmse_m") for r in passed_controllers]
+all_terminal = [num(r, "terminal_position_error_m") for r in passed_controllers]
 controller_names = [r["controller_id"] for r in passed_controllers]
+@assert all(isfinite, all_rmse) "当前 accepted index 存在缺失 position_rmse_m"
+@assert all(isfinite, all_terminal) "当前 accepted index 存在缺失 terminal_position_error_m"
 
 # 排版标准由 typlot_figure_style.jl 统一提供：Times New Roman、无中文、无标题，
 # 字号按画布宽度等比缩放（锚点为已过审的 9 in / 18 pt 标签 / 16 pt 刻度）。
@@ -38,7 +51,7 @@ const N = length(passed_controllers)
 
 const CV_BOX  = (6.0, 7.5)     # 单组箱线，窄高
 const CV_HIST = (10.0, 6.0)    # 直方
-const CV_RANK = (10.0, 11.3)   # 28 条排名：改横条，竖版 90° 旋转必堆叠
+const CV_RANK = (10.0, 11.3)   # 30 条排名：改横条，竖版 90° 旋转必堆叠
 
 # 图1：Position RMSE箱线图
 fig(CV_BOX...)
@@ -82,7 +95,7 @@ sorted_indices = sortperm(all_rmse)
 sorted_rmse = all_rmse[sorted_indices]
 sorted_names = controller_names[sorted_indices]
 
-# 竖版 + xtickangle(90) 在 28 条长控制器名下必堆叠，改横条（已过审：p2_ranking_barh）
+# 竖版 + xtickangle(90) 在 30 条长控制器名下必堆叠，改横条（已过审：p2_ranking_barh）
 fig(CV_RANK...)
 y = 1:length(sorted_rmse)
 barh(y, sorted_rmse)

@@ -14,10 +14,10 @@ patch: a project rule, workflow, skill, or index was improved
 no_patch: sources were checked and no project change was justified
 ```
 
-Current coordinating-thread routing:
+Current task-local lookup rule:
 
 ```text
-coordinating thread
+current conversation
   role: inspect local reference indexes first, then run a scoped audit or
     web/source lookup only when current work needs it; use a temporary
     subagent only for an independent bounded source slice

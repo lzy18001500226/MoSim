@@ -1,8 +1,8 @@
 # Add Controller Workflow
 
 > Status: reusable controller-addition workflow. Its G9 family sequence is
-> historical trace-back, while current evidence selection follows
-> `Docs/Workflows/controller_evidence_closeout.md` and the current board.
+> historical trace-back, while current evidence rules are defined by
+> `Docs/Workflows/controller_evidence_closeout.md` and the current user's scope.
 > This workflow is static-first. It does not start ROS, Gazebo, PX4, MAVROS,
 > RViz, UE, or MWORKS unless the current user request explicitly opens that live
 > scope.
@@ -25,12 +25,12 @@ G9-E: INDI / PID-INDI bounded augmentation
 G9-F: NMPC outer loop
 ```
 
-The current execution selector is
-`Docs/Workflows/mainline_operations_board.md`, not this workflow by itself.
+The current user's direct request selects whether this workflow may run; this
+workflow does not select work by itself.
 Before promoting a new controller into the active evidence matrix, read
 `Docs/Workflows/controller_evidence_closeout.md` for the frozen model-root,
 claim boundary, and G1-G7 gates. Do not restart historical G9/G10/G11
-sequences unless the board or user explicitly reopens that evidence.
+sequences unless the current user explicitly reopens that evidence.
 
 Do not treat a roadmap entry or a `ControllerProfile` entry as an implemented
 controller. Planned controllers must stay blocked by `C-CTRL-01` until source
@@ -241,7 +241,7 @@ G9.5/G9.6:
   Gazebo trajectories before claiming improvement.
 
 G10:
-  frozen backlog after the earlier G9.5/G9.6/G10 probes. Because the board now
+  frozen backlog after the earlier G9.5/G9.6/G10 probes. Historical evidence
   records the G9 family codegen and runtime reinjection route as closed for the
   current ATTITUDE_THRUST generated-family path, a reopened enhancement must
   start with minimal Gazebo evidence for its own contribution. Implement
@@ -264,11 +264,11 @@ G11:
   and static ROS/Sunray adapter-shape validation at
   `Results/g9/controller_family_attitude_thrust_v1/g9_family_ros_sunray_adapter_gate_20260630_200721/RUN_MANIFEST.json`.
   These gates prove only generated source, same-input numerical equivalence,
-  and px4ctrl/MAVROS attitude-target command shape. The board also records the
+  and px4ctrl/MAVROS attitude-target command shape. Historical records also show the
   later official-PID generated-family build, Diff single-UAV, and Diff
-  three-UAV runtime reinjection evidence. That closes the current
-  generated-family route; new work should reopen only the board-selected
-  enhancement gate, not repeat this closure sequence.
+  three-UAV runtime reinjection evidence. That closes the historical
+  generated-family route; new work must be explicitly scoped by the user rather
+  than inferred from this closure sequence.
 
 G12/G13:
   UE map import, QGC secondary development, and RflySim-like display are

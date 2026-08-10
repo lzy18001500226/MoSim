@@ -31,7 +31,7 @@ def test_current_simulation_report_source_hygiene_plan_builds(tmp_path: Path) ->
     completed = run_builder(tmp_path)
     assert completed.returncode == 0, completed.stdout + completed.stderr
     report = json.loads(completed.stdout)
-    assert report["finding_count"] >= 5
+    assert report["finding_count"] == 2
     assert report["edits_report_source"] is False
     assert report["deletes_content"] is False
     assert report["final_acceptance"] is False
@@ -42,15 +42,11 @@ def test_current_simulation_report_source_hygiene_plan_builds(tmp_path: Path) ->
     assert plan["summary"]["deletes_content"] is False
     assert plan["summary"]["final_acceptance"] is False
     finding_ids = {finding["finding_id"] for finding in plan["findings"]}
-    assert {
-        "old_airframe_snapshot_warnings",
+    assert finding_ids == {
         "smoke_and_staged_prominence",
         "legacy_controller_comparison_sections",
-        "heading_number_mismatch",
-        "formation_next_stage_statement_conflict",
-        "final_artifact_missing_boundary",
-    }.issubset(finding_ids)
-    assert "does not edit Docs/simulation_report.md" in " ".join(plan["claim_boundary"])
+    }
+    assert "does not edit Docs/报告/仿真分析报告_正文骨架.md" in " ".join(plan["claim_boundary"])
 
 
 def main() -> int:

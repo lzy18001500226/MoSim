@@ -4,7 +4,7 @@
 > reference indexes, and capability routing. The legacy long body was
 > archived at `Docs/Cache/agent_legacy/tooling_assets_governance_legacy_20260624.md`.
 
-Status: coordinating-thread project workflow, 2026-07-24 CST.
+Status: task-local project workflow, 2026-07-24 CST.
 
 ## 1. Scope
 
@@ -61,10 +61,20 @@ python Scripts\hooks\preflight.py --json --write-path Results/tmp/hook_probe.txt
 4. Only after the new path passes, update `C:\Users\HP\.codex\hooks.json`.
 5. Re-run the smoke test.
 
-Hook policy must remain mechanical: block outside-project writes, destructive
-commands, broad Git, real sensitive paths, oversized file candidates, and
-known Git/runtime-output hazards. Do not use hooks to load large context or
-auto-continue turns.
+Hook policy must remain mechanical and bounded: block outside-project writes,
+destructive commands, broad Git, real sensitive paths, oversized file
+candidates, and known Git/runtime-output hazards. Lifecycle hooks may retain a
+small task/source checkpoint and advise a current-thread recovery read only
+when that capability is exposed after compaction. The primary path must not
+parse transcripts, route work from another thread, load large context, or
+auto-continue ordinary task completion.
+Only when direct capture is absent may a compatibility fallback inspect a fixed
+small tail of hook-provided `transcript_path`, accept one latest recognized
+direct-user record, and reject unknown formats, internal continuations, and
+older entries. It remains a non-authoritative recovery aid, never a task
+selector. When no current direct input can be recovered, the hook must leave
+continuity unresolved and request the smallest recovery source; it must not
+create a synthetic Stop continuation prompt.
 
 ## 4. Capability Workflow
 
@@ -74,7 +84,7 @@ When adding or changing a capability:
 2. Update the machine row in `Config/capabilities/capability_index.json`.
 3. If explicitly reopened legacy/design task packets use the capability,
    update `Config/protocol/` templates. Do not update legacy packet templates
-   for ordinary coordinating-thread work.
+   for ordinary task-local work.
 4. Run:
 
 ```powershell

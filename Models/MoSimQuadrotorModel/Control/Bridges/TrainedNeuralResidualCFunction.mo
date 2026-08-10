@@ -3,113 +3,114 @@ model TrainedNeuralResidualCFunction
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
-  annotation(__MWORKS(modelType=Control,PortArrangement(Left(mode_in, dt_in, position_x_in, position_y_in, position_z_in, velocity_x_in, velocity_y_in, velocity_z_in, attitude_w_in, attitude_x_in, attitude_y_in, attitude_z_in, angular_velocity_x_in, angular_velocity_y_in, angular_velocity_z_in, reference_position_x_in, reference_position_y_in, reference_position_z_in, reference_velocity_x_in, reference_velocity_y_in, reference_velocity_z_in, reference_acceleration_x_in, reference_acceleration_y_in, reference_acceleration_z_in, reference_yaw_in, mass_kg_in, gravity_mps2_in, hover_percentage_in, max_tilt_rad_in, min_collective_thrust_n_in, max_collective_thrust_n_in, enable_in, learning_enable_in, reset_in), Right(desired_attitude_w_out, desired_attitude_x_out, desired_attitude_y_out, desired_attitude_z_out, desired_collective_thrust_n_out, normalized_thrust_out, desired_acceleration_x_out, desired_acceleration_y_out, desired_acceleration_z_out, learning_action_x_out, learning_action_y_out, learning_action_z_out, scheduled_gain_x_out, scheduled_gain_y_out, scheduled_gain_z_out, fallback_active_out, status_code_out, mode_out_out)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0",version="26.3.0",CodeGeneration(Config = {"code_placement":{"mode":"Compact"},"code_replacement":{"standard_c_library":"C99"},"custom_code":{"code":{"function_declare":{"head":"","item_head":"","item_tail":"","tail":""},"function_define":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_declare":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_define":{"head":"","item_head":"","item_tail":"","tail":""},"include":{"head":"","item_head":"","item_tail":"","tail":""},"macro":{"head":"","item_head":"","item_tail":"","tail":""},"type":{"head":"","item_head":"","item_tail":"","tail":""}},"code_protection":{"integer_division_by_zero":false,"overflow":false}},"data_type":{"real_as_float":false},"experiment":{"task_and_sample":{"muti_task_mode":false,"whether_to_use_prefix":false}},"hardware_platform":{"largest_atomic_size":{"floating_point":"64","integer":"32"}},"identifier":{"max_length":32,"style":{"function":"camelCase","local_variable":"camelCase","macro":"camelCase","mem_var":"camelCase","type":"camelCase"}},"interface":{"function_name":{"initialize":"Init","step":"Step"}},"is_expand":{"is_expand":false},"optimization":{"array_loop_threshold":5,"logical_operator":"logical"}}, Sim_seting = {"sim_seting":{"output":"C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\g6_formal_champion_promotion_20260725\\trained_neural_residual\\generated_c"}})),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.03,StoreEventValue=0),Diagram(coordinateSystem(extent={{-620,-456.00},{620,456.00}},grid={2,2})));
+  annotation(__MWORKS(modelType=Control,PortArrangement(Left(mode_in, dt_in, position_x_in, position_y_in, position_z_in, velocity_x_in, velocity_y_in, velocity_z_in, attitude_w_in, attitude_x_in, attitude_y_in, attitude_z_in, angular_velocity_x_in, angular_velocity_y_in, angular_velocity_z_in, reference_position_x_in, reference_position_y_in, reference_position_z_in, reference_velocity_x_in, reference_velocity_y_in, reference_velocity_z_in, reference_acceleration_x_in, reference_acceleration_y_in, reference_acceleration_z_in, reference_yaw_in, mass_kg_in, gravity_mps2_in, hover_percentage_in, max_tilt_rad_in, min_collective_thrust_n_in, max_collective_thrust_n_in, enable_in, learning_enable_in, reset_in), Right(desired_attitude_w_out, desired_attitude_x_out, desired_attitude_y_out, desired_attitude_z_out, desired_collective_thrust_n_out, normalized_thrust_out, desired_acceleration_x_out, desired_acceleration_y_out, desired_acceleration_z_out, learning_action_x_out, learning_action_y_out, learning_action_z_out, scheduled_gain_x_out, scheduled_gain_y_out, scheduled_gain_z_out, fallback_active_out, status_code_out, mode_out_out)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0",version="26.3.0",CodeGeneration(Config = {"code_placement":{"mode":"Compact"},"code_replacement":{"standard_c_library":"C99"},"custom_code":{"code":{"function_declare":{"head":"","item_head":"","item_tail":"","tail":""},"function_define":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_declare":{"head":"","item_head":"","item_tail":"","tail":""},"global_variable_define":{"head":"","item_head":"","item_tail":"","tail":""},"include":{"head":"","item_head":"","item_tail":"","tail":""},"macro":{"head":"","item_head":"","item_tail":"","tail":""},"type":{"head":"","item_head":"","item_tail":"","tail":""}},"code_protection":{"integer_division_by_zero":false,"overflow":false}},"data_type":{"real_as_float":false
+},"experiment":{"task_and_sample":{"muti_task_mode":false,"whether_to_use_prefix":false}},"hardware_platform":{"largest_atomic_size":{"floating_point":"64","integer":"32"}},"identifier":{"max_length":32,"style":{"function":"camelCase","local_variable":"camelCase","macro":"camelCase","mem_var":"camelCase","type":"camelCase"}},"interface":{"function_name":{"initialize":"Init","step":"Step"}},"is_expand":{"is_expand":false},"optimization":{"array_loop_threshold":5,"logical_operator":"logical"}}, Sim_seting = {"sim_seting":{"output":"C:\\Users\\HP\\Desktop\\MoSim\\Results\\control_platform\\g6_formal_champion_promotion_20260725\\trained_neural_residual\\generated_c"}})),Icon(coordinateSystem(preserveAspectRatio=false)),experiment(DoublePrecision=true,Algorithm=Euler,IntegratorStep=0.01,Interval=0.01,StartTime=0,StopTime=0.03,StoreEventValue=0),Diagram(coordinateSystem(extent={{-620,-456.00},{620,456.00}},grid={2,2})));
 
-  CFunction cFunction
+  CFunction cFunction 
     annotation (Placement(transformation(origin={0,0}, extent={{-80,-396.00},{80,396.00}})),__MWORKS(BlockSystem(SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport mode_in
+  SysplorerEmbeddedCoder.Port.Inport mode_in 
     annotation (Placement(transformation(origin={-500,396.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport dt_in
+  SysplorerEmbeddedCoder.Port.Inport dt_in 
     annotation (Placement(transformation(origin={-500,372.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport position_x_in
+  SysplorerEmbeddedCoder.Port.Inport position_x_in 
     annotation (Placement(transformation(origin={-500,348.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport position_y_in
+  SysplorerEmbeddedCoder.Port.Inport position_y_in 
     annotation (Placement(transformation(origin={-500,324.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport position_z_in
+  SysplorerEmbeddedCoder.Port.Inport position_z_in 
     annotation (Placement(transformation(origin={-500,300.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport velocity_x_in
+  SysplorerEmbeddedCoder.Port.Inport velocity_x_in 
     annotation (Placement(transformation(origin={-500,276.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport velocity_y_in
+  SysplorerEmbeddedCoder.Port.Inport velocity_y_in 
     annotation (Placement(transformation(origin={-500,252.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport velocity_z_in
+  SysplorerEmbeddedCoder.Port.Inport velocity_z_in 
     annotation (Placement(transformation(origin={-500,228.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport attitude_w_in
+  SysplorerEmbeddedCoder.Port.Inport attitude_w_in 
     annotation (Placement(transformation(origin={-500,204.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport attitude_x_in
+  SysplorerEmbeddedCoder.Port.Inport attitude_x_in 
     annotation (Placement(transformation(origin={-500,180.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport attitude_y_in
+  SysplorerEmbeddedCoder.Port.Inport attitude_y_in 
     annotation (Placement(transformation(origin={-500,156.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport attitude_z_in
+  SysplorerEmbeddedCoder.Port.Inport attitude_z_in 
     annotation (Placement(transformation(origin={-500,132.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport angular_velocity_x_in
+  SysplorerEmbeddedCoder.Port.Inport angular_velocity_x_in 
     annotation (Placement(transformation(origin={-500,108.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport angular_velocity_y_in
+  SysplorerEmbeddedCoder.Port.Inport angular_velocity_y_in 
     annotation (Placement(transformation(origin={-500,84.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport angular_velocity_z_in
+  SysplorerEmbeddedCoder.Port.Inport angular_velocity_z_in 
     annotation (Placement(transformation(origin={-500,60.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_position_x_in
+  SysplorerEmbeddedCoder.Port.Inport reference_position_x_in 
     annotation (Placement(transformation(origin={-500,36.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_position_y_in
+  SysplorerEmbeddedCoder.Port.Inport reference_position_y_in 
     annotation (Placement(transformation(origin={-500,12.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_position_z_in
+  SysplorerEmbeddedCoder.Port.Inport reference_position_z_in 
     annotation (Placement(transformation(origin={-500,-12.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_velocity_x_in
+  SysplorerEmbeddedCoder.Port.Inport reference_velocity_x_in 
     annotation (Placement(transformation(origin={-500,-36.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_velocity_y_in
+  SysplorerEmbeddedCoder.Port.Inport reference_velocity_y_in 
     annotation (Placement(transformation(origin={-500,-60.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_velocity_z_in
+  SysplorerEmbeddedCoder.Port.Inport reference_velocity_z_in 
     annotation (Placement(transformation(origin={-500,-84.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_acceleration_x_in
+  SysplorerEmbeddedCoder.Port.Inport reference_acceleration_x_in 
     annotation (Placement(transformation(origin={-500,-108.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_acceleration_y_in
+  SysplorerEmbeddedCoder.Port.Inport reference_acceleration_y_in 
     annotation (Placement(transformation(origin={-500,-132.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_acceleration_z_in
+  SysplorerEmbeddedCoder.Port.Inport reference_acceleration_z_in 
     annotation (Placement(transformation(origin={-500,-156.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reference_yaw_in
+  SysplorerEmbeddedCoder.Port.Inport reference_yaw_in 
     annotation (Placement(transformation(origin={-500,-180.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport mass_kg_in
+  SysplorerEmbeddedCoder.Port.Inport mass_kg_in 
     annotation (Placement(transformation(origin={-500,-204.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport gravity_mps2_in
+  SysplorerEmbeddedCoder.Port.Inport gravity_mps2_in 
     annotation (Placement(transformation(origin={-500,-228.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport hover_percentage_in
+  SysplorerEmbeddedCoder.Port.Inport hover_percentage_in 
     annotation (Placement(transformation(origin={-500,-252.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport max_tilt_rad_in
+  SysplorerEmbeddedCoder.Port.Inport max_tilt_rad_in 
     annotation (Placement(transformation(origin={-500,-276.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport min_collective_thrust_n_in
+  SysplorerEmbeddedCoder.Port.Inport min_collective_thrust_n_in 
     annotation (Placement(transformation(origin={-500,-300.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport max_collective_thrust_n_in
+  SysplorerEmbeddedCoder.Port.Inport max_collective_thrust_n_in 
     annotation (Placement(transformation(origin={-500,-324.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport enable_in
+  SysplorerEmbeddedCoder.Port.Inport enable_in 
     annotation (Placement(transformation(origin={-500,-348.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport learning_enable_in
+  SysplorerEmbeddedCoder.Port.Inport learning_enable_in 
     annotation (Placement(transformation(origin={-500,-372.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Inport reset_in
+  SysplorerEmbeddedCoder.Port.Inport reset_in 
     annotation (Placement(transformation(origin={-500,-396.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(inherit=InheritType.auto,ref="double"),Dimension(dimensionType=DimensionType.auto)=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_attitude_w_out
+  SysplorerEmbeddedCoder.Port.Outport desired_attitude_w_out 
     annotation (Placement(transformation(origin={500,396.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_attitude_x_out
+  SysplorerEmbeddedCoder.Port.Outport desired_attitude_x_out 
     annotation (Placement(transformation(origin={500,349.41},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_attitude_y_out
+  SysplorerEmbeddedCoder.Port.Outport desired_attitude_y_out 
     annotation (Placement(transformation(origin={500,302.82},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_attitude_z_out
+  SysplorerEmbeddedCoder.Port.Outport desired_attitude_z_out 
     annotation (Placement(transformation(origin={500,256.24},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_collective_thrust_n_out
+  SysplorerEmbeddedCoder.Port.Outport desired_collective_thrust_n_out 
     annotation (Placement(transformation(origin={500,209.65},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport normalized_thrust_out
+  SysplorerEmbeddedCoder.Port.Outport normalized_thrust_out 
     annotation (Placement(transformation(origin={500,163.06},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_x_out
+  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_x_out 
     annotation (Placement(transformation(origin={500,116.47},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_y_out
+  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_y_out 
     annotation (Placement(transformation(origin={500,69.88},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_z_out
+  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_z_out 
     annotation (Placement(transformation(origin={500,23.29},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport learning_action_x_out
+  SysplorerEmbeddedCoder.Port.Outport learning_action_x_out 
     annotation (Placement(transformation(origin={500,-23.29},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport learning_action_y_out
+  SysplorerEmbeddedCoder.Port.Outport learning_action_y_out 
     annotation (Placement(transformation(origin={500,-69.88},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport learning_action_z_out
+  SysplorerEmbeddedCoder.Port.Outport learning_action_z_out 
     annotation (Placement(transformation(origin={500,-116.47},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport scheduled_gain_x_out
+  SysplorerEmbeddedCoder.Port.Outport scheduled_gain_x_out 
     annotation (Placement(transformation(origin={500,-163.06},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport scheduled_gain_y_out
+  SysplorerEmbeddedCoder.Port.Outport scheduled_gain_y_out 
     annotation (Placement(transformation(origin={500,-209.65},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport scheduled_gain_z_out
+  SysplorerEmbeddedCoder.Port.Outport scheduled_gain_z_out 
     annotation (Placement(transformation(origin={500,-256.24},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport fallback_active_out
+  SysplorerEmbeddedCoder.Port.Outport fallback_active_out 
     annotation (Placement(transformation(origin={500,-302.82},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport status_code_out
+  SysplorerEmbeddedCoder.Port.Outport status_code_out 
     annotation (Placement(transformation(origin={500,-349.41},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
-  SysplorerEmbeddedCoder.Port.Outport mode_out_out
+  SysplorerEmbeddedCoder.Port.Outport mode_out_out 
     annotation (Placement(transformation(origin={500,-396.00},extent={{-8,-8},{8,8}})),__MWORKS(BlockSystem(Type(ref="double"),Dimension=1,SampleTime(group="D1")=0.01)));
 
   model ModelWorkspace
@@ -117,7 +118,9 @@ model TrainedNeuralResidualCFunction
   end ModelWorkspace;
 
   block CFunction
-    annotation(__MWORKS(PortArrangement(Left(mode, dt, position_x, position_y, position_z, velocity_x, velocity_y, velocity_z, attitude_w, attitude_x, attitude_y, attitude_z, angular_velocity_x, angular_velocity_y, angular_velocity_z, reference_position_x, reference_position_y, reference_position_z, reference_velocity_x, reference_velocity_y, reference_velocity_z, reference_acceleration_x, reference_acceleration_y, reference_acceleration_z, reference_yaw, mass_kg, gravity_mps2, hover_percentage, max_tilt_rad, min_collective_thrust_n, max_collective_thrust_n, enable, learning_enable, reset), Right(desired_attitude_w, desired_attitude_x, desired_attitude_y, desired_attitude_z, desired_collective_thrust_n, normalized_thrust, desired_acceleration_x, desired_acceleration_y, desired_acceleration_z, learning_action_x, learning_action_y, learning_action_z, scheduled_gain_x, scheduled_gain_y, scheduled_gain_z, fallback_active, status_code, mode_out)),PortLabels(labelType="CustomType",labels(label(text="mode",instance="mode"),label(text="dt",instance="dt"),label(text="position_x",instance="position_x"),label(text="position_y",instance="position_y"),label(text="position_z",instance="position_z"),label(text="velocity_x",instance="velocity_x"),label(text="velocity_y",instance="velocity_y"),label(text="velocity_z",instance="velocity_z"),label(text="attitude_w",instance="attitude_w"),label(text="attitude_x",instance="attitude_x"),label(text="attitude_y",instance="attitude_y"),label(text="attitude_z",instance="attitude_z"),label(text="angular_velocity_x",instance="angular_velocity_x"),label(text="angular_velocity_y",instance="angular_velocity_y"),label(text="angular_velocity_z",instance="angular_velocity_z"),label(text="reference_position_x",instance="reference_position_x"),label(text="reference_position_y",instance="reference_position_y"),label(text="reference_position_z",instance="reference_position_z"),label(text="reference_velocity_x",instance="reference_velocity_x"),label(text="reference_velocity_y",instance="reference_velocity_y"),label(text="reference_velocity_z",instance="reference_velocity_z"),label(text="reference_acceleration_x",instance="reference_acceleration_x"),label(text="reference_acceleration_y",instance="reference_acceleration_y"),label(text="reference_acceleration_z",instance="reference_acceleration_z"),label(text="reference_yaw",instance="reference_yaw"),label(text="mass_kg",instance="mass_kg"),label(text="gravity_mps2",instance="gravity_mps2"),label(text="hover_percentage",instance="hover_percentage"),label(text="max_tilt_rad",instance="max_tilt_rad"),label(text="min_collective_thrust_n",instance="min_collective_thrust_n"),label(text="max_collective_thrust_n",instance="max_collective_thrust_n"),label(text="enable",instance="enable"),label(text="learning_enable",instance="learning_enable"),label(text="reset",instance="reset"),label(text="desired_attitude_w",instance="desired_attitude_w"),label(text="desired_attitude_x",instance="desired_attitude_x"),label(text="desired_attitude_y",instance="desired_attitude_y"),label(text="desired_attitude_z",instance="desired_attitude_z"),label(text="desired_collective_thrust_n",instance="desired_collective_thrust_n"),label(text="normalized_thrust",instance="normalized_thrust"),label(text="desired_acceleration_x",instance="desired_acceleration_x"),label(text="desired_acceleration_y",instance="desired_acceleration_y"),label(text="desired_acceleration_z",instance="desired_acceleration_z"),label(text="learning_action_x",instance="learning_action_x"),label(text="learning_action_y",instance="learning_action_y"),label(text="learning_action_z",instance="learning_action_z"),label(text="scheduled_gain_x",instance="scheduled_gain_x"),label(text="scheduled_gain_y",instance="scheduled_gain_y"),label(text="scheduled_gain_z",instance="scheduled_gain_z"),label(text="fallback_active",instance="fallback_active"),label(text="status_code",instance="status_code"),label(text="mode_out",instance="mode_out"))),BlockSystem(blockKind=BlockKind.atomic,bltBlockKind=BltBlockKind.cfunction),independentInstance=true,sourceModel=SysplorerEmbeddedCoder.Utilities.CCaller,ExternalFunctionBlock,hide=true),
+    annotation(__MWORKS(PortArrangement(Left(mode, dt, position_x, position_y, position_z, velocity_x, velocity_y, velocity_z, attitude_w, attitude_x, attitude_y, attitude_z, angular_velocity_x, angular_velocity_y, angular_velocity_z, reference_position_x, reference_position_y, reference_position_z, reference_velocity_x, reference_velocity_y, reference_velocity_z, reference_acceleration_x, reference_acceleration_y, reference_acceleration_z, reference_yaw, mass_kg, gravity_mps2, hover_percentage, max_tilt_rad, min_collective_thrust_n, max_collective_thrust_n, enable, learning_enable, reset), Right(desired_attitude_w, desired_attitude_x, desired_attitude_y, desired_attitude_z, desired_collective_thrust_n, normalized_thrust, desired_acceleration_x, desired_acceleration_y, desired_acceleration_z, learning_action_x, learning_action_y, learning_action_z, scheduled_gain_x, scheduled_gain_y, scheduled_gain_z, fallback_active, status_code, mode_out)),PortLabels(labelType="CustomType",labels(label(text="mode",instance="mode"),label(text="dt",instance="dt"),label(text="position_x",instance="position_x"),label(text="position_y",instance="position_y"),label(text="position_z",instance="position_z"),label(text="velocity_x",instance="velocity_x"),label(text="velocity_y",instance="velocity_y"),label(text="velocity_z",instance="velocity_z"),label(text="attitude_w",instance="attitude_w"),label(text="attitude_x",instance="attitude_x"),label(text="attitude_y",instance="attitude_y"),label(text="attitude_z",instance="attitude_z"),label(text="angular_velocity_x",instance="angular_velocity_x"),label(text="angular_velocity_y",instance="angular_velocity_y"),label(text="angular_velocity_z",instance="angular_velocity_z"),label(text="reference_position_x",instance="reference_position_x"),label(text="reference_position_y",instance="reference_position_y"),label(text="reference_position_z",instance="reference_position_z"),label(text="reference_velocity_x",instance="reference_velocity_x"),label(text
+="reference_velocity_y",instance="reference_velocity_y"),label(text="reference_velocity_z",instance="reference_velocity_z"),label(text="reference_acceleration_x",instance="reference_acceleration_x"),label(text="reference_acceleration_y",instance="reference_acceleration_y"),label(text="reference_acceleration_z",instance="reference_acceleration_z"),label(text="reference_yaw",instance="reference_yaw"),label(text="mass_kg",instance="mass_kg"),label(text="gravity_mps2",instance="gravity_mps2"),label(text="hover_percentage",instance="hover_percentage"),label(text="max_tilt_rad",instance="max_tilt_rad"),label(text="min_collective_thrust_n",instance="min_collective_thrust_n"),label(text="max_collective_thrust_n",instance="max_collective_thrust_n"),label(text="enable",instance="enable"),label(text="learning_enable",instance="learning_enable"),label(text="reset",instance="reset"),label(text="desired_attitude_w",instance="desired_attitude_w"),label(text="desired_attitude_x",instance="desired_attitude_x"),label(text="desired_attitude_y",instance="desired_attitude_y"),label(text="desired_attitude_z",instance="desired_attitude_z"),label(text="desired_collective_thrust_n",instance="desired_collective_thrust_n"),label(text="normalized_thrust",instance="normalized_thrust"),label(text="desired_acceleration_x",instance="desired_acceleration_x"),label(text="desired_acceleration_y",instance="desired_acceleration_y"),label(text="desired_acceleration_z",instance="desired_acceleration_z"),label(text="learning_action_x",instance="learning_action_x"),label(text="learning_action_y",instance="learning_action_y"),label(text="learning_action_z",instance="learning_action_z"),label(text="scheduled_gain_x",instance="scheduled_gain_x"),label(text="scheduled_gain_y",instance="scheduled_gain_y"),label(text="scheduled_gain_z",instance="scheduled_gain_z"),label(text="fallback_active",instance="fallback_active"),label(text="status_code",instance="status_code"),label(text="mode_out",instance="mode_out"))
+),BlockSystem(blockKind=BlockKind.atomic,bltBlockKind=BltBlockKind.cfunction),independentInstance=true,sourceModel=SysplorerEmbeddedCoder.Utilities.CCaller,ExternalFunctionBlock,hide=true),
       Icon(coordinateSystem(extent={{-200,-100},{200,100}},preserveAspectRatio=false,initialScale=0.1,grid={2,2}),graphics={Rectangle(origin={0,0},fillColor={255,255,255},fillPattern=FillPattern.Solid,extent={{-200,100},{200,-100}}),Text(origin={0,0},extent={{-100,20},{100,-20}},textString="C",verticalAlignment=TextAlignment.VCenter),Text(origin={0,-120},lineColor={0,0,0},extent={{-150,20},{150,-20}},textString="%name",fontSize=14,textColor={0,0,0},verticalAlignment=TextAlignment.Top)}),
       Diagram(coordinateSystem(extent={{-100,-100},{100,100}},preserveAspectRatio=false,initialScale=0.1,grid={2,2})));
 
@@ -174,7 +177,7 @@ model TrainedNeuralResidualCFunction
       output SysplorerEmbeddedCoder.Types.Auto fallback_active annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)));
       output SysplorerEmbeddedCoder.Types.Auto status_code annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)));
       output SysplorerEmbeddedCoder.Types.Auto mode_out annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)));
-    external "C" MosimLearningAttitudeThrustStepScalar(mode,dt,position_x,position_y,position_z,velocity_x,velocity_y,velocity_z,attitude_w,attitude_x,attitude_y,attitude_z,angular_velocity_x,angular_velocity_y,angular_velocity_z,reference_position_x,reference_position_y,reference_position_z,reference_velocity_x,reference_velocity_y,reference_velocity_z,reference_acceleration_x,reference_acceleration_y,reference_acceleration_z,reference_yaw,mass_kg,gravity_mps2,hover_percentage,max_tilt_rad,min_collective_thrust_n,max_collective_thrust_n,enable,learning_enable,reset,desired_attitude_w,desired_attitude_x,desired_attitude_y,desired_attitude_z,desired_collective_thrust_n,normalized_thrust,desired_acceleration_x,desired_acceleration_y,desired_acceleration_z,learning_action_x,learning_action_y,learning_action_z,scheduled_gain_x,scheduled_gain_y,scheduled_gain_z,fallback_active,status_code,mode_out)
+    external "C" MosimLearningAttitudeThrustStepScalar(mode,dt,position_x,position_y,position_z,velocity_x,velocity_y,velocity_z,attitude_w,attitude_x,attitude_y,attitude_z,angular_velocity_x,angular_velocity_y,angular_velocity_z,reference_position_x,reference_position_y,reference_position_z,reference_velocity_x,reference_velocity_y,reference_velocity_z,reference_acceleration_x,reference_acceleration_y,reference_acceleration_z,reference_yaw,mass_kg,gravity_mps2,hover_percentage,max_tilt_rad,min_collective_thrust_n,max_collective_thrust_n,enable,learning_enable,reset,desired_attitude_w,desired_attitude_x,desired_attitude_y,desired_attitude_z,desired_collective_thrust_n,normalized_thrust,desired_acceleration_x,desired_acceleration_y,desired_acceleration_z,learning_action_x,learning_action_y,learning_action_z,scheduled_gain_x,scheduled_gain_y,scheduled_gain_z,fallback_active,status_code,mode_out) 
       annotation (Include="#define MOSIM_LEARNING_OBSERVATION_SIZE 12
 #define MOSIM_LEARNING_ACTION_SIZE 3
 #define MOSIM_NEURAL_HIDDEN_SIZE 12
@@ -2051,109 +2054,109 @@ void MosimLearningAttitudeThrustStepScalar(
 ");
     end func_CFunction;
 
-    SysplorerEmbeddedCoder.Port.Inport mode
+    SysplorerEmbeddedCoder.Port.Inport mode 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport dt
+    SysplorerEmbeddedCoder.Port.Inport dt 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport position_x
+    SysplorerEmbeddedCoder.Port.Inport position_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport position_y
+    SysplorerEmbeddedCoder.Port.Inport position_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport position_z
+    SysplorerEmbeddedCoder.Port.Inport position_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport velocity_x
+    SysplorerEmbeddedCoder.Port.Inport velocity_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport velocity_y
+    SysplorerEmbeddedCoder.Port.Inport velocity_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport velocity_z
+    SysplorerEmbeddedCoder.Port.Inport velocity_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport attitude_w
+    SysplorerEmbeddedCoder.Port.Inport attitude_w 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport attitude_x
+    SysplorerEmbeddedCoder.Port.Inport attitude_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport attitude_y
+    SysplorerEmbeddedCoder.Port.Inport attitude_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport attitude_z
+    SysplorerEmbeddedCoder.Port.Inport attitude_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport angular_velocity_x
+    SysplorerEmbeddedCoder.Port.Inport angular_velocity_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport angular_velocity_y
+    SysplorerEmbeddedCoder.Port.Inport angular_velocity_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport angular_velocity_z
+    SysplorerEmbeddedCoder.Port.Inport angular_velocity_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_position_x
+    SysplorerEmbeddedCoder.Port.Inport reference_position_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_position_y
+    SysplorerEmbeddedCoder.Port.Inport reference_position_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_position_z
+    SysplorerEmbeddedCoder.Port.Inport reference_position_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_velocity_x
+    SysplorerEmbeddedCoder.Port.Inport reference_velocity_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_velocity_y
+    SysplorerEmbeddedCoder.Port.Inport reference_velocity_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_velocity_z
+    SysplorerEmbeddedCoder.Port.Inport reference_velocity_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_acceleration_x
+    SysplorerEmbeddedCoder.Port.Inport reference_acceleration_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_acceleration_y
+    SysplorerEmbeddedCoder.Port.Inport reference_acceleration_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_acceleration_z
+    SysplorerEmbeddedCoder.Port.Inport reference_acceleration_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reference_yaw
+    SysplorerEmbeddedCoder.Port.Inport reference_yaw 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport mass_kg
+    SysplorerEmbeddedCoder.Port.Inport mass_kg 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport gravity_mps2
+    SysplorerEmbeddedCoder.Port.Inport gravity_mps2 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport hover_percentage
+    SysplorerEmbeddedCoder.Port.Inport hover_percentage 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport max_tilt_rad
+    SysplorerEmbeddedCoder.Port.Inport max_tilt_rad 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport min_collective_thrust_n
+    SysplorerEmbeddedCoder.Port.Inport min_collective_thrust_n 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport max_collective_thrust_n
+    SysplorerEmbeddedCoder.Port.Inport max_collective_thrust_n 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport enable
+    SysplorerEmbeddedCoder.Port.Inport enable 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport learning_enable
+    SysplorerEmbeddedCoder.Port.Inport learning_enable 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Inport reset
+    SysplorerEmbeddedCoder.Port.Inport reset 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_attitude_w
+    SysplorerEmbeddedCoder.Port.Outport desired_attitude_w 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_attitude_x
+    SysplorerEmbeddedCoder.Port.Outport desired_attitude_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_attitude_y
+    SysplorerEmbeddedCoder.Port.Outport desired_attitude_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_attitude_z
+    SysplorerEmbeddedCoder.Port.Outport desired_attitude_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_collective_thrust_n
+    SysplorerEmbeddedCoder.Port.Outport desired_collective_thrust_n 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport normalized_thrust
+    SysplorerEmbeddedCoder.Port.Outport normalized_thrust 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_acceleration_x
+    SysplorerEmbeddedCoder.Port.Outport desired_acceleration_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_acceleration_y
+    SysplorerEmbeddedCoder.Port.Outport desired_acceleration_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport desired_acceleration_z
+    SysplorerEmbeddedCoder.Port.Outport desired_acceleration_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport learning_action_x
+    SysplorerEmbeddedCoder.Port.Outport learning_action_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport learning_action_y
+    SysplorerEmbeddedCoder.Port.Outport learning_action_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport learning_action_z
+    SysplorerEmbeddedCoder.Port.Outport learning_action_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport scheduled_gain_x
+    SysplorerEmbeddedCoder.Port.Outport scheduled_gain_x 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport scheduled_gain_y
+    SysplorerEmbeddedCoder.Port.Outport scheduled_gain_y 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport scheduled_gain_z
+    SysplorerEmbeddedCoder.Port.Outport scheduled_gain_z 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport fallback_active
+    SysplorerEmbeddedCoder.Port.Outport fallback_active 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport status_code
+    SysplorerEmbeddedCoder.Port.Outport status_code 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
-    SysplorerEmbeddedCoder.Port.Outport mode_out
+    SysplorerEmbeddedCoder.Port.Outport mode_out 
       annotation(__MWORKS(BlockSystem(Type(inherit=InheritType.none,ref="double"),Dimension(dimensionType=DimensionType.none)=1)),Placement(transformation(origin={0,0},extent={{-10,-10},{10,10}})));
   equation
     (desired_attitude_w, desired_attitude_x, desired_attitude_y, desired_attitude_z, desired_collective_thrust_n, normalized_thrust, desired_acceleration_x, desired_acceleration_y, desired_acceleration_z, learning_action_x, learning_action_y, learning_action_z, scheduled_gain_x, scheduled_gain_y, scheduled_gain_z, fallback_active, status_code, mode_out) = func_CFunction(mode, dt, position_x, position_y, position_z, velocity_x, velocity_y, velocity_z, attitude_w, attitude_x, attitude_y, attitude_z, angular_velocity_x, angular_velocity_y, angular_velocity_z, reference_position_x, reference_position_y, reference_position_z, reference_velocity_x, reference_velocity_y, reference_velocity_z, reference_acceleration_x, reference_acceleration_y, reference_acceleration_z, reference_yaw, mass_kg, gravity_mps2, hover_percentage, max_tilt_rad, min_collective_thrust_n, max_collective_thrust_n, enable, learning_enable, reset);

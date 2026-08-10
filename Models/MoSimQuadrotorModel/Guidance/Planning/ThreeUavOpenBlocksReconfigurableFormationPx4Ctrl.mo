@@ -73,7 +73,7 @@ model ThreeUavOpenBlocksReconfigurableFormationPx4Ctrl
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1})
+      1, 1, 1, 1, 1, 1}) 
     annotation(Placement(transformation(origin = {-82, 74}, extent = {{-18, -18}, {18, 18}})));
   PlannedQuinticPx4CtrlReference reference2(
     n_segments = 44,
@@ -143,7 +143,7 @@ model ThreeUavOpenBlocksReconfigurableFormationPx4Ctrl
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1})
+      1, 1, 1, 1, 1, 1}) 
     annotation(Placement(transformation(origin = {-82, 4}, extent = {{-18, -18}, {18, 18}})));
   PlannedQuinticPx4CtrlReference reference3(
     n_segments = 35,
@@ -213,7 +213,7 @@ model ThreeUavOpenBlocksReconfigurableFormationPx4Ctrl
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1})
+      1, 1, 1, 1, 1, 1}) 
     annotation(Placement(transformation(origin = {-82, -66}, extent = {{-18, -18}, {18, 18}})));
 
   OpenBlocksMapTruthDisplay navigationDisplay(
@@ -284,14 +284,14 @@ model ThreeUavOpenBlocksReconfigurableFormationPx4Ctrl
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
       1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1})
+      1, 1, 1, 1, 1, 1}) 
     annotation(Placement(transformation(origin = {0, 72}, extent = {{-22, -22}, {22, 22}})));
 
-  OpenBlocksPx4CtrlVehicle vehicle1(initial_position = {-41, -26, 1.5})
+  OpenBlocksPx4CtrlVehicle vehicle1(initial_position = {-41, -26, 1.5}) 
     annotation(Placement(transformation(origin = {70, 74}, extent = {{-22, -22}, {22, 22}})));
-  OpenBlocksPx4CtrlVehicle vehicle2(initial_position = {-43, -26, 1.5})
+  OpenBlocksPx4CtrlVehicle vehicle2(initial_position = {-43, -26, 1.5}) 
     annotation(Placement(transformation(origin = {70, 4}, extent = {{-22, -22}, {22, 22}})));
-  OpenBlocksPx4CtrlVehicle vehicle3(initial_position = {-41, -28, 1.32})
+  OpenBlocksPx4CtrlVehicle vehicle3(initial_position = {-41, -28, 1.32}) 
     annotation(Placement(transformation(origin = {70, -66}, extent = {{-22, -22}, {22, 22}})));
 
   Real pair_distance_12_m;

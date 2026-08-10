@@ -1,7 +1,7 @@
 {
   "radar_scores": {
-    "Control Energy": 0.9765974694700932,
-    "Max Error": 0.2152247271422771,
+    "Control Energy": 0.2477146842701777,
+    "Max Error": 0.21146413962187555,
     "Position RMSE": 0.0,
     "Terminal Error": 0.19038500297415134
   },
@@ -26,7 +26,7 @@
   "resolution": 600,
   "family_slug": "nonlinear",
   "schema": "mosim.typlot_controller_comparison.v1",
-  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv",
+  "index_source": ".tmp/chapter10_typlot/accepted_controller_index.csv（当前 catalog 30 条 pass）",
   "engine": "Syslab TyPlot",
   "family_median": {
     "position_rmse_m": 2.162091102107092,
@@ -34,5 +34,5 @@
     "max_position_error_m": 2.7766334471637073,
     "control_energy": 837202.5968545658
   },
-  "metric_source": "Results/control_platform/phase2_full_48_climbpath/<controller>/metrics/metrics.csv（冻结值，未重算）"
+  "metric_source": "当前目录各 source_record 绑定的 metrics.csv/metrics.json（已有值，未重算）"
 }

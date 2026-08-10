@@ -123,7 +123,7 @@ def build() -> dict[str, Any]:
         "Results/control_platform/non_frontend_evidence_index_20260718/figures/learning_control_rmse_change.png",
     ]
     evidence_files = list(AUTHORITY.values()) + figures + [
-        "Docs/user_manual.md",
+        "Docs/报告/用户手册_正文骨架.md",
         "Docs/Workflows/mainline_operations_board.md",
         "PROGRESS.md",
     ]
@@ -145,7 +145,8 @@ def build() -> dict[str, Any]:
             "claim_boundary": "Only accepted rows are selectable Gazebo controller evidence; blocked and not-run rows remain visible.",
         },
         "reproduction": {
-            "working_directory": "C:/Users/HP/Desktop/MoSim",
+            "working_directory": "$MOSIM_ROOT",
+            "path_policy": "Resolve MOSIM_ROOT to the extracted repository root before running commands.",
             "commands": REPRODUCTION_COMMANDS,
             "runtime_note": "The commands rebuild static indices and figures. Gazebo/MWORKS runtime gates require their declared workflows and are not silently replaced by static output.",
         },

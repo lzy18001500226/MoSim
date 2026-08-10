@@ -32,10 +32,11 @@ def main() -> int:
             "historical_g3_alias_count": 8,
             "historical_g3_mapped_catalog_count": 41,
             "supplemental_current_record_count": 7,
+            "post_freeze_current_override_record_count": 2,
             "formal_runner_missing_count": 0,
             "historical_g3_only_count": 7,
-            "passed_count": 30,
-            "failed_count": 18,
+            "passed_count": 31,
+            "failed_count": 17,
             "not_run_count": 0,
             "inventory_reconciled": True,
             "completed": False,
@@ -52,6 +53,12 @@ def main() -> int:
         assert rows["fixed_qp_nmpc_l1_indi_cbf"]["check_model_status"] == (
             "formal_runner_passed_mcp_timeout_native_completion_verified"
         )
+        assert rows["pole_placement_luenberger"]["evidence_origin"] == "post_freeze_current_override_record"
+        assert rows["pole_placement_luenberger"]["failure_class"] == "terminal_position_error_exceeds_5m"
+        assert rows["pole_placement_luenberger"]["terminal_position_error_norm_m"] == 402.1409427651827
+        assert rows["adaptive_mpc"]["evidence_origin"] == "post_freeze_current_override_record"
+        assert rows["adaptive_mpc"]["status"] == "pass"
+        assert rows["adaptive_mpc"]["terminal_position_error_norm_m"] == 0.003614672230764729
         assert status["unresolved_catalog_entries"] == []
         assert len(status["historical_g3_only_rows"]) == 7
         run([sys.executable, "-B", str(SCRIPT), "--output", str(output), "--check"])

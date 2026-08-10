@@ -11,16 +11,25 @@ model AdaptiveMpcAttitudeThrustAdapter
   parameter Real normalized_thrust_scale = 0.03772949988018335;
   parameter Real collective_thrust_slope = 8 * lift_coefficient * hover_speed;
   parameter Real max_collective_thrust_delta_n = 30 * collective_thrust_slope;
+  parameter Real velocity_reference_filter_time_constant_s(min = 1e-6, unit = "s") = 0.5
+    "Structural conditioning time constant for the sampled velocity-reference step";
 
   MoSimQuadrotorModel.Control.Bridges.AdaptiveMpcEquationBridge core(
     sample_time_s = sample_time_s);
+  Modelica.Blocks.Continuous.FirstOrder velocity_reference_filter[3](
+    each k = 1,
+    each T = velocity_reference_filter_time_constant_s,
+    each initType = Modelica.Blocks.Types.Init.InitialOutput,
+    each y_start = 0)
+    "Adapter-local continuous velocity-reference conditioning boundary";
   Real desired_collective_thrust_n;
 
 equation
   core.position = position_mea;
   core.velocity = velocity_mea;
   core.reference_position = position_ref;
-  core.reference_velocity = velocity_ref;
+  connect(velocity_ref, velocity_reference_filter.u);
+  core.reference_velocity = velocity_reference_filter.y;
   core.reference_acceleration = acceleration_ref;
   core.enable = 1;
   attitude_ref[1] = -core.desired_roll_rad_out;

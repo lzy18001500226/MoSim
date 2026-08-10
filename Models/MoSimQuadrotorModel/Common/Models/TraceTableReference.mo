@@ -13,11 +13,11 @@ block TraceTableReference
     extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint,
     verboseRead = false);
 
-  Modelica.Blocks.Interfaces.RealOutput position_command[3]
+  Modelica.Blocks.Interfaces.RealOutput position_command[3] 
     annotation(Placement(transformation(origin = {100, 40}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput z_ref_rate
+  Modelica.Blocks.Interfaces.RealOutput z_ref_rate 
     annotation(Placement(transformation(origin = {100, 0}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput yaw_ref
+  Modelica.Blocks.Interfaces.RealOutput yaw_ref 
     annotation(Placement(transformation(origin = {100, -40}, extent = {{-10, -10}, {10, 10}})));
 
 equation

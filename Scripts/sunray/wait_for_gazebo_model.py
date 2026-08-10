@@ -24,13 +24,13 @@ def main() -> int:
     rospy.init_node("mosim_wait_for_gazebo_model", anonymous=True)
     rospy.Subscriber("/gazebo/model_states", ModelStates, callback, queue_size=1)
     deadline = time.monotonic() + args.timeout_s
-    rate = rospy.Rate(10)
     while not rospy.is_shutdown() and time.monotonic() < deadline:
         if seen["value"]:
             with open(args.output, "w", encoding="utf-8") as stream:
                 stream.write(f"model: {args.model}\nstatus: ready\n")
             return 0
-        rate.sleep()
+        # Do not let a missing /clock suspend this wall-clock readiness probe.
+        time.sleep(0.1)
 
     with open(args.output, "w", encoding="utf-8") as stream:
         stream.write(f"model: {args.model}\nstatus: timeout\n")

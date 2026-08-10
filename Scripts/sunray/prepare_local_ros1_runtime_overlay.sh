@@ -13,8 +13,10 @@ Usage: bash Scripts/sunray/prepare_local_ros1_runtime_overlay.sh --workspace <pa
 
 Creates one generated runtime overlay below build/ros1/runtime_overlays from
 the project-owned src/simulation/gazebo/sunray and
-src/flight_stack/mavros/sunray_uav_control trees. It never reads References,
-Results, or an old WSL runtime workspace as a source input.
+src/flight_stack/mavros/sunray_uav_control trees. It also creates a minimal
+px4 package wrapper that exposes the validated source-local PX4 SITL build to
+ROS1 node resolution. It never reads References, Results, or an old WSL
+runtime workspace as a source input.
 EOF
 }
 
@@ -54,12 +56,18 @@ esac
 
 SOURCE_SIMULATOR="${PROJECT_ROOT}/src/simulation/gazebo/sunray"
 SOURCE_CONTROL="${PROJECT_ROOT}/src/flight_stack/mavros/sunray_uav_control"
-for path in "${SOURCE_SIMULATOR}" "${SOURCE_CONTROL}"; do
+PX4_SOURCE_DIR="${SUNRAY_PX4_DIR:-${PROJECT_ROOT}/src/flight_stack/px4/PX4-Autopilot}"
+PX4_BUILD_DIR="${PX4_BUILD_DIR:-${PROJECT_ROOT}/build/px4/px4_sitl_default}"
+for path in "${SOURCE_SIMULATOR}" "${SOURCE_CONTROL}" "${PX4_SOURCE_DIR}"; do
   [[ -d "${path}" ]] || die "project source directory missing: ${path}"
 done
+[[ -f "${PX4_SOURCE_DIR}/package.xml" ]] || die "PX4 package manifest missing: ${PX4_SOURCE_DIR}/package.xml"
+[[ -x "${PX4_BUILD_DIR}/bin/px4" ]] || die "PX4 SITL executable missing: ${PX4_BUILD_DIR}/bin/px4"
+[[ -d "${PX4_BUILD_DIR}/etc" ]] || die "PX4 SITL runtime configuration missing: ${PX4_BUILD_DIR}/etc"
 
 target_simulator="${WORKSPACE}/simulation/sunray_simulator"
 target_control="${WORKSPACE}/General_Module/sunray_uav_control"
+target_px4="${WORKSPACE}/px4"
 manifest="${WORKSPACE}/runtime_overlay_manifest.json"
 
 if [[ -e "${WORKSPACE}" ]]; then
@@ -103,11 +111,63 @@ payload = {
     "generated_paths": [
         "simulation/sunray_simulator",
         "General_Module/sunray_uav_control",
+        "px4",
     ],
 }
 output.write_text(json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
 PY
 fi
 
+prepare_px4_package_overlay() {
+  local px4_node="${target_px4}/px4"
+  local px4_build_link="${target_px4}/build/px4_sitl_default"
+  local resolved_binary
+  local resolved_build
+
+  resolved_binary="$(realpath "${PX4_BUILD_DIR}/bin/px4")"
+  resolved_build="$(realpath "${PX4_BUILD_DIR}")"
+
+  if [[ -e "${target_px4}" ]]; then
+    [[ -d "${target_px4}" && ! -L "${target_px4}" ]] \
+      || die "existing PX4 runtime package overlay is not a directory: ${target_px4}"
+    [[ -f "${target_px4}/package.xml" && -L "${px4_node}" && -L "${px4_build_link}" ]] \
+      || die "existing PX4 runtime package overlay is incomplete: ${target_px4}"
+    [[ "$(realpath "${px4_node}")" == "${resolved_binary}" ]] \
+      || die "existing PX4 runtime package binary differs from PX4_BUILD_DIR: ${target_px4}"
+    [[ "$(realpath "${px4_build_link}")" == "${resolved_build}" ]] \
+      || die "existing PX4 runtime package build differs from PX4_BUILD_DIR: ${target_px4}"
+    return
+  fi
+
+  local temporary_px4="${WORKSPACE}/.px4_runtime_overlay_$$"
+  mkdir -p "${temporary_px4}/build"
+  cp "${PX4_SOURCE_DIR}/package.xml" "${temporary_px4}/package.xml"
+  ln -s "${resolved_build}" "${temporary_px4}/build/px4_sitl_default"
+  ln -s "${resolved_binary}" "${temporary_px4}/px4"
+  mv "${temporary_px4}" "${target_px4}"
+}
+
+prepare_px4_package_overlay
+
+python3 - "${manifest}" "${target_px4}" "${PX4_SOURCE_DIR}" "${PX4_BUILD_DIR}" <<'PY'
+import json
+import pathlib
+import sys
+
+manifest_path = pathlib.Path(sys.argv[1])
+payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+generated_paths = payload.setdefault("generated_paths", [])
+if "px4" not in generated_paths:
+    generated_paths.append("px4")
+payload["px4_ros1_package_overlay"] = {
+    "package": str(pathlib.Path(sys.argv[2]).resolve()),
+    "px4_source": str(pathlib.Path(sys.argv[3]).resolve()),
+    "px4_build": str(pathlib.Path(sys.argv[4]).resolve()),
+    "binary": str((pathlib.Path(sys.argv[4]) / "bin" / "px4").resolve()),
+}
+manifest_path.write_text(json.dumps(payload, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+PY
+
 printf 'LOCAL_ROS1_RUNTIME_OVERLAY=%s\n' "${WORKSPACE}"
 printf 'LOCAL_ROS1_RUNTIME_OVERLAY_MANIFEST=%s\n' "${manifest}"
+printf 'PX4_ROS1_OVERLAY_PKG=%s\n' "${target_px4}"

@@ -7,9 +7,9 @@ model Sunray150PlanningOpenBlocksPx4CtrlSysblockClosedLoop
 
   extends MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner(
     redeclare model Trajectory = OpenBlocksPx4CtrlReference,
-    plant(initial_position_m = initial_position_m),
-    sampled_position_ref(y_start = initial_position_m),
-    sampled_position(y_start = initial_position_m));
+    plant(initial_position_m = initial_position_m));
+  // The graphical PX4CTRL outer loop owns its 100 Hz sample boundary. Do not
+  // retain EquationBridge-only UnitDelay modifiers on this graphical route.
 
   OpenBlocksMapTruthDisplay navigationDisplay(
     n_segments = reference.n_segments,
@@ -17,7 +17,7 @@ model Sunray150PlanningOpenBlocksPx4CtrlSysblockClosedLoop
     p_y = reference.p_y,
     p_z = reference.p_z,
     segment_duration = reference.segment_duration)
-    "Canonical full-map truth with a separate 6 m local sensing overlay.";
+    "Canonical full-map truth with a separate 6 m local sensing overlay." annotation(Placement(transformation(extent={{-15,-46},{15,-6}})));
 
 equation
   connect(plant.position, navigationDisplay.actual_position);

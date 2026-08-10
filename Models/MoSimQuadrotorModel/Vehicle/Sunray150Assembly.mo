@@ -28,10 +28,34 @@ model Sunray150Assembly
   parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
   parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
 
-  Modelica.Blocks.Interfaces.RealInput rotor_command[4];
-  Modelica.Blocks.Interfaces.RealOutput position[3];
-  Modelica.Blocks.Interfaces.RealOutput attitude[3];
-  Modelica.Blocks.Interfaces.RealOutput rotor_speed[4];
+  Modelica.Blocks.Interfaces.RealInput rotor_command[4] 
+    annotation(Placement(
+      transformation(origin = {-220, 70}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {-100, 60}, extent = {{-5, -5}, {5, 5}})));
+  Modelica.Blocks.Interfaces.RealOutput position[3] 
+    annotation(Placement(
+      transformation(origin = {220, 85}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, 80}, extent = {{-5, -5}, {5, 5}})));
+  Modelica.Blocks.Interfaces.RealOutput attitude[3] 
+    annotation(Placement(
+      transformation(origin = {220, 35}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, 60}, extent = {{-5, -5}, {5, 5}})));
+  Modelica.Blocks.Interfaces.RealOutput rotor_speed[4] 
+    annotation(Placement(
+      transformation(origin = {220, -30}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, 40}, extent = {{-5, -5}, {5, 5}})));
+  Modelica.Blocks.Interfaces.RealOutput VelMea[3](each unit = "m/s") 
+    annotation(Placement(
+      transformation(origin = {220, -70}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, 20}, extent = {{-5, -5}, {5, 5}})));
+  Modelica.Blocks.Interfaces.RealOutput BodyRateMea[3](each unit = "rad/s") 
+    annotation(Placement(
+      transformation(origin = {220, -105}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, 0}, extent = {{-5, -5}, {5, 5}})));
+  Modelica.Blocks.Interfaces.RealOutput QuatMea[4] 
+    annotation(Placement(
+      transformation(origin = {220, -140}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, -20}, extent = {{-5, -5}, {5, 5}})));
 
   MoSimQuadrotorModel.Vehicle.Dynamics.PhysicalWrenchAdapter physical(
     profile = profile,
@@ -46,26 +70,43 @@ model Sunray150Assembly
     fault_start_s = fault_start_s,
     fault_rotor_index = fault_rotor_index,
     fault_rotor_effectiveness = fault_rotor_effectiveness,
-    body(r_0(start = initial_position_m)));
-  MoSimQuadrotorModel.Vehicle.Sensors.Sensors sensors;
+    body(r_0(start = initial_position_m))) 
+    annotation(Placement(transformation(origin = {-55, 10}, extent = {{-65, -65}, {65, 65}})));
+  MoSimQuadrotorModel.Vehicle.Sensors.Sensors sensors 
+    annotation(Placement(transformation(origin = {105, 55}, extent = {{-42, -30}, {42, 30}})));
   MoSimQuadrotorModel.Vehicle.Sunray150VisualShell visual_shell(profile = profile)
-    "Massless body and propeller visuals for native formal-runner animation";
+    "Massless body and propeller visuals for native formal-runner animation" 
+    annotation(Placement(transformation(origin = {105, -45}, extent = {{-52, -32}, {52, 32}})));
   Modelica.Mechanics.MultiBody.Forces.WorldForce gust(
     resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameB.world,
-    animation = false);
-  Real rotor_thrust[4](each unit = "N");
-  Real rotor_yaw_reaction_moment[4](each unit = "N.m");
-  Real applied_reaction_yaw_moment(unit = "N.m");
+    animation = false) 
+    annotation(Placement(transformation(origin = {-155, 100}, extent = {{-25, -18}, {25, 18}})));
+  Modelica.Blocks.Interfaces.RealOutput rotor_thrust[4](each unit = "N") 
+    annotation(Placement(
+      transformation(origin = {220, 120}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, -40}, extent = {{-5, -5}, {5, 5}})));
+  Modelica.Blocks.Interfaces.RealOutput rotor_yaw_reaction_moment[4](each unit = "N.m") 
+    annotation(Placement(
+      transformation(origin = {220, 60}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, -60}, extent = {{-5, -5}, {5, 5}})));
+  Modelica.Blocks.Interfaces.RealOutput applied_reaction_yaw_moment(unit = "N.m") 
+    annotation(Placement(
+      transformation(origin = {220, 0}, extent = {{-10, -10}, {10, 10}}),
+      iconTransformation(origin = {100, -80}, extent = {{-5, -5}, {5, 5}})));
 
 equation
   gust.force[1] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then gust_force[1] else 0;
   gust.force[2] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then gust_force[2] else 0;
   gust.force[3] = if time >= gust_start_s and time <= gust_start_s + gust_duration_s then gust_force[3] else 0;
 
-  connect(gust.frame_b, physical.body.frame_a);
-  connect(physical.body.frame_a, sensors.frame_a);
-  connect(physical.body.frame_a, visual_shell.frame_a);
-  connect(rotor_speed, visual_shell.rotor_speed);
+  connect(gust.frame_b, physical.body.frame_a) 
+    annotation(Line(points = {{-130, 100}, {-100, 100}, {-100, 10}}, color = {95, 95, 95}, thickness = 0.5));
+  connect(physical.body.frame_a, sensors.frame_a) 
+    annotation(Line(points = {{10, 10}, {60, 10}, {60, 55}}, color = {95, 95, 95}, thickness = 0.5));
+  connect(physical.body.frame_a, visual_shell.frame_a) 
+    annotation(Line(points = {{10, 10}, {55, 10}, {55, -45}}, color = {95, 95, 95}, thickness = 0.5));
+  connect(rotor_speed, visual_shell.rotor_speed) 
+    annotation(Line(points = {{220, -30}, {170, -30}, {170, -65}, {157, -65}}, color = {0, 0, 127}));
 
   for i in 1:4 loop
     physical.wrapper.motor_command[i] = rotor_command[i];
@@ -77,15 +118,18 @@ equation
 
   position = sensors.PosMea;
   attitude = sensors.AngleMea;
+  VelMea = sensors.VelMea;
+  BodyRateMea = sensors.BodyRateMea;
+  QuatMea = sensors.QuatMea;
 
   annotation(
     Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
       Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {160, 80, 0},
         fillColor = {255, 250, 240}, fillPattern = FillPattern.Solid),
-      Bitmap(origin = {0, 12}, extent = {{-94, -53.529}, {94, 53.529}},
+      Bitmap(origin = {0, 18}, extent = {{-75, -61.6}, {75, 61.6}},
         fileName = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Images/Sunray150-Side.png"),
       Text(origin = {0, -76}, extent = {{-92, 14}, {92, -14}},
         textString = "Sunray150", textColor = {160, 80, 0})}),
-    Diagram(coordinateSystem(extent = {{-200, -120}, {200, 120}})),
+    Diagram(coordinateSystem(extent = {{-240, -150}, {240, 145}}, grid = {2, 2})),
     __MWORKS(version="26.3.0"));
 end Sunray150Assembly;

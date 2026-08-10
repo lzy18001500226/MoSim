@@ -2,15 +2,11 @@ within MoSimQuadrotorModel.Guidance.Trajectories;
 model SpiralAscent
   "Horizontal circular motion with a continuous altitude climb"
 
+  extends PartialTrajectory;
+
   parameter Real radius_m(unit = "m") = 1.5;
   parameter Real angular_rate_rad_s(unit = "rad/s") = 0.30;
   parameter Real climb_rate_m_s(unit = "m/s") = 0.15;
-  Modelica.Blocks.Interfaces.RealOutput position_command[3]
-    "Reference position command [x, y, z] in m";
-  Modelica.Blocks.Interfaces.RealOutput velocity_command[3]
-    "Reference translational velocity [x, y, z] in m/s";
-  Modelica.Blocks.Interfaces.RealOutput acceleration_command[3]
-    "Reference translational acceleration [x, y, z] in m/s2";
 
 equation
   position_command[1] = radius_m * (cos(angular_rate_rad_s * time) - 1);

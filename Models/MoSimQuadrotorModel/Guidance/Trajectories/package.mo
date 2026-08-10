@@ -3,29 +3,29 @@ package Trajectories "Reference trajectories"
   extends Modelica.Icons.Package;
   model CirclePath "螺旋爬升模型"
     Modelica.Blocks.Sources.Ramp ramp(startTime = 0, duration = 150,
-      height = 10)
+      height = 10) 
       annotation (Placement(transformation(origin = {-2.0, -50.209416252197016},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
     Modelica.Blocks.Interfaces.RealOutput position_command[3] "指令信号--x,y,z" annotation (Placement(transformation(origin = {111.0, 0.0},
       extent = {{-10.0, -10.0}, {10.0, 10.0}}),
       iconTransformation(origin = {110.0, 0.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Math.Gain gain(k = 1)
+    Modelica.Blocks.Math.Gain gain(k = 1) 
       annotation (Placement(transformation(origin = {55.94162521970009, -50.121461426274266},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Math.Gain gain1(k = 1)
+    Modelica.Blocks.Math.Gain gain1(k = 1) 
       annotation (Placement(transformation(origin = {55.94162521970009, 41.790583747803},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Sources.Sine sine(f=0.03, amplitude=3, startTime=10)
+    Modelica.Blocks.Sources.Sine sine(f=0.03, amplitude=3, startTime=10) 
       annotation (Placement(transformation(origin = {-2.0, -0.209416252197002},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Sources.Cosine cosine(f=0.03, amplitude=3, startTime=10)
+    Modelica.Blocks.Sources.Cosine cosine(f=0.03, amplitude=3, startTime=10) 
       annotation (Placement(transformation(origin = {-2.0, 41.790583747803},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
 
 
 
-    Modelica.Blocks.Math.Gain gain2(k = 1)
+    Modelica.Blocks.Math.Gain gain2(k = 1) 
       annotation (Placement(transformation(origin = {56.779290228488094, 0.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
     annotation (Icon(coordinateSystem(extent = {{-100.0, -100.0}, {100.0, 100.0}},
@@ -46,27 +46,27 @@ package Trajectories "Reference trajectories"
       arrowSize = 4.0,
       __MWorks_Manhattanize = true)}));
   equation
-    connect(gain1.y, position_command[1])
+    connect(gain1.y, position_command[1]) 
       annotation (Line(origin = {89.0, 21.0},
         points = {{-22.0, 21.0}, {-9.0, 21.0}, {-9.0, -21.0}, {22.0, -21.0}},
         color = {0, 0, 127}));
-    connect(gain2.y, position_command[2])
+    connect(gain2.y, position_command[2]) 
       annotation (Line(origin = {90.0, 0.0},
         points = {{-22.0, 0.0}, {21.0, 0.0}},
         color = {0, 0, 127}));
-    connect(gain.y, position_command[3])
+    connect(gain.y, position_command[3]) 
       annotation (Line(origin = {90.0, -25.0},
         points = {{-23.0, -25.0}, {-10.0, -25.0}, {-10.0, 25.0}, {21.0, 25.0}},
         color = {0, 0, 127}));
-    connect(cosine.y, gain1.u)
+    connect(cosine.y, gain1.u) 
       annotation (Line(origin = {7.0, 42.0},
         points = {{2.0, 0.0}, {37.0, 0.0}},
         color = {0, 0, 127}));
-    connect(sine.y, gain2.u)
+    connect(sine.y, gain2.u) 
       annotation (Line(origin = {7.0, 0.0},
         points = {{2.0, 0.0}, {38.0, 0.0}},
         color = {0, 0, 127}));
-    connect(ramp.y, gain.u)
+    connect(ramp.y, gain.u) 
       annotation (Line(origin = {7.0, -50.0},
         points = {{2.0, 0.0}, {37.0, 0.0}},
         color = {0, 0, 127}));
@@ -74,28 +74,21 @@ package Trajectories "Reference trajectories"
 
 
   model ClimbPath "阶梯爬升模型"
+    extends PartialTrajectory;
     Modelica.Blocks.Sources.Ramp ramp(startTime = 10, duration = 3,
-      height = 5)
+      height = 5) 
       annotation (Placement(transformation(origin = {-52.0, -28.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Interfaces.RealOutput position_command[3] "指令信号--x,y,z" annotation (Placement(transformation(origin = {110.0, 0.0},
-      extent = {{-10.0, -10.0}, {10.0, 10.0}}),
-      iconTransformation(origin = {110.0, 0.0},
-        extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Interfaces.RealOutput velocity_command[3]
-      "Reference translational velocity [x, y, z] in m/s";
-    Modelica.Blocks.Interfaces.RealOutput acceleration_command[3]
-      "Reference translational acceleration [x, y, z] in m/s2";
-    Modelica.Blocks.Sources.Ramp ramp1(offset = 0, startTime = 0, height = 10, duration = 5)
+    Modelica.Blocks.Sources.Ramp ramp1(offset = 0, startTime = 0, height = 10, duration = 5) 
       annotation (Placement(transformation(origin = {-52.0, -72.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
 
 
 
-    Modelica.Blocks.Math.Add add
+    Modelica.Blocks.Math.Add add 
       annotation (Placement(transformation(origin = {6.0, -50.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Math.Gain gain(k = 1)
+    Modelica.Blocks.Math.Gain gain(k = 1) 
       annotation (Placement(transformation(origin = {46.0, -50.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
     annotation (experiment(Algorithm = Dassl, Interval = 0.001, StartTime = 0, StopTime = 20, Tolerance = 0.0001),
@@ -117,35 +110,35 @@ package Trajectories "Reference trajectories"
         arrowSize = 4.0,
         __MWorks_Manhattanize = true)}));
     Modelica.Blocks.Sources.Ramp ramp3(startTime = 30, duration = 10,
-      height = 10)
+      height = 10) 
       annotation (Placement(transformation(origin = {6.0, 0.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
     Modelica.Blocks.Sources.Ramp ramp5(startTime = 20, duration = 10,
-      height = 10)
+      height = 10) 
       annotation (Placement(transformation(origin = {6.0, 44.0},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
   equation
-    connect(ramp.y, add.u1)
+    connect(ramp.y, add.u1) 
       annotation (Line(origin = {-21.999999999999996, -35.0},
         points = {{-19.0, 7.0}, {4.0, 7.0}, {4.0, -9.0}, {16.0, -9.0}},
         color = {0, 0, 127}));
-    connect(ramp1.y, add.u2)
+    connect(ramp1.y, add.u2) 
       annotation (Line(origin = {-21.999999999999996, -63.0},
         points = {{-19.0, -9.0}, {4.0, -9.0}, {4.0, 7.0}, {16.0, 7.0}},
         color = {0, 0, 127}));
-    connect(add.y, gain.u)
+    connect(add.y, gain.u) 
       annotation (Line(origin = {13.0, -50.0},
         points = {{4.0, 0.0}, {21.0, 0.0}},
         color = {0, 0, 127}));
-    connect(gain.y, position_command[3])
+    connect(gain.y, position_command[3]) 
       annotation (Line(origin = {84.0, -25.0},
         points = {{-27.0, -25.0}, {-22.0, -25.0}, {-22.0, 25.0}, {26.0, 25.0}},
         color = {0, 0, 127}));
-    connect(ramp3.y, position_command[2])
+    connect(ramp3.y, position_command[2]) 
       annotation (Line(origin = {64.0, 0.0},
         points = {{-47.0, 0.0}, {46.0, 0.0}},
         color = {0, 0, 127}));
-    connect(ramp5.y, position_command[1])
+    connect(ramp5.y, position_command[1]) 
       annotation (Line(origin = {64.0, 22.0},
         points = {{-47.0, 22.0}, {-2.0, 22.0}, {-2.0, -22.0}, {46.0, -22.0}},
         color = {0, 0, 127}));
@@ -157,13 +150,13 @@ package Trajectories "Reference trajectories"
   end ClimbPath;
 
   model EightPath "横8字型模型"
-    Modelica.Blocks.Sources.RealExpression realExpression(y = x)
+    Modelica.Blocks.Sources.RealExpression realExpression(y = x) 
       annotation (Placement(transformation(origin = {1.1591052234775123, 47.17773039939571},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Sources.RealExpression realExpression1(y = y)
+    Modelica.Blocks.Sources.RealExpression realExpression1(y = y) 
       annotation (Placement(transformation(origin = {-0.1359852938817938, -0.17597254192228462},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-    Modelica.Blocks.Sources.Ramp ramp(duration = 10, height = 10)
+    Modelica.Blocks.Sources.Ramp ramp(duration = 10, height = 10) 
       annotation (Placement(transformation(origin = {-0.9087221095334688, -41.28301853656825},
         extent = {{-10.0, -10.0}, {10.0, 10.0}})));
     Modelica.Blocks.Interfaces.RealOutput position_command[3] "指令信号--x,y,z" annotation (Placement(transformation(origin = {110.30852974245975, 0.03180971102869656},
@@ -175,10 +168,10 @@ package Trajectories "Reference trajectories"
     parameter Real XOmega = 0.02 "X方向频率";
     parameter Real YAMP = 10 "Y方向输出幅值";
     parameter Real YOmega = 0.04 "Y方向频率";
-    Modelica.Blocks.Nonlinear.FixedDelay fixedDelay(delayTime=10)
+    Modelica.Blocks.Nonlinear.FixedDelay fixedDelay(delayTime=10) 
       annotation (Placement(transformation(origin={52,47.1777},
   extent={{-10,-10},{10,10}})));
-    Modelica.Blocks.Nonlinear.FixedDelay fixedDelay1(delayTime=10)
+    Modelica.Blocks.Nonlinear.FixedDelay fixedDelay1(delayTime=10) 
       annotation (Placement(transformation(origin={52,-0.175973},
   extent={{-10,-10},{10,10}})));
     annotation (Icon(coordinateSystem(extent = {{-100.0, -100.0}, {100.0, 100.0}},
@@ -208,23 +201,23 @@ package Trajectories "Reference trajectories"
     x = XAMP * sin((XOmega * time + 1 / 360) * pi);
     y = YAMP * sin(YOmega * time * pi);
     end if;
-    connect(ramp.y, position_command[3])
+    connect(ramp.y, position_command[3]) 
       annotation (Line(origin = {60.0, -11.0},
         points = {{-50.0, -30.0}, {20.0, -30.0}, {20.0, 11.0}, {50.0, 11.0}},
         color = {0, 0, 127}));
-    connect(realExpression.y, fixedDelay.u)
+    connect(realExpression.y, fixedDelay.u) 
     annotation(Line(origin={61,24},
   points={{-48.8409,23.1777},{-21,23.1777}},
   color={0,0,127}));
-    connect(realExpression1.y, fixedDelay1.u)
+    connect(realExpression1.y, fixedDelay1.u) 
     annotation(Line(origin={61,0},
   points={{-50.136,-0.175973},{-21,-0.175973}},
   color={0,0,127}));
-    connect(fixedDelay.y, position_command[1])
+    connect(fixedDelay.y, position_command[1]) 
     annotation(Line(origin={87,24},
   points={{-24,23.1777},{-7,23.1777},{-7,-23.9682},{23.3085,-23.9682}},
   color={0,0,127}));
-    connect(fixedDelay1.y, position_command[2])
+    connect(fixedDelay1.y, position_command[2]) 
     annotation(Line(origin={122,20},
   points={{-59,-20.176},{-11.6915,-20.176},{-11.6915,-19.9682}},
   color={0,0,127}));

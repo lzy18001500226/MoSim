@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Monitor one Factory Diff coverage run and send one terminal email."""
+"""Monitor one Factory Diff coverage run and optionally send one terminal email."""
 
 from __future__ import annotations
 
@@ -23,56 +23,36 @@ def read_json(path: Path) -> dict:
     return data if isinstance(data, dict) else {}
 
 
-def summarize(run_dir: Path, payload: dict, manifest: dict, metrics: dict, coverage: dict) -> tuple[str, str]:
-    goals = payload.get("goals") if isinstance(payload.get("goals"), list) else []
-    completed = payload.get("completed_goal_count", len(goals))
-    loaded = payload.get("loaded_route_goal_count")
-    blockers = payload.get("blockers")
-    skips = sum(1 for goal in goals if isinstance(goal, dict) and goal.get("runtime_skipped_goal"))
-    stuck = sum(1 for goal in goals if isinstance(goal, dict) and goal.get("attitude_stuck_violation"))
-    rejoin = len(payload.get("route_rejoin_events") or [])
-    manifest_status = manifest.get("status", "missing")
-    metrics_status = metrics.get("status", "missing")
-    coverage_status = coverage.get("status", "missing")
-    coverage_ratio = (
-        coverage.get("acceptance", {}).get("merged_sensor_footprint_coverage_ratio")
-        if isinstance(coverage.get("acceptance"), dict)
-        else None
+def write_task_notification_status(run_dir: Path, source: Path, payload: dict, blockers: object) -> Path:
+    observed_status = str(payload.get("status") or "unknown")
+    terminal_status = "completed" if observed_status == "passed" and not blockers else "blocked"
+    status_path = run_dir / "terminal_task_notification_status.json"
+    status_path.write_text(
+        json.dumps(
+            {
+                "status": terminal_status,
+                "task": "Factory L2 单机同飞行覆盖建图",
+                "failure_kind": "factory_diff_coverage_terminal",
+                "observed_error": f"运行终态：{observed_status}",
+                "minimal_user_action": "无需处理。" if terminal_status == "completed" else "查看终态证据并处理阻塞项。",
+                "latest_snapshot": str(source),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
     )
-    subject = f"MoSim Factory覆盖终态: {payload.get('status', 'unknown')}/{manifest_status}"
-    body = "\n".join(
-        [
-            "Factory L2 单机同飞行覆盖建图终态",
-            "",
-            f"status: {payload.get('status', 'unknown')}",
-            f"manifest_status: {manifest_status}",
-            f"metrics_status: {metrics_status}",
-            f"coverage_status: {coverage_status}",
-            f"coverage_ratio: {coverage_ratio}",
-            f"completed: {completed}/{loaded}",
-            f"blockers: {blockers}",
-            f"runtime_skipped_goals: {skips}",
-            f"attitude_stuck: {stuck}",
-            f"route_rejoin_events: {rejoin}",
-            f"run_dir: {run_dir}",
-            f"generated_at: {datetime.now().astimezone().isoformat(timespec='seconds')}",
-        ]
-    )
-    return subject, body
+    return status_path
 
 
-def send_email(subject: str, body: str, cooldown_key: str) -> dict:
+def send_email(status_path: Path) -> dict:
     cmd = [
         sys.executable,
         str(ROOT / "Scripts" / "agent" / "send_gateway_email_alert.py"),
-        "--subject",
-        subject,
-        "--body",
-        body,
-        "--cooldown-key",
-        cooldown_key,
-        "--cooldown-minutes",
-        "0",
+        "--status-json",
+        str(status_path),
+        "--task-notification",
     ]
     proc = subprocess.run(cmd, cwd=str(ROOT), text=True, capture_output=True, timeout=60)
     return {
@@ -87,6 +67,11 @@ def main() -> int:
     parser.add_argument("--run-dir", required=True, type=Path)
     parser.add_argument("--poll-s", type=float, default=300.0)
     parser.add_argument("--max-hours", type=float, default=18.0)
+    parser.add_argument(
+        "--send-task-email",
+        action="store_true",
+        help="send the terminal task notification only when explicitly requested for this run",
+    )
     args = parser.parse_args()
 
     run_dir = args.run_dir.resolve()
@@ -96,11 +81,7 @@ def main() -> int:
 
     final_json = run_dir / "DIFF_INTERACTIVE_COVERAGE_GOAL_CHAIN_PROBE.json"
     partial_json = run_dir / "DIFF_INTERACTIVE_COVERAGE_GOAL_CHAIN_PROBE.partial.json"
-    manifest_json = run_dir / "FACTORY_L2_DIFF_INTERACTIVE_COVERAGE_PROBE.json"
-    metrics_json = run_dir / "EGO_SINGLE_METRICS.json"
-    coverage_json = run_dir / "coverage_packet" / "FACTORY_L2_INDOOR_COVERAGE_PACKET.json"
     monitor_json = run_dir / "terminal_monitor.json"
-    cooldown_key = f"factory_diff_coverage_terminal:{run_dir.name}"
     deadline = time.time() + max(0.1, args.max_hours) * 3600.0
 
     while time.time() < deadline:
@@ -108,15 +89,15 @@ def main() -> int:
         payload = read_json(source)
         status = str(payload.get("status") or "")
         blockers = payload.get("blockers")
-        manifest = read_json(manifest_json)
-        metrics = read_json(metrics_json)
-        coverage = read_json(coverage_json)
         terminal = bool(blockers) or status in {"failed", "blocked", "review_required_or_blocked"}
         if source == final_json and status == "passed":
-            terminal = manifest_json.exists()
+            terminal = (run_dir / "FACTORY_L2_DIFF_INTERACTIVE_COVERAGE_PROBE.json").exists()
         if terminal or blockers:
-            subject, body = summarize(run_dir, payload, manifest, metrics, coverage)
-            email = send_email(subject, body, cooldown_key)
+            email = (
+                send_email(write_task_notification_status(run_dir, source, payload, blockers))
+                if args.send_task_email
+                else {"attempted": False, "reason": "task_notification_not_requested"}
+            )
             record = {
                 "status": "terminal_observed",
                 "source": str(source),
@@ -126,7 +107,7 @@ def main() -> int:
                 "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
             }
             monitor_json.write_text(json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            return 0 if email.get("returncode") == 0 else 2
+            return 0 if not email.get("attempted") or email.get("returncode") == 0 else 2
         time.sleep(max(15.0, args.poll_s))
 
     record = {

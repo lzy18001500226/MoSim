@@ -60,7 +60,7 @@ equation
     motor_tau[i] = if abs(motor_command[i]) > abs(omega[i]) then time_constant_up else time_constant_down;
     der(omega[i]) = (motor_command[i] - omega[i]) / motor_tau[i];
     nominal_thrust[i] = lift_coefficient * omega[i] * omega[i];
-    fault_effectiveness[i] = if i == fault_rotor_index and time >= fault_start_s then
+    fault_effectiveness[i] = if i == fault_rotor_index and time >= fault_start_s then 
       fault_rotor_effectiveness else 1;
     thrust[i] = fault_effectiveness[i] * thrust_effectiveness[i] * nominal_thrust[i];
     // Static effectiveness retains its historical meaning. The scheduled fault

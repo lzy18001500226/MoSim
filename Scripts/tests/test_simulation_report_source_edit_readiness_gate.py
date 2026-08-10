@@ -54,7 +54,7 @@ def test_current_source_edit_readiness_gate_blocks_apply(tmp_path: Path) -> None
     assert readiness["summary"]["decision_check_ok"] is True
     assert readiness["summary"]["decision_authorizes_application"] is False
     assert readiness["summary"]["safe_to_apply_report_source_edits_now"] is False
-    assert "does not edit Docs/simulation_report.md" in " ".join(readiness["claim_boundary"])
+    assert "does not edit Docs/报告/仿真分析报告_正文骨架.md" in " ".join(readiness["claim_boundary"])
 
 
 def main() -> int:

@@ -60,6 +60,34 @@ blockers or after their separate controller/bootstrapping repairs. Do not alter
 FAST-LIO map/filter parameters to mask either blocker, and do not claim planner,
 avoidance, trajectory, or swarm-separation success from the local-build result.
 
+### 0.2 C99 Diff-Swarm Staged Debug Route
+
+`run_c99_multiuav_planner_gate.sh` remains the compatibility regression gate.
+For C99/Diff-Swarm diagnosis, use the staged route instead of treating that
+large runner as the only observable entrypoint:
+
+```text
+prepare_c99_diff_swarm_runtime.sh
+run_c99_diff_swarm_components.sh
+run_c99_diff_swarm_mission.sh
+review_c99_diff_swarm_run.sh
+stop_c99_diff_swarm_components.sh
+```
+
+The prepare stage records the resolved workspace and coordinate contract but
+starts no runtime. The components stage remains in its own foreground terminal
+after it writes `C99_DIFF_SWARM_COMPONENTS_READY.json`; it retains ownership of
+Gazebo/PX4/MAVROS/px4ctrl/bridges/planner while the mission stage runs in a
+second terminal. Review is read-only. Stop sends `SIGINT` only to the recorded
+components runner, which performs its own cleanup. Use a new `RESULT_DIR` for
+every staged attempt and do not start another Sunray runtime while that runner
+is active.
+
+The single-aircraft counterpart remains
+`run_factory_l2_diff_single_c99_gate.sh`. The staged multi-aircraft route and
+the single-aircraft gate are independent runtime checks; neither replaces RViz
+review, MWORKS formal evidence, or generalized swarm-safety acceptance.
+
 ## 1. Goal
 
 Before changing files or running live tools, write the local goal in one
@@ -75,8 +103,9 @@ EGO/EGOv2/Diff-Planner review
 MWORKS generated-controller integration slice
 ```
 
-If the task does not name a gate, choose the smallest gate that advances the
-current board and state it before acting.
+If the task does not name a gate, choose only the smallest read-only probe that
+clarifies the requested scope. Ask before starting a live gate; do not infer a
+replacement action from a board or historical status.
 
 ## 2. Read Only The Needed Context
 
@@ -85,7 +114,6 @@ Default current context:
 ```text
 AGENTS.md
 Docs/Workflows/new_conversation_context.md
-Docs/Workflows/mainline_operations_board.md
 Docs/Design/架构.md
 Docs/Workflows/sunray_ros1_current_runtime_lane.md
 this checklist
@@ -639,8 +667,8 @@ or use the archived historical helper only for trace-back:
 Scripts/cmd/Archive/legacy_unverified/build_g8_mworks_closeout.cmd
 ```
 
-Only rerun G7B/G7C runtime gates when a generated controller or scoped
-regression needs fresh evidence. The next mainline branch after user review is
-controller-family expansion using G8 as the template; do not retune px4ctrl or
-planner parameters while entering that branch unless a regression gate proves
-the frozen runtime baseline changed.
+Only rerun G7B/G7C runtime gates when the current user scopes a generated
+controller or regression that needs fresh evidence. Controller-family expansion
+is historical planning context, not an automatic next step; do not retune
+px4ctrl or planner parameters unless the current task explicitly requires it
+and a regression gate proves the frozen runtime baseline changed.

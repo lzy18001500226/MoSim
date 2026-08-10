@@ -106,9 +106,9 @@ model PlanningNavigationDisplay
   parameter Boolean show_static_grid_overlay = false
     "Keep false for GUI review unless explicit grid debugging is needed. Dark grid lines hide terrain stair steps.";
 
-  Modelica.Blocks.Interfaces.RealInput actual_position[3]
+  Modelica.Blocks.Interfaces.RealInput actual_position[3] 
     annotation(Placement(transformation(origin = {-120, 30}, extent = {{-20, -20}, {20, 20}})));
-  Modelica.Blocks.Interfaces.RealInput reference_position[3]
+  Modelica.Blocks.Interfaces.RealInput reference_position[3] 
     annotation(Placement(transformation(origin = {-120, -30}, extent = {{-20, -20}, {20, 20}})));
 
 protected
@@ -839,20 +839,20 @@ equation
     pillar_position[i, 3] = pillar_z_min[i] + 0.5 * pillar_height[i];
     pillar_distance_to_uav[i] = sqrt((pillar_center[i, 1] - sensed_position[1]) ^ 2 + (pillar_center[i, 2] - sensed_position[2]) ^ 2);
     pillar_bearing_dot[i] =
-      if pillar_distance_to_uav[i] > 1e-6 and local_heading_norm > 1e-6 then
+      if pillar_distance_to_uav[i] > 1e-6 and local_heading_norm > 1e-6 then 
         ((pillar_center[i, 1] - sensed_position[1]) * local_heading_vector[1] +
         (pillar_center[i, 2] - sensed_position[2]) * local_heading_vector[2]) /
-        (pillar_distance_to_uav[i] * local_heading_norm)
+        (pillar_distance_to_uav[i] * local_heading_norm) 
       else 1.0;
     pillar_active[i] = i <= pillar_count;
     pillar_occluded[i] = i <= pillar_count and occludedByWallArms(
       sensed_position[1], sensed_position[2], pillar_center[i, 1], pillar_center[i, 2],
       0, 0, max_wall_groups, wall_group_count,
       wall_arm1_min, wall_arm1_max, wall_arm2_min, wall_arm2_max);
-    pillar_sensed[i] = i <= pillar_count and highlight_local_costmap and
+    pillar_sensed[i] = i <= pillar_count and highlight_local_costmap and 
       pillar_distance_to_uav[i] <= local_costmap_radius_m and not pillar_occluded[i];
-    pillar_near[i] = i <= pillar_count and highlight_local_costmap and
-      pillar_distance_to_uav[i] > local_costmap_radius_m and
+    pillar_near[i] = i <= pillar_count and highlight_local_costmap and 
+      pillar_distance_to_uav[i] > local_costmap_radius_m and 
       pillar_distance_to_uav[i] <= local_costmap_fade_radius_m and not pillar_occluded[i];
   end for;
 
@@ -860,46 +860,46 @@ equation
     wall_arm1_x_axis[i] = abs(wall_arm1_max[i, 1] - wall_arm1_min[i, 1]) >= abs(wall_arm1_max[i, 2] - wall_arm1_min[i, 2]);
     wall_arm2_x_axis[i] = abs(wall_arm2_max[i, 1] - wall_arm2_min[i, 1]) >= abs(wall_arm2_max[i, 2] - wall_arm2_min[i, 2]);
 
-    wall_arm1_length[i] = if wall_arm1_x_axis[i] then
+    wall_arm1_length[i] = if wall_arm1_x_axis[i] then 
       abs(wall_arm1_max[i, 1] - wall_arm1_min[i, 1]) else abs(wall_arm1_max[i, 2] - wall_arm1_min[i, 2]);
-    wall_arm2_length[i] = if wall_arm2_x_axis[i] then
+    wall_arm2_length[i] = if wall_arm2_x_axis[i] then 
       abs(wall_arm2_max[i, 1] - wall_arm2_min[i, 1]) else abs(wall_arm2_max[i, 2] - wall_arm2_min[i, 2]);
-    wall_arm1_width[i] = if wall_arm1_x_axis[i] then
+    wall_arm1_width[i] = if wall_arm1_x_axis[i] then 
       abs(wall_arm1_max[i, 2] - wall_arm1_min[i, 2]) else abs(wall_arm1_max[i, 1] - wall_arm1_min[i, 1]);
-    wall_arm2_width[i] = if wall_arm2_x_axis[i] then
+    wall_arm2_width[i] = if wall_arm2_x_axis[i] then 
       abs(wall_arm2_max[i, 2] - wall_arm2_min[i, 2]) else abs(wall_arm2_max[i, 1] - wall_arm2_min[i, 1]);
     wall_arm1_height[i] = abs(wall_arm1_max[i, 3] - wall_arm1_min[i, 3]);
     wall_arm2_height[i] = abs(wall_arm2_max[i, 3] - wall_arm2_min[i, 3]);
 
-    wall_arm1_position[i, 1] = if wall_arm1_x_axis[i] then min(wall_arm1_min[i, 1], wall_arm1_max[i, 1])
+    wall_arm1_position[i, 1] = if wall_arm1_x_axis[i] then min(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) 
       else 0.5 * (wall_arm1_min[i, 1] + wall_arm1_max[i, 1]);
-    wall_arm1_position[i, 2] = if wall_arm1_x_axis[i] then 0.5 * (wall_arm1_min[i, 2] + wall_arm1_max[i, 2])
+    wall_arm1_position[i, 2] = if wall_arm1_x_axis[i] then 0.5 * (wall_arm1_min[i, 2] + wall_arm1_max[i, 2]) 
       else min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]);
     wall_arm1_position[i, 3] = 0.5 * (wall_arm1_min[i, 3] + wall_arm1_max[i, 3]);
-    wall_arm2_position[i, 1] = if wall_arm2_x_axis[i] then min(wall_arm2_min[i, 1], wall_arm2_max[i, 1])
+    wall_arm2_position[i, 1] = if wall_arm2_x_axis[i] then min(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) 
       else 0.5 * (wall_arm2_min[i, 1] + wall_arm2_max[i, 1]);
-    wall_arm2_position[i, 2] = if wall_arm2_x_axis[i] then 0.5 * (wall_arm2_min[i, 2] + wall_arm2_max[i, 2])
+    wall_arm2_position[i, 2] = if wall_arm2_x_axis[i] then 0.5 * (wall_arm2_min[i, 2] + wall_arm2_max[i, 2]) 
       else min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]);
     wall_arm2_position[i, 3] = 0.5 * (wall_arm2_min[i, 3] + wall_arm2_max[i, 3]);
-    wall_arm1_dx_to_uav[i] = if sensed_position[1] < min(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) then
-      min(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) - sensed_position[1]
-      else if sensed_position[1] > max(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) then
-      sensed_position[1] - max(wall_arm1_min[i, 1], wall_arm1_max[i, 1])
+    wall_arm1_dx_to_uav[i] = if sensed_position[1] < min(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) then 
+      min(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) - sensed_position[1] 
+      else if sensed_position[1] > max(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) then 
+      sensed_position[1] - max(wall_arm1_min[i, 1], wall_arm1_max[i, 1]) 
       else 0.0;
-    wall_arm1_dy_to_uav[i] = if sensed_position[2] < min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) then
-      min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) - sensed_position[2]
-      else if sensed_position[2] > max(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) then
-      sensed_position[2] - max(wall_arm1_min[i, 2], wall_arm1_max[i, 2])
+    wall_arm1_dy_to_uav[i] = if sensed_position[2] < min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) then 
+      min(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) - sensed_position[2] 
+      else if sensed_position[2] > max(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) then 
+      sensed_position[2] - max(wall_arm1_min[i, 2], wall_arm1_max[i, 2]) 
       else 0.0;
-    wall_arm2_dx_to_uav[i] = if sensed_position[1] < min(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) then
-      min(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) - sensed_position[1]
-      else if sensed_position[1] > max(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) then
-      sensed_position[1] - max(wall_arm2_min[i, 1], wall_arm2_max[i, 1])
+    wall_arm2_dx_to_uav[i] = if sensed_position[1] < min(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) then 
+      min(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) - sensed_position[1] 
+      else if sensed_position[1] > max(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) then 
+      sensed_position[1] - max(wall_arm2_min[i, 1], wall_arm2_max[i, 1]) 
       else 0.0;
-    wall_arm2_dy_to_uav[i] = if sensed_position[2] < min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) then
-      min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) - sensed_position[2]
-      else if sensed_position[2] > max(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) then
-      sensed_position[2] - max(wall_arm2_min[i, 2], wall_arm2_max[i, 2])
+    wall_arm2_dy_to_uav[i] = if sensed_position[2] < min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) then 
+      min(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) - sensed_position[2] 
+      else if sensed_position[2] > max(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) then 
+      sensed_position[2] - max(wall_arm2_min[i, 2], wall_arm2_max[i, 2]) 
       else 0.0;
     wall_arm1_distance_to_uav[i] = sqrt(wall_arm1_dx_to_uav[i] ^ 2 + wall_arm1_dy_to_uav[i] ^ 2);
     wall_arm2_distance_to_uav[i] = sqrt(wall_arm2_dx_to_uav[i] ^ 2 + wall_arm2_dy_to_uav[i] ^ 2);
@@ -922,34 +922,34 @@ equation
     wall_arm1_display_radius[i] = if wall_arm1_sensed[i] then local_costmap_radius_m else 0.0;
     wall_arm2_display_radius[i] = if wall_arm2_sensed[i] then local_costmap_radius_m else 0.0;
 
-    wall_arm1_display_length[i] = if wall_arm1_x_axis[i] then
+    wall_arm1_display_length[i] = if wall_arm1_x_axis[i] then 
       max(0.0,
         clippedIntervalHigh(wall_arm1_min[i, 1], wall_arm1_max[i, 1], sensed_position[1], wall_arm1_dy_to_uav[i], wall_arm1_display_radius[i]) -
-        clippedIntervalLow(wall_arm1_min[i, 1], wall_arm1_max[i, 1], sensed_position[1], wall_arm1_dy_to_uav[i], wall_arm1_display_radius[i]))
-      else
+        clippedIntervalLow(wall_arm1_min[i, 1], wall_arm1_max[i, 1], sensed_position[1], wall_arm1_dy_to_uav[i], wall_arm1_display_radius[i])) 
+      else 
       max(0.0,
         clippedIntervalHigh(wall_arm1_min[i, 2], wall_arm1_max[i, 2], sensed_position[2], wall_arm1_dx_to_uav[i], wall_arm1_display_radius[i]) -
         clippedIntervalLow(wall_arm1_min[i, 2], wall_arm1_max[i, 2], sensed_position[2], wall_arm1_dx_to_uav[i], wall_arm1_display_radius[i]));
-    wall_arm2_display_length[i] = if wall_arm2_x_axis[i] then
+    wall_arm2_display_length[i] = if wall_arm2_x_axis[i] then 
       max(0.0,
         clippedIntervalHigh(wall_arm2_min[i, 1], wall_arm2_max[i, 1], sensed_position[1], wall_arm2_dy_to_uav[i], wall_arm2_display_radius[i]) -
-        clippedIntervalLow(wall_arm2_min[i, 1], wall_arm2_max[i, 1], sensed_position[1], wall_arm2_dy_to_uav[i], wall_arm2_display_radius[i]))
-      else
+        clippedIntervalLow(wall_arm2_min[i, 1], wall_arm2_max[i, 1], sensed_position[1], wall_arm2_dy_to_uav[i], wall_arm2_display_radius[i])) 
+      else 
       max(0.0,
         clippedIntervalHigh(wall_arm2_min[i, 2], wall_arm2_max[i, 2], sensed_position[2], wall_arm2_dx_to_uav[i], wall_arm2_display_radius[i]) -
         clippedIntervalLow(wall_arm2_min[i, 2], wall_arm2_max[i, 2], sensed_position[2], wall_arm2_dx_to_uav[i], wall_arm2_display_radius[i]));
-    wall_arm1_display_position[i, 1] = if wall_arm1_x_axis[i] then
-      clippedIntervalLow(wall_arm1_min[i, 1], wall_arm1_max[i, 1], sensed_position[1], wall_arm1_dy_to_uav[i], wall_arm1_display_radius[i])
+    wall_arm1_display_position[i, 1] = if wall_arm1_x_axis[i] then 
+      clippedIntervalLow(wall_arm1_min[i, 1], wall_arm1_max[i, 1], sensed_position[1], wall_arm1_dy_to_uav[i], wall_arm1_display_radius[i]) 
       else 0.5 * (wall_arm1_min[i, 1] + wall_arm1_max[i, 1]);
-    wall_arm1_display_position[i, 2] = if wall_arm1_x_axis[i] then
-      0.5 * (wall_arm1_min[i, 2] + wall_arm1_max[i, 2])
+    wall_arm1_display_position[i, 2] = if wall_arm1_x_axis[i] then 
+      0.5 * (wall_arm1_min[i, 2] + wall_arm1_max[i, 2]) 
       else clippedIntervalLow(wall_arm1_min[i, 2], wall_arm1_max[i, 2], sensed_position[2], wall_arm1_dx_to_uav[i], wall_arm1_display_radius[i]);
     wall_arm1_display_position[i, 3] = wall_arm1_position[i, 3];
-    wall_arm2_display_position[i, 1] = if wall_arm2_x_axis[i] then
-      clippedIntervalLow(wall_arm2_min[i, 1], wall_arm2_max[i, 1], sensed_position[1], wall_arm2_dy_to_uav[i], wall_arm2_display_radius[i])
+    wall_arm2_display_position[i, 1] = if wall_arm2_x_axis[i] then 
+      clippedIntervalLow(wall_arm2_min[i, 1], wall_arm2_max[i, 1], sensed_position[1], wall_arm2_dy_to_uav[i], wall_arm2_display_radius[i]) 
       else 0.5 * (wall_arm2_min[i, 1] + wall_arm2_max[i, 1]);
-    wall_arm2_display_position[i, 2] = if wall_arm2_x_axis[i] then
-      0.5 * (wall_arm2_min[i, 2] + wall_arm2_max[i, 2])
+    wall_arm2_display_position[i, 2] = if wall_arm2_x_axis[i] then 
+      0.5 * (wall_arm2_min[i, 2] + wall_arm2_max[i, 2]) 
       else clippedIntervalLow(wall_arm2_min[i, 2], wall_arm2_max[i, 2], sensed_position[2], wall_arm2_dx_to_uav[i], wall_arm2_display_radius[i]);
     wall_arm2_display_position[i, 3] = wall_arm2_position[i, 3];
 
@@ -981,17 +981,17 @@ equation
     ground_center[i, 2] = ground_position[i, 2];
     ground_distance_to_uav[i] = sqrt((ground_center[i, 1] - sensed_position[1]) ^ 2 + (ground_center[i, 2] - sensed_position[2]) ^ 2);
     ground_bearing_dot[i] =
-      if ground_distance_to_uav[i] > 1e-6 and local_heading_norm > 1e-6 then
+      if ground_distance_to_uav[i] > 1e-6 and local_heading_norm > 1e-6 then 
         ((ground_center[i, 1] - sensed_position[1]) * local_heading_vector[1] +
         (ground_center[i, 2] - sensed_position[2]) * local_heading_vector[2]) /
-        (ground_distance_to_uav[i] * local_heading_norm)
+        (ground_distance_to_uav[i] * local_heading_norm) 
       else 1.0;
     ground_occluded[i] = occludedByWallArms(
       sensed_position[1], sensed_position[2], ground_center[i, 1], ground_center[i, 2],
       0, 0, max_wall_groups, wall_group_count,
       wall_arm1_min, wall_arm1_max, wall_arm2_min, wall_arm2_max);
     ground_sensed[i] = highlight_local_costmap and ground_distance_to_uav[i] <= local_costmap_radius_m and not ground_occluded[i];
-    ground_near[i] = highlight_local_costmap and ground_distance_to_uav[i] > local_costmap_radius_m and
+    ground_near[i] = highlight_local_costmap and ground_distance_to_uav[i] > local_costmap_radius_m and 
       ground_distance_to_uav[i] <= local_costmap_fade_radius_m and not ground_occluded[i];
   end for;
 
@@ -1008,14 +1008,14 @@ equation
       local_sensed_ground_position[i, 1], local_sensed_ground_position[i, 2],
       0, 0, max_wall_groups, wall_group_count,
       wall_arm1_min, wall_arm1_max, wall_arm2_min, wall_arm2_max);
-    local_sensed_ground_active[i] = highlight_local_costmap and
-      local_sensed_ground_position[i, 1] >= x_min and local_sensed_ground_position[i, 1] <= x_max and
-      local_sensed_ground_position[i, 2] >= y_min and local_sensed_ground_position[i, 2] <= y_max and
+    local_sensed_ground_active[i] = highlight_local_costmap and 
+      local_sensed_ground_position[i, 1] >= x_min and local_sensed_ground_position[i, 1] <= x_max and 
+      local_sensed_ground_position[i, 2] >= y_min and local_sensed_ground_position[i, 2] <= y_max and 
       local_sensed_ground_distance[i] <= local_costmap_radius_m and not local_sensed_ground_occluded[i];
-    local_sensed_ground_near[i] = highlight_local_costmap and
-      local_sensed_ground_position[i, 1] >= x_min and local_sensed_ground_position[i, 1] <= x_max and
-      local_sensed_ground_position[i, 2] >= y_min and local_sensed_ground_position[i, 2] <= y_max and
-      local_sensed_ground_distance[i] > local_costmap_radius_m and
+    local_sensed_ground_near[i] = highlight_local_costmap and 
+      local_sensed_ground_position[i, 1] >= x_min and local_sensed_ground_position[i, 1] <= x_max and 
+      local_sensed_ground_position[i, 2] >= y_min and local_sensed_ground_position[i, 2] <= y_max and 
+      local_sensed_ground_distance[i] > local_costmap_radius_m and 
       local_sensed_ground_distance[i] <= local_costmap_fade_radius_m and not local_sensed_ground_occluded[i];
   end for;
 

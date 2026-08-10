@@ -9,7 +9,17 @@ import json
 import math
 from bisect import bisect_left
 from pathlib import Path
+import sys
 from typing import Any
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from fastlio_fusion_evidence_contract import (
+    DEFAULT_MAX_ALIGNED_TRUTH_POSITION_P95_M,
+    DEFAULT_MIN_ARMED_FUSION_SUCCESS_RATIO,
+    evaluate_goal3_gate,
+)
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -378,6 +388,70 @@ def topic_frames(series: list[dict[str, Any]]) -> dict[str, list[str]]:
     return {"frame_id": frames, "child_frame_id": children}
 
 
+def goal3_contract_summary(goal3: dict[str, Any]) -> dict[str, Any]:
+    """Classify a Goal3 artifact against the current continuous-fusion rule.
+
+    Older artifacts only state whether fusion was observed at least once. They
+    lack the armed-period samples needed to make a continuous-fusion claim and
+    must remain useful diagnostic input without being accepted as a gate pass.
+    """
+
+    checks = goal3.get("checks")
+    comparisons = goal3.get("comparisons")
+    checks = checks if isinstance(checks, dict) else {}
+    comparisons = comparisons if isinstance(comparisons, dict) else {}
+    required_checks = (
+        "external_odom_valid_last",
+        "armed_fusion_sample_count",
+        "armed_fusion_success_seen",
+        "armed_fusion_success_last",
+        "armed_fusion_success_ratio",
+        "negative_header_gaps",
+    )
+    missing = [key for key in required_checks if key not in checks]
+    aligned_truth = comparisons.get("aligned_vs_truth_position_m")
+    if not isinstance(aligned_truth, dict) or "p95" not in aligned_truth:
+        missing.append("aligned_vs_truth_position_m.p95")
+
+    source_status = str(goal3.get("status", "missing"))
+    source_gate_pass = goal3.get("gate_pass")
+    summary: dict[str, Any] = {
+        "source_status": source_status,
+        "source_gate_pass": source_gate_pass,
+        "observed_fusion_success_ratio": checks.get("fusion_success_ratio"),
+    }
+    if missing:
+        return {
+            **summary,
+            "status": "incomplete_legacy_contract",
+            "reason": "missing_continuous_fusion_evidence:" + ",".join(missing),
+            "current_contract_pass": False,
+        }
+
+    thresholds = goal3.get("thresholds")
+    thresholds = thresholds if isinstance(thresholds, dict) else {}
+    evaluation = evaluate_goal3_gate(
+        checks,
+        comparisons,
+        min_armed_fusion_success_ratio=thresholds.get(
+            "min_armed_fusion_success_ratio", DEFAULT_MIN_ARMED_FUSION_SUCCESS_RATIO
+        ),
+        max_aligned_truth_position_p95_m=thresholds.get(
+            "max_aligned_truth_position_p95_m", DEFAULT_MAX_ALIGNED_TRUTH_POSITION_P95_M
+        ),
+    )
+    current_contract_pass = (
+        source_status == "passed" and source_gate_pass is True and evaluation["gate_pass"]
+    )
+    return {
+        **summary,
+        "status": "verified_passed" if current_contract_pass else "blocked",
+        "reason": "" if current_contract_pass else "continuous_fusion_gate_not_satisfied",
+        "current_contract_pass": current_contract_pass,
+        "evaluation": evaluation,
+    }
+
+
 def analyze_run(run_dir: Path, args: argparse.Namespace) -> dict[str, Any]:
     samples_path = run_dir / "control_diagnostics_samples.jsonl"
     rows = read_jsonl(samples_path)
@@ -439,6 +513,7 @@ def analyze_run(run_dir: Path, args: argparse.Namespace) -> dict[str, Any]:
     }
     control_summary = read_json(run_dir / "control_diagnostics_summary.json")
     goal3 = read_json(run_dir / "GOAL3_FASTLIO_EKF_FUSION_AUDIT.json")
+    goal3_contract = goal3_contract_summary(goal3)
     time_tf = read_json(run_dir / "time_tf_audit.json")
     px4_params = (run_dir / "px4_param_overrides.txt").read_text(
         encoding="utf-8", errors="replace"
@@ -469,6 +544,12 @@ def analyze_run(run_dir: Path, args: argparse.Namespace) -> dict[str, Any]:
     negative_gaps = goal3.get("checks", {}).get("negative_header_gaps", {})
     if any(int(v or 0) > 0 for v in negative_gaps.values()):
         findings.append("Goal3 audit saw negative header gaps; MAVROS/local timestamp ordering needs a stricter recorder or source check.")
+    if goal3_contract["status"] == "incomplete_legacy_contract":
+        findings.append(
+            "Goal3 audit predates the continuous in-flight fusion contract; its source status is not a valid fusion acceptance."
+        )
+    elif not goal3_contract["current_contract_pass"]:
+        findings.append("Goal3 continuous-fusion contract blocks this run; do not use it for EKF fusion acceptance.")
     if ev_bits and ev_bits.get("velocity_3d"):
         findings.append(
             "EKF2_EV_CTRL includes 3D velocity fusion; current Sunray externalFusion publishes MAVROS vision_pose PoseStamped, so verify EV velocity availability before accepting this as the default."
@@ -496,6 +577,7 @@ def analyze_run(run_dir: Path, args: argparse.Namespace) -> dict[str, Any]:
             "goal3_status": goal3.get("status"),
             "goal3_fusion_success_ratio": goal3.get("checks", {}).get("fusion_success_ratio"),
             "goal3_negative_header_gaps": negative_gaps,
+            "goal3_current_contract": goal3_contract,
             "time_tf_use_sim_time": time_tf.get("use_sim_time"),
             "time_tf_clock": time_tf.get("clock_topic_stats", {}),
         },

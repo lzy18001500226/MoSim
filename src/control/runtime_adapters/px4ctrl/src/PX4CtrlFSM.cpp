@@ -158,8 +158,6 @@ void PX4CtrlFSM::process()
 					}
 				}
 			}
-			takeoff_land.toggle_takeoff_land_time = now_time;
-
 			ROS_INFO("\033[32m[px4ctrl] MANUAL_CTRL(L1) --> AUTO_TAKEOFF\033[32m");
 		}
 

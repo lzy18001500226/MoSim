@@ -102,7 +102,6 @@ success authority. Current runtime evidence belongs to:
 
 ```text
 Docs/Design/架构.md
-Docs/Workflows/mainline_operations_board.md
 Docs/Workflows/sunray_ros1_current_runtime_lane.md
 Docs/Workflows/sunray_ros1_execution_checklist.md
 ```
@@ -228,4 +227,4 @@ Hard implementation constraints:
 The archived workflow contains old ROS2, Factory, FAST-LIO, command-echo, and
 UE sensor-bridge design history. Treat it as historical/reference material.
 Do not import its route into current work unless the user explicitly reopens
-that architecture and the current board/architecture docs are updated first.
+that architecture and the relevant design/workflow documents are updated first.

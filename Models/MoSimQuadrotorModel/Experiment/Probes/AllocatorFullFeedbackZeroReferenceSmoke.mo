@@ -2,9 +2,9 @@ within MoSimQuadrotorModel.Experiment.Probes;
 model AllocatorFullFeedbackZeroReferenceSmoke
   "Zero-reference, full-feedback isolation of the shared attitude allocator and plant"
 
-  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator
+  MoSimQuadrotorModel.Control.Allocation.OfflineAttitudeRateAllocator allocator 
     annotation(Placement(transformation(origin = {-48, 0}, extent = {{-32, -26}, {32, 26}})));
-  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant
+  MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant 
     annotation(Placement(transformation(origin = {70, 0}, extent = {{-42, -58}, {42, 58}})));
   Real position[3];
   Real attitude[3];
@@ -13,9 +13,9 @@ model AllocatorFullFeedbackZeroReferenceSmoke
 equation
   allocator.attitude_ref = {0.0, 0.0, 0.0};
   allocator.collective_thrust_delta = 0.0;
-  connect(plant.attitude, allocator.attitude_mea)
+  connect(plant.attitude, allocator.attitude_mea) 
     annotation(Line(points = {{28, -18}, {8, -18}, {8, -34}, {-48, -34}, {-48, -26}}, color = {0, 0, 127}));
-  connect(allocator.rotor_command, plant.rotor_command)
+  connect(allocator.rotor_command, plant.rotor_command) 
     annotation(Line(points = {{-16, 0}, {28, 0}}, color = {0, 0, 127}));
 
   position = plant.position;

@@ -20,7 +20,7 @@ equation
     desired_body_rate[axis] = min(max(body_rate_from_acceleration[axis]
       * desired_acceleration_out[axis], -body_rate_limit[axis]),
       body_rate_limit[axis]);
-    desired_body_rate_out[axis] = if enable >= 0.5 then
+    desired_body_rate_out[axis] = if enable >= 0.5 then 
       desired_body_rate[axis] else 0;
   end for;
   // The vertical acceleration channel produces collective thrust. It must not

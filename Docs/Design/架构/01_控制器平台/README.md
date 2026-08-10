@@ -18,6 +18,8 @@ se3_basic
 | 文档 | 用途 |
 | --- | --- |
 | `MWORKS控制器关系与组合架构.md` | 当前控制责任链、PX4/MWORKS替换点、Model Studio实际配置映射、自由组合与认证预设的边界；先读此文理解组合关系 |
+| `全图形化Sysblock建模与组合平台规范.md` | 全 48 条路线的严格 Sysblock 核、非空整机图、APP 自动组装、模型归类与逐条晋级规范 |
+| `Config/control_platform/strict_graphical_sysblock_registry.json` | 从活动 Catalog、当前模型入口与 Formal 测试壳映射派生的 48 条严格图形迁移波次、目标类和当前 SG 状态；用生成器的 `--check` 防止漂移 |
 | `控制平台接口与闭环实施规范.md` | 分层接口、类型化Frame、Registry、晋级门、Factory简化故障面和前端handoff边界；其原 G1-G7 编号仅供历史追溯 |
 | `Docs/Workflows/controller_evidence_closeout.md` | 当前 G1-G7 控制器证据与模型迁移工作流；当前 48 个活动条目与历史 67 条分层路线必须分开读取，其中包括 47 个 MWORKS Control Profile（46 条原始路线和 1 条已物化但性能待评估的 ESO Profile）及 `px4ctrl` 工程/部署基线；七族实测胜出者和七场景矩阵以主线看板为准 |
 | `G1_G6闭环验收矩阵.md` | 2026-07-16 历史 H1-H6（原 G1-G6）收尾矩阵，不定义当前任务状态 |

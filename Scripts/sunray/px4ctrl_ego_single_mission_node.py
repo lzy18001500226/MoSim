@@ -58,6 +58,8 @@ class EgoSingleMission:
         self.last_truth: dict | None = None
         self.last_sunray_truth: dict | None = None
         self.last_odom: dict | None = None
+        self.last_path_odom: Odometry | None = None
+        self.last_path_odom_row: dict | None = None
         self.last_state: State | None = None
         self.last_position_cmd: dict | None = None
         self.home_odom_z: float | None = None
@@ -75,6 +77,8 @@ class EgoSingleMission:
         self.land_metrics: dict | None = None
         self.interactive_goal_metrics: dict[str, dict] = {}
         self.interactive_goal_handoff_metrics: list[dict] = []
+        self.last_interactive_goal_frame_issue: dict | None = None
+        self.interactive_final_hover_metrics: dict | None = None
         self.interactive_yaw_scan_events: list[dict] = []
         self.first_bspline_t: float | None = None
         self.first_polytraj_t: float | None = None
@@ -139,6 +143,8 @@ class EgoSingleMission:
         rospy.Subscriber("/gazebo/model_states", ModelStates, self.on_model_states, queue_size=30)
         rospy.Subscriber(args.sunray_truth_topic, Odometry, self.on_sunray_truth, queue_size=100)
         rospy.Subscriber(args.odom_topic, Odometry, self.on_odom, queue_size=100)
+        if args.path_odom_topic:
+            rospy.Subscriber(args.path_odom_topic, Odometry, self.on_path_odom, queue_size=100)
         rospy.Subscriber("/uav1/mavros/state", State, self.on_state, queue_size=20)
         rospy.Subscriber(args.interactive_forwarded_goal_topic, PoseStamped, self.on_forwarded_goal, queue_size=30)
         rospy.Subscriber("/position_cmd", PositionCommand, self.on_position_cmd, queue_size=200)
@@ -309,15 +315,15 @@ class EgoSingleMission:
         if self.should_record("sunray_truth", t, self.args.record_hz):
             self.sunray_truth_rows.append(row)
 
-    def on_odom(self, msg: Odometry) -> None:
+    def odom_row(self, msg: Odometry) -> dict:
         p = msg.pose.pose.position
         q = msg.pose.pose.orientation
         v = msg.twist.twist.linear
         roll, pitch, yaw = self.rpy_from_quat(q.x, q.y, q.z, q.w)
-        t = self.now()
-        row = {
-            "t": t,
+        return {
+            "t": self.now(),
             "phase": self.phase,
+            "frame_id": str(msg.header.frame_id or ""),
             "x": float(p.x),
             "y": float(p.y),
             "z": float(p.z),
@@ -328,9 +334,17 @@ class EgoSingleMission:
             "pitch": pitch,
             "yaw": yaw,
         }
+
+    def on_odom(self, msg: Odometry) -> None:
+        row = self.odom_row(msg)
+        t = float(row["t"])
         self.last_odom = row
         if self.should_record("odom", t, self.args.record_hz):
             self.odom_rows.append(row)
+
+    def on_path_odom(self, msg: Odometry) -> None:
+        self.last_path_odom = msg
+        self.last_path_odom_row = self.odom_row(msg)
 
     def position_cmd_row(self, msg: PositionCommand, receive_t: float | None = None) -> dict:
         t = self.now() if receive_t is None else receive_t
@@ -603,8 +617,12 @@ class EgoSingleMission:
         if not publish_static_target:
             return
         target_path = RosPath(header=Header(stamp=stamp, frame_id=self.args.path_frame))
-        home_x, home_y = self.mission_home_xy if self.mission_home_xy else (0.0, 0.0)
-        for x, y, z in [(home_x, home_y, self.args.takeoff_height), (self.args.target_x, self.args.target_y, self.args.target_z)]:
+        start_x, start_y, start_z = self.display_path_start()
+        target_x, target_y, target_z = self.display_path_target()
+        for x, y, z in [
+            (start_x, start_y, start_z),
+            (target_x, target_y, target_z),
+        ]:
             ps = PoseStamped()
             ps.header = target_path.header
             ps.pose.position.x = x
@@ -613,6 +631,22 @@ class EgoSingleMission:
             ps.pose.orientation.w = 1.0
             target_path.poses.append(ps)
         self.target_path_pub.publish(target_path)
+
+    def display_path_start(self) -> tuple[float, float, float]:
+        if self.last_path_odom is not None:
+            position = self.last_path_odom.pose.pose.position
+            return float(position.x), float(position.y), float(position.z)
+        home_x, home_y = self.mission_home_xy if self.mission_home_xy else (0.0, 0.0)
+        return home_x, home_y, self.takeoff_target_z_m()
+
+    def display_path_target(self) -> tuple[float, float, float]:
+        if self.last_forwarded_goal is not None:
+            return (
+                float(self.last_forwarded_goal["x"]),
+                float(self.last_forwarded_goal["y"]),
+                float(self.last_forwarded_goal["z"]),
+            )
+        return self.args.target_x, self.args.target_y, self.args.target_z
 
     @staticmethod
     def normalize_angle(angle: float) -> float:
@@ -628,7 +662,7 @@ class EgoSingleMission:
     ) -> PositionCommand:
         msg = PositionCommand()
         msg.header.stamp = rospy.Time.now()
-        msg.header.frame_id = self.args.path_frame
+        msg.header.frame_id = self.control_frame_id()
         msg.trajectory_flag = PositionCommand.TRAJECTORY_STATUS_READY
         msg.trajectory_id = 0
         msg.position.x = x
@@ -641,6 +675,19 @@ class EgoSingleMission:
     def publish_hover_cmd(self, x: float, y: float, z: float, yaw: float | None = None) -> None:
         self.hover_cmd_pub.publish(self.make_hover_cmd(x, y, z, yaw))
         self.hover_cmd_publish_count += 1
+
+    def control_frame_id(self) -> str:
+        if self.last_odom is not None:
+            frame_id = str(self.last_odom.get("frame_id") or "")
+            if frame_id:
+                return frame_id
+        return self.args.control_frame
+
+    def takeoff_target_z_m(self) -> float:
+        """Return the absolute odom z targeted by px4ctrl auto-takeoff."""
+        if self.home_odom_z is None:
+            return float(self.args.takeoff_height)
+        return float(self.home_odom_z) + float(self.args.takeoff_height)
 
     def can_publish_takeoff_hover(self) -> bool:
         if not self.last_state:
@@ -844,15 +891,41 @@ class EgoSingleMission:
             "abs_roll_pitch_deg": math.degrees(max(abs(row["roll"]), abs(row["pitch"]))),
         }
 
+    def interactive_goal_state_row(self, goal_frame_id: str, preferred_row: dict | None = None) -> dict | None:
+        candidates = (self.last_path_odom_row, preferred_row, self.last_odom)
+        for candidate in candidates:
+            if candidate is not None and str(candidate.get("frame_id") or "") == goal_frame_id:
+                self.last_interactive_goal_frame_issue = None
+                return candidate
+        self.last_interactive_goal_frame_issue = {
+            "reason_code": "interactive_goal_state_frame_mismatch",
+            "goal_frame_id": goal_frame_id,
+            "available_state_frames": [
+                str(candidate.get("frame_id") or "")
+                for candidate in candidates
+                if candidate is not None
+            ],
+        }
+        return None
+
     def interactive_goal_snapshot(self, row: dict | None = None) -> dict | None:
-        row = row or self.last_odom
-        if row is None or self.last_forwarded_goal is None:
+        if self.last_forwarded_goal is None:
             return None
         goal = self.last_forwarded_goal
-        return self.state_snapshot_to_target(row, (float(goal["x"]), float(goal["y"]), float(goal["z"])))
+        goal_frame_id = str(goal.get("frame_id") or self.args.path_frame)
+        state_row = self.interactive_goal_state_row(goal_frame_id, preferred_row=row)
+        if state_row is None:
+            return None
+        snapshot = self.state_snapshot_to_target(
+            state_row,
+            (float(goal["x"]), float(goal["y"]), float(goal["z"])),
+        )
+        snapshot["state_frame_id"] = str(state_row.get("frame_id") or "")
+        snapshot["goal_frame_id"] = goal_frame_id
+        return snapshot
 
     def interactive_goal_reached(self) -> bool:
-        snapshot = self.interactive_goal_snapshot(self.last_odom)
+        snapshot = self.interactive_goal_snapshot()
         if snapshot is None:
             return False
         return bool(
@@ -864,10 +937,18 @@ class EgoSingleMission:
         )
 
     def publish_interactive_hover_handoff(self, snapshot: dict, goal_seq: int) -> dict:
-        hold_x = float(snapshot["x"])
-        hold_y = float(snapshot["y"])
-        hold_z = float(self.last_forwarded_goal["z"]) if self.last_forwarded_goal else self.args.takeoff_height
-        hold_yaw = float(snapshot.get("yaw", self.args.yaw))
+        control_snapshot = self.last_odom
+        if control_snapshot is None:
+            return {
+                "goal_seq": goal_seq,
+                "handoff_t": self.now(),
+                "status": "blocked",
+                "reason_code": "interactive_handoff_local_odom_missing",
+            }
+        hold_x = float(control_snapshot["x"])
+        hold_y = float(control_snapshot["y"])
+        hold_z = float(control_snapshot["z"])
+        hold_yaw = float(control_snapshot.get("yaw", self.args.yaw))
         adapter_hold = self.args.interactive_handoff_mode == "adapter_hold"
         if adapter_hold:
             rospy.sleep(self.args.interactive_post_adapter_disable_wait_s)
@@ -883,6 +964,7 @@ class EgoSingleMission:
             "hold_xyz": [hold_x, hold_y, hold_z],
             "hold_yaw": hold_yaw,
             "snapshot": snapshot,
+            "control_frame_id": self.control_frame_id(),
             "adapter_disabled": not adapter_hold,
             "mode": self.args.interactive_handoff_mode,
         }
@@ -916,7 +998,7 @@ class EgoSingleMission:
         else:
             odom_age = now_t - self.last_odom["t"]
             odom_xy_error = self.xy_distance(self.last_odom, (home_x, home_y))
-            odom_z_error = self.z_error(self.last_odom, self.args.takeoff_height)
+            odom_z_error = self.z_error(self.last_odom, self.takeoff_target_z_m())
             odom_speed = self.row_speed(self.last_odom)
             odom_abs_vz = abs(self.last_odom["vz"])
             odom_abs_roll_pitch_deg = math.degrees(max(abs(self.last_odom["roll"]), abs(self.last_odom["pitch"])))
@@ -988,6 +1070,22 @@ class EgoSingleMission:
             self.pre_diff_gate_history = self.pre_diff_gate_history[-self.args.pre_diff_history_limit :]
         return snapshot
 
+    def truth_odom_relative_z_state(self) -> dict | None:
+        if (
+            self.last_truth is None
+            or self.last_odom is None
+            or self.truth_home is None
+            or self.home_odom_z is None
+        ):
+            return None
+        truth_z_rel_m = float(self.last_truth["z"] - self.truth_home[2])
+        odom_z_rel_m = float(self.last_odom["z"] - self.home_odom_z)
+        return {
+            "truth_z_rel_m": truth_z_rel_m,
+            "odom_z_rel_m": odom_z_rel_m,
+            "error_m": truth_z_rel_m - odom_z_rel_m,
+        }
+
     def flight_safety_blockers(self, prefix: str) -> list[str]:
         blockers: list[str] = []
         snapshot: dict = {
@@ -998,6 +1096,7 @@ class EgoSingleMission:
                 "min_truth_z_m": self.args.execute_min_truth_z_m,
                 "min_odom_z_m": self.args.execute_min_odom_z_m,
                 "max_roll_pitch_deg": self.args.execute_max_roll_pitch_deg,
+                "max_truth_odom_z_error_m": self.args.execute_max_truth_odom_z_error_m,
             },
         }
 
@@ -1031,6 +1130,15 @@ class EgoSingleMission:
                 blockers.append(f"{prefix}_{source}_z_below_gate")
             if self.args.execute_max_roll_pitch_deg > 0.0 and abs_roll_pitch_deg > self.args.execute_max_roll_pitch_deg:
                 blockers.append(f"{prefix}_{source}_roll_pitch_above_gate")
+
+        relative_z_state = self.truth_odom_relative_z_state()
+        snapshot["truth_odom_relative_z"] = relative_z_state
+        if (
+            relative_z_state is not None
+            and self.args.execute_max_truth_odom_z_error_m > 0.0
+            and abs(relative_z_state["error_m"]) > self.args.execute_max_truth_odom_z_error_m
+        ):
+            blockers.append(f"{prefix}_truth_odom_z_divergence_above_gate")
 
         if blockers:
             snapshot["blockers"] = blockers
@@ -1081,7 +1189,13 @@ class EgoSingleMission:
             if self.safe_stop.requested():
                 return False
             self.publish_paths()
-            if self.last_state and self.last_state.connected and self.last_odom and self.last_truth:
+            if (
+                self.last_state
+                and self.last_state.connected
+                and self.last_odom
+                and self.last_truth
+                and self.takeoff_land_pub.get_num_connections() > 0
+            ):
                 return True
             rate.sleep()
         return False
@@ -1177,7 +1291,11 @@ class EgoSingleMission:
         self.write_outputs(status="passed", blockers=[])
         return 0
 
-    def perform_safe_stop(self, rate: rospy.Rate) -> int:
+    def abort_for_flight_safety(self, rate: rospy.Rate, blockers: list[str]) -> int:
+        self.set_interactive_goal_ready(False)
+        return self.perform_safe_stop(rate, safety_blockers=list(blockers))
+
+    def perform_safe_stop(self, rate: rospy.Rate, safety_blockers: list[str] | None = None) -> int:
         self.safe_stop.acknowledge("quiescing", 20)
         self.set_cmd_adapter_enabled(False)
         self.phase = "safe_stop_hover"
@@ -1203,22 +1321,27 @@ class EgoSingleMission:
             reason_code="safe_stop_completed" if disarmed else "safe_stop_disarm_not_confirmed",
             detail={"landing": self.land_metrics or {}},
         )
+        final_blockers = list(safety_blockers or [])
+        if not disarmed:
+            final_blockers.append("safe_stop_disarm_not_confirmed")
         self.write_outputs(
-            status="safe_stopped" if disarmed else "blocked",
-            blockers=[] if disarmed else ["safe_stop_disarm_not_confirmed"],
+            status="blocked" if final_blockers else "safe_stopped",
+            blockers=final_blockers,
         )
+        if safety_blockers:
+            return 15 if disarmed else 16
         return 0 if disarmed else 16
 
     def takeoff_status_summary(self) -> dict:
         state_rows = self.rows_in_phases(self.state_rows, {"takeoff"})
         odom_rows = self.rows_in_phases(self.odom_rows, {"takeoff"})
         truth_rows = self.rows_in_phases(self.truth_rows, {"takeoff"})
-        target_z = self.args.takeoff_height
+        target_z = self.takeoff_target_z_m()
         max_odom_z = max((float(row["z"]) for row in odom_rows), default=None)
         max_truth_z = max((float(row["z"]) for row in truth_rows), default=None)
         return {
             "target_z_m": target_z,
-            "target_z_semantics": "px4ctrl single-UAV gate uses MAVROS local odom z against --takeoff-height.",
+            "target_z_semantics": "px4ctrl auto-takeoff uses home_odom_z + --takeoff-height in MAVROS local odom.",
             "takeoff_cmd_publish_count": self.takeoff_cmd_publish_count,
             "land_cmd_publish_count": self.land_cmd_publish_count,
             "state_samples": len(state_rows),
@@ -1286,10 +1409,10 @@ class EgoSingleMission:
                 and time.time() - hover_start >= self.args.publish_hover_during_takeoff_delay_s
                 and self.can_publish_takeoff_hover()
             ):
-                self.publish_hover_cmd(home_x, home_y, self.args.takeoff_height)
+                self.publish_hover_cmd(home_x, home_y, self.takeoff_target_z_m())
             self.publish_paths()
             stable_snapshot = self.pre_diff_stability_snapshot(home_x, home_y)
-            if self.last_odom and abs(self.last_odom["z"] - self.args.takeoff_height) < self.args.takeoff_z_tol:
+            if self.last_odom and abs(self.last_odom["z"] - self.takeoff_target_z_m()) < self.args.takeoff_z_tol:
                 if hover_reached_time is None:
                     hover_reached_time = time.time()
                 hover_height_satisfied = True
@@ -1323,9 +1446,7 @@ class EgoSingleMission:
             self.phase = "interactive_goal_review"
             initial_scan = self.run_interactive_yaw_scan("initial_ready")
             if not initial_scan.get("ok", False):
-                self.set_interactive_goal_ready(False)
-                self.write_outputs(status="blocked", blockers=list(initial_scan.get("blockers", [])))
-                return 15
+                return self.abort_for_flight_safety(rate, list(initial_scan.get("blockers", [])))
             self.set_interactive_goal_ready(True)
             if self.args.publish_goal_in_interactive_review:
                 self.publish_trigger()
@@ -1335,7 +1456,7 @@ class EgoSingleMission:
             reached_since: float | None = None
             handoff_goal_seq: int | None = None
             handoff_hover_cmd: tuple[float, float, float, float] | None = None
-            final_pass_since: float | None = None
+            final_stable_since: float | None = None
             while (
                 not rospy.is_shutdown()
                 and (not review_has_deadline or time.time() - review_start < self.args.interactive_review_hold_s)
@@ -1348,7 +1469,8 @@ class EgoSingleMission:
                     reached_since = None
                     handoff_goal_seq = None
                     handoff_hover_cmd = None
-                    final_pass_since = None
+                    final_stable_since = None
+                    self.interactive_final_hover_metrics = None
                     self.set_cmd_adapter_enabled(True)
                     self.interactive_goal_metrics[str(active_goal_seq)] = {
                         "goal_seq": active_goal_seq,
@@ -1361,11 +1483,15 @@ class EgoSingleMission:
                     if handoff_hover_cmd is not None and self.args.interactive_handoff_mode != "adapter_hold":
                         self.publish_hover_cmd(*handoff_hover_cmd)
                     elif handoff_hover_cmd is None:
-                        self.publish_hover_cmd(home_x, home_y, self.args.takeoff_height, self.interactive_hover_yaw)
+                        self.publish_hover_cmd(
+                            home_x, home_y, self.takeoff_target_z_m(), self.interactive_hover_yaw
+                        )
                 elif self.first_planner_takeover_time() is None:
-                    self.publish_hover_cmd(home_x, home_y, self.args.takeoff_height, self.interactive_hover_yaw)
+                    self.publish_hover_cmd(
+                        home_x, home_y, self.takeoff_target_z_m(), self.interactive_hover_yaw
+                    )
                 else:
-                    snapshot = self.interactive_goal_snapshot(self.last_odom)
+                    snapshot = self.interactive_goal_snapshot()
                     if snapshot is not None:
                         metric = self.interactive_goal_metrics.setdefault(
                             str(active_goal_seq),
@@ -1385,35 +1511,97 @@ class EgoSingleMission:
                             metric["hold_duration_s"] = time.time() - reached_since
                             if time.time() - reached_since >= self.args.interactive_target_hold_s:
                                 handoff = self.publish_interactive_hover_handoff(snapshot, active_goal_seq)
+                                if handoff.get("status") == "blocked":
+                                    return self.abort_for_flight_safety(
+                                        rate,
+                                        [str(handoff["reason_code"])],
+                                    )
                                 metric["handoff"] = handoff
                                 handoff_goal_seq = active_goal_seq
                                 handoff_hover_cmd = tuple(handoff["hold_xyz"]) + (float(handoff["hold_yaw"]),)
-                                final_pass_since = time.time()
+                                final_stable_since = None
+                                self.interactive_final_hover_metrics = {
+                                    "goal_seq": active_goal_seq,
+                                    "target": self.last_forwarded_goal,
+                                    "required_s": self.args.interactive_final_hover_hold_s,
+                                    "reached": False,
+                                    "handoff_t": handoff.get("handoff_t"),
+                                    "hold_start_t": None,
+                                    "hold_end_t": None,
+                                    "duration_s": 0.0,
+                                    "first_snapshot": None,
+                                    "last_snapshot": None,
+                                    "end_snapshot": None,
+                                    "max_error_xyz_m": 0.0,
+                                    "max_error_xy_m": 0.0,
+                                    "max_abs_z_error_m": 0.0,
+                                    "max_speed_mps": 0.0,
+                                    "max_abs_vz_mps": 0.0,
+                                    "max_abs_roll_pitch_deg": 0.0,
+                                    "stability_reset_count": 0,
+                                }
                                 self.set_interactive_goal_ready(False)
                                 if self.args.interactive_yaw_scan_after_goal:
                                     scan = self.run_interactive_yaw_scan(f"after_goal_{active_goal_seq}")
                                     metric["post_goal_yaw_scan"] = scan
                                     if not scan.get("ok", False):
-                                        self.set_interactive_goal_ready(False)
-                                        self.write_outputs(status="blocked", blockers=list(scan.get("blockers", [])))
-                                        return 15
+                                        return self.abort_for_flight_safety(rate, list(scan.get("blockers", [])))
                                 self.set_interactive_goal_ready(True)
                         else:
                             reached_since = None
                             metric["hold_duration_s"] = 0.0
                             metric["hold_start_t"] = None
+                if handoff_goal_seq is not None and self.interactive_final_hover_metrics is not None:
+                    final_snapshot = self.interactive_goal_snapshot()
+                    final_metric = self.interactive_final_hover_metrics
+                    if final_snapshot is not None:
+                        if final_metric["first_snapshot"] is None:
+                            final_metric["first_snapshot"] = final_snapshot
+                        final_metric["last_snapshot"] = final_snapshot
+                        final_metric["max_error_xyz_m"] = max(
+                            final_metric["max_error_xyz_m"], final_snapshot["error_xyz_m"]
+                        )
+                        final_metric["max_error_xy_m"] = max(
+                            final_metric["max_error_xy_m"], final_snapshot["error_xy_m"]
+                        )
+                        final_metric["max_abs_z_error_m"] = max(
+                            final_metric["max_abs_z_error_m"], abs(final_snapshot["error_z_m"])
+                        )
+                        final_metric["max_speed_mps"] = max(
+                            final_metric["max_speed_mps"], final_snapshot["speed_mps"]
+                        )
+                        final_metric["max_abs_vz_mps"] = max(
+                            final_metric["max_abs_vz_mps"], final_snapshot["abs_vz_mps"]
+                        )
+                        final_metric["max_abs_roll_pitch_deg"] = max(
+                            final_metric["max_abs_roll_pitch_deg"], final_snapshot["abs_roll_pitch_deg"]
+                        )
+                        if self.interactive_goal_reached():
+                            if final_stable_since is None:
+                                final_stable_since = time.time()
+                                final_metric["hold_start_t"] = final_snapshot["t"]
+                            final_metric["duration_s"] = time.time() - final_stable_since
+                            if final_metric["duration_s"] >= final_metric["required_s"]:
+                                final_metric["reached"] = True
+                                final_metric["hold_end_t"] = final_snapshot["t"]
+                                final_metric["end_snapshot"] = final_snapshot
+                        else:
+                            if final_stable_since is not None:
+                                final_metric["stability_reset_count"] += 1
+                            final_stable_since = None
+                            final_metric["hold_start_t"] = None
+                            final_metric["duration_s"] = 0.0
                 self.publish_paths(publish_static_target=False)
                 safety_blockers = self.flight_safety_blockers("interactive")
                 if safety_blockers:
-                    self.set_interactive_goal_ready(False)
-                    self.write_outputs(status="blocked", blockers=safety_blockers)
-                    return 15
+                    return self.abort_for_flight_safety(rate, safety_blockers)
                 if (
                     self.args.interactive_auto_pass_goal_count > 0
                     and handoff_goal_seq is not None
                     and handoff_goal_seq >= self.args.interactive_auto_pass_goal_count
-                    and final_pass_since is not None
-                    and time.time() - final_pass_since >= self.args.interactive_final_hover_hold_s
+                    and final_stable_since is not None
+                    and self.interactive_final_hover_metrics is not None
+                    and self.interactive_final_hover_metrics.get("reached") is True
                 ):
                     self.set_interactive_goal_ready(False)
                     self.write_outputs(status="interactive_passed", blockers=[])
@@ -1432,7 +1620,7 @@ class EgoSingleMission:
         while not rospy.is_shutdown() and time.time() < takeover_deadline and self.first_planner_takeover_time() is None:
             if self.safe_stop.requested():
                 return self.perform_safe_stop(rate)
-            self.publish_hover_cmd(home_x, home_y, self.args.takeoff_height)
+            self.publish_hover_cmd(home_x, home_y, self.takeoff_target_z_m())
             self.publish_paths()
             rate.sleep()
 
@@ -1465,8 +1653,7 @@ class EgoSingleMission:
                 self.publish_paths(publish_static_target=False)
                 safety_blockers = self.flight_safety_blockers("exploration")
                 if safety_blockers:
-                    self.write_outputs(status="blocked", blockers=safety_blockers)
-                    return 15
+                    return self.abort_for_flight_safety(rate, safety_blockers)
                 if self.last_odom:
                     self.exploration_metrics["last_snapshot"] = self.target_state_snapshot(self.last_odom)
                 self.wall_sleep_once()
@@ -1508,8 +1695,7 @@ class EgoSingleMission:
             self.publish_paths()
             safety_blockers = self.flight_safety_blockers("execute")
             if safety_blockers:
-                self.write_outputs(status="blocked", blockers=safety_blockers)
-                return 15
+                return self.abort_for_flight_safety(rate, safety_blockers)
             if self.last_odom:
                 snapshot = self.target_state_snapshot(self.last_odom)
                 if snapshot is None:
@@ -1950,6 +2136,8 @@ class EgoSingleMission:
             "exploration_trajectory_freshness": trajectory_freshness,
             "interactive_goals": self.interactive_goal_metrics,
             "interactive_goal_handoffs": self.interactive_goal_handoff_metrics,
+            "interactive_goal_frame_issue": self.last_interactive_goal_frame_issue,
+            "interactive_final_hover": self.interactive_final_hover_metrics,
             "interactive_yaw_scan_events": self.interactive_yaw_scan_events,
             "forwarded_goal_count": self.forwarded_goal_seq,
             "land": self.land_metrics,
@@ -2004,6 +2192,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--result-dir", required=True)
     parser.add_argument("--odom-topic", default="/uav1/mavros/local_position/odom")
+    parser.add_argument("--path-odom-topic", default="")
+    parser.add_argument("--control-frame", default="map")
     parser.add_argument("--truth-model-name", default="uav1")
     parser.add_argument("--sunray-truth-topic", default="/uav1/sunray/gazebo_pose")
     parser.add_argument("--raw-lidar-topic", default="/uav1/livox/lidar")
@@ -2039,6 +2229,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--execute-min-truth-z-m", type=float, default=0.50)
     parser.add_argument("--execute-min-odom-z-m", type=float, default=0.50)
     parser.add_argument("--execute-max-roll-pitch-deg", type=float, default=45.0)
+    parser.add_argument("--execute-max-truth-odom-z-error-m", type=float, default=0.0)
     parser.add_argument("--land-timeout-s", type=float, default=25.0)
     parser.add_argument("--pre-ego-hover-s", type=float, default=2.0)
     parser.add_argument("--pre-diff-stable-s", type=float, default=3.0)

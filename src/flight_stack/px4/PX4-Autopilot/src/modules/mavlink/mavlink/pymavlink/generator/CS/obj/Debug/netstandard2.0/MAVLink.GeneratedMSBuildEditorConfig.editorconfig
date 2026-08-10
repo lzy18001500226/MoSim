@@ -1,0 +1,8 @@
+is_global = true
+build_property.RootNamespace = MAVLink
+build_property.ProjectDir = C:\Users\HP\Desktop\MoSim\src\flight_stack\px4\PX4-Autopilot\src\modules\mavlink\mavlink\pymavlink\generator\CS\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.CsWinRTUseWindowsUIXamlProjections = false
+build_property.EffectiveAnalysisLevelStyle = 
+build_property.EnableCodeStyleSeverity = 

@@ -174,27 +174,54 @@ def verify_against(exported_csv: Path, reference_csv: Path) -> dict[str, Any]:
     with reference_csv.open(newline="", encoding="utf-8-sig") as handle:
         reference_rows = list(csv.DictReader(handle))
     if len(exported_rows) != len(reference_rows):
-        raise ValueError(
-            f"verification row mismatch: exported={len(exported_rows)}, reference={len(reference_rows)}"
-        )
+        return {
+            "reference_csv": relative_path(reference_csv),
+            "exported_row_count": len(exported_rows),
+            "reference_row_count": len(reference_rows),
+            "status": "failed",
+            "error": (
+                "verification row mismatch: "
+                f"exported={len(exported_rows)}, reference={len(reference_rows)}"
+            ),
+        }
     common = sorted(set(exported_rows[0]).intersection(reference_rows[0])) if exported_rows else []
     differences: dict[str, float] = {}
+    per_column: list[dict[str, Any]] = []
     for field in common:
-        maximum = max(
+        deltas = [
             abs(float(exported[field]) - float(reference[field]))
             for exported, reference in zip(exported_rows, reference_rows)
-        )
+        ]
+        peak_index = max(range(len(deltas)), key=deltas.__getitem__) if deltas else 0
+        maximum = deltas[peak_index] if deltas else 0.0
         differences[field] = maximum
+        if exported_rows:
+            per_column.append(
+                {
+                    "column": field,
+                    "maximum_absolute_difference": maximum,
+                    "peak_row_index": peak_index,
+                    "time_s": float(exported_rows[peak_index]["time"]),
+                    "exported_value_at_peak": float(exported_rows[peak_index][field]),
+                    "reference_value_at_peak": float(reference_rows[peak_index][field]),
+                }
+            )
     maximum_difference = max(differences.values(), default=0.0)
-    if maximum_difference > 1.0e-8:
-        raise ValueError(f"verification mismatch exceeds 1e-8: {maximum_difference}")
-    return {
+    threshold = 1.0e-8
+    result: dict[str, Any] = {
         "reference_csv": relative_path(reference_csv),
+        "exported_row_count": len(exported_rows),
+        "reference_row_count": len(reference_rows),
         "shared_columns": common,
         "max_abs_difference_by_column": differences,
+        "per_column": per_column,
         "max_abs_difference": maximum_difference,
-        "status": "passed",
+        "threshold": threshold,
+        "status": "passed" if maximum_difference <= threshold else "failed",
     }
+    if maximum_difference > threshold:
+        result["error"] = f"verification mismatch exceeds {threshold:g}: {maximum_difference}"
+    return result
 
 
 def export_one(entry: dict[str, Any], overwrite: bool) -> dict[str, Any]:
@@ -239,7 +266,11 @@ def export_one(entry: dict[str, Any], overwrite: bool) -> dict[str, Any]:
     )
     reference = entry.get("verify_against")
     if reference:
-        result["reference_regression"] = verify_against(output, Path(reference))
+        regression = verify_against(output, Path(reference))
+        result["reference_regression"] = regression
+        if regression["status"] != "passed":
+            result["status"] = "failed"
+            result["error"] = regression["error"]
     return result
 
 

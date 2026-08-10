@@ -79,8 +79,8 @@ def operating_docs() -> dict:
     required = [
         "AGENTS.md",
         "Docs/Workflows/new_conversation_context.md",
-        "Docs/Workflows/mainline_operations_board.md",
         "Docs/Workflows/single_thread_operating_model.md",
+        "Docs/Workflows/documentation_governance.md",
         "Docs/Workflows/sunray_ros1_current_runtime_lane.md",
     ]
     missing = [item for item in required if not (ROOT / item).exists()]
@@ -93,7 +93,7 @@ def operating_docs() -> dict:
         else:
             legacy_note = "agent_task_ledger.md exists but is not marked as a legacy stub"
     else:
-        legacy_note = "agent_task_ledger.md absent; current single-thread docs do not require it"
+        legacy_note = "agent_task_ledger.md absent; task-local docs do not require it"
     return {
         "ok": not missing,
         "required": required,
@@ -147,7 +147,7 @@ def mcp_config_hint() -> dict:
         "note": (
             "Use Codex /mcp for live server health; this doctor avoids external "
             "config reads. UE tools are support-lane helpers, not current "
-            "single-thread runtime requirements."
+            "task-local runtime requirements."
         ),
     }
 
@@ -164,7 +164,7 @@ def collect(limit_mb: int, full_git: bool, max_large_scan_files: int) -> dict:
         "key_workflows": {
             "ok": all((ROOT / p).exists() for p in [
                 "Docs/Workflows/single_thread_operating_model.md",
-                "Docs/Workflows/mainline_operations_board.md",
+                "Docs/Workflows/documentation_governance.md",
                 "Docs/Workflows/audit_external_repo.md",
                 "Docs/Workflows/unreal_renderer.md",
             ]),

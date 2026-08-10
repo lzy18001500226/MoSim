@@ -1,6 +1,6 @@
 {
   "schema": "mosim.phase2_full_48_climbpath.g3_catalog_reconciliation.v1",
-  "generated_at": "2026-08-01T06:20:07+08:00",
+  "generated_at": "2026-08-03T19:04:57+08:00",
   "authority": "Current status for the fixed 48-entry catalog. Historical G3_STATUS.json remains immutable execution evidence and is not overwritten by this reconciliation.",
   "scope": "Nominal 50 s ClimbPath evidence only. No scenario, tuning, deployment, ROS, Gazebo, or runtime claim.",
   "source_files": {
@@ -10,7 +10,7 @@
     },
     "scheme_id_alias_map": {
       "path": "Config/control_platform/scheme_id_alias_map.json",
-      "sha256": "4e17d063de8dbf529d82411e8c70e372d466e10ddb8a36c8321cd381d9cc38b5"
+      "sha256": "030b2d7e04f38f73728e61e950061b0ed2a160c988bac840e0ec9f693b4f6db9"
     },
     "historical_g3_status": {
       "path": "Results/control_platform/phase2_full_48_climbpath/g3_repair/G3_STATUS.json",
@@ -24,10 +24,11 @@
     "historical_g3_alias_count": 8,
     "historical_g3_mapped_catalog_count": 41,
     "supplemental_current_record_count": 7,
+    "post_freeze_current_override_record_count": 2,
     "formal_runner_missing_count": 0,
     "historical_g3_only_count": 7,
-    "passed_count": 30,
-    "failed_count": 18,
+    "passed_count": 31,
+    "failed_count": 17,
     "not_run_count": 0,
     "inventory_reconciled": true,
     "completed": false
@@ -277,16 +278,26 @@
       "category": "linear_robust_state_feedback",
       "status": "fail",
       "completion_state": "completed",
-      "evidence_origin": "historical_g3_execution",
+      "evidence_origin": "post_freeze_current_override_record",
       "historical_g3_controller_id": "pole_placement_luenberger",
       "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.PolePlacementLuenbergerFormalRunner",
-      "source_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/pole_placement_luenberger/RUN_RECORD.json",
-      "terminal_position_error_norm_m": null,
-      "position_rmse_m": null,
-      "failure_class": "check_model_failed",
+      "source_record": "Results/mworks_live_gate/failed18_recovery_20260802/pole_placement_reopen/simulation_50s/POLE_PLACEMENT_SIMULATION_50S.json",
+      "source_record_sha256": "b88b02b675627209fbe3f31901b8f9d966f0fab8bf3a02ca8d7879ede31e3fd2",
+      "source_status": "completed",
+      "check_model_status": "passed",
+      "stop_time_s": 50.0,
+      "sample_count": 25001,
+      "terminal_position_error_norm_m": 402.1409427651827,
+      "position_rmse_m": 63.81822564113234,
+      "failure_class": "terminal_position_error_exceeds_5m",
       "failure_reasons": [
-        "model check failed: {'ok': False, 'tool': 'check_model', 'model_type': 'MODELICA', 'elapsed_s': 0.235, 'count': 1, 'results': [{'ok': False, 'api': 'CheckModel', 'data': False, 'error': 'CheckModel returned False\\nGetLastErrors: 错误(2): 编译器错误(9000): 当前授权不允许变量方程数大于 300.\\nMessageText: [上一条命令没有日志信息]', 'model_name': 'MoSimQuadrotorModel.Experiment.Runners.Formal.PolePlacementLuenbergerFormalRunner', 'dt_s': 0.233}]}"
-      ]
+        "terminal position_error_norm 402.140942765 m is not below 5 m"
+      ],
+      "supersedes_historical_g3_record": {
+        "source_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/pole_placement_luenberger/RUN_RECORD.json",
+        "failure_class": "check_model_failed"
+      },
+      "claim_boundary": "This post-freeze current-session evidence supersedes only the current catalog status for pole_placement_luenberger. It preserves the frozen G3 CheckModel authorization record and does not claim controller acceptance, tuning, permanent activation, runtime acknowledgement, or closed-loop success."
     },
     {
       "scheme_id": "backstepping_baseline",
@@ -531,18 +542,26 @@
       "scheme_id": "adaptive_mpc",
       "display_name_zh": "自适应 MPC",
       "category": "optimization_predictive",
-      "status": "fail",
+      "status": "pass",
       "completion_state": "completed",
-      "evidence_origin": "historical_g3_execution",
+      "evidence_origin": "post_freeze_current_override_record",
       "historical_g3_controller_id": "adaptive_mpc",
       "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveMpcFormalRunner",
-      "source_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/adaptive_mpc/RUN_RECORD.json",
-      "terminal_position_error_norm_m": null,
-      "position_rmse_m": null,
-      "failure_class": "simulate_failed",
-      "failure_reasons": [
-        "simulation API reported failure: {'ok': True, 'api': 'ModelingPy.SimulateModel', 'simulation_options': None, 'data': False, 'simulate_api_reported_failure': True, 'last_errors': [''], 'last_errors_error': None, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.008000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'result_verification': {'result_probe': {'ok': True, 'has_readable_result': True, 'data': 'Real', 'error': None}, 'get_var_value_at': {'ok': True, 'data': 10.001137255425457, 'error': None}}, 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.008000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 10.001137255425457}, 'raw_tool_result': {'ok': True, 'tool': 'mworks_run_script', 'stdout': '', 'stderr': '', 'exception': '', 'traceback': '', 'run_script_result': {'simulation_api': 'ModelingPy.SimulateModel', 'simulate': False, 'post_simulation_diagnostics': {'GetSimulationExitState': {'api': 'GetSimulationExitState', 'ok': True, 'data': 2}, 'GetSimulationState': {'api': 'GetSimulationState', 'ok': True, 'data': 'Idle'}, 'GetCurrentSimTime': {'api': 'GetCurrentSimTime', 'ok': True, 'data': 10.008000000000001}, 'MessageText': {'api': 'MessageText', 'ok': True, 'data': '[上一条命令没有日志信息]'}, 'GetLastErrors': {'api': 'GetLastErrors', 'ok': True, 'data': ['']}}, 'last_errors': [''], 'result_probe_type': 'Real', 'has_readable_result': True, 'get_var_value_at': 10.001137255425457}, 'script_path_resolved': '', 'hint': ''}}"
-      ]
+      "source_record": "Results/mworks_live_gate/failed18_recovery_20260803/adaptive_mpc/final_formal_50s/RUN_RECORD.json",
+      "source_record_sha256": "e538823fc0e2eb119906b48640a2b4357eb724e41e69c5e5c3d401585c958f1b",
+      "source_status": "completed",
+      "check_model_status": "passed",
+      "stop_time_s": 50.0,
+      "sample_count": 25001,
+      "terminal_position_error_norm_m": 0.003614672230764729,
+      "position_rmse_m": 0.2514976397270518,
+      "failure_class": null,
+      "failure_reasons": [],
+      "supersedes_historical_g3_record": {
+        "source_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/adaptive_mpc/RUN_RECORD.json",
+        "failure_class": "simulate_failed"
+      },
+      "claim_boundary": "This post-freeze current-session evidence supersedes only the current catalog status for adaptive_mpc. It preserves the frozen G3 simulate_failed record and prior recovery packet, and does not claim gain optimization, seven-scenario work, code generation, Gazebo, PX4, ROS, QGC, permanent activation, or flight-runtime acceptance."
     },
     {
       "scheme_id": "tube_mpc",

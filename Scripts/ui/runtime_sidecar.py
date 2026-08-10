@@ -27,6 +27,7 @@ from src.orchestration.runtime_sidecar_contract import (
 )
 from src.orchestration.operator_map_state import (
     COORDINATE_CONTRACT_STATUSES,
+    MAX_PATH_POINTS,
     OPERATOR_MAP_IDENTITY_FIELDS,
     OPERATOR_MAP_STATE_SCHEMA,
     OPERATOR_MAP_TRANSPORT_MODES,
@@ -393,6 +394,132 @@ def project_live_operator_map_frame(
     return map_vehicles, map_paths, {"state": "accepted", "reason_code": ""}
 
 
+def build_operator_map_state_or_rejected(
+    *,
+    manifest: dict[str, Any],
+    map_snapshot: dict[str, Any],
+    transport_mode: str,
+    sequence: int,
+    received_at_unix_s: float,
+    source_timestamp_s: float | None,
+    playback_state: str,
+    playback_time_s: float | None,
+    bag_id: str,
+    vehicles: list[dict[str, Any]],
+    task_paths: dict[str, dict[str, Any]],
+    actual_tracks: dict[str, dict[str, Any]],
+    map_data_status: dict[str, str],
+    max_track_points: int = MAX_PATH_POINTS,
+) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    """Return a valid display envelope when one projected geometry frame is rejected.
+
+    Callers provide vehicle and task-path geometry already projected into the
+    frozen operator-map frame. Geometry is validated before adding it to the
+    durable actual-track history. A rejected vehicle position carries only a
+    connection skeleton and prior valid tracks, but does not discard an
+    independently valid online task path.
+    """
+
+    def build_state(
+        projected_vehicles: list[dict[str, Any]],
+        projected_task_paths: dict[str, dict[str, Any]],
+        tracks: dict[str, dict[str, Any]],
+        data_status: dict[str, str],
+    ) -> dict[str, Any]:
+        return build_operator_map_state(
+            manifest=manifest,
+            map_snapshot=map_snapshot,
+            transport_mode=transport_mode,
+            sequence=sequence,
+            received_at_unix_s=received_at_unix_s,
+            source_timestamp_s=source_timestamp_s,
+            playback_state=playback_state,
+            playback_time_s=playback_time_s,
+            bag_id=bag_id,
+            vehicles=projected_vehicles,
+            task_paths=projected_task_paths,
+            actual_tracks=tracks,
+            map_data_status=data_status,
+        )
+
+    try:
+        candidate_state = build_state(vehicles, task_paths, actual_tracks, map_data_status)
+    except ValueError as exc:
+        reason_code = str(exc)
+        if reason_code not in {
+            "operator_map_vehicle_position_invalid",
+            "operator_map_task_path_points_invalid",
+        }:
+            raise
+        rejected_status = {"state": "rejected", "reason_code": reason_code}
+        safe_vehicles = [_map_vehicle_skeleton(vehicle) for vehicle in vehicles]
+        if reason_code == "operator_map_vehicle_position_invalid":
+            try:
+                return build_state(safe_vehicles, task_paths, actual_tracks, rejected_status), actual_tracks
+            except ValueError as fallback_exc:
+                # The original vehicle failure can occur before task-path
+                # validation. Do not retain a path that independently fails.
+                if not str(fallback_exc).startswith("operator_map_task_path_"):
+                    raise
+        return build_state(safe_vehicles, {}, actual_tracks, rejected_status), actual_tracks
+
+    if map_data_status["state"] != "accepted":
+        return candidate_state, actual_tracks
+
+    next_tracks = append_operator_map_actual_tracks(
+        actual_tracks,
+        vehicles,
+        run_id=str(manifest["run_id"]),
+        world_frame=str(map_snapshot["world_frame"]),
+        updated_at=received_at_unix_s,
+        max_points=max_track_points,
+    )
+    return build_state(vehicles, task_paths, next_tracks, map_data_status), next_tracks
+
+
+def build_live_operator_map_state_or_rejected(
+    *,
+    manifest: dict[str, Any],
+    map_snapshot: dict[str, Any],
+    transport_mode: str,
+    sequence: int,
+    received_at_unix_s: float,
+    source_timestamp_s: float | None,
+    playback_state: str,
+    playback_time_s: float | None,
+    bag_id: str,
+    vehicles: list[dict[str, Any]],
+    task_paths: dict[str, dict[str, Any]],
+    actual_tracks: dict[str, dict[str, Any]],
+    coordinate_evidence: dict[str, Any] | None,
+    max_track_points: int = MAX_PATH_POINTS,
+) -> tuple[dict[str, Any], dict[str, dict[str, Any]]]:
+    """Project one live frame, then apply the shared rejected-frame policy."""
+
+    map_vehicles, map_task_paths, map_data_status = project_live_operator_map_frame(
+        vehicles=vehicles,
+        task_paths=task_paths,
+        coordinate_evidence=coordinate_evidence,
+        run_id=str(manifest["run_id"]),
+    )
+    return build_operator_map_state_or_rejected(
+        manifest=manifest,
+        map_snapshot=map_snapshot,
+        transport_mode=transport_mode,
+        sequence=sequence,
+        received_at_unix_s=received_at_unix_s,
+        source_timestamp_s=source_timestamp_s,
+        playback_state=playback_state,
+        playback_time_s=playback_time_s,
+        bag_id=bag_id,
+        vehicles=map_vehicles,
+        task_paths=map_task_paths,
+        actual_tracks=actual_tracks,
+        map_data_status=map_data_status,
+        max_track_points=max_track_points,
+    )
+
+
 def load_mission_status(
     path: Path,
     *,
@@ -447,6 +574,65 @@ def load_mission_status(
     }
 
 
+def sample_polytraj_points(
+    message: Any,
+    *,
+    sample_period_s: float = 0.05,
+    max_points: int = MAX_PATH_POINTS,
+) -> list[dict[str, float]]:
+    """Sample a Diff-Planner PolyTraj using the coefficient order in its C++ publisher."""
+    try:
+        order = int(message.order)
+        durations = [float(value) for value in message.duration]
+        coefficient_sets = [
+            [float(value) for value in message.coef_x],
+            [float(value) for value in message.coef_y],
+            [float(value) for value in message.coef_z],
+        ]
+    except (AttributeError, TypeError, ValueError):
+        return []
+    if order != 5 or not durations or sample_period_s <= 0.0 or max_points < 2:
+        return []
+    if any(not math.isfinite(duration) or duration <= 0.0 for duration in durations):
+        return []
+    width = order + 1
+    expected_coefficients = width * len(durations)
+    if any(
+        len(coefficients) != expected_coefficients
+        or any(not math.isfinite(value) for value in coefficients)
+        for coefficients in coefficient_sets
+    ):
+        return []
+
+    total_duration = sum(durations)
+    if not math.isfinite(total_duration) or total_duration <= 0.0:
+        return []
+    sample_count = min(max_points, max(2, int(math.ceil(total_duration / sample_period_s)) + 1))
+    points: list[dict[str, float]] = []
+    segment_index = 0
+    segment_start = 0.0
+    for sample_index in range(sample_count):
+        elapsed = total_duration * sample_index / (sample_count - 1)
+        while (
+            segment_index < len(durations) - 1
+            and elapsed > segment_start + durations[segment_index]
+        ):
+            segment_start += durations[segment_index]
+            segment_index += 1
+        local_time = min(durations[segment_index], max(0.0, elapsed - segment_start))
+        offset = segment_index * width
+        values: list[float] = []
+        for coefficients in coefficient_sets:
+            value = 0.0
+            for coefficient_index in range(width):
+                value += coefficients[offset + coefficient_index] * local_time ** (order - coefficient_index)
+            values.append(value)
+        if not all(math.isfinite(value) for value in values):
+            return []
+        points.append({"x": values[0], "y": values[1], "z": values[2]})
+    return points
+
+
 class RosRuntimeSidecar:
     def __init__(self, args: argparse.Namespace) -> None:
         import rospy
@@ -457,6 +643,13 @@ class RosRuntimeSidecar:
         from nav_msgs.msg import Odometry, Path as RosPath
         from std_msgs.msg import Float64MultiArray
         from visualization_msgs.msg import Marker
+
+        PolyTraj = None
+        if args.future_polytraj_topic:
+            try:
+                from traj_utils.msg import PolyTraj
+            except ImportError as exc:
+                raise ValueError("future_polytraj_message_type_unavailable") from exc
 
         # The read-only operator map only needs standard ROS messages for the
         # vehicle state and the latched reference path.  Keep the optional
@@ -562,6 +755,11 @@ class RosRuntimeSidecar:
                 args.future_marker_topic, Marker, self._future_marker_cb,
                 callback_args=args.future_marker_topic, queue_size=10,
             )
+        if args.future_polytraj_topic:
+            rospy.Subscriber(
+                args.future_polytraj_topic, PolyTraj, self._future_polytraj_cb,
+                callback_args=args.future_polytraj_topic, queue_size=10,
+            )
         self.wrench = None if args.read_only else rospy.ServiceProxy(args.wrench_service, ApplyBodyWrench)
 
     @staticmethod
@@ -606,6 +804,24 @@ class RosRuntimeSidecar:
             "frame_id": str(msg.header.frame_id),
             "updated_at": time.time(),
             "points": self._bounded_points(list(msg.points)),
+        }
+
+    def _future_polytraj_cb(self, msg: Any, source_topic: str) -> None:
+        points = sample_polytraj_points(msg)
+        if len(points) < 2:
+            return
+        self.task_paths["future"] = {
+            "status": "available",
+            "semantics": "planner_sampled_future_trajectory",
+            "vehicle_scope": "uav1" if len(self.vehicle_ids) == 1 else "planner_default",
+            "source_topic": source_topic,
+            "source_type": "traj_utils/PolyTraj",
+            "trajectory_id": int(msg.traj_id),
+            "frame_id": self.args.future_polytraj_frame_id,
+            "updated_at": time.time(),
+            "sampling_period_s": 0.05,
+            "duration_s": sum(float(value) for value in msg.duration),
+            "points": points,
         }
 
     def _topics(self, vehicle_id: str) -> dict[str, str]:
@@ -803,6 +1019,7 @@ class RosRuntimeSidecar:
             telemetry["reference"] = {
                 "position": _vector(msg.position), "velocity": _vector(msg.velocity),
                 "acceleration": _vector(msg.acceleration), "yaw": float(msg.yaw), "yaw_dot": float(msg.yaw_dot),
+                "position_frame": str(msg.header.frame_id or ""),
             }
         if vehicle["target_attitude"]:
             msg = vehicle["target_attitude"][0]
@@ -818,10 +1035,21 @@ class RosRuntimeSidecar:
             telemetry["attitude_error"] = 2.0 * math.acos(max(0.0, min(1.0, dot)))
         if vehicle["odom"] and vehicle["position_command"]:
             actual = vehicle["odom"][0].pose.pose.position
-            desired = vehicle["position_command"][0].position
-            telemetry["position_error_m"] = {
-                "x": float(desired.x - actual.x), "y": float(desired.y - actual.y), "z": float(desired.z - actual.z),
-            }
+            actual_frame = str(vehicle["odom"][0].header.frame_id or "")
+            command = vehicle["position_command"][0]
+            reference_frame = str(command.header.frame_id or "")
+            if actual_frame and actual_frame == reference_frame:
+                desired = command.position
+                telemetry["position_error_m"] = {
+                    "x": float(desired.x - actual.x), "y": float(desired.y - actual.y), "z": float(desired.z - actual.z),
+                }
+            else:
+                telemetry["position_error_status"] = {
+                    "state": "unavailable",
+                    "reason_code": "position_command_frame_mismatch",
+                    "actual_frame_id": actual_frame,
+                    "reference_frame_id": reference_frame,
+                }
         if vehicle["actuator"] and len(vehicle["actuator"][0].data) == 18:
             values = list(vehicle["actuator"][0].data)
             telemetry["rotor_state"] = {
@@ -857,21 +1085,8 @@ class RosRuntimeSidecar:
         }
         atomic_write_json(self.run_dir / "RUNTIME_STATUS.json", status_payload)
         vehicles = [self._vehicle_telemetry(vehicle_id) for vehicle_id in self.vehicle_ids]
-        map_vehicles, map_task_paths, map_data_status = project_live_operator_map_frame(
-            vehicles=vehicles,
-            task_paths=self.task_paths,
-            coordinate_evidence=self.coordinate_evidence,
-            run_id=self.manifest["run_id"],
-        )
-        self.actual_tracks = append_operator_map_actual_tracks(
-            self.actual_tracks,
-            map_vehicles,
-            run_id=str(self.manifest["run_id"]),
-            world_frame=str(self.operator_map["world_frame"]),
-            updated_at=now,
-        )
         self.map_sequence += 1
-        map_state = build_operator_map_state(
+        map_state, self.actual_tracks = build_live_operator_map_state_or_rejected(
             manifest=self.manifest,
             map_snapshot=self.operator_map,
             transport_mode=self.args.transport_mode,
@@ -881,10 +1096,11 @@ class RosRuntimeSidecar:
             playback_state=self.args.replay_state,
             playback_time_s=self.args.replay_time_s,
             bag_id=self.args.replay_bag_id,
-            vehicles=map_vehicles,
-            task_paths=map_task_paths,
+            vehicles=vehicles,
+            task_paths=self.task_paths,
             actual_tracks=self.actual_tracks,
-            map_data_status=map_data_status,
+            coordinate_evidence=self.coordinate_evidence,
+            max_track_points=self.args.max_track_points,
         )
         telemetry: dict[str, Any] = {
             "schema": "mosim.runtime_telemetry.v2", "run_id": self.manifest["run_id"], "timestamp": now,
@@ -937,6 +1153,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--contract", type=Path, required=True)
     parser.add_argument("--vehicle-count", type=int, choices=range(1, 10), default=1)
     parser.add_argument("--rate-hz", type=float, default=20.0)
+    parser.add_argument(
+        "--max-track-points",
+        type=int,
+        default=MAX_PATH_POINTS,
+        help="Maximum retained points per vehicle in the display-only actual track.",
+    )
     parser.add_argument("--ready-timeout-s", type=float, default=90.0)
     parser.add_argument("--mission-status-max-age-s", type=float, default=2.5)
     parser.add_argument("--wind-force-coefficient", type=float, default=0.025)
@@ -949,6 +1171,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--actuator-telemetry-topic", default="/uav1/mosim/ftc_actuator_telemetry")
     parser.add_argument("--expected-path-topic", default="")
     parser.add_argument("--future-marker-topic", default="")
+    parser.add_argument("--future-polytraj-topic", default="")
+    parser.add_argument("--future-polytraj-frame-id", default="world")
     parser.add_argument(
         "--map-id",
         default="",
@@ -1003,6 +1227,10 @@ def main() -> int:
     args = parse_args()
     if args.rate_hz <= 0.0 or args.ready_timeout_s <= 0.0 or args.mission_status_max_age_s <= 0.0:
         raise SystemExit("rate and timeout must be positive")
+    if not 1 <= args.max_track_points <= MAX_PATH_POINTS:
+        raise SystemExit(f"max-track-points must be between 1 and {MAX_PATH_POINTS}")
+    if args.future_polytraj_topic and not args.future_polytraj_frame_id.strip():
+        raise SystemExit("future PolyTraj frame id is required")
     if args.transport_mode == "live_ros1" and (args.replay_bag_id or args.replay_time_s is not None):
         raise SystemExit("live_ros1 map transport cannot declare rosbag replay fields")
     if args.transport_mode == "rosbag_replay" and not args.replay_bag_id:

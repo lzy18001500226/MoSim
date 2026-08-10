@@ -69,12 +69,24 @@ The adapter is part of the source contract. A new report type first needs a
 small adapter selection/design review; it must not be forced through an
 unrelated builder just because both inputs are Markdown.
 
-For the competition report, short expressions embedded in prose remain in the
-same body paragraph and use Word subscript/superscript runs. Only fenced
-display LaTeX is kept as Office Math. Figure and table captions remain ordinary
+For the competition report, short mathematical expressions embedded in prose
+remain in the same body paragraph, but indexed variables must use inline
+LaTeX, for example `\(T_{0,i}\)`, `\(T_i\)`, or `\(t_{end}\)`. The builder
+converts these short expressions to ordinary Word body runs with true
+subscript/superscript formatting; do not leave mathematical `T_0,i` or
+`t_end` as plain text. Exact configuration keys, API names, interface enums,
+controller IDs, and file paths are not mathematical variables: keep them
+unchanged in backticks, for example `extrinsic_T`, `ATTITUDE_THRUST`, or
+`motor_time_constant_up_s`. Only fenced display LaTeX is kept as Office Math.
+Figure and table captions remain ordinary
 caption text with Word `SEQ` fields supplying the automatic number; caption
 text must describe the figure itself rather than carry a separate explanatory
 sentence.
+
+The competition-report adapter must pin its DOCX author metadata explicitly
+(defaulting to the approved template creator) rather than inheriting the local
+Office account. Except for headings, captions, and display equations, all text
+uses the template `Normal` body style; Markdown code fences are body text too.
 
 ## 4. Preflight
 
@@ -98,6 +110,37 @@ Stop for missing input, a source image outside the repository, a credential-like
 artifact, a required renderer that cannot be located, or an ambiguous adapter
 selection. Do not substitute a template or downsample an image to hide a
 publication problem.
+
+### Standing Authorization For Disposable MathType Pilots
+
+For the competition-report MathType conversion lane, the user has granted
+standing authorization for bounded pilot-owned desktop actions. Codex may
+proceed without asking for per-action confirmation to:
+
+- start, observe, gracefully close, and, when a pilot-owned process is
+  demonstrably stuck, terminate and restart only the Word/MathType processes
+  created by the current disposable pilot;
+- open a disposable copy of the golden pilot, activate `Equation.DSMT4`, and
+  run a single-formula conversion or MathML OLE write/read/save/reopen check;
+- use the documented Word/MathType UI or OLE route needed by that pilot; and
+- write new pilot outputs and evidence below
+  `Results/report_word_layout_20260804/mathtype_conversion_pilot/`.
+
+This authorization does not cover the authoritative report, unrelated or
+pre-existing Word/MathType processes, batch conversion, MWORKS/runtime assets,
+credentials, license or authorization dialogs, unknown prompts, or save/
+overwrite actions outside the disposable pilot. Before terminating a process,
+bind it to the current pilot by PID and current evidence; if ownership is
+ambiguous, stop. Keep every live action bounded and record its result. Do not
+ask again for routine actions within this scope; stop and report only when a
+listed boundary is reached or the requested work changes scope.
+
+When a live `DATADIR_SET` enumeration does not advertise the requested MathML
+format, do not retry `IDataObject.SetData` with the same format. Record that
+format-contract failure and move to a documented single-formula MathType UI
+conversion pilot instead. A pilot that enters an add-in loop must be closed
+under the pilot-owned lifecycle authorization and narrowed to a different
+syntax-isolation case before another attempt.
 
 ## 5. Build
 

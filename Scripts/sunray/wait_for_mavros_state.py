@@ -30,12 +30,12 @@ def main() -> int:
     rospy.Subscriber(args.topic, State, callback, queue_size=10)
 
     deadline = time.time() + args.timeout_s
-    rate = rospy.Rate(20)
     while not rospy.is_shutdown() and time.time() < deadline:
         if last_msg is not None and last_msg.connected:
             output.write_text(format_state(last_msg), encoding="utf-8")
             return 0
-        rate.sleep()
+        # MAVROS connection timeout must remain wall-clock bounded before Gazebo publishes /clock.
+        time.sleep(0.05)
 
     if last_msg is not None:
         output.write_text(format_state(last_msg), encoding="utf-8")

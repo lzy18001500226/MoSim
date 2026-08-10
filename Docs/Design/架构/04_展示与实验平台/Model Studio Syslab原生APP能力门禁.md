@@ -1,13 +1,19 @@
 # Model Studio Syslab原生APP能力门禁
 
 > 状态：D1通过，2026-07-17。
+>
+> 文档边界：本文是 2026-07-17 的 D1/D4 历史门禁记录。其原生窗口、
+> `native_app/` 源码和 `.slappinstall` 证据不能直接替代当前
+> `apps/model_studio/src/app.jl` 的现场加载复核；当前启动路径、交付状态和
+> 路径覆盖规则以 `apps/model_studio/README.md` 与
+> `Docs/报告/用户手册_正文骨架.md` 为准。
 
 ## 1. 结论
 
 MWORKS.Syslab 2026a具备用户自定义原生APP能力。Model Studio冻结采用
 `TyAppDesigner`路线，不采用Web页面或独立Qt应用替代。
 
-当前本机证据：
+当时门禁使用的本机证据：
 
 - Syslab版本：`26.3.1.7499`；
 - Julia版本：`1.10.10+4`；
@@ -19,7 +25,8 @@ MWORKS.Syslab 2026a具备用户自定义原生APP能力。Model Studio冻结采�
 - 原生运行与正式Orchestrator回调证据：
   `Results/ui_platform/model_studio_native_review_20260717/model_studio_after_clean_f5/`和
   `Results/ui_platform/model_studio_native_review_20260717/model_studio_prepare_run/`；
-- 安装包：`apps/model_studio/dist/MoSim Model Studio.slappinstall`。
+- 当时安装包：`apps/model_studio/dist/MoSim Model Studio.slappinstall`（历史产物，
+  不是当前 `MoSim Studio` 发布包）。
 
 本机还提供Python/C++ `SyslabAppSdk`和曲线拟合示例，但该路线仅保留为外部扩展参考，
 不作为Model Studio主体。
@@ -53,7 +60,9 @@ Model Studio原生APP负责：
 
 ## 4. D1最小验收
 
-源码入口：`apps/model_studio/src/app.jl`。
+当前源码入口是 `apps/model_studio/src/app.jl`；本节的 D1 结论只约束
+2026-07-17 门禁所用的原生 APP 基线，当前源码或布局变更后必须重新做一次
+Syslab 加载和窗口级复核。
 
 D1只有完成以下同一轮证据后才通过：
 

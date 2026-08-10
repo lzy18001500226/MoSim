@@ -399,6 +399,7 @@ void AQuadrotorMworksPlaybackActor::Tick(float DeltaSeconds)
         {
             LastAppliedSequence = Frame.Sequence;
             ++UniqueFramesAppliedInWindow;
+            Receiver->RecordGameThreadFrameApplied(Frame);
         }
 
         const double NowSeconds = FPlatformTime::Seconds();

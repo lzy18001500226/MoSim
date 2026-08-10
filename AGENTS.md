@@ -24,8 +24,10 @@ After context compaction, interruption, or resume:
 
 1. Re-anchor to the newest direct user instruction in this conversation.
 2. Re-check the files and paths named by that instruction.
-3. If the instruction or scope is unavailable or ambiguous, stop and ask the
-   user. Do not choose a replacement task from repository documents.
+3. If the instruction or scope is unavailable or ambiguous, do not choose a
+   replacement task from repository documents. Keep the task marked
+   `continuity_unresolved` and, in the current turn, ask for only the minimum
+   recovery source. Do not silently end after the startup reads.
 
 Context compaction is an internal continuation boundary, not task completion.
 When the newest user objective is present in the retained conversation or
@@ -33,6 +35,40 @@ recovery summary, continue that objective immediately after loading the
 required context. Do not ask for a replacement task, emit a completion
 response, or treat hook output as a new user task merely because `AGENTS.md`
 was re-read. Ask only when no recoverable user objective exists.
+
+A direct request to explain why execution stopped or to repair continuation
+behavior is itself a complete task. Diagnose the active recovery hook and
+task-continuity rules before asking for a source from the interrupted business
+task. Do not inspect or modify that business source merely to diagnose the
+stop.
+
+Before deciding that no objective is recoverable, use this bounded order:
+
+1. The current direct-user recovery pack, including its exact resource
+   identities, is the preferred source.
+2. If that pack is absent, an active Goal from the same in-flight session may
+   resume its own stated outcome, constraints, and verification as a continuity
+   fallback. It cannot supply missing source identities, widen scope, revive a
+   completed/blocked goal, or select work from another conversation.
+3. If exposed, call `get_goal` to refresh that active goal, then use
+   `codex_app__read_thread` only for the current thread to recover the newest
+   direct user instruction and enrich missing detail. When an exact source
+   identity needed for execution is missing, this bounded read is mandatory
+   before asking the user for it or marking the task blocked. The current thread
+   ID is an access target for this bounded recovery, not task authority.
+4. If no pack, active goal, or current-thread reader is available, or the
+   bounded read does not recover the required source, preserve the task as
+   `continuity_unresolved`. Do not claim completion or ask for a full task
+   restatement; in the current turn, ask only for the minimum recovery source
+   needed, such as the original prompt, active goal text, or task-packet path.
+   Do not silently end after the startup reads.
+
+A recovered goal, task plan, completion marker, or `get_goal` result is not a
+general task selector. A newer direct user instruction always wins. Create or
+update a local goal only after the current task has been selected from that
+instruction. Do not substitute a thread preview, initial prompt, prior
+assistant response, board, memory, another conversation, or historical result
+for a current task.
 
 A task ID or conversation ID in any project file is historical metadata, not a
 routing instruction. Do not inspect, message, dispatch to, or modify another
@@ -81,8 +117,12 @@ current source or evidence before being used.
 
 ## 4. Execution And Evidence
 
-- Name a local goal for non-trivial work and inspect the smallest relevant
-  context before changing files.
+- For non-trivial work, create a concise Goal contract when the current client
+  exposes Goal mode: outcome, constraints, and verification. Never pass
+  `token_budget` unless the current direct user explicitly requests a numeric
+  budget. A Goal is the active task's continuity contract, not a project queue
+  or cross-conversation handoff. Then inspect the smallest relevant context
+  before changing files.
 - Use project-owned workflows and helper APIs; do not guess model, MCP, or
   runtime interfaces.
 - Keep source/static checks, GUI/review evidence, fixtures, result-context
@@ -127,10 +167,13 @@ Words such as "control mainline" or "runtime lane" in a design document
 describe technical evidence boundaries only. They never choose today's task or
 override the current user's direct request.
 
-For a named current task that reaches completion, a blocker, or review-required
-state, send at most one concise Chinese notification through
-`Scripts/agent/send_gateway_email_alert.py`. Do not send notifications for
-ordinary turns, and do not send a notification for another conversation's task.
+For each current Codex conversation with a terminal Goal status, the native
+hook sends one concise Chinese task email when it first becomes `blocked` and
+one when it later becomes `completed`. It keys deduplication by the current
+conversation ID plus terminal status. Do not send task email for ordinary
+turns, `review_required`, or another conversation's task. Gateway and watchdog
+incident alerts are separate automated paths with their own incident-level
+deduplication.
 
 ## 6. Git Closeout
 

@@ -2,7 +2,7 @@
 
 Date: 2026-05-28
 
-Status: legacy/design reference after the 2026-06-24 single-thread reset.
+Status: legacy/design reference after the task-local operating reset.
 Do not use this file to create, route, patrol, or recover active MoSim
 conversations unless the user explicitly reopens durable agent-runtime or
 visible-thread protocol work.
@@ -12,8 +12,8 @@ visible-thread protocol work.
 This protocol records how the former MoSim Agent Protocol used conversations
 as work surfaces without turning them into uncontrolled agent swarms. Current
 MoSim execution starts from `AGENTS.md`,
-`Docs/Workflows/new_conversation_context.md`, and
-`Docs/Workflows/mainline_operations_board.md`.
+`Docs/Workflows/new_conversation_context.md`, and the task-specific workflow
+named by the current user's direct request.
 
 ## Approved Conversation Roles
 
@@ -34,14 +34,14 @@ layer. The former concrete 11-agent role design is preserved in
 | `Subagent` | one-shot | bounded research, review, or execution slice | own durable state |
 
 Existing user-facing thread labels are historical material under
-`Docs/Cache/agent_legacy/`; current MoSim work follows the single-thread
+`Docs/Cache/agent_legacy/`; current MoSim work follows the task-local
 operating model instead.
 
 ## Historical Concrete Agent Profiles
 
 The historical MoSim visible conversations were recorded in
 `Config/legacy/department_threads.json` for audit and migration only. They are
-not current dispatch targets in single-thread MoSim execution:
+not current dispatch targets in task-local MoSim execution:
 
 1. `MoSim｜主线 PMO`
 2. `MoSim｜DevOps 发布`
@@ -79,9 +79,10 @@ Config/protocol/templates/agent_profile.yaml
 Config/protocol/templates/task_scoped_agent_profile.yaml
 ```
 
-If this protocol and current MoSim workflow files conflict, current startup
-docs and the mainline board win. Older design files may remain as historical
-architecture material, but they do not make old thread IDs dispatchable.
+If this protocol and current MoSim workflow files conflict, the current user's
+direct request and current startup docs win. Older design files may remain as
+historical architecture material, but they do not make old thread IDs
+dispatchable.
 
 ## Creation Criteria
 

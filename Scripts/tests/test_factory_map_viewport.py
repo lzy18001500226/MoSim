@@ -11,6 +11,7 @@ CUSTOM_QRC = ROOT / "apps" / "flight_console" / "mosim" / "custom" / "custom.qrc
 def test_fly_map_zoom_uses_viewport_coordinates_and_uses_the_upper_left_scale_controls() -> None:
     qml = FLY_MAP.read_text(encoding="utf-8")
 
+    assert "property real maxZoom: 48.0" in qml
     assert "id: mapWheelArea" in qml
     assert "anchors.fill: mapFlickable" in qml
     assert "var viewportX = clamp(viewX, 0, mapFlickable.width)" in qml

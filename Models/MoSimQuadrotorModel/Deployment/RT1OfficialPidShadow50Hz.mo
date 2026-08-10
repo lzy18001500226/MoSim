@@ -20,7 +20,7 @@ model RT1OfficialPidShadow50Hz
     output Real values[24];
     external "C" processedFrames = mosim_mworks_live_rt1_receive(
       sequence, sourceStampNs, adapterReceiveMonotonicNs, armed, frameValid,
-      values)
+      values) 
       annotation(
         Include="#include \"mosim_mworks_live_rt1_bridge.h\"",
         IncludeDirectory="modelica://MoSimQuadrotorModel/Deployment/Resources/Include",
@@ -41,7 +41,7 @@ model RT1OfficialPidShadow50Hz
     output Integer result;
     external "C" result = mosim_mworks_live_rt1_send(
       stateSequence, adapterReceiveMonotonicNs, qx, qy, qz, qw,
-      collectiveThrustN, saturationMask, controllerStatus, outputValid)
+      collectiveThrustN, saturationMask, controllerStatus, outputValid) 
       annotation(
         Include="#include \"mosim_mworks_live_rt1_bridge.h\"",
         IncludeDirectory="modelica://MoSimQuadrotorModel/Deployment/Resources/Include",

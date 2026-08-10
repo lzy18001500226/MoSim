@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 
@@ -59,6 +60,28 @@ def main() -> int:
     require(current_summary["failed_count"] == 18, "current catalog failure count is not 18")
     require(current_summary["not_run_count"] == 0, "current catalog not_run count is not zero")
     require(current_summary["inventory_reconciled"] is True, "current catalog is not reconciled")
+    current_rows = {row["scheme_id"]: row for row in current["rows"]}
+    failure_classes = Counter(
+        row["failure_class"] for row in current_rows.values() if row["status"] == "fail"
+    )
+    require(
+        failure_classes
+        == Counter(
+            {
+                "terminal_position_error_exceeds_5m": 9,
+                "simulation_timeout": 8,
+                "simulate_failed": 1,
+            }
+        ),
+        f"current failure taxonomy is stale: {failure_classes}",
+    )
+    pole = current_rows["pole_placement_luenberger"]
+    require(pole["evidence_origin"] == "post_freeze_current_override_record", "pole override is missing")
+    require(pole["failure_class"] == "terminal_position_error_exceeds_5m", "pole is not a terminal-error failure")
+    require(
+        pole["terminal_position_error_norm_m"] == 402.1409427651827,
+        "pole terminal metric drifted",
+    )
 
     require(frozen["effective_passed_count"] == 28, "frozen G3 pass count changed")
     require(frozen["effective_failed_count"] == 20, "frozen G3 failure count changed")
@@ -97,10 +120,12 @@ def main() -> int:
     require("30/48" in audit_text, "current audit does not state 30/48")
     require("28/48" in audit_text and "20/48" in audit_text, "current audit lacks historical split")
     require("当前 30 条通过图集" in audit_text, "atlas boundary is missing")
+    require("402.1409427651827" in audit_text, "current audit lacks pole 50 s metric")
 
     result = {
         "status": "passed",
         "current_catalog": {"count": 48, "passed": 30, "failed": 18, "not_run": 0},
+        "current_failure_taxonomy": dict(failure_classes),
         "historical_g3_snapshot": {"count": 48, "passed": 28, "failed": 20, "completed": False},
         "formal_runner_files": 53,
         "frozen_g3_sha256": sha256(FROZEN_STATUS),

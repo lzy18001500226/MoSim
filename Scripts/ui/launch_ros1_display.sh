@@ -223,6 +223,7 @@ case "${display_kind}" in
     owner_id="${3:-}"
     run_id="${4:-}"
     metrics_output="${5:-}"
+    source_to_receiver_clock_offset_ns="${6:-none}"
     if [[ -z "${host_address}" ]]; then
       echo "unreal_bridge requires the Windows host address" >&2
       exit 2
@@ -235,27 +236,37 @@ case "${display_kind}" in
       echo "unreal_bridge requires run id and metrics output path" >&2
       exit 2
     fi
+    if [[ "${source_to_receiver_clock_offset_ns}" != "none" && ! "${source_to_receiver_clock_offset_ns}" =~ ^-?[0-9]+$ ]]; then
+      echo "unreal_bridge accepts a signed source-to-receiver clock offset or none" >&2
+      exit 2
+    fi
     stop_project_ue_bridge 5005
     cd "${PROJECT_ROOT}"
     # rospy will wait for the ROS master. Keep the display bridge alive when
     # MoSim Ground Control starts before Gazebo/ROS instead of requiring a restart.
-    exec python3 -u Scripts/UE5/stream_ros1_state_to_ue_udp.py \
-      --odom-topic /uav1/sunray/gazebo_pose \
-      --position-cmd-topic /position_cmd \
-      --link-states-topic /gazebo/link_states \
-      --mavros-state-topic /uav1/mavros/state \
-      --host "${host_address}" \
-      --port 5005 \
-      --rate-hz 100 \
-      --source-timeout-s 0.5 \
-      --run-id "${run_id}" \
-      --metrics-output "${metrics_output}" \
-      --stream-id "${owner_id}" \
-      --vehicle-id uav1 \
-      --scene-id factory \
-      --map-id local_factoryenvironmentcollect \
-      --controller-profile orchestrated \
+    bridge_args=(
+      python3 -u Scripts/UE5/stream_ros1_state_to_ue_udp.py
+      --odom-topic /uav1/sunray/gazebo_pose
+      --position-cmd-topic /position_cmd
+      --link-states-topic /gazebo/link_states
+      --mavros-state-topic /uav1/mavros/state
+      --host "${host_address}"
+      --port 5005
+      --rate-hz 100
+      --source-timeout-s 0.5
+      --run-id "${run_id}"
+      --metrics-output "${metrics_output}"
+      --stream-id "${owner_id}"
+      --vehicle-id uav1
+      --scene-id factory
+      --map-id local_factoryenvironmentcollect
+      --controller-profile orchestrated
       --planner-profile none
+    )
+    if [[ "${source_to_receiver_clock_offset_ns}" != "none" ]]; then
+      bridge_args+=(--source-to-receiver-clock-offset-ns "${source_to_receiver_clock_offset_ns}")
+    fi
+    exec "${bridge_args[@]}"
     ;;
   unreal_bridge_stop)
     owner_id="${2:-}"

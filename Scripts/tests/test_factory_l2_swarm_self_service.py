@@ -94,6 +94,10 @@ def test_manual_stop_uses_precise_runner_signal_escalation_and_not_a_broad_proce
 def test_three_uav_startup_uses_a_project_local_mavros_timeout_and_stability_gate() -> None:
     runner = (ROOT / "Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh").read_text(encoding="utf-8")
     launch = (ROOT / "Scripts/sunray/goal5_sunray_px4_basic.launch").read_text(encoding="utf-8")
+    preloaded_launch = (ROOT / "Scripts/sunray/goal5_swarm_px4_preloaded_gazebo.launch").read_text(
+        encoding="utf-8"
+    )
+    no_spawn_launch = (ROOT / "Scripts/sunray/goal5_px4_mavros_no_spawn.launch").read_text(encoding="utf-8")
     mission = (ROOT / "Scripts/sunray/px4ctrl_ego_swarm_mission_node.py").read_text(encoding="utf-8")
 
     assert "MAVROS_CONN_TIMEOUT_S" in runner
@@ -103,11 +107,25 @@ def test_three_uav_startup_uses_a_project_local_mavros_timeout_and_stability_gat
     assert "mavros_conn_timeout_s:=" in runner
     assert '"mavros_connection"' in runner
     assert '<param name="conn/timeout" value="$(arg mavros_conn_timeout_s)" />' in launch
+    assert '<arg name="mavros_conn_timeout_s" default="60.0"/>' in preloaded_launch
+    assert preloaded_launch.count('mavros_conn_timeout_s" value="$(arg mavros_conn_timeout_s)"') == 3
+    assert '<arg name="mavros_conn_timeout_s" default="60.0"/>' in no_spawn_launch
+    assert '<param name="mavros/conn/timeout" value="$(arg mavros_conn_timeout_s)"/>' in no_spawn_launch
     assert "/mavros/cmd/arming" in runner
     assert "/mavros/set_mode" in runner
     assert "mavros_state_stability_snapshot" in mission
     assert "--mavros-ready-min-state-samples" in mission
     assert "--mavros-ready-stable-wall-s" in mission
+
+
+def test_swarm_mission_keeps_the_peak_occupancy_sample_for_final_acceptance() -> None:
+    mission = (ROOT / "Scripts/sunray/px4ctrl_ego_swarm_mission_node.py").read_text(encoding="utf-8")
+
+    assert "occupancy_max_points: int = 0" in mission
+    assert "uav.occupancy_max_points = max(uav.occupancy_max_points, uav.occupancy_points)" in mission
+    assert "uav.occupancy_max_points < self.args.min_occupancy_points" in mission
+    assert '"max_point_counts"' in mission
+    assert '"occupancy_inflate": uav.occupancy_max_points' in mission
 
 
 def test_swarm_formation_runtime_audit_rejects_planner_emergency_stops() -> None:

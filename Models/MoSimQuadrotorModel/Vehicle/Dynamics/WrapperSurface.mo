@@ -4,7 +4,8 @@ model WrapperSurface
   parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile;
   parameter Real expected_yaw_direction[4] = profile.mworks_yaw_direction;
   parameter Real expected_rotor_center[4, 3] = profile.mworks_rotor_center_m;
-  RotorActuatorCore dynamics(profile = profile);
+  RotorActuatorCore dynamics(profile = profile) 
+    annotation(Placement(transformation(origin = {0, 0}, extent = {{-58, -58}, {58, 58}})));
   Real motor_command[4](each unit = "rad/s")
     "Signed MWORKS visual rotor speed command surface";
   Real commanded_thrust[4](each unit = "N")
@@ -61,5 +62,14 @@ equation
   minimum_reaction_moment_effectiveness = dynamics.minimum_reaction_moment_effectiveness;
   motor_order_gate_error = sum({abs(dynamics.rotor_center[i, j] - expected_rotor_center[i, j]) for i in 1:4, j in 1:3});
   yaw_direction_gate_error = sum({abs(dynamics.yaw_direction[i] - expected_yaw_direction[i]) for i in 1:4});
-  annotation(__MWORKS(hide=true,version="26.3.0"));
+  annotation(
+    Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
+      Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {130, 0, 130},
+        fillColor = {252, 244, 255}, fillPattern = FillPattern.Solid),
+      Bitmap(origin = {0, 22}, extent = {{-72, -40.86}, {72, 40.86}},
+        fileName = "modelica://MoSimQuadrotorModel/Vehicle/Resources/Images/motor.png"),
+      Text(origin = {0, -62}, extent = {{-92, 16}, {92, -16}},
+        textString = "Rotor Actuation", textColor = {130, 0, 130})}),
+    Diagram(coordinateSystem(extent = {{-100, -100}, {100, 100}}, grid = {2, 2})),
+    __MWORKS(hide=false,version="26.3.0"));
 end WrapperSurface;

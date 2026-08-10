@@ -1,7 +1,7 @@
 {
   "schema": "mosim.climbpath_baseline_count_definition.v2",
-  "version": 2,
-  "generated_at": "2026-08-01",
+  "version": 3,
+  "generated_at": "2026-08-03",
   "authority": "The current nominal ClimbPath status for the fixed 48-entry catalog is G3_CATALOG_48_CURRENT_STATUS.json. G3_STATUS.json is immutable historical execution evidence and must not be overwritten or presented as the current catalog reconciliation.",
   "scope": "Nominal 50 s ClimbPath evidence only. This file makes no scenario, tuning, deployment, ROS, Gazebo, or runtime claim.",
   "current_catalog_48_reconciliation": {
@@ -29,7 +29,9 @@
     "studio_available_routes": 48,
     "historical_g3_mapped_catalog_entries": 41,
     "historical_g3_only_entries": 7,
-    "post_freeze_current_catalog_records": 7,
+    "post_freeze_current_catalog_records": 8,
+    "post_freeze_current_catalog_supplemental_records": 7,
+    "post_freeze_current_catalog_override_records": 1,
     "sources": [
       "Config/control_platform/control_scheme_catalog.json",
       "Config/control_platform/scheme_id_alias_map.json",
@@ -80,6 +82,13 @@
       "scheme_id": "pid_awff_linear_eso",
       "status": "fail",
       "terminal_position_error_norm_m": 3412.359226529184
+    },
+    {
+      "scheme_id": "pole_placement_luenberger",
+      "status": "fail",
+      "terminal_position_error_norm_m": 402.1409427651827,
+      "position_rmse_m": 63.81822564113234,
+      "evidence_role": "post_freeze_current_override_record"
     }
   ],
   "claim_rules": [
@@ -92,6 +101,7 @@
   "open_items": [
     "A new current 30-pass visual atlas would require source-bound figure generation for the three supplemental passing catalog entries; it is not created by this count reconciliation.",
     "The frozen historical G3_STATUS.json remains unchanged for auditability.",
-    "The current catalog reconciliation has zero unmapped entries, but its completed=false field preserves that the G3 repair acceptance target of 48/48 passes has not been achieved."
+    "The current catalog reconciliation has zero unmapped entries, but its completed=false field preserves that the G3 repair acceptance target of 48/48 passes has not been achieved.",
+    "The 2026-08-02 PolePlacementLuenbergerFormalRunner result supersedes its historical authorization-only CheckModel failure in the current catalog view: CheckModel passed, the 50 s result completed, and terminal position error was 402.1409427651827 m."
   ]
 }

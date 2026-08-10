@@ -18,9 +18,9 @@ DEFAULT_OUTPUT_DIR = (
     / "20260608_026_mosimquad_wrapper_surface_formal_source_surface"
 )
 PRIMARY_ANCHORS = [
-    "RotorActuatorCore dynamics;",
+    "RotorActuatorCore dynamics(",
     "dynamics.motor_command = motor_command",
-    "commanded_thrust[i] = dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
+    "commanded_thrust[i] = dynamics.fault_effectiveness[i] * dynamics.thrust_effectiveness[i] * dynamics.lift_coefficient * motor_command[i] * motor_command[i]",
     "commanded_total_moment_body[3]",
     "motor_order_gate_error =",
     "yaw_direction_gate_error =",

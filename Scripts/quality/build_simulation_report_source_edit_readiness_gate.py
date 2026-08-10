@@ -2,7 +2,7 @@
 """Build a readiness gate for applying simulation-report source edits.
 
 This gate answers whether the current non-applying patch preview may be applied
-to `Docs/simulation_report.md`. It does not edit the report.
+to `Docs/报告/仿真分析报告_正文骨架.md`. It does not edit the report.
 """
 
 from __future__ import annotations
@@ -173,7 +173,7 @@ def build_gate(
             decision_allows_application,
             rel(decision_check_path),
             decision_blocking_reason,
-            "obtain explicit approval before applying preview snippets to Docs/simulation_report.md",
+            "obtain explicit approval before applying preview snippets to Docs/报告/仿真分析报告_正文骨架.md",
         )
     )
     gates.append(
@@ -247,11 +247,11 @@ def build_gate(
         "blocking_gates": blocking_gates,
         "decision_check": decision_check,
         "decision": (
-            "Do not apply preview snippets to Docs/simulation_report.md in this run. "
+            "Do not apply preview snippets to Docs/报告/仿真分析报告_正文骨架.md in this run. "
             "The preview is valid as a review artifact, but source-edit application still needs explicit human/PMO approval."
         ),
         "claim_boundary": [
-            "This gate does not edit Docs/simulation_report.md.",
+            "This gate does not edit Docs/报告/仿真分析报告_正文骨架.md.",
             "It does not authorize automatic patch application.",
             "It does not generate final PDFs/video or PMO final acceptance.",
             "It keeps final submission readiness blocked while final artifacts are missing.",
