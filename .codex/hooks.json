@@ -1,0 +1,80 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:\\Users\\HP\\Desktop\\MoSim\\Scripts\\hooks\\codex_native_hook.py",
+            "timeout": 10,
+            "statusMessage": "Loading MoSim project guardrails"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|apply_patch|Edit|Write|mcp__.*|create_goal",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:\\Users\\HP\\Desktop\\MoSim\\Scripts\\hooks\\codex_native_hook.py",
+            "timeout": 10,
+            "statusMessage": "Checking MoSim project policy"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:\\Users\\HP\\Desktop\\MoSim\\Scripts\\hooks\\codex_native_hook.py",
+            "timeout": 10,
+            "statusMessage": "Capturing MoSim task context"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "^(update_plan|create_goal|get_goal|update_goal)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:\\Users\\HP\\Desktop\\MoSim\\Scripts\\hooks\\codex_native_hook.py",
+            "timeout": 10,
+            "statusMessage": "Checkpointing MoSim task state"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "manual|auto",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:\\Users\\HP\\Desktop\\MoSim\\Scripts\\hooks\\codex_native_hook.py",
+            "timeout": 10,
+            "statusMessage": "Checkpointing MoSim continuation"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python C:\\Users\\HP\\Desktop\\MoSim\\Scripts\\hooks\\codex_native_hook.py",
+            "timeout": 10,
+            "statusMessage": "Checking MoSim completion guardrails"
+          }
+        ]
+      }
+    ]
+  }
+}
