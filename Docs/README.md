@@ -47,6 +47,8 @@ Docs/CoSim/      Future multi-vehicle platform blueprint and research.
   people locating and understanding the repository. `Results/` carries evidence.
 - Historical material stays readable under `Cache/`, but does not appear in the
   ordinary startup path.
+- New external archive batches use the E: root and verification procedure in
+  `Workflows/external_archive_policy.md`; `Cache/` is not an archive target.
 - Do not create a document for routine progress. Update the owning design,
   workflow, index, result, or board only when its responsibility changes.
 

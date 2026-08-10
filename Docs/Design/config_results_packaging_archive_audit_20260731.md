@@ -101,10 +101,24 @@ The first low-risk batch was materialized on 2026-07-31 as a verified external
 copy. This is an archive receipt, not a source deletion or an evidence-status
 change.
 
+### Archive-Root Update (2026-08-10)
+
+The C: paths in the 2026-07 receipt tables below are original historical
+locations, not the current default archive root. New archive batches must use
+`E:\刘致远18001500226\MoSim_Archive\<archive-id>\` according to
+[`external_archive_policy.md`](../Workflows/external_archive_policy.md).
+
+The verified reconciliation receipt is
+`E:\刘致远18001500226\MoSim_Archive\20260810_desktop_archive_reconciliation\`.
+Its manifest records a copy-only, source-retained transfer of 349 files
+(1,605,933,452 bytes), with zero missing files and zero source or destination
+SHA-256 mismatches. It explicitly records that source deletion is not
+authorized.
+
 | Field | Value |
 |---|---|
 | Archive candidate | `legacy_example1_robustness_pair` |
-| External archive | `C:\Users\HP\Desktop\MoSim_Archive\202605_example1_robustness\` |
+| Original archive location (legacy) | `C:\Users\HP\Desktop\MoSim_Archive\202605_example1_robustness\` |
 | Included source-relative roots | `Results/robustness/`, `Config/controllers/`, `Config/scenarios/robustness/` |
 | Copy mode | Copy only; all original repository files remain in place. |
 | Verified content | 577 files, 398,562,113 bytes, source/destination SHA-256 checked per file. |
@@ -132,7 +146,7 @@ ROS/Gazebo/PX4/QGC/UE runtime route is complete.
 
 ### Completed external archives
 
-| Archive ID | External destination | Verified content | Source result |
+| Archive ID | Original archive location (legacy) | Verified content | Source result |
 |---|---|---:|---|
 | `20260731_local_unreferenced_cache_phase1` | `C:\Users\HP\Desktop\MoSim_Archive\20260731_local_unreferenced_cache_phase1\` | 16,753 files; 2,621,010,763 bytes | All five source roots were SHA-256 verified, removed, and replaced by `ARCHIVED_EXTERNALLY.md` tombstones. |
 | `20260731_historical_mworks_unreferenced_phase2` | `C:\Users\HP\Desktop\MoSim_Archive\20260731_historical_mworks_unreferenced_phase2\` | 345 files; 254,350,491 bytes | Fourteen of fifteen historical, untracked MWORKS-result roots were SHA-256 verified, removed, and tombstoned. |

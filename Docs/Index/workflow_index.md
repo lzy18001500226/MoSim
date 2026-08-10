@@ -12,6 +12,7 @@
 | Keep work task-local | `Docs/Workflows/single_thread_operating_model.md` |
 | Read historical project status | `Docs/Workflows/mainline_operations_board.md` (explicit request only) |
 | Place, compress, or archive documentation | `Docs/Workflows/documentation_governance.md` |
+| Create or verify an external archive batch | `Docs/Workflows/external_archive_policy.md` |
 | Promote/reject session history | `Docs/Workflows/session_memory_migration.md` |
 | Close a changed task or final package | `Docs/Workflows/pre_submit_check.md` |
 | Reproduce a release, code-delivery hash, or package boundary | `Docs/Workflows/RELEASE_CHECKLIST.md` |

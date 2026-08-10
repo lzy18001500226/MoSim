@@ -46,8 +46,8 @@ into a runner when an existing profile or scenario can be extended.
 发布源包保留控制器平台、Profile、Plant、Schema、代码生成、路径注册表以及
 仍被当前脚本/模型引用的兼容配置。`Config/legacy/`、`Config/protocol/` 和
 旧场景目录只有在静态引用替换或固定后才能归档。归档操作必须在
-`MoSim_Archive/` 生成哈希清单，并在原路径留下说明；不能把“从压缩包排除”
-当作“可以删除”。
+`E:\刘致远18001500226\MoSim_Archive\<archive-id>\` 生成哈希清单，并在原
+路径留下说明；不能把“从压缩包排除”当作“可以删除”。
 
 2026-08-01 的收敛扫描覆盖 `Config/` 的 16 个顶层目录，均发现仓库内引用，
 所以本批次没有移动任何配置。下一次归档必须针对单个文件/子目录给出消费者

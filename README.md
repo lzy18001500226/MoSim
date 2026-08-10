@@ -268,8 +268,10 @@ python Scripts/quality/materialize_sunray_runtime_assets.py
 ## 实验与归档边界
 
 当前目录布局和模型/源码入口保持稳定，不执行大范围重构。经过依赖审计、哈希归档
-和原路径留痕后，可以把明确无活动依赖的 `Results/` 或 `Config/` 子树移入
-`MoSim_Archive/`；这不等于允许移动模型根、当前运行时配置、UI/UE 资产或活动证据。
+和原路径留痕后，可以把明确无活动依赖的 `Results/` 或 `Config/` 子树复制到
+`E:\刘致远18001500226\MoSim_Archive\<archive-id>\`；这不等于允许移动模型根、
+当前运行时配置、UI/UE 资产或活动证据。具体操作、清单与删除边界见
+[`Docs/Workflows/external_archive_policy.md`](Docs/Workflows/external_archive_policy.md)。
 `References/` 也不能按“已复制”整体删除，必须以本节路径表和实际消费者为准。
 
 旧实验、兼容配置和历史结果的归档必须保留归档清单、SHA-256 和原路径说明。归档
@@ -278,8 +280,8 @@ python Scripts/quality/materialize_sunray_runtime_assets.py
 ### 当前归档收敛记录（2026-08-01）
 
 - 已将 5 个无活动引用的旧 Codex/coagent GUI 与线程维护诊断目录归档到外部
-  `MoSim_Archive/20260801_unreferenced_codex_gui_phase3/`（该目录不属于源码包，
-  仅作为本机归档示例）。
+  归档批次 `20260801_unreferenced_codex_gui_phase3`（该目录不属于源码包，
+  仅作为本机归档示例；新批次使用上文规定的 E: 根）。
   共 8 个文件、847,079 字节，归档清单 SHA-256 为
   `ced1cd97ba438fcb2b2d8493a7ec545436d0eb7029e4c562532645a09c8a1c81`；原路径保留
   `ARCHIVED_EXTERNALLY.md` 留痕。
