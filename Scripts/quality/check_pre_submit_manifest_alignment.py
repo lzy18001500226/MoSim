@@ -17,7 +17,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_DOC = ROOT / "Docs" / "Workflows" / "pre_submit_check.md"
-DEFAULT_DETAIL_DOC = ROOT / "Docs" / "Cache" / "pre_submit_detail.md"
+DEFAULT_DETAIL_DOC = ROOT / "Docs" / "Cache" / "workflow_history" / "release" / "pre_submit_detail.md"
 DEFAULT_MANIFEST = (
     ROOT
     / "Results"
@@ -393,7 +393,7 @@ EXPECTED_HEADINGS = [
 ]
 
 REQUIRED_ACTIVE_DOC_TERMS = [
-    "Docs/Cache/pre_submit_detail.md",
+    "Docs/Cache/workflow_history/release/pre_submit_detail.md",
     "Per-Task Git Closeout Gate",
     "git diff --cached --check",
     "candidate_submission_evidence_manifest.json",

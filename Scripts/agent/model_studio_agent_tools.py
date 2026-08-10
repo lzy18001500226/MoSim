@@ -779,7 +779,7 @@ def recommend_manual_workflow(topic: str) -> dict[str, Any]:
     """Recommend a real workflow path; never execute it."""
     topic_key = (topic or "").casefold()
     candidates = [
-        ("代码生成", "Docs/Workflows/MoSim Agent执行任务指令.md", "打开 MWORKS 模型后，在原生代码生成页签手动导出。"),
+        ("代码生成", "Docs/Workflows/mworks_codegen_controller_runtime.md", "按当前代码生成工作流完成导出、SIL 和运行时门禁。"),
         ("结果", "Docs/Skills/Mworks/mworks-simulation-evidence/SKILL.md", "先保留 Result.msr、运行记录和指标，再进行只读分析。"),
         ("仿真", "Docs/Workflows/run_simulation.md", "先确认当前用户授权范围和模型入口；Studio 不替代 MWORKS 的手动仿真。"),
         ("故障", "Config/control_platform/seven_scenario_experiment_profiles_v2.json", "先冻结场景参数，再在 MWORKS 中手动执行；不要将 UI 设置视为结果。"),

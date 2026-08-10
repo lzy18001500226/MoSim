@@ -144,7 +144,8 @@ Stage 5: ducted model-aircraft and special airframes
 ## 6. Relation To Current MoSim Design
 
 `Docs/Design` remains the source for current A8 quadrotor competition and
-near-term implementation gates. `Docs/CoSim` is the future platform blueprint.
+near-term implementation gates. `Docs/Cache/cosim/blueprint_20260614/` is the
+archived future platform blueprint.
 
 Current competition evidence is not blocked by CoSim's full Gazebo/PX4/ROS2
 route unless a task explicitly claims those surfaces.

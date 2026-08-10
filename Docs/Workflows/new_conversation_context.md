@@ -66,8 +66,9 @@ evidence lane is ROS1 Noetic / Sunray / Gazebo Classic / PX4 / MAVROS / px4ctrl
 with RViz review. UE, QGC, Flight Console, and Model Studio are display or
 operation surfaces and do not replace those authorities.
 
-`Docs/CoSim/` is a future multi-vehicle platform blueprint. Its roadmap is
-reference material, not a task assignment for a new conversation.
+`Docs/Cache/cosim/blueprint_20260614/` preserves the future multi-vehicle
+platform blueprint. It is reference material, not a task assignment for a new
+conversation.
 
 ## 4. Structure Rules
 

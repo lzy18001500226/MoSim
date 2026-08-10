@@ -6,11 +6,11 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def test_three_uav_self_service_entrypoints_are_split_by_operator_stage() -> None:
     expected = {
-        "cmd/01_预检Factory三机环境.cmd": "preflight_factory_l2_swarm_formation.ps1",
-        "cmd/03_启动Factory三机固定编队.cmd": "start_factory_l2_swarm_formation_backend.ps1",
-        "cmd/04_打开Factory三机RViz审核.cmd": "open_factory_l2_swarm_formation_rviz_review.ps1",
-        "cmd/05_检查Factory三机状态.cmd": "check_factory_l2_swarm_formation_runtime.ps1",
-        "cmd/06_停止Factory三机编队.cmd": "stop_factory_l2_swarm_formation_runtime.ps1",
+        "Scripts/cmd/Archive/legacy_unverified/01_预检Factory三机环境.cmd": "preflight_factory_l2_swarm_formation.ps1",
+        "Scripts/cmd/Archive/legacy_unverified/03_启动Factory三机固定编队.cmd": "start_factory_l2_swarm_formation_backend.ps1",
+        "Scripts/cmd/Archive/legacy_unverified/04_打开Factory三机RViz审核.cmd": "open_factory_l2_swarm_formation_rviz_review.ps1",
+        "Scripts/cmd/Archive/legacy_unverified/05_检查Factory三机状态.cmd": "check_factory_l2_swarm_formation_runtime.ps1",
+        "Scripts/cmd/Archive/legacy_unverified/06_停止Factory三机编队.cmd": "stop_factory_l2_swarm_formation_runtime.ps1",
     }
 
     for name, target in expected.items():
@@ -215,13 +215,13 @@ def test_controlled_keep_alive_stop_requires_complete_gate_evidence_before_succe
     assert '"This marker records an operator-requested stop' in stop
 
 
-def test_self_service_workflow_requires_preflight_before_backend_start() -> None:
-    workflow = (ROOT / "Docs/Workflows/sunray_factory_three_uav_self_service.md").read_text(
+def test_archived_self_service_workflow_requires_preflight_before_backend_start() -> None:
+    workflow = (ROOT / "Docs/Cache/workflow_history/runtime/sunray_factory_three_uav_self_service.md").read_text(
         encoding="utf-8"
     )
 
-    assert workflow.index("cmd/01_预检Factory三机环境.cmd") < workflow.index(
-        "cmd/03_启动Factory三机固定编队.cmd"
+    assert workflow.index("Scripts/cmd/Archive/legacy_unverified/01_预检Factory三机环境.cmd") < workflow.index(
+        "Scripts/cmd/Archive/legacy_unverified/03_启动Factory三机固定编队.cmd"
     )
     assert "When it reports `busy`, do not start another backend." in workflow
 

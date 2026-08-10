@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 CHECKER = ROOT / "Scripts" / "quality" / "check_pre_submit_manifest_alignment.py"
 DOC = ROOT / "Docs" / "Workflows" / "pre_submit_check.md"
-DETAIL_DOC = ROOT / "Docs" / "Cache" / "pre_submit_detail.md"
+DETAIL_DOC = ROOT / "Docs" / "Cache" / "workflow_history" / "release" / "pre_submit_detail.md"
 MANIFEST = (
     ROOT
     / "Results"

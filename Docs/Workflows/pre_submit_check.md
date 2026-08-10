@@ -1,7 +1,8 @@
 # Pre-Submit Check
 
 > Active checklist for task closeout and competition-package review. Detailed
-> artifact procedures are archived at `Docs/Cache/pre_submit_detail.md` and
+> artifact procedures are archived at
+> `Docs/Cache/workflow_history/release/pre_submit_detail.md` and
 > are loaded only for a named final-package gate.
 
 ## 1. Goal
@@ -50,4 +51,4 @@ Video is review evidence only and cannot replace run, metric, and evidence recor
 Run the applicable source, contract, and documentation checks before staging.
 
 ## 12. Final Pass Criteria
-Final packaging requires the explicit human approval and acceptance packet described in `Docs/Cache/pre_submit_detail.md`.
+Final packaging requires the explicit human approval and acceptance packet described in `Docs/Cache/workflow_history/release/pre_submit_detail.md`.

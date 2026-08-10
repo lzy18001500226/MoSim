@@ -2,9 +2,9 @@
 
 Status: raw-content preservation manifest.
 
-All previously root-level `Docs/CoSim` research files were moved into
-`Docs/CoSim/research/raw/` without editing their content. The old material is
-preserved as trace-back input, not treated as deleted.
+In the 2026-06 rebuild, previously root-level CoSim research files were moved
+into the blueprint's `research/raw/` tree without editing their content. The
+old material is preserved as trace-back input, not treated as deleted.
 
 | Raw file | SHA256 | Intended reviewed decision destination |
 |---|---|---|

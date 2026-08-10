@@ -4,6 +4,9 @@
 > `Docs/Workflows/pre_submit_check.md`; this file is loaded only when a named
 > final-package gate needs its artifact-specific procedure.
 
+This archived reference does not edit Docs/报告/仿真分析报告_正文骨架.md; report
+source changes require their own explicit, human-reviewed task.
+
 > Purpose: verify that the project is ready for competition submission.
 
 ---

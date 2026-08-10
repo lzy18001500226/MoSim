@@ -52,7 +52,6 @@
 |---|---|
 | Current ROS1/Sunray/Gazebo/PX4/RViz lane | `Docs/Workflows/sunray_ros1_current_runtime_lane.md`; `Docs/Workflows/sunray_ros1_execution_checklist.md` |
 | Bounded Factory scene-to-Sunray integration | `Docs/Workflows/factory_sunray_integration_gate.md` |
-| Fixed Factory three-UAV formation operation | `Docs/Workflows/sunray_factory_three_uav_self_service.md` |
 | QGC and Flight Console operator surface | `Docs/Workflows/qgc_ue_operator_startup.md` |
 | UE-to-Gazebo static scene import | `Docs/Workflows/ue_to_gazebo_static_scene_import.md` |
 | UE/frontend rendering and mapping-window boundary | `Docs/Workflows/unreal_renderer.md`; `Docs/Workflows/unreal_mapping_window_research.md` |
@@ -83,7 +82,8 @@
 These files are deliberately outside `Docs/Workflows/` and must not select
 current work:
 
-- `Docs/Cache/pre_submit_detail.md`: detailed final-package reference.
+- `Docs/Cache/workflow_history/release/pre_submit_detail.md`: detailed
+  final-package reference.
 - `Docs/Cache/workflow_history/competition_gap_inventory_20260715.md`: dated
   gap snapshot.
 - `Docs/Cache/workflow_history/controller_document_evidence_capture_20260720.md`:
@@ -92,6 +92,8 @@ current work:
   historical controller closeout.
 - `Docs/Cache/workflow_history/factory_l2_full_system_validation_plan.md`:
   dated Factory F1-F8 plan.
+- `Docs/Cache/workflow_history/runtime/sunray_factory_three_uav_self_service.md`:
+  historical fixed-formation operator flow; it is not a current runtime entry.
 
 Vendor and reference skill directories are governed separately by
 `Docs/Workflows/tooling_assets_governance.md`; this index does not promote them

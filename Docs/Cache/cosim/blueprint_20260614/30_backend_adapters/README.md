@@ -8,7 +8,7 @@ flight controllers, middleware, renderers, and controller-generation tools.
 Read first:
 
 ```text
-Docs/CoSim/research/07_Backend_Decision_Matrix.md
+Docs/Cache/cosim/blueprint_20260614/research/07_Backend_Decision_Matrix.md
 ```
 
 ## Adapter Categories

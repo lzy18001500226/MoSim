@@ -21,7 +21,8 @@ These two document sets have different responsibilities:
 Docs/Design/     Current A8 MoSim architecture, competition scope, interfaces,
                   controller work, evidence requirements, and task roadmap.
 
-Docs/CoSim/      Future multi-vehicle platform blueprint and research.
+Docs/Cache/cosim/blueprint_20260614/
+                  Archived future multi-vehicle platform blueprint and research.
                   Its three-phase roadmap is preserved future work; it is not
                   a claim that the current MoSim slice is finished.
 ```

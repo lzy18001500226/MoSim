@@ -15,7 +15,7 @@
 | Read historical project status | `Docs/Workflows/mainline_operations_board.md` (explicit request only) |
 | Understand current MoSim architecture | `Docs/Design/架构.md` |
 | Read competition scope and requirements | `Docs/Design/赛题.md`, `Docs/Design/需求.md` |
-| Read future CoSim platform direction | `Docs/CoSim/README.md`, `Docs/CoSim/research/raw/CoSim设计.md` |
+| Read archived future CoSim platform direction | `Docs/Cache/cosim/blueprint_20260614/README.md`, `Docs/Cache/cosim/blueprint_20260614/research/raw/CoSim设计.md` |
 
 ## Engineering Maps
 

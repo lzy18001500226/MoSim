@@ -13,10 +13,12 @@ Do not put current operating rules here. Current rules belong in
 | Directory | Purpose |
 |---|---|
 | `agent_legacy/` | Legacy AgentOS, visible-thread, patrol, packet, and workflow migration material. |
-| `cosim/` | Cached CoSim architecture drafts, source migration manifests, and audit notes. |
+| `cosim/` | Archived future-CoSim blueprint, its rebuild metadata, source migration manifests, and audit notes. |
+| `delivery_history/` | Archived report/manual bodies, delivery review notes, and dated analysis plans. |
 | `design/` | Cached design drafts, rebuild audits, absorbed/superseded architecture snapshots, and pre-rebuild material. |
 | `design_intake/` | Reviewed design intake records before promotion into formal design docs. |
 | `runtime_summaries/` | Small cached runtime summaries that are not authoritative result evidence. |
+| `research/` | Historical infrastructure and external-learning research that is not a current routing source. |
 | `session_memory_migration/` | Reviewed memory/session promotion and rejection records. |
 | `workflow_history/` | Superseded current-board bodies and one-off workflow snapshots retained for trace-back. |
 
