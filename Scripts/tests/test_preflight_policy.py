@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -47,16 +48,20 @@ def make_args(**overrides):
 
 
 def run_adapter_payload(payload: dict) -> dict:
-    completed = subprocess.run(
-        [sys.executable, str(ADAPTER_PATH.relative_to(ROOT))],
-        cwd=ROOT,
-        input=json.dumps(payload, ensure_ascii=False),
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        timeout=20,
-        check=False,
-    )
+    environment = dict(os.environ)
+    with tempfile.TemporaryDirectory(dir=ROOT / "Results" / "tmp") as context_root:
+        environment["MOSIM_CONTEXT_PACK_ROOT"] = context_root
+        completed = subprocess.run(
+            [sys.executable, str(ADAPTER_PATH.relative_to(ROOT))],
+            cwd=ROOT,
+            input=json.dumps(payload, ensure_ascii=False),
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            timeout=20,
+            check=False,
+            env=environment,
+        )
     assert completed.returncode == 0, {
         "stdout": completed.stdout,
         "stderr": completed.stderr,
@@ -94,7 +99,27 @@ def run_secret_path_check(values: list[str]) -> dict:
     return preflight.check_secret_paths(values)
 
 
+def test_hook_compile_preflight_covers_every_hook_module() -> None:
+    result = preflight.check_py_compile()
+    expected = sorted(
+        path.relative_to(ROOT).as_posix()
+        for path in (ROOT / "Scripts" / "hooks").glob("*.py")
+        if path.is_file()
+    )
+    assert result["ok"], result
+    assert result["compiled_hook_modules"] == expected
+    assert {
+        "Scripts/hooks/codex_native_hook.py",
+        "Scripts/hooks/context_recovery.py",
+        "Scripts/hooks/global_context_continuity.py",
+        "Scripts/hooks/preflight.py",
+        "Scripts/hooks/recover_git_index_lock.py",
+        "Scripts/hooks/task_terminal_email.py",
+    }.issubset(set(result["compiled_hook_modules"]))
+
+
 def main() -> int:
+    test_hook_compile_preflight_covers_every_hook_module()
     with tempfile.TemporaryDirectory(dir=ROOT / "Results" / "tmp") as tmp:
         tmp_root = Path(tmp)
         big_file = tmp_root / "large.bin"

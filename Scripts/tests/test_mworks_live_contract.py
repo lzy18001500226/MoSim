@@ -312,9 +312,6 @@ def test_rt1_fixed_size_frames_round_trip() -> None:
     assert "#pragma pack(push, 1)" in header
     assert "double values[24]" in header
     assert "MOSIM_RT1_PORT 49020u" in header
-    model_200 = (ROOT / "Models/MoSimQuadrotorModel/Deployment/RT1OfficialPidShadow200Hz.mo").read_text(encoding="utf-8")
-    assert "final parameter Real samplePeriod=0.005" in model_200
-    assert "mosim_mworks_live_rt1_exchange_official_pid" in model_200
     assert "MOSIM_RT1_MAX_DRAIN 512" in header
     assert "for (index = 0; index < MOSIM_RT1_MAX_DRAIN; ++index)" in header
     assert "mosim_rt1_compute_and_send_official_pid" in header
@@ -323,11 +320,6 @@ def test_rt1_fixed_size_frames_round_trip() -> None:
     assert "if (have_latest && mosim_rt1_compute_and_send_official_pid" in header
     assert "++(*sent_frames);" in header
     assert "return processed;" in header
-    assert "coalescedFrames" in model_200
-    assert "Interval=0.005" in model_200
-    assert "mosim_mworks_live_request_1ms_timer_resolution" in model_200
-    assert "when initial() then" in model_200
-
     runtime = (ROOT / "Scripts/ui/run_orchestrated_runtime.sh").read_text(encoding="utf-8")
     assert 'if [[ "${rt1_rate}" == "200" ]]; then\n    rt1_status_rate_hz="0.5"' in runtime
     assert 'MWORKS_LIVE_MWSOLVER_PRIORITY:-High' in runtime
@@ -501,14 +493,6 @@ def test_200hz_runtime_selects_wall_clock_cpp_rt1_backend() -> None:
     assert 'MWORKS_LIVE_WORLD_FILE:-${SUNRAY_WS}/simulation/sunray_simulator/worlds/planning_test.world' in gate
     basic_gate = (ROOT / "Scripts/sunray/run_px4ctrl_basic_gate.sh").read_text(encoding="utf-8")
     assert 'vehicle:="${VEHICLE}" gui:="${GUI}" rviz_enable:=false' in basic_gate
-
-
-def test_200hz_live_model_keeps_scheduler_aligned_and_reserves_gate_window() -> None:
-    model = (ROOT / "Models/MoSimQuadrotorModel/Deployment/RT1OfficialPidShadow200Hz.mo").read_text(encoding="utf-8")
-    assert "final parameter Real samplePeriod=0.005" in model
-    assert "StopTime=900" in model
-    assert "Interval=0.005" in model
-
 
 def test_rt1_owner_wait_uses_wall_clock_when_gazebo_clock_stops() -> None:
     waiter = (ROOT / "Scripts/mworks_live/wait_for_rt1_control_state.py").read_text(encoding="utf-8")

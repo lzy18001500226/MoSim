@@ -38,7 +38,7 @@ document.
 | `架构/00_架构与任务/任务算法与场景地图注册接口.md` | MissionAlgorithmRegistry, SceneMapRegistry, planner/exploration/formation adapters, map switching, and the offline QGC 2D map contract. |
 | `架构/04_展示与实验平台/Flight Console与二维任务地图详细设计.md` | QGC 5.0.8 reuse audit, UE-centered Flight Console layout, Factory mini/expanded mission map, waypoint/boundary/fleet editing, coordinate and command-authority contracts. |
 | `架构/04_展示与实验平台/MWORKS实时联合仿真与双GUI接口设计.md` | MWORKS Live experimental controller backend, dual-GUI operation flow, real-time I/O, fallback, and RT0-RT5 validation gates. |
-| `MoSim大系统介绍.md` | Shareable product introduction covering the dual GUI, Agent-driven simulation, model-to-runtime loop, controller library, planning, formation, safety, and evidence workflow. |
+| `架构/00_架构与任务/MoSim大系统介绍.md` | Shareable product introduction covering the dual GUI, Agent-driven simulation, model-to-runtime loop, controller library, planning, formation, safety, and evidence workflow. |
 | `架构/01_控制器平台/统一控制接口.md` | State, reference, controller output, adapter, frame, and timing contracts. |
 | `架构/02_感知定位与规划集群/FASTLIO定位闭环.md` | FAST-LIO localization, point-cloud/map validation, and planner rerun gates. |
 | `架构/02_感知定位与规划集群/规划与编队控制接口.md` | Diff-Planner current loop, EGO/EGO-Swarm references, planner/formation interfaces, and multi-UAV contracts. |
@@ -55,6 +55,8 @@ document.
 | `架构/01_控制器平台/控制器管理与配置.md` | Controller profiles, configuration, switching policy, and management boundary. |
 | `架构/03_测试调参与证据/测试与评价.md` | Offline consistency, Gazebo/RViz evidence gates, metrics, and acceptance rules. |
 | `架构/01_控制器平台/控制增强与容错.md` | Safety, disturbance rejection, fault tolerance, and advanced-control backlog. |
+| `报告手册交付证据总账_P0_20260731.md` | Current report, manual, and delivery evidence counts with claim boundaries. |
+| `架构/03_测试调参与证据/交付与审计/README.md` | Static controller-entry basis and Config/Results packaging audit artifacts. |
 
 ### Level 3: Execution Workflow
 

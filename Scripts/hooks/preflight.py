@@ -19,6 +19,7 @@ if str(ROOT) not in sys.path:
 ALLOWED_ROOT = ROOT.resolve()
 REFERENCE_INDEX = ROOT / "Docs" / "Index" / "reference_project_index.md"
 HOOK_README = ROOT / "Scripts" / "hooks" / "README.md"
+HOOK_DIRECTORY = ROOT / "Scripts" / "hooks"
 HOOK_ADAPTER = ROOT / "Scripts" / "hooks" / "codex_native_hook.py"
 HOOK_PREFLIGHT = ROOT / "Scripts" / "hooks" / "preflight.py"
 DOCUMENTATION_GOVERNANCE = ROOT / "Docs" / "Workflows" / "documentation_governance.md"
@@ -204,17 +205,21 @@ def check_reference_index() -> dict:
 
 
 def check_py_compile() -> dict:
-    return run(
+    hook_modules = sorted(
+        path.relative_to(ROOT).as_posix() for path in HOOK_DIRECTORY.glob("*.py") if path.is_file()
+    )
+    result = run(
         [
             sys.executable,
             "-m",
             "py_compile",
-            "Scripts/hooks/codex_native_hook.py",
-            "Scripts/hooks/preflight.py",
+            *hook_modules,
             "Scripts/reference/check_reference_index.py",
         ],
         timeout=30,
     )
+    result["compiled_hook_modules"] = hook_modules
+    return result
 
 
 def check_large_tracked_files(limit_mb: int = 100, *, full_repo: bool = False) -> dict:

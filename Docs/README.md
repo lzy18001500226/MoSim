@@ -11,6 +11,7 @@ reference material. It does not replace the repository [README](../README.md).
 | Engineer starting a task | `../AGENTS.md` | `Workflows/new_conversation_context.md`, then only the topic docs named by the current user |
 | MWORKS controller task | `Design/架构/01_控制器平台/` | matching `Skills/Mworks/` entry and topic workflow |
 | ROS1/Sunray runtime task | `Workflows/sunray_ros1_current_runtime_lane.md` | `Workflows/sunray_ros1_execution_checklist.md` |
+| Operator following a from-zero manual test | `Guides/README.md` | matching guide, then its owning workflow and result packet |
 | Report or user manual review | `报告/README.md` | `报告/用户手册_正文骨架.md`、`报告/仿真分析报告_正文骨架.md` and the cited evidence bundle |
 
 ## Current MoSim And Future CoSim
@@ -33,6 +34,7 @@ Docs/Cache/cosim/blueprint_20260614/
 |---|---|---|
 | `Design/` | stable requirements, architecture, interfaces, algorithm and evidence design | daily progress narration |
 | `Workflows/` | repeatable task procedure, inputs, stop conditions, and outputs | historical run logs or report prose |
+| `Guides/` | from-zero, human-facing operation tutorials with explicit startup, observation, stop, and evidence steps | runtime authority, architecture, or evidence policy |
 | `Skills/` | task-family tool guidance and known constraints | routine startup or project status |
 | `Index/` | navigation to owners, models, workflows, APIs, and references | duplicate policy or implementation detail |
 | `Cache/` | historical plans, superseded docs, research drafts, migration records | current operating rules |
@@ -46,6 +48,8 @@ Docs/Cache/cosim/blueprint_20260614/
   policy, current status, or experiment conclusions.
 - A workflow is for normal project execution and quality gates. A README is for
   people locating and understanding the repository. `Results/` carries evidence.
+- A guide is for a human carrying out one documented operation. It links to the
+  governing workflow instead of duplicating its runtime or evidence policy.
 - Historical material stays readable under `Cache/`, but does not appear in the
   ordinary startup path.
 - New external archive batches use the E: root and verification procedure in

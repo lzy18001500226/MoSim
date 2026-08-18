@@ -21,6 +21,7 @@ from gazebo_msgs.msg import ModelStates
 from geometry_msgs.msg import PoseStamped
 from nav_msgs.msg import Odometry
 from quadrotor_msgs.msg import PositionCommand
+from rosgraph_msgs.msg import Clock
 from std_msgs.msg import Bool
 
 
@@ -68,6 +69,65 @@ def rpy_from_quat(x: float, y: float, z: float, w: float) -> tuple[float, float,
     return roll, pitch, yaw_from_quat(x, y, z, w)
 
 
+def finite_time(value: object) -> float | None:
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        return None
+    return parsed if math.isfinite(parsed) else None
+
+
+def build_goal_stage_rtf_report(report: dict, clock_topic: str) -> dict:
+    """Summarize actual planner-goal to arrival timing from one live probe."""
+
+    goals = []
+    blockers = []
+    for item in report.get("goals", []):
+        timing = item.get("goal_stage_timing")
+        if not isinstance(timing, dict):
+            timing = {
+                "status": "blocked",
+                "reason_code": "goal_stage_timing_missing",
+            }
+        goal = {
+            "index": item.get("index"),
+            "route_index": item.get("route_index"),
+            "requested": item.get("requested"),
+            "accepted": item.get("accepted"),
+            "reached": bool(item.get("reached")),
+            "timing": timing,
+        }
+        goals.append(goal)
+        if timing.get("status") != "measured":
+            blockers.append(
+                f"goal_{item.get('index', 'unknown')}:{timing.get('reason_code', 'goal_stage_timing_missing')}"
+            )
+
+    if report.get("status") != "passed":
+        blockers.append("interactive_goal_probe_not_passed")
+    if not goals:
+        blockers.append("no_executed_goals")
+
+    return {
+        "schema": "mosim.sunray_ros1.diff_interactive_goal_stage_rtf.v1",
+        "status": "passed" if not blockers else "blocked",
+        "source": "live_ros1_clock_and_goal_switch_probe",
+        "clock_topic": clock_topic,
+        "task_boundary": {
+            "start": "actual /goal_with_id forwarding to Diff-Planner",
+            "end": "stable arrival-hold confirmation",
+            "excludes": ["Gazebo/PX4 cold start", "post-arrival final hover", "cleanup"],
+        },
+        "goals": goals,
+        "blockers": blockers,
+        "claim_boundary": (
+            "This reports only the live goal-stage sim/wall factor for the actual "
+            "forwarded Diff-Planner target. It does not replace raw-cloud pacing, "
+            "controller-quality, collision, or broader mission acceptance evidence."
+        ),
+    }
+
+
 class InteractiveGoalSwitchProbe:
     def __init__(self, args: argparse.Namespace) -> None:
         self.args = args
@@ -81,6 +141,9 @@ class InteractiveGoalSwitchProbe:
         self.forwarded_goal_seq = 0
         self.mission_ready = not bool(args.require_mission_ready)
         self.last_mission_ready_wall: float | None = None
+        self.latest_clock_sim_s: float | None = None
+        self.latest_clock_wall_s: float | None = None
+        self.clock_message_count = 0
         self.goal_index = 0
         self.goal_start_wall = 0.0
         self.last_record_wall: dict[str, float] = {}
@@ -99,6 +162,7 @@ class InteractiveGoalSwitchProbe:
             self.on_forwarded_goal,
             queue_size=30,
         )
+        rospy.Subscriber(args.clock_topic, Clock, self.on_clock, queue_size=100)
         rospy.Subscriber(args.odom_topic, Odometry, self.on_odom, queue_size=100)
         rospy.Subscriber(args.truth_topic, ModelStates, self.on_truth, queue_size=50)
         rospy.Subscriber(args.raw_cmd_topic, PositionCommand, self.on_raw_cmd, queue_size=200)
@@ -114,8 +178,29 @@ class InteractiveGoalSwitchProbe:
         output.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
     def now(self) -> float:
+        if self.latest_clock_sim_s is not None:
+            return self.latest_clock_sim_s
         stamp = rospy.Time.now().to_sec()
         return float(stamp) if stamp > 0 else time.time()
+
+    def time_fields(self) -> dict:
+        wall = time.time()
+        clock_age = None
+        if self.latest_clock_wall_s is not None:
+            clock_age = max(0.0, wall - self.latest_clock_wall_s)
+        return {
+            "wall": wall,
+            "sim_time_s": self.latest_clock_sim_s,
+            "clock_age_wall_s": clock_age,
+        }
+
+    def clock_summary(self) -> dict:
+        return {
+            "topic": self.args.clock_topic,
+            "messages_observed": self.clock_message_count,
+            "latest_sim_time_s": self.latest_clock_sim_s,
+            "latest_clock_wall_s": self.latest_clock_wall_s,
+        }
 
     def current_position_row(self) -> dict | None:
         return self.truth or self.odom
@@ -315,12 +400,20 @@ class InteractiveGoalSwitchProbe:
         self.mission_ready = bool(msg.data)
         self.last_mission_ready_wall = time.time()
 
+    def on_clock(self, msg: Clock) -> None:
+        sim_time_s = finite_time(msg.clock.to_sec())
+        if sim_time_s is None or sim_time_s < 0.0:
+            return
+        self.latest_clock_sim_s = sim_time_s
+        self.latest_clock_wall_s = time.time()
+        self.clock_message_count += 1
+
     def on_forwarded_goal(self, msg: PoseStamped) -> None:
         p = msg.pose.position
         self.forwarded_goal_seq += 1
         row = {
             "t": self.now(),
-            "wall": time.time(),
+            **self.time_fields(),
             "seq": self.forwarded_goal_seq,
             "x": float(p.x),
             "y": float(p.y),
@@ -337,6 +430,7 @@ class InteractiveGoalSwitchProbe:
         roll, pitch, yaw = rpy_from_quat(q.x, q.y, q.z, q.w)
         row = {
             "t": self.now(),
+            **self.time_fields(),
             "x": float(p.x),
             "y": float(p.y),
             "z": float(p.z),
@@ -361,6 +455,7 @@ class InteractiveGoalSwitchProbe:
         roll, pitch, yaw = rpy_from_quat(q.x, q.y, q.z, q.w)
         row = {
             "t": self.now(),
+            **self.time_fields(),
             "x": float(pose.position.x),
             "y": float(pose.position.y),
             "z": float(pose.position.z),
@@ -374,10 +469,10 @@ class InteractiveGoalSwitchProbe:
         self.truth = row
         self.record("truth", row.copy())
 
-    @staticmethod
-    def cmd_row(msg: PositionCommand, t: float) -> dict:
+    def cmd_row(self, msg: PositionCommand) -> dict:
         return {
-            "t": t,
+            "t": self.now(),
+            **self.time_fields(),
             "x": float(msg.position.x),
             "y": float(msg.position.y),
             "z": float(msg.position.z),
@@ -391,12 +486,12 @@ class InteractiveGoalSwitchProbe:
         }
 
     def on_raw_cmd(self, msg: PositionCommand) -> None:
-        row = self.cmd_row(msg, self.now())
+        row = self.cmd_row(msg)
         self.raw_cmd = row
         self.record("raw_cmd", row.copy())
 
     def on_cmd(self, msg: PositionCommand) -> None:
-        row = self.cmd_row(msg, self.now())
+        row = self.cmd_row(msg)
         self.cmd = row
         self.record("cmd", row.copy())
 
@@ -558,6 +653,48 @@ class InteractiveGoalSwitchProbe:
             "max_abs_roll_pitch_deg": max(rp_values),
         }
 
+    @staticmethod
+    def goal_stage_timing(forwarded: dict, arrival: dict | None) -> dict:
+        start_wall_s = finite_time(forwarded.get("wall"))
+        start_sim_s = finite_time(forwarded.get("sim_time_s"))
+        if arrival is None:
+            return {
+                "status": "blocked",
+                "reason_code": "stable_arrival_hold_not_confirmed",
+                "start": {"wall_s": start_wall_s, "sim_time_s": start_sim_s},
+                "arrival": None,
+            }
+
+        end_wall_s = finite_time(arrival.get("wall"))
+        end_sim_s = finite_time(arrival.get("sim_time_s"))
+        timing = {
+            "start": {"wall_s": start_wall_s, "sim_time_s": start_sim_s},
+            "arrival": {
+                "wall_s": end_wall_s,
+                "sim_time_s": end_sim_s,
+                "clock_age_wall_s": finite_time(arrival.get("clock_age_wall_s")),
+            },
+        }
+        if None in (start_wall_s, start_sim_s, end_wall_s, end_sim_s):
+            timing.update({"status": "blocked", "reason_code": "goal_stage_clock_boundary_missing"})
+            return timing
+
+        wall_elapsed_s = end_wall_s - start_wall_s
+        sim_elapsed_s = end_sim_s - start_sim_s
+        timing.update({"wall_elapsed_s": wall_elapsed_s, "sim_elapsed_s": sim_elapsed_s})
+        if wall_elapsed_s <= 0.0 or sim_elapsed_s < 0.0:
+            timing.update({"status": "blocked", "reason_code": "goal_stage_clock_regressed"})
+            return timing
+
+        timing.update(
+            {
+                "status": "measured",
+                "reason_code": "goal_stage_sim_wall_rtf_measured",
+                "sim_wall_rtf": sim_elapsed_s / wall_elapsed_s,
+            }
+        )
+        return timing
+
     def run_goal(self, index: int, requested: tuple[float, float, float]) -> dict:
         self.goal_index = index
         self.goal_start_wall = time.time()
@@ -623,6 +760,8 @@ class InteractiveGoalSwitchProbe:
         reached_hold_ok = False
         reached_hold_start_t = None
         reached_hold_end_t = None
+        reached_hold_start_timepoint = None
+        reached_hold_end_timepoint = None
         runtime_skip_candidate = False
         runtime_skip_since = None
         runtime_skip_end_t = None
@@ -678,14 +817,17 @@ class InteractiveGoalSwitchProbe:
                     if reached_since is None:
                         reached_since = time.time()
                         reached_hold_start_t = snap["t"]
+                        reached_hold_start_timepoint = self.time_fields()
                     if time.time() - reached_since >= self.args.reach_hold_s:
                         reached_hold_duration_s = time.time() - reached_since
                         reached_hold_end_t = snap["t"]
+                        reached_hold_end_timepoint = self.time_fields()
                         reached_hold_ok = True
                         break
                 else:
                     reached_since = None
                     reached_hold_start_t = None
+                    reached_hold_start_timepoint = None
                     reached_hold_duration_s = 0.0
                     if (
                         self.args.allow_coverage_soft_waypoints
@@ -831,6 +973,7 @@ class InteractiveGoalSwitchProbe:
             coverage_soft_reason = "coverage_route_point_reached_within_sensor_footprint_without_stable_hover"
             blockers = [blocker for blocker in blockers if blocker != "accepted_goal_stable_hold_not_reached"]
             warnings.append(f"coverage_soft_waypoint:{coverage_soft_reason}")
+        goal_stage_timing = self.goal_stage_timing(forwarded, reached_hold_end_timepoint)
         return {
             "index": index,
             "requested": list(requested),
@@ -860,7 +1003,10 @@ class InteractiveGoalSwitchProbe:
                 "ok": reached_hold_ok,
                 "start_t": reached_hold_start_t,
                 "end_t": reached_hold_end_t,
+                "start_timepoint": reached_hold_start_timepoint,
+                "end_timepoint": reached_hold_end_timepoint,
             },
+            "goal_stage_timing": goal_stage_timing,
             "safety_violation": safety_violation,
             "attitude_stuck_violation": attitude_stuck_violation,
             "summaries": summaries,
@@ -899,6 +1045,7 @@ class InteractiveGoalSwitchProbe:
         if not self.wait_ready():
             report["status"] = "blocked"
             report["blockers"] = ["ready_timeout_no_odom_or_truth"]
+            report["clock"] = self.clock_summary()
             return report
         goals = load_goals(self.args)
         report["loaded_route_goal_count"] = len(goals)
@@ -940,6 +1087,7 @@ class InteractiveGoalSwitchProbe:
                 report["route_rejoin_recovered_goal_count"] = sum(
                     1 for recorded in report["goals"] if recorded.get("route_rejoin_recovered_goal")
                 )
+                report["clock"] = self.clock_summary()
                 self.write_partial_report(report)
                 return report
             rejoin_index, rejoin_event = self.choose_rejoin_index(goals, next_route_index, item)
@@ -976,6 +1124,7 @@ class InteractiveGoalSwitchProbe:
         report["status"] = "blocked" if blockers else "passed"
         report["blockers"] = blockers
         report["warnings"] = warnings
+        report["clock"] = self.clock_summary()
         return report
 
 
@@ -984,6 +1133,8 @@ def main() -> int:
     parser.add_argument("--result-dir", required=True)
     parser.add_argument("--output-json", default="DIFF_INTERACTIVE_GOAL_SWITCH_CHAIN_PROBE.json")
     parser.add_argument("--partial-output-json", default="")
+    parser.add_argument("--goal-stage-rtf-output", default="DIFF_INTERACTIVE_GOAL_STAGE_RTF.json")
+    parser.add_argument("--clock-topic", default="/clock")
     parser.add_argument("--request-goal-topic", default="/move_base_simple/goal")
     parser.add_argument("--forwarded-goal-topic", default="/goal_with_id")
     parser.add_argument("--mission-ready-topic", default="/mosim/goal4/interactive_goal_ready")
@@ -1079,6 +1230,13 @@ def main() -> int:
     probe = InteractiveGoalSwitchProbe(args)
     report = probe.run()
     output_json.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    rtf_output = Path(args.goal_stage_rtf_output)
+    if not rtf_output.is_absolute():
+        rtf_output = result_dir / rtf_output
+    rtf_output.write_text(
+        json.dumps(build_goal_stage_rtf_report(report, args.clock_topic), indent=2) + "\n",
+        encoding="utf-8",
+    )
     print(output_json)
     return 0 if report.get("status") == "passed" else 1
 

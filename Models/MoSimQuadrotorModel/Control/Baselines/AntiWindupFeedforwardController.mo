@@ -1,6 +1,8 @@
 within MoSimQuadrotorModel.Control.Baselines;
 model AntiWindupFeedforwardController
   "Project-owned PID controller with conditional integration and reference feedforward"
+  import MoSimQuadrotorModel.Common.Limits.saturate;
+
   parameter Real kp_x = 1.65;
   parameter Real ki_x = 0.0;
   parameter Real kd_x = 1.0;

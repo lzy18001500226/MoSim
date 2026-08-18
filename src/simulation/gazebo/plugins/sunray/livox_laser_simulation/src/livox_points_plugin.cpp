@@ -25,6 +25,18 @@
 namespace gazebo
 {
 
+    namespace
+    {
+        int ScanBinIndex(double coordinate, double minimum, double increment, int binCount)
+        {
+            if (binCount <= 1 || increment == 0.0)
+            {
+                return 0;
+            }
+            return roundf((coordinate - minimum) / increment);
+        }
+    }
+
     GZ_REGISTER_SENSOR_PLUGIN(LivoxPointsPlugin)
 
     LivoxPointsPlugin::LivoxPointsPlugin() {}
@@ -370,7 +382,11 @@ namespace gazebo
 
     double LivoxPointsPlugin::GetAngleResolution() const { return AngleResolution(); }
 
-    double LivoxPointsPlugin::AngleResolution() const { return (AngleMax() - AngleMin()).Radian() / (RangeCount() - 1); }
+    double LivoxPointsPlugin::AngleResolution() const
+    {
+        const int rangeCount = RangeCount();
+        return rangeCount <= 1 ? 0.0 : (AngleMax() - AngleMin()).Radian() / (rangeCount - 1);
+    }
 
     double LivoxPointsPlugin::GetRangeResolution() const { return RangeResolution(); }
 
@@ -446,7 +462,10 @@ namespace gazebo
 
     double LivoxPointsPlugin::VerticalAngleResolution() const
     {
-        return (VerticalAngleMax() - VerticalAngleMin()).Radian() / (VerticalRangeCount() - 1);
+        const int verticalRangeCount = VerticalRangeCount();
+        return verticalRangeCount <= 1
+                   ? 0.0
+                   : (VerticalAngleMax() - VerticalAngleMin()).Radian() / (verticalRangeCount - 1);
     }
     void LivoxPointsPlugin::SendRosTf(const ignition::math::Pose3d &pose, const std::string &father_frame,
                                       const std::string &child_frame)
@@ -484,8 +503,8 @@ namespace gazebo
         auto &scan_points = scan_point.points;
         for (auto &pair : points_pair)
         {
-            int verticle_index = roundf((pair.second.zenith - verticle_min) / verticle_incre);
-            int horizon_index = roundf((pair.second.azimuth - angle_min) / angle_incre);
+            int verticle_index = ScanBinIndex(pair.second.zenith, verticle_min, verticle_incre, verticalRayCount);
+            int horizon_index = ScanBinIndex(pair.second.azimuth, angle_min, angle_incre, rayCount);
             if (verticle_index < 0 || horizon_index < 0)
             {
                 continue;
@@ -545,8 +564,8 @@ namespace gazebo
         for (int i = 0; i < points_pair.size(); ++i)
         {
             std::pair<int, gazebo::AviaRotateInfo> &pair = points_pair[i];
-            int verticle_index = roundf((pair.second.zenith - verticle_min) / verticle_incre);
-            int horizon_index = roundf((pair.second.azimuth - angle_min) / angle_incre);
+            int verticle_index = ScanBinIndex(pair.second.zenith, verticle_min, verticle_incre, verticalRayCount);
+            int horizon_index = ScanBinIndex(pair.second.azimuth, angle_min, angle_incre, rayCount);
             if (verticle_index < 0 || horizon_index < 0)
             {
                 continue;
@@ -625,8 +644,8 @@ namespace gazebo
         for (int i = 0; i < points_pair.size(); ++i)
         {
             std::pair<int, AviaRotateInfo> &pair = points_pair[i];
-            int verticle_index = roundf((pair.second.zenith - verticle_min) / verticle_incre);
-            int horizon_index = roundf((pair.second.azimuth - angle_min) / angle_incre);
+            int verticle_index = ScanBinIndex(pair.second.zenith, verticle_min, verticle_incre, verticalRayCount);
+            int horizon_index = ScanBinIndex(pair.second.azimuth, angle_min, angle_incre, rayCount);
             if (verticle_index < 0 || horizon_index < 0)
             {
                 continue;
@@ -712,8 +731,8 @@ namespace gazebo
         for (int i = 0; i < points_pair.size(); ++i)
         {
             std::pair<int, AviaRotateInfo> &pair = points_pair[i];
-            int verticle_index = roundf((pair.second.zenith - verticle_min) / verticle_incre);
-            int horizon_index = roundf((pair.second.azimuth - angle_min) / angle_incre);
+            int verticle_index = ScanBinIndex(pair.second.zenith, verticle_min, verticle_incre, verticalRayCount);
+            int horizon_index = ScanBinIndex(pair.second.azimuth, angle_min, angle_incre, rayCount);
             if (verticle_index < 0 || horizon_index < 0)
             {
                 continue;

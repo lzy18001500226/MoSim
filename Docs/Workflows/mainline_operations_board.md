@@ -137,7 +137,7 @@ Direct user assignment on 2026-08-03 is to establish the formal, expandable,
 simulatable MWORKS entry
 `MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner`.
 The design and implementation plan is
-`Docs/Design/Official_PID_单机黄金图形化闭环重构规划_20260803.md`.
+`Docs/Design/架构/01_控制器平台/Official_PID_单机黄金图形化闭环重构规划_20260803.md`.
 The entry reuses `Sunray150Assembly`, its physical Sensors and visual shell, the
 existing `Vehicle.Blocks.Controller.Controller` Official PID core, and an
 explicit nominal Battery/ESC/four-rotor command path. The existing

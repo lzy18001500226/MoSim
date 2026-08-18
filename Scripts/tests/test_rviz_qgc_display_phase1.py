@@ -126,3 +126,16 @@ def test_phase1_wrapper_opens_the_rviz_goal_surface_and_writes_the_manual_packet
     assert "write_phase1_manual_test_packet" in wrapper
     assert "verify_rviz_qgc_display_phase1_acceptance" in wrapper
     assert "qgc_plan_goal=disabled_for_phase_1" in wrapper
+
+
+def test_phase1_standalone_launcher_prepares_the_same_published_run_contract() -> None:
+    launcher = (ROOT / "Scripts" / "sunray" / "start_factory_l2_rviz_qgc_phase1.sh").read_text(encoding="utf-8")
+
+    assert '--profile-id "px4ctrl_graphical_c99_factory_rviz_qgc_display_phase1_v1"' in launcher
+    assert '--runtime-profile-id "sunray_ros1_factory_l2_graphical_px4ctrl_c99_rviz_qgc_display_phase1_v1"' in launcher
+    assert '--prepared-by "terminal_rviz_qgc_display_phase1"' in launcher
+    assert "--print-run-id" in launcher
+    assert "MOSIM_OPERATOR_RUN_ID" in launcher
+    assert "MOSIM_OPERATOR_RUN_DIR" in launcher
+    assert "MOSIM_OPERATOR_RUN_MANIFEST" in launcher
+    assert 'run_qgc_diff_realtime_goal_gate.sh" rviz_qgc_display_phase1' in launcher

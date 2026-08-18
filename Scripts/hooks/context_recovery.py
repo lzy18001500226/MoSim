@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 import re
+import time
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -25,11 +26,15 @@ MAX_VISIBLE_RESOURCES = 16
 MAX_PLAN_STEPS = 6
 MAX_TURN_RECORDS = 12
 MAX_COMPACTION_MARKERS = 8
+MAX_SESSION_RESET_MARKERS = 8
+MAX_RECOVERY_DECISION_RECORDS = 32
 MAX_CONTINUATION_GUARDS = 8
 MAX_INTERNAL_CONTINUATION_MARKERS = 8
 MAX_VISIBLE_GOAL_CHARS = 1_200
 MAX_TRANSCRIPT_TAIL_BYTES = 256 * 1024
 MAX_TRANSCRIPT_LINES = 1_600
+WRITE_RETRY_ATTEMPTS = 4
+WRITE_RETRY_SECONDS = 0.05
 
 URL_RE = re.compile(r"https?://[^\s<>\[\]{}\"']+", re.IGNORECASE)
 WINDOWS_PATH_RE = re.compile(r"(?i)(?<![A-Za-z0-9_])([A-Z]:[\\/][^\r\n<>|\"?*]+)")
@@ -51,8 +56,18 @@ URL_SECRET_RE = re.compile(
     r"(?i)([?&](?:api[_-]?key|access[_-]?token|refresh[_-]?token|secret|password|credential)=)[^&#\s]+"
 )
 API_KEY_RE = re.compile(r"\bsk-[A-Za-z0-9_-]{16,}\b")
+AUTHORIZATION_SECRET_RE = re.compile(r"(?i)(\bauthorization\b\s*[:=]\s*)(?:bearer\s+)?[^\s,;]+")
 GOAL_CONTEXT_OPEN_RE = re.compile(
     r"^\s*<codex_internal_context\b(?=[^>]*\bsource\s*=\s*(?:\"goal\"|'goal'|goal(?:\s|>|/)))[^>]*>",
+    re.IGNORECASE,
+)
+TURN_ABORTED_CONTEXT_RE = re.compile(
+    r"^\s*<turn_aborted\b[^>]*>[\s\S]*?</turn_aborted>\s*$",
+    re.IGNORECASE,
+)
+PROJECT_CONTEXT_RE = re.compile(
+    r"^\s*#\s*AGENTS\.md\s+instructions\s+for\s+[^\r\n]+\r?\n\s*<INSTRUCTIONS>[\s\S]*?</INSTRUCTIONS>"
+    r"(?:\s*<environment_context>[\s\S]*?</environment_context>)?\s*$",
     re.IGNORECASE,
 )
 TRAILING_SOURCE_PUNCTUATION = ".,;:!?)]}>，。；：！？）】》\"'"
@@ -127,6 +142,18 @@ def is_generated_goal_context(prompt: str) -> bool:
     return bool(GOAL_CONTEXT_OPEN_RE.match(prompt))
 
 
+def is_generated_turn_aborted_context(prompt: str) -> bool:
+    """Recognize the App interruption envelope without treating it as a task."""
+
+    return bool(TURN_ABORTED_CONTEXT_RE.match(prompt))
+
+
+def is_generated_project_context(prompt: str) -> bool:
+    """Recognize the full AGENTS.md envelope injected by the Codex App."""
+
+    return bool(PROJECT_CONTEXT_RE.match(prompt))
+
+
 def is_continuity_diagnosis(prompt: str) -> bool:
     """Return whether the direct user request is about an unexpected stop itself."""
 
@@ -146,9 +173,18 @@ def _context_root() -> Path:
 def _session_id(payload: dict[str, Any]) -> str:
     """Resolve the Codex session identity across lifecycle event envelopes."""
 
-    return _payload_text(payload, "session_id", "sessionId", "thread_id", "threadId") or os.environ.get(
-        "CODEX_THREAD_ID", ""
-    ).strip()
+    explicit_ids = {
+        _payload_text(payload, key)
+        for key in ("session_id", "sessionId", "thread_id", "threadId")
+        if _payload_text(payload, key)
+    }
+    if len(explicit_ids) == 1:
+        return next(iter(explicit_ids))
+    if explicit_ids:
+        # Different explicit event identities are unsafe to merge. Do not fall
+        # back to an ambient environment value that could belong to another task.
+        return ""
+    return os.environ.get("CODEX_THREAD_ID", "").strip()
 
 
 def _session_dir(payload: dict[str, Any]) -> Path | None:
@@ -202,16 +238,34 @@ def _read_json(path: Path, default: dict[str, Any] | None = None) -> dict[str, A
 
 
 def _write_json(path: Path, data: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
-    temporary.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    temporary.replace(path)
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.{uuid.uuid4().hex}.tmp")
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        for attempt in range(WRITE_RETRY_ATTEMPTS):
+            try:
+                temporary.replace(path)
+                return
+            except OSError:
+                if attempt + 1 == WRITE_RETRY_ATTEMPTS:
+                    return
+                time.sleep(WRITE_RETRY_SECONDS)
+    except OSError:
+        return
+    finally:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+        except OSError:
+            pass
 
 
 def _redact(text: str) -> str:
     text = ASSIGNMENT_SECRET_RE.sub(r"\1\2[REDACTED]", text)
     text = URL_SECRET_RE.sub(r"\1[REDACTED]", text)
-    return API_KEY_RE.sub("[REDACTED]", text)
+    text = API_KEY_RE.sub("[REDACTED]", text)
+    return AUTHORIZATION_SECRET_RE.sub(r"\1[REDACTED]", text)
 
 
 def _excerpt(text: str, limit: int) -> tuple[str, bool]:
@@ -287,7 +341,12 @@ def _direct_record_for_turn(session_dir: Path, turn_id: str | None) -> tuple[dic
         return None, None
     # Older hook versions could persist the App's Goal continuation envelope
     # as a user record. Keep it on disk for diagnostics, but never recover it.
-    if is_generated_goal_context(_text(record.get("user_prompt"))):
+    record_prompt = _text(record.get("user_prompt"))
+    if (
+        is_generated_goal_context(record_prompt)
+        or is_generated_turn_aborted_context(record_prompt)
+        or is_generated_project_context(record_prompt)
+    ):
         return None, None
     return record, path
 
@@ -366,7 +425,11 @@ def capture_user_prompt(payload: dict[str, Any]) -> str:
     """Persist a bounded copy of the direct UserPromptSubmit input."""
 
     prompt = direct_user_prompt(payload)
-    if is_generated_goal_context(prompt):
+    if (
+        is_generated_goal_context(prompt)
+        or is_generated_turn_aborted_context(prompt)
+        or is_generated_project_context(prompt)
+    ):
         return ""
     return _capture_direct_user_prompt(
         payload,
@@ -580,6 +643,80 @@ def compaction_lacks_current_turn_capture(payload: dict[str, Any]) -> bool:
     return bool(compaction.get("current_turn_capture_missing"))
 
 
+def _recovery_decision_dir(session_dir: Path) -> Path:
+    return session_dir / "recovery_decisions"
+
+
+def record_recovery_decision(
+    payload: dict[str, Any],
+    *,
+    boundary: str,
+    outcome: str,
+    recovery_source: str = "",
+) -> None:
+    """Persist a bounded, prompt-free outcome for one recovery decision."""
+
+    session_dir = _session_dir(payload)
+    if session_dir is None:
+        return
+    active = _read_json(session_dir / "active.json")
+    compaction = active.get("last_compaction")
+    compaction_data = compaction if isinstance(compaction, dict) else {}
+    direct_turn_id = _text(compaction_data.get("direct_turn_id")) or _text(active.get("active_turn_id"))
+    record, _ = _direct_record_for_turn(session_dir, direct_turn_id)
+    resolved_source = recovery_source or _text(compaction_data.get("recovery_source"))
+    if not resolved_source and record is not None:
+        resolved_source = _text(record.get("capture_source"))
+
+    decision = {
+        "schema_version": SCHEMA_VERSION,
+        "kind": "mosim_recovery_decision",
+        "decision_id": uuid.uuid4().hex,
+        "recorded_at": _utc_now(),
+        "boundary": boundary,
+        "outcome": outcome,
+        "session_id": _session_id(payload),
+        "event_turn_id": _turn_id(payload) or "",
+        "direct_turn_id": direct_turn_id,
+        "compaction_id": _text(compaction_data.get("compaction_id")),
+        "recovery_source": resolved_source,
+        "capture_source": _text(record.get("capture_source")) if record is not None else "",
+    }
+    decision_dir = _recovery_decision_dir(session_dir)
+    _write_json(decision_dir / f"{time.time_ns()}-{decision['decision_id']}.json", decision)
+    try:
+        decisions = sorted(
+            decision_dir.glob("*.json"),
+            key=lambda path: (path.stat().st_mtime_ns, path.name),
+        )
+    except OSError:
+        return
+    for stale in decisions[:-MAX_RECOVERY_DECISION_RECORDS]:
+        try:
+            stale.unlink()
+        except OSError:
+            continue
+
+
+def unresolved_recovery_message(*, current_turn_capture_missing: bool = False) -> str:
+    """Return the verifier-aligned instruction for an unresolved recovery."""
+
+    if current_turn_capture_missing:
+        prefix = (
+            "The direct user input for this compacted turn was not captured, and the bounded "
+            "transcript_path fallback did not recover a recognized current user message. "
+        )
+    else:
+        prefix = "No bounded task recovery pack or recognized transcript_path user message was available. "
+    return (
+        prefix
+        + "Keep continuity_unresolved. Use `codex_app__read_thread` only for the current thread when exposed. "
+        "Before asking the user for a missing source or marking the task blocked, that bounded read is mandatory "
+        "when exposed. If it is unavailable, request only the one minimum recovery source; do not select "
+        "replacement work or end silently."
+    )
+
+
 def _claim_compaction_marker(session_dir: Path, compaction_id: str) -> bool:
     marker_dir = session_dir / "compactions"
     marker = marker_dir / f"{_safe_component(compaction_id, 'compaction')}.claimed"
@@ -602,6 +739,36 @@ def _claim_compaction_marker(session_dir: Path, compaction_id: str) -> bool:
     except OSError:
         return True
     for stale in markers[:-MAX_COMPACTION_MARKERS]:
+        try:
+            stale.unlink()
+        except OSError:
+            continue
+    return True
+
+
+def _claim_session_reset_marker(session_dir: Path, reset_id: str) -> bool:
+    """Claim a clear/resume recovery once without reusing compact markers."""
+
+    marker_dir = session_dir / "session_resets"
+    marker = marker_dir / f"{_safe_component(reset_id, 'session-reset')}.claimed"
+    try:
+        marker_dir.mkdir(parents=True, exist_ok=True)
+        with marker.open("x", encoding="utf-8") as stream:
+            stream.write(_utc_now() + "\n")
+    except FileExistsError:
+        return False
+    except OSError:
+        # Storage trouble must not suppress a legitimate current-task recovery.
+        return True
+
+    try:
+        markers = sorted(
+            marker_dir.glob("*.claimed"),
+            key=lambda path: (path.stat().st_mtime_ns, path.name),
+        )
+    except OSError:
+        return True
+    for stale in markers[:-MAX_SESSION_RESET_MARKERS]:
         try:
             stale.unlink()
         except OSError:
@@ -764,12 +931,57 @@ def _transcript_user_prompt(record: dict[str, Any]) -> str | None:
     return None
 
 
+def _transcript_session_id(record: dict[str, Any]) -> str:
+    """Return an explicit transcript conversation identity, when available."""
+
+    payload = _mapping(record.get("payload"))
+    item = _mapping(record.get("item"))
+    for candidate in (record, payload, item):
+        identity = _payload_text(candidate, "session_id", "sessionId", "thread_id", "threadId")
+        if identity:
+            return identity
+
+    # Codex rollout JSONL identifies a conversation in its session_meta record.
+    # Do not treat generic record/payload IDs as session identities: many are turn
+    # or response IDs and would create an unsafe false match.
+    kind = _text(record.get("type")).strip().lower()
+    if kind in {"session_meta", "sessionmeta"}:
+        return _payload_text(payload, "id")
+    return ""
+
+
+def _transcript_matches_current_session(lines: list[str], session_id: str) -> bool:
+    """Require transcript identity before using it as a continuation fallback."""
+
+    if not session_id:
+        return False
+
+    identities: set[str] = set()
+    for line in lines[-MAX_TRANSCRIPT_LINES:]:
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(record, dict):
+            continue
+        identity = _transcript_session_id(record)
+        if identity:
+            identities.add(identity)
+
+    # An absent or mixed identity cannot establish that this transcript belongs
+    # to the current conversation. Keep recovery unresolved instead of importing
+    # a potentially foreign direct-user message.
+    return identities == {session_id}
+
+
 def _latest_transcript_user_prompt(payload: dict[str, Any], session_dir: Path) -> str:
     transcript_path = _text(payload.get("transcript_path")).strip()
     if not transcript_path:
         return ""
 
     lines = _read_transcript_tail(transcript_path).splitlines()
+    if not _transcript_matches_current_session(lines, _session_id(payload)):
+        return ""
     for line in reversed(lines[-MAX_TRANSCRIPT_LINES:]):
         try:
             record = json.loads(line)
@@ -780,11 +992,16 @@ def _latest_transcript_user_prompt(payload: dict[str, Any], session_dir: Path) -
         prompt = _transcript_user_prompt(record)
         if prompt is None:
             continue
-        # The latest recognized user entry must be the current direct input.
-        # Never skip it to revive an earlier request from the transcript.
+        # The App can append its full project context after a direct request.
+        # It is not a task and may safely be skipped to reach that request.
+        if is_generated_project_context(prompt):
+            continue
+        # A Goal, interruption, or known internal continuation is meaningful
+        # lifecycle state. Do not skip it to revive an earlier request.
         if (
             not prompt
             or is_generated_goal_context(prompt)
+            or is_generated_turn_aborted_context(prompt)
             or _is_known_internal_continuation(session_dir, prompt)
         ):
             return ""
@@ -977,6 +1194,34 @@ def consume_compact_context(
     return render_compact_context(payload)
 
 
+def consume_session_reset_context(payload: dict[str, Any], source: str) -> str | None:
+    """Recover the active direct request once after a clear or resume start."""
+
+    session_dir = _session_dir(payload)
+    if session_dir is None:
+        return ""
+    active = _read_json(session_dir / "active.json")
+    record: dict[str, Any] | None = None
+    for candidate in (_text(active.get("active_turn_id")), _text(active.get("last_captured_turn_id"))):
+        record, _ = _direct_record_for_turn(session_dir, candidate)
+        if record is not None:
+            break
+    if record is None:
+        return ""
+
+    reset_id = ":".join(
+        (
+            source,
+            _turn_id(payload) or "unknown-turn",
+            _text(record.get("turn_id")) or "unknown-direct-turn",
+            _prompt_digest(_text(record.get("user_prompt")))[:24],
+        )
+    )
+    if not _claim_session_reset_marker(session_dir, reset_id):
+        return None
+    return render_compact_context(payload, boundary="session reset")
+
+
 def _resource_lines(resources: Any, prefix: str = "") -> list[str]:
     if not isinstance(resources, list):
         return []
@@ -1041,8 +1286,8 @@ def _relative_path(path: Path) -> str:
         return str(path)
 
 
-def render_compact_context(payload: dict[str, Any]) -> str:
-    """Build compact continuation context from a previous UserPromptSubmit capture."""
+def render_compact_context(payload: dict[str, Any], *, boundary: str = "compaction") -> str:
+    """Build continuation context from a previous UserPromptSubmit capture."""
 
     session_dir = _session_dir(payload)
     if session_dir is None:
@@ -1057,7 +1302,11 @@ def render_compact_context(payload: dict[str, Any]) -> str:
     capture_description = (
         "This is a bounded fallback extracted from the hook-provided transcript_path after UserPromptSubmit capture was unavailable. It accepts only the latest recognized direct-user JSONL record; its format is not a stable Codex hook interface. It identifies scope and source references only; a newer direct user message always wins."
         if capture_source == "transcript_path_fallback"
-        else "This is a bounded pre-compaction capture of the active direct-user input. It identifies scope and source references only; a newer direct user message always wins."
+        else (
+            "This is a bounded pre-compaction capture of the active direct-user input. It identifies scope and source references only; a newer direct user message always wins."
+            if boundary == "compaction"
+            else "This is a bounded capture of the active direct-user input before the session reset. It identifies scope and source references only; a newer direct user message always wins."
+        )
     )
     lines = [
         "[MoSim Task Recovery Pack]",
@@ -1109,3 +1358,20 @@ def render_compact_context(payload: dict[str, Any]) -> str:
     lines.append("Never infer a user-supplied source from repository files, import times, memory, or a broad search.")
     context, _ = _excerpt("\n".join(lines), MAX_VISIBLE_CONTEXT_CHARS)
     return context
+
+
+def render_generated_project_context(payload: dict[str, Any]) -> str:
+    """Keep an App-injected project envelope from becoming the current task."""
+
+    recovery = render_compact_context(payload)
+    lines = [
+        "[MoSim Generated Project Context]",
+        "The full AGENTS.md envelope is App-generated project guidance, not a direct user task. Do not acknowledge it as a new request, ask for replacement work, or let it replace the newest captured direct user request.",
+    ]
+    if recovery:
+        lines.extend(["Continue the recovered direct user task below:", recovery])
+    else:
+        lines.append(
+            "No direct user request is available in the local recovery state. Keep continuity_unresolved and wait for an actual direct user message; do not treat this envelope as that message."
+        )
+    return "\n\n".join(lines)

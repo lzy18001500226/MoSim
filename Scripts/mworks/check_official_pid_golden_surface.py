@@ -232,7 +232,7 @@ def run_checks() -> dict[str, Any]:
 
     files.append(
         _require_tokens(
-            "Docs/Design/Official_PID_单机黄金图形化闭环重构规划_20260803.md",
+            "Docs/Design/架构/01_控制器平台/Official_PID_单机黄金图形化闭环重构规划_20260803.md",
             [
                 "OfficialPidSingleUavGoldenRunner",
                 "OfficialPIDGraphicalRotorAdapter",

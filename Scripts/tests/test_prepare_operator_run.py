@@ -131,6 +131,40 @@ def test_prepare_freezes_profile_map_and_pointer(tmp_path: Path) -> None:
     assert pointer["run_directory"] == "Results/runs/qgc-test-run"
 
 
+def test_prepare_records_the_independent_terminal_that_created_the_run(tmp_path: Path) -> None:
+    module = _module()
+    root = _fixture_root(tmp_path)
+
+    result = module.prepare_run(
+        root=root,
+        profile_id="factory_demo_v1",
+        runtime_profile_id="factory_demo_runtime_v1",
+        run_id="qgc-standalone-terminal-run",
+        prepared_by="terminal_rviz_qgc_display_phase1",
+        now=1.0,
+    )
+
+    manifest = json.loads((result["run_directory"] / "RUN_MANIFEST.json").read_text(encoding="utf-8"))
+    pointer = json.loads((root / "Results/ui_platform/qgc_active_run.json").read_text(encoding="utf-8"))
+    assert manifest["prepared_by"] == "terminal_rviz_qgc_display_phase1"
+    assert manifest["source_state"]["prepared_by"] == "terminal_rviz_qgc_display_phase1"
+    assert pointer["source"] == "terminal_rviz_qgc_display_phase1"
+
+
+def test_prepare_rejects_an_unregistered_preparation_source(tmp_path: Path) -> None:
+    module = _module()
+    root = _fixture_root(tmp_path)
+
+    with pytest.raises(ValueError, match="operator_run_prepared_by_invalid"):
+        module.prepare_run(
+            root=root,
+            profile_id="factory_demo_v1",
+            runtime_profile_id="factory_demo_runtime_v1",
+            run_id="qgc-invalid-source-run",
+            prepared_by="unregistered_terminal",
+        )
+
+
 def test_prepare_refuses_to_replace_a_live_pointer_until_operator_clears_it(tmp_path: Path) -> None:
     module = _module()
     root = _fixture_root(tmp_path)

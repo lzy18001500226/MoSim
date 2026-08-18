@@ -11,8 +11,9 @@ risky operations or long-running task execution.
 
 | File | Purpose |
 |---|---|
-| `codex_native_hook.py` | adapter for Codex native lifecycle hooks. It is called by the global Codex hook config and delegates MoSim-specific checks to `preflight.py` only when the current `cwd` is inside this repository. |
-| `context_recovery.py` | bounded per-session capture of direct user scope, exact URL/path references, `update_plan` checkpoints, and observed Goal token budgets; when that primary capture is absent, it can inspect only a fixed tail of the hook-provided `transcript_path` for one recognized latest direct-user JSONL entry. |
+| `codex_native_hook.py` | adapter for Codex native lifecycle hooks. It delegates MoSim-specific checks to `preflight.py` only inside this repository, and routes non-MoSim prompt continuity to `global_context_continuity.py`. |
+| `context_recovery.py` | bounded per-session capture of direct user scope, exact URL/path references, `update_plan` checkpoints, and observed Goal token budgets; it records prompt-free recovery decisions and, when primary capture is absent, can inspect only a fixed tail of the hook-provided `transcript_path` after proving its session identity matches the current conversation. |
+| `global_context_continuity.py` | bounded capture and recovery of the active direct user request for non-MoSim sessions; it ignores MoSim and App-generated Goal/interruption envelopes. |
 | `preflight.py` | project-local preflight for path boundary, write scope, sensitive-path risk, destructive commands, broad Git risk, large-file risk, terminal evidence, runtime-output ignore policy, and reference-index health |
 
 ## Codex Native Global Hook
@@ -27,16 +28,18 @@ It registers:
 
 | Event | Current MoSim behavior |
 |---|---|
-| `SessionStart` | Injects a concise startup reminder and, after compaction, the bounded task-recovery pack. A direct request to diagnose an unexpected stop is treated as a self-contained Hook/continuity task before any interrupted business source is requested. If the pack is unavailable, it first tries one strict, bounded `transcript_path` fallback; if neither path recovers the current input, it leaves continuity unresolved and requests only the minimum recovery source. |
-| `UserPromptSubmit` | Captures the active direct user input before it can be compacted; blocks App-generated `<codex_internal_context source="goal">` continuations and consumes known Stop-generated continuation markers so internal text cannot become a new task. |
+| `SessionStart` | Injects a concise startup reminder and, after compaction, clear, or resume, the bounded task-recovery pack. A direct request to diagnose an unexpected stop is treated as a self-contained Hook/continuity task before any interrupted business source is requested. If the pack is unavailable, it first tries one strict, identity-bound `transcript_path` fallback; if neither path recovers the current input, it leaves continuity unresolved and requests only the minimum recovery source. |
+| `UserPromptSubmit` | Captures the active direct user input before it can be compacted; ignores App-generated Goal, interruption, and full `AGENTS.md` project-context envelopes, then restores the prior captured task when such project context appears after compaction. It consumes known Stop-generated continuation markers so internal text cannot become a new task. |
 | `PostToolUse` for `update_plan` and Goal tools | Stores bounded tracking state. An `update_goal` transition to `blocked` or `completed` also emits one conversation-keyed terminal task email. |
 | `PreCompact` | Associates the execution turn with the latest valid direct-user record before manual or automatic compaction; it does not overwrite that record with the assistant execution ID. |
 | `PreToolUse` | Runs the project preflight adapter for shell commands, file edits, writes, patches, and MCP calls; blocks hard risks such as destructive Git commands, outside-project writes, secret-risk paths, and large-file offenders. It also blocks `create_goal.token_budget` unless the current direct user request explicitly sets the exact numeric value. |
 | `Stop` | Has no continuation side effect. A missing current prompt must not create a synthetic user prompt, because it cannot recover scope and can loop through the same unresolved state. |
 
-The global hook is intentionally scoped by `cwd`. It exits without action when
-Codex is not operating inside `C:\Users\HP\Desktop\MoSim`, so the same Windows
-Codex installation can still work on other projects.
+MoSim policy and evidence hooks are scoped by `cwd`. For other local projects,
+the same trusted global handler redacts and bounds the newest direct user
+request on `UserPromptSubmit`, marks compaction on `PreCompact`, and injects it
+on `compact`, `clear`, or `resume` `SessionStart`; it does not apply MoSim
+preflight or project policy.
 
 The global file is the only MoSim hook registration. The repository keeps the
 adapter scripts but deliberately does not install `/.codex/hooks.json`; this
@@ -48,23 +51,28 @@ global recovery events provide:
 | `UserPromptSubmit` | Stores a redacted, bounded direct user prompt and its exact HTTP(S)/Windows-path source identities under ignored `Results/context_packs/`. |
 | `PostToolUse` for `update_plan` | Stores the current bounded plan after Codex accepts the update, never as task authority. |
 | `PreCompact` | Stores both the compaction execution turn and its resolved direct-user turn before manual or automatic compaction. |
-| `SessionStart` with `source=compact` | Injects the bounded recovery pack before the immediate continuation model request. An atomic claim ensures concurrent compact starts emit it only once. |
+| `SessionStart` with `source=compact`, `clear`, or `resume` | Injects the bounded recovery pack before the immediate continuation model request. Separate atomic claims ensure repeated compact and session-reset starts emit it only once, and every recovery outcome is written as a prompt-free per-session decision record. |
 
 The pack contains only scope, source identities, and plan tracking. Its primary
 path does not parse transcript JSONL, read the referenced source content,
 select a task from history, or make an old plan authoritative. If that primary
 capture is absent, the adapter may read only a 256 KiB tail from the
 hook-provided `transcript_path` and accept only the latest recognized
-direct-user JSONL record. App-generated `<codex_internal_context source="goal">`
-continuations are internal Goal metadata, not direct-user messages, so they are
-rejected rather than retained or re-injected. It does not skip an internal Stop
+direct-user JSONL record after every observed transcript session identity agrees
+with the current hook session. Missing or mixed identity, including conflicting
+hook `session_id` and `thread_id` values, fails closed.
+App-generated `<codex_internal_context source="goal">`
+continuations, interruption envelopes, and full App-generated `AGENTS.md`
+project-context envelopes are not direct-user messages, so they are rejected
+rather than retained or re-injected. It does not skip an internal Stop
 continuation to reuse an older message, and it discards unknown formats. This is a last-resort
 compatibility path because Codex does not promise transcript-format stability.
 The resource catalog retains
 at most six source-bearing turns and only the two most recent bundles can be
 attached when a later user prompt explicitly refers to earlier resources. A
 bundle holds at most 16 resources, each session retains at most 12 direct-user
-turn records, and successful compaction claims retain at most eight markers.
+turn records, successful compaction claims retain at most eight markers, and
+recovery decisions retain at most 32 prompt-free records.
 
 Codex lifecycle events can expose different IDs for the direct-user submission
 and the assistant execution being compacted. When the execution ID has no
@@ -86,9 +94,10 @@ direct-user record is still present. This migration is limited to the old state
 shape and never overrides an explicit newer direct-user ID.
 
 If no valid direct-user record is available, recovery first attempts the strict
-transcript fallback above. If that also has no recognized current prompt, it
+identity-bound transcript fallback above. If that also has no recognized current prompt, it
 keeps continuity unresolved and asks only for the original prompt, active goal
-text, or task-packet path; a current-thread read is optional only when exposed.
+text, or task-packet path; use the bounded current-thread read first whenever
+that capability is exposed.
 It never creates a synthetic Stop prompt, so stale instructions cannot replace
 newer input or cause a continuation loop.
 
@@ -105,8 +114,8 @@ until the task or app refreshes its configuration. Restart or open a new task
 before judging whether duplicate hook entries are gone. A legacy task that
 compacted before `UserPromptSubmit` capture was trusted, and whose current
 runtime does not expose `codex_app__read_thread`, can recover only when its
-hook-provided `transcript_path` contains a recognized latest direct-user
-record; otherwise request the minimum recovery input instead of guessing the
+hook-provided `transcript_path` contains a matching-session, recognized latest
+direct-user record; otherwise request the minimum recovery input instead of guessing the
 task.
 
 Recurring health owner:
@@ -130,6 +139,9 @@ python Scripts/hooks/codex_native_hook.py
 python Scripts/hooks/recover_git_index_lock.py --json
 python -m pytest Scripts/tests/test_context_recovery.py
 ```
+
+`preflight.py` runs `py_compile` over every current Python module in
+`Scripts/hooks/`, then compiles the reference-index checker.
 
 `recover_git_index_lock.py` is report-only by default. After confirming that no
 repository writer is running and the lock is older than the safety threshold, an

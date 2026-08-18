@@ -15,33 +15,47 @@ from pathlib import Path
 from typing import Any
 
 try:
+    from .global_context_continuity import handle_event as handle_global_continuity_event
     from .context_recovery import (
         capture_transcript_user_prompt,
         compaction_lacks_current_turn_capture,
         active_direct_user_prompt,
         capture_user_prompt,
         consume_compact_context,
+        consume_session_reset_context,
         consume_internal_continuation,
         direct_user_prompt,
         is_generated_goal_context,
+        is_generated_project_context,
+        is_generated_turn_aborted_context,
         mark_compaction,
+        record_recovery_decision,
         record_goal,
         record_plan,
+        render_generated_project_context,
+        unresolved_recovery_message,
     )
     from .task_terminal_email import emit_terminal_email
 except ImportError:  # Direct hook execution has no package parent.
+    from global_context_continuity import handle_event as handle_global_continuity_event  # type: ignore[no-redef]
     from context_recovery import (  # type: ignore[no-redef]
         capture_transcript_user_prompt,
         compaction_lacks_current_turn_capture,
         active_direct_user_prompt,
         capture_user_prompt,
         consume_compact_context,
+        consume_session_reset_context,
         consume_internal_continuation,
         direct_user_prompt,
         is_generated_goal_context,
+        is_generated_project_context,
+        is_generated_turn_aborted_context,
         mark_compaction,
+        record_recovery_decision,
         record_goal,
         record_plan,
+        render_generated_project_context,
+        unresolved_recovery_message,
     )
     from task_terminal_email import emit_terminal_email
 
@@ -296,14 +310,26 @@ def _session_start(payload: dict[str, Any]) -> int:
         # bounded check has had a chance to win.
         recovery_context = consume_compact_context(payload, allow_latest_direct_record=False)
         if recovery_context is None:
+            record_recovery_decision(
+                payload,
+                boundary="compaction",
+                outcome="recovery_suppressed_after_claim_or_newer_direct_user",
+            )
             return 0
+        recovered_from_transcript = False
         if not recovery_context:
             transcript_context = capture_transcript_user_prompt(payload)
             if transcript_context:
                 recovery_context = transcript_context
+                recovered_from_transcript = True
             elif not compaction_lacks_current_turn_capture(payload):
                 recovery_context = consume_compact_context(payload)
                 if recovery_context is None:
+                    record_recovery_decision(
+                        payload,
+                        boundary="compaction",
+                        outcome="recovery_suppressed_after_claim_or_newer_direct_user",
+                    )
                     return 0
         message = (
             "MoSim native Codex hook active for a compact continuation. "
@@ -317,36 +343,79 @@ def _session_start(payload: dict[str, Any]) -> int:
             "result is non-authoritative tracking state, including if it was "
             "injected during compaction. Never use recovered state to select "
             "work or override that newest user task; ignore it on conflict. "
-            "If the direct user task is not recoverable, stop and ask rather "
-            "than using recovered state as a fallback."
+            "If the direct user task is not recoverable, do not end silently: "
+            "use the bounded current-thread recovery check when exposed, then "
+            "issue one concise request for only the minimum recovery input in "
+            "this same turn rather than using recovered state as a fallback."
         )
         if recovery_context:
+            record_recovery_decision(
+                payload,
+                boundary="compaction",
+                outcome="recovery_context_injected",
+                recovery_source="transcript_path_fallback" if recovered_from_transcript else "",
+            )
             message += "\n\n" + recovery_context
         else:
-            if compaction_lacks_current_turn_capture(payload):
-                message += (
-                    "\n\nThe direct user input for this compacted turn was not captured, "
-                    "and the bounded transcript_path fallback did not recover a recognized "
-                    "current user message. Do not reuse an earlier recovery pack or active "
-                    "Goal in its place. Use `codex_app__read_thread` for the current thread "
-                    "only when that capability is exposed to recover the newest direct user "
-                    "instruction and exact sources. Before asking the user for a missing "
-                    "source or marking the task blocked, that bounded read is mandatory when "
-                    "exposed. If it is unavailable, keep continuity "
-                    "unresolved and request only the minimum recovery input."
-                )
-            else:
-                message += (
-                    "\n\nNo bounded task recovery pack or recognized transcript_path user "
-                    "message was available for this compaction. Use "
-                    "`codex_app__read_thread` only for the current thread when it is "
-                    "exposed to recover the newest direct user instruction. Before asking "
-                    "the user for a missing source or marking the task blocked, that bounded "
-                    "read is mandatory when exposed. If it is "
-                    "unavailable, keep continuity_unresolved and request only one minimal "
-                    "recovery source (the original prompt, active goal text, or task-packet "
-                    "path), not a full task restatement."
-                )
+            capture_missing = compaction_lacks_current_turn_capture(payload)
+            record_recovery_decision(
+                payload,
+                boundary="compaction",
+                outcome="continuity_unresolved",
+                recovery_source="missing_direct_user_capture" if capture_missing else "",
+            )
+            message += "\n\n" + unresolved_recovery_message(
+                current_turn_capture_missing=capture_missing
+            )
+    elif source in {"clear", "resume"}:
+        recovery_context = consume_session_reset_context(payload, source)
+        if recovery_context is None:
+            record_recovery_decision(
+                payload,
+                boundary=source,
+                outcome="recovery_suppressed_after_claim",
+            )
+            return 0
+        recovered_from_transcript = False
+        if not recovery_context:
+            transcript_context = capture_transcript_user_prompt(payload)
+            if transcript_context:
+                # The fallback creates the first safe direct record. Claim the
+                # same reset afterward so a duplicate SessionStart cannot
+                # inject that just-recovered task again.
+                recovery_context = consume_session_reset_context(payload, source)
+                recovered_from_transcript = True
+                if recovery_context is None:
+                    record_recovery_decision(
+                        payload,
+                        boundary=source,
+                        outcome="recovery_suppressed_after_claim",
+                    )
+                    return 0
+        message = (
+            f"MoSim native Codex hook active for a {source} continuation. "
+            "Clearing or resuming a session is not task completion: preserve and continue "
+            "the newest direct user task already in this conversation. Read AGENTS.md and "
+            "Docs/Workflows/new_conversation_context.md as required context, then continue "
+            "the active task in this same turn. Do not treat generated project context as a "
+            "new user task or ask for replacement work solely because startup files were re-read."
+        )
+        if recovery_context:
+            record_recovery_decision(
+                payload,
+                boundary=source,
+                outcome="recovery_context_injected",
+                recovery_source="transcript_path_fallback" if recovered_from_transcript else "active_direct_record",
+            )
+            message += "\n\n" + recovery_context
+        else:
+            record_recovery_decision(
+                payload,
+                boundary=source,
+                outcome="continuity_unresolved",
+                recovery_source="missing_direct_user_capture",
+            )
+            message += "\n\n" + unresolved_recovery_message()
     else:
         message = (
             "MoSim native Codex hook active. For this project, load AGENTS.md "
@@ -366,11 +435,29 @@ def _session_start(payload: dict[str, Any]) -> int:
 
 def _user_prompt_submit(payload: dict[str, Any]) -> int:
     prompt = direct_user_prompt(payload)
+    if is_generated_project_context(prompt):
+        _json(
+            {
+                "hookSpecificOutput": {
+                    "hookEventName": "UserPromptSubmit",
+                    "additionalContext": render_generated_project_context(payload),
+                }
+            }
+        )
+        return 0
     if is_generated_goal_context(prompt):
         _json(
             {
                 "decision": "block",
                 "reason": "MoSim hook rejected an internal Goal continuation envelope; send a direct user task instead.",
+            }
+        )
+        return 0
+    if is_generated_turn_aborted_context(prompt):
+        _json(
+            {
+                "decision": "block",
+                "reason": "MoSim hook rejected an App-generated turn-aborted envelope; it is not a direct user task.",
             }
         )
         return 0
@@ -404,7 +491,7 @@ def _stop(payload: dict[str, Any]) -> int:
 def main() -> int:
     payload = _read_input()
     if not _is_mosim_cwd(payload.get("cwd") if isinstance(payload.get("cwd"), str) else None):
-        return 0
+        return handle_global_continuity_event(payload)
 
     event = str(payload.get("hook_event_name") or "")
     if event == "PreToolUse":

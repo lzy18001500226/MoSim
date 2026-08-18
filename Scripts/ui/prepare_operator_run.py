@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Prepare one QGC-selected operator run without starting its runtime.
+"""Prepare one published operator run without starting its runtime.
 
-The generated command is intentionally executed by the operator in a visible
-terminal. This helper freezes the selected published Profile and Factory-map
-snapshot before the existing launcher runs. It never starts or supervises
-ROS, Gazebo, PX4, MAVROS, QGC, UE, RViz, or MWORKS.
+The prepared invocation is intentionally executed by the operator in a visible
+terminal. It may originate from QGC's copy command or a project-owned explicit
+terminal wrapper. This helper freezes the selected published Profile and
+Factory-map snapshot before the existing launcher runs. It never starts or
+supervises ROS, Gazebo, PX4, MAVROS, QGC, UE, RViz, or MWORKS.
 """
 
 from __future__ import annotations
@@ -41,6 +42,7 @@ ACTIVE_POINTER_RELATIVE_PATH = Path("Results") / "ui_platform" / "qgc_active_run
 RUN_ID_PATTERN = re.compile(r"^qgc-[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
 ACTIVE_STATES = {"launch_prepared", "running", "replaying"}
 TERMINAL_STATES = {"completed", "blocked", "failed"}
+PREPARATION_SOURCES = {"qgc_visible_terminal", "terminal_rviz_qgc_display_phase1"}
 
 
 def _read_object(path: Path) -> dict[str, Any]:
@@ -190,9 +192,12 @@ def prepare_run(
     run_id: str | None = None,
     now: float | None = None,
     active_pointer_relative_path: str | Path = ACTIVE_POINTER_RELATIVE_PATH,
+    prepared_by: str = "qgc_visible_terminal",
 ) -> dict[str, Any]:
     root = root.resolve()
     pointer_relative_path = _pointer_relative_path(active_pointer_relative_path)
+    if prepared_by not in PREPARATION_SOURCES:
+        raise ValueError("operator_run_prepared_by_invalid")
     if _active_pointer_is_live(root, pointer_relative_path):
         raise ValueError("operator_run_already_active")
     selected_run_id = run_id or _generated_run_id()
@@ -253,7 +258,7 @@ def prepare_run(
             "profile_path": profile_path.relative_to(root).as_posix(),
             "runtime_backend_catalog": "Config/control_platform/runtime_backend_catalog.json",
             "operator_map_catalog": "Config/control_platform/operator_map_catalog.json",
-            "prepared_by": "qgc_visible_terminal",
+            "prepared_by": prepared_by,
         },
         "artifacts": {
             "mworks_model": artifact_slot(status="not_requested"),
@@ -290,9 +295,9 @@ def prepare_run(
         "scenario_snapshot": scenario_snapshot,
         "state": "launch_prepared",
         "prepared_at_unix_s": timestamp,
-        "prepared_by": "qgc_visible_terminal",
+        "prepared_by": prepared_by,
         "claim_boundary": (
-            "This prepares a frozen operator run only. It does not prove that the copied launcher, "
+            "This prepares a frozen operator run only. It does not prove that the launcher, "
             "ROS, Gazebo, PX4, MAVROS, controller, planner, sidecar, or vehicle accepted execution."
         ),
     }
@@ -313,7 +318,7 @@ def prepare_run(
         "experiment_profile_hash": profile_hash,
         "runtime_profile_id": runtime_profile_id,
         "updated_at_unix_s": timestamp,
-        "source": "qgc_visible_terminal",
+        "source": prepared_by,
     }
     pointer_path = _active_pointer_path(root, pointer_relative_path)
     _atomic_write_json(pointer_path, pointer)
@@ -502,6 +507,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--profile-id")
     parser.add_argument("--runtime-profile-id")
     parser.add_argument("--run-id")
+    parser.add_argument("--prepared-by", default="qgc_visible_terminal")
     parser.add_argument("--active-pointer-path")
     parser.add_argument("--print-run-id", action="store_true")
     parser.add_argument("--clear-active", action="store_true")
@@ -520,7 +526,8 @@ def main() -> int:
     try:
         if args.finalize_active:
             if (args.clear_active or args.activate_active or args.profile_id or args.runtime_profile_id or args.run_id
-                    or args.print_run_id or args.active_pointer_path):
+                    or args.print_run_id or args.active_pointer_path
+                    or args.prepared_by != "qgc_visible_terminal"):
                 raise ValueError("operator_run_finalize_arguments_invalid")
             if not args.expected_run_id or not args.terminal_state or not args.reason_code:
                 raise ValueError("operator_run_finalize_arguments_missing")
@@ -551,6 +558,7 @@ def main() -> int:
                 or args.print_run_id
                 or args.terminal_state
                 or args.reason_code
+                or args.prepared_by != "qgc_visible_terminal"
             ):
                 raise ValueError("operator_run_activate_arguments_invalid")
             if not args.expected_run_id:
@@ -580,6 +588,7 @@ def main() -> int:
                 or args.expected_run_id
                 or args.terminal_state
                 or args.reason_code
+                or args.prepared_by != "qgc_visible_terminal"
             ):
                 raise ValueError("operator_run_clear_arguments_invalid")
             result = clear_active_run()
@@ -592,6 +601,7 @@ def main() -> int:
             runtime_profile_id=args.runtime_profile_id,
             run_id=args.run_id,
             active_pointer_relative_path=args.active_pointer_path or ACTIVE_POINTER_RELATIVE_PATH,
+            prepared_by=args.prepared_by,
         )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(str(exc), file=sys.stderr)

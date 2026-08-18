@@ -36,6 +36,7 @@
 | Result layout and review rule | `Results/README.md` |
 | Simulation analysis narrative | `Docs/报告/仿真分析报告_正文骨架.md` |
 | User-facing operation guide | `Docs/报告/用户手册_正文骨架.md` |
+| From-zero Factory L2 Phase 1 manual test, including the isolated base-chain diagnostic appendix | `Docs/Guides/qgc_rviz_phase1_manual_test_tutorial.md` |
 | P0 report/manual/delivery evidence numbers and claim boundaries | `Docs/Design/报告手册交付证据总账_P0_20260731.md` |
 | Active report, manual, formulas, figures, and asset routing | `Docs/报告/README.md`; figure asset index: `Docs/报告/图/README.md` |
 | Final package gate | `Docs/Workflows/pre_submit_check.md` |

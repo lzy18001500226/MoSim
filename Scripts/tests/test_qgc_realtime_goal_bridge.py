@@ -11,13 +11,16 @@ import pytest
 import Scripts.sunray.qgc_realtime_goal_bridge as qgc_goal_bridge
 from Scripts.sunray.qgc_realtime_goal_bridge import (
     GOAL_REQUEST_SCHEMA,
+    WAYPOINT_PLAN_REQUEST_SCHEMA,
     RealtimeGoalBridge,
     atomic_write_json,
     build_live_goal,
     canonical_json_hash,
     normalize_goal_request,
+    ros_time_seconds,
     validate_active_pointer,
     validate_request_freshness,
+    waypoint_plan_progress,
 )
 from Scripts.ui.factory_map_coordinates import coordinate_for_world
 
@@ -26,7 +29,7 @@ ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "Config" / "control_platform" / "operator_map_catalog.json"
 OPERATOR_PROFILES = ROOT / "Config" / "profiles" / "operator_profiles.json"
 RUNTIME_BACKENDS = ROOT / "Config" / "control_platform" / "runtime_backend_catalog.json"
-CUSTOM_QGC = ROOT / "src" / "ground_station" / "qgc" / "mosim_extension" / "custom" / "src"
+CUSTOM_QGC = ROOT / "apps" / "flight_console" / "mosim" / "custom" / "src"
 QGC_DIFF_PROFILE_ID = "px4ctrl_graphical_c99_factory_diff_interactive_goal_v1"
 QGC_DIFF_RUNTIME_PROFILE_ID = "sunray_ros1_factory_l2_graphical_px4ctrl_c99_diff_interactive_goal_v1"
 QGC_DIFF_OPERATION_ID = "factory_l2_graphical_px4ctrl_c99_diff_interactive_goal"
@@ -81,6 +84,23 @@ def _request(manifest: dict, *, submitted_at_unix_s: float = 1000.0) -> dict:
     }
 
 
+def _waypoint_plan_request(manifest: dict, *, submitted_at_unix_s: float = 1000.0) -> dict:
+    request = _request(manifest, submitted_at_unix_s=submitted_at_unix_s)
+    first = request.pop("goal")
+    request["schema"] = WAYPOINT_PLAN_REQUEST_SCHEMA
+    request["source"] = "qgc_mission_waypoint_plan"
+    request["waypoints"] = [
+        {"sequence": 1, **first},
+        {
+            "sequence": 2,
+            "latitude_deg": first["latitude_deg"] + 0.0001,
+            "longitude_deg": first["longitude_deg"] + 0.0001,
+            "qgc_altitude_m": first["qgc_altitude_m"],
+        },
+    ]
+    return request
+
+
 def _identity_evidence(manifest: dict) -> dict:
     snapshot = manifest["operator_map_snapshot"]
     return {
@@ -107,24 +127,29 @@ class _FakePoseStamped:
 class _FakePublisher:
     def __init__(self) -> None:
         self.subscriber_count = 0
-        self.messages: list[_FakePoseStamped] = []
+        self.messages: list[object] = []
 
     def get_num_connections(self) -> int:
         return self.subscriber_count
 
-    def publish(self, message: _FakePoseStamped) -> None:
+    def publish(self, message: object) -> None:
         self.messages.append(message)
 
 
 class _FakeRospy:
     class Time:
+        current = 1001.0
+
         @staticmethod
         def now() -> float:
-            return 1001.0
+            return _FakeRospy.Time.current
 
     def __init__(self) -> None:
+        self.Time.current = 1001.0
         self.publisher = _FakePublisher()
+        self.plan_size_publisher = _FakePublisher()
         self.publisher_options: dict[str, object] = {}
+        self.subscribers: dict[str, object] = {}
 
     def Publisher(
         self,
@@ -134,6 +159,8 @@ class _FakeRospy:
         queue_size: int,
         latch: bool,
     ) -> _FakePublisher:
+        if topic == "/mosim/goal4/interactive_goal_waypoint_count":
+            return self.plan_size_publisher
         self.publisher_options = {
             "topic": topic,
             "message_type": message_type,
@@ -141,6 +168,30 @@ class _FakeRospy:
             "latch": latch,
         }
         return self.publisher
+
+    def Subscriber(
+        self,
+        topic: str,
+        message_type: object,
+        callback: object,
+        *,
+        queue_size: int,
+    ) -> object:
+        self.subscribers[topic] = callback
+        return object()
+
+    def emit_ready(self, topic: str, ready: bool) -> None:
+        callback = self.subscribers[topic]
+        callback(SimpleNamespace(data=ready))  # type: ignore[operator]
+
+
+class _FakeBool:
+    pass
+
+
+class _FakeUInt16:
+    def __init__(self) -> None:
+        self.data = 0
 
 
 def _bridge_args(tmp_path: Path) -> SimpleNamespace:
@@ -150,9 +201,13 @@ def _bridge_args(tmp_path: Path) -> SimpleNamespace:
         active_pointer=tmp_path / "qgc_active_run.json",
         goal_topic="/move_base_simple/goal",
         goal_frame="world",
+        mission_ready_topic="/mosim/goal4/interactive_goal_ready",
+        waypoint_plan_size_topic="/mosim/goal4/interactive_goal_waypoint_count",
         ground_z_m=0.0,
         poll_hz=10.0,
         max_request_age_s=5.0,
+        max_waypoint_plan_duration_s=600.0,
+        max_waypoint_plan_wall_stall_s=120.0,
         max_future_skew_s=1.0,
     )
 
@@ -209,6 +264,23 @@ def test_qgc_goal_request_requires_the_exact_frozen_map_identity() -> None:
         normalize_goal_request(request, manifest=manifest)
 
 
+def test_qgc_waypoint_plan_rejects_targets_outside_the_frozen_task_boundary() -> None:
+    manifest = _manifest()
+    request = _waypoint_plan_request(manifest)
+    anchor = manifest["operator_map_snapshot"]["simulation_geodetic_anchor"]
+    outside = coordinate_for_world(anchor, 100.0, 0.0, altitude_m=50.0)
+    request["waypoints"][1].update(
+        {
+            "latitude_deg": outside["latitude_deg"],
+            "longitude_deg": outside["longitude_deg"],
+            "qgc_altitude_m": outside["altitude_m"],
+        }
+    )
+
+    with pytest.raises(ValueError, match="qgc_realtime_goal_request_outside_task_boundary"):
+        normalize_goal_request(request, manifest=manifest)
+
+
 def test_qgc_goal_request_is_fresh_and_never_reused_as_a_replay_input() -> None:
     request = _request(_manifest(), submitted_at_unix_s=1000.0)
 
@@ -225,6 +297,46 @@ def test_qgc_goal_request_is_fresh_and_never_reused_as_a_replay_input() -> None:
             max_request_age_s=5.0,
             max_future_skew_s=1.0,
         )
+
+
+def test_waypoint_plan_progress_uses_ros_sim_time_and_detects_a_stalled_clock() -> None:
+    slow = waypoint_plan_progress(
+        started_sim_time_s=100.0,
+        current_sim_time_s=291.0,
+        started_wall_time_s=1000.0,
+        current_wall_time_s=1600.0,
+        last_sim_time_s=100.0,
+        last_sim_progress_wall_time_s=1000.0,
+        max_sim_duration_s=600.0,
+        max_wall_stall_s=120.0,
+    )
+    assert slow["state"] == "running"
+    assert slow["actual_rtf"] == pytest.approx(191.0 / 600.0)
+
+    stalled = waypoint_plan_progress(
+        started_sim_time_s=100.0,
+        current_sim_time_s=100.0,
+        started_wall_time_s=1000.0,
+        current_wall_time_s=1120.0,
+        last_sim_time_s=100.0,
+        last_sim_progress_wall_time_s=1000.0,
+        max_sim_duration_s=600.0,
+        max_wall_stall_s=120.0,
+    )
+    assert stalled["state"] == "sim_clock_stalled"
+
+    expired = waypoint_plan_progress(
+        started_sim_time_s=100.0,
+        current_sim_time_s=700.1,
+        started_wall_time_s=1000.0,
+        current_wall_time_s=2600.0,
+        last_sim_time_s=100.0,
+        last_sim_progress_wall_time_s=1000.0,
+        max_sim_duration_s=600.0,
+        max_wall_stall_s=120.0,
+    )
+    assert expired["state"] == "sim_duration_exceeded"
+    assert ros_time_seconds(12.5, "test") == pytest.approx(12.5)
 
 
 def test_qgc_goal_requires_an_active_running_pointer() -> None:
@@ -304,6 +416,205 @@ def test_new_qgc_goal_forwards_once_after_a_live_subscriber_is_present(
     assert rospy.publisher.messages[0].header.frame_id == "world"
 
 
+def test_qgc_waypoint_plan_releases_one_goal_per_live_ready_cycle(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = _manifest()
+    context = {"manifest": manifest, "coordinate_evidence": _identity_evidence(manifest), "coordinate_evidence_sha256": "evidence"}
+    monkeypatch.setattr(qgc_goal_bridge, "load_runtime_context", lambda **_: context)
+    monkeypatch.setattr(qgc_goal_bridge.time, "time", lambda: 1001.0)
+    rospy = _FakeRospy()
+    bridge = RealtimeGoalBridge(
+        args=_bridge_args(tmp_path),
+        rospy=rospy,
+        pose_stamped_type=_FakePoseStamped,
+        bool_type=_FakeBool,
+        uint16_type=_FakeUInt16,
+    )
+    rospy.publisher.subscriber_count = 1
+    rospy.plan_size_publisher.subscriber_count = 1
+    bridge._refresh_idle_readiness()
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", True)
+    atomic_write_json(tmp_path / "operator_goal" / "REQUEST.json", _waypoint_plan_request(manifest))
+
+    bridge._read_new_request()
+    bridge._forward_pending_request()
+    first = json.loads((tmp_path / "operator_goal" / "STATUS.json").read_text(encoding="utf-8"))
+    assert first["state"] == "forwarded"
+    assert first["details"]["request_kind"] == "waypoint_plan"
+    assert first["details"]["forwarded_waypoint_count"] == 1
+    assert len(rospy.publisher.messages) == 1
+    assert len(rospy.plan_size_publisher.messages) == 1
+    assert rospy.plan_size_publisher.messages[0].data == 2
+
+    bridge._forward_pending_request()
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", True)
+    bridge._forward_pending_request()
+    waiting = json.loads((tmp_path / "operator_goal" / "STATUS.json").read_text(encoding="utf-8"))
+    assert waiting["state"] == "awaiting_mission_ready"
+    assert len(rospy.publisher.messages) == 1
+
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", False)
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", True)
+    bridge._forward_pending_request()
+    final = json.loads((tmp_path / "operator_goal" / "STATUS.json").read_text(encoding="utf-8"))
+    assert final["state"] == "forwarded"
+    assert final["details"]["forwarded_waypoint_count"] == 2
+    assert final["details"]["goal"]["waypoint_index"] == 1
+    assert len(rospy.publisher.messages) == 2
+    assert len(rospy.plan_size_publisher.messages) == 1
+
+
+def test_stalled_qgc_waypoint_plan_cancels_the_mission_sequence_before_retry(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = _manifest()
+    context = {"manifest": manifest, "coordinate_evidence": _identity_evidence(manifest), "coordinate_evidence_sha256": "evidence"}
+    now = [1001.0]
+    monkeypatch.setattr(qgc_goal_bridge, "load_runtime_context", lambda **_: context)
+    monkeypatch.setattr(qgc_goal_bridge.time, "time", lambda: now[0])
+    rospy = _FakeRospy()
+    bridge = RealtimeGoalBridge(
+        args=_bridge_args(tmp_path),
+        rospy=rospy,
+        pose_stamped_type=_FakePoseStamped,
+        bool_type=_FakeBool,
+        uint16_type=_FakeUInt16,
+    )
+    rospy.publisher.subscriber_count = 1
+    rospy.plan_size_publisher.subscriber_count = 1
+    bridge._refresh_idle_readiness()
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", True)
+    atomic_write_json(tmp_path / "operator_goal" / "REQUEST.json", _waypoint_plan_request(manifest))
+
+    bridge._read_new_request()
+    bridge._forward_pending_request()
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", False)
+    now[0] = 1121.0
+    bridge._forward_pending_request()
+
+    rejected = json.loads((tmp_path / "operator_goal" / "STATUS.json").read_text(encoding="utf-8"))
+    assert rejected["state"] == "rejected"
+    assert rejected["reason_code"] == "qgc_realtime_waypoint_plan_sim_clock_stalled"
+    assert rejected["details"]["waypoint_plan_cancel_published"] is True
+    assert rejected["details"]["sim_clock_stall_s"] == pytest.approx(120.0)
+    assert [message.data for message in rospy.plan_size_publisher.messages] == [2, 0]
+
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", True)
+    bridge._refresh_idle_readiness()
+    ready = json.loads((tmp_path / "operator_goal" / "STATUS.json").read_text(encoding="utf-8"))
+    assert ready["state"] == "ready"
+    assert ready["reason_code"] == "waiting_for_new_qgc_goal_after_rejection"
+
+    retry = _waypoint_plan_request(manifest, submitted_at_unix_s=1121.0)
+    retry["request_id"] = "qgc-goal-live-goal-0002"
+    atomic_write_json(tmp_path / "operator_goal" / "REQUEST.json", retry)
+    bridge._read_new_request()
+    bridge._forward_pending_request()
+
+    assert [message.data for message in rospy.plan_size_publisher.messages] == [2, 0, 2]
+    assert len(rospy.publisher.messages) == 2
+
+
+def test_slow_qgc_waypoint_plan_uses_sim_time_after_the_first_release(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = _manifest()
+    context = {"manifest": manifest, "coordinate_evidence": _identity_evidence(manifest), "coordinate_evidence_sha256": "evidence"}
+    now = [1001.0]
+    monkeypatch.setattr(qgc_goal_bridge, "load_runtime_context", lambda **_: context)
+    monkeypatch.setattr(qgc_goal_bridge.time, "time", lambda: now[0])
+    rospy = _FakeRospy()
+    bridge = RealtimeGoalBridge(
+        args=_bridge_args(tmp_path),
+        rospy=rospy,
+        pose_stamped_type=_FakePoseStamped,
+        bool_type=_FakeBool,
+        uint16_type=_FakeUInt16,
+    )
+    rospy.publisher.subscriber_count = 1
+    rospy.plan_size_publisher.subscriber_count = 1
+    bridge._refresh_idle_readiness()
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", True)
+    atomic_write_json(tmp_path / "operator_goal" / "REQUEST.json", _waypoint_plan_request(manifest))
+
+    bridge._read_new_request()
+    bridge._forward_pending_request()
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", False)
+    rospy.emit_ready("/mosim/goal4/interactive_goal_ready", True)
+    now[0] = 1601.0
+    rospy.Time.current = 1192.0
+    bridge._forward_pending_request()
+
+    status = json.loads((tmp_path / "operator_goal" / "STATUS.json").read_text(encoding="utf-8"))
+    assert status["state"] == "forwarded"
+    assert status["details"]["forwarded_waypoint_count"] == 2
+    assert status["details"]["actual_rtf"] == pytest.approx(191.0 / 600.0)
+
+
+def test_bridge_spin_uses_wall_clock_sleep_when_the_sim_clock_can_stall(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = _manifest()
+    context = {
+        "manifest": manifest,
+        "coordinate_evidence": _identity_evidence(manifest),
+        "coordinate_evidence_sha256": "evidence",
+    }
+    monkeypatch.setattr(qgc_goal_bridge, "load_runtime_context", lambda **_: context)
+    rospy = _FakeRospy()
+    bridge = RealtimeGoalBridge(
+        args=_bridge_args(tmp_path),
+        rospy=rospy,
+        pose_stamped_type=_FakePoseStamped,
+    )
+    iterations = iter((False, True))
+    rospy.is_shutdown = lambda: next(iterations)  # type: ignore[attr-defined]
+    calls: list[str] = []
+    sleeps: list[float] = []
+    monkeypatch.setattr(bridge, "_refresh_idle_readiness", lambda: calls.append("ready"))
+    monkeypatch.setattr(bridge, "_read_new_request", lambda: calls.append("read"))
+    monkeypatch.setattr(bridge, "_forward_pending_request", lambda: calls.append("forward"))
+    monkeypatch.setattr(qgc_goal_bridge.time, "sleep", lambda interval_s: sleeps.append(interval_s))
+
+    bridge.spin()
+
+    assert calls == ["ready", "read", "forward"]
+    assert sleeps == [pytest.approx(0.1)]
+
+
+def test_qgc_waypoint_plan_requires_a_live_plan_size_subscriber(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest = _manifest()
+    context = {"manifest": manifest, "coordinate_evidence": _identity_evidence(manifest), "coordinate_evidence_sha256": "evidence"}
+    monkeypatch.setattr(qgc_goal_bridge, "load_runtime_context", lambda **_: context)
+    rospy = _FakeRospy()
+    bridge = RealtimeGoalBridge(
+        args=_bridge_args(tmp_path),
+        rospy=rospy,
+        pose_stamped_type=_FakePoseStamped,
+        bool_type=_FakeBool,
+        uint16_type=_FakeUInt16,
+    )
+
+    rospy.publisher.subscriber_count = 1
+    bridge._refresh_idle_readiness()
+    awaiting = json.loads((tmp_path / "operator_goal" / "STATUS.json").read_text(encoding="utf-8"))
+    assert awaiting["state"] == "awaiting_subscriber"
+    assert awaiting["reason_code"] == "qgc_realtime_goal_waypoint_plan_size_subscriber_missing"
+
+    rospy.plan_size_publisher.subscriber_count = 1
+    bridge._refresh_idle_readiness()
+    ready = json.loads((tmp_path / "operator_goal" / "STATUS.json").read_text(encoding="utf-8"))
+    assert ready["state"] == "ready"
+
+
 def test_bridge_waits_for_the_planner_subscriber_before_marking_plan_goal_ready(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -329,6 +640,7 @@ def test_qgc_and_ros_sources_keep_the_goal_lane_live_and_planner_only() -> None:
     bridge = (ROOT / "Scripts" / "sunray" / "qgc_realtime_goal_bridge.py").read_text(encoding="utf-8")
     qml = (CUSTOM_QGC / "PlanView.qml").read_text(encoding="utf-8")
     qgc_bridge = (CUSTOM_QGC / "MoSimOperatorBridge.cc").read_text(encoding="utf-8")
+    factory_overlay = (CUSTOM_QGC / "FactoryPlanMapOverlay.qml").read_text(encoding="utf-8")
 
     assert 'default="/move_base_simple/goal"' in bridge
     assert "latch=False" in bridge
@@ -337,18 +649,39 @@ def test_qgc_and_ros_sources_keep_the_goal_lane_live_and_planner_only() -> None:
     assert "rosbag.Bag" not in bridge
     assert "--bag" not in bridge
     assert "submitRealtimePlanningGoal" in qml
+    assert "submitRealtimeWaypointPlan" in qml
+    assert "realtimeMissionWaypoints" in qml
+    assert "Submit Waypoints" in qml
     assert "_realtimePlanningGoalOnClick" in qml
-    assert "copyRealtimePlanningGoalBridgeCommand" in qml
+    assert "Plan Goal 必须位于青色任务边界内" in qml
+    assert "Submit Waypoints 只接受青色任务边界内的航点" in qml
+    assert "worldForMapPoint" in factory_overlay
+    assert "worldPointInExplorationBoundary" in factory_overlay
+    assert "copyRealtimePlanningGoalBridgeCommand" not in qml
     assert "QSaveFile" in qgc_bridge
     assert "operator_goal/REQUEST.json" in qgc_bridge
     assert "realtimePlanningGoalReady" in qgc_bridge
     assert 'runtimeBackendForProfile(\n        profile.value(QStringLiteral("profile_id")).toString())' in qgc_bridge
-    assert "--active-pointer %5" in qgc_bridge
     assert "_activePointerRelativePath" in qgc_bridge
+    assert "OPERATOR_MAP_COORDINATE_EVIDENCE.json" in qgc_bridge
+    assert 'coordinateEvidence.value(QStringLiteral("source_frame_id")).toString() == goalFrame' in qgc_bridge
+    assert 'coordinateEvidence.value(QStringLiteral("target_frame_id")).toString() == mapFrame' in qgc_bridge
     assert 'QStringLiteral("realtime_goal")' in qgc_bridge
     assert 'QStringLiteral("qgc_plan_view")' in qgc_bridge
+    assert 'QStringLiteral("qgc_mission_waypoint_plan")' in qgc_bridge
+    assert "mosim.qgc_realtime_goal_request.v2" in qgc_bridge
+    assert 'if (state == QStringLiteral("ready")) {' in qgc_bridge
+    assert 'state == QStringLiteral("ready") || state == QStringLiteral("rejected")' not in qgc_bridge
     assert "runtimeBackendForProfile(_selectedProfileId)" not in qgc_bridge
     assert "QProcess" not in qgc_bridge
+    assert "awaiting_mission_ready" in bridge
+    assert "mission_ready_topic" in bridge
+    assert "waypoint_plan_size_topic" in bridge
+    assert "qgc_realtime_goal_waypoint_plan_size_subscriber_missing" in bridge
+    assert "qgc_realtime_waypoint_plan_ros_published" in bridge
+    assert "waypoint_plan_cancel_published" in bridge
+    assert 'message.data = 0' in bridge
+    assert "forwardedWaypointCount >= waypointCount" in qgc_bridge
 
 
 def test_qgc_interactive_mission_waits_for_px4ctrl_takeoff_subscriber() -> None:
@@ -356,6 +689,10 @@ def test_qgc_interactive_mission_waits_for_px4ctrl_takeoff_subscriber() -> None:
     wait_for_ready = mission.split("    def wait_for_ready(self) -> bool:\n", 1)[1].split("\n    def ", 1)[0]
 
     assert "self.takeoff_land_pub.get_num_connections() > 0" in wait_for_ready
+    interactive_loop = mission.split("        if self.args.interactive_goal_review:\n", 1)[1].split(
+        "\n        self.phase = \"ego_triggered\"", 1
+    )[0]
+    assert "self.set_interactive_goal_ready(False, repeats=1)" in interactive_loop
 
 
 def test_qgc_diff_goal_keeps_world_evaluation_separate_from_local_control() -> None:
@@ -504,6 +841,23 @@ def test_qgc_realtime_goal_profiles_are_bound_to_the_live_goal_wrapper() -> None
     assert "QGC_DIFF_REALTIME_GOAL_ACCEPTANCE.json" in wrapper
     assert "qgc_diff_realtime_goal_acceptance_verified" in wrapper
     assert "finalize_operator_run completed qgc_diff_realtime_goal_acceptance_verified" in wrapper
+    assert "start_qgc_realtime_goal_bridge()" in wrapper
+    assert "qgc_realtime_goal_bridge.py" in wrapper
+    assert 'QGC_REALTIME_MISSION_READY_TOPIC="${QGC_REALTIME_MISSION_READY_TOPIC:-/mosim/goal4/interactive_goal_ready}"' in wrapper
+    assert 'QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC="${QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC:-/mosim/goal4/interactive_goal_waypoint_count}"' in wrapper
+    assert 'DIFF_INTERACTIVE_GOAL_READY_TOPIC="$QGC_REALTIME_MISSION_READY_TOPIC"' in wrapper
+    assert 'DIFF_INTERACTIVE_WAYPOINT_PLAN_SIZE_TOPIC="$QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC"' in wrapper
+    assert '--waypoint-plan-size-topic "$QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC"' in wrapper
+    assert "qgc_waypoint_plan_not_fully_forwarded" in wrapper
+    assert "qgc_waypoint_plan_mission_handoff_missing" in wrapper
+    assert "GOAL_BRIDGE_PID=" in wrapper
+    assert "stop_process GOAL_BRIDGE_PID" in wrapper
+    assert "qgc_realtime_goal_bridge_start_failed" in wrapper
+    active_pointer_at = wrapper.index("--activate-active")
+    bridge_start_at = wrapper.index("if ! start_qgc_realtime_goal_bridge", active_pointer_at)
+    readiness_wait_at = wrapper.index("if ! wait_for_interactive_chain", active_pointer_at)
+    assert active_pointer_at < bridge_start_at < readiness_wait_at
+    assert "Copy and run the bridge command" not in wrapper
     assert '"$RUNTIME_RESULT_DIR/RUN_MANIFEST.json"' not in wrapper
     assert "--expected-path-topic /mosim/goal4/target_path" in wrapper
     assert "--future-polytraj-topic /drone_0_planning/trajectory" in wrapper
@@ -517,13 +871,20 @@ def test_qgc_realtime_goal_profiles_are_bound_to_the_live_goal_wrapper() -> None
     assert "qgc_diff_realtime_goal_planner_profile_mismatch" in wrapper
 
     generic_runner = (ROOT / "Scripts" / "sunray" / "run_px4ctrl_ego_single_gate.sh").read_text(encoding="utf-8")
+    mission = (ROOT / "Scripts" / "sunray" / "px4ctrl_ego_single_mission_node.py").read_text(encoding="utf-8")
+    assert 'DIFF_INTERACTIVE_WAYPOINT_PLAN_SIZE_TOPIC="${DIFF_INTERACTIVE_WAYPOINT_PLAN_SIZE_TOPIC:-}"' in generic_runner
+    assert 'MISSION_ADAPTER_ARGS+=(--interactive-waypoint-plan-size-topic "${DIFF_INTERACTIVE_WAYPOINT_PLAN_SIZE_TOPIC}")' in generic_runner
+    assert "--interactive-require-waypoint-plan-size" in generic_runner
+    assert "interactive_completion_goal_count" in mission
+    assert "interactive_waypoint_plan_cancel_requested" in mission
+    assert "qgc_waypoint_plan_cancelled" in mission
     assert 'FASTLIO_PATH_START_TIMEOUT_S="${FASTLIO_PATH_START_TIMEOUT_S:-${FASTLIO_START_TIMEOUT_S}}"' in generic_runner
     assert '--topic /path \\' in generic_runner
     assert 'fastlio_path_wait_pid=$!' in generic_runner
     assert 'if ! wait "${fastlio_path_wait_pid}"; then' in generic_runner
-    assert 'if [[ "${PRESERVE_EXISTING_ROSCORE:-false}" != "true" ]]; then' in generic_runner
-    assert 'pkill -f "rosmaster"' in generic_runner
-    assert 'pkill -f "rosout"' in generic_runner
+    assert "stop_owned_processes" in generic_runner
+    assert 'pkill -f "rosmaster"' not in generic_runner
+    assert 'pkill -f "rosout"' not in generic_runner
     assert 'DIFF_GOAL4_COMMON_WORLD_FRAME="${DIFF_GOAL4_COMMON_WORLD_FRAME:-false}"' in generic_runner
     assert 'DIFF_GOAL4_PLANNER_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC:-/uav1/mosim/diff_goal4/planner_odom_world}"' in generic_runner
     assert 'DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC="${DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC:-/uav1/mosim/diff_goal4/planner_position_cmd_world}"' in generic_runner

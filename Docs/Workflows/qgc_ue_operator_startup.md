@@ -89,13 +89,11 @@ QGC 实例。审核应确认 Factory L2 上同时出现任务预期路径和更�
 
 ### 第一阶段：RViz 规划与 QGC 航迹显示
 
-已发布的“RViz规划-QGC航迹显示（阶段一）”Profile 是 QGC 闭环的第一次人工测试入口。它启动同一条
-ROS1/Gazebo/PX4/规划器/sidecar 运行，但 RViz 的 `2D Nav Goal` 是唯一目标输入，QGC 只显示同一
-`run_id` 的未来路径和实际轨迹。该 Profile 的运行后端声明为 `rviz_2d_nav_goal`，因此 QGC 的 `Plan Goal`
-控件和实时目标桥不会在此阶段出现，避免把第二阶段输入混入第一阶段。
-
-从启动 QGC、选择 Profile、等待运行就绪到 RViz 点击、QGC 视觉确认、停止和证据保留的完整操作见
-[`qgc_rviz_phase1_manual_test_tutorial.md`](qgc_rviz_phase1_manual_test_tutorial.md)。
+已发布的“RViz规划-QGC航迹显示（阶段一）”Profile 是阶段一的固定配置事实来源。操作者按
+[阶段一人工测试教程](../Guides/qgc_rviz_phase1_manual_test_tutorial.md) 的独立 WSL 包装器启动同一条
+ROS1/Gazebo/PX4/规划器/sidecar 运行；QGC 不选择 Profile、不复制启动命令，只显示同一 `run_id` 的
+未来路径和实际轨迹。RViz 的 `2D Nav Goal` 是唯一目标输入，运行后端声明为 `rviz_2d_nav_goal`，
+因此 QGC 的 `Plan Goal` 控件和实时目标桥不会在此阶段出现，避免把第二阶段输入混入第一阶段。
 
 运行端达到就绪后会生成 `RVIZ_QGC_DISPLAY_PHASE1_MANUAL_TEST.json`，其中固定了 RViz 配置、目标 topic、
 sidecar telemetry 和结果路径。操作者只需在 RViz 使用一次 `2D Nav Goal`，然后在 QGC 观察同一运行的
@@ -186,7 +184,7 @@ MWORKS 模型、原生结果和代码生成一致性证据判定。
 | Q6 故障与恢复 | 在活动 run 内暂存故障，复制并在可见终端执行应用/恢复命令 | 运行端或 sidecar 写回同一 run_id 的 ACK、当前生效值和失败原因；恢复 ACK 证明风扰归零、四电机效率为 100% | 命令复制或请求文件写入即代表故障已生效 |
 | Q7 Plan View 发布 | 编辑航点或边界草案，并执行世界坐标与经纬度往返验收 | 未通过往返门禁时上传明确保持阻止；通过后才允许单独审核任务发布 | 二维底图或草案可见即代表飞控航点已发布 |
 | Q8 UE 独立展示 | 仅在需要视频/展示且相关运行时已授权后单独打开 UE | UE 不嵌入 QGC；鼠标可通过 `Esc` 或失焦释放；其画面与 run bundle 对应 | UE 画面替代 Gazebo/PX4/MAVROS/RViz 的运行真值 |
-| Q9-P1 RViz 规划与 QGC 显示 | 启动“RViz规划-QGC航迹显示（阶段一）”Profile，在 RViz 使用一次 `2D Nav Goal`，并在 QGC 观察同一 run | `RVIZ_QGC_DISPLAY_PHASE1_MANUAL_TEST.json`、RViz adapter、规划器未来轨迹、sidecar actual track，以及操作者的 QGC 视觉确认 | QGC 发起规划、QGC `Plan Goal`、飞行或控制器验收 |
+| Q9-P1 RViz 规划与 QGC 显示 | 按阶段一人工测试教程的独立 WSL 包装器启动，在 RViz 使用一次 `2D Nav Goal`，并在 QGC 观察同一 run | `RVIZ_QGC_DISPLAY_PHASE1_MANUAL_TEST.json`、RViz adapter、规划器未来轨迹、sidecar actual track，以及操作者的 QGC 视觉确认 | QGC 发起规划、QGC `Plan Goal`、飞行或控制器验收 |
 | Q9-P2 QGC 实时规划目标 | 启动已发布的 QGC 实时目标单机规划闭环，复制桥接命令后在 Plan View 选择 `Plan Goal` 并点击一次 | 同一 `run_id` 的 `STATUS.json=forwarded`、规划器更新后的未来路径/轨迹、sidecar 的实际轨迹和 QGC 地图显示 | 单独 RViz 目标、请求文件、桥接就绪状态或 QGC 截图即代表闭环、飞行或控制器验收 |
 
 Q5 至 Q8 的控制、规划、避障、故障容错和显示结论分别由各自运行工作流的日志、指标和结果包

@@ -31,7 +31,8 @@ case "$1" in
     TERMINAL_SOURCE=terminal_rviz_qgc_display_phase1_gate
     OPEN_RVIZ_FOR_PHASE=true
     DIFF_OPEN_SPLIT_RVIZ_FOR_PHASE=false
-    RVIZ_CONFIG_RELATIVE=Config/rviz/sunray_ros1_goal4_diff_pointcloud_review.rviz
+    EGO_VISUALIZATION_FORWARD_ONLY_FOR_PHASE=true
+    RVIZ_CONFIG_RELATIVE=Config/rviz/sunray_ros1_goal4_diff_realtime_combined_review.rviz
     ;;
   qgc_realtime_goal)
     RUN_MODE=qgc_realtime_goal
@@ -51,6 +52,7 @@ case "$1" in
     MANUAL_PACKET_FILE_NAME=
     OPEN_RVIZ_FOR_PHASE=false
     DIFF_OPEN_SPLIT_RVIZ_FOR_PHASE=false
+    EGO_VISUALIZATION_FORWARD_ONLY_FOR_PHASE=true
     RVIZ_CONFIG_RELATIVE=
     ;;
   interactive_goal)
@@ -71,6 +73,7 @@ case "$1" in
     MANUAL_PACKET_FILE_NAME=
     OPEN_RVIZ_FOR_PHASE=false
     DIFF_OPEN_SPLIT_RVIZ_FOR_PHASE=false
+    EGO_VISUALIZATION_FORWARD_ONLY_FOR_PHASE=true
     RVIZ_CONFIG_RELATIVE=
     ;;
   *)
@@ -119,12 +122,86 @@ case "$QGC_DIFF_FASTLIO_WS" in
 esac
 GOAL4_DIFF_PLANNER_WS="${GOAL4_DIFF_PLANNER_WS:-$PROJECT_ROOT/Results/sunray_ros1/workspaces/goal4_diff_planner_ws_px4msg}"
 GOAL4_DIFF_PLANNER_WS="$(readlink -m "$GOAL4_DIFF_PLANNER_WS")"
-if [[ ! -f "$GOAL4_DIFF_PLANNER_WS/devel/setup.bash" ]]; then
-  echo "Goal4 Diff-Planner workspace is missing: $GOAL4_DIFF_PLANNER_WS/devel/setup.bash" >&2
+PROJECT_DIFF_SRC="$(readlink -m "$PROJECT_ROOT/src/planning/diff_planner/src")"
+
+ensure_goal4_diff_planner_overlay() {
+  local package link expected
+  local packages=(
+    "plan_env:diff_planner/plan_env"
+    "path_searching:diff_planner/path_searching"
+    "traj_opt:diff_planner/traj_opt"
+    "traj_utils:diff_planner/traj_utils"
+    "diff_planner:diff_planner/plan_manage"
+    "multipoint:user_command/multipoint"
+  )
+
+  if [[ -f "$GOAL4_DIFF_PLANNER_WS/devel/setup.bash" ]]; then
+    for package in "${packages[@]}"; do
+      link="${package%%:*}"
+      expected="${PROJECT_DIFF_SRC}/${package#*:}"
+      if [[ ! -L "$GOAL4_DIFF_PLANNER_WS/src/$link" || "$(readlink -m "$GOAL4_DIFF_PLANNER_WS/src/$link")" != "$expected" ]]; then
+        break
+      fi
+    done
+    if [[ "$package" == "${packages[-1]}" ]]; then
+      return 0
+    fi
+  fi
+
+  echo "Rebuilding Goal4 Diff-Planner overlay from project-owned source" >&2
+  PROJECT_ROOT="$PROJECT_ROOT" DIFF_SRC="$PROJECT_DIFF_SRC" DIFF_WS="$GOAL4_DIFF_PLANNER_WS" \
+    bash "$PROJECT_ROOT/Scripts/sunray/setup_goal4_diff_planner_overlay.sh"
+
+  if [[ ! -f "$GOAL4_DIFF_PLANNER_WS/devel/setup.bash" ]]; then
+    return 1
+  fi
+  for package in "${packages[@]}"; do
+    link="${package%%:*}"
+    expected="${PROJECT_DIFF_SRC}/${package#*:}"
+    [[ -L "$GOAL4_DIFF_PLANNER_WS/src/$link" ]] || return 1
+    [[ "$(readlink -m "$GOAL4_DIFF_PLANNER_WS/src/$link")" == "$expected" ]] || return 1
+  done
+}
+
+if ! ensure_goal4_diff_planner_overlay; then
+  echo "Goal4 Diff-Planner overlay could not be rebuilt from project-owned source" >&2
   exit 2
 fi
+QGC_REALTIME_MISSION_READY_TOPIC="${QGC_REALTIME_MISSION_READY_TOPIC:-/mosim/goal4/interactive_goal_ready}"
+QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC="${QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC:-/mosim/goal4/interactive_goal_waypoint_count}"
+QGC_REALTIME_WAYPOINT_PLAN_SIM_DURATION_S="${QGC_REALTIME_WAYPOINT_PLAN_SIM_DURATION_S:-600}"
+QGC_REALTIME_WAYPOINT_PLAN_WALL_STALL_S="${QGC_REALTIME_WAYPOINT_PLAN_WALL_STALL_S:-120}"
+if [ -z "$QGC_REALTIME_MISSION_READY_TOPIC" ] || [ -z "$QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC" ]; then
+  echo "QGC realtime mission topics must be non-empty" >&2
+  exit 2
+fi
+QGC_INTERACTIVE_REQUIRE_WAYPOINT_PLAN_SIZE=false
+if [ "$RUN_MODE" = "qgc_realtime_goal" ]; then
+  QGC_INTERACTIVE_REQUIRE_WAYPOINT_PLAN_SIZE=true
+fi
 WORLD_FILE=$PROJECT_ROOT/$WORLD_RELATIVE
-GAZEBO_MODEL_PATH=$PROJECT_ROOT/$MODELS_RELATIVE
+BASE_GAZEBO_MODEL_PATH=$PROJECT_ROOT/$MODELS_RELATIVE
+FACTORY_MODEL_PATH_FOR_PHASE=$BASE_GAZEBO_MODEL_PATH
+QGC_DIFF_GAZEBO_MODEL_OVERLAY="${QGC_DIFF_GAZEBO_MODEL_OVERLAY:-}"
+if [ -n "$QGC_DIFF_GAZEBO_MODEL_OVERLAY" ]; then
+  QGC_DIFF_GAZEBO_MODEL_OVERLAY="$(readlink -m "$QGC_DIFF_GAZEBO_MODEL_OVERLAY")"
+  case "$QGC_DIFF_GAZEBO_MODEL_OVERLAY" in
+    "$PROJECT_ROOT"/Results/*) ;;
+    *)
+      echo "QGC_DIFF_GAZEBO_MODEL_OVERLAY must remain below $PROJECT_ROOT/Results" >&2
+      exit 2
+      ;;
+  esac
+  if [ ! -d "$QGC_DIFF_GAZEBO_MODEL_OVERLAY" ]; then
+    echo "QGC_DIFF_GAZEBO_MODEL_OVERLAY is missing: $QGC_DIFF_GAZEBO_MODEL_OVERLAY" >&2
+      exit 2
+  fi
+  FACTORY_MODEL_PATH_FOR_PHASE=$QGC_DIFF_GAZEBO_MODEL_OVERLAY
+fi
+GAZEBO_MODEL_PATH=$BASE_GAZEBO_MODEL_PATH
+if [ -n "$QGC_DIFF_GAZEBO_MODEL_OVERLAY" ]; then
+  GAZEBO_MODEL_PATH="$QGC_DIFF_GAZEBO_MODEL_OVERLAY:$GAZEBO_MODEL_PATH"
+fi
 SUNRAY_GAZEBO_LAUNCH_FILE=$PROJECT_ROOT/$LAUNCH_RELATIVE
 SUNRAY_UAV_INIT_X=-10.575025
 SUNRAY_UAV_INIT_Y=-19.36313
@@ -200,6 +277,7 @@ fi
 
 INNER_PID=
 SIDECAR_PID=
+GOAL_BRIDGE_PID=
 ROSCORE_PID=
 INNER_EXIT_CODE=
 FINALIZED=false
@@ -216,18 +294,18 @@ write_runtime_status() {
   reason_code=$(normalize_reason_code "$2")
   local inner_exit_code=
   if [ "$#" -ge 3 ]; then inner_exit_code=$3; fi
-  python3 - "$RUNTIME_STATUS_FILE" "$RUN_ID" "$state" "$reason_code" "$inner_exit_code" "$OPERATOR_RUN_DIR" "$RUNTIME_STATUS_SCHEMA" "$RUN_MODE" <<'PY'
+  python3 - "$RUNTIME_STATUS_FILE" "$RUN_ID" "$state" "$reason_code" "$inner_exit_code" "$OPERATOR_RUN_DIR" "$RUNTIME_STATUS_SCHEMA" "$RUN_MODE" "$QGC_REALTIME_MISSION_READY_TOPIC" "$QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC" <<'PY'
 import json
 import pathlib
 import sys
 import time
 
-output, run_id, state, reason_code, inner_exit_code, run_dir, schema, run_mode = sys.argv[1:]
+output, run_id, state, reason_code, inner_exit_code, run_dir, schema, run_mode, mission_ready_topic, waypoint_plan_size_topic = sys.argv[1:]
 if run_mode == "rviz_qgc_display_phase1":
     transport = {
         "rviz_goal_topic": "/move_base_simple/goal",
         "planner_goal_topic": "/goal_with_id",
-        "mission_ready_topic": "/mosim/goal4/interactive_goal_ready",
+        "mission_ready_topic": mission_ready_topic,
         "operator_telemetry_path": f"{run_dir}/telemetry.json",
         "claim_boundary": (
             "This status records the Phase 1 RViz input and QGC display readiness surfaces. "
@@ -241,7 +319,8 @@ else:
         "qgc_status_path": f"{run_dir}/operator_goal/STATUS.json",
         "goal_topic": "/move_base_simple/goal",
         "adapter_topic": "/goal_with_id",
-        "mission_ready_topic": "/mosim/goal4/interactive_goal_ready",
+        "mission_ready_topic": mission_ready_topic,
+        "waypoint_plan_size_topic": waypoint_plan_size_topic,
         "claim_boundary": (
             "This status records the live runtime wrapper and transport surfaces. "
             "It does not prove that a user selected a QGC goal, that the planner "
@@ -271,6 +350,7 @@ PY
 verify_qgc_goal_acceptance() {
   python3 - \
     "$RUNTIME_RESULT_DIR/EGO_SINGLE_METRICS.json" \
+    "$OPERATOR_RUN_DIR/operator_goal/REQUEST.json" \
     "$OPERATOR_RUN_DIR/operator_goal/STATUS.json" \
     "$OPERATOR_RUN_DIR/telemetry.json" \
     "$ACCEPTANCE_FILE" \
@@ -282,8 +362,9 @@ import math
 import pathlib
 import sys
 
-metrics_path, goal_status_path, telemetry_path, output_path, run_id, schema, reason_prefix = sys.argv[1:]
+metrics_path, goal_request_path, goal_status_path, telemetry_path, output_path, run_id, schema, reason_prefix = sys.argv[1:]
 metrics_path = pathlib.Path(metrics_path)
+goal_request_path = pathlib.Path(goal_request_path)
 goal_status_path = pathlib.Path(goal_status_path)
 telemetry_path = pathlib.Path(telemetry_path)
 output_path = pathlib.Path(output_path)
@@ -302,36 +383,96 @@ def load_object(path):
     return value
 
 metrics = load_object(metrics_path)
+goal_request = load_object(goal_request_path)
 goal_status = load_object(goal_status_path)
 telemetry = load_object(telemetry_path)
+
+def nonnegative_int(value):
+    try:
+        count = int(value)
+    except (TypeError, ValueError):
+        return None
+    return count if count >= 0 else None
+
+request_id = goal_request.get("request_id")
+request_kind = ""
+expected_waypoint_count = None
+if (
+    goal_request.get("schema") == "mosim.qgc_realtime_goal_request.v2"
+    and goal_request.get("source") == "qgc_mission_waypoint_plan"
+):
+    request_kind = "waypoint_plan"
+    requested_waypoints = goal_request.get("waypoints")
+    if not isinstance(requested_waypoints, list) or not requested_waypoints:
+        blockers.append("qgc_waypoint_plan_request_items_invalid")
+    else:
+        expected_waypoint_count = len(requested_waypoints)
+elif (
+    goal_request.get("schema") == "mosim.qgc_realtime_goal_request.v1"
+    and goal_request.get("source") == "qgc_plan_view"
+    and isinstance(goal_request.get("goal"), dict)
+):
+    request_kind = "single_goal"
+    expected_waypoint_count = 1
+else:
+    blockers.append("qgc_goal_request_identity_invalid")
+if not isinstance(request_id, str) or not request_id:
+    blockers.append("qgc_goal_request_id_missing")
 
 if metrics.get("run_terminal_status") != "interactive_passed" or metrics.get("status") != "passed":
     blockers.append("interactive_mission_not_passed")
 if metrics.get("blockers"):
     blockers.append("interactive_mission_has_blockers")
 counts = metrics.get("counts") if isinstance(metrics.get("counts"), dict) else {}
-if int(metrics.get("forwarded_goal_count", 0) or 0) < 1:
+forwarded_goal_count = nonnegative_int(metrics.get("forwarded_goal_count"))
+if forwarded_goal_count is None or forwarded_goal_count < (expected_waypoint_count or 1):
     blockers.append("forwarded_goal_missing")
 if int(counts.get("polytraj", 0) or 0) < 1:
     blockers.append("planner_future_polytraj_missing")
 if int(counts.get("planner_position_cmd", 0) or 0) < 1:
     blockers.append("planner_position_command_missing")
 handoffs = metrics.get("interactive_goal_handoffs")
-if not isinstance(handoffs, list) or not handoffs:
+if not isinstance(handoffs, list) or len(handoffs) < (expected_waypoint_count or 1):
     blockers.append("interactive_goal_handoff_missing")
 final_hover = metrics.get("interactive_final_hover")
 if not isinstance(final_hover, dict) or final_hover.get("reached") is not True:
     blockers.append("interactive_final_hover_not_reached")
 
-if goal_status.get("run_id") != run_id or goal_status.get("state") != "forwarded":
+if (
+    goal_status.get("run_id") != run_id
+    or goal_status.get("state") != "forwarded"
+    or goal_status.get("request_id") != request_id
+):
     blockers.append("qgc_goal_transport_not_forwarded")
 details = goal_status.get("details") if isinstance(goal_status.get("details"), dict) else {}
 if details.get("transport") != "live_ros1":
     blockers.append("qgc_goal_transport_not_live_ros1")
+if details.get("request_kind") != request_kind:
+    blockers.append("qgc_goal_request_kind_mismatch")
+status_waypoint_count = nonnegative_int(details.get("waypoint_count"))
+forwarded_waypoint_count = nonnegative_int(details.get("forwarded_waypoint_count"))
+if expected_waypoint_count is None or status_waypoint_count != expected_waypoint_count:
+    blockers.append("qgc_goal_waypoint_count_mismatch")
+if expected_waypoint_count is None or forwarded_waypoint_count != expected_waypoint_count:
+    blockers.append("qgc_waypoint_plan_not_fully_forwarded")
+if request_kind == "waypoint_plan":
+    interactive_plan = metrics.get("interactive_waypoint_plan")
+    interactive_plan = interactive_plan if isinstance(interactive_plan, dict) else {}
+    if interactive_plan.get("expected_goal_count") != expected_waypoint_count:
+        blockers.append("qgc_waypoint_plan_completion_size_mismatch")
+    if forwarded_goal_count is None or forwarded_goal_count < expected_waypoint_count:
+        blockers.append("qgc_waypoint_plan_mission_goal_missing")
+    if not isinstance(handoffs, list) or len(handoffs) < expected_waypoint_count:
+        blockers.append("qgc_waypoint_plan_mission_handoff_missing")
 goal = details.get("goal") if isinstance(details.get("goal"), dict) else {}
 goal_position = goal.get("position") if isinstance(goal.get("position"), dict) else {}
 if goal.get("frame_id") != "world" or not all(key in goal_position for key in ("x", "y")):
     blockers.append("qgc_goal_world_coordinate_missing")
+if (
+    goal.get("waypoint_count") != expected_waypoint_count
+    or goal.get("waypoint_index") != (expected_waypoint_count - 1 if expected_waypoint_count else None)
+):
+    blockers.append("qgc_goal_final_waypoint_metadata_mismatch")
 
 map_state = telemetry.get("map_state") if isinstance(telemetry.get("map_state"), dict) else {}
 if telemetry.get("run_id") != run_id or map_state.get("run_id") != run_id:
@@ -382,8 +523,11 @@ payload = {
     "blockers": blockers,
     "evidence": {
         "mission_metrics": str(metrics_path),
+        "qgc_goal_request": str(goal_request_path),
         "qgc_goal_status": str(goal_status_path),
         "operator_telemetry": str(telemetry_path),
+        "requested_waypoint_count": expected_waypoint_count,
+        "status_forwarded_waypoint_count": forwarded_waypoint_count,
         "forwarded_goal_count": metrics.get("forwarded_goal_count"),
         "planner_polytraj_count": counts.get("polytraj"),
         "planner_position_command_count": counts.get("planner_position_cmd"),
@@ -422,11 +566,25 @@ verify_rviz_qgc_display_phase1_acceptance() {
     --schema "$ACCEPTANCE_SCHEMA"
 }
 
+collect_process_tree() {
+  local parent_pid=$1
+  local child_pid
+  while IFS= read -r child_pid; do
+    [[ "${child_pid}" =~ ^[0-9]+$ ]] || continue
+    collect_process_tree "${child_pid}"
+    printf '%s\n' "${child_pid}"
+  done < <(pgrep -P "${parent_pid}" 2>/dev/null || true)
+}
+
 stop_process() {
   local variable_name=$1
   local pid=
+  local tree_pid
+  local alive
+  local -a process_tree=()
   case "$variable_name" in
     SIDECAR_PID) pid=$SIDECAR_PID ;;
+    GOAL_BRIDGE_PID) pid=$GOAL_BRIDGE_PID ;;
     INNER_PID) pid=$INNER_PID ;;
     ROSCORE_PID) pid=$ROSCORE_PID ;;
     *) return 1 ;;
@@ -434,20 +592,47 @@ stop_process() {
   if [ -z "$pid" ] || ! kill -0 "$pid" 2>/dev/null; then
     case "$variable_name" in
       SIDECAR_PID) SIDECAR_PID= ;;
+      GOAL_BRIDGE_PID) GOAL_BRIDGE_PID= ;;
       INNER_PID) INNER_PID= ;;
       ROSCORE_PID) ROSCORE_PID= ;;
     esac
     return
   fi
-  kill -INT "$pid" 2>/dev/null || true
+  while IFS= read -r tree_pid; do
+    [[ "${tree_pid}" =~ ^[0-9]+$ ]] || continue
+    process_tree+=("${tree_pid}")
+  done < <(collect_process_tree "${pid}")
+  process_tree+=("${pid}")
+
+  for tree_pid in "${process_tree[@]}"; do
+    kill -INT "${tree_pid}" 2>/dev/null || true
+  done
   for _ in $(seq 1 30); do
-    if ! kill -0 "$pid" 2>/dev/null; then break; fi
+    alive=false
+    for tree_pid in "${process_tree[@]}"; do
+      if kill -0 "${tree_pid}" 2>/dev/null; then
+        alive=true
+        break
+      fi
+    done
+    if [ "${alive}" = false ]; then break; fi
     sleep 0.25
   done
-  if kill -0 "$pid" 2>/dev/null; then kill -TERM "$pid" 2>/dev/null || true; fi
+  for tree_pid in "${process_tree[@]}"; do
+    if kill -0 "${tree_pid}" 2>/dev/null; then
+      kill -TERM "${tree_pid}" 2>/dev/null || true
+    fi
+  done
+  sleep 1
+  for tree_pid in "${process_tree[@]}"; do
+    if kill -0 "${tree_pid}" 2>/dev/null; then
+      kill -KILL "${tree_pid}" 2>/dev/null || true
+    fi
+  done
   wait "$pid" 2>/dev/null || true
   case "$variable_name" in
     SIDECAR_PID) SIDECAR_PID= ;;
+    GOAL_BRIDGE_PID) GOAL_BRIDGE_PID= ;;
     INNER_PID) INNER_PID= ;;
     ROSCORE_PID) ROSCORE_PID= ;;
   esac
@@ -471,6 +656,7 @@ finalize_operator_run() {
 cleanup() {
   local exit_code=$?
   set +e
+  stop_process GOAL_BRIDGE_PID
   stop_process SIDECAR_PID
   stop_process INNER_PID
   stop_process ROSCORE_PID
@@ -519,7 +705,7 @@ if manifest.get("operator_map_snapshot", {}).get("map_id") != "factory_l2":
     raise SystemExit("qgc_diff_realtime_goal_factory_map_required")
 PY
 
-if [ ! -f "$WORLD_FILE" ] || [ ! -f "$SUNRAY_GAZEBO_LAUNCH_FILE" ] || [ ! -d "$GAZEBO_MODEL_PATH" ]; then
+if [ ! -f "$WORLD_FILE" ] || [ ! -f "$SUNRAY_GAZEBO_LAUNCH_FILE" ] || [ ! -d "$BASE_GAZEBO_MODEL_PATH" ]; then
   echo "Factory L2 runtime source is incomplete" >&2
   write_runtime_status blocked qgc_diff_realtime_goal_factory_runtime_source_missing
   finalize_operator_run blocked qgc_diff_realtime_goal_factory_runtime_source_missing
@@ -715,6 +901,9 @@ fi
   echo "fastlio_build_timeout_s=$QGC_DIFF_FASTLIO_BUILD_TIMEOUT_S"
   echo "fastlio_sensor_start_timeout_s=$QGC_DIFF_FASTLIO_SENSOR_START_TIMEOUT_S"
   echo "px4_sim_speed_factor=$QGC_DIFF_PX4_SIM_SPEED_FACTOR"
+  echo "gazebo_model_overlay=${QGC_DIFF_GAZEBO_MODEL_OVERLAY:-none}"
+  echo "factory_model_path=$FACTORY_MODEL_PATH_FOR_PHASE"
+  echo "rviz_config=${RVIZ_CONFIG_FOR_PHASE:-none}"
   echo "takeoff_timeout_s=$QGC_DIFF_TAKEOFF_TIMEOUT_S"
   echo "publish_hover_during_takeoff=true"
   if [ "$RUN_MODE" = "rviz_qgc_display_phase1" ]; then
@@ -725,6 +914,7 @@ fi
     echo "manual_test_packet=$MANUAL_TEST_PACKET_FILE"
   else
     echo "qgc_input_topic=/move_base_simple/goal"
+    echo "qgc_goal_bridge=runtime_managed"
   fi
   echo "planner_input_topic=/goal_with_id"
   echo "replay_transport=disabled"
@@ -766,6 +956,9 @@ run_inner_gate() {
   GOAL4_TAKEOFF_TIMEOUT_S="$QGC_DIFF_TAKEOFF_TIMEOUT_S" \
   PLANNER_VARIANT=diff_planner \
   DIFF_INTERACTIVE_CLICK_GOAL=true \
+  DIFF_INTERACTIVE_GOAL_READY_TOPIC="$QGC_REALTIME_MISSION_READY_TOPIC" \
+  DIFF_INTERACTIVE_WAYPOINT_PLAN_SIZE_TOPIC="$QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC" \
+  DIFF_INTERACTIVE_REQUIRE_WAYPOINT_PLAN_SIZE="$QGC_INTERACTIVE_REQUIRE_WAYPOINT_PLAN_SIZE" \
   DIFF_AUTO_GOAL_IN_INTERACTIVE_REVIEW=false \
   DIFF_INTERACTIVE_REVIEW_HOLD_S=0 \
   DIFF_INTERACTIVE_AUTO_PASS_GOAL_COUNT="$QGC_DIFF_AUTO_PASS_GOAL_COUNT" \
@@ -801,9 +994,13 @@ run_inner_gate() {
   EGO_MAP_SIZE_X="$QGC_DIFF_MAP_SIZE_X" \
   EGO_MAP_SIZE_Y="$QGC_DIFF_MAP_SIZE_Y" \
   EGO_MAP_SIZE_Z="$QGC_DIFF_MAP_SIZE_Z" \
+  EGO_MAX_VEL=0.6 \
+  EGO_MAX_JERK=2.0 \
   EGO_VIRTUAL_CEIL_HEIGHT=1.6 \
+  EGO_VISUALIZATION_FORWARD_ONLY="$EGO_VISUALIZATION_FORWARD_ONLY_FOR_PHASE" \
   ENABLE_POINTCLOUD_REVIEW_ACCUMULATION=false \
   ENABLE_OCCUPANCY_REVIEW_ACCUMULATION=false \
+  FACTORY_MODEL_PATH="$FACTORY_MODEL_PATH_FOR_PHASE" \
   TARGET_X="$SUNRAY_UAV_INIT_X" \
   TARGET_Y="$SUNRAY_UAV_INIT_Y" \
   TARGET_Z=1.0 \
@@ -983,6 +1180,47 @@ wait_for_interactive_chain() {
   return 1
 }
 
+start_qgc_realtime_goal_bridge() {
+  if [ "$RUN_MODE" != "qgc_realtime_goal" ]; then
+    return 0
+  fi
+  local status_file="$OPERATOR_RUN_DIR/operator_goal/STATUS.json"
+  mkdir -p "$(dirname "$status_file")"
+  (
+    set +u
+    source /opt/ros/noetic/setup.bash
+    source "$GOAL4_DIFF_PLANNER_WS/devel/setup.bash"
+    set -u
+    exec python3 "$PROJECT_ROOT/Scripts/sunray/qgc_realtime_goal_bridge.py" \
+      --run-dir "$OPERATOR_RUN_DIR" \
+      --coordinate-evidence "$OPERATOR_RUN_DIR/OPERATOR_MAP_COORDINATE_EVIDENCE.json" \
+      --active-pointer "$PROJECT_ROOT/Results/ui_platform/qgc_active_run.json" \
+      --goal-topic /move_base_simple/goal \
+      --goal-frame world \
+      --mission-ready-topic "$QGC_REALTIME_MISSION_READY_TOPIC" \
+      --waypoint-plan-size-topic "$QGC_REALTIME_WAYPOINT_PLAN_SIZE_TOPIC" \
+      --max-waypoint-plan-duration-s "$QGC_REALTIME_WAYPOINT_PLAN_SIM_DURATION_S" \
+      --max-waypoint-plan-wall-stall-s "$QGC_REALTIME_WAYPOINT_PLAN_WALL_STALL_S"
+  ) > "$RESULT_DIR/qgc_realtime_goal_bridge.log" 2>&1 &
+  GOAL_BRIDGE_PID=$!
+
+  local deadline=$((SECONDS + 15))
+  while (( SECONDS < deadline )); do
+    if ! kill -0 "$GOAL_BRIDGE_PID" 2>/dev/null; then
+      wait "$GOAL_BRIDGE_PID" 2>/dev/null || true
+      GOAL_BRIDGE_PID=
+      return 1
+    fi
+    if [ -s "$status_file" ]; then
+      printf 'qgc_realtime_goal_bridge_pid=%s\n' "$GOAL_BRIDGE_PID" \
+        > "$RUNTIME_RESULT_DIR/qgc_realtime_goal_bridge.pid"
+      return 0
+    fi
+    sleep 0.2
+  done
+  return 1
+}
+
 if ! wait_for_planner_launch; then
   echo "QGC planning backend did not report started before startup timeout" >&2
   if [ -n "$INNER_EXIT_CODE" ]; then
@@ -1010,6 +1248,13 @@ if ! python3 "$PROJECT_ROOT/Scripts/ui/prepare_operator_run.py" \
   echo "QGC realtime-goal active-run pointer could not advance after planner startup" >&2
   write_runtime_status blocked qgc_diff_realtime_goal_active_pointer_activate_failed
   finalize_operator_run blocked qgc_diff_realtime_goal_active_pointer_activate_failed
+  exit 5
+fi
+
+if ! start_qgc_realtime_goal_bridge; then
+  echo "QGC realtime-goal bridge did not become ready" >&2
+  write_runtime_status blocked qgc_realtime_goal_bridge_start_failed
+  finalize_operator_run blocked qgc_realtime_goal_bridge_start_failed
   exit 5
 fi
 
@@ -1063,9 +1308,9 @@ if [ "$RUN_MODE" = "rviz_qgc_display_phase1" ]; then
   echo "Manual test packet: $MANUAL_TEST_PACKET_FILE"
 else
   write_runtime_status running qgc_diff_realtime_goal_interactive_chain_ready
-  echo "QGC Plan Goal is now available. Copy and run the bridge command from QGC, then select Plan Goal on the Factory L2 map." \
+  echo "QGC Plan Goal is now available. Select Plan Goal on the Factory L2 map." \
     | tee "$READY_FILE"
-  echo "The bridge publishes only /move_base_simple/goal; planner and vehicle acceptance require separate runtime evidence."
+  echo "The runtime-owned bridge publishes only /move_base_simple/goal; planner and vehicle acceptance require separate runtime evidence."
 fi
 
 set +e

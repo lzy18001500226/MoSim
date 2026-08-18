@@ -48,7 +48,6 @@ UE5/MoSimSceneLibrary/*.sln
 
 # Codex local state
 .codex/*
-!.codex/hooks.json
 .mcp.json
 .tmp/
 
@@ -453,3 +452,19 @@ Docs/报告/MoSim_仿真分析报告_题注公式修正版_v6_20260802.docx
 Docs/报告/MoSim_仿真分析报告_当前口径更新版_20260803.docx
 Docs/报告/MoSim_仿真分析报告_当前口径更新版_v2_20260803.docx
 Docs/报告/MoSim_仿真分析报告_当前口径更新版_v3_20260803.docx
+
+# Generated course report exceeds the conservative Git-host file limit.
+Docs/课设/MoSim_项目综合实践III_国赛模板版.docx
+Docs/课设/MoSim_软件构造课程设计_国赛模板版.docx
+Docs/课设/MoSim_软件构造课程设计.docx
+Docs/课设/MoSim_软件构造课程设计.pdf
+Docs/课设/MoSim_项目综合实践III.docx
+Docs/课设/MoSim_项目综合实践III.pdf
+Docs/课设/MoSim_用户手册.docx
+Docs/课设/MoSim_用户手册.pdf
+
+# Large local visualization meshes; regenerate from the project map/reference
+# sources instead of committing duplicate binary payloads.
+Models/MoSimQuadrotorModel/Environment/Maps/Resources/Visualization/map_open_blocks_static_terrain_band_*_ground_0p2.stl
+References/Lab/localization_slam/MARSIM-ubuntu20/Utils/odom_visualization/meshes/f250.dae
+src/perception/MARSIM-ubuntu20/Utils/odom_visualization/meshes/f250.dae

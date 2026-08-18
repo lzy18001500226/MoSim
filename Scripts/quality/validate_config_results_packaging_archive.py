@@ -11,7 +11,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_MANIFEST = ROOT / "Docs" / "Design" / "config_results_packaging_archive_manifest_20260731.json"
+DEFAULT_MANIFEST = ROOT / "Docs" / "Design" / "架构" / "03_测试调参与证据" / "交付与审计" / "config_results_packaging_archive_manifest_20260731.json"
 SECTIONS = ("source_release", "evidence_bundles", "archive_candidates", "owner_locked")
 ALLOWED_ACTIONS = {
     "keep_in_source_release",
@@ -22,6 +22,8 @@ ALLOWED_ACTIONS = {
     "exclude_from_source_release",
     "owner_locked",
 }
+LX_SYMLINK_POLICY = "record_lx_symlink_metadata"
+LX_SYMLINK_TAG = "0xa000001d"
 
 
 def parse_args() -> argparse.Namespace:
@@ -46,6 +48,48 @@ def load_manifest(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError("manifest root must be an object")
     return data
+
+
+def validate_reparse_point_metadata(entry: dict[str, Any], errors: list[str]) -> None:
+    policy = entry.get("reparse_point_policy")
+    points = entry.get("reparse_points")
+    if policy is None and points is None:
+        return
+    entry_id = entry.get("id") or "<unknown>"
+    if policy != LX_SYMLINK_POLICY:
+        errors.append(f"archive_candidates:{entry_id}: unsupported reparse_point_policy")
+        return
+    if not isinstance(points, list) or not points:
+        errors.append(f"archive_candidates:{entry_id}: reparse_points must be a non-empty list")
+        return
+    paths = entry.get("paths", [])
+    seen: set[str] = set()
+    for point in points:
+        if not isinstance(point, dict):
+            errors.append(f"archive_candidates:{entry_id}: reparse-point entry must be an object")
+            continue
+        source = point.get("source_relpath")
+        tag = point.get("reparse_tag")
+        digest = point.get("reparse_data_sha256")
+        target = point.get("target")
+        if not all(isinstance(value, str) and value for value in (source, tag, digest, target)):
+            errors.append(f"archive_candidates:{entry_id}: incomplete reparse-point metadata")
+            continue
+        try:
+            source_path = as_repo_path(source)
+        except ValueError as exc:
+            errors.append(f"archive_candidates:{entry_id}: {exc}")
+            continue
+        root_paths = [as_repo_path(value) for value in paths]
+        if not any(source_path.is_relative_to(root) for root in root_paths):
+            errors.append(f"archive_candidates:{entry_id}: reparse point is outside candidate paths: {source}")
+        if source in seen:
+            errors.append(f"archive_candidates:{entry_id}: duplicate reparse-point path: {source}")
+        seen.add(source)
+        if tag != LX_SYMLINK_TAG:
+            errors.append(f"archive_candidates:{entry_id}: unsupported reparse-point tag: {tag}")
+        if len(digest) != 64 or any(character not in "0123456789abcdef" for character in digest.lower()):
+            errors.append(f"archive_candidates:{entry_id}: invalid reparse-point payload SHA-256")
 
 
 def validate_entry(section: str, entry: Any, errors: list[str], checked_paths: list[str]) -> None:
@@ -79,6 +123,8 @@ def validate_entry(section: str, entry: Any, errors: list[str], checked_paths: l
         errors.append(f"{section}:{entry_id or '<unknown>'}: preconditions must be a non-empty string list")
     if action == "owner_locked" and not isinstance(entry.get("owner"), str):
         errors.append(f"{section}:{entry_id or '<unknown>'}: owner_locked entry needs an owner")
+    if section == "archive_candidates":
+        validate_reparse_point_metadata(entry, errors)
 
 
 def main() -> int:

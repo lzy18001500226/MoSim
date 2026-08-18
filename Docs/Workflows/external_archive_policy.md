@@ -5,21 +5,22 @@
 
 ## Canonical Root
 
-The only default destination for new MoSim archive batches is:
+The only allowed destination for new MoSim archive batches is:
 
 ```text
 E:\刘致远18001500226\MoSim_Archive\<archive-id>\
 ```
 
-`C:\Users\HP\Desktop\MoSim_Archive` is a retained legacy source/archive
-location. It is not a destination for new batches and its existence does not
-authorize a source deletion.
+`C:\Users\HP\Desktop\MoSim_Archive` is a retired historical source/archive
+location. It is not a destination for new batches and must not be recreated.
+Historical audit records may retain it as a source identity.
 
 ## Required Preconditions
 
 1. Identify one candidate batch and its repository-relative source paths.
 2. Complete the applicable dependency/reference audit before moving anything.
-3. Copy to a new, uniquely named E: batch first. Keep the source intact.
+3. Copy only to one new, uniquely named direct child of the E: root above.
+   Active archivers reject all other external roots and nested destinations.
 4. Write `ARCHIVE_README.md`, `ARCHIVE_MANIFEST.json`, and `SHA256SUMS.txt` in
    the destination batch.
 5. Verify every destination file against the source SHA-256 values.
@@ -51,5 +52,5 @@ E:\刘致远18001500226\MoSim_Archive\20260810_desktop_archive_reconciliation\
 
 Its `ARCHIVE_MANIFEST.json` records `349` verified files,
 `1,605,933,452` source bytes, zero missing files, zero source or target hash
-mismatches, and `source_deletion_authorized: false`. This receipt preserves
-the C: source; it does not authorize its removal.
+mismatches, and `source_deletion_authorized: true`. After the completed
+revalidation, the C: source was removed under the recorded user authorization.

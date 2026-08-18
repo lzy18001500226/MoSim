@@ -72,11 +72,23 @@ def _payload(event: str, session_id: str, turn_id: str, **extra: object) -> dict
     }
 
 
-def _write_transcript(path: Path, records: list[dict[str, object]]) -> None:
+def _write_transcript(
+    path: Path, records: list[dict[str, object]], *, session_id: str | None = None
+) -> None:
+    if session_id:
+        records = [{"type": "session_meta", "payload": {"id": session_id}}, *records]
     path.write_text(
         "\n".join(json.dumps(record, ensure_ascii=False) for record in records) + "\n",
         encoding="utf-8",
     )
+
+
+def _recovery_decisions(context_root: Path, session_id: str) -> list[dict[str, object]]:
+    decision_dir = context_root / session_id / "recovery_decisions"
+    return [
+        json.loads(path.read_text(encoding="utf-8"))
+        for path in sorted(decision_dir.glob("*.json"))
+    ]
 
 
 def test_project_does_not_register_duplicate_hooks() -> None:
@@ -128,6 +140,43 @@ def test_missing_compact_pack_remains_unresolved_without_a_stop_continuation() -
         assert _run_hook(_payload("Stop", session_id, turn_id), context_root) == {}
 
 
+def test_recovery_decisions_are_prompt_free_and_observable() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        context_root = Path(temporary)
+        session_id = "session-recovery-decision-audit"
+        turn_id = "turn-direct"
+        prompt = "恢复当前任务且不得在审计记录中写入此提示正文。"
+
+        _run_hook(_payload("UserPromptSubmit", session_id, turn_id, prompt=prompt), context_root)
+        _run_hook(_payload("PreCompact", session_id, "turn-execution", trigger="auto"), context_root)
+        _run_hook(_payload("SessionStart", session_id, "turn-execution", source="compact"), context_root)
+        assert _run_hook(
+            _payload("SessionStart", session_id, "turn-execution", source="compact"), context_root
+        ) == {}
+
+        decisions = _recovery_decisions(context_root, session_id)
+        injected = next(item for item in decisions if item["outcome"] == "recovery_context_injected")
+        assert injected["kind"] == "mosim_recovery_decision"
+        assert injected["boundary"] == "compaction"
+        assert injected["direct_turn_id"] == turn_id
+        assert injected["capture_source"] == "user_prompt_submit"
+        assert any(item["outcome"] == "recovery_suppressed_after_claim_or_newer_direct_user" for item in decisions)
+        assert all(prompt not in json.dumps(item, ensure_ascii=False) for item in decisions)
+
+
+def test_reset_unresolved_message_and_decision_share_the_compact_verifier_language() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        context_root = Path(temporary)
+        session_id = "session-reset-unresolved-audit"
+        reset = _run_hook(_payload("SessionStart", session_id, "reset-turn", source="resume"), context_root)
+
+        context = reset["hookSpecificOutput"]["additionalContext"]
+        assert "No bounded task recovery pack or recognized transcript_path user message was available" in context
+        decisions = _recovery_decisions(context_root, session_id)
+        assert decisions[-1]["boundary"] == "resume"
+        assert decisions[-1]["outcome"] == "continuity_unresolved"
+
+
 def test_stop_never_generates_a_synthetic_user_prompt() -> None:
     with tempfile.TemporaryDirectory() as temporary:
         context_root = Path(temporary)
@@ -146,6 +195,297 @@ def test_stop_never_generates_a_synthetic_user_prompt() -> None:
             context_root,
         )
         assert no_continuation == {}
+
+
+def test_generated_turn_aborted_envelope_does_not_replace_direct_user_input() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        context_root = Path(temporary)
+        session_id = "session-turn-aborted-submit"
+        direct_turn = "turn-direct"
+        aborted_turn = "turn-aborted"
+        execution_turn = "turn-execution"
+        direct_prompt = "修复当前恢复路径，不要读取其他任务。"
+        aborted_prompt = (
+            "<turn_aborted>\n"
+            "The user interrupted the previous turn on purpose. Any running unified exec processes may still be running in the background. "
+            "If any tools/commands were aborted, they may have partially executed.\n"
+            "</turn_aborted>"
+        )
+
+        _run_hook(
+            _payload("UserPromptSubmit", session_id, direct_turn, prompt=direct_prompt),
+            context_root,
+        )
+        aborted = _run_hook(
+            _payload("UserPromptSubmit", session_id, aborted_turn, prompt=aborted_prompt),
+            context_root,
+        )
+        assert aborted["decision"] == "block"
+        assert "turn-aborted envelope" in aborted["reason"]
+
+        active = json.loads((context_root / session_id / "active.json").read_text(encoding="utf-8"))
+        assert active["active_turn_id"] == direct_turn
+        assert not (context_root / session_id / "turns" / f"{aborted_turn}.json").exists()
+
+        _run_hook(_payload("PreCompact", session_id, execution_turn, trigger="auto"), context_root)
+        recovered = _run_hook(
+            _payload("SessionStart", session_id, execution_turn, source="compact"),
+            context_root,
+        )
+        context = recovered["hookSpecificOutput"]["additionalContext"]
+        assert direct_prompt in context
+        assert aborted_prompt not in context
+
+
+def test_generated_project_context_does_not_replace_direct_user_input() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        context_root = Path(temporary)
+        session_id = "session-project-context-submit"
+        direct_turn = "turn-direct"
+        project_turn = "turn-project-context"
+        execution_turn = "turn-execution"
+        direct_prompt = "修复当前 RViz 双视图，不要切换任务。"
+        project_prompt = (
+            "# AGENTS.md instructions for C:\\Users\\HP\\Desktop\\MoSim\n\n"
+            "<INSTRUCTIONS>\nProject guardrails only.\n</INSTRUCTIONS>\n"
+            "<environment_context>\nworkspace context\n</environment_context>"
+        )
+
+        _run_hook(_payload("UserPromptSubmit", session_id, direct_turn, prompt=direct_prompt), context_root)
+        project = _run_hook(
+            _payload("UserPromptSubmit", session_id, project_turn, prompt=project_prompt), context_root
+        )
+        project_context = project["hookSpecificOutput"]["additionalContext"]
+        assert "App-generated project guidance" in project_context
+        assert direct_prompt in project_context
+
+        active = json.loads((context_root / session_id / "active.json").read_text(encoding="utf-8"))
+        assert active["active_turn_id"] == direct_turn
+        assert not (context_root / session_id / "turns" / f"{project_turn}.json").exists()
+
+        _run_hook(_payload("PreCompact", session_id, execution_turn, trigger="auto"), context_root)
+        recovered = _run_hook(
+            _payload("SessionStart", session_id, execution_turn, source="compact"), context_root
+        )
+        context = recovered["hookSpecificOutput"]["additionalContext"]
+        assert direct_prompt in context
+        assert project_prompt not in context
+
+
+def test_clear_and_resume_recover_the_active_direct_user_input_once() -> None:
+    for source in ("clear", "resume"):
+        with tempfile.TemporaryDirectory() as temporary:
+            context_root = Path(temporary)
+            session_id = f"session-{source}-recovery"
+            direct_prompt = f"{source} 后继续修复当前任务，不要切换工作。"
+            _run_hook(
+                _payload("UserPromptSubmit", session_id, "direct-turn", prompt=direct_prompt), context_root
+            )
+
+            reset = _run_hook(
+                _payload("SessionStart", session_id, "reset-turn", source=source), context_root
+            )
+            context = reset["hookSpecificOutput"]["additionalContext"]
+            assert f"{source} continuation" in context
+            assert direct_prompt in context
+            assert "session reset" in context
+
+            assert _run_hook(
+                _payload("SessionStart", session_id, "reset-turn", source=source), context_root
+            ) == {}
+
+
+def test_clear_transcript_fallback_is_claimed_once_after_creating_the_direct_record() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        context_root = Path(temporary) / "context"
+        transcript = Path(temporary) / "rollout.jsonl"
+        session_id = "session-clear-transcript-recovery"
+        prompt = "清除历史后继续修复当前任务。"
+        _write_transcript(
+            transcript,
+            [
+                {
+                    "type": "response_item",
+                    "payload": {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": prompt}],
+                    },
+                }
+            ],
+            session_id=session_id,
+        )
+
+        first = _run_hook(
+            _payload(
+                "SessionStart",
+                session_id,
+                "reset-turn",
+                source="clear",
+                transcript_path=str(transcript),
+            ),
+            context_root,
+        )
+        assert prompt in first["hookSpecificOutput"]["additionalContext"]
+        assert _run_hook(
+            _payload(
+                "SessionStart",
+                session_id,
+                "reset-turn",
+                source="clear",
+                transcript_path=str(transcript),
+            ),
+            context_root,
+        ) == {}
+
+
+def test_context_recovery_writes_no_temporary_state_files() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        context_root = Path(temporary)
+        session_id = "session-no-temporary-state-files"
+        _run_hook(
+            _payload("UserPromptSubmit", session_id, "direct-turn", prompt="修复当前恢复写入。"),
+            context_root,
+        )
+        _run_hook(_payload("PreCompact", session_id, "execution-turn", trigger="auto"), context_root)
+        _run_hook(_payload("SessionStart", session_id, "execution-turn", source="compact"), context_root)
+
+        assert not list((context_root / session_id).rglob("*.tmp"))
+
+
+def test_project_context_transcript_recovers_the_prior_direct_user_input() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        context_root = Path(temporary) / "context"
+        transcript = Path(temporary) / "rollout.jsonl"
+        session_id = "session-project-context-transcript"
+        direct_prompt = "继续修复当前 RViz 视图，不要切换任务。"
+        project_prompt = (
+            "# AGENTS.md instructions for C:\\Users\\HP\\Desktop\\MoSim\n\n"
+            "<INSTRUCTIONS>\nProject guardrails only.\n</INSTRUCTIONS>"
+        )
+
+        _run_hook(_payload("PreCompact", session_id, "execution-turn", trigger="auto"), context_root)
+        _write_transcript(
+            transcript,
+            [
+                {
+                    "type": "response_item",
+                    "payload": {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": direct_prompt}],
+                    },
+                },
+                {
+                    "type": "response_item",
+                    "payload": {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": project_prompt}],
+                    },
+                }
+            ],
+            session_id=session_id,
+        )
+
+        recovered = _run_hook(
+            _payload(
+                "SessionStart",
+                session_id,
+                "execution-turn",
+                source="compact",
+                transcript_path=str(transcript),
+            ),
+            context_root,
+        )
+        context = recovered["hookSpecificOutput"]["additionalContext"]
+        assert direct_prompt in context
+        assert project_prompt not in context
+        record = json.loads(
+            (context_root / session_id / "turns" / "execution-turn.json").read_text(encoding="utf-8")
+        )
+        assert record["capture_source"] == "transcript_path_fallback"
+
+
+def test_turn_aborted_envelope_is_not_recovered_from_legacy_pack_or_transcript() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        context_root = Path(temporary) / "context"
+        transcript = Path(temporary) / "rollout.jsonl"
+        session_id = "session-turn-aborted-legacy"
+        aborted_turn = "turn-aborted"
+        aborted_prompt = "<turn_aborted>\nThe user interrupted the previous turn on purpose.\n</turn_aborted>"
+        prior_prompt = "旧的直接任务不得被中断信封替代。"
+        session_dir = context_root / session_id
+        turns_dir = session_dir / "turns"
+        turns_dir.mkdir(parents=True)
+        (turns_dir / f"{aborted_turn}.json").write_text(
+            json.dumps(
+                {
+                    "kind": "mosim_direct_user_input",
+                    "turn_id": aborted_turn,
+                    "user_prompt": aborted_prompt,
+                },
+                ensure_ascii=False,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        (session_dir / "active.json").write_text(
+            json.dumps(
+                {
+                    "active_turn_id": aborted_turn,
+                    "last_captured_turn_id": aborted_turn,
+                    "last_compaction": {
+                        "compaction_id": "compaction-turn-aborted",
+                        "direct_turn_id": aborted_turn,
+                        "recovery_source": "matching_direct_turn",
+                        "current_turn_capture_missing": False,
+                    },
+                },
+                ensure_ascii=False,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        _write_transcript(
+            transcript,
+            [
+                {
+                    "type": "response_item",
+                    "payload": {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": prior_prompt}],
+                    },
+                },
+                {
+                    "type": "response_item",
+                    "payload": {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": aborted_prompt}],
+                    },
+                },
+            ],
+            session_id=session_id,
+        )
+
+        started = _run_hook(
+            _payload(
+                "SessionStart",
+                session_id,
+                "turn-execution",
+                source="compact",
+                transcript_path=str(transcript),
+            ),
+            context_root,
+        )
+        context = started["hookSpecificOutput"]["additionalContext"]
+        assert "[MoSim Task Recovery Pack]" not in context
+        assert aborted_prompt not in context
+        assert prior_prompt not in context
+        assert "No bounded task recovery pack" in context
+        assert "do not end silently" in context
 
 
 def test_transcript_fallback_recovers_only_the_latest_direct_user_message() -> None:
@@ -197,6 +537,7 @@ def test_transcript_fallback_recovers_only_the_latest_direct_user_message() -> N
                     },
                 },
             ],
+            session_id=session_id,
         )
 
         session_start = _payload(
@@ -221,6 +562,114 @@ def test_transcript_fallback_recovers_only_the_latest_direct_user_message() -> N
         assert record["capture_source"] == "transcript_path_fallback"
         assert active["active_turn_id"] == compacted_turn
         assert _run_hook(_payload("Stop", session_id, "turn-after-compact"), context_root) == {}
+
+
+def test_transcript_fallback_rejects_missing_or_foreign_session_identity() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        temporary_root = Path(temporary)
+        current_session = "session-current"
+        foreign_prompt = "不得导入其他对话的任务。"
+
+        for label, transcript_session in (("missing", None), ("foreign", "session-foreign")):
+            context_root = temporary_root / label / "context"
+            transcript = temporary_root / label / "rollout.jsonl"
+            _run_hook(_payload("PreCompact", current_session, "execution-turn", trigger="auto"), context_root)
+            _write_transcript(
+                transcript,
+                [
+                    {
+                        "type": "response_item",
+                        "payload": {
+                            "type": "message",
+                            "role": "user",
+                            "content": [{"type": "input_text", "text": foreign_prompt}],
+                        },
+                    }
+                ],
+                session_id=transcript_session,
+            )
+
+            started = _run_hook(
+                _payload(
+                    "SessionStart",
+                    current_session,
+                    "execution-turn",
+                    source="compact",
+                    transcript_path=str(transcript),
+                ),
+                context_root,
+            )
+            context = started["hookSpecificOutput"]["additionalContext"]
+            assert foreign_prompt not in context, label
+            assert "direct user input for this compacted turn was not captured" in context
+            assert not (context_root / current_session / "turns" / "execution-turn.json").exists()
+
+
+def test_transcript_fallback_rejects_mixed_or_conflicting_session_identity() -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+        temporary_root = Path(temporary)
+        current_session = "session-current"
+        foreign_session = "session-foreign"
+        foreign_prompt = "不得导入身份冲突对话的任务。"
+
+        mixed_context_root = temporary_root / "mixed" / "context"
+        mixed_transcript = temporary_root / "mixed" / "rollout.jsonl"
+        _run_hook(_payload("PreCompact", current_session, "execution-turn", trigger="auto"), mixed_context_root)
+        _write_transcript(
+            mixed_transcript,
+            [
+                {
+                    "type": "response_item",
+                    "payload": {
+                        "type": "message",
+                        "role": "user",
+                        "session_id": foreign_session,
+                        "content": [{"type": "input_text", "text": foreign_prompt}],
+                    },
+                }
+            ],
+            session_id=current_session,
+        )
+        mixed = _run_hook(
+            _payload(
+                "SessionStart",
+                current_session,
+                "execution-turn",
+                source="compact",
+                transcript_path=str(mixed_transcript),
+            ),
+            mixed_context_root,
+        )
+        assert foreign_prompt not in mixed["hookSpecificOutput"]["additionalContext"]
+
+        conflicting_context_root = temporary_root / "conflicting" / "context"
+        conflicting_transcript = temporary_root / "conflicting" / "rollout.jsonl"
+        conflicting_transcript.parent.mkdir(parents=True)
+        _write_transcript(
+            conflicting_transcript,
+            [
+                {
+                    "type": "response_item",
+                    "payload": {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": foreign_prompt}],
+                    },
+                }
+            ],
+            session_id=current_session,
+        )
+        conflicting_payload = _payload(
+            "SessionStart",
+            current_session,
+            "execution-turn",
+            source="compact",
+            transcript_path=str(conflicting_transcript),
+        )
+        conflicting_payload["thread_id"] = foreign_session
+        conflicting = _run_hook(conflicting_payload, conflicting_context_root)
+        assert foreign_prompt not in conflicting["hookSpecificOutput"]["additionalContext"]
+        assert not (conflicting_context_root / current_session).exists()
 
 
 def test_execution_turn_preserves_the_latest_captured_direct_record() -> None:
@@ -1280,11 +1729,15 @@ def test_recovery_state_redacts_secret_like_user_input() -> None:
                 "UserPromptSubmit",
                 "session-redaction",
                 "turn-secret",
-                prompt="检查 https://example.test/report?access_token=do-not-store api_key=also-do-not-store",
+                prompt=(
+                    "检查 https://example.test/report?access_token=do-not-store "
+                    "api_key=also-do-not-store Authorization: Bearer authorization-do-not-store"
+                ),
             ),
             context_root,
         )
         record = (context_root / "session-redaction" / "turns" / "turn-secret.json").read_text(encoding="utf-8")
         assert "do-not-store" not in record
         assert "also-do-not-store" not in record
+        assert "authorization-do-not-store" not in record
         assert "[REDACTED]" in record

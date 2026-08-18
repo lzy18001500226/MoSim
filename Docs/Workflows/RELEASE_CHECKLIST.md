@@ -91,7 +91,7 @@ Config/control_platform/model_studio_task_routes_v1.toml
 打开”，不表示每条已经通过性能门限、七场景或代码生成。
 
 46 条 MWORKS 实现模块的逐项 `current_model_file` 存在性清单见
-`Docs/Design/控制器实现和Studio入口计数依据_P0_20260731.md`。
+`Docs/Design/架构/03_测试调参与证据/交付与审计/控制器实现和Studio入口计数依据_P0_20260731.md`。
 
 | 控制器 ID | Runner 全类名 | 文件相对路径 | 输出边界 |
 |---|---|---|---|
@@ -287,8 +287,8 @@ px4ctrl C 源、构建文件与共享库证据的完整哈希清单位于
 
 源代码包与证据包必须分开制作：根 `.gitignore` 排除了 `Results/`，因此克隆仓库
 不能替代证据交付。当前的非破坏性分类、保留路径和归档前置条件见
-`Docs/Design/config_results_packaging_archive_audit_20260731.md`；机器可读清单为
-`Docs/Design/config_results_packaging_archive_manifest_20260731.json`。
+`Docs/Design/架构/03_测试调参与证据/交付与审计/config_results_packaging_archive_audit_20260731.md`；机器可读清单为
+`Docs/Design/架构/03_测试调参与证据/交付与审计/config_results_packaging_archive_manifest_20260731.json`。
 
 打包前运行：
 

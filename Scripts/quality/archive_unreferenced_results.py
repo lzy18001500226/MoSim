@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Archive verified untracked Results directories outside the repository.
+"""Archive verified untracked Results directories under the canonical external root.
 
 This is deliberately narrower than a generic cleanup tool.  It accepts only
 untracked directories under ``Results/``, copies them to a new external archive
@@ -20,6 +20,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from external_archive_root import validate_external_archive_destination
+
 
 ROOT = Path(__file__).resolve().parents[2]
 TOMBSTONE_NAME = "ARCHIVED_EXTERNALLY.md"
@@ -28,7 +30,12 @@ TOMBSTONE_NAME = "ARCHIVED_EXTERNALLY.md"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--archive-id", required=True)
-    parser.add_argument("--destination", required=True, type=Path)
+    parser.add_argument(
+        "--destination",
+        required=True,
+        type=Path,
+        help=r"archive batch directly under E:\刘致远18001500226\MoSim_Archive",
+    )
     parser.add_argument(
         "--source",
         action="append",
@@ -88,19 +95,11 @@ def resolve_source(value: str) -> Path:
 
 
 def resolve_destination(value: Path, *, must_exist: bool = False) -> Path:
-    destination = value.expanduser().resolve(strict=False)
-    try:
-        destination.relative_to(ROOT.resolve())
-    except ValueError:
-        pass
-    else:
-        raise ValueError("archive destination must be outside the repository")
-    if must_exist:
-        if not destination.is_dir():
-            raise ValueError(f"existing archive destination does not exist: {destination}")
-    elif destination.exists():
-        raise ValueError(f"archive destination already exists: {destination}")
-    return destination
+    return validate_external_archive_destination(
+        value,
+        repository_root=ROOT,
+        must_exist=must_exist,
+    )
 
 
 def resolve_staging(value: Path, destination: Path) -> Path:
