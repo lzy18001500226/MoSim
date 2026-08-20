@@ -15,6 +15,7 @@ import hashlib
 import importlib.util
 import json
 import math
+import re
 import sys
 import tomllib
 from datetime import datetime, timezone
@@ -27,6 +28,7 @@ PROFILE_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_experiment
 CONTRACT_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_injection_contract_v2.json"
 DRIVER_PATH = ROOT / "Scripts" / "mworks" / "run_seven_scenario_ab.py"
 TASK_ROUTE_PATH = ROOT / "Config" / "control_platform" / "model_studio_task_routes_v1.toml"
+CONTROL_SCHEME_CATALOG_PATH = ROOT / "Config" / "control_platform" / "control_scheme_catalog.json"
 DEFAULT_OUTPUT = ROOT / "Results" / "ui_platform" / "model_studio_task_handoffs" / "latest.json"
 TASK_CONFIG_SCHEMA = "mosim.model_studio.task_config.v1"
 TASK_ROUTE_SCHEMA = "mosim.model_studio_task_routes.v1"
@@ -52,6 +54,34 @@ V2_EVIDENCE_CONTROLLER_IDS = frozenset({"official_pid", "px4ctrl"})
 MAP_IDS = frozenset({"blank", "openblocks"})
 EPSILON = 1e-9
 DEFAULT_INJECTION_START_S = 15.0
+MODEL_DECLARATION_PATTERN = re.compile(r"^model\s+([A-Za-z_]\w*)", re.MULTILINE)
+SCENARIO_PARAMETER_PATTERN = re.compile(
+    r"^\s*parameter\s+Integer\s+scenario_mode\b[^=]*=\s*[^;]+;?",
+    re.MULTILINE,
+)
+REFERENCE_BINDING_PATTERN = re.compile(
+    r"MultiModeTrajectory\s+reference\s*\(\s*scenario_mode\s*=\s*scenario_mode\b",
+    re.MULTILINE,
+)
+COMMON_RUNNER_PARAMETER_NAMES = (
+    "gust_force",
+    "gust_start_s",
+    "gust_duration_s",
+    "mass_scale",
+    "inertia_scale",
+    "rotor_effectiveness",
+    "fault_start_s",
+    "fault_rotor_index",
+    "fault_rotor_effectiveness",
+)
+SCENARIO_MODE_BY_TRAJECTORY = {
+    "ClimbPath": 0,
+    "ClimbTrajectory": 0,
+    "HoverHold": 1,
+    "StepResponse": 2,
+    "Figure8": 3,
+    "SpiralAscent": 4,
+}
 
 SPECIAL_ROUTES: dict[str, dict[str, Any]] = {
     "single_uav_autonomous_avoidance": {
@@ -67,7 +97,7 @@ SPECIAL_ROUTES: dict[str, dict[str, Any]] = {
         "vehicle_count": 3,
         "map_id": "blank",
         "controller_ids": frozenset({"px4ctrl"}),
-        "base_model": "MoSimQuadrotorModel.Experiment.Runners.Formation.Px4CtrlThreeUavFigure8Runner",
+        "base_model": "MoSimQuadrotorModel.Experiment.Formation.Px4Ctrl.ThreeUavPx4CtrlFormationRunner",
         "duration_s": 50.0,
         "injection_supported": True,
         "configuration_kind": "three_uav_formation_route",
@@ -123,6 +153,19 @@ def project_path_text(path: Path) -> str:
         return str(resolved)
 
 
+def active_controller_ids() -> frozenset[str]:
+    document = json.loads(CONTROL_SCHEME_CATALOG_PATH.read_text(encoding="utf-8-sig"))
+    rows = document.get("schemes")
+    if document.get("schema") != "mosim.control_profile_catalog.v2" or not isinstance(rows, list):
+        raise ValueError("model_studio_controller_catalog_invalid")
+    controller_ids = [row.get("scheme_id") for row in rows if isinstance(row, dict)]
+    if any(not isinstance(controller_id, str) or not controller_id for controller_id in controller_ids):
+        raise ValueError("model_studio_controller_catalog_id_missing")
+    if len(set(controller_ids)) != len(controller_ids):
+        raise ValueError("model_studio_controller_catalog_id_duplicate")
+    return frozenset(controller_ids)
+
+
 def load_manual_formal_routes() -> dict[str, dict[str, Any]]:
     with TASK_ROUTE_PATH.open("rb") as handle:
         document = tomllib.load(handle)
@@ -151,12 +194,51 @@ def load_manual_formal_routes() -> dict[str, dict[str, Any]]:
             for field in ("runner_class", "runner_file", "boundary"):
                 if not isinstance(route.get(field), str) or not route[field]:
                     raise ValueError(f"model_studio_task_route_{field}_missing: {controller_id}")
-            runner_file = ROOT / str(route["runner_file"])
+            runner_file = (ROOT / str(route["runner_file"])).resolve()
+            try:
+                runner_file.relative_to(ROOT.resolve())
+            except ValueError as exc:
+                raise ValueError(f"model_studio_task_route_runner_file_outside_project: {controller_id}") from exc
             if not runner_file.is_file():
                 raise ValueError(f"model_studio_task_route_runner_file_missing: {controller_id}")
+            runner_source = runner_file.read_text(encoding="utf-8")
+            within_match = re.search(r"^within\s+([^;]+);", runner_source, re.MULTILINE)
+            model_match = MODEL_DECLARATION_PATTERN.search(runner_source)
+            declared_class = (
+                f"{within_match.group(1)}.{model_match.group(1)}"
+                if within_match is not None and model_match is not None
+                else None
+            )
+            if declared_class != route["runner_class"]:
+                raise ValueError(
+                    f"model_studio_task_route_runner_class_mismatch: {controller_id}: "
+                    f"{route['runner_class']} != {declared_class}"
+                )
+            if SCENARIO_PARAMETER_PATTERN.search(runner_source) is None:
+                raise ValueError(f"model_studio_task_route_scenario_parameter_missing: {controller_id}")
+            if REFERENCE_BINDING_PATTERN.search(runner_source) is None:
+                raise ValueError(f"model_studio_task_route_trajectory_binding_missing: {controller_id}")
+            missing_parameters = [
+                name
+                for name in COMMON_RUNNER_PARAMETER_NAMES
+                if re.search(rf"\bparameter\s+(?:Real|Integer)\s+{re.escape(name)}\b", runner_source) is None
+            ]
+            if missing_parameters:
+                raise ValueError(
+                    f"model_studio_task_route_parameter_missing: {controller_id}: {','.join(missing_parameters)}"
+                )
         elif not isinstance(route.get("reason"), str) or not route["reason"]:
             raise ValueError(f"model_studio_task_route_reason_missing: {controller_id}")
         routes[controller_id] = route
+    catalog_ids = active_controller_ids()
+    route_ids = frozenset(routes)
+    if route_ids != catalog_ids:
+        missing = sorted(catalog_ids - route_ids)
+        extra = sorted(route_ids - catalog_ids)
+        raise ValueError(
+            "model_studio_task_route_controller_ids_mismatch: "
+            f"missing={missing}, extra={extra}"
+        )
     return routes
 
 
@@ -377,6 +459,28 @@ def profile_trajectory_modification(profile: dict[str, Any]) -> str:
     return f"{trajectory_class}({modifications})"
 
 
+def scenario_mode_for_profile(profile: dict[str, Any]) -> int:
+    trajectory_class = str(profile["trajectory_class"])
+    trajectory_name = trajectory_class.rsplit(".", 1)[-1]
+    try:
+        return SCENARIO_MODE_BY_TRAJECTORY[trajectory_name]
+    except KeyError as exc:
+        raise ValueError(f"unsupported_multimode_trajectory: {trajectory_class}") from exc
+
+
+def scenario_mode_modifications(profile: dict[str, Any]) -> list[str]:
+    parameters = profile.get("trajectory_parameter_overrides", {})
+    if not isinstance(parameters, dict):
+        raise ValueError(f"trajectory_parameter_overrides_invalid: {profile['scenario_id']}")
+    nested_reference = [
+        f"{key} = {modelica_value(value)}" for key, value in parameters.items()
+    ]
+    modifications = [f"scenario_mode = {scenario_mode_for_profile(profile)}"]
+    if nested_reference:
+        modifications.append("reference(" + ", ".join(nested_reference) + ")")
+    return modifications
+
+
 def rendered_generic_formal_harness(
     *,
     task_id: str,
@@ -387,9 +491,7 @@ def rendered_generic_formal_harness(
     runner_parameters = profile.get("runner_parameter_overrides", {})
     if not isinstance(runner_parameters, dict):
         raise ValueError(f"runner_parameter_overrides_invalid: {task_id}")
-    runner_modifications = [
-        f"redeclare model Trajectory = {profile_trajectory_modification(profile)}",
-    ]
+    runner_modifications = scenario_mode_modifications(profile)
     runner_modifications.extend(
         f"{key} = {modelica_value(value)}" for key, value in runner_parameters.items()
     )
@@ -527,7 +629,14 @@ def write_task_config(
             )
             kind = configuration_kind(task_id, profile, source_profile or profile)
         elif controller_id in V2_EVIDENCE_CONTROLLER_IDS:
-            harness_text = rendered_formal_harness(driver, controller_id, task_id, profile, name)
+            # The app handoff must bind the same current Runner catalog as every
+            # other controller. Formal evidence generation remains in the driver.
+            harness_text = rendered_generic_formal_harness(
+                task_id=task_id,
+                route=route,
+                profile=profile,
+                name=name,
+            )
             kind = configuration_kind(task_id, profile, source_profile or profile)
         else:
             harness_text = rendered_generic_formal_harness(
@@ -557,6 +666,8 @@ def write_task_config(
         "created_at": utc_now(),
         "controller_id": controller_id,
         "runner_class": runner_class,
+        "trajectory_binding": "scenario_mode",
+        "trajectory_mode": scenario_mode_for_profile(profile) if route_kind == "formal" else None,
         "task_id": task_id,
         "configuration_kind": kind,
         "selection": selection,
@@ -574,6 +685,8 @@ def write_task_config(
         "task_route": {
             "boundary": route["boundary"],
             "runner_alias": route.get("runner_alias"),
+            "runner_class": route["runner_class"],
+            "runner_file": route["runner_file"],
         } if route_kind == "formal" else None,
         "claim_boundary": "Manual MWORKS configuration and generated harness only; no MWORKS simulation has been started and no evidence verdict is recorded.",
     }

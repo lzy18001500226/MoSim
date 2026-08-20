@@ -168,11 +168,11 @@ model Px4CtrlBaselineCore "Native graphical px4ctrl baseline core with the Offic
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_mix(k = 0.707) 
     annotation(Placement(transformation(extent = {{105, 117}, {139, 143}})));
   SysplorerEmbeddedCoder.Discrete.UnitDelay pitch_diff_delay(initCond = 0.0) 
-    annotation(Placement(transformation(origin = {-214, 163},
-    extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin={-214,171},
+extent={{-17,-13},{17,13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pitch_diff_sum(inputs = "+-", isSaturate = false) 
-    annotation(Placement(transformation(origin = {-278, 163},
-    extent = {{-17, -13}, {17, 13}})), __MWORKS(BlockSystem(Instance(u(u1, u2)), Type(overflowKind = SysplorerEmbeddedCoder.Types.OverflowKind.wrap))));
+    annotation(Placement(transformation(origin={-278,171},
+extent={{-17,-13},{17,13}})), __MWORKS(BlockSystem(Instance(u(u1, u2)), Type(overflowKind = SysplorerEmbeddedCoder.Types.OverflowKind.wrap))));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_slope(k = 100.0) 
     annotation(Placement(transformation(extent = {{-183, 117}, {-149, 143}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_increment(k = 0.631839272714496) 
@@ -204,8 +204,8 @@ model Px4CtrlBaselineCore "Native graphical px4ctrl baseline core with the Offic
   SysplorerEmbeddedCoder.Discrete.UnitDelay yaw_diff_delay(initCond = 0.0) 
     annotation(Placement(transformation(extent = {{-231, -13}, {-197, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum yaw_diff_sum(inputs = "+-", isSaturate = false) 
-    annotation(Placement(transformation(origin = {-295, 0},
-    extent = {{-17, -13}, {17, 13}})), __MWORKS(BlockSystem(Instance(u(u1, u2)), Type(overflowKind = SysplorerEmbeddedCoder.Types.OverflowKind.wrap))));
+    annotation(Placement(transformation(origin={-214,-208},
+extent={{-17,-13},{17,13}})), __MWORKS(BlockSystem(Instance(u(u1, u2)), Type(overflowKind = SysplorerEmbeddedCoder.Types.OverflowKind.wrap))));
   SysplorerEmbeddedCoder.MathOperation.Gain yaw_derivative_slope(k = 100.0) 
     annotation(Placement(transformation(extent = {{-183, -39}, {-149, -13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain yaw_derivative_increment(k = 0.631839272714496) 
@@ -360,8 +360,9 @@ equation
     points = {{-293.2, -319}, {-204, -319}, {-204, -154.5}, {-188.8, -154.5}},
     color = {0, 0, 127}));
   connect(roll_diff_sum.y, roll_derivative_slope.u) 
-    annotation(Line(points = {{-401.2, 171}, {-390, 171}, {-390, 52}, {-232.8, 52}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-401.2,171},{-388,171},{-388,146},{-248,146},{-248,52},{-232.8,52}},
+color={0,0,127}));
   connect(roll_derivative_slope.y, roll_derivative_increment.u) 
     annotation(Line(points = {{-197, 52}, {-190, 52}, {-190, 26}, {-183, 26}}, color = {0, 0, 127}));
   connect(roll_derivative_increment.y, roll_derivative_state.u2) 
@@ -391,14 +392,17 @@ equation
   connect(roll_error.y, roll_attitude_gain.u) 
     annotation(Line(points = {{-101, 52}, {-94, 52}, {-94, 78}, {-87, 78}}, color = {0, 0, 127}));
   connect(roll_mea, roll_diff_delay.u1) 
-    annotation(Line(points = {{-502, -338}, {-490, -338}, {-490, 171}, {-373, 171}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-485.974,-338},{-466,-338},{-466,146},{-388,146},{-388,171},{-374.8,171}},
+color={0,0,127}));
   connect(roll_mea, roll_diff_sum.u1) 
-    annotation(Line(points = {{-502, -338}, {-490, -338}, {-490, 171}, {-437, 171}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-485.974,-338},{-466,-338},{-466,177.5},{-438.8,177.5}},
+color={0,0,127}));
   connect(roll_diff_delay.y, roll_diff_sum.u2) 
-    annotation(Line(points = {{-339, 171}, {-330, 171}, {-330, 164.5}, {-437, 164.5}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-337.2,171},{-330,171},{-330,146},{-466,146},{-466,164.5},{-438.8,164.5}},
+color={0,0,127}));
   connect(roll_attitude_gain.y, roll_pd.u1) 
     annotation(Line(points = {{-53, 78}, {-46, 78}, {-46, 26}, {-39, 26}}, color = {0, 0, 127}));
   connect(roll_derivative_gain.y, roll_pd.u2) 
@@ -410,8 +414,9 @@ equation
   connect(roll_limit.y, roll_mix.u) 
     annotation(Line(points = {{43, 0}, {50, 0}, {50, -52}, {57, -52}}, color = {0, 0, 127}));
   connect(pitch_diff_sum.y, pitch_derivative_slope.u) 
-    annotation(Line(points = {{-259.2, 163}, {-248, 163}, {-248, 130}, {-184.8, 130}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-259.2,171},{-248,171},{-248,130},{-184.8,130}},
+color={0,0,127}));
   connect(pitch_derivative_slope.y, pitch_derivative_increment.u) 
     annotation(Line(points = {{-149, 130}, {-142, 130}, {-142, 104}, {-135, 104}}, color = {0, 0, 127}));
   connect(pitch_derivative_increment.y, pitch_derivative_state.u2) 
@@ -439,14 +444,17 @@ equation
     points = {{-317.2, 215}, {-122, 215}, {-122, -118.5}, {-116.8, -118.5}},
     color = {0, 0, 127}), __MWORKS(BlockSystem(NamedSignal)));
   connect(pitch_measurement_sign.y, pitch_diff_delay.u1) 
-    annotation(Line(points = {{-337.2, 223}, {-214, 223}, {-214, 176}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-337.2,223},{-236.6,223},{-236.6,171},{-232.8,171}},
+color={0,0,127}));
   connect(pitch_measurement_sign.y, pitch_diff_sum.u1) 
-    annotation(Line(points = {{-337.2, 223}, {-278, 223}, {-278, 176}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-337.2,223},{-304,223},{-304,177.5},{-296.8,177.5}},
+color={0,0,127}));
   connect(pitch_diff_delay.y, pitch_diff_sum.u2) 
-    annotation(Line(points = {{-197, 163}, {-190, 163}, {-190, 156.5}, {-295, 156.5}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-195.2,171},{-191.4,171},{-191.4,146},{-304,146},{-304,164.5},{-296.8,164.5}},
+color={0,0,127}));
   connect(pitch_error.y, pitch_attitude_gain.u) 
     annotation(Line(points = {{-101, -104}, {-94, -104}, {-94, -130}, {-87, -130}}, color = {0, 0, 127}));
   connect(pitch_attitude_gain.y, pitch_pd.u1) 
@@ -485,14 +493,17 @@ equation
     annotation(Line(points = {{-337.2, -171}, {-248, -171}, {-248, 0}, {-231, 0}},
     color = {0, 0, 127}));
   connect(yaw_measurement_sign.y, yaw_diff_sum.u1) 
-    annotation(Line(points = {{-337.2, -171}, {-295, -171}, {-295, -13}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-337.2,-171},{-248,-171},{-248,-201.5},{-232.8,-201.5}},
+color={0,0,127}));
   connect(yaw_diff_delay.y, yaw_diff_sum.u2) 
-    annotation(Line(points = {{-197, 0}, {-178, 0}, {-178, -13}, {-278, -13}, {-278, -6.5}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-195.2,0},{-191.4,0},{-191.4,-24},{-248,-24},{-248,-214.5},{-232.8,-214.5}},
+color={0,0,127}));
   connect(yaw_diff_sum.y, yaw_derivative_slope.u) 
-    annotation(Line(points = {{-276.8, 0}, {-270, 0}, {-270, -26}, {-184.8, -26}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{-195.2,-208},{-190,-208},{-190,-26},{-184.8,-26}},
+color={0,0,127}));
   connect(yaw_derivative_slope.y, yaw_derivative_increment.u) 
     annotation(Line(points = {{-149, -26}, {-142, -26}, {-142, -52}, {-135, -52}}, color = {0, 0, 127}));
   connect(yaw_derivative_increment.y, yaw_derivative_state.u2) 
@@ -550,9 +561,9 @@ equation
   connect(yaw_mix.y, mixer_2_yaw_sign.u) 
     annotation(Line(points = {{139, 78}, {146, 78}, {146, -78}, {153, -78}}, color = {0, 0, 127}));
   connect(mixer_2_roll_sign.y, mixer_2_first.u1) 
-    annotation(Line(origin = {0, 0},
-    points = {{140.8, -26}, {194, -26}, {194, 32.5}, {199.2, 32.5}},
-    color = {0, 0, 127}));
+    annotation(Line(origin={0,0},
+points={{140.8,-26},{146,-26},{146,-2},{194,-2},{194,32.5},{199.2,32.5}},
+color={0,0,127}));
   connect(mixer_2_pitch_sign.y, mixer_2_first.u2) 
     annotation(Line(points = {{187, 130}, {194, 130}, {194, 26}, {201, 26}}, color = {0, 0, 127}));
   connect(mixer_2_first.y, mixer_2_second.u1) 

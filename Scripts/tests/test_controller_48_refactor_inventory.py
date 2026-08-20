@@ -27,11 +27,11 @@ def test_inventory_covers_the_active_catalog_and_distinguishes_d2_binding() -> N
     assert summary["studio_available_count"] == 48
     assert summary["studio_runner_file_exists_count"] == 48
     assert summary["studio_runner_declared_class_matches_count"] == 48
-    assert summary["studio_runner_shared_sunray150assembly_source_chain_count"] == 47
+    assert summary["studio_runner_shared_sunray150assembly_source_chain_count"] == 48
     assert summary["studio_runner_or_d2_whole_aircraft_shell_count"] == 48
-    assert summary["route_explicit_adapter_file_exists_count"] == 47
-    assert summary["route_explicit_adapter_typed_interface_count"] == 47
-    assert summary["route_adapter_or_embedded_binding_count"] == 48
+    assert summary["route_explicit_adapter_file_exists_count"] == 44
+    assert summary["route_explicit_adapter_typed_interface_count"] == 0
+    assert summary["route_adapter_or_embedded_binding_count"] == 45
     assert summary["d2_canonical_whole_aircraft_harness_count"] == 5
     assert summary["studio_app_reads_authoritative_toml"] is True
     assert summary["task_writer_reads_authoritative_toml"] is True

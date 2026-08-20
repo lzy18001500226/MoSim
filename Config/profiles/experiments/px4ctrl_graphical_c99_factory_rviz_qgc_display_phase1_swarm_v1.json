@@ -1,0 +1,51 @@
+{
+  "experiment_profile": {
+    "id": "px4ctrl_graphical_c99_factory_rviz_qgc_display_phase1_swarm_v1",
+    "version": 1,
+    "description": "Factory L2 Phase 1 three-UAV Diff-Swarm RViz center-goal input with same-run QGC display; QGC Plan Goal remains disabled.",
+    "operator_map_id": "factory_l2",
+    "goal": "Phase 1 RViz formation-center planning and QGC same-run multi-UAV trajectory display",
+    "scenario_profile": "factory_l2_qgc_realtime_goal_swarm_v1",
+    "vehicle_count": 3,
+    "plant_profile": "sunray150_gazebo_v1",
+    "sensor_profile": "mid360_imu_height_camera_v1",
+    "state_source_profile": "px4_mavros_fused_v1",
+    "height_source_profile": "px4_or_gazebo_rangefinder_proxy_v1",
+    "truth_profile": "gazebo_truth_eval_only_v1",
+    "frequency_profile": "attitude_thrust_100hz_v1",
+    "trajectory_profile": "rviz_qgc_display_phase1_planner_trajectory_v1",
+    "planner_profile": "diff_planner_interactive_goal5_swarm_v1",
+    "controller_profile": "px4ctrl_attitude_thrust_v1",
+    "controller_backend": "mworks_graphical_px4ctrl_c99_runtime_v1",
+    "augmentation_profile": "none",
+    "safety_profile": "basic_limiter_v1",
+    "adapter_profile": "mavros_attitude_thrust_v1",
+    "fault_profile": "none",
+    "disturbance_profile": "none",
+    "display_profile": "factory_l2_qgc_rviz_planning_v1",
+    "evaluation_profile": "rviz_qgc_display_phase1_px4_mavros_transport_v1",
+    "runtime_profile": "sunray_ros1_gazebo_classic_v1",
+    "runtime_export_profile": "sunray_px4ctrl_runtime_export_v1",
+    "evidence_profile": "standard_run_packet_v1",
+    "generated_controller_source": "src/control/codegen/px4ctrl",
+    "manual_goal_contract": {
+      "input_surface": "RViz 2D Nav Goal",
+      "input_topic": "/move_base_simple/goal",
+      "input_frame": "world",
+      "expansion": "fixed_formation_offsets_per_uav",
+      "planner_goal_topic_template": "/uav{uid}/goal_with_id",
+      "qgc_plan_goal": "disabled_for_phase_1",
+      "fastlio_xy_role": "planner_input_when_enabled_after_alignment_gate",
+      "control_completion_source": "/uav{uid}/mavros/local_position/odom"
+    },
+    "forbidden_claims": [
+      "QGC Plan Goal input or bridge forwarding",
+      "global collision-aware swarm planning from independent Diff-Planner instances",
+      "human QGC visual observation without an operator report",
+      "formal controller-performance acceptance",
+      "QGC trajectory display as flight acceptance",
+      "FAST-LIO XY as PX4/EKF control input without same-run fusion evidence",
+      "UE as control-loop authority"
+    ]
+  }
+}

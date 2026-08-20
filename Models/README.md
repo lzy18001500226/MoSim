@@ -9,11 +9,11 @@ a second project or a required dependency root.
 | Need | Open this class | Purpose |
 |---|---|---|
 | Physical airframe | `MoSimQuadrotorModel.Vehicle.Sunray150Assembly` | Sunray150 whole-aircraft plant assembly |
-| Graphical system review | `MoSimQuadrotorModel.Experiment.CompleteSystemGraphical` | Direct graphical whole-system architecture entry |
-| Controller closed loop | `MoSimQuadrotorModel.Experiment.Runners.<Controller>FormalRunner` | One formal whole-aircraft runner per controller route |
+| Graphical system review | `MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGraphical` | Direct graphical whole-system architecture entry |
+| Controller closed loop | `MoSimQuadrotorModel.Experiment.<Family>.<Controller>GraphicalRunner` | Current single-aircraft review Runner; the family package is declared by the route catalog |
 | PID legacy example review | `MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.<Example>` | Original Example1/2/3 PID variants retained for report and demo review |
 | Reference trajectory | `MoSimQuadrotorModel.Guidance.Trajectories.<Trajectory>` | Replaceable reference used by formal runners |
-| Three-aircraft formation prototype | `MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC` (defined in `Guidance/Formation/package.mo`) | MWORKS prototype only; separate from the formal `Experiment.Runners.Formation.Px4CtrlThreeUavFigure8Runner` and the ROS/Gazebo deployment route |
+| Three-aircraft formation prototype | `MoSimQuadrotorModel.Experiment.Formation.Px4Ctrl.ThreeUavPx4CtrlFormationRunner` | MWORKS prototype only; separate from the ROS/Gazebo deployment route |
 
 The APP/manual route catalog is
 `Config/control_platform/model_studio_task_routes_v1.toml`. It is the authority

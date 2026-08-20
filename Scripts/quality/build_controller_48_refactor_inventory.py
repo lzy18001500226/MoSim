@@ -30,7 +30,10 @@ INVENTORY_NAME = "CONTROLLER_48_REFACTOR_INVENTORY.json"
 REPORT_NAME = "CONTROLLER_48_REFACTOR_REPORT.md"
 SCHEMA = "mosim.controller_48_refactor_inventory.v1"
 MODEL_PREFIX = "MoSimQuadrotorModel."
-ADAPTER_PATTERN = re.compile(r"MoSimQuadrotorModel\.Control\.Adapters\.([A-Za-z_][A-Za-z0-9_]*)")
+ADAPTER_PATTERN = re.compile(
+    r"MoSimQuadrotorModel\.(?:(Control\.Adapters)|(Experiment\.Adapters))\."
+    r"([A-Za-z_][A-Za-z0-9_]*)"
+)
 EXTENDS_PATTERN = re.compile(r"\bextends\s+(MoSimQuadrotorModel(?:\.[A-Za-z_][A-Za-z0-9_]*)+)")
 
 
@@ -166,8 +169,19 @@ def build_inventory() -> dict[str, Any]:
         runner_chain = parent_model_files(runner_file) if runner_exists else []
         runner_chain_text = "\n".join(path.read_text(encoding="utf-8") for path in runner_chain)
         adapter_match = ADAPTER_PATTERN.search(runner_file.read_text(encoding="utf-8")) if runner_exists else None
-        adapter_class = adapter_match.group(1) if adapter_match else None
-        adapter_file = ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Adapters" / f"{adapter_class}.mo" if adapter_class else None
+        adapter_namespace = (
+            adapter_match.group(1) or adapter_match.group(2)
+            if adapter_match
+            else None
+        )
+        adapter_class = adapter_match.group(3) if adapter_match else None
+        adapter_file = None
+        if adapter_class:
+            adapter_candidates = [
+                ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Adapters" / f"{adapter_class}.mo",
+                ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Adapters" / f"{adapter_class}.mo",
+            ]
+            adapter_file = next((path for path in adapter_candidates if path.is_file()), None)
         adapter_exists = adapter_file is not None and adapter_file.is_file()
         adapter_text = adapter_file.read_text(encoding="utf-8") if adapter_exists and adapter_file else ""
         partial_interface = expected_partial_interface(boundary)
@@ -242,7 +256,7 @@ def build_inventory() -> dict[str, Any]:
                     "source_chain": [repo_path(path) for path in runner_chain],
                 },
                 "adapter_route": {
-                    "class": f"MoSimQuadrotorModel.Control.Adapters.{adapter_class}" if adapter_class else None,
+                    "class": f"MoSimQuadrotorModel.{adapter_namespace}.{adapter_class}" if adapter_class else None,
                     "file": repo_path(adapter_file) if adapter_file else None,
                     "file_exists": adapter_exists,
                     "typed_partial_interface": partial_interface if partial_interface in adapter_text else None,

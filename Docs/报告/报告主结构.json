@@ -1,0 +1,314 @@
+{
+  "total_paragraphs": 1627,
+  "total_tables": 152,
+  "major_headings": [
+    {
+      "level": 1,
+      "text": "基于 MWORKS 的四旋翼位姿控制全链路仿真平台"
+    },
+    {
+      "level": 1,
+      "text": "摘要"
+    },
+    {
+      "level": 1,
+      "text": "研究背景与平台定位"
+    },
+    {
+      "level": 2,
+      "text": "工业仿真软件的知识壁垒"
+    },
+    {
+      "level": 2,
+      "text": "MoSim 平台要解决的问题"
+    },
+    {
+      "level": 2,
+      "text": "主要工作概述"
+    },
+    {
+      "level": 2,
+      "text": "赛题对应与技术路线"
+    },
+    {
+      "level": 2,
+      "text": "赛题对应表"
+    },
+    {
+      "level": 2,
+      "text": "报告阅读说明"
+    },
+    {
+      "level": 1,
+      "text": "指标定义与负样本处理"
+    },
+    {
+      "level": 2,
+      "text": "可审计实验链"
+    },
+    {
+      "level": 2,
+      "text": "实验 Profile"
+    },
+    {
+      "level": 2,
+      "text": "参考轨迹与故障注入"
+    },
+    {
+      "level": 2,
+      "text": "指标与有效通过判定"
+    },
+    {
+      "level": 2,
+      "text": "负样本处理原则"
+    },
+    {
+      "level": 2,
+      "text": "数据提取与可视化工具链（MWORKS.Syslab / Julia / TyPlot）"
+    },
+    {
+      "level": 1,
+      "text": "云纵150参照虚拟机体与参数 Profile"
+    },
+    {
+      "level": 2,
+      "text": "参数分层"
+    },
+    {
+      "level": 2,
+      "text": "坐标、旋翼与物理链"
+    },
+    {
+      "level": 2,
+      "text": "公共动力学、执行器与实际 X 型分配"
+    },
+    {
+      "level": 1,
+      "text": "统一控制器接口与 FormalRunner 执行边界"
+    },
+    {
+      "level": 1,
+      "text": "Official PID 工程基线"
+    },
+    {
+      "level": 1,
+      "text": "七个算法族 46 条控制器的图形化建模与统一实现"
+    },
+    {
+      "level": 2,
+      "text": "48 条控制器的正文登记与章节分工"
+    },
+    {
+      "level": 2,
+      "text": "PID 族"
+    },
+    {
+      "level": 2,
+      "text": "线性与鲁棒状态反馈族"
+    },
+    {
+      "level": 2,
+      "text": "非线性与自适应控制族"
+    },
+    {
+      "level": 2,
+      "text": "滑模控制族"
+    },
+    {
+      "level": 2,
+      "text": "预测与优化控制的 10 条公式"
+    },
+    {
+      "level": 2,
+      "text": "几何与微分平坦控制的 6 条公式"
+    },
+    {
+      "level": 2,
+      "text": "学习控制的 2 条公式"
+    },
+    {
+      "level": 2,
+      "text": "48 条控制器的源码、公式与实现映射"
+    },
+    {
+      "level": 1,
+      "text": "ClimbPath 50 s 名义基线筛查"
+    },
+    {
+      "level": 2,
+      "text": "主结果"
+    },
+    {
+      "level": 2,
+      "text": "未达标记录与失败原因"
+    },
+    {
+      "level": 2,
+      "text": "性能分布图"
+    },
+    {
+      "level": 2,
+      "text": "代表控制器详图"
+    },
+    {
+      "level": 2,
+      "text": "控制族内对比图"
+    },
+    {
+      "level": 2,
+      "text": "控制器完整轨迹图集"
+    },
+    {
+      "level": 1,
+      "text": "px4ctrl 图形化设计与 MWORKS 全机验证"
+    },
+    {
+      "level": 1,
+      "text": "Official PID 与 px4ctrl 七场景对比与灵敏度验证"
+    },
+    {
+      "level": 2,
+      "text": "七场景核心对比"
+    },
+    {
+      "level": 2,
+      "text": "px4ctrl 性能结果与 Official PID 基线特征"
+    },
+    {
+      "level": 2,
+      "text": "风扰、参数失配与电机效率灵敏度分析"
+    },
+    {
+      "level": 1,
+      "text": "三机编队 Figure8 与 ECBF 安全参考调节"
+    },
+    {
+      "level": 2,
+      "text": "三机 Figure8 编队结果"
+    },
+    {
+      "level": 2,
+      "text": "三机 ECBF 安全参考调节"
+    },
+    {
+      "level": 2,
+      "text": "多机协同任务小结"
+    },
+    {
+      "level": 1,
+      "text": "感知与规划组件原理"
+    },
+    {
+      "level": 2,
+      "text": "FAST-LIO 状态估计"
+    },
+    {
+      "level": 2,
+      "text": "FUEL 自主探索规划器"
+    },
+    {
+      "level": 2,
+      "text": "Diff-Planner 局部轨迹优化"
+    },
+    {
+      "level": 1,
+      "text": "OpenBlocks 障碍地图规划与多机执行"
+    },
+    {
+      "level": 2,
+      "text": "单机 OpenBlocks 避障"
+    },
+    {
+      "level": 2,
+      "text": "三机 OpenBlocks 可重构编队避障"
+    },
+    {
+      "level": 1,
+      "text": "px4ctrl C99 代码生成、可移植构建与 SIL 验证"
+    },
+    {
+      "level": 2,
+      "text": "图形模型到 C 的链路"
+    },
+    {
+      "level": 2,
+      "text": "生成产物与交付"
+    },
+    {
+      "level": 2,
+      "text": "50 s SIL 结果"
+    },
+    {
+      "level": 2,
+      "text": "SIL 一致性公式"
+    },
+    {
+      "level": 2,
+      "text": "运行时部署环境"
+    },
+    {
+      "level": 1,
+      "text": "生成 C99 在 ROS1/Gazebo 的运行时闭环"
+    },
+    {
+      "level": 2,
+      "text": "运行时链路与后端识别"
+    },
+    {
+      "level": 2,
+      "text": "生命周期结果"
+    },
+    {
+      "level": 2,
+      "text": "运行时稳态跟踪结果"
+    },
+    {
+      "level": 2,
+      "text": "运行时完善方向"
+    },
+    {
+      "level": 1,
+      "text": "显示层与验收边界"
+    },
+    {
+      "level": 2,
+      "text": "显示层职责划分"
+    },
+    {
+      "level": 2,
+      "text": "MoSim Studio 只读评审入口"
+    },
+    {
+      "level": 2,
+      "text": "MoSim Studio APP 架构"
+    },
+    {
+      "level": 2,
+      "text": "MoSim 助手（AI Agent 后端）"
+    },
+    {
+      "level": 2,
+      "text": "知识蒸馏与 MCP Skills 工程"
+    },
+    {
+      "level": 1,
+      "text": "结论与展望"
+    },
+    {
+      "level": 2,
+      "text": "技术成果总结"
+    },
+    {
+      "level": 2,
+      "text": "打破技术封锁的战略意义"
+    },
+    {
+      "level": 2,
+      "text": "下一阶段优化方向"
+    },
+    {
+      "level": 2,
+      "text": "对工业软件自主化的启示"
+    }
+  ]
+}

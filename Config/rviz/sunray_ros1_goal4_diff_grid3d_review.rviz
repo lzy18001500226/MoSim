@@ -6,13 +6,13 @@ Panels:
 Visualization Manager:
   Class: ""
   Displays:
-    - Alpha: 0.45
+    - Alpha: 0.75
       Cell Size: 1
       Class: rviz/Grid
-      Color: 160; 160; 164
-      Enabled: false
+      Color: 190; 190; 196
+      Enabled: true
       Line Style:
-        Line Width: 0.03
+        Line Width: 0.04
         Value: Lines
       Name: World Grid
       Plane: XY

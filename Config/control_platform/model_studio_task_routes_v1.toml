@@ -6,346 +6,346 @@ formal_task_ids = ["climb_path_50s", "hover", "step_response", "figure8", "spira
 [[route]]
 controller_id = "official_pid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Golden/OfficialPidSingleUavGoldenRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Baselines.OfficialPidRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Baselines/OfficialPidRunner.mo"
 boundary = "ROTOR_COMMAND"
 
 [[route]]
 controller_id = "cascade_pid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.CascadePidFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/CascadePidFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.PidFamily.CascadePidGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/PidFamily/CascadePidGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "gain_scheduled_pid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.GainScheduledPidFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/GainScheduledPidFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.PidFamily.GainScheduledPidGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/PidFamily/GainScheduledPidGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "fuzzy_pid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzyPidFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzyPidFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.PidFamily.FuzzyPidGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/PidFamily/FuzzyPidGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "neural_pid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.NeuralPidFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NeuralPidFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.PidFamily.NeuralPidGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/PidFamily/NeuralPidGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "fopid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FopidFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FopidFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.FopidGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/FopidGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "fixed_awff_pid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.AwffFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AwffFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffPid"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo"
 boundary = "ROTOR_COMMAND"
 runner_alias = "awff"
 
 [[route]]
 controller_id = "fixed_awff_l1_residual"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.L1FormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/L1FormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.IntegratedChains.AwffL1ResidualGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/IntegratedChains/AwffL1ResidualGraphicalRunner.mo"
 boundary = "ROTOR_COMMAND"
 runner_alias = "l_1"
 
 [[route]]
 controller_id = "fixed_awff_l1_indi"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.IndiFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IndiFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.IntegratedChains.AwffL1IndiGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/IntegratedChains/AwffL1IndiGraphicalRunner.mo"
 boundary = "ROTOR_COMMAND"
 runner_alias = "indi"
 
 [[route]]
 controller_id = "pid_awff_linear_eso"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.PidAwffLinearEsoFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PidAwffLinearEsoFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.AwffControllers.PidAwffLinearEsoGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/AwffControllers/PidAwffLinearEsoGraphicalRunner.mo"
 boundary = "ROTOR_COMMAND"
 
 [[route]]
 controller_id = "lqr_baseline"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LqrBaselineFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqrBaselineFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.LqrBaselineGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/LqrBaselineGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "lqi_baseline"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LqiFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqiFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.LqiBaselineGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/LqiBaselineGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 runner_alias = "lqi"
 
 [[route]]
 controller_id = "lqg"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LqgFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LqgFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.LqgGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/LqgGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "h2_state_feedback"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.H2StateFeedbackFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/H2StateFeedbackFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.H2StateFeedbackGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/H2StateFeedbackGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 runner_alias = "h_2_state_feedback"
 
 [[route]]
 controller_id = "hinf_hover_wrench"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.HinfHoverWrenchFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/HinfHoverWrenchFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.HinfHoverWrenchGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/HinfHoverWrenchGraphicalRunner.mo"
 boundary = "WRENCH"
 
 [[route]]
 controller_id = "pole_placement_luenberger"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.PolePlacementLuenbergerFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PolePlacementLuenbergerFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.PolePlacementLuenbergerGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/PolePlacementLuenbergerGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "backstepping_baseline"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.BacksteppingBaselineFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/BacksteppingBaselineFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.BacksteppingBaselineGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/BacksteppingBaselineGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "adaptive_backstepping"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveBacksteppingFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveBacksteppingFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.AdaptiveBacksteppingGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/AdaptiveBacksteppingGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "feedback_linearization"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FeedbackLinearizationFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FeedbackLinearizationFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.FeedbackLinearizationGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/FeedbackLinearizationGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "mrac"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.MracFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MracFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.MracGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/MracGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "ndi"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.NdiFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NdiFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.NdiGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/NdiGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "passivity_based_control"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.PassivityBasedControlFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/PassivityBasedControlFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.ClassicRobust.PassivityBasedControlGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/ClassicRobust/PassivityBasedControlGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "integral_smc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.IntegralSmcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IntegralSmcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.SlidingMode.IntegralSmcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/SlidingMode/IntegralSmcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "terminal_smc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.TerminalSmcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TerminalSmcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.SlidingMode.TerminalSmcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/SlidingMode/TerminalSmcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "nonsingular_terminal_smc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.NonsingularTerminalSmcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/NonsingularTerminalSmcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.SlidingMode.NonsingularTerminalSmcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/SlidingMode/NonsingularTerminalSmcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "super_twisting_smc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.SuperTwistingSmcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/SuperTwistingSmcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.SlidingMode.SuperTwistingSmcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/SlidingMode/SuperTwistingSmcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "adaptive_smc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveSmcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveSmcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.SlidingMode.AdaptiveSmcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/SlidingMode/AdaptiveSmcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "fuzzy_smc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FuzzySmcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FuzzySmcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.SlidingMode.FuzzySmcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/SlidingMode/FuzzySmcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "smc_boundary_layer"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Experimental.SmcBoundaryLayerFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/SmcBoundaryLayerFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.SlidingMode.SmcBoundaryLayerGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/SlidingMode/SmcBoundaryLayerGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "linear_mpc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Optimization.LinearMpcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Optimization/LinearMpcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "robust_mpc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.RobustMpcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RobustMpcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Optimization.RobustMpcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Optimization/RobustMpcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "adaptive_mpc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.AdaptiveMpcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/AdaptiveMpcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Optimization.AdaptiveMpcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Optimization/AdaptiveMpcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "tube_mpc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.TubeMpcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TubeMpcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Optimization.TubeMpcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Optimization/TubeMpcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "explicit_gain_scheduled_mpc"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.ExplicitGainScheduledMpcFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/ExplicitGainScheduledMpcFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Optimization.ExplicitGainScheduledMpcGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Optimization/ExplicitGainScheduledMpcGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "ilqr"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.IlqrFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/IlqrFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Optimization.IlqrGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Optimization/IlqrGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "mppi"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.MppiFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/MppiFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Optimization.MppiGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Optimization/MppiGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "nmpc_outer"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Experimental.NmpcOuterFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Experimental/NmpcOuterFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Optimization.NmpcOuterGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Optimization/NmpcOuterGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "fixed_linear_mpc_l1_indi"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcRotorFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/LinearMpcRotorFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.IntegratedChains.LinearMpcL1IndiGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/IntegratedChains/LinearMpcL1IndiGraphicalRunner.mo"
 boundary = "ROTOR_COMMAND"
 runner_alias = "linear_mpc_rotor"
 
 [[route]]
 controller_id = "fixed_qp_nmpc_l1_indi_cbf"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.FixedQpNmpcL1IndiCbfFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/FixedQpNmpcL1IndiCbfFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.IntegratedChains.QpNmpcL1IndiCbfGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/IntegratedChains/QpNmpcL1IndiCbfGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "se3_basic"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.Se3BasicFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Se3BasicFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.GeometricFlatness.Se3BasicGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/Se3BasicGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 runner_alias = "se_3_basic"
 
 [[route]]
 controller_id = "dfbc_basic"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcBasicFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcBasicFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.GeometricFlatness.DfbcBasicGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcBasicGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "dfbc_high_order_attitude"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.GeometricFlatness.DfbcHighOrderAttitudeGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcHighOrderAttitudeGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 runner_alias = "dfbc_high_order"
 
 [[route]]
 controller_id = "dfbc_high_order_bodyrate"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcHighOrderBodyRateFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcHighOrderBodyRateFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.GeometricFlatness.DfbcHighOrderBodyrateGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcHighOrderBodyrateGraphicalRunner.mo"
 boundary = "BODY_RATE_THRUST"
 runner_alias = "dfbc_high_order_body_rate"
 
 [[route]]
 controller_id = "dfbc_smooth_robust_attitude"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcSmoothRobustFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcSmoothRobustFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.GeometricFlatness.DfbcSmoothRobustAttitudeGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcSmoothRobustAttitudeGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 runner_alias = "dfbc_smooth_robust"
 
 [[route]]
 controller_id = "dfbc_smooth_robust_bodyrate"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.DfbcSmoothRobustBodyRateFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/DfbcSmoothRobustBodyRateFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.GeometricFlatness.DfbcSmoothRobustBodyrateGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcSmoothRobustBodyrateGraphicalRunner.mo"
 boundary = "BODY_RATE_THRUST"
 runner_alias = "dfbc_smooth_robust_body_rate"
 
 [[route]]
 controller_id = "trained_neural_residual"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.TrainedNeuralResidualFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/TrainedNeuralResidualFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Learning.TrainedNeuralResidualGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Learning/TrainedNeuralResidualGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "rl_gain_scheduler"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.RlGainSchedulerFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/RlGainSchedulerFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Learning.RlGainSchedulerGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Learning/RlGainSchedulerGraphicalRunner.mo"
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
 controller_id = "px4ctrl"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Runners/Formal/Px4CtrlFormalRunner.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.Px4Ctrl.Px4CtrlRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/Px4CtrlRunner.mo"
 boundary = "ATTITUDE_THRUST"

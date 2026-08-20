@@ -192,6 +192,7 @@ class InteractiveGoalSwitchProbe:
             "wall": wall,
             "sim_time_s": self.latest_clock_sim_s,
             "clock_age_wall_s": clock_age,
+            "time_basis": "ros_sim_time",
         }
 
     def clock_summary(self) -> dict:
@@ -756,6 +757,7 @@ class InteractiveGoalSwitchProbe:
         clamped_or_staged = request_to_accepted_xy > self.args.accepted_goal_epsilon_m
         best = None
         reached_since = None
+        stable_since_sim = None
         reached_hold_duration_s = 0.0
         reached_hold_ok = False
         reached_hold_start_t = None
@@ -815,17 +817,19 @@ class InteractiveGoalSwitchProbe:
                     and snap["abs_vz_mps"] <= self.args.reach_max_vz_mps
                 ):
                     if reached_since is None:
-                        reached_since = time.time()
+                        stable_since_sim = self.now()
+                        reached_since = stable_since_sim
                         reached_hold_start_t = snap["t"]
                         reached_hold_start_timepoint = self.time_fields()
-                    if time.time() - reached_since >= self.args.reach_hold_s:
-                        reached_hold_duration_s = time.time() - reached_since
+                    if self.now() - stable_since_sim >= self.args.reach_hold_s:
+                        reached_hold_duration_s = self.now() - stable_since_sim
                         reached_hold_end_t = snap["t"]
                         reached_hold_end_timepoint = self.time_fields()
                         reached_hold_ok = True
                         break
                 else:
                     reached_since = None
+                    stable_since_sim = None
                     reached_hold_start_t = None
                     reached_hold_start_timepoint = None
                     reached_hold_duration_s = 0.0

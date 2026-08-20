@@ -9,31 +9,31 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
     Text(origin = {0, 0}, extent = {{-90, 18}, {90, -18}}, textString = "SYSBLOCK CORE", textColor = {0, 100, 150}),
     Text(origin = {0, -34}, extent = {{-90, 14}, {90, -14}}, textString = "9 IN | 4 OUT", textColor = {0, 100, 150})}), experiment(Algorithm = Euler, IntegratorStep = 0.01, Interval = 0.01, StartTime = 0, StopTime = 0.02, StoreEventValue = 0));
   SysplorerEmbeddedCoder.Port.Inport x_ref 
-    annotation(Placement(transformation(origin = {-560, 600}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, 260}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Inport y_ref 
-    annotation(Placement(transformation(origin = {-560, 350}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, 202}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Inport z_ref 
-    annotation(Placement(transformation(origin = {-560, 100}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, 144}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Inport x_mea 
-    annotation(Placement(transformation(origin = {-560, 540}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, 86}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Inport y_mea 
-    annotation(Placement(transformation(origin = {-560, 290}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, 28}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Inport z_mea 
-    annotation(Placement(transformation(origin = {-560, 40}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, -30}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Inport roll_mea 
-    annotation(Placement(transformation(origin = {-560, -150}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, -88}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Inport pitch_mea 
-    annotation(Placement(transformation(origin = {-560, -400}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, -146}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Inport yaw_mea 
-    annotation(Placement(transformation(origin = {-560, -650}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-560, -204}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Outport y 
-    annotation(Placement(transformation(origin = {430, 200}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {430, 180}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Outport y1 
-    annotation(Placement(transformation(origin = {430, 80}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {430, 60}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Outport y2 
-    annotation(Placement(transformation(origin = {430, -40}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {430, -60}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Port.Outport y3 
-    annotation(Placement(transformation(origin = {430, -160}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {430, -180}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum x_error(inputs = "+-") 
     annotation(Placement(transformation(origin = {-480, 260}, extent = {{-17, -13}, {17, 13}})), __MWORKS(BlockSystem(Instance(u(u1, u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain x_p(k = 1.5) 
@@ -41,7 +41,7 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain x_derivative_input(k = 1.0) 
     annotation(Placement(transformation(origin = {-480, 225}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.Difference x_derivative_difference 
-    annotation(Placement(transformation(origin = {-410, 510}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-420, 225}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain x_derivative_slope(k = 100.0) 
     annotation(Placement(transformation(origin = {-360, 225}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain x_derivative_filtered_increment(k = 0.631839272714496) 
@@ -69,7 +69,7 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain y_derivative_input(k = 1.0) 
     annotation(Placement(transformation(origin = {-480, 85}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.Difference y_derivative_difference 
-    annotation(Placement(transformation(origin = {-410, 260}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-420, 85}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain y_derivative_slope(k = 100.0) 
     annotation(Placement(transformation(origin = {-360, 85}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain y_derivative_filtered_increment(k = 0.631839272714496) 
@@ -105,7 +105,7 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain z_derivative_input(k = 1.0) 
     annotation(Placement(transformation(origin = {-480, -90}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.Difference z_derivative_difference 
-    annotation(Placement(transformation(origin = {-410, -50}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-420, -120}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_derivative_slope(k = 100.0) 
     annotation(Placement(transformation(origin = {-360, -120}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_derivative_filtered_increment(k = 0.631839272714496) 
@@ -133,7 +133,7 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_input(k = 1.0) 
     annotation(Placement(transformation(origin = {-480, -335}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.Difference pitch_derivative_difference 
-    annotation(Placement(transformation(origin = {-350, -460}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-420, -335}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_slope(k = 100.0) 
     annotation(Placement(transformation(origin = {-360, -335}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_filtered_increment(k = 0.631839272714496) 
@@ -163,7 +163,7 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain roll_derivative_input(k = 1.0) 
     annotation(Placement(transformation(origin = {-480, -195}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.Difference roll_derivative_difference 
-    annotation(Placement(transformation(origin = {-280, -210}, extent = {{-17, -13}, {17, 13}})));
+    annotation(Placement(transformation(origin = {-420, -195}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_derivative_slope(k = 100.0) 
     annotation(Placement(transformation(origin = {-360, -195}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_derivative_filtered_increment(k = 0.631839272714496) 

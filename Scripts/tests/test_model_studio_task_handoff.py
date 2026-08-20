@@ -46,7 +46,9 @@ def test_standard_wind_task_writes_the_formal_v2_profile(tmp_path: Path) -> None
     assert payload == saved
     assert payload["schema"] == writer.TASK_CONFIG_SCHEMA
     assert payload["configuration_kind"] == "formal_v2_profile"
-    assert payload["runner_class"].endswith("Px4CtrlFormalRunner")
+    assert payload["runner_class"] == "MoSimQuadrotorModel.Experiment.Px4Ctrl.Px4CtrlRunner"
+    assert payload["trajectory_binding"] == "scenario_mode"
+    assert payload["trajectory_mode"] == 3
     assert payload["profile"]["runner_parameter_overrides"]["gust_force"] == [0.25, 0.0, 0.0]
     assert payload["profile"]["runner_parameter_overrides"]["gust_start_s"] == 15.0
     assert payload["profile"]["runner_parameter_overrides"]["gust_duration_s"] == 35.0
@@ -73,7 +75,7 @@ def test_parameter_mismatch_synchronizes_mass_and_all_inertias(tmp_path: Path) -
     harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
     assert "mass_scale = 1.3" in harness
     assert "inertia_scale = {1.3, 1.3, 1.3}" in harness
-    assert "extends MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner(" in harness
+    assert "extends MoSimQuadrotorModel.Experiment.Baselines.OfficialPidRunner(" in harness
 
 
 def test_motor_task_keeps_a_single_delayed_rotor_fault(tmp_path: Path) -> None:
@@ -150,8 +152,8 @@ def test_registered_formal_route_writes_a_manual_task_for_any_controller(tmp_pat
     assert payload["task_route"]["boundary"] == "ATTITUDE_THRUST"
     assert payload["task_route_source"].endswith("model_studio_task_routes_v1.toml")
     harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
-    assert "extends MoSimQuadrotorModel.Experiment.Runners.Formal.LinearMpcFormalRunner(" in harness
-    assert "redeclare model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.Figure8(" in harness
+    assert "extends MoSimQuadrotorModel.Experiment.Optimization.LinearMpcGraphicalRunner(" in harness
+    assert "scenario_mode = 3" in harness
     assert "gust_force = {0.25, 0, 0}" in harness
     assert "fault_rotor_index = 2" in harness
 
@@ -255,7 +257,7 @@ def test_three_uav_figure8_targets_the_selected_plant(tmp_path: Path) -> None:
     assert payload["configuration_kind"] == "three_uav_formation_route"
     assert payload["selection"]["fault_target_uav"] == 2
     harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
-    assert "extends MoSimQuadrotorModel.Experiment.Runners.Formation.Px4CtrlThreeUavFigure8Runner(" in harness
+    assert "extends MoSimQuadrotorModel.Experiment.Formation.Px4Ctrl.ThreeUavPx4CtrlFormationRunner(" in harness
     assert "plant_2(" in harness
     assert "gust_force = {0.25, 0, 0}" in harness
     assert "fault_rotor_effectiveness = 0.5" in harness

@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCopyrightAttribute("Michael Oborne")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("MAVLink 1/2 for Ardupilot")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.5.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.6+a8df967d4dc74fc95df3634b7e427db656fc6b96")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.6+47937f8bc4d20bd9278bd7d0143f514043df3f14")]
 [assembly: System.Reflection.AssemblyProductAttribute("MAVLink")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MAVLink")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

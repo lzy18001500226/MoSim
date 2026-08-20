@@ -65,6 +65,7 @@ class EgoSingleMission:
         self.home_odom_z: float | None = None
         self.last_position_cmd_xyz: tuple[float, float, float] | None = None
         self.cmd_adapter_enabled = True
+        self.hover_cmd_publisher_released = False
         self.interactive_hover_yaw: float | None = None
         self.last_forwarded_goal: dict | None = None
         self.forwarded_goal_seq = 0
@@ -136,7 +137,8 @@ class EgoSingleMission:
         self.truth_path_pub = rospy.Publisher("/mosim/goal4/truth_path", RosPath, queue_size=1, latch=True)
         self.cmd_path_pub = rospy.Publisher("/mosim/goal4/position_cmd_path", RosPath, queue_size=1, latch=True)
         self.target_path_pub = rospy.Publisher("/mosim/goal4/target_path", RosPath, queue_size=1, latch=True)
-        self.body_axes_pub = rospy.Publisher(args.body_axes_topic, MarkerArray, queue_size=1)
+        # Keep the last vehicle pose visible when RViz starts after the mission node.
+        self.body_axes_pub = rospy.Publisher(args.body_axes_topic, MarkerArray, queue_size=1, latch=True)
         self.truth_path = RosPath(header=Header(frame_id=args.path_frame))
         self.cmd_path = RosPath(header=Header(frame_id=args.path_frame))
 
@@ -572,6 +574,7 @@ class EgoSingleMission:
             )
         markers = MarkerArray()
         stamp = rospy.Time.now()
+        marker_lifetime = rospy.Duration(0)
         axes = (
             (0, "body_x_forward", (1.0, 0.0, 0.0), (1.0, 0.05, 0.05, 1.0)),
             (1, "body_y_left", (0.0, 1.0, 0.0), (0.05, 1.0, 0.05, 1.0)),
@@ -598,7 +601,18 @@ class EgoSingleMission:
             marker.scale.y = self.args.body_axis_head_diameter_m
             marker.scale.z = self.args.body_axis_head_length_m
             marker.color.r, marker.color.g, marker.color.b, marker.color.a = color
-            marker.lifetime = rospy.Duration(self.args.body_axis_lifetime_s)
+            marker.lifetime = marker_lifetime
+            markers.markers.append(marker)
+
+        # Remove any airframe markers left by older mission-node instances.
+        # The body-axis display remains available for pose/orientation review.
+        for marker_id in range(10, 16):
+            marker = Marker()
+            marker.header.stamp = stamp
+            marker.header.frame_id = self.args.path_frame
+            marker.ns = "uav_airframe"
+            marker.id = marker_id
+            marker.action = Marker.DELETE
             markers.markers.append(marker)
         self.body_axes_pub.publish(markers)
 
@@ -954,6 +968,8 @@ class EgoSingleMission:
             rospy.sleep(self.args.interactive_post_adapter_disable_wait_s)
         else:
             self.set_cmd_adapter_enabled(False)
+            # direct_hover is an explicit handoff back to this mission node.
+            self.hover_cmd_publisher_released = False
             rospy.sleep(self.args.interactive_post_adapter_disable_wait_s)
             for _ in range(max(1, self.args.interactive_handoff_hover_repeats)):
                 self.publish_hover_cmd(hold_x, hold_y, hold_z, hold_yaw)
@@ -968,6 +984,7 @@ class EgoSingleMission:
             "adapter_disabled": not adapter_hold,
             "mode": self.args.interactive_handoff_mode,
         }
+        metric["hold_time_basis"] = "ros_sim_time"
         self.interactive_goal_handoff_metrics.append(metric)
         return metric
 
@@ -1464,6 +1481,7 @@ class EgoSingleMission:
                 if self.safe_stop.requested():
                     self.set_interactive_goal_ready(False)
                     return self.perform_safe_stop(rate)
+                mission_owns_position_command = not self.hover_cmd_publisher_released
                 if self.forwarded_goal_seq > active_goal_seq:
                     active_goal_seq = self.forwarded_goal_seq
                     reached_since = None
@@ -1477,20 +1495,26 @@ class EgoSingleMission:
                         "goal": self.last_forwarded_goal,
                         "started_t": self.now(),
                         "handoff": None,
+                        "hold_time_basis": "ros_sim_time",
                         "last_snapshot": None,
                     }
                 if self.last_forwarded_goal is None or handoff_goal_seq == active_goal_seq:
-                    if handoff_hover_cmd is not None and self.args.interactive_handoff_mode != "adapter_hold":
-                        self.publish_hover_cmd(*handoff_hover_cmd)
-                    elif handoff_hover_cmd is None:
+                    if mission_owns_position_command:
+                        if handoff_hover_cmd is not None and self.args.interactive_handoff_mode != "adapter_hold":
+                            self.publish_hover_cmd(*handoff_hover_cmd)
+                        elif handoff_hover_cmd is None:
+                            self.publish_hover_cmd(
+                                home_x, home_y, self.takeoff_target_z_m(), self.interactive_hover_yaw
+                            )
+                elif self.first_planner_takeover_time() is None:
+                    if mission_owns_position_command:
                         self.publish_hover_cmd(
                             home_x, home_y, self.takeoff_target_z_m(), self.interactive_hover_yaw
                         )
-                elif self.first_planner_takeover_time() is None:
-                    self.publish_hover_cmd(
-                        home_x, home_y, self.takeoff_target_z_m(), self.interactive_hover_yaw
-                    )
                 else:
+                    # The planner adapter is now the sole /position_cmd owner.
+                    # Keep this release sticky across subsequent interactive goals.
+                    self.hover_cmd_publisher_released = True
                     snapshot = self.interactive_goal_snapshot()
                     if snapshot is not None:
                         metric = self.interactive_goal_metrics.setdefault(
@@ -1500,16 +1524,17 @@ class EgoSingleMission:
                                 "goal": self.last_forwarded_goal,
                                 "started_t": self.now(),
                                 "handoff": None,
+                                "hold_time_basis": "ros_sim_time",
                                 "last_snapshot": None,
                             },
                         )
                         metric["last_snapshot"] = snapshot
                         if self.interactive_goal_reached():
                             if reached_since is None:
-                                reached_since = time.time()
+                                reached_since = self.now()
                                 metric["hold_start_t"] = snapshot["t"]
-                            metric["hold_duration_s"] = time.time() - reached_since
-                            if time.time() - reached_since >= self.args.interactive_target_hold_s:
+                            metric["hold_duration_s"] = self.now() - reached_since
+                            if metric["hold_duration_s"] >= self.args.interactive_target_hold_s:
                                 handoff = self.publish_interactive_hover_handoff(snapshot, active_goal_seq)
                                 if handoff.get("status") == "blocked":
                                     return self.abort_for_flight_safety(
@@ -1524,6 +1549,7 @@ class EgoSingleMission:
                                     "goal_seq": active_goal_seq,
                                     "target": self.last_forwarded_goal,
                                     "required_s": self.args.interactive_final_hover_hold_s,
+                                    "time_basis": "ros_sim_time",
                                     "reached": False,
                                     "handoff_t": handoff.get("handoff_t"),
                                     "hold_start_t": None,
@@ -1540,6 +1566,7 @@ class EgoSingleMission:
                                     "max_abs_roll_pitch_deg": 0.0,
                                     "stability_reset_count": 0,
                                 }
+                                final_metric["time_basis"] = "ros_sim_time"
                                 self.set_interactive_goal_ready(False)
                                 if self.args.interactive_yaw_scan_after_goal:
                                     scan = self.run_interactive_yaw_scan(f"after_goal_{active_goal_seq}")
@@ -1578,9 +1605,9 @@ class EgoSingleMission:
                         )
                         if self.interactive_goal_reached():
                             if final_stable_since is None:
-                                final_stable_since = time.time()
+                                final_stable_since = self.now()
                                 final_metric["hold_start_t"] = final_snapshot["t"]
-                            final_metric["duration_s"] = time.time() - final_stable_since
+                            final_metric["duration_s"] = self.now() - final_stable_since
                             if final_metric["duration_s"] >= final_metric["required_s"]:
                                 final_metric["reached"] = True
                                 final_metric["hold_end_t"] = final_snapshot["t"]
@@ -1677,6 +1704,7 @@ class EgoSingleMission:
         self.target_hold_metrics = {
             "reached": False,
             "required_s": self.args.target_hold_s,
+            "time_basis": "ros_sim_time",
             "radius_m": self.args.target_reached_radius,
             "max_speed_mps": self.args.target_hold_max_speed_mps,
             "max_vz_mps": self.args.target_hold_max_vz_mps,
@@ -1716,11 +1744,11 @@ class EgoSingleMission:
                 )
                 if snapshot["error_xyz_m"] <= self.args.target_reached_radius and speed_ok and vz_ok:
                     if target_hold_start is None:
-                        target_hold_start = time.time()
+                        target_hold_start = self.now()
                         self.target_hold_metrics["hold_start_t"] = snapshot["t"]
                         if self.target_hold_metrics["first_reached_snapshot"] is None:
                             self.target_hold_metrics["first_reached_snapshot"] = snapshot
-                    hold_duration = time.time() - target_hold_start
+                    hold_duration = self.now() - target_hold_start
                     self.target_hold_metrics["duration_s"] = hold_duration
                     if hold_duration >= self.args.target_hold_s:
                         target_hold_reached = True

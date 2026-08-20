@@ -1,0 +1,57 @@
+schema = "mosim.model_studio_entry_policy.v1"
+version = 1
+scope = "The active Model Studio entry policy. It exposes the two baselines plus the 17 graphical Runner routes that completed the current 50 s batch, while keeping the 48-entry semantic catalog and formal evidence separate."
+
+new_semantic_entry_count = 48
+new_semantic_entries_complete = false
+new_semantic_source = "Config/control_platform/control_scheme_catalog.json"
+new_model_source = "Config/control_platform/current_model_entry_map.json"
+semantic_identity_key = "category + scheme_id"
+semantic_identity_fields = ["scheme_id", "display_name_zh", "display_name_en", "category", "entry_type", "role", "implementation_status", "selection_eligibility", "execution_kind"]
+phase_labels_are_provenance_only = true
+active_entry_mode = "current_graphical_runner_batch"
+current_graphical_entry_count = 17
+completion_rule = "All 48 semantic entries must have semantic identity, source model, task/output contract, and evidence state before the catalog can be marked formally complete. The current graphical Runner batch may be selected before that point, but selection does not satisfy CheckModel, simulation, or runtime evidence."
+semantic_completion_manifest = ""
+completed_active_controller_ids = []
+current_graphical_active_controller_ids = [
+  "adaptive_backstepping",
+  "adaptive_smc",
+  "cascade_pid",
+  "dfbc_basic",
+  "dfbc_high_order_attitude",
+  "dfbc_high_order_bodyrate",
+  "dfbc_smooth_robust_attitude",
+  "dfbc_smooth_robust_bodyrate",
+  "fixed_awff_pid",
+  "fuzzy_pid",
+  "fuzzy_smc",
+  "gain_scheduled_pid",
+  "integral_smc",
+  "neural_pid",
+  "nonsingular_terminal_smc",
+  "super_twisting_smc",
+  "terminal_smc",
+]
+
+# These are stable baseline aliases, not a partial promotion of the new 48-entry set.
+legacy_controller_ids = ["official_pid", "px4ctrl"]
+legacy_offline_source = "Config/control_platform/offline_composition_catalog.json"
+
+[[legacy_entry]]
+controller_id = "official_pid"
+display_name_zh = "Official PID 旧基线"
+task_runner_file = "Models/MoSimQuadrotorModel/Experiment/Baselines/OfficialPidRunner.mo"
+task_runner_class = "MoSimQuadrotorModel.Experiment.Baselines.OfficialPidRunner"
+codegen_model_file = "Models/MoSimQuadrotorModel/Control/PID/OfficialPidGraphicalCore.mo"
+codegen_model_class = "MoSimQuadrotorModel.Control.PID.OfficialPidGraphicalCore"
+boundary = "ROTOR_COMMAND"
+
+[[legacy_entry]]
+controller_id = "px4ctrl"
+display_name_zh = "px4ctrl 旧基线"
+task_runner_file = "Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/Px4CtrlRunner.mo"
+task_runner_class = "MoSimQuadrotorModel.Experiment.Px4Ctrl.Px4CtrlRunner"
+codegen_model_file = "Models/MoSimQuadrotorModel/Control/Px4Ctrl/Px4CtrlOuterLoopGraphicalSysblock.mo"
+codegen_model_class = "MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlOuterLoopGraphicalSysblock"
+boundary = "ROTOR_COMMAND"

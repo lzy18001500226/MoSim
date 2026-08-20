@@ -70,7 +70,8 @@ PY
 export TARGET_X TARGET_Y TARGET_Z
 GOAL_COUNT="${DIFF_INTERACTIVE_AUTO_PASS_GOAL_COUNT:-$(printf '%s\n' "${GOALS}" | awk -F';' '{count=0; for (i=1; i<=NF; i++) if ($i != "") count++; print count}')}"
 TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-320}"
-DIFF_INTERACTIVE_REVIEW_HOLD_S="${DIFF_INTERACTIVE_REVIEW_HOLD_S:-240}"
+DIFF_INTERACTIVE_GOAL_TIMEOUT_S="${DIFF_INTERACTIVE_GOAL_TIMEOUT_S:-120}"
+DIFF_INTERACTIVE_REVIEW_HOLD_S="${DIFF_INTERACTIVE_REVIEW_HOLD_S:-$((GOAL_COUNT * DIFF_INTERACTIVE_GOAL_TIMEOUT_S + 180))}"
 DIFF_INTERACTIVE_FINAL_HOVER_HOLD_S="${DIFF_INTERACTIVE_FINAL_HOVER_HOLD_S:-5.0}"
 DIFF_INTERACTIVE_TARGET_HOLD_S="${DIFF_INTERACTIVE_TARGET_HOLD_S:-5.0}"
 # Feed the intended absolute hold setpoint as soon as px4ctrl leaves
@@ -332,7 +333,7 @@ python3 Scripts/sunray/probe_diff_interactive_goal_switch_chain.py \
   --min-cmd-z-m 0.95 \
   --max-cmd-z-m 1.15 \
   --cmd-end-z-tol-m 0.12 \
-  --goal-timeout-s 55 \
+  --goal-timeout-s "${DIFF_INTERACTIVE_GOAL_TIMEOUT_S}" \
   > "${RESULT_DIR}/probe_stdout.txt" 2> "${RESULT_DIR}/probe_stderr.txt"
 probe_exit=$?
 

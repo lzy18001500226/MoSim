@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="factory_chunk_0061">
+    <static>true</static>
+    <link name="collision_lite_link">
+      <collision name="collision_lite">
+        <geometry>
+          <mesh>
+            <uri>model://factory_chunk_0061/meshes/factory_chunk_0061_collision_10pct.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

@@ -3,6 +3,11 @@ model OpenBlocksMapTruthDisplay
   "Canonical OpenBlocks global map truth with a separate local sensing overlay"
 
   extends PlanningNavigationDisplay(
+    final n_segments = 1,
+    final p_x = fill(0.0, 91),
+    final p_y = fill(0.0, 91),
+    final p_z = fill(1.5, 91),
+    final segment_duration = fill(1.0, 90),
     final x_min = -45.0,
     final x_max = 45.0,
     final y_min = -30.0,

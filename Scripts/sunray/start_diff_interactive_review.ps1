@@ -1,6 +1,7 @@
 param(
     [string]$RunId = ("review_diff_interactive_guard_" + (Get-Date -Format "yyyyMMdd_HHmmss")),
     [int]$ReviewHoldS = 0,
+    [switch]$HoverOnly,
     [switch]$SkipPreflight,
     [switch]$OpenUnrealLiveMirror,
     [int]$UnrealUdpPort = 5005,
@@ -14,6 +15,9 @@ $ProjectRootWsl = "/mnt/c/Users/HP/Desktop/MoSim"
 $ResultDirWin = Join-Path $ProjectRootWin ("Results\sunray_ros1\" + $RunId)
 $ResultDirWsl = $ProjectRootWsl + "/Results/sunray_ros1/" + $RunId
 $TotalTimeoutS = if ($ReviewHoldS -gt 0) { $ReviewHoldS + 180 } else { 0 }
+$InteractiveYawScanEnable = if ($HoverOnly) { "false" } else { "true" }
+$InteractiveYawScanAfterGoal = if ($HoverOnly) { "false" } else { "true" }
+$ReviewMode = if ($HoverOnly) { "hover_only" } else { "interactive_goal_review" }
 
 New-Item -ItemType Directory -Force -Path $ResultDirWin | Out-Null
 
@@ -69,9 +73,15 @@ $envParts = @(
     "GUI=false",
     "OPEN_RVIZ=true",
     "KEEP_ALIVE=true",
+    "GOAL4_TAKEOFF_HEIGHT=1.5",
+    "PX4CTRL_AUTO_TAKEOFF_HEIGHT=1.5",
+    "TARGET_Z=1.5",
+    # Keep the interactive gate enabled so the mission node waits at hover
+    # instead of falling through to the scripted target path.
     "DIFF_INTERACTIVE_CLICK_GOAL=true",
-    "DIFF_INTERACTIVE_YAW_SCAN_ENABLE=true",
-    "DIFF_INTERACTIVE_YAW_SCAN_AFTER_GOAL=true",
+    "DIFF_AUTO_GOAL_IN_INTERACTIVE_REVIEW=false",
+    "DIFF_INTERACTIVE_YAW_SCAN_ENABLE=$InteractiveYawScanEnable",
+    "DIFF_INTERACTIVE_YAW_SCAN_AFTER_GOAL=$InteractiveYawScanAfterGoal",
     "DIFF_INTERACTIVE_YAW_SCAN_DELTA_RAD=3.141592653589793",
     "DIFF_INTERACTIVE_YAW_SCAN_DURATION_S=6.0",
     "DIFF_INTERACTIVE_YAW_SCAN_SETTLE_S=1.0",
@@ -81,12 +91,12 @@ $envParts = @(
     "DIFF_ENABLE_CMD_SAFETY_ADAPTER=true",
     "DIFF_CLICK_STATIC_PATH_GUARD=false",
     "DIFF_CMD_INVALID_Z_POLICY=clamp",
-    "DIFF_CMD_MIN_Z=0.95",
-    "DIFF_CMD_MAX_Z=1.15",
+    "DIFF_CMD_MIN_Z=1.35",
+    "DIFF_CMD_MAX_Z=1.65",
     "DIFF_CMD_SAFETY_MAX_POSITION_JUMP_M=0",
     "DIFF_CMD_SAFETY_MAX_POSITION_JUMP_SPEED_MPS=3.0",
-    "EGO_VIRTUAL_CEIL_HEIGHT=1.15",
-    "EGO_VISUALIZATION_TRUNCATE_HEIGHT=1.25",
+    "EGO_VIRTUAL_CEIL_HEIGHT=1.60",
+    "EGO_VISUALIZATION_TRUNCATE_HEIGHT=1.75",
     "GOAL4_RECORD_HZ=100",
     "GOAL4_RECORD_CMD_HZ=100",
     "GOAL4_MAX_PATH_POINTS=0",
@@ -139,4 +149,8 @@ $proc = Start-Process -FilePath "powershell.exe" -ArgumentList @("-NoProfile", "
     RunId = $RunId
     ProcessId = $proc.Id
     ResultDir = $ResultDirWin
+    Mode = $ReviewMode
+    HoverOnly = [bool]$HoverOnly
+    ReviewHoldS = $ReviewHoldS
+    OperatorRule = if ($HoverOnly) { "Do not publish an RViz goal; observe hover only." } else { "RViz goal input is enabled for interactive review." }
 }

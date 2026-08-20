@@ -150,7 +150,10 @@ def make_body_axes(row: dict, frame_id: str, args: argparse.Namespace) -> Marker
         marker.color.g = color[1]
         marker.color.b = color[2]
         marker.color.a = color[3]
-        marker.lifetime = rospy.Duration(args.body_axis_lifetime_s)
+        # The keep-alive process is the owner after the mission exits.  A
+        # finite lifetime makes the last pose disappear during any publish
+        # gap, so keep the latched review marker persistent.
+        marker.lifetime = rospy.Duration(0)
         markers.markers.append(marker)
     return markers
 
@@ -287,20 +290,36 @@ def main() -> int:
     cmd_pub = rospy.Publisher(args.cmd_topic, RosPath, queue_size=1, latch=True)
     planner_cmd_pub = rospy.Publisher(args.planner_cmd_topic, RosPath, queue_size=1, latch=True)
     target_pub = rospy.Publisher(args.target_topic, RosPath, queue_size=1, latch=True)
-    axes_pub = rospy.Publisher(args.body_axes_topic, MarkerArray, queue_size=1)
+    # Keep the last review pose available to RViz subscribers that start late.
+    axes_pub = rospy.Publisher(args.body_axes_topic, MarkerArray, queue_size=1, latch=True)
     live = LiveReviewState(args)
     rate = rospy.Rate(args.publish_hz)
     axes_replay_index = 0
+    last_truth_path: RosPath | None = None
+    last_cmd_path: RosPath | None = None
+    last_planner_cmd_path: RosPath | None = None
     while not rospy.is_shutdown():
         truth = live.truth_path if live.live_truth_available() else read_path(result_dir / "truth.csv", args.frame_id, args.max_points)
         cmd = live.cmd_path if live.live_cmd_available() else read_path(result_dir / "position_cmd.csv", args.frame_id, args.max_points)
         planner_cmd = read_path(result_dir / "planner_position_cmd_raw.csv", args.frame_id, args.max_points)
+
+        # Do not replace a real path with an empty fallback while the mission
+        # is still writing its CSVs or a live topic is momentarily quiet.
         if truth.poses:
-            truth_pub.publish(truth)
+            last_truth_path = truth
         if cmd.poses:
-            cmd_pub.publish(cmd)
+            last_cmd_path = cmd
         if planner_cmd.poses:
-            planner_cmd_pub.publish(planner_cmd)
+            last_planner_cmd_path = planner_cmd
+        if last_truth_path is not None:
+            last_truth_path.header.stamp = rospy.Time.now()
+            truth_pub.publish(last_truth_path)
+        if last_cmd_path is not None:
+            last_cmd_path.header.stamp = rospy.Time.now()
+            cmd_pub.publish(last_cmd_path)
+        if last_planner_cmd_path is not None:
+            last_planner_cmd_path.header.stamp = rospy.Time.now()
+            planner_cmd_pub.publish(last_planner_cmd_path)
         if not args.disable_static_target:
             target_pub.publish(target_path(args))
         axes_pose = None

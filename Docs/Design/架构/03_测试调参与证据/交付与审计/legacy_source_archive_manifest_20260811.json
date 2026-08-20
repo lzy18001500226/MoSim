@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "scope": "non_destructive_legacy_source_snapshot_archive",
+  "non_destructive": true,
+  "archive_candidates": [
+    {
+      "id": "qgc_legacy_vendor_snapshot_20260811",
+      "action": "archive_candidate_after_dependency_audit",
+      "owner": "ground_station",
+      "paths": [
+        "apps/flight_console/vendor"
+      ],
+      "reason": "The retained QGroundControl vendor source is not the active build root; it remains required locally only by the current legacy-path provenance and rollback contract.",
+      "preconditions": [
+        "Verify the canonical src/ground_station/qgc/qgroundcontrol manifest before copying.",
+        "Copy only; source deletion is not authorized by this snapshot archive.",
+        "Do not alter Config/project_paths.json or remove the retained legacy path in this task."
+      ]
+    }
+  ]
+}

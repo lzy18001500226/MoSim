@@ -30,8 +30,10 @@ RUN_ID="${RUN_ID:-factory_l2_diff_single_c99_obstacle_$(date +%Y%m%d_%H%M%S)}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
 SCENARIO_PATH="${SINGLE_UAV_SCENARIO_PATH:-${RESULT_DIR}/single_uav_obstacle_crossing.json}"
 ROUTE_ALTITUDE_M="${ROUTE_ALTITUDE_M:-1.0}"
-TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-600}"
+TOTAL_TIMEOUT_S="${TOTAL_TIMEOUT_S:-1200}"
 PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE:-0.294}"
+DIFF_FASTLIO_EKF_FUSION="${DIFF_FASTLIO_EKF_FUSION:-false}"
+DIFF_FASTLIO_ALIGNMENT_Z_SOURCE="${DIFF_FASTLIO_ALIGNMENT_Z_SOURCE:-truth}"
 # The Factory scenario's z target is absolute MAVROS local odom. Sunray's
 # settled home odom is about 0.25 m, so this produces the 1.0 m route hold.
 FACTORY_TAKEOFF_HEIGHT_M="${FACTORY_TAKEOFF_HEIGHT_M:-0.75}"
@@ -60,26 +62,42 @@ if not 0.95 <= route_altitude_m <= 1.15:
 
 scenario = json.loads(scenario_path.read_text(encoding="utf-8"))
 formation = scenario.get("formation") or {}
-contract = scenario.get("obstacle_crossing_contract") or {}
-start = (formation.get("start_positions_xy_m") or {}).get("1")
-target = (formation.get("target_positions_xy_m") or {}).get("1")
-member_hits = (contract.get("member_intersecting_proxies") or {}).get("1") or []
-clearance_m = float(contract.get("clearance_margin_m") or 0.0)
+rigid_path = scenario.get("rigid_center_path_contract") or {}
+if rigid_path.get("status") != "passed":
+    raise SystemExit("Factory single-UAV route has no passed rigid_center_path_contract")
+
+route = rigid_path.get("center_waypoints_xy_m") or []
+start = formation.get("start_center_xy_m")
+if len(route) < 2 or not isinstance(start, list) or len(start) < 2:
+    raise SystemExit("Factory single-UAV route must contain a spawn point and a traversal waypoint")
+if any(abs(float(route[0][axis]) - float(start[axis])) > 0.001 for axis in (0, 1)):
+    raise SystemExit("Factory rigid center path does not start at the formation center")
+
+traversal = route[1:]
+clearance_m = float(rigid_path.get("clearance_margin_m") or 0.0)
 
 if scenario.get("status") != "static_scenario_ready_runtime_pending":
     raise SystemExit("Factory single-UAV obstacle scenario was not generated successfully")
-if not contract.get("direct_center_segment_blocked") or not member_hits:
-    raise SystemExit("Factory single-UAV route does not require an obstacle detour")
-if not isinstance(start, list) or not isinstance(target, list) or len(start) < 2 or len(target) < 2:
-    raise SystemExit("Factory single-UAV route has invalid start or target coordinates")
+if len(traversal) < 1:
+    raise SystemExit("Factory rigid center path has no traversal waypoint")
 if clearance_m <= 0.0:
     raise SystemExit("Factory single-UAV route has no positive clearance contract")
 
-values = [float(start[0]), float(start[1]), float(target[0]), float(target[1])]
+goals = []
+for point in traversal:
+    if not isinstance(point, list) or len(point) < 2:
+        raise SystemExit("Factory rigid center path contains an invalid traversal waypoint")
+    x, y = float(point[0]), float(point[1])
+    if not all(math.isfinite(value) for value in (x, y)):
+        raise SystemExit("Factory single-UAV route coordinates must be finite")
+    goals.append(f"{x:.12g},{y:.12g},{route_altitude_m:.12g}")
+
+first_target = traversal[0]
+values = [float(start[0]), float(start[1]), float(first_target[0]), float(first_target[1])]
 if not all(math.isfinite(value) for value in values):
     raise SystemExit("Factory single-UAV route coordinates must be finite")
 
-for value in (*values, route_altitude_m, clearance_m, round(clearance_m + 0.20, 2)):
+for value in (*values, route_altitude_m, clearance_m, ";".join(goals)):
     print(value)
 PY
 )
@@ -95,7 +113,9 @@ TARGET_X="${route_values[2]}"
 TARGET_Y="${route_values[3]}"
 TARGET_Z="${route_values[4]}"
 PLANNER_CLEARANCE_M="${route_values[5]}"
-RUNTIME_INFLATION_M="${route_values[6]}"
+GOALS="${route_values[6]}"
+GOAL_COUNT="$(awk -F';' '{count=0; for (i=1; i<=NF; i++) if ($i != "") count++; print count}' <<< "${GOALS}")"
+RUNTIME_INFLATION_M="${RUNTIME_INFLATION_M:-0.20}"
 
 set +e
 env \
@@ -110,14 +130,16 @@ env \
   SUNRAY_UAV_INIT_Y="${START_Y}" \
   SUNRAY_UAV_INIT_Z=0.2 \
   SUNRAY_UAV_INIT_YAW=0.0 \
-  GOALS="${TARGET_X},${TARGET_Y},${TARGET_Z}" \
+  GOALS="${GOALS}" \
   TARGET_X="${TARGET_X}" \
   TARGET_Y="${TARGET_Y}" \
   TARGET_Z="${TARGET_Z}" \
-  DIFF_INTERACTIVE_AUTO_PASS_GOAL_COUNT=1 \
+  DIFF_INTERACTIVE_AUTO_PASS_GOAL_COUNT="${GOAL_COUNT}" \
   DIFF_INTERACTIVE_TARGET_HOLD_S=5.0 \
   DIFF_INTERACTIVE_FINAL_HOVER_HOLD_S=5.0 \
   DIFF_PUBLISH_HOVER_DURING_TAKEOFF=true \
+  DIFF_FASTLIO_EKF_FUSION="${DIFF_FASTLIO_EKF_FUSION}" \
+  DIFF_FASTLIO_ALIGNMENT_Z_SOURCE="${DIFF_FASTLIO_ALIGNMENT_Z_SOURCE}" \
   PX4CTRL_CORE_PROFILE=graphical_c99 \
   PX4CTRL_EXPECTED_BUILD_BACKEND=graphical_px4ctrl_c99 \
   PX4CTRL_HOVER_PERCENTAGE="${PX4CTRL_HOVER_PERCENTAGE}" \
@@ -186,6 +208,8 @@ payload = {
     "scenario": str(scenario_path),
     "controller_core_profile": "graphical_c99",
     "controller_build_backend": "graphical_px4ctrl_c99",
+    "px4ctrl_odom_source": "/uav1/mavros/local_position/odom",
+    "gazebo_truth_direct_px4ctrl_input_allowed": False,
     "exit_codes": {"backend": backend_exit, "obstacle_clearance": clearance_exit},
     "gate_results": statuses,
     "artifact_refs": [

@@ -6,6 +6,7 @@ set -eo pipefail
 PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 export MOSIM_PROJECT_ROOT="${PROJECT_ROOT}"
 FACTORY_WORLD_MODE="${FACTORY_WORLD_MODE:-}"
+SUNRAY_FACTORY_WORLD_RUNTIME_OVERLAY="${SUNRAY_FACTORY_WORLD_RUNTIME_OVERLAY:-false}"
 SUNRAY_WS="${SUNRAY_WS:-/opt/mosim_work/sunray_ws/Sunray}"
 SUNRAY_PX4_DIR="${SUNRAY_PX4_DIR:-/opt/mosim_work/sunray_px4}"
 PX4_BUILD_DIR="${PX4_BUILD_DIR:-${SUNRAY_PX4_DIR}/build/px4_sitl_default}"
@@ -490,7 +491,7 @@ DIFF_PRE_TRUTH_MAX_Z_ERROR_M="${DIFF_PRE_TRUTH_MAX_Z_ERROR_M:-0.15}"
 DIFF_PRE_TRUTH_MAX_SPEED_MPS="${DIFF_PRE_TRUTH_MAX_SPEED_MPS:-0.30}"
 DIFF_PRE_TRUTH_MAX_VZ_MPS="${DIFF_PRE_TRUTH_MAX_VZ_MPS:-0.20}"
 DIFF_PRE_TRUTH_MAX_ROLL_PITCH_DEG="${DIFF_PRE_TRUTH_MAX_ROLL_PITCH_DEG:-15.0}"
-DIFF_PUBLISH_HOVER_DURING_TAKEOFF="${DIFF_PUBLISH_HOVER_DURING_TAKEOFF:-false}"
+DIFF_PUBLISH_HOVER_DURING_TAKEOFF="${DIFF_PUBLISH_HOVER_DURING_TAKEOFF:-true}"
 DIFF_PUBLISH_HOVER_DURING_TAKEOFF_DELAY_S="${DIFF_PUBLISH_HOVER_DURING_TAKEOFF_DELAY_S:-0.0}"
 DIFF_EXECUTE_MIN_TRUTH_Z_M="${DIFF_EXECUTE_MIN_TRUTH_Z_M:-0.50}"
 DIFF_EXECUTE_MIN_ODOM_Z_M="${DIFF_EXECUTE_MIN_ODOM_Z_M:-0.50}"
@@ -589,7 +590,15 @@ USE_SIM_TIME="${USE_SIM_TIME:-true}"
 SUNRAY_GAZEBO_MAX_STEP_SIZE_S="${SUNRAY_GAZEBO_MAX_STEP_SIZE_S:-0.001}"
 SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ="${SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ:-1000}"
 SUNRAY_SPLIT_WORLD_BASIC_LAUNCH="${SUNRAY_SPLIT_WORLD_BASIC_LAUNCH:-false}"
-GAZEBO_MODEL_READY_TIMEOUT_S="${GAZEBO_MODEL_READY_TIMEOUT_S:-180}"
+if [[ "${SUNRAY_FACTORY_WORLD_RUNTIME_OVERLAY}" == "true" ]]; then
+  if [[ -z "${GAZEBO_MODEL_READY_TIMEOUT_S+x}" ]]; then
+    GAZEBO_MODEL_READY_TIMEOUT_S=360
+  fi
+else
+  if [[ -z "${GAZEBO_MODEL_READY_TIMEOUT_S+x}" ]]; then
+    GAZEBO_MODEL_READY_TIMEOUT_S=180
+  fi
+fi
 MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-60}"
 ODOM_BRIDGE_READY_TIMEOUT_S="${ODOM_BRIDGE_READY_TIMEOUT_S:-20}"
 MAVROS_STREAM_RATE_HZ="${MAVROS_STREAM_RATE_HZ:-100}"
@@ -2132,6 +2141,23 @@ if [[ ! -f "${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so" ]]; then
     LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS}" \
     bash "${PROJECT_ROOT}/Scripts/sunray/setup_sunray_livox_gazebo_plugin.sh" \
     > "${RESULT_DIR}/sunray_livox_plugin_setup_stdout.txt" 2>&1
+fi
+
+if [[ "${SUNRAY_FACTORY_WORLD_RUNTIME_OVERLAY}" == "true" ]]; then
+  if [[ "${SUNRAY_GAZEBO_LAUNCH_FILE}" != *"factory_l2_sunray_px4_gazebo.launch"* ]]; then
+    echo "Factory world runtime overlay requires factory_l2_sunray_px4_gazebo.launch" >&2
+    exit 2
+  fi
+  RUNTIME_WORLD_FILE="${RESULT_DIR}/factory_world_runtime_overlay.sdf"
+  python3 "${PROJECT_ROOT}/Scripts/sunray/materialize_gazebo_world_overlay.py" \
+    --project-root "${PROJECT_ROOT}" \
+    --source "${WORLD_FILE}" \
+    --output "${RUNTIME_WORLD_FILE}" \
+    --manifest "${RESULT_DIR}/factory_world_runtime_overlay.json" \
+    --max-step-size-s "${SUNRAY_GAZEBO_MAX_STEP_SIZE_S}" \
+    --real-time-update-rate-hz "${SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ}" \
+    > "${RESULT_DIR}/factory_world_runtime_overlay.log"
+  WORLD_FILE="${RUNTIME_WORLD_FILE}"
 fi
 
 cleanup force
@@ -3868,6 +3894,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     }
   },
   "gazebo": {
+    "factory_world_runtime_overlay": "${SUNRAY_FACTORY_WORLD_RUNTIME_OVERLAY}",
     "max_step_size_s": ${SUNRAY_GAZEBO_MAX_STEP_SIZE_S},
     "real_time_update_rate_hz": ${SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ},
     "split_world_basic_launch": "${SUNRAY_SPLIT_WORLD_BASIC_LAUNCH}",

@@ -1,0 +1,5 @@
+Phase 4: CheckModel Verification (Real Sysplorer)
+================================================================================
+
+Starting Sysplorer session...
+ERROR: 

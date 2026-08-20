@@ -190,9 +190,9 @@ selected task, controller, and permitted scenario values to
 `Results/ui_platform/model_studio_task_handoffs/latest.json`, and writes a
 hash-bound temporary Modelica harness beside it. `打开仿真模型` opens exactly
 that frozen harness and runs native `CheckModel`; it does not start a solver.
-For `official_pid`, the frozen harness extends the checked graphical
-`OfficialPidSingleUavGoldenRunner`; the unchanged `OfficialPidFormalRunner`
-remains the numerical reference. `重置` restores the selected task's standard values. The frozen seven-scenario
+For `official_pid`, the frozen harness extends the checked current
+`MoSimQuadrotorModel.Experiment.Baselines.OfficialPidRunner`. This remains a
+manual MWORKS review route; opening it is not simulation evidence. `重置` restores the selected task's standard values. The frozen seven-scenario
 evidence set contains only `official_pid` and `px4ctrl`. This is an
 evidence-scope boundary, not a prohibition on a user manually opening another
 `available=true` whole-aircraft review runner with a compatible task/configuration. A

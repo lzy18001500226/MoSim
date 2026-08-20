@@ -141,7 +141,7 @@ healthy.
 
 ### Direct MCP Review For The px4ctrl Graphical Architecture
 
-For manual review of `MoSimQuadrotorModel.Experiment.CompleteSystemGraphical`,
+For manual review of `MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGraphical`,
 use this direct MCP sequence:
 
 ```text
@@ -149,8 +149,8 @@ python Scripts\agent\check_mworks_gui_sentinel.py --output Results\mworks_gui_in
 capture a maximized or foreground screenshot of the target reusable Sysplorer/MWORKS main window, and verify the image content actually shows that target window
 session_manager(action="health")
 model_manager(action="load_file", file_path="C:\\Users\\HP\\Desktop\\MoSim\\Models\\MoSimQuadrotorModel\\package.mo", force_reload=true, auto_load_deps=true)
-model_manager(action="open", model_name="MoSimQuadrotorModel.Experiment.CompleteSystemGraphical")
-check_model(model_name="MoSimQuadrotorModel.Experiment.CompleteSystemGraphical", stop_on_error=false)
+model_manager(action="open", model_name="MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGraphical")
+check_model(model_name="MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGraphical", stop_on_error=false)
 ```
 
 Background `PrintWindow` capture, including
@@ -166,14 +166,14 @@ Load the canonical root package once. Its embedded `Plant` package contains the
 official baseline plant and resources, so do not load an external
 `QuadrotorModel` package or any legacy facade alongside it. Mixing roots can
 cause `错误(1401): 模型重复定义`. The public px4ctrl graphical architecture
-entry is `MoSimQuadrotorModel.Experiment.CompleteSystemGraphical`; it extends
+entry is `MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGraphical`; it extends
 `Experiment.Templates.Architecture.CompleteSystemGraphical`, whose
 `Sunray150CompleteSystemGraphical_Sysblock` template retains the V6X, ORIN NX,
 GPS + Mid360, ESC, four-motor and Sunray150 hierarchy. Its central
 `Px4CtrlControllerModule` is composed from the active
 `Px4CtrlAttitudeThrustAdapter` and `OfflineAttitudeRateAllocator` classes.
-`Px4CtrlFormalRunner` remains the separate whole-aircraft formal simulation
-entry and is not substituted for this review diagram.
+`MoSimQuadrotorModel.Experiment.Px4Ctrl.Px4CtrlRunner` remains the separate
+whole-aircraft Runner entry and is not substituted for this review diagram.
 
 Review-result interpretation:
 

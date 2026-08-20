@@ -84,6 +84,12 @@ SUNRAY_MID360_RAY_SENSOR_LOCAL_POSE = "0 0 0.1 0 0 0"
 SUNRAY_MID360_PLUGIN_DOWNSAMPLE = int(os.environ.get("SUNRAY_MID360_PLUGIN_DOWNSAMPLE", "1"))
 SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ = float(os.environ.get("SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ", "20.0"))
 SUNRAY_MID360_IMU_UPDATE_RATE_HZ = 200
+SUNRAY_MID360_RAY_BACKEND = os.environ.get("SUNRAY_MID360_RAY_BACKEND", "ray").strip().lower()
+if SUNRAY_MID360_RAY_BACKEND not in {"ray", "gpu"}:
+    raise RuntimeError(
+        f"unsupported SUNRAY_MID360_RAY_BACKEND={SUNRAY_MID360_RAY_BACKEND!r}; expected ray or gpu"
+    )
+SUNRAY_GPU_LIVOX_PLUGIN_NAME = "mosim_gpu_livox_pointcloud"
 SUNRAY_GAZEBO_MAX_STEP_SIZE_S = os.environ.get("SUNRAY_GAZEBO_MAX_STEP_SIZE_S", "0.001")
 SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ = int(os.environ.get("SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ", "1000"))
 SUNRAY_LIVOX_PLUGIN_FILENAME = os.environ.get("SUNRAY_LIVOX_PLUGIN_FILENAME", "liblivox_laser_simulation.so")
@@ -91,6 +97,8 @@ SUNRAY_MID360_CSV_FILE_NAME = os.environ.get("SUNRAY_MID360_CSV_FILE_NAME", "mid
 SUNRAY_MID360_SENSOR_MODE = os.environ.get("SUNRAY_MID360_SENSOR_MODE", "nested").strip().lower()
 if SUNRAY_MID360_SENSOR_MODE not in {"inline", "nested"}:
     raise RuntimeError(f"unsupported SUNRAY_MID360_SENSOR_MODE={SUNRAY_MID360_SENSOR_MODE!r}")
+if SUNRAY_MID360_RAY_BACKEND == "gpu" and SUNRAY_MID360_SENSOR_MODE != "nested":
+    raise RuntimeError("SUNRAY_MID360_RAY_BACKEND=gpu requires SUNRAY_MID360_SENSOR_MODE=nested")
 SUNRAY_MAVLINK_ENABLE_LOCKSTEP = os.environ.get("SUNRAY_MAVLINK_ENABLE_LOCKSTEP", "true").strip().lower()
 if SUNRAY_MAVLINK_ENABLE_LOCKSTEP not in {"true", "false"}:
     raise RuntimeError(f"unsupported SUNRAY_MAVLINK_ENABLE_LOCKSTEP={SUNRAY_MAVLINK_ENABLE_LOCKSTEP!r}")
@@ -792,6 +800,12 @@ def patch_world_physics(world_path: Path) -> dict[str, int]:
 def delete_default_livox_sensor_shell(sensor_sdf_path: Path) -> dict[str, int]:
     text = sensor_sdf_path.read_text(encoding="utf-8")
     replacements: dict[str, int] = {}
+    sensor_type = "gpu_ray" if SUNRAY_MID360_RAY_BACKEND == "gpu" else "ray"
+    plugin_name = (
+        SUNRAY_GPU_LIVOX_PLUGIN_NAME
+        if SUNRAY_MID360_RAY_BACKEND == "gpu"
+        else "gazebo_ros_laser_controller"
+    )
 
     collision_pattern = (
         r"\s*<collision\s+name=[\"']collision[\"']>\s*"
@@ -810,7 +824,7 @@ def delete_default_livox_sensor_shell(sensor_sdf_path: Path) -> dict[str, int]:
     replacements["default_mid360_visual_deleted"] = count
 
     text, count = re.subn(
-        r"(<sensor type=\"ray\" name=\"laser_livox\">\s*)<pose>.*?</pose>",
+        r"(<sensor type=\"(?:ray|gpu_ray)\" name=\"laser_livox\">\s*)<pose>.*?</pose>",
         rf"\1<pose>{SUNRAY_MID360_RAY_SENSOR_LOCAL_POSE}</pose>",
         text,
         count=1,
@@ -819,7 +833,15 @@ def delete_default_livox_sensor_shell(sensor_sdf_path: Path) -> dict[str, int]:
     replacements["assembled_mid360_ray_sensor_local_pose"] = count
 
     text, count = re.subn(
-        r"(<sensor type=\"ray\" name=\"laser_livox\">.*?<update_rate>)\s*[^<]+\s*(</update_rate>)",
+        r'(<sensor type=")ray(" name="laser_livox")',
+        rf"\g<1>{sensor_type}\g<2>",
+        text,
+        count=1,
+    )
+    replacements["mid360_ray_backend_sensor_type"] = count
+
+    text, count = re.subn(
+        r"(<sensor type=\"(?:ray|gpu_ray)\" name=\"laser_livox\">.*?<update_rate>)\s*[^<]+\s*(</update_rate>)",
         rf"\g<1>{SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ:g}\2",
         text,
         count=1,
@@ -844,12 +866,12 @@ def delete_default_livox_sensor_shell(sensor_sdf_path: Path) -> dict[str, int]:
     replacements["mid360_csv_file_name"] = count
 
     text, count = re.subn(
-        r'(<plugin name="gazebo_ros_laser_controller" filename=")[^"]+(">)',
-        rf"\g<1>{SUNRAY_LIVOX_PLUGIN_FILENAME}\2",
+        r'(<plugin name=")(?:gazebo_ros_laser_controller|mosim_gpu_livox_pointcloud)(" filename=")[^"]+(">)',
+        rf"\g<1>{plugin_name}\g<2>{SUNRAY_LIVOX_PLUGIN_FILENAME}\g<3>",
         text,
         count=1,
     )
-    replacements["mid360_livox_plugin_filename"] = count
+    replacements["mid360_ray_backend_plugin"] = count
 
     text, count = re.subn(
         r"(<sensor name=\"imu_sensor\" type=\"imu\">.*?<update_rate>)\s*[^<]+\s*(</update_rate>)",
@@ -881,18 +903,15 @@ def delete_default_livox_sensor_shell(sensor_sdf_path: Path) -> dict[str, int]:
     # The sensor/plugin blocks must survive this visual-only patch.
     patched = sensor_sdf_path.read_text(encoding="utf-8")
     required = [
-        'sensor type="ray" name="laser_livox"',
+        f'sensor type="{sensor_type}" name="laser_livox"',
         "<ros_topic>livox/lidar</ros_topic>",
         'sensor name="imu_sensor" type="imu"',
         "libgazebo_ros_imu_sensor.so",
         "<topicName>livox/imu</topicName>",
+        f'<plugin name="{plugin_name}"',
+        f'filename="{SUNRAY_LIVOX_PLUGIN_FILENAME}"',
     ]
     missing = [needle for needle in required if needle not in patched]
-    if (
-        f'filename="{SUNRAY_LIVOX_PLUGIN_FILENAME}"' not in patched
-        and 'filename="liblivox_laser_simulation.so"' not in patched
-    ):
-        missing.append(f'filename="{SUNRAY_LIVOX_PLUGIN_FILENAME}"')
     if missing:
         raise RuntimeError(f"livox sensor patch removed required sensor/plugin entries: {missing}")
     if "model://livox_mid360/meshes/test2.dae" in patched:
@@ -1060,7 +1079,11 @@ def verify_runtime_plugins(local_ros1_ws: Path) -> dict[str, object]:
     """Verify the Livox plugin came from the source-built local workspace."""
     source_lib = local_ros1_ws / "devel/lib"
     plugin_names = [
-        "liblivox_laser_simulation.so",
+        (
+            "libmosim_gpu_livox_pointcloud.so"
+            if SUNRAY_MID360_RAY_BACKEND == "gpu"
+            else "liblivox_laser_simulation.so"
+        ),
     ]
     missing: list[str] = []
     for name in plugin_names:
@@ -1071,7 +1094,12 @@ def verify_runtime_plugins(local_ros1_ws: Path) -> dict[str, object]:
         raise FileNotFoundError(f"missing local runtime plugin build output(s): {missing}")
     return {
         "source_lib": str(source_lib),
-        "mode": "source_built_workspace",
+        "mode": (
+            "gpu_ray_generated_workspace"
+            if SUNRAY_MID360_RAY_BACKEND == "gpu"
+            else "source_built_workspace"
+        ),
+        "ray_backend": SUNRAY_MID360_RAY_BACKEND,
         "verified": plugin_names,
         "verified_count": len(plugin_names),
     }
@@ -1231,6 +1259,7 @@ def main() -> int:
             "mid360_imu_update_rate_hz": SUNRAY_MID360_IMU_UPDATE_RATE_HZ,
         },
         "mid360_sensor_mode": SUNRAY_MID360_SENSOR_MODE,
+        "mid360_ray_backend": SUNRAY_MID360_RAY_BACKEND,
         "mavlink_enable_lockstep": SUNRAY_MAVLINK_ENABLE_LOCKSTEP,
         "mavlink_interface_mode": SUNRAY_MAVLINK_INTERFACE_MODE,
         "gps_sensor_mode": SUNRAY_GPS_SENSOR_MODE,
@@ -1249,6 +1278,7 @@ def main() -> int:
             f"Sets mavlink_interface mode to {SUNRAY_MAVLINK_INTERFACE_MODE}; disabled is a bounded diagnostic only and is not a PX4 closed-loop evidence mode.",
             f"Uses the reviewed MoSim assembly pose for the MID360 mount: {ASSEMBLED_MID360_INCLUDE_POSE}.",
             f"Sets the MID360 LiDAR Gazebo update rate to {SUNRAY_MID360_LIDAR_UPDATE_RATE_HZ:g}Hz for the current FAST-LIO localization profile.",
+            f"Uses the {SUNRAY_MID360_RAY_BACKEND} MID360 Gazebo ray backend; gpu selects a gpu_ray sensor and the project-owned GPU PointCloud2 plugin.",
             f"Sets the Livox plugin downsample to {SUNRAY_MID360_PLUGIN_DOWNSAMPLE} so the raw PointCloud2 density is not reduced before localization review.",
             f"Sets the Livox internal IMU Gazebo update rate to {SUNRAY_MID360_IMU_UPDATE_RATE_HZ}Hz to support the current 20Hz LiDAR/FAST-LIO profile.",
             f"Sets Gazebo real_time_update_rate to {SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ}Hz. The PX4 flight-controller IMU follows Gazebo world updates and must be measured from /imu and /uav1/mavros/imu/data in the same run.",

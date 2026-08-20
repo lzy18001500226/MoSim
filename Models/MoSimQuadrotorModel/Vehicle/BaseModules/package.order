@@ -1,0 +1,12 @@
+BatteryPowerModule
+ESCDriveModule
+V6XFlightControllerModule
+ORINNXMissionComputerModule
+PerceptionInterfaceModule
+SystemSupervisorModule
+BatteryPower
+ESCDrive
+FlightController
+MissionComputer
+PerceptionInterface
+Supervisor
