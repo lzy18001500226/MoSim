@@ -5,22 +5,19 @@ model Sunray150PlanningOpenBlocksPx4CtrlSysblockDynamicClosedLoop
   parameter Real initial_position_m[3](each unit = "m") = {-41, -26, 1.5}
     "Match the first OpenBlocks reference point at the sampled controller boundary";
 
-  extends MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner(
-    redeclare model Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksDynamicReference,
-    plant(initial_position_m = initial_position_m));
-  // The graphical PX4CTRL outer loop owns its 100 Hz sample boundary. Do not
-  // retain EquationBridge-only UnitDelay modifiers on this graphical route.
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksDynamicReference reference
+    annotation(Placement(transformation(origin = {-82, 50}, extent = {{-18, -18}, {18, 18}})));
+  OpenBlocksPx4CtrlVehicle vehicle(initial_position = initial_position_m)
+    annotation(Placement(transformation(origin = {50, 50}, extent = {{-38, -38}, {38, 38}})));
 
-  OpenBlocksMapTruthDisplay navigationDisplay(
-    n_segments = 54,
-    p_x = {-41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, 41},
-    p_y = {-26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, 26},
-    p_z = {1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5},
-    segment_duration = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1})
-    "Canonical full-map truth with a separate 6 m local sensing overlay." annotation(Placement(transformation(extent={{-15,-46},{15,-6}})));
+  OpenBlocksMapTruthDisplay navigationDisplay
+    annotation(Placement(transformation(extent={{-15,-46},{15,-6}})));
 
 equation
-  connect(plant.position, navigationDisplay.actual_position);
+  connect(reference.position_command, vehicle.position_reference) annotation(Line(points = {{-64, 57.2}, {-20, 57.2}, {-20, 63.5}, {7.6, 63.5}}, color = {0, 0, 127}));
+  connect(reference.velocity_command, vehicle.velocity_reference) annotation(Line(points = {{-64, 50}, {-14, 50}, {-14, 53.8}, {7.6, 53.8}}, color = {0, 0, 127}));
+  connect(reference.acceleration_command, vehicle.acceleration_reference) annotation(Line(points = {{-64, 42.8}, {-20, 42.8}, {-20, 44.1}, {7.6, 44.1}}, color = {0, 0, 127}));
+  connect(vehicle.position, navigationDisplay.actual_position);
   connect(reference.position_command, navigationDisplay.reference_position);
 
   annotation(

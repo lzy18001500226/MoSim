@@ -9,12 +9,7 @@ model ThreeUavOpenBlocksReconfigurableFormationPx4CtrlDynamic
   MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav3DynamicReference reference3
     annotation(Placement(transformation(origin = {-82, -66}, extent = {{-18, -18}, {18, 18}})));
 
-  OpenBlocksMapTruthDisplay navigationDisplay(
-    n_segments = 54,
-    p_x = {-41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, -41, 41},
-    p_y = {-26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, -26, 26},
-    p_z = {1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5, 1.5},
-    segment_duration = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1})
+  OpenBlocksMapTruthDisplay navigationDisplay
     annotation(Placement(transformation(origin = {0, 72}, extent = {{-22, -22}, {22, 22}})));
 
   OpenBlocksPx4CtrlVehicle vehicle1(initial_position = {-41, -26, 1.5})
