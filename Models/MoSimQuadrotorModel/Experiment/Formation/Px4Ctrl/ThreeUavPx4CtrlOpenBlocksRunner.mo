@@ -22,7 +22,7 @@ model ThreeUavPx4CtrlOpenBlocksRunner
   parameter Real pair_activation_distance_m(unit = "m") = 1.5;
 
   // ── Shared OpenBlocks A* trajectory reference ─────────────────────────────────
-  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksPx4CtrlReference openblocks_ref
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksPx4CtrlReference openblocks_ref 
     annotation(Placement(transformation(origin={-827.5,-105.853},
 extent={{-92.5,-142.528},{92.5,142.528}})));
 
@@ -34,7 +34,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
     p_z = openblocks_ref.p_z,
     segment_duration = openblocks_ref.segment_duration)
     "OpenBlocks environment map with obstacle walls and reference trajectory"
-    annotation(Placement(transformation(origin={-827.5,140},extent={{-92.5,-60},{92.5,60}})));
+    annotation(Placement(transformation(origin={-827.5,80},extent={{-92.5,-60},{92.5,60}})));
 
   // ── Pairwise ECBF safety filter ───────────────────────────────────────────────
   MoSimQuadrotorModel.Guidance.Formation.ThreeUavPairwiseEcbfReferenceSafetyFilter ecbf_filter(
@@ -83,7 +83,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
     gust_start_s        = gust_start_s,
     gust_duration_s     = gust_duration_s,
     mass_scale          = mass_scale,
-    inertia_scale       = inertia_scale)
+    inertia_scale       = inertia_scale) 
     annotation(Placement(transformation(origin = {627.5, 102.5}, extent = {{-127.5, -147.5}, {127.5, 147.5}})));
 
   // ══ UAV 2 control chain ═══════════════════════════════════════════════════════
@@ -125,7 +125,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
     gust_start_s        = gust_start_s,
     gust_duration_s     = gust_duration_s,
     mass_scale          = mass_scale,
-    inertia_scale       = inertia_scale)
+    inertia_scale       = inertia_scale) 
     annotation(Placement(transformation(origin = {627.5, -292.5}, extent = {{-127.5, -147.5}, {127.5, 147.5}})));
 
   // ══ UAV 3 control chain ═══════════════════════════════════════════════════════
@@ -167,7 +167,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
     gust_start_s        = gust_start_s,
     gust_duration_s     = gust_duration_s,
     mass_scale          = mass_scale,
-    inertia_scale       = inertia_scale)
+    inertia_scale       = inertia_scale) 
     annotation(Placement(transformation(origin = {627.5, -687.5}, extent = {{-127.5, -147.5}, {127.5, 147.5}})));
 
   // ── Observable variables ──────────────────────────────────────────────────────
@@ -1053,39 +1053,39 @@ color={0,0,127}));
   // ── Formation reference → ECBF filter (nominal trajectories) ─────────────────
   // openblocks_ref right-side ports: position_command, velocity_command, acceleration_command (broadcast to all 3 UAVs)
   // ecbf_filter left-side ports:   global x=-687.5, y=[-6.084,-34.589,-63.095,-91.600,-120.106,-148.611,-177.117,-205.622,-234.127]
-  connect(openblocks_ref.position_command,     ecbf_filter.nominal_position_1)
+  connect(openblocks_ref.position_command,     ecbf_filter.nominal_position_1) 
     annotation(Line(origin={0,0},
 points={{-725.75,8.1694},{-705,8.1694},{-705,-6.0834},{-687.5,-6.0834}},
 color={0,0,127}));
-  connect(openblocks_ref.velocity_command,     ecbf_filter.nominal_velocity_1)
+  connect(openblocks_ref.velocity_command,     ecbf_filter.nominal_velocity_1) 
     annotation(Line(origin={0,0},
 points={{-725.75,-26.0373},{-705.375,-26.0373},{-705.375,-34.589},{-687.5,-34.589}},
 color={0,0,127}));
-  connect(openblocks_ref.acceleration_command, ecbf_filter.nominal_acceleration_1)
+  connect(openblocks_ref.acceleration_command, ecbf_filter.nominal_acceleration_1) 
     annotation(Line(origin={0,0},
 points={{-725.75,-60.244},{-705.375,-60.244},{-705.375,-63.0946},{-687.5,-63.0946}},
 color={0,0,127}));
-  connect(openblocks_ref.position_command,     ecbf_filter.nominal_position_2)
+  connect(openblocks_ref.position_command,     ecbf_filter.nominal_position_2) 
     annotation(Line(origin={0,0},
 points={{-725.75,-94.45076},{-705.375,-94.45076},{-705.375,-91.6002},{-687.5,-91.6002}},
 color={0,0,127}));
-  connect(openblocks_ref.velocity_command,     ecbf_filter.nominal_velocity_2)
+  connect(openblocks_ref.velocity_command,     ecbf_filter.nominal_velocity_2) 
     annotation(Line(origin={0,0},
 points={{-725.75,-128.65748},{-705,-128.65748},{-705,-120.106},{-687.5,-120.106}},
 color={0,0,127}));
-  connect(openblocks_ref.acceleration_command, ecbf_filter.nominal_acceleration_2)
+  connect(openblocks_ref.acceleration_command, ecbf_filter.nominal_acceleration_2) 
     annotation(Line(origin={0,0},
 points={{-725.75,-162.864},{-705,-162.864},{-705,-148.6114},{-687.5,-148.6114}},
 color={0,0,127}));
-  connect(openblocks_ref.position_command,     ecbf_filter.nominal_position_3)
+  connect(openblocks_ref.position_command,     ecbf_filter.nominal_position_3) 
     annotation(Line(origin={0,0},
 points={{-725.75,-197.07092},{-705,-197.07092},{-705,-177.117},{-687.5,-177.117}},
 color={0,0,127}));
-  connect(openblocks_ref.velocity_command,     ecbf_filter.nominal_velocity_3)
+  connect(openblocks_ref.velocity_command,     ecbf_filter.nominal_velocity_3) 
     annotation(Line(origin={0,0},
 points={{-725.75,-219.8754},{-705,-219.875},{-705,-205.623},{-687.5,-205.623}},
 color={0,0,127}));
-  connect(openblocks_ref.acceleration_command, ecbf_filter.nominal_acceleration_3)
+  connect(openblocks_ref.acceleration_command, ecbf_filter.nominal_acceleration_3) 
     annotation(Line(origin={0,0},
 points={{-725.75,-242.68},{-705,-242.68},{-705,-234.1282},{-687.5,-234.1282}},
 color={0,0,127}),__MWORKS(BlockSystem(NamedSignal)));
@@ -1093,11 +1093,11 @@ color={0,0,127}),__MWORKS(BlockSystem(NamedSignal)));
   // ── Map display connections ───────────────────────────────────────────────────
   connect(openblocks_ref.position_command, navigationDisplay.reference_position)
     annotation(Line(origin={0,0},
-points={{-725.75,8.1694},{-700,8.1694},{-700,110},{-920,110}},
+points={{-735,-48.8418},{-735,50},{-920,50}},
 color={0,0,127}));
   connect(plant_1.position, navigationDisplay.actual_position)
     annotation(Line(origin={0,0},
-points={{755,220.5},{780,220.5},{780,300},{-950,300},{-950,150},{-920,150}},
+points={{755,220.5},{775,220.5},{775,300},{-950,300},{-950,110},{-920,110}},
 color={0,100,150}));
 
   // ── Plant feedback → ECBF filter ──────────────────────────────────────────────
