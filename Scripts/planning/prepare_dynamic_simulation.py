@@ -27,7 +27,7 @@ MAT_EXPORT_SCRIPT = ROOT / "Scripts/planning/export_planning_to_mat.py"
 # 动态参考模型路径（使用CombiTimeTable读MAT文件）
 DYNAMIC_MODELS = {
     "px4ctrl_single": "Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningOpenBlocksPx4CtrlSysblockDynamicClosedLoop.mo",
-    "px4ctrl_three": "Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningOpenBlocksPx4CtrlThreeUavDynamicClosedLoop.mo",
+    "px4ctrl_three": "Models/MoSimQuadrotorModel/Guidance/Planning/ThreeUavOpenBlocksReconfigurableFormationPx4CtrlDynamic.mo",
 }
 
 
@@ -39,10 +39,10 @@ def run_step(description: str, command: list[str]) -> bool:
 
     result = subprocess.run(command, cwd=ROOT)
     if result.returncode != 0:
-        print(f"\n❌ FAILED: {description}")
+        print(f"\n[FAILED] {description}")
         return False
 
-    print(f"\n✓ DONE: {description}")
+    print(f"\n[DONE] {description}")
     return True
 
 
@@ -68,7 +68,7 @@ def main():
 
     # Step 3: 提示用户下一步操作
     print("\n" + "=" * 60)
-    print("✓ 准备完成！MAT文件已就绪")
+    print("[SUCCESS] MAT files ready for simulation")
     print("=" * 60)
     print("\n下一步在Sysplorer中操作：")
     print("\n【选项1】单机Px4Ctrl动态仿真：")
