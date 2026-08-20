@@ -1,6 +1,8 @@
 within MoSimQuadrotorModel.Guidance;
 package Trajectories "Reference trajectories"
   extends Modelica.Icons.Package;
+
+  annotation(__MWORKS(hide=true,version="26.3.0"));
   model CirclePath "螺旋爬升模型"
     Modelica.Blocks.Sources.Ramp ramp(startTime = 0, duration = 150,
       height = 10) 
