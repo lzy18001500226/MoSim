@@ -98,31 +98,31 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain z_p(k=8.0)
     annotation (Placement(transformation(origin = {-400, 25}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_integral_dt(k=0.01)
-    annotation (Placement(transformation(origin = {-400, -20}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-480, -55}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum z_integral_accum(inputs="++")
     annotation (Placement(transformation(origin = {-340, -20}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.Discrete.UnitDelay z_integral_state(initCond=0.0)
     annotation (Placement(transformation(origin = {-340, -50}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_i(k=6.0)
-    annotation (Placement(transformation(origin = {-320, -20}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-360, -55}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_derivative_input(k=1.0)
-    annotation (Placement(transformation(origin = {-480, -65}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-480, -90}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.Difference z_derivative_difference
-    annotation (Placement(transformation(origin = {-420, -65}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-420, -120}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_derivative_slope(k=100.0)
-    annotation (Placement(transformation(origin = {-360, -65}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-360, -120}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_derivative_filtered_increment(k=0.631839272714496)
-    annotation (Placement(transformation(origin = {-300, -95}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-300, -150}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.UnitDelay z_derivative_previous_state(initCond=0.0)
-    annotation (Placement(transformation(origin = {-300, -35}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-300, -90}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_derivative_state_decay(k=0.368160727285504)
-    annotation (Placement(transformation(origin = {-240, -35}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-240, -90}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum z_derivative_state_sum(inputs="++")
-    annotation (Placement(transformation(origin = {-180, -65}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {-180, -120}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain z_derivative(k=1.0)
-    annotation (Placement(transformation(origin = {-120, -65}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-120, -120}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain z_d(k=4.0)
-    annotation (Placement(transformation(origin = {-320, -65}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-320, -120}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum z_pi(inputs="++")
     annotation (Placement(transformation(origin = {-240, 0}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum thrust_command(inputs="++")
@@ -130,71 +130,71 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.Sources.Constant yaw_reference(k=0.0)
     annotation (Placement(transformation(origin = {-480, -370}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pitch_error(inputs="+-")
-    annotation (Placement(transformation(origin = {-420, -130}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {-480, -300}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_p(k=14.142)
-    annotation (Placement(transformation(origin = {-340, -102}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-400, -265}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_input(k=1.0)
-    annotation (Placement(transformation(origin = {-420, -158}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-480, -335}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.Difference pitch_derivative_difference
-    annotation (Placement(transformation(origin = {-360, -158}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-420, -335}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_slope(k=100.0)
-    annotation (Placement(transformation(origin = {-300, -158}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-360, -335}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_filtered_increment(k=0.631839272714496)
-    annotation (Placement(transformation(origin = {-240, -188}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-300, -365}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.UnitDelay pitch_derivative_previous_state(initCond=0.0)
-    annotation (Placement(transformation(origin = {-240, -128}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-300, -305}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative_state_decay(k=0.368160727285504)
-    annotation (Placement(transformation(origin = {-180, -128}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-240, -305}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pitch_derivative_state_sum(inputs="++")
-    annotation (Placement(transformation(origin = {-120, -158}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {-180, -335}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_derivative(k=1.0)
-    annotation (Placement(transformation(origin = {-60, -158}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-120, -335}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_d(k=1.414)
-    annotation (Placement(transformation(origin = {-260, -158}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-320, -335}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pitch_pd(inputs="++")
-    annotation (Placement(transformation(origin = {-180, -130}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {-240, -300}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.Discontinuities.Saturation pitch_limit(upLimit=7.0,lowLimit=-7.0)
-    annotation (Placement(transformation(origin = {-100, -130}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-160, -300}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain pitch_mix(k=0.707)
-    annotation (Placement(transformation(origin = {-20, -130}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-80, -300}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_mea_sign(k=-1)
     annotation (Placement(transformation(origin = {-500, -250}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum roll_error(inputs="+-")
-    annotation (Placement(transformation(origin = {-420, -250}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {-480, -160}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_p(k=14.142)
-    annotation (Placement(transformation(origin = {-340, -222}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-400, -125}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_derivative_input(k=1.0)
-    annotation (Placement(transformation(origin = {-420, -278}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-480, -195}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.Difference roll_derivative_difference
-    annotation (Placement(transformation(origin = {-360, -278}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-420, -195}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_derivative_slope(k=100.0)
-    annotation (Placement(transformation(origin = {-300, -278}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-360, -195}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_derivative_filtered_increment(k=0.631839272714496)
-    annotation (Placement(transformation(origin = {-240, -308}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-300, -225}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discrete.UnitDelay roll_derivative_previous_state(initCond=0.0)
-    annotation (Placement(transformation(origin = {-240, -248}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-300, -165}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_derivative_state_decay(k=0.368160727285504)
-    annotation (Placement(transformation(origin = {-180, -248}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-240, -165}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum roll_derivative_state_sum(inputs="++")
-    annotation (Placement(transformation(origin = {-120, -278}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {-180, -195}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_derivative(k=1.0)
-    annotation (Placement(transformation(origin = {-60, -278}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-120, -195}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_d(k=1.414)
-    annotation (Placement(transformation(origin = {-260, -278}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-320, -195}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum roll_pd(inputs="++")
-    annotation (Placement(transformation(origin = {-180, -250}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {-240, -160}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.Discontinuities.Saturation roll_limit(upLimit=7.0,lowLimit=-7.0)
-    annotation (Placement(transformation(origin = {-100, -250}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-160, -160}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain roll_mix(k=0.707)
-    annotation (Placement(transformation(origin = {-20, -250}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-80, -160}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum yaw_error(inputs="+-")
-    annotation (Placement(transformation(origin = {-420, -370}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {-480, -440}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain yaw_p(k=5.0)
-    annotation (Placement(transformation(origin = {-340, -342}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-400, -405}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation yaw_limit(upLimit=7.0,lowLimit=-7.0)
-    annotation (Placement(transformation(origin = {-100, -370}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-160, -440}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain yaw_mix(k=0.707)
-    annotation (Placement(transformation(origin = {-20, -370}, extent = {{-17, -13}, {17, 13}})));
+    annotation (Placement(transformation(origin = {-80, -440}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain mixer_1_yaw_gain(k=-1)
     annotation (Placement(transformation(origin = {55, 215}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Gain mixer_1_pitch_gain(k=-1)
@@ -202,9 +202,9 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain mixer_1_roll_gain(k=1)
     annotation (Placement(transformation(origin = {55, 145}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum mixer_1_first(inputs="++")
-    annotation (Placement(transformation(origin = {125, 198}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {100, 180}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum mixer_1(inputs="++")
-    annotation (Placement(transformation(origin = {185, 180}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {260, 180}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum rotor_1_sum(inputs="++")
     annotation (Placement(transformation(origin = {255, 180}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain rotor_1_sign(k=1)
@@ -216,9 +216,9 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain mixer_2_roll_gain(k=-1)
     annotation (Placement(transformation(origin = {55, 25}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum mixer_2_first(inputs="++")
-    annotation (Placement(transformation(origin = {125, 78}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {100, 60}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum mixer_2(inputs="++")
-    annotation (Placement(transformation(origin = {185, 60}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {260, 60}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum rotor_2_sum(inputs="++")
     annotation (Placement(transformation(origin = {255, 60}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain rotor_2_sign(k=1)
@@ -230,9 +230,9 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain mixer_3_roll_gain(k=-1)
     annotation (Placement(transformation(origin = {55, -95}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum mixer_3_first(inputs="++")
-    annotation (Placement(transformation(origin = {125, -42}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {100, -60}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum mixer_3(inputs="++")
-    annotation (Placement(transformation(origin = {185, -60}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {260, -60}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum rotor_3_sum(inputs="++")
     annotation (Placement(transformation(origin = {255, -60}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain rotor_3_sign(k=1)
@@ -244,9 +244,9 @@ model OfficialPidGraphicalCore "Official PID native graphical controller core"
   SysplorerEmbeddedCoder.MathOperation.Gain mixer_4_roll_gain(k=1)
     annotation (Placement(transformation(origin = {55, -215}, extent = {{-17, -13}, {17, 13}})));
   SysplorerEmbeddedCoder.MathOperation.Sum mixer_4_first(inputs="++")
-    annotation (Placement(transformation(origin = {125, -162}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {100, -180}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum mixer_4(inputs="++")
-    annotation (Placement(transformation(origin = {185, -180}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
+    annotation (Placement(transformation(origin = {260, -180}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum rotor_4_sum(inputs="++")
     annotation (Placement(transformation(origin = {255, -180}, extent = {{-17, -13}, {17, 13}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Gain rotor_4_sign(k=1)
