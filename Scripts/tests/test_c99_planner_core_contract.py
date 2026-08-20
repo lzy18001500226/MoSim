@@ -8,6 +8,8 @@ ROOT = Path(__file__).resolve().parents[2]
 COORDINATE_CONTRACT = ROOT / "Scripts" / "sunray" / "write_c99_diff_target_coordinate_contract.py"
 MULTIUAV_RUNNER = ROOT / "Scripts" / "sunray" / "run_c99_multiuav_planner_gate.sh"
 SINGLE_RUNNER = ROOT / "Scripts" / "sunray" / "run_diff_single_auto123_gate.sh"
+SINGLE_GATE = ROOT / "Scripts" / "sunray" / "run_px4ctrl_ego_single_gate.sh"
+DIFF_LAUNCH = ROOT / "Scripts" / "sunray" / "diff_planner_single_px4ctrl_goal4.launch"
 FORMATION_GATE = ROOT / "Scripts" / "sunray" / "run_factory_l2_swarm_formation_obstacle_gate.ps1"
 GRID_MAP = ROOT / "src" / "planning" / "fixed_formation" / "src" / "planner" / "plan_env" / "src" / "grid_map.cpp"
 
@@ -128,6 +130,23 @@ def test_c99_planner_entrypoints_disable_qgc_and_ue_without_sensor_parameter_tun
     assert "QGC=disabled" in multi
     assert "export UE_LIVE_MIRROR_ENABLE=false" in multi
     assert "FAST-LIO, MID360, point-cloud and grid-map parameters are unchanged." in coordinate_contract
+
+
+def test_diff_single_entry_connects_planner_commands_to_px4ctrl() -> None:
+    wrapper = SINGLE_RUNNER.read_text(encoding="utf-8")
+    gate = SINGLE_GATE.read_text(encoding="utf-8")
+    launch = DIFF_LAUNCH.read_text(encoding="utf-8")
+
+    assert "PLANNER_VARIANT=diff_planner" in wrapper
+    assert 'bash Scripts/sunray/run_px4ctrl_ego_single_gate.sh' in wrapper
+    assert 'PLANNER_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/diff_planner_single_px4ctrl_goal4.launch"' in gate
+    assert 'PLANNER_RAW_POSITION_CMD_TOPIC="${DIFF_RAW_POSITION_CMD_TOPIC}"' in gate
+    assert 'PLANNER_ENABLE_CMD_SAFETY_ADAPTER="${DIFF_ENABLE_CMD_SAFETY_ADAPTER}"' in gate
+    assert 'goal4_position_cmd_safety_adapter.py' in gate
+    assert '_input_topic:="${PLANNER_RAW_POSITION_CMD_TOPIC}"' in gate
+    assert '_output_topic:=/position_cmd' in gate
+    assert '<remap from="position_cmd" to="$(arg position_cmd_topic)"/>' in launch
+    assert '<arg name="odom_topic" default="/uav1/mavros/local_position/odom"/>' in launch
 
 
 def test_formation_gate_uses_the_c99_wrapper_and_only_adds_an_optional_map_origin() -> None:
