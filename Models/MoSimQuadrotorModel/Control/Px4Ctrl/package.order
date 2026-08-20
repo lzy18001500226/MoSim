@@ -1,0 +1,10 @@
+Px4CtrlBaselineCore
+Px4CtrlInputSampler
+Px4CtrlOutputBridge
+Px4CtrlBaselineMapperDiagnostics
+Px4CtrlCoreSysblock
+Px4CtrlOuterLoopGraphicalSysblock
+Px4CtrlAttitudeThrustSysblockAdapter
+Px4CtrlRotorAllocator
+Px4CtrlAttitudeThrustSysblockRt1Smoke
+Px4CtrlReferenceCompensator

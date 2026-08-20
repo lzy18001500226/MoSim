@@ -1,0 +1,7 @@
+OfficialPidGraphicalCore
+OfficialPidContinuousMapper
+OfficialPidSysblockMapperDiagnostics
+BaselineRotorMapper
+YawDampedAmplitudeRouter
+BodyFramePreprocessor
+WorldFramePassthrough

@@ -1,9 +1,0 @@
-PerceptionInterface
-FlightController
-MissionComputer
-Supervisor
-BatteryPower
-ESCDrive
-Px4CtrlController
-MotorDrive
-AirframeSensor

@@ -1,0 +1,13 @@
+AdaptiveBackstepping
+BacksteppingBaseline
+FeedbackLinearization
+Fopid
+H2StateFeedback
+HinfHoverWrench
+Lqg
+LqiBaseline
+LqrBaseline
+Mrac
+Ndi
+PassivityBasedControl
+PolePlacementLuenberger

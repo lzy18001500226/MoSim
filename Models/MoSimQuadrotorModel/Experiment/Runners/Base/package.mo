@@ -1,7 +1,0 @@
-within MoSimQuadrotorModel.Experiment.Runners;
-package Base
-  "Reusable formal whole-aircraft runner templates by controller output boundary"
-
-  extends Modelica.Icons.Package;
-  annotation(__MWORKS(version="26.3.0"));
-end Base;
