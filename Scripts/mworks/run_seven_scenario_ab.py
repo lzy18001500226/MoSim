@@ -328,13 +328,13 @@ model {case.model_name}
 equation
   injection_gust_force_N = plant.gust.force;
   injection_plant_mass_kg = plant.physical.wrapper.dynamics.mass_kg;
-  injection_controller_nominal_mass_kg = controller.profile.takeoff_mass_kg;
+  injection_controller_nominal_mass_kg = plant.profile.takeoff_mass_kg;
   injection_plant_inertia_diagonal_kg_m2 = {{
     plant.physical.body.I_11,
     plant.physical.body.I_22,
     plant.physical.body.I_33}};
   injection_controller_nominal_inertia_diagonal_kg_m2 =
-    controller.profile.body_inertia_diagonal_kg_m2;
+    plant.profile.body_inertia_diagonal_kg_m2;
   injection_fault_effectiveness = plant.physical.wrapper.dynamics.fault_effectiveness;
 
   annotation(
