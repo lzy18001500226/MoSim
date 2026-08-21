@@ -48,8 +48,8 @@ print()
 
 # Map to GraphicalRunner paths
 runner_map = {
-    'awff_l1_indi': 'Models/MoSimQuadrotorModel/Experiment/IntegratedChains/AwffL1IndiGraphicalRunner.mo',
-    'awff_l1_residual': 'Models/MoSimQuadrotorModel/Experiment/IntegratedChains/AwffL1ResidualGraphicalRunner.mo',
+    'awff_l1_indi': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1IndiGraphicalRunner.mo',
+    'awff_l1_residual': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1ResidualGraphicalRunner.mo',
     'linear_mpc_l1_indi': 'Models/MoSimQuadrotorModel/Experiment/OptimizationPredictive/LinearMpcL1IndiGraphicalRunner.mo',
     'qp_nmpc_l1_indi_cbf': 'Models/MoSimQuadrotorModel/Experiment/OptimizationPredictive/QpNmpcL1IndiCbfGraphicalRunner.mo'
 }

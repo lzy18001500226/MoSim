@@ -3,8 +3,8 @@
   "id": "factory_l2_fuel_fixed64_exploration_v1",
   "scene": "Factory L2",
   "vehicle_count": 1,
-  "world_file": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
-  "model_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+  "world_file": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "model_path": "Config/gazebo/models",
   "spawn": {
     "x_m": -10.575025,
     "y_m": -19.36313,

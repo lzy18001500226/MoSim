@@ -122,7 +122,9 @@ def test_phase1_wrapper_opens_the_rviz_goal_surface_and_writes_the_manual_packet
     assert "rviz_qgc_display_phase1)" in wrapper
     assert "COMMAND_SCHEMA=mosim.rviz_qgc_display_phase1_command.v1" in wrapper
     assert "OPEN_RVIZ_FOR_PHASE=true" in wrapper
-    assert "DIFF_OPEN_SPLIT_RVIZ_FOR_PHASE=false" in wrapper
+    assert "DIFF_OPEN_SPLIT_RVIZ_FOR_PHASE=true" in wrapper
+    assert "RVIZ_CONFIG_RELATIVE=Config/rviz/sunray_ros1_goal4_diff_pointcloud_review.rviz" in wrapper
+    assert "DIFF_GRID3D_RVIZ_CONFIG=\"$PROJECT_ROOT/Config/rviz/sunray_ros1_goal4_diff_grid3d_review.rviz\"" in wrapper
     assert "write_phase1_manual_test_packet" in wrapper
     assert "verify_rviz_qgc_display_phase1_acceptance" in wrapper
     assert "qgc_plan_goal=disabled_for_phase_1" in wrapper

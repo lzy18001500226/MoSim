@@ -1,27 +1,7 @@
-within MoSimQuadrotorModel.Experiment.Formation.Px4Ctrl;
-model ThreeUavHeterogeneousOpenBlocksRunner
-  "Three-UAV heterogeneous OpenBlocks obstacle avoidance: independent A* quintic references per UAV,
+within MoSimQuadrotorModel.Experiment.OpenBlocks.Px4Ctrl.Formation;
+model ThreeUavPx4CtrlOpenBlocksRunner
+  "Three-UAV OpenBlocks obstacle avoidance: shared A* quintic reference,
    pairwise ECBF safety filter, Px4Ctrl baseline control chains"
-
-  // ── Observable outputs ────────────────────────────────────────────────────────
-  Modelica.Blocks.Interfaces.RealOutput pos_1[3](each unit = "m")
-    "UAV 1 position [x, y, z]" 
-    annotation(Placement(transformation(origin={800,220.5}, extent={{-15,-15},{15,15}})));
-  Modelica.Blocks.Interfaces.RealOutput att_1[3](each unit = "rad")
-    "UAV 1 attitude [roll, pitch, yaw]" 
-    annotation(Placement(transformation(origin={800,191}, extent={{-15,-15},{15,15}})));
-  Modelica.Blocks.Interfaces.RealOutput pos_2[3](each unit = "m")
-    "UAV 2 position [x, y, z]" 
-    annotation(Placement(transformation(origin={800,-174.5}, extent={{-15,-15},{15,15}})));
-  Modelica.Blocks.Interfaces.RealOutput att_2[3](each unit = "rad")
-    "UAV 2 attitude [roll, pitch, yaw]" 
-    annotation(Placement(transformation(origin={800,-204}, extent={{-15,-15},{15,15}})));
-  Modelica.Blocks.Interfaces.RealOutput pos_3[3](each unit = "m")
-    "UAV 3 position [x, y, z]" 
-    annotation(Placement(transformation(origin={800,-569.5}, extent={{-15,-15},{15,15}})));
-  Modelica.Blocks.Interfaces.RealOutput att_3[3](each unit = "rad")
-    "UAV 3 attitude [roll, pitch, yaw]" 
-    annotation(Placement(transformation(origin={800,-599}, extent={{-15,-15},{15,15}})));
 
   // ── Shared parameters ─────────────────────────────────────────────────────────
   parameter Real nominal_esc_limit_abs(unit = "rad/s", min = 0) = 110
@@ -41,13 +21,22 @@ model ThreeUavHeterogeneousOpenBlocksRunner
   parameter Real pair_minimum_distance_m(unit = "m", min = 0.1) = 1.0;
   parameter Real pair_activation_distance_m(unit = "m") = 1.5;
 
-  // ── Independent OpenBlocks A* trajectory references ──────────────────────────
-  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksPx4CtrlReference openblocks_ref_1 
-    annotation(Placement(transformation(origin={-827.5,-40}, extent={{-92.5,-142.528},{92.5,142.528}})));
-  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav2Reference openblocks_ref_2 
-    annotation(Placement(transformation(origin={-827.5,-170}, extent={{-92.5,-142.528},{92.5,142.528}})));
-  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav3Reference openblocks_ref_3 
-    annotation(Placement(transformation(origin={-827.5,-300}, extent={{-92.5,-142.528},{92.5,142.528}})));
+  // ── Separate OpenBlocks A* trajectory references for each UAV (DYNAMIC MAT) ──
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksDynamicReference uav1_ref
+    annotation(Placement(transformation(origin={-827.5,-105.853},
+extent={{-92.5,-142.528},{92.5,142.528}})));
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav2DynamicReference uav2_ref
+    annotation(Placement(transformation(origin={-827.5,-305.853},
+extent={{-92.5,-142.528},{92.5,142.528}})));
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav3DynamicReference uav3_ref
+    annotation(Placement(transformation(origin={-827.5,-505.853},
+extent={{-92.5,-142.528},{92.5,142.528}})));
+
+  // ── OpenBlocks map visualization ──────────────────────────────────────────────
+  MoSimQuadrotorModel.Guidance.Planning.OpenBlocksMapTruthDisplay navigationDisplay
+    "OpenBlocks environment map with obstacle walls; actual/reference positions from signals"
+    annotation(Placement(transformation(origin={-380,105},
+extent={{-50,-35},{50,35}})));
 
   // ── Pairwise ECBF safety filter ───────────────────────────────────────────────
   MoSimQuadrotorModel.Guidance.Formation.ThreeUavPairwiseEcbfReferenceSafetyFilter ecbf_filter(
@@ -90,7 +79,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
   MoSimQuadrotorModel.Experiment.Telemetry.RotorCommandChannel motor1_4(channel_index = 4) 
     annotation(Placement(transformation(origin = {431.25, -15.617}, extent = {{-28.75, -30}, {28.75, 30}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_1(
-    initial_position_m  = {0, 1.2, 0},
+    initial_position_m  = {-41, -26, 1.5},
     rotor_effectiveness = rotor_effectiveness_1,
     gust_force          = gust_force,
     gust_start_s        = gust_start_s,
@@ -132,7 +121,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
   MoSimQuadrotorModel.Experiment.Telemetry.RotorCommandChannel motor2_4(channel_index = 4) 
     annotation(Placement(transformation(origin = {431.25, -410.617}, extent = {{-28.75, -30}, {28.75, 30}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_2(
-    initial_position_m  = {-1.0392304845, -0.6, 0},
+    initial_position_m  = {-43, -26, 1.5},
     rotor_effectiveness = rotor_effectiveness_2,
     gust_force          = gust_force,
     gust_start_s        = gust_start_s,
@@ -174,7 +163,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
   MoSimQuadrotorModel.Experiment.Telemetry.RotorCommandChannel motor3_4(channel_index = 4) 
     annotation(Placement(transformation(origin = {431.25, -805.617}, extent = {{-28.75, -30}, {28.75, 30}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_3(
-    initial_position_m  = {1.0392304845, -0.6, 0},
+    initial_position_m  = {-41, -28, 1.32},
     rotor_effectiveness = rotor_effectiveness_3,
     gust_force          = gust_force,
     gust_start_s        = gust_start_s,
@@ -182,12 +171,6 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
     mass_scale          = mass_scale,
     inertia_scale       = inertia_scale) 
     annotation(Placement(transformation(origin = {627.5, -687.5}, extent = {{-127.5, -147.5}, {127.5, 147.5}})));
-
-  // ── Map display: preserve the native OpenBlocks truth/reference view ─────────
-  MoSimQuadrotorModel.Environment.Maps.OpenBlocksMapTruthDisplay nav_display 
-    annotation(
-      Placement(transformation(origin={-380,-125}, extent={{-50,-50},{50,50}})),
-      __MWORKS(hide=true));
 
   // ── Observable variables ──────────────────────────────────────────────────────
   Real position_ref_1[3];
@@ -207,34 +190,6 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
 
 equation
 
-  // ── Observable assignments ────────────────────────────────────────────────────
-  position_ref_1 = openblocks_ref_1.position_command;
-  position_ref_2 = openblocks_ref_2.position_command;
-  position_ref_3 = openblocks_ref_3.position_command;
-  position_1 = plant_1.position;
-  position_2 = plant_2.position;
-  position_3 = plant_3.position;
-  attitude_1 = plant_1.attitude;
-  attitude_2 = plant_2.attitude;
-  attitude_3 = plant_3.attitude;
-
-  position_error_norm_1 = sqrt((position_1[1] - position_ref_1[1])^2 +
-                                (position_1[2] - position_ref_1[2])^2 +
-                                (position_1[3] - position_ref_1[3])^2);
-  position_error_norm_2 = sqrt((position_2[1] - position_ref_2[1])^2 +
-                                (position_2[2] - position_ref_2[2])^2 +
-                                (position_2[3] - position_ref_2[3])^2);
-  position_error_norm_3 = sqrt((position_3[1] - position_ref_3[1])^2 +
-                                (position_3[2] - position_ref_3[2])^2 +
-                                (position_3[3] - position_ref_3[3])^2);
-
-  minimum_pair_distance_m = min(min(
-    sqrt((position_1[1] - position_2[1])^2 + (position_1[2] - position_2[2])^2 + (position_1[3] - position_2[3])^2),
-    sqrt((position_1[1] - position_3[1])^2 + (position_1[2] - position_3[2])^2 + (position_1[3] - position_3[3])^2)),
-    sqrt((position_2[1] - position_3[1])^2 + (position_2[2] - position_3[2])^2 + (position_2[3] - position_3[3])^2));
-
-  max_position_error_norm = max(max(position_error_norm_1, position_error_norm_2), position_error_norm_3);
-
   // ── Plant actual states → ECBF filter (feedback inputs) ──────────────────────
   ecbf_filter.actual_position_1 = plant_1.position;
   ecbf_filter.actual_velocity_1 = plant_1.VelMea;
@@ -242,6 +197,10 @@ equation
   ecbf_filter.actual_velocity_2 = plant_2.VelMea;
   ecbf_filter.actual_position_3 = plant_3.position;
   ecbf_filter.actual_velocity_3 = plant_3.VelMea;
+
+  // ══════════════════════════════════════════════════════════════════════════════
+  // ══ UAV 1 CONTROL CHAIN (Y offset = 0) ═══════════════════════════════════════
+  // ══════════════════════════════════════════════════════════════════════════════
 
   // ══════════════════════════════════════════════════════════════════════════════
   // ══ UAV 1 CONTROL CHAIN (Y offset = 0) ═══════════════════════════════════════
@@ -525,7 +484,6 @@ color={0,0,127}));
 
   // <<UAV_1_CHAIN_END>>
 
-
   // ══════════════════════════════════════════════════════════════════════════════
   // ══ UAV 2 CONTROL CHAIN (Y offset = -395) ════════════════════════════════════
   // ══════════════════════════════════════════════════════════════════════════════
@@ -808,7 +766,6 @@ color={0,100,150}));
 
   // <<UAV_2_CHAIN_END>>
 
-
   // ══════════════════════════════════════════════════════════════════════════════
   // ══ UAV 3 CONTROL CHAIN (Y offset = -790) ════════════════════════════════════
   // ══════════════════════════════════════════════════════════════════════════════
@@ -816,39 +773,39 @@ color={0,100,150}));
   // ── ECBF safe reference → Input sampler 3 ─────────────────────────────────────
   connect(ecbf_filter.safe_position_3[1], input_sampler_3.pos_ref_x) 
     annotation(Line(origin={0,0},
-points={{-502.5,-91.6},{-450,-91.6},{-450,-543.611},{-289.3,-543.611}},
-color={0,0,127}),__MWORKS(BlockSystem(NamedSignal)));
+points={{-502.5,-177.117},{-450,-177.117},{-450,-543.611},{-289.3,-543.611}},
+color={0,0,127}));
   connect(ecbf_filter.safe_position_3[2], input_sampler_3.pos_ref_y) 
     annotation(Line(origin={0,0},
-points={{-502.5,-91.6},{-450,-91.6},{-450,-550.833},{-289.3,-550.833}},
+points={{-502.5,-177.117},{-450,-177.117},{-450,-550.833},{-289.3,-550.833}},
 color={0,0,127}));
   connect(ecbf_filter.safe_position_3[3], input_sampler_3.pos_ref_z) 
     annotation(Line(origin={0,0},
-points={{-502.5,-91.6},{-450,-91.6},{-450,-558.056},{-289.3,-558.056}},
+points={{-502.5,-177.117},{-450,-177.117},{-450,-558.056},{-289.3,-558.056}},
 color={0,0,127}));
   connect(ecbf_filter.safe_velocity_3[1], input_sampler_3.vel_ref_x) 
     annotation(Line(origin={0,0},
-points={{-502.5,-120.106},{-450,-120.106},{-450,-565.278},{-289.3,-565.278}},
-color={0,0,127}));
+points={{-502.5,-205.622},{-450,-205.622},{-450,-565.278},{-289.3,-565.278}},
+color={0,0,127}),__MWORKS(BlockSystem(NamedSignal)));
   connect(ecbf_filter.safe_velocity_3[2], input_sampler_3.vel_ref_y) 
     annotation(Line(origin={0,0},
-points={{-502.5,-120.106},{-450,-120.106},{-450,-572.5},{-289.3,-572.5}},
+points={{-502.5,-205.622},{-450,-205.622},{-450,-572.5},{-289.3,-572.5}},
 color={0,0,127}));
   connect(ecbf_filter.safe_velocity_3[3], input_sampler_3.vel_ref_z) 
     annotation(Line(origin={0,0},
-points={{-502.5,-120.106},{-450,-120.106},{-450,-579.722},{-289.3,-579.722}},
+points={{-502.5,-205.622},{-450,-205.622},{-450,-579.722},{-289.3,-579.722}},
 color={0,0,127}));
   connect(ecbf_filter.safe_acceleration_3[1], input_sampler_3.acc_ref_x) 
     annotation(Line(origin={0,0},
-points={{-502.5,-148.611},{-450,-148.611},{-450,-586.944},{-289.3,-586.944}},
+points={{-502.5,-234.128},{-450,-234.128},{-450,-586.944},{-289.3,-586.944}},
 color={0,0,127}));
   connect(ecbf_filter.safe_acceleration_3[2], input_sampler_3.acc_ref_y) 
     annotation(Line(origin={0,0},
-points={{-502.5,-148.611},{-450,-148.611},{-450,-594.167},{-289.3,-594.167}},
+points={{-502.5,-234.128},{-450,-234.128},{-450,-594.167},{-289.3,-594.167}},
 color={0,0,127}));
   connect(ecbf_filter.safe_acceleration_3[3], input_sampler_3.acc_ref_z) 
     annotation(Line(origin={0,0},
-points={{-502.5,-148.6114},{-450,-148.6114},{-450,-601.389},{-289.3,-601.389}},
+points={{-502.5,-234.128},{-450,-234.128},{-450,-601.389},{-289.3,-601.389}},
 color={0,0,127}));
 
   // ── Plant measurements → Input sampler 3 ──────────────────────────────────────
@@ -886,8 +843,8 @@ color={0,0,127}));
   color={0,100,150}));
   connect(plant_3.attitude[3], input_sampler_3.att_yaw) 
     annotation(Line(origin={0,0},
-points={{755,-599},{775,-599},{775,-845},{-310,-845},{-310,-666.389},{-289.3,-666.389}},
-color={0,100,150}));
+  points={{755,-599},{775,-599},{775,-845},{-310,-845},{-310,-666.389},{-289.3,-666.389}},
+  color={0,100,150}));
 
   // ── Input sampler → Controller core 3 ─────────────────────────────────────────
   connect(input_sampler_3.s_pos_ref_x, controller_core_3.x_ref) 
@@ -961,8 +918,8 @@ color={0,100,150}));
   points={{209.3,169.617},{232.5,169.617},{232.5,-54.133},{102.5,-54.133},{102.5,5.25},{118.75,5.25}},
   color={55,80,115}));
   connect(mapper_3.rotor_command_4, fault_compensator_3.command_in[4]) 
-    annotation(Line(origin={0,0},
-  points={{361.8,-484.133},{385,-484.133},{385,-845},{255,-845},{255,-785.617},{271.25,-785.617}},
+    annotation(Line(origin={152.5,-790.867},
+  points={{209.3,137.117},{232.5,137.117},{232.5,-54.133},{102.5,-54.133},{102.5,5.25},{118.75,5.25}},
   color={55,80,115}));
 
   // ── Fault Compensator → ESC 3 ──────────────────────────────────────────────────
@@ -1040,8 +997,8 @@ color={0,100,150}));
   // ── Plant position → Perception 3 (feedback) ──────────────────────────────────
   connect(plant_3.position, perception_3.position_raw) 
     annotation(Line(origin={152.5,-790.867},
-points={{602.5,221.367},{622.5,221.367},{622.5,-54.133},{-602.5,-54.133},{-602.5,5.25},{-587.5,5.25}},
-color={0,100,150}));
+  points={{602.5,221.367},{622.5,221.367},{622.5,-54.133},{-602.5,-54.133},{-602.5,5.25},{-587.5,5.25}},
+  color={0,100,150}));
 
   // ── Battery → ESC 3 ───────────────────────────────────────────────────────────
   connect(battery_3.bus_voltage, esc_3.bus_voltage) 
@@ -1089,194 +1046,86 @@ color={0,100,150}));
   points={{-302.5,-27.25},{-317.5,-27.25},{-317.5,-54.133},{-462.5,-54.133},{-462.5,-22.25},{-445,-22.25}},
   color={100,70,20}));
 
-  // ── UAV 1 → native OpenBlocks map truth/reference display ────────────────────
-  connect(plant_1.position[1], nav_display.actual_position[1]) 
-    annotation(Line(points={{755,220.5},{800,220.5},{800,-112.5},{-430,-112.5}},
-      color={0,100,150}));
-  connect(plant_1.position[2], nav_display.actual_position[2]) 
-    annotation(Line(points={{755,220.5},{800,220.5},{800,-112.5},{-430,-112.5}},
-      color={0,100,150}));
-  connect(plant_1.position[3], nav_display.actual_position[3]) 
-    annotation(Line(points={{755,220.5},{800,220.5},{800,-112.5},{-430,-112.5}},
-      color={0,100,150}));
-  connect(openblocks_ref_1.position_command[1], nav_display.reference_position[1]) 
-    annotation(Line(points={{-735,-40},{-700,-40},{-700,-137.5},{-430,-137.5}},
-      color={0,0,127}));
-  connect(openblocks_ref_1.position_command[2], nav_display.reference_position[2]) 
-    annotation(Line(points={{-735,-40},{-700,-40},{-700,-137.5},{-430,-137.5}},
-      color={0,0,127}));
-  connect(openblocks_ref_1.position_command[3], nav_display.reference_position[3]) 
-    annotation(Line(points={{-735,-40},{-700,-40},{-700,-137.5},{-430,-137.5}},
-      color={0,0,127}));
-
   // <<UAV_3_CHAIN_END>>
 
-
   // ══════════════════════════════════════════════════════════════════════════════
-  // ══ FORMATION CROSS-CONNECTIONS (Three Independent Trajectories → ECBF) ══════
-  // ══════════════════════════════════════════════════════════════════════════════
-
-  // ── UAV 1 trajectory reference → ECBF filter ──────────────────────────────────
-  connect(openblocks_ref_1.position_command[1], ecbf_filter.nominal_position_1[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_1.position_command[2], ecbf_filter.nominal_position_1[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_1.position_command[3], ecbf_filter.nominal_position_1[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_1.velocity_command[1], ecbf_filter.nominal_velocity_1[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_1.velocity_command[2], ecbf_filter.nominal_velocity_1[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_1.velocity_command[3], ecbf_filter.nominal_velocity_1[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_1.acceleration_command[1], ecbf_filter.nominal_acceleration_1[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-  connect(openblocks_ref_1.acceleration_command[2], ecbf_filter.nominal_acceleration_1[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-  connect(openblocks_ref_1.acceleration_command[3], ecbf_filter.nominal_acceleration_1[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-40},{-705,-40},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-
-  // ── UAV 2 trajectory reference → ECBF filter ──────────────────────────────────
-  connect(openblocks_ref_2.position_command[1], ecbf_filter.nominal_position_2[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_2.position_command[2], ecbf_filter.nominal_position_2[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_2.position_command[3], ecbf_filter.nominal_position_2[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_2.velocity_command[1], ecbf_filter.nominal_velocity_2[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_2.velocity_command[2], ecbf_filter.nominal_velocity_2[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_2.velocity_command[3], ecbf_filter.nominal_velocity_2[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_2.acceleration_command[1], ecbf_filter.nominal_acceleration_2[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-  connect(openblocks_ref_2.acceleration_command[2], ecbf_filter.nominal_acceleration_2[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-  connect(openblocks_ref_2.acceleration_command[3], ecbf_filter.nominal_acceleration_2[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-170},{-705,-170},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-
-  // ── UAV 3 trajectory reference → ECBF filter ──────────────────────────────────
-  connect(openblocks_ref_3.position_command[1], ecbf_filter.nominal_position_3[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_3.position_command[2], ecbf_filter.nominal_position_3[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_3.position_command[3], ecbf_filter.nominal_position_3[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-35.433},{-662.5,-35.433}},
-  color={0,0,127}));
-  connect(openblocks_ref_3.velocity_command[1], ecbf_filter.nominal_velocity_3[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_3.velocity_command[2], ecbf_filter.nominal_velocity_3[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_3.velocity_command[3], ecbf_filter.nominal_velocity_3[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-63.939},{-662.5,-63.939}},
-  color={0,0,127}));
-  connect(openblocks_ref_3.acceleration_command[1], ecbf_filter.nominal_acceleration_3[1]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-  connect(openblocks_ref_3.acceleration_command[2], ecbf_filter.nominal_acceleration_3[2]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-  connect(openblocks_ref_3.acceleration_command[3], ecbf_filter.nominal_acceleration_3[3]) 
-    annotation(Line(origin={0,0},
-  points={{-735,-300},{-705,-300},{-705,-92.444},{-662.5,-92.444}},
-  color={0,0,127}));
-
-  // ══════════════════════════════════════════════════════════════════════════════
-  // ══ OBSERVABLE EXPORTS ════════════════════════════════════════════════════════
+  // ══ FORMATION CROSS-CONNECTIONS ═══════════════════════════════════════════════
   // ══════════════════════════════════════════════════════════════════════════════
 
-  connect(plant_1.position, pos_1) annotation(Line(origin={0,0},
-    points={{755,220.5},{785,220.5}},
-    color={0,100,150}));
-  connect(plant_1.attitude, att_1) annotation(Line(origin={0,0},
-    points={{755,191},{785,191}},
-    color={0,100,150}));
-  connect(plant_2.position, pos_2) annotation(Line(origin={0,0},
-    points={{755,-174.5},{785,-174.5}},
-    color={0,100,150}));
-  connect(plant_2.attitude, att_2) annotation(Line(origin={0,0},
-    points={{755,-204},{785,-204}},
-    color={0,100,150}));
-  connect(plant_3.position, pos_3) annotation(Line(origin={0,0},
-    points={{755,-569.5},{785,-569.5}},
-    color={0,100,150}));
-  connect(plant_3.attitude, att_3) annotation(Line(origin={0,0},
-    points={{755,-599},{785,-599}},
-    color={0,100,150}));
+  // ── Formation reference → ECBF filter (nominal trajectories) ─────────────────
+  // UAV1 uses uav1_ref, UAV2 uses uav2_ref, UAV3 uses uav3_ref
+  // ecbf_filter left-side ports:   global x=-687.5, y=[-6.084,-34.589,-63.095,-91.600,-120.106,-148.611,-177.117,-205.622,-234.127]
+  connect(uav1_ref.position_command,     ecbf_filter.nominal_position_1) 
+    annotation(Line(origin={0,0},
+points={{-725.75,8.1694},{-705,8.1694},{-705,-6.0834},{-687.5,-6.0834}},
+color={0,0,127}));
+  connect(uav1_ref.velocity_command,     ecbf_filter.nominal_velocity_1) 
+    annotation(Line(origin={0,0},
+points={{-725.75,-26.0373},{-705.375,-26.0373},{-705.375,-34.589},{-687.5,-34.589}},
+color={0,0,127}));
+  connect(uav1_ref.acceleration_command, ecbf_filter.nominal_acceleration_1) 
+    annotation(Line(origin={0,0},
+points={{-725.75,-60.244},{-705.375,-60.244},{-705.375,-63.0946},{-687.5,-63.0946}},
+color={0,0,127}));
+  connect(uav2_ref.position_command,     ecbf_filter.nominal_position_2) 
+    annotation(Line(origin={0,0},
+points={{-725.75,-94.45076},{-705.375,-94.45076},{-705.375,-91.6002},{-687.5,-91.6002}},
+color={0,0,127}));
+  connect(uav2_ref.velocity_command,     ecbf_filter.nominal_velocity_2) 
+    annotation(Line(origin={0,0},
+points={{-725.75,-128.65748},{-705,-128.65748},{-705,-120.106},{-687.5,-120.106}},
+color={0,0,127}));
+  connect(uav2_ref.acceleration_command, ecbf_filter.nominal_acceleration_2) 
+    annotation(Line(origin={0,0},
+points={{-725.75,-162.864},{-705,-162.864},{-705,-148.6114},{-687.5,-148.6114}},
+color={0,0,127}));
+  connect(uav3_ref.position_command,     ecbf_filter.nominal_position_3) 
+    annotation(Line(origin={0,0},
+points={{-725.75,-197.07092},{-705,-197.07092},{-705,-177.117},{-687.5,-177.117}},
+color={0,0,127}));
+  connect(uav3_ref.velocity_command,     ecbf_filter.nominal_velocity_3) 
+    annotation(Line(origin={0,0},
+points={{-725.75,-219.8754},{-705,-219.875},{-705,-205.623},{-687.5,-205.623}},
+color={0,0,127}));
+  connect(uav3_ref.acceleration_command, ecbf_filter.nominal_acceleration_3) 
+    annotation(Line(origin={0,0},
+points={{-725.75,-242.68},{-705,-242.68},{-705,-234.1282},{-687.5,-234.1282}},
+color={0,0,127}),__MWORKS(BlockSystem(NamedSignal)));
+
+  // ── Map display connections ───────────────────────────────────────────────────
+  connect(uav1_ref.position_command, navigationDisplay.reference_position) 
+    annotation(Line(origin={0,0},
+points={{-735,-48.8418},{-715,-48.8418},{-715,94.5},{-440,94.5}},
+color={0,0,127}));
+  connect(plant_1.position, navigationDisplay.actual_position) 
+    annotation(Line(origin={0,0},
+points={{755,220.5},{763.375,220.5},{763.375,-55},{-450,-55},{-450,115.5},{-440,115.5}},
+color={0,100,150}));
+
+  // ── Plant feedback → ECBF filter ──────────────────────────────────────────────
+  // ── Observable exports ────────────────────────────────────────────────────────
+  position_ref_1        = ecbf_filter.safe_position_1;
+  position_ref_2        = ecbf_filter.safe_position_2;
+  position_ref_3        = ecbf_filter.safe_position_3;
+  position_1            = plant_1.position;
+  position_2            = plant_2.position;
+  position_3            = plant_3.position;
+  attitude_1            = plant_1.attitude;
+  attitude_2            = plant_2.attitude;
+  attitude_3            = plant_3.attitude;
+  position_error_norm_1 = sqrt((position_ref_1[1]-position_1[1])^2
+    + (position_ref_1[2]-position_1[2])^2 + (position_ref_1[3]-position_1[3])^2);
+  position_error_norm_2 = sqrt((position_ref_2[1]-position_2[1])^2
+    + (position_ref_2[2]-position_2[2])^2 + (position_ref_2[3]-position_2[3])^2);
+  position_error_norm_3 = sqrt((position_ref_3[1]-position_3[1])^2
+    + (position_ref_3[2]-position_3[2])^2 + (position_ref_3[3]-position_3[3])^2);
+  minimum_pair_distance_m = ecbf_filter.minimum_actual_pair_distance_m;
+  max_position_error_norm = max(position_error_norm_1,
+    max(position_error_norm_2, position_error_norm_3));
 
   annotation(
-    Icon(coordinateSystem(extent={{-920,-900},{920,900}}), graphics={
-      Rectangle(extent={{-920,-900},{920,900}}, lineColor={28,108,200}, fillColor={255,255,255}, fillPattern=FillPattern.Solid),
-      Text(extent={{-800,850},{800,750}}, textString="Three UAV", textColor={28,108,200}),
-      Text(extent={{-800,650},{800,550}}, textString="Heterogeneous", textColor={28,108,200}),
-      Text(extent={{-800,450},{800,350}}, textString="OpenBlocks", textColor={0,140,72}),
-      Text(extent={{-800,250},{800,150}}, textString="Obstacle Avoidance", textColor={238,46,47}),
-      Text(extent={{-800,50},{800,-50}}, textString="with ECBF", textColor={217,67,180}),
-      Ellipse(extent={{-600,-200},{-400,-400}}, lineColor={28,108,200}, fillColor={170,213,255}, fillPattern=FillPattern.Solid),
-      Ellipse(extent={{-200,-200},{0,-400}}, lineColor={28,108,200}, fillColor={170,213,255}, fillPattern=FillPattern.Solid),
-      Ellipse(extent={{200,-200},{400,-400}}, lineColor={28,108,200}, fillColor={170,213,255}, fillPattern=FillPattern.Solid),
-      Line(points={{-500,-250},{-100,-250}}, color={217,67,180}, thickness=2, pattern=LinePattern.Dash),
-      Line(points={{-100,-250},{300,-250}}, color={217,67,180}, thickness=2, pattern=LinePattern.Dash),
-      Line(points={{-500,-350},{300,-350}}, color={217,67,180}, thickness=2, pattern=LinePattern.Dash),
-      Text(extent={{-650,-450},{-350,-550}}, textString="UAV 1", textColor={28,108,200}),
-      Text(extent={{-250,-450},{50,-550}}, textString="UAV 2", textColor={28,108,200}),
-      Text(extent={{150,-450},{450,-550}}, textString="UAV 3", textColor={28,108,200}),
-      Polygon(points={{-520,-280},{-480,-280},{-500,-320},{-520,-280}}, lineColor={0,140,72}, fillColor={0,140,72}, fillPattern=FillPattern.Solid),
-      Polygon(points={{-120,-280},{-80,-280},{-100,-320},{-120,-280}}, lineColor={0,140,72}, fillColor={0,140,72}, fillPattern=FillPattern.Solid),
-      Polygon(points={{280,-280},{320,-280},{300,-320},{280,-280}}, lineColor={0,140,72}, fillColor={0,140,72}, fillPattern=FillPattern.Solid),
-      Text(extent={{-800,-600},{800,-700}}, textString="Independent A* Trajectories", textColor={0,140,72}),
-      Text(extent={{-800,-750},{800,-850}}, textString="Pairwise Collision Avoidance", textColor={217,67,180})}),
-    Diagram(coordinateSystem(extent={{-920,-900},{920,900}})),
-    experiment(StartTime=0, StopTime=120, Tolerance=1e-06, Interval=0.005),
-    __OpenModelica_simulationFlags(lv="LOG_STATS", outputFormat="mat", s="dassl"),
-    __MWORKS(version="26.3.0"));
-end ThreeUavHeterogeneousOpenBlocksRunner;
+    experiment(Algorithm = Dassl, StartTime = 0, StopTime = 60,
+      Tolerance = 0.0001, Interval = 0.01),
+    Diagram(coordinateSystem(extent = {{-720, -920}, {830, 280}}, grid = {5, 5})),
+    __MWORKS(version = "26.3.0"));
+end ThreeUavPx4CtrlOpenBlocksRunner;

@@ -53,8 +53,9 @@ MoSim 助手的本机 Codex 服务和 Gazebo/ROS/PX4 运行时同样是可选组
 | 正式 Modelica 包根 | `Models/MoSimQuadrotorModel/package.mo` |
 | 机体、动力学和装配 | `Models/MoSimQuadrotorModel/Vehicle/` |
 | 控制器接口、Adapter 和实现 | `Models/MoSimQuadrotorModel/Control/` |
-| 单机 Runner | `Models/MoSimQuadrotorModel/Experiment/` 下按控制器族分包的 `*Runner.mo` |
+| 单机 Runner | `Models/MoSimQuadrotorModel/Experiment/SingleUav/` 下按控制器族分包的 `*Runner.mo` |
 | 三机/编队 Runner | `Models/MoSimQuadrotorModel/Experiment/Formation/Px4Ctrl/` |
+| OpenBlocks Runner | `Models/MoSimQuadrotorModel/Experiment/OpenBlocks/` 下按控制器和单机/编队分包 |
 | 轨迹、障碍场和编队参考 | `Models/MoSimQuadrotorModel/Guidance/` |
 | Studio 当前源码 | `apps/model_studio/src/app.jl` |
 | Studio 路由权威表 | `Config/control_platform/model_studio_task_routes_v1.toml` |

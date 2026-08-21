@@ -172,7 +172,7 @@ entry is `MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGr
 GPS + Mid360, ESC, four-motor and Sunray150 hierarchy. Its central
 `Px4CtrlControllerModule` is composed from the active
 `Px4CtrlAttitudeThrustAdapter` and `OfflineAttitudeRateAllocator` classes.
-`MoSimQuadrotorModel.Experiment.Px4Ctrl.Px4CtrlRunner` remains the separate
+`MoSimQuadrotorModel.Experiment.SingleUav.Px4Ctrl.Px4CtrlRunner` remains the separate
 whole-aircraft Runner entry and is not substituted for this review diagram.
 
 Review-result interpretation:
@@ -201,7 +201,7 @@ mistake.
 
 ### Planning Model GUI Review Variables
 
-For `MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop`,
+For `MoSimQuadrotorModel.Experiment.OpenBlocks.LinearMpc.SingleUav.Sunray150OpenBlocksLinearMPCRunner`,
 the reference trajectory is exported from `planningReference`, not from the
 official Example1 `climbePath`. When using `run_sysplorer_mcp_smoke.py` for
 GUI review or reproducible export, override the reference aliases explicitly:

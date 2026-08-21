@@ -30,9 +30,9 @@ case "$1" in
     REASON_PREFIX=rviz_qgc_display_phase1
     TERMINAL_SOURCE=terminal_rviz_qgc_display_phase1_gate
     OPEN_RVIZ_FOR_PHASE=true
-    DIFF_OPEN_SPLIT_RVIZ_FOR_PHASE=false
+    DIFF_OPEN_SPLIT_RVIZ_FOR_PHASE=true
     EGO_VISUALIZATION_FORWARD_ONLY_FOR_PHASE=true
-    RVIZ_CONFIG_RELATIVE=Config/rviz/sunray_ros1_goal4_diff_realtime_combined_review.rviz
+    RVIZ_CONFIG_RELATIVE=Config/rviz/sunray_ros1_goal4_diff_pointcloud_review.rviz
     ;;
   qgc_realtime_goal)
     RUN_MODE=qgc_realtime_goal
@@ -108,8 +108,8 @@ if [ -n "$RVIZ_CONFIG_RELATIVE" ]; then
   RVIZ_CONFIG_FOR_PHASE="$PROJECT_ROOT/$RVIZ_CONFIG_RELATIVE"
 fi
 PLANNER_MAP_EXTENT_FILE="$RESULT_DIR/$PLANNER_MAP_EXTENT_FILE_NAME"
-WORLD_RELATIVE=Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf
-MODELS_RELATIVE=Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models
+WORLD_RELATIVE=Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf
+MODELS_RELATIVE=Config/gazebo/models
 LAUNCH_RELATIVE=Scripts/sunray/factory_l2_sunray_px4_gazebo.launch
 QGC_DIFF_FASTLIO_WS="${QGC_DIFF_FASTLIO_WS:-$PROJECT_ROOT/build/ros1/qgc_diff_fastlio_ws}"
 QGC_DIFF_FASTLIO_WS="$(readlink -m "$QGC_DIFF_FASTLIO_WS")"
@@ -1010,6 +1010,8 @@ run_inner_gate() {
   OPEN_RVIZ="$OPEN_RVIZ_FOR_PHASE" \
   DIFF_OPEN_SPLIT_RVIZ="$DIFF_OPEN_SPLIT_RVIZ_FOR_PHASE" \
   GRID_RVIZ_CONFIG="$RVIZ_CONFIG_FOR_PHASE" \
+  DIFF_POINTCLOUD_RVIZ_CONFIG="$PROJECT_ROOT/Config/rviz/sunray_ros1_goal4_diff_pointcloud_review.rviz" \
+  DIFF_GRID3D_RVIZ_CONFIG="$PROJECT_ROOT/Config/rviz/sunray_ros1_goal4_diff_grid3d_review.rviz" \
   KEEP_ALIVE=false \
   DIFF_ENABLE_WAYPOINT_AUDIT=false \
   DIFF_ENABLE_Z_AUDIT=false \
@@ -1281,6 +1283,7 @@ fi
   --vehicle-count 1 \
   --odom-topic /uav1/sunray/gazebo_pose \
   --expected-path-topic /mosim/goal4/target_path \
+  --clear-empty-expected-path \
   --future-polytraj-topic /drone_0_planning/trajectory \
   --future-polytraj-frame-id world \
   --coordinate-evidence "$OPERATOR_RUN_DIR/OPERATOR_MAP_COORDINATE_EVIDENCE.json" \

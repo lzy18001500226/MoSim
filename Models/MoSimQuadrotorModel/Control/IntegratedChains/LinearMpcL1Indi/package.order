@@ -1,1 +1,4 @@
-LinearMpcL1IndiCore
+LinearMpcL1IndiGraphicalController
+LinearMpcL1IndiOuterLoopGraphical
+LinearMpcL1IndiAttitudeGraphical
+LinearMpcL1IndiMotorMixerGraphical

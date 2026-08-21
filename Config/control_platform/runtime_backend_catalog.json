@@ -18,7 +18,7 @@
           "FASTLIO_FILTER_SIZE_MAP": "0.5",
           "FASTLIO_FILTER_SIZE_SURF": "0.5",
           "GUI": "false",
-          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "GAZEBO_MODEL_PATH": "Config/gazebo/models",
           "MAVROS_READY_TIMEOUT_S": "180",
           "NO_FLIGHT_DIAGNOSTIC_HOLD_S": "until_stopped",
           "PX4CTRL_CORE_PROFILE": "original",
@@ -35,7 +35,7 @@
           "SUNRAY_UAV_INIT_Y": "-19.36313",
           "SUNRAY_UAV_INIT_Z": "0.2",
           "TOTAL_TIMEOUT_S": "540",
-          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+          "WORLD_FILE": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
         },
         "arguments": ["takeoff_hover_land"]
       },
@@ -62,7 +62,7 @@
         "schema": "mosim.operator_invocation.v1",
         "shell_environment": {
           "GUI": "false",
-          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "GAZEBO_MODEL_PATH": "Config/gazebo/models",
           "MAVROS_READY_TIMEOUT_S": "180",
           "PX4CTRL_CORE_PROFILE": "original",
           "REVIEW_START_FASTLIO": "true",
@@ -72,7 +72,7 @@
           "SUNRAY_UAV_INIT_Y": "-19.36313",
           "SUNRAY_UAV_INIT_Z": "0.2",
           "TOTAL_TIMEOUT_S": "540",
-          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+          "WORLD_FILE": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
         },
         "arguments": ["figure8"]
       },
@@ -99,7 +99,7 @@
         "schema": "mosim.operator_invocation.v1",
         "shell_environment": {
           "GUI": "false",
-          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "GAZEBO_MODEL_PATH": "Config/gazebo/models",
           "MOTOR_EFFICIENCY_AIRBORNE_TIMEOUT_S": "90",
           "MOTOR_EFFICIENCY_DURATION_S": "4",
           "MOTOR_EFFICIENCY_EFFECTIVENESS": "0.85",
@@ -120,7 +120,7 @@
           "SUNRAY_UAV_INIT_Z": "0.2",
           "SUNRAY_UAV_INIT_YAW": "0",
           "TOTAL_TIMEOUT_S": "540",
-          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+          "WORLD_FILE": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
         },
         "arguments": ["--factory-l2-fault-demo"]
       },
@@ -148,7 +148,7 @@
         "schema": "mosim.operator_invocation.v1",
         "shell_environment": {
           "GUI": "false",
-          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "GAZEBO_MODEL_PATH": "Config/gazebo/models",
           "MAVROS_READY_TIMEOUT_S": "180",
           "FASTLIO_FILTER_SIZE_SURF": "0.5",
           "FASTLIO_FILTER_SIZE_MAP": "0.5",
@@ -166,7 +166,7 @@
           "SUNRAY_UAV_INIT_Z": "0.2",
           "SUNRAY_UAV_INIT_YAW": "0",
           "TOTAL_TIMEOUT_S": "540",
-          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+          "WORLD_FILE": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
         },
         "arguments": ["takeoff_hover_land"]
       },
@@ -193,7 +193,7 @@
         "schema": "mosim.operator_invocation.v1",
         "shell_environment": {
           "GUI": "false",
-          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "GAZEBO_MODEL_PATH": "Config/gazebo/models",
           "MAVROS_READY_TIMEOUT_S": "180",
           "ORCHESTRATOR_REQUIRE_ACTUATOR_TELEMETRY": "false",
           "FASTLIO_FILTER_SIZE_SURF": "0.5",
@@ -217,7 +217,7 @@
           "SUNRAY_UAV_INIT_Z": "0.2",
           "SUNRAY_UAV_INIT_YAW": "0",
           "TOTAL_TIMEOUT_S": "600",
-          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+          "WORLD_FILE": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
         },
         "arguments": ["figure8"]
       },
@@ -337,7 +337,7 @@
         "schema": "mosim.operator_invocation.v1",
         "shell_environment": {
           "GUI": "false",
-          "GAZEBO_MODEL_PATH": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+          "GAZEBO_MODEL_PATH": "Config/gazebo/models",
           "MAVROS_READY_TIMEOUT_S": "180",
           "PX4CTRL_CORE_PROFILE": "cascade_pid",
           "REVIEW_START_FASTLIO": "true",
@@ -347,7 +347,7 @@
           "SUNRAY_UAV_INIT_Y": "-19.36313",
           "SUNRAY_UAV_INIT_Z": "0.2",
           "TOTAL_TIMEOUT_S": "540",
-          "WORLD_FILE": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+          "WORLD_FILE": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
         },
         "arguments": ["figure8"]
       },

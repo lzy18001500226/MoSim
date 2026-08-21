@@ -145,7 +145,7 @@ Config/control_platform/runner_baseline_bindings/{scheme_id}.json
   "scheme_id": "cascade_pid",
   "output_boundary": "ATTITUDE_THRUST",
   "formal_runner": {
-    "model_class": "MoSimQuadrotorModel.Experiment.PidFamily.CascadePidFormalRunner"
+    "model_class": "MoSimQuadrotorModel.Experiment.SingleUav.PidFamily.CascadePidFormalRunner"
   },
   "formal_adapter": {
     "model_class": "MoSimQuadrotorModel.Control.Adapters.CascadePidAttitudeThrustAdapter"
@@ -310,10 +310,10 @@ end AwffSysblockRotorAdapter;
 
 #### 步骤 3：创建 Formal Runner
 
-**文件**：`Experiment/PidFamily/AwffSysblockFormalRunner.mo`
+**文件**：`Experiment/SingleUav/PidFamily/AwffSysblockFormalRunner.mo`
 
 ```modelica
-within MoSimQuadrotorModel.Experiment.PidFamily;
+within MoSimQuadrotorModel.Experiment.SingleUav.PidFamily;
 model AwffSysblockFormalRunner
   "Formal runner for AWFF Sysblock controller"
   extends MoSimQuadrotorModel.Experiment.Runners.Base.FormalRotorCommandRunnerBase(

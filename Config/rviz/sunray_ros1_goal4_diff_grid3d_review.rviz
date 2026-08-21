@@ -1,8 +1,20 @@
 Panels:
   - Class: rviz/Displays
+    Help Height: 70
     Name: Displays
+    Property Tree Widget:
+      Expanded: ~
+      Splitter Ratio: 0.5
+    Tree Height: 373
   - Class: rviz/Views
+    Expanded:
+      - /Current View1
     Name: Views
+    Splitter Ratio: 0.5
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
 Visualization Manager:
   Class: ""
   Displays:
@@ -12,12 +24,45 @@ Visualization Manager:
       Color: 190; 190; 196
       Enabled: true
       Line Style:
-        Line Width: 0.04
+        Line Width: 0.03999999910593033
         Value: Lines
       Name: World Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
       Plane: XY
       Plane Cell Count: 80
       Reference Frame: <Fixed Frame>
+      Value: true
+    - Alpha: 0.800000011920929
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 2.9000000953674316
+        Min Value: 0.30000001192092896
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: AxisColor
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: Continuous 3D Occupancy Review
+      Position Transformer: XYZ
+      Queue Size: 2
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.20000000298023224
+      Style: Boxes
+      Topic: /mosim/goal4/occupancy_object_review
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
       Value: true
     - Alpha: 0.25
       Autocompute Intensity Bounds: true
@@ -28,21 +73,26 @@ Visualization Manager:
       Axis: Z
       Channel Name: z
       Class: rviz/PointCloud2
+      Color: 255; 255; 255
       Color Transformer: AxisColor
       Decay Time: 0
       Enabled: false
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
       Name: 3D Raw Occupancy Local Diagnostic
       Position Transformer: XYZ
       Queue Size: 5
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.12
+      Size (m): 0.11999999731779099
       Style: Boxes
       Topic: /drone_0_ego_planner_node/grid_map/occupancy
+      Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
       Value: false
-    - Alpha: 0.55
+    - Alpha: 0.550000011920929
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
         Max Value: 2
@@ -51,92 +101,133 @@ Visualization Manager:
       Axis: Z
       Channel Name: z
       Class: rviz/PointCloud2
+      Color: 255; 255; 255
       Color Transformer: AxisColor
       Decay Time: 0
-      Enabled: true
+      Enabled: false
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
       Name: 3D Accumulated Raw Occupancy Review
       Position Transformer: XYZ
       Queue Size: 5
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.20
+      Size (m): 0.20000000298023224
       Style: Boxes
       Topic: /mosim/goal4/occupancy_accumulated
+      Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: true
-    - Alpha: 0.80
+      Value: false
+    - Alpha: 0.800000011920929
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2
-        Min Value: 0
+        Max Value: 1.5499999523162842
+        Min Value: 0.23000000417232513
         Value: true
       Axis: Z
       Channel Name: z
       Class: rviz/PointCloud2
+      Color: 255; 255; 255
       Color Transformer: AxisColor
       Decay Time: 0
-      Enabled: false
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
       Name: 3D Inflated Occupancy Diagnostic
       Position Transformer: XYZ
       Queue Size: 5
       Selectable: true
       Size (Pixels): 3
-      Size (m): 0.12
+      Size (m): 0.11999999731779099
       Style: Boxes
       Topic: /drone_0_ego_planner_node/grid_map/occupancy_inflate
+      Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
-      Value: false
-    - Class: rviz/Path
-      Alpha: 1
+      Value: true
+    - Alpha: 1
       Buffer Length: 1
+      Class: rviz/Path
       Color: 255; 50; 50
       Enabled: true
-      Head Diameter: 0.18
-      Head Length: 0.12
-      Length: 0.2
+      Head Diameter: 0.18000000715255737
+      Head Length: 0.11999999731779099
+      Length: 0.20000000298023224
       Line Style: Lines
-      Line Width: 0.055
+      Line Width: 0.054999999701976776
       Name: UAV Truth Trajectory
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
       Pose Color: 255; 50; 50
       Pose Style: None
+      Queue Size: 10
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
       Topic: /mosim/goal4/truth_path
+      Unreliable: false
       Value: true
-    - Class: rviz/Path
-      Alpha: 1
+    - Alpha: 1
       Buffer Length: 1
+      Class: rviz/Path
       Color: 30; 220; 80
       Enabled: true
-      Head Diameter: 0.18
-      Head Length: 0.12
-      Length: 0.2
+      Head Diameter: 0.18000000715255737
+      Head Length: 0.11999999731779099
+      Length: 0.20000000298023224
       Line Style: Lines
-      Line Width: 0.04
+      Line Width: 0.03999999910593033
       Name: Diff Position Command Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
       Pose Color: 30; 220; 80
       Pose Style: None
+      Queue Size: 10
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
       Topic: /mosim/goal4/position_cmd_path
+      Unreliable: false
       Value: true
-    - Class: rviz/Path
-      Alpha: 1
+    - Alpha: 1
       Buffer Length: 1
+      Class: rviz/Path
       Color: 255; 220; 0
-      Enabled: false
-      Head Diameter: 0.18
-      Head Length: 0.12
-      Length: 0.2
+      Enabled: true
+      Head Diameter: 0.18000000715255737
+      Head Length: 0.11999999731779099
+      Length: 0.20000000298023224
       Line Style: Lines
-      Line Width: 0.035
+      Line Width: 0.03500000014901161
       Name: Mission Target Segment
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
       Pose Color: 255; 220; 0
       Pose Style: None
+      Queue Size: 10
+      Radius: 0.029999999329447746
+      Shaft Diameter: 0.10000000149011612
+      Shaft Length: 0.10000000149011612
       Topic: /mosim/goal4/target_path
-      Value: false
+      Unreliable: false
+      Value: true
     - Class: rviz/MarkerArray
       Enabled: true
       Marker Topic: /mosim/goal4/body_axes
       Name: UAV Body Axes
+      Namespaces:
+        body_x_forward: true
+        body_y_left: true
+        body_z_up: true
       Queue Size: 5
       Value: true
   Enabled: true
@@ -148,6 +239,7 @@ Visualization Manager:
   Name: root
   Tools:
     - Class: rviz/Interact
+      Hide Inactive Objects: true
     - Class: rviz/MoveCamera
     - Class: rviz/Select
     - Class: rviz/FocusCamera
@@ -159,17 +251,34 @@ Visualization Manager:
     Current:
       Class: rviz/Orbit
       Distance: 18
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Field of View: 0.7853981852531433
       Focal Point:
-        X: 0
-        Y: 120
-        Z: 1
+        X: -8.88961124420166
+        Y: -18.563634872436523
+        Z: 1.4231443405151367
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
       Name: Current View
-      Pitch: 0.72
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.9399998784065247
       Target Frame: world
-      Value: Orbit (rviz)
-      Yaw: 0.75
+      Yaw: 3.069999933242798
+    Saved: ~
 Window Geometry:
+  Displays:
+    collapsed: true
   Height: 880
+  Hide Left Dock: true
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd0000000100000000000001560000031afc0200000002fb000000100044006900730070006c006100790073000000003b000001e0000000c700fffffffb0000000a00560069006500770073000000022100000134000000a000ffffff000004600000031a00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Views:
+    collapsed: true
   Width: 1120
-  X: 1160
-  Y: 40
+  X: 1096
+  Y: -24

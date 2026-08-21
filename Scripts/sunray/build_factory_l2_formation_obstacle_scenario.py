@@ -880,7 +880,7 @@ def main() -> None:
                 "the generic mission default because the container corridor is narrow."
             ),
         },
-        "world": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+        "world": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
         "formation": {
             "type": "three_uav_equilateral_subset_of_normal_hexagon",
             "scale": args.scale,

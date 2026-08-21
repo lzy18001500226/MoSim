@@ -31,8 +31,8 @@ PROJECT_ROOT="${PROJECT_ROOT:-/mnt/c/Users/HP/Desktop/MoSim}"
 RUN_ID="${RUN_ID:-factory_l2_diff_single_c99_$(date +%Y%m%d_%H%M%S)}"
 RESULT_DIR="${RESULT_DIR:-${PROJECT_ROOT}/Results/sunray_ros1/${RUN_ID}}"
 
-FACTORY_WORLD_FILE="${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
-FACTORY_MODEL_PATH="${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models"
+FACTORY_WORLD_FILE="${PROJECT_ROOT}/Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+FACTORY_MODEL_PATH="${PROJECT_ROOT}/Config/gazebo/models"
 FACTORY_GAZEBO_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch"
 
 # This scene-specific mapping is evidenced by the C99 Factory fixed-hover

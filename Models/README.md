@@ -10,10 +10,12 @@ a second project or a required dependency root.
 |---|---|---|
 | Physical airframe | `MoSimQuadrotorModel.Vehicle.Sunray150Assembly` | Sunray150 whole-aircraft plant assembly |
 | Graphical system review | `MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGraphical` | Direct graphical whole-system architecture entry |
-| Controller closed loop | `MoSimQuadrotorModel.Experiment.<Family>.<Controller>GraphicalRunner` | Current single-aircraft review Runner; the family package is declared by the route catalog |
+| Controller closed loop | `MoSimQuadrotorModel.Experiment.SingleUav.<Family>.<Controller>GraphicalRunner` | Current single-aircraft review Runner; legacy family paths remain compatibility aliases |
 | PID legacy example review | `MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.<Example>` | Original Example1/2/3 PID variants retained for report and demo review |
 | Reference trajectory | `MoSimQuadrotorModel.Guidance.Trajectories.<Trajectory>` | Replaceable reference used by formal runners |
 | Three-aircraft formation prototype | `MoSimQuadrotorModel.Experiment.Formation.Px4Ctrl.ThreeUavPx4CtrlFormationRunner` | MWORKS prototype only; separate from the ROS/Gazebo deployment route |
+| OpenBlocks single-aircraft route | `MoSimQuadrotorModel.Experiment.OpenBlocks.Px4Ctrl.SingleUav.Sunray150OpenBlocksStaticRunner` | Frozen OpenBlocks reference review entry |
+| OpenBlocks formation route | `MoSimQuadrotorModel.Experiment.OpenBlocks.Px4Ctrl.Formation.ThreeUavPx4CtrlOpenBlocksRunner` | Dynamic OpenBlocks formation review entry |
 
 The APP/manual route catalog is
 `Config/control_platform/model_studio_task_routes_v1.toml`. It is the authority

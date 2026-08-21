@@ -198,8 +198,8 @@ $environment = @(
     "EGO_GATE_TAKEOFF_LAND_SPEED=0.12",
     "UAV_NUM=3",
     "KEEP_ALIVE=$($KeepAlive.IsPresent.ToString().ToLowerInvariant())",
-    "WORLD_FILE=$RootWsl/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
-    "FACTORY_L2_MODEL_PATH=$RootWsl/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+    "WORLD_FILE=$RootWsl/Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+    "FACTORY_L2_MODEL_PATH=$RootWsl/Config/gazebo/models",
     "SUNRAY_GAZEBO_LAUNCH_FILE=$RootWsl/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch",
     # The C99 route uses a preloaded world so every UAV retains its Livox
     # sensor plugin. Dynamic staggered spawn remains available through the

@@ -14,7 +14,7 @@ import mworks.sysplorer as ModelingPy
 
 ROOT = Path(r"C:\Users\HP\Desktop\MoSim")
 MODEL_NAME = "MoSimQuadrotorModel.Guidance.Planning.OpenBlocksSingleUavMapAudit"
-LEGACY_MODEL_NAME = "MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop"
+LEGACY_MODEL_NAME = "MoSimQuadrotorModel.Experiment.OpenBlocks.LinearMpc.SingleUav.Sunray150OpenBlocksLinearMPCRunner"
 PACKAGE_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
 DISPLAY_FILE = (
     ROOT

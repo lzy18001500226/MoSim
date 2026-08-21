@@ -14,21 +14,22 @@ ROOT = Path(__file__).resolve().parents[2]
 CATALOG = ROOT / "Config" / "control_platform" / "control_scheme_catalog.json"
 
 FAMILY_DIRS = {
-    "PidFamily": "PidFamily",
-    "ClassicRobust": "ClassicRobust",
-    "SlidingMode": "SlidingMode",
-    "Optimization": "Optimization",
-    "GeometricFlatness": "GeometricFlatness",
-    "Learning": "Learning",
+    "PidFamily": "SingleUav/PidFamily",
+    "ClassicRobust": "SingleUav/ClassicRobust",
+    "SlidingMode": "SingleUav/SlidingMode",
+    "Optimization": "SingleUav/Optimization",
+    "GeometricFlatness": "SingleUav/GeometricFlatness",
+    "Learning": "SingleUav/Learning",
 }
 
 SPECIAL_PATHS = {
     "fixed_awff_pid": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo",
-    "fixed_awff_l1_residual": "Models/MoSimQuadrotorModel/Experiment/IntegratedChains/AwffL1ResidualGraphicalRunner.mo",
-    "fixed_awff_l1_indi": "Models/MoSimQuadrotorModel/Experiment/IntegratedChains/AwffL1IndiGraphicalRunner.mo",
-    "fixed_linear_mpc_l1_indi": "Models/MoSimQuadrotorModel/Experiment/IntegratedChains/LinearMpcL1IndiGraphicalRunner.mo",
-    "fixed_qp_nmpc_l1_indi_cbf": "Models/MoSimQuadrotorModel/Experiment/IntegratedChains/QpNmpcL1IndiCbfGraphicalRunner.mo",
-    "pid_awff_linear_eso": "Models/MoSimQuadrotorModel/Experiment/AwffControllers/PidAwffLinearEsoGraphicalRunner.mo",
+    "fixed_awff_l1_residual": "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1ResidualGraphicalRunner.mo",
+    "fixed_awff_l1_indi": "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1IndiGraphicalRunner.mo",
+    "fixed_linear_mpc_l1_indi": "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/LinearMpcL1IndiGraphicalRunner.mo",
+    "fixed_qp_nmpc_l1_indi_cbf": "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/QpNmpcL1IndiCbfGraphicalRunner.mo",
+    "pid_awff_linear_eso": "Models/MoSimQuadrotorModel/Experiment/SingleUav/AwffControllers/PidAwffLinearEsoGraphicalRunner.mo",
+    "linear_mpc": "Models/MoSimQuadrotorModel/Experiment/SingleUav/LinearMpc/LinearMpcGraphicalRunner.mo",
 }
 
 ANCHORS = {

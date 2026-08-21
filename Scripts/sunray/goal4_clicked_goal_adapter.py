@@ -57,6 +57,15 @@ class ClickedGoalAdapter:
         self.stage_reach_z_tol_m = float(rospy.get_param("~stage_reach_z_tol_m", self.ready_z_tolerance))
         self.stage_required_stable_s = float(rospy.get_param("~stage_required_stable_s", self.ready_required_stable_s))
         self.stage_max_count = int(rospy.get_param("~stage_max_count", 20))
+        self.target_reach_xy_radius_m = float(
+            rospy.get_param("~target_reach_xy_radius_m", self.stage_reach_xy_radius_m)
+        )
+        self.target_reach_z_tolerance_m = float(
+            rospy.get_param("~target_reach_z_tolerance_m", self.stage_reach_z_tol_m)
+        )
+        self.target_reach_required_stable_s = float(
+            rospy.get_param("~target_reach_required_stable_s", 0.5)
+        )
         self.static_obstacle_guard_enabled = bool(rospy.get_param("~static_obstacle_guard_enabled", True))
         self.static_obstacle_world_file = str(rospy.get_param("~static_obstacle_world_file", ""))
         self.static_obstacle_default_radius_m = float(rospy.get_param("~static_obstacle_default_radius_m", 0.20))
@@ -101,6 +110,8 @@ class ClickedGoalAdapter:
         self.first_goal_wall: float | None = None
         self.last_goal_wall: float | None = None
         self.last_path_goal: tuple[float, float, float] | None = None
+        self.target_path_active = False
+        self.target_reached_since_wall: float | None = None
         self.last_path_guard_plan: dict | None = None
         self.static_obstacles = self.load_static_obstacles()
 
@@ -144,10 +155,14 @@ class ClickedGoalAdapter:
                 self.ready_stable_since_wall = self.last_odom_wall
         else:
             self.ready_stable_since_wall = None
+        self.refresh_target_path()
+        self.try_clear_target_path_on_arrival()
         self.try_release_queued_goal()
 
     def on_path_odom(self, msg: Odometry) -> None:
         self.last_path_odom = msg
+        self.refresh_target_path()
+        self.try_clear_target_path_on_arrival()
 
     def on_mission_ready(self, msg: Bool) -> None:
         self.mission_ready = bool(msg.data)
@@ -359,6 +374,7 @@ class ClickedGoalAdapter:
             rospy.loginfo("Completed staged Goal4 target after %d stages", self.active_staged_goal.get("stage_index", 0))
             self.active_staged_goal = None
             self.stage_stable_since_wall = None
+            self.clear_target_path()
             return
         self.stage_stable_since_wall = None
         self.publish_next_staged_goal()
@@ -386,6 +402,7 @@ class ClickedGoalAdapter:
                 rospy.loginfo("Completed staged Goal4 path target after %d stages", stage_index - 1)
                 self.active_staged_goal = None
                 self.stage_stable_since_wall = None
+                self.clear_target_path()
                 return
             waypoint = path[path_index]
             stage_x = float(waypoint["x"])
@@ -929,11 +946,69 @@ class ClickedGoalAdapter:
                 path.poses = path.poses[:1]
         path.poses.append(visual_goal)
         self.path_pub.publish(path)
+        self.target_path_active = True
+        self.target_reached_since_wall = None
         self.last_path_goal = (
             visual_goal.pose.position.x,
             visual_goal.pose.position.y,
             visual_goal.pose.position.z,
         )
+
+    def refresh_target_path(self) -> None:
+        """Keep the yellow segment anchored to the live aircraft position."""
+        if not self.target_path_active or self.last_path_goal is None:
+            return
+        path_odom = self.last_path_odom or self.last_odom
+        if path_odom is None:
+            return
+        stamp = rospy.Time.now()
+        path = RosPath(header=Header(stamp=stamp, frame_id=self.frame_id))
+        current = PoseStamped()
+        current.header = path.header
+        current.pose.position.x = path_odom.pose.pose.position.x
+        current.pose.position.y = path_odom.pose.pose.position.y
+        current.pose.position.z = path_odom.pose.pose.position.z
+        current.pose.orientation = path_odom.pose.pose.orientation
+        target = PoseStamped()
+        target.header = path.header
+        target.pose.position.x, target.pose.position.y, target.pose.position.z = self.last_path_goal
+        target.pose.orientation.w = 1.0
+        path.poses.extend((current, target))
+        self.path_pub.publish(path)
+
+    def try_clear_target_path_on_arrival(self) -> None:
+        if not self.target_path_active or self.last_path_goal is None:
+            return
+        path_odom = self.last_path_odom or self.last_odom
+        if path_odom is None:
+            return
+        position = path_odom.pose.pose.position
+        target_x, target_y, target_z = self.last_path_goal
+        distance_xy = math.hypot(target_x - float(position.x), target_y - float(position.y))
+        z_error = abs(target_z - float(position.z))
+        if (
+            distance_xy > self.target_reach_xy_radius_m
+            or z_error > self.target_reach_z_tolerance_m
+        ):
+            self.target_reached_since_wall = None
+            return
+        now_wall = time.time()
+        if self.target_reached_since_wall is None:
+            self.target_reached_since_wall = now_wall
+            return
+        if now_wall - self.target_reached_since_wall < self.target_reach_required_stable_s:
+            return
+        self.clear_target_path()
+
+    def clear_target_path(self) -> None:
+        if not self.target_path_active:
+            return
+        stamp = rospy.Time.now()
+        self.path_pub.publish(RosPath(header=Header(stamp=stamp, frame_id=self.frame_id)))
+        self.target_path_active = False
+        self.target_reached_since_wall = None
+        self.last_path_goal = None
+        rospy.loginfo("Cleared Goal4 target path after reaching the interactive target")
 
     def write_diagnostics(self) -> None:
         if not self.diagnostics_path:
@@ -946,6 +1021,11 @@ class ClickedGoalAdapter:
             "nav_goal_topic": self.nav_goal_topic,
             "output_goal_topic": self.output_goal_topic,
             "target_path_topic": self.target_path_topic,
+            "target_path_active": self.target_path_active,
+            "target_reached_since_wall": self.target_reached_since_wall,
+            "target_reach_xy_radius_m": self.target_reach_xy_radius_m,
+            "target_reach_z_tolerance_m": self.target_reach_z_tolerance_m,
+            "target_reach_required_stable_s": self.target_reach_required_stable_s,
             "mission_ready_topic": self.mission_ready_topic,
             "require_mission_ready": self.require_mission_ready,
             "mission_ready": self.mission_ready,

@@ -54,8 +54,8 @@ $ProjectRootWsl = "/mnt/c/Users/HP/Desktop/MoSim"
 $EnvelopePathWin = Join-Path $ProjectRootWin "Config\gazebo\scene_profiles\factory_l2_exploration_envelope.json"
 $ResultDirWin = Join-Path $ProjectRootWin ("Results\sunray_ros1\" + $RunId)
 $ResultDirWsl = $ProjectRootWsl + "/Results/sunray_ros1/" + $RunId
-$FactoryWorldWsl = $ProjectRootWsl + "/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
-$FactoryModelPathWsl = $ProjectRootWsl + "/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models"
+$FactoryWorldWsl = $ProjectRootWsl + "/Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+$FactoryModelPathWsl = $ProjectRootWsl + "/Config/gazebo/models"
 $TotalTimeoutS = if ($MissionTotalTimeoutS -gt 0) {
     $MissionTotalTimeoutS
 } else {

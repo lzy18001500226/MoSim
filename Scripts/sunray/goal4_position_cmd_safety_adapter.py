@@ -16,8 +16,10 @@ import time
 from pathlib import Path
 
 import rospy
+import sensor_msgs.point_cloud2 as pc2
 from nav_msgs.msg import Odometry
 from quadrotor_msgs.msg import PositionCommand
+from sensor_msgs.msg import PointCloud2
 from std_msgs.msg import Bool
 
 from trajectory_dynamics import constrain_kinematic_step, enforce_position_z_bounds
@@ -71,6 +73,29 @@ class PositionCmdSafetyAdapter:
         self.enable_topic = rospy.get_param("~enable_topic", "/mosim/goal4/position_cmd_adapter_enable")
         self.enabled = bool(rospy.get_param("~initial_enabled", True))
         self.require_fresh_raw_after_enable = bool(rospy.get_param("~require_fresh_raw_after_enable", True))
+        self.map_guard_enabled = bool(rospy.get_param("~map_guard_enabled", False))
+        self.map_guard_cloud_topic = str(rospy.get_param("~map_guard_cloud_topic", "")).strip()
+        self.map_guard_occupancy_topic = str(rospy.get_param("~map_guard_occupancy_topic", "")).strip()
+        self.map_guard_timeout_s = max(0.0, float(rospy.get_param("~map_guard_timeout_s", 1.0)))
+        self.map_guard_min_cloud_points = max(1, int(rospy.get_param("~map_guard_min_cloud_points", 1)))
+        self.map_guard_min_occupancy_points = max(
+            1, int(rospy.get_param("~map_guard_min_occupancy_points", 1))
+        )
+        self.map_collision_guard_enabled = bool(
+            rospy.get_param("~map_collision_guard_enabled", False)
+        )
+        self.map_collision_radius_m = max(
+            0.0, float(rospy.get_param("~map_collision_radius_m", 0.30))
+        )
+        self.map_collision_z_margin_m = max(
+            0.0, float(rospy.get_param("~map_collision_z_margin_m", 0.25))
+        )
+        self.map_collision_sample_step_m = max(
+            0.02, float(rospy.get_param("~map_collision_sample_step_m", 0.06))
+        )
+        self.map_collision_max_points = max(
+            1, int(rospy.get_param("~map_collision_max_points", 10000))
+        )
         self.diagnostics_path = rospy.get_param("~diagnostics_path", "")
 
         self.last_raw: PositionCommand | None = None
@@ -142,11 +167,48 @@ class PositionCmdSafetyAdapter:
         self.max_published_jerk_mps3 = 0.0
         self.last_dynamics_limit: dict | None = None
         self.post_dynamics_z_clamp_count = 0
+        self.last_map_cloud_wall = 0.0
+        self.last_map_cloud_points = 0
+        self.last_map_cloud_stamp = 0.0
+        self.last_occupancy_cloud_wall = 0.0
+        self.last_occupancy_cloud_points = 0
+        self.last_occupancy_cloud_stamp = 0.0
+        self.map_guard_not_ready_count = 0
+        self.map_guard_ready_count = 0
+        self.map_guard_hold_count = 0
+        self.last_map_guard: dict | None = None
+        self.last_occupancy_points: list[tuple[float, float, float]] = []
+        self.last_occupancy_frame_id = ""
+        self.map_collision_guard_count = 0
+        self.map_collision_hold_count = 0
+        self.last_map_collision: dict | None = None
 
         self.pub = rospy.Publisher(self.output_topic, PositionCommand, queue_size=20)
         rospy.Subscriber(self.input_topic, PositionCommand, self.on_raw, queue_size=50)
         rospy.Subscriber(self.enable_topic, Bool, self.on_enable, queue_size=5)
-        if self.odom_target_guard_enabled and self.odom_topic:
+        if self.map_guard_enabled or self.map_collision_guard_enabled:
+            if self.map_guard_enabled and not self.map_guard_cloud_topic:
+                raise ValueError("~map_guard_cloud_topic is required when ~map_guard_enabled is true")
+            if not self.map_guard_occupancy_topic:
+                raise ValueError(
+                    "~map_guard_occupancy_topic is required when a map guard is enabled"
+                )
+            if self.map_guard_enabled:
+                rospy.Subscriber(
+                    self.map_guard_cloud_topic,
+                    PointCloud2,
+                    self.on_map_cloud,
+                    callback_args="planner_cloud",
+                    queue_size=5,
+                )
+            rospy.Subscriber(
+                self.map_guard_occupancy_topic,
+                PointCloud2,
+                self.on_map_cloud,
+                callback_args="occupancy_inflate",
+                queue_size=5,
+            )
+        if (self.odom_target_guard_enabled or self.seed_from_odom_on_enable or self.map_guard_enabled) and self.odom_topic:
             rospy.Subscriber(self.odom_topic, Odometry, self.on_odom, queue_size=50)
 
     @staticmethod
@@ -248,6 +310,168 @@ class PositionCmdSafetyAdapter:
             float(msg.pose.pose.position.z),
         ]
 
+    @staticmethod
+    def pointcloud_point_count(msg: PointCloud2) -> int:
+        return max(0, int(getattr(msg, "width", 0))) * max(1, int(getattr(msg, "height", 1)))
+
+    def on_map_cloud(self, msg: PointCloud2, stream: str) -> None:
+        now_wall = time.time()
+        point_count = self.pointcloud_point_count(msg)
+        stamp = float(msg.header.stamp.to_sec()) if msg.header and msg.header.stamp else 0.0
+        if stream == "planner_cloud":
+            self.last_map_cloud_wall = now_wall
+            self.last_map_cloud_points = point_count
+            self.last_map_cloud_stamp = stamp
+        elif stream == "occupancy_inflate":
+            self.last_occupancy_cloud_wall = now_wall
+            self.last_occupancy_cloud_points = point_count
+            self.last_occupancy_cloud_stamp = stamp
+            self.last_occupancy_frame_id = str(getattr(msg.header, "frame_id", "") or "")
+            if self.map_collision_guard_enabled:
+                points: list[tuple[float, float, float]] = []
+                for point in pc2.read_points(msg, field_names=("x", "y", "z"), skip_nans=True):
+                    x, y, z = float(point[0]), float(point[1]), float(point[2])
+                    if math.isfinite(x) and math.isfinite(y) and math.isfinite(z):
+                        points.append((x, y, z))
+                        if len(points) >= self.map_collision_max_points:
+                            break
+                self.last_occupancy_points = points
+
+    def map_guard_snapshot(self, now_wall: float) -> dict:
+        if not self.map_guard_enabled:
+            return {"enabled": False, "ready": True, "reasons": []}
+
+        cloud_age_s = (
+            now_wall - self.last_map_cloud_wall if self.last_map_cloud_wall > 0.0 else None
+        )
+        occupancy_age_s = (
+            now_wall - self.last_occupancy_cloud_wall
+            if self.last_occupancy_cloud_wall > 0.0
+            else None
+        )
+        reasons: list[str] = []
+        if self.last_map_cloud_points < self.map_guard_min_cloud_points:
+            reasons.append("planner_cloud_empty")
+        if self.last_occupancy_cloud_points < self.map_guard_min_occupancy_points:
+            reasons.append("occupancy_inflate_empty")
+        if cloud_age_s is None or cloud_age_s > self.map_guard_timeout_s:
+            reasons.append("planner_cloud_stale")
+        if occupancy_age_s is None or occupancy_age_s > self.map_guard_timeout_s:
+            reasons.append("occupancy_inflate_stale")
+        return {
+            "enabled": True,
+            "ready": not reasons,
+            "reasons": reasons,
+            "timeout_s": self.map_guard_timeout_s,
+            "planner_cloud_topic": self.map_guard_cloud_topic,
+            "planner_cloud_points": self.last_map_cloud_points,
+            "planner_cloud_age_s": cloud_age_s,
+            "planner_cloud_stamp": self.last_map_cloud_stamp,
+            "occupancy_topic": self.map_guard_occupancy_topic,
+            "occupancy_points": self.last_occupancy_cloud_points,
+            "occupancy_age_s": occupancy_age_s,
+            "occupancy_stamp": self.last_occupancy_cloud_stamp,
+        }
+
+    def map_collision_snapshot(self, msg: PositionCommand) -> dict:
+        if not self.map_collision_guard_enabled:
+            return {"enabled": False, "collision": False, "reason": ""}
+
+        candidate = (
+            float(msg.position.x),
+            float(msg.position.y),
+            float(msg.position.z),
+        )
+        start = candidate
+        if self.last_safe_msg is not None:
+            start = (
+                float(self.last_safe_msg.position.x),
+                float(self.last_safe_msg.position.y),
+                float(self.last_safe_msg.position.z),
+            )
+        if not self.last_occupancy_points:
+            return {
+                "enabled": True,
+                "collision": False,
+                "ready": False,
+                "reason": "occupancy_inflate_empty",
+                "candidate_xyz": list(candidate),
+                "start_xyz": list(start),
+                "occupancy_points": 0,
+                "frame_id": self.last_occupancy_frame_id,
+            }
+
+        dx = candidate[0] - start[0]
+        dy = candidate[1] - start[1]
+        dz = candidate[2] - start[2]
+        distance = math.sqrt(dx * dx + dy * dy + dz * dz)
+        sample_count = max(1, int(math.ceil(distance / self.map_collision_sample_step_m)))
+        radius_sq = self.map_collision_radius_m * self.map_collision_radius_m
+        for index in range(sample_count + 1):
+            ratio = index / sample_count
+            sample = (
+                start[0] + ratio * dx,
+                start[1] + ratio * dy,
+                start[2] + ratio * dz,
+            )
+            for obstacle in self.last_occupancy_points:
+                if abs(sample[2] - obstacle[2]) > self.map_collision_z_margin_m:
+                    continue
+                ox = sample[0] - obstacle[0]
+                oy = sample[1] - obstacle[1]
+                if ox * ox + oy * oy <= radius_sq:
+                    return {
+                        "enabled": True,
+                        "collision": True,
+                        "ready": True,
+                        "reason": "candidate_intersects_inflated_occupancy",
+                        "candidate_xyz": list(candidate),
+                        "start_xyz": list(start),
+                        "obstacle_xyz": list(obstacle),
+                        "sample_xyz": list(sample),
+                        "sample_index": index,
+                        "sample_count": sample_count,
+                        "distance_m": distance,
+                        "radius_m": self.map_collision_radius_m,
+                        "z_margin_m": self.map_collision_z_margin_m,
+                        "occupancy_points": len(self.last_occupancy_points),
+                        "frame_id": self.last_occupancy_frame_id,
+                    }
+        return {
+            "enabled": True,
+            "collision": False,
+            "ready": True,
+            "reason": "",
+            "candidate_xyz": list(candidate),
+            "start_xyz": list(start),
+            "distance_m": distance,
+            "radius_m": self.map_collision_radius_m,
+            "z_margin_m": self.map_collision_z_margin_m,
+            "occupancy_points": len(self.last_occupancy_points),
+            "frame_id": self.last_occupancy_frame_id,
+        }
+
+    def apply_map_collision_guard(
+        self, msg: PositionCommand, now_wall: float, now_motion: float
+    ) -> PositionCommand | None:
+        self.last_map_collision = self.map_collision_snapshot(msg)
+        if not self.map_collision_guard_enabled:
+            return msg
+        if not self.last_map_collision.get("ready", True):
+            self.last_reject_reason = self.last_map_collision["reason"]
+            hold = self.hold_last_safe_msg(now_wall, "planner_map_not_ready", now_motion)
+            if hold is not None:
+                self.map_collision_hold_count += 1
+            return hold
+        if not self.last_map_collision["collision"]:
+            return msg
+        self.map_collision_guard_count += 1
+        self.last_reject_reason = "planner_map_collision"
+        hold = self.hold_last_safe_msg(now_wall, "planner_map_collision", now_motion)
+        if hold is not None:
+            self.map_collision_hold_count += 1
+        return hold
+
     def on_enable(self, msg: Bool) -> None:
         was_enabled = self.enabled
         self.enabled = bool(msg.data)
@@ -274,6 +498,8 @@ class PositionCmdSafetyAdapter:
     def hold_last_safe_msg(
         self, now_wall: float, reason: str, now_motion: float | None = None
     ) -> PositionCommand | None:
+        if self.last_safe_msg is None and self.seed_from_odom_on_enable:
+            self.last_safe_msg = self.seed_msg_from_odom()
         if self.last_safe_msg is None:
             return None
         msg = self.clone_msg(self.last_safe_msg)
@@ -643,6 +869,17 @@ class PositionCmdSafetyAdapter:
         if self.waiting_fresh_raw_after_enable:
             return None
 
+        if self.map_guard_enabled:
+            self.last_map_guard = self.map_guard_snapshot(now_wall)
+            if not self.last_map_guard["ready"]:
+                self.map_guard_not_ready_count += 1
+                self.last_reject_reason = "planner_map_not_ready"
+                hold = self.hold_last_safe_msg(now_wall, "planner_map_not_ready", now_motion)
+                if hold is not None:
+                    self.map_guard_hold_count += 1
+                return hold
+            self.map_guard_ready_count += 1
+
         msg = self.clone_msg(self.last_raw)
 
         raw_age_s = (
@@ -699,6 +936,15 @@ class PositionCmdSafetyAdapter:
         # inside it. A second projection can jump to the opposite side of the
         # disk after a planner direction change and must not run here.
         msg = self.apply_smoothing(msg, now_wall, now_motion)
+        collision_guard_msg = self.apply_map_collision_guard(msg, now_wall, now_motion)
+        if collision_guard_msg is None:
+            return None
+        if self.last_map_collision and (
+            self.last_map_collision.get("collision")
+            or not self.last_map_collision.get("ready", True)
+        ):
+            return collision_guard_msg
+        msg = collision_guard_msg
         # Judge discontinuities on the command that will actually reach the
         # controller. Raw planner references may legitimately run far ahead;
         # the odom guard and smoothing above are what make them executable.
@@ -754,6 +1000,32 @@ class PositionCmdSafetyAdapter:
             "fixed_z": self.fixed_z,
             "fixed_yaw": self.fixed_yaw,
             "input_timeout_s": self.input_timeout_s,
+            "map_guard_enabled": self.map_guard_enabled,
+            "map_guard_cloud_topic": self.map_guard_cloud_topic,
+            "map_guard_occupancy_topic": self.map_guard_occupancy_topic,
+            "map_guard_timeout_s": self.map_guard_timeout_s,
+            "map_guard_min_cloud_points": self.map_guard_min_cloud_points,
+            "map_guard_min_occupancy_points": self.map_guard_min_occupancy_points,
+            "map_guard_not_ready_count": self.map_guard_not_ready_count,
+            "map_guard_ready_count": self.map_guard_ready_count,
+            "map_guard_hold_count": self.map_guard_hold_count,
+            "last_map_guard": self.last_map_guard,
+            "map_collision_guard_enabled": self.map_collision_guard_enabled,
+            "map_collision_radius_m": self.map_collision_radius_m,
+            "map_collision_z_margin_m": self.map_collision_z_margin_m,
+            "map_collision_sample_step_m": self.map_collision_sample_step_m,
+            "map_collision_max_points": self.map_collision_max_points,
+            "map_collision_guard_count": self.map_collision_guard_count,
+            "map_collision_hold_count": self.map_collision_hold_count,
+            "last_map_collision": self.last_map_collision,
+            "last_occupancy_frame_id": self.last_occupancy_frame_id,
+            "last_occupancy_collision_points": len(self.last_occupancy_points),
+            "last_map_cloud_wall": self.last_map_cloud_wall,
+            "last_map_cloud_points": self.last_map_cloud_points,
+            "last_map_cloud_stamp": self.last_map_cloud_stamp,
+            "last_occupancy_cloud_wall": self.last_occupancy_cloud_wall,
+            "last_occupancy_cloud_points": self.last_occupancy_cloud_points,
+            "last_occupancy_cloud_stamp": self.last_occupancy_cloud_stamp,
             "invalid_z_policy": self.invalid_z_policy,
             "jump_guard_enabled": self.jump_guard_enabled,
             "max_position_jump_m": self.max_position_jump_m,

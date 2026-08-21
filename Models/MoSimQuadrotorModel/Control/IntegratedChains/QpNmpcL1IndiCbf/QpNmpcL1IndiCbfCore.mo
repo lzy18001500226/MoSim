@@ -6,7 +6,7 @@ model QpNmpcL1IndiCbfCore
   import BaseWorkspace.*;
   annotation(
     __MWORKS(version="26.3.0",modelType=Control,PortArrangement(
-Left(x_error, y_error, z_error, z_ref_rate, roll_mea, pitch_mea, yaw_mea, yaw_ref),
+Left(x_error, y_error, z_error, z_ref_rate, roll_mea, pitch_mea, yaw_mea, yaw_ref, elapsed_time),
 Right(y, y1, y2, y3, controller_mode, safety_active, event_code, return_ref_x, return_ref_y, return_ref_z)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
     Icon(coordinateSystem(preserveAspectRatio=false)),
     experiment(DoublePrecision=false, Algorithm=Euler, IntegratorStep=0.01, Interval=0.01, StartTime=0, StopTime=1, StoreEventValue=0),
@@ -38,6 +38,9 @@ Right(y, y1, y2, y3, controller_mode, safety_active, event_code, return_ref_x, r
       __MWORKS(BlockSystem(Type(inherit=InheritType.none, ref="double"), Dimension(dimensionType=DimensionType.none)=1, SampleTime(group="D1")=0.01)));
   SysplorerEmbeddedCoder.Port.Inport yaw_ref 
     annotation(Placement(transformation(origin={-360,-170}, extent={{-10,-10},{10,10}})),
+      __MWORKS(BlockSystem(Type(inherit=InheritType.none, ref="double"), Dimension(dimensionType=DimensionType.none)=1, SampleTime(group="D1")=0.01)));
+  SysplorerEmbeddedCoder.Port.Inport elapsed_time 
+    annotation(Placement(transformation(origin={-360,-220}, extent={{-10,-10},{10,10}})),
       __MWORKS(BlockSystem(Type(inherit=InheritType.none, ref="double"), Dimension(dimensionType=DimensionType.none)=1, SampleTime(group="D1")=0.01)));
 
   SysplorerEmbeddedCoder.Port.Outport y 
@@ -84,6 +87,7 @@ equation
   connect(pitch_mea, controller.pitch_mea) annotation(Line(points={{-350,-50},{-250,-50},{-250,-80},{-170,-80}}, color={0,0,0}));
   connect(yaw_mea, controller.yaw_mea) annotation(Line(points={{-350,-110},{-260,-110},{-260,-130},{-170,-130}}, color={0,0,0}));
   connect(yaw_ref, controller.yaw_ref) annotation(Line(points={{-350,-170},{-270,-170},{-270,-180},{-170,-180}}, color={0,0,0}));
+  connect(elapsed_time, controller.elapsed_time) annotation(Line(points={{-350,-220},{-280,-220},{-280,-215},{-320,-215}}, color={0,0,0}));
   connect(controller.y, y) annotation(Line(points={{170,190},{240,190},{240,225},{350,225}}, color={0,0,0}));
   connect(controller.y1, y1) annotation(Line(points={{170,145},{250,145},{250,175},{350,175}}, color={0,0,0}));
   connect(controller.y2, y2) annotation(Line(points={{170,100},{260,100},{260,125},{350,125}}, color={0,0,0}));

@@ -46,7 +46,7 @@ def test_standard_wind_task_writes_the_formal_v2_profile(tmp_path: Path) -> None
     assert payload == saved
     assert payload["schema"] == writer.TASK_CONFIG_SCHEMA
     assert payload["configuration_kind"] == "formal_v2_profile"
-    assert payload["runner_class"] == "MoSimQuadrotorModel.Experiment.Px4Ctrl.Px4CtrlRunner"
+    assert payload["runner_class"] == "MoSimQuadrotorModel.Experiment.SingleUav.Px4Ctrl.Px4CtrlRunner"
     assert payload["trajectory_binding"] == "scenario_mode"
     assert payload["trajectory_mode"] == 3
     assert payload["profile"]["runner_parameter_overrides"]["gust_force"] == [0.25, 0.0, 0.0]
@@ -152,7 +152,7 @@ def test_registered_formal_route_writes_a_manual_task_for_any_controller(tmp_pat
     assert payload["task_route"]["boundary"] == "ATTITUDE_THRUST"
     assert payload["task_route_source"].endswith("model_studio_task_routes_v1.toml")
     harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
-    assert "extends MoSimQuadrotorModel.Experiment.Optimization.LinearMpcGraphicalRunner(" in harness
+    assert "extends MoSimQuadrotorModel.Experiment.SingleUav.LinearMpc.LinearMpcGraphicalRunner(" in harness
     assert "scenario_mode = 3" in harness
     assert "gust_force = {0.25, 0, 0}" in harness
     assert "fault_rotor_index = 2" in harness
@@ -166,6 +166,25 @@ def test_manual_route_catalog_covers_the_controller_catalog_without_evidence_gat
         assert controller_id in writer.FORMAL_CONTROLLER_IDS
     for controller_id in ("pid_awff_linear_eso", "smc_boundary_layer", "nmpc_outer", "fixed_qp_nmpc_l1_indi_cbf"):
         assert controller_id in writer.FORMAL_CONTROLLER_IDS
+
+
+def test_every_registered_route_renders_its_current_runner_and_reference_binding(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_all_routes")
+    for controller_id, route in sorted(writer.FORMAL_CONTROLLER_ROUTES.items()):
+        payload = write_config(
+            writer,
+            tmp_path / controller_id,
+            task_id="figure8",
+            controller_id=controller_id,
+            gust_force_x_n=0.0,
+            mass_inertia_scale=1.0,
+            motor_effectiveness=[1.0, 1.0, 1.0, 1.0],
+        )
+        assert payload["runner_class"] == route["runner_class"]
+        assert payload["task_route"]["runner_file"] == route["runner_file"]
+        harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
+        assert f"extends {route['runner_class']}(" in harness
+        assert "scenario_mode = 3" in harness
 
 
 def test_baseline_is_a_separate_climbpath_handoff(tmp_path: Path) -> None:

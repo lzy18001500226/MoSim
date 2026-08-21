@@ -68,5 +68,5 @@ if failed:
 print(f"{'='*80}")
 
 # Test if CascadePidGraphicalRunner is now visible
-cascade_exists = ModelingPy.ClassExist('MoSimQuadrotorModel.Experiment.PidFamily.CascadePidGraphicalRunner')
+cascade_exists = ModelingPy.ClassExist('MoSimQuadrotorModel.Experiment.SingleUav.PidFamily.CascadePidGraphicalRunner')
 print(f"\nCascadePidGraphicalRunner exists: {cascade_exists}")

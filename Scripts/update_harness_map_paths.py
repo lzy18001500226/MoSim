@@ -15,57 +15,57 @@ data = json.load(open(HARNESS_PATH, encoding='utf-8'))
 # Build actual Runner file mapping (without fixed_ prefix)
 runner_map = {
     # PidFamily
-    'cascade_pid': 'Models/MoSimQuadrotorModel/Experiment/PidFamily/CascadePidGraphicalRunner.mo',
-    'gain_scheduled_pid': 'Models/MoSimQuadrotorModel/Experiment/PidFamily/GainScheduledPidGraphicalRunner.mo',
-    'fuzzy_pid': 'Models/MoSimQuadrotorModel/Experiment/PidFamily/FuzzyPidGraphicalRunner.mo',
-    'neural_pid': 'Models/MoSimQuadrotorModel/Experiment/PidFamily/NeuralPidGraphicalRunner.mo',
+    'cascade_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/PidFamily/CascadePidGraphicalRunner.mo',
+    'gain_scheduled_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/PidFamily/GainScheduledPidGraphicalRunner.mo',
+    'fuzzy_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/PidFamily/FuzzyPidGraphicalRunner.mo',
+    'neural_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/PidFamily/NeuralPidGraphicalRunner.mo',
     'official_pid': 'Models/MoSimQuadrotorModel/Experiment/Baselines/OfficialPidRunner.mo',
 
     # ClassicRobust
-    'lqr_baseline': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/LqrBaselineGraphicalRunner.mo',
-    'lqi_baseline': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/LqiBaselineGraphicalRunner.mo',
-    'lqg': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/LqgGraphicalRunner.mo',
-    'h2_state_feedback': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/H2StateFeedbackGraphicalRunner.mo',
-    'hinf_hover_wrench': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/HinfHoverWrenchGraphicalRunner.mo',
-    'pole_placement_luenberger': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/PolePlacementLuenbergerGraphicalRunner.mo',
-    'backstepping_baseline': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/BacksteppingBaselineGraphicalRunner.mo',
-    'adaptive_backstepping': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/AdaptiveBacksteppingGraphicalRunner.mo',
-    'feedback_linearization': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/FeedbackLinearizationGraphicalRunner.mo',
-    'mrac': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/MracGraphicalRunner.mo',
-    'ndi': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/NdiGraphicalRunner.mo',
-    'passivity_based_control': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/PassivityBasedControlGraphicalRunner.mo',
-    'fopid': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/FopidGraphicalRunner.mo',
+    'lqr_baseline': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/LqrBaselineGraphicalRunner.mo',
+    'lqi_baseline': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/LqiBaselineGraphicalRunner.mo',
+    'lqg': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/LqgGraphicalRunner.mo',
+    'h2_state_feedback': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/H2StateFeedbackGraphicalRunner.mo',
+    'hinf_hover_wrench': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/HinfHoverWrenchGraphicalRunner.mo',
+    'pole_placement_luenberger': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/PolePlacementLuenbergerGraphicalRunner.mo',
+    'backstepping_baseline': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/BacksteppingBaselineGraphicalRunner.mo',
+    'adaptive_backstepping': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/AdaptiveBacksteppingGraphicalRunner.mo',
+    'feedback_linearization': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/FeedbackLinearizationGraphicalRunner.mo',
+    'mrac': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/MracGraphicalRunner.mo',
+    'ndi': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/NdiGraphicalRunner.mo',
+    'passivity_based_control': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/PassivityBasedControlGraphicalRunner.mo',
+    'fopid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/FopidGraphicalRunner.mo',
 
     # SlidingMode
-    'integral_smc': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/IntegralSmcGraphicalRunner.mo',
-    'terminal_smc': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/TerminalSmcGraphicalRunner.mo',
-    'nonsingular_terminal_smc': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/NonsingularTerminalSmcGraphicalRunner.mo',
-    'super_twisting_smc': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/SuperTwistingSmcGraphicalRunner.mo',
-    'adaptive_smc': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/AdaptiveSmcGraphicalRunner.mo',
-    'fuzzy_smc': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/FuzzySmcGraphicalRunner.mo',
-    'smc_boundary_layer': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/SmcBoundaryLayerGraphicalRunner.mo',
+    'integral_smc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/IntegralSmcGraphicalRunner.mo',
+    'terminal_smc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/TerminalSmcGraphicalRunner.mo',
+    'nonsingular_terminal_smc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/NonsingularTerminalSmcGraphicalRunner.mo',
+    'super_twisting_smc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/SuperTwistingSmcGraphicalRunner.mo',
+    'adaptive_smc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/AdaptiveSmcGraphicalRunner.mo',
+    'fuzzy_smc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/FuzzySmcGraphicalRunner.mo',
+    'smc_boundary_layer': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/SmcBoundaryLayerGraphicalRunner.mo',
 
     # Optimization
-    'linear_mpc': 'Models/MoSimQuadrotorModel/Experiment/Optimization/LinearMpcGraphicalRunner.mo',
-    'robust_mpc': 'Models/MoSimQuadrotorModel/Experiment/Optimization/RobustMpcGraphicalRunner.mo',
-    'adaptive_mpc': 'Models/MoSimQuadrotorModel/Experiment/Optimization/AdaptiveMpcGraphicalRunner.mo',
-    'tube_mpc': 'Models/MoSimQuadrotorModel/Experiment/Optimization/TubeMpcGraphicalRunner.mo',
-    'explicit_gain_scheduled_mpc': 'Models/MoSimQuadrotorModel/Experiment/Optimization/ExplicitGainScheduledMpcGraphicalRunner.mo',
-    'ilqr': 'Models/MoSimQuadrotorModel/Experiment/Optimization/IlqrGraphicalRunner.mo',
-    'mppi': 'Models/MoSimQuadrotorModel/Experiment/Optimization/MppiGraphicalRunner.mo',
-    'nmpc_outer': 'Models/MoSimQuadrotorModel/Experiment/Optimization/NmpcOuterGraphicalRunner.mo',
+    'linear_mpc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/LinearMpc/LinearMpcGraphicalRunner.mo',
+    'robust_mpc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/RobustMpcGraphicalRunner.mo',
+    'adaptive_mpc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/AdaptiveMpcGraphicalRunner.mo',
+    'tube_mpc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/TubeMpcGraphicalRunner.mo',
+    'explicit_gain_scheduled_mpc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/ExplicitGainScheduledMpcGraphicalRunner.mo',
+    'ilqr': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/IlqrGraphicalRunner.mo',
+    'mppi': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/MppiGraphicalRunner.mo',
+    'nmpc_outer': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/NmpcOuterGraphicalRunner.mo',
 
     # GeometricFlatness
-    'dfbc_high_order_attitude': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcHighOrderAttitudeGraphicalRunner.mo',
-    'dfbc_high_order_bodyrate': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcHighOrderBodyrateGraphicalRunner.mo',
-    'dfbc_smooth_robust_attitude': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcSmoothRobustAttitudeGraphicalRunner.mo',
-    'dfbc_smooth_robust_bodyrate': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcSmoothRobustBodyrateGraphicalRunner.mo',
-    'dfbc_basic': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcBasicGraphicalRunner.mo',
-    'se3_basic': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/Se3BasicGraphicalRunner.mo',
+    'dfbc_high_order_attitude': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/DfbcHighOrderAttitudeGraphicalRunner.mo',
+    'dfbc_high_order_bodyrate': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/DfbcHighOrderBodyrateGraphicalRunner.mo',
+    'dfbc_smooth_robust_attitude': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/DfbcSmoothRobustAttitudeGraphicalRunner.mo',
+    'dfbc_smooth_robust_bodyrate': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/DfbcSmoothRobustBodyrateGraphicalRunner.mo',
+    'dfbc_basic': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/DfbcBasicGraphicalRunner.mo',
+    'se3_basic': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/Se3BasicGraphicalRunner.mo',
 
     # Learning
-    'trained_neural_residual': 'Models/MoSimQuadrotorModel/Experiment/Learning/TrainedNeuralResidualGraphicalRunner.mo',
-    'rl_gain_scheduler': 'Models/MoSimQuadrotorModel/Experiment/Learning/RlGainSchedulerGraphicalRunner.mo',
+    'trained_neural_residual': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Learning/TrainedNeuralResidualGraphicalRunner.mo',
+    'rl_gain_scheduler': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Learning/RlGainSchedulerGraphicalRunner.mo',
 
     # IntegratedChains (cleaned scheme_ids without fixed_ prefix)
     'awff_pid': 'Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo',
@@ -75,10 +75,10 @@ runner_map = {
     'qp_nmpc_l1_indi_cbf': 'Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedQpNmpcL1IndiCbf.mo',
 
     # AwffControllers
-    'pid_awff_linear_eso': 'Models/MoSimQuadrotorModel/Experiment/AwffControllers/PidAwffLinearEsoGraphicalRunner.mo',
+    'pid_awff_linear_eso': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/AwffControllers/PidAwffLinearEsoGraphicalRunner.mo',
 
     # Px4Ctrl
-    'px4ctrl': 'Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/Px4CtrlRunner.mo'
+    'px4ctrl': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Px4Ctrl/Px4CtrlRunner.mo'
 }
 
 print("="*80)

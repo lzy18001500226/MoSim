@@ -26,7 +26,7 @@ CHECK_TARGETS = {
     "px4ctrl_outer_loop": "MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlOuterLoopGraphicalSysblock",
     "px4ctrl_core": "MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlBaselineCore",
     "official_pid_runner": "MoSimQuadrotorModel.Experiment.Baselines.OfficialPidRunner",
-    "px4ctrl_runner": "MoSimQuadrotorModel.Experiment.Px4Ctrl.Px4CtrlRunner",
+    "px4ctrl_runner": "MoSimQuadrotorModel.Experiment.SingleUav.Px4Ctrl.Px4CtrlRunner",
 }
 
 DIAGRAM_TARGETS = {
@@ -76,12 +76,12 @@ SOURCE_FILES = (
     ROOT / "Models/MoSimQuadrotorModel/Control/Px4Ctrl/package.mo",
     ROOT / "Models/MoSimQuadrotorModel/Control/Px4Ctrl/package.order",
     ROOT / "Models/MoSimQuadrotorModel/Experiment/Baselines/OfficialPidRunner.mo",
-    ROOT / "Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/Px4CtrlRunner.mo",
+    ROOT / "Models/MoSimQuadrotorModel/Experiment/SingleUav/Px4Ctrl/Px4CtrlRunner.mo",
     ROOT / "Models/MoSimQuadrotorModel/Experiment/Baselines/ScheduledRotorEfficiencyCompensator.mo",
     ROOT / "Models/MoSimQuadrotorModel/Experiment/Baselines/package.mo",
     ROOT / "Models/MoSimQuadrotorModel/Experiment/Baselines/package.order",
-    ROOT / "Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/package.mo",
-    ROOT / "Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/package.order",
+    ROOT / "Models/MoSimQuadrotorModel/Experiment/SingleUav/Px4Ctrl/package.mo",
+    ROOT / "Models/MoSimQuadrotorModel/Experiment/SingleUav/Px4Ctrl/package.order",
 )
 
 

@@ -1,8 +1,8 @@
 AdaptiveMpcGraphicalRunner
 ExplicitGainScheduledMpcGraphicalRunner
 IlqrGraphicalRunner
-LinearMpcGraphicalRunner
 MppiGraphicalRunner
 NmpcOuterGraphicalRunner
 RobustMpcGraphicalRunner
 TubeMpcGraphicalRunner
+LinearMpcGraphicalRunner

@@ -48,10 +48,10 @@ print()
 
 # Map to GraphicalRunner paths
 runner_map = {
-    'dfbc_basic': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcBasicGraphicalRunner.mo',
-    'se3_basic': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/Se3BasicGraphicalRunner.mo',
-    'nmpc_outer': 'Models/MoSimQuadrotorModel/Experiment/Optimization/NmpcOuterGraphicalRunner.mo',
-    'smc_boundary_layer': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/SmcBoundaryLayerGraphicalRunner.mo'
+    'dfbc_basic': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/DfbcBasicGraphicalRunner.mo',
+    'se3_basic': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/Se3BasicGraphicalRunner.mo',
+    'nmpc_outer': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/NmpcOuterGraphicalRunner.mo',
+    'smc_boundary_layer': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/SmcBoundaryLayerGraphicalRunner.mo'
 }
 
 results = {}

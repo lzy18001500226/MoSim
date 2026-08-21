@@ -7,6 +7,7 @@ import pytest
 
 from Scripts.ui.runtime_sidecar import (
     _canonical_hash,
+    RosRuntimeSidecar,
     build_live_operator_map_state_or_rejected,
     build_operator_map_state,
     load_operator_map_snapshot,
@@ -384,6 +385,60 @@ def test_live_sidecar_projects_only_evidence_bound_geometry() -> None:
     assert task_paths["expected"]["status"] == "available"
     assert task_paths["expected"]["frame_id"] == "mworks_world"
     assert task_paths["expected"]["points"][1] == {"x": 7.0, "y": -1.0, "z": 1.0}
+
+
+def test_live_sidecar_preserves_cleared_interactive_target_path() -> None:
+    manifest = _manifest()
+    snapshot = manifest["operator_map_snapshot"]
+    assert isinstance(snapshot, dict)
+    evidence = validate_coordinate_evidence(
+        _coordinate_evidence(manifest),
+        map_snapshot=snapshot,
+        snapshot_hash=str(manifest["operator_map_snapshot_hash"]),
+    )
+
+    _, task_paths, map_data_status = project_live_operator_map_frame(
+        vehicles=[],
+        task_paths={
+            "expected": {
+                "status": "cleared",
+                "semantics": "interactive_target_segment",
+                "vehicle_scope": "uav1",
+                "source_topic": "/mosim/goal4/target_path",
+                "updated_at": 10.0,
+                "frame_id": "world",
+                "points": [],
+            }
+        },
+        coordinate_evidence=evidence,
+        run_id=str(manifest["run_id"]),
+    )
+
+    assert map_data_status == {"state": "accepted", "reason_code": ""}
+    assert task_paths["expected"]["status"] == "cleared"
+    assert task_paths["expected"]["frame_id"] == "mworks_world"
+    assert task_paths["expected"]["points"] == []
+
+
+def test_sidecar_empty_interactive_target_path_clears_expected_geometry() -> None:
+    from types import SimpleNamespace
+
+    sidecar = RosRuntimeSidecar.__new__(RosRuntimeSidecar)
+    sidecar.args = SimpleNamespace(clear_empty_expected_path=True)
+    sidecar.vehicle_ids = ["uav1"]
+    sidecar.task_paths = {}
+    message = SimpleNamespace(header=SimpleNamespace(frame_id="world"), poses=[])
+
+    sidecar._expected_path_cb(message, "/mosim/goal4/target_path")
+
+    cleared = sidecar.task_paths["expected"]
+    assert cleared["status"] == "cleared"
+    assert cleared["semantics"] == "interactive_target_segment"
+    assert cleared["vehicle_scope"] == "uav1"
+    assert cleared["source_topic"] == "/mosim/goal4/target_path"
+    assert cleared["frame_id"] == "world"
+    assert cleared["points"] == []
+    assert cleared["updated_at"] > 0.0
 
 
 def test_live_sidecar_hides_unverified_or_source_mismatched_geometry_without_stopping_telemetry() -> None:

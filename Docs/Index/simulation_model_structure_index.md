@@ -33,7 +33,7 @@ MoSimQuadrotorModel
   Parameters/         source-labeled Sunray150 and runtime parameter sets
   Vehicle/            physical plant, actuators, sensors, resources and examples
   Control/            baseline, graphical, robust, learning and adapter modules
-  Experiment/         typed runners, templates, probes and scenario test shells
+  Experiment/         scenario-first runners, templates, probes and test shells
   Guidance/           trajectory, planning and formation reference modules
   Deployment/         live I/O, code-generation and transport resource surface
   Visualization/      graphical scenario and diagnostic visualization models
@@ -47,6 +47,9 @@ MoSimQuadrotorModel
 | `MoSimQuadrotorModel.Control.*` | 控制器源、Sysblock、图形化核心、接口、分配器与适配器 | 图形化核心已具备整机闭环。 |
 | `MoSimQuadrotorModel.Experiment.Runners.*` | 输出边界和正式测试壳 | 与 PX4 运行时 owner 等价。 |
 | `MoSimQuadrotorModel.Experiment.Templates.*` | 单机正式任务模板 | 其他场景的性能结论。 |
+| `MoSimQuadrotorModel.Experiment.SingleUav.*` | 单机非避障控制器 runner | OpenBlocks 避障或多机编队结论。 |
+| `MoSimQuadrotorModel.Experiment.Formation.*` | 非避障多机编队 runner | 避障编队或 ROS/Gazebo 运行时成功。 |
+| `MoSimQuadrotorModel.Experiment.OpenBlocks.*` | OpenBlocks 单机/编队避障 runner | 仅凭包加载宣称规划、定位或闭环成功。 |
 | `MoSimQuadrotorModel.Experiment.Scenarios.Robustness.*` | 扰动、安全、故障实验 | 已完成 FDI/FTC 闭环。 |
 | `MoSimQuadrotorModel.Guidance.Planning.*` | 路径/轨迹/障碍场景 | 在线规划或真实传感闭环。 |
 | `MoSimQuadrotorModel.Guidance.Formation.*` | 多机参考与编队场景 | 分布式通信或集群避障已验证。 |
@@ -150,4 +153,8 @@ Historical results may retain the model names recorded when they were produced. 
 
 ## 8. Maintenance Rule
 
-Update this index whenever a canonical package, current scenario binding, formal runner, or stable result location changes. Do not add aliases, duplicate roots, empty placeholder directories, or a flat experiment pool to make an old command work. Update the command/configuration to the canonical namespace instead.
+Update this index whenever a canonical package, current scenario binding, formal runner, or stable result location changes. New references must use
+`Experiment/SingleUav`, `Experiment/Formation`, or `Experiment/OpenBlocks`.
+The old flat experiment packages may remain only as hidden, one-line FQN
+compatibility aliases; they are not canonical entries and must not receive new
+implementation files.

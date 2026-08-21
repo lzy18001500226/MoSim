@@ -33,8 +33,8 @@ MOSIM_UE_STATE_STREAM_RATE_HZ="${MOSIM_UE_STATE_STREAM_RATE_HZ:-100}"
 # exposes its MAVLink TCP endpoint. Keep this local to the Factory demo so the
 # generic basic gate retains its shorter diagnostic timeout.
 MAVROS_READY_TIMEOUT_S="${MAVROS_READY_TIMEOUT_S:-180}"
-FACTORY_L2_WORLD_RELATIVE="Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
-FACTORY_L2_MODELS_RELATIVE="Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models"
+FACTORY_L2_WORLD_RELATIVE="Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+FACTORY_L2_MODELS_RELATIVE="Config/gazebo/models"
 FACTORY_L2_LAUNCH_RELATIVE="Scripts/sunray/factory_l2_sunray_px4_gazebo.launch"
 WORLD_FILE="${WORLD_FILE:-${PROJECT_ROOT}/${FACTORY_L2_WORLD_RELATIVE}}"
 GAZEBO_MODEL_PATH="${GAZEBO_MODEL_PATH:-${PROJECT_ROOT}/${FACTORY_L2_MODELS_RELATIVE}}"

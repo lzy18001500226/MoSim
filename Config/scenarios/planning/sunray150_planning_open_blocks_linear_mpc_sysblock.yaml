@@ -6,8 +6,8 @@ evidence_level: real_sysplorer_mcp_planning_column_truth_0p2_sensor_20hz_simulat
 
 model:
   source_package: MoSimQuadrotorModel
-  model_name: MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop
-  model_path_hint: Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningOpenBlocksLinearMPCSysblockClosedLoop.mo
+  model_name: MoSimQuadrotorModel.Experiment.OpenBlocks.LinearMpc.SingleUav.Sunray150OpenBlocksLinearMPCRunner
+  model_path_hint: Models/MoSimQuadrotorModel/Experiment/OpenBlocks/LinearMpc/SingleUav/Sunray150OpenBlocksLinearMPCRunner.mo
   base_model_path_hint: Models/MoSimQuadrotorModel/package.mo
   extra_model_files:
     - Models/MoSimQuadrotorModel/Guidance/Planning/PlannedQuinticReference.mo

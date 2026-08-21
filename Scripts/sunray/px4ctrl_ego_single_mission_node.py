@@ -381,7 +381,16 @@ class EgoSingleMission:
         self.position_cmd_count += 1
         if self.should_record("cmd", t, self.args.record_cmd_hz):
             self.position_cmd_rows.append(row)
-            self.append_path(self.cmd_path, row["x"], row["y"], row["z"], t, max_points=self.args.max_path_points)
+            # /position_cmd is PX4-local after the common-world inverse bridge,
+            # while the review path is explicitly published in the world frame.
+            self.append_path(
+                self.cmd_path,
+                row["x"] + self.args.path_command_offset_x,
+                row["y"] + self.args.path_command_offset_y,
+                row["z"] + self.args.path_command_offset_z,
+                t,
+                max_points=self.args.max_path_points,
+            )
 
     def on_planner_position_cmd(self, msg: PositionCommand) -> None:
         t = self.now()
@@ -628,7 +637,10 @@ class EgoSingleMission:
         self.truth_path_pub.publish(self.truth_path)
         self.cmd_path_pub.publish(self.cmd_path)
         self.publish_body_axes()
-        if not publish_static_target:
+        # Interactive Goal4 target_path is owned by the clicked-goal adapter.
+        # A second latched publisher would race the live aircraft-to-target
+        # segment and could restore the line after the adapter clears it.
+        if not publish_static_target or self.args.interactive_goal_review:
             return
         target_path = RosPath(header=Header(stamp=stamp, frame_id=self.args.path_frame))
         start_x, start_y, start_z = self.display_path_start()
@@ -2240,6 +2252,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--goal-pose-topic", default="")
     parser.add_argument("--mission-mode", choices=["fixed_goal", "exploration_stream"], default="fixed_goal")
     parser.add_argument("--path-frame", default="world")
+    parser.add_argument("--path-command-offset-x", type=float, default=0.0)
+    parser.add_argument("--path-command-offset-y", type=float, default=0.0)
+    parser.add_argument("--path-command-offset-z", type=float, default=0.0)
     parser.add_argument("--drone-id", type=int, default=0)
     parser.add_argument("--target-x", type=float, default=4.0)
     parser.add_argument("--target-y", type=float, default=0.0)

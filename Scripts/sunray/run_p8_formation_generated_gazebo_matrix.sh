@@ -9,7 +9,7 @@ P8_RESULT_SUFFIX="${P8_RESULT_SUFFIX:-gazebo_r1_20260717}"
 RUNNER="${PROJECT_ROOT}/Scripts/sunray/run_px4ctrl_ego_swarm_gate.sh"
 MISSION_NODE="${PROJECT_ROOT}/Scripts/sunray/p8_formation_generated_mission_node.py"
 GENERATED_LIB="${PROJECT_ROOT}/Results/control_platform/p8_formation_generated_runtime_20260717/libmosim_p8_formation_generated.so"
-WORLD_FILE="${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+WORLD_FILE="${PROJECT_ROOT}/Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
 
 for mode_id in ${P8_MODE_IDS}; do
   run_id="p8_formation_mode${mode_id}_${P8_RESULT_SUFFIX}"

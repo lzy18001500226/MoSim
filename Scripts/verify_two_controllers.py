@@ -10,8 +10,8 @@ import json
 
 def main():
     models_to_check = [
-        "MoSimQuadrotorModel.Experiment.AwffControllers.AwffPidGraphicalRunner",
-        "MoSimQuadrotorModel.Experiment.AwffControllers.PidAwffLinearEsoGraphicalRunner",
+        "MoSimQuadrotorModel.Experiment.SingleUav.AwffControllers.AwffPidGraphicalRunner",
+        "MoSimQuadrotorModel.Experiment.SingleUav.AwffControllers.PidAwffLinearEsoGraphicalRunner",
     ]
 
     print("=" * 80)

@@ -77,7 +77,7 @@ RUNNERS = {
         "forbidden_runner_tokens": ("roll_feedback_sign",),
     },
     "px4ctrl": {
-        "path": "Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/Px4CtrlRunner.mo",
+        "path": "Models/MoSimQuadrotorModel/Experiment/SingleUav/Px4Ctrl/Px4CtrlRunner.mo",
         "model": "Px4CtrlRunner",
         "core_type": "Px4CtrlBaselineCore",
         "core_instance": "controller_core",
@@ -121,7 +121,7 @@ PACKAGE_ENTRIES = {
     "Models/MoSimQuadrotorModel/Experiment/Baselines/package.order": (
         "OfficialPidRunner",
     ),
-    "Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/package.order": (
+    "Models/MoSimQuadrotorModel/Experiment/SingleUav/Px4Ctrl/package.order": (
         "Px4CtrlRunner",
     ),
 }
@@ -139,7 +139,7 @@ PACKAGE_DECLARATIONS = {
         "within MoSimQuadrotorModel.Experiment;",
         "package Baselines",
     ),
-    "Models/MoSimQuadrotorModel/Experiment/Px4Ctrl/package.mo": (
+    "Models/MoSimQuadrotorModel/Experiment/SingleUav/Px4Ctrl/package.mo": (
         "within MoSimQuadrotorModel.Experiment;",
         "package Px4Ctrl",
     ),

@@ -6,8 +6,8 @@
   "map_name": "Factory",
   "scene_id": "factoryenvironmentcollect",
   "static_import_level": "L2",
-  "world_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
-  "gazebo_model_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+  "world_path": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "gazebo_model_path": "Config/gazebo/models",
   "base_scene_profile": "Config/gazebo/scene_profiles/factory_l2_static_sunray_scene.json",
   "default_vehicle": "sunray150_with_mid360",
   "default_uav_num": 1,
@@ -71,7 +71,7 @@
   },
   "review_evidence": {
     "manifest": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/MANIFEST.json",
-    "sdf_check": "wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && GAZEBO_MODEL_PATH=\"$PWD/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models:$GAZEBO_MODEL_PATH\" gz sdf -v 1.6 -k \"Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf\"'",
+    "sdf_check": "wsl -d Ubuntu-20.04 --exec bash -lc 'cd /mnt/c/Users/HP/Desktop/MoSim && GAZEBO_MODEL_PATH=\"$PWD/Config/gazebo/models:$GAZEBO_MODEL_PATH\" gz sdf -v 1.6 -k \"Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf\"'",
     "sdf_check_observed_output": "Check complete",
     "user_visual_acceptance": "pending",
     "ue_calibration_rig_render": "verified_segments_16_markers_6"

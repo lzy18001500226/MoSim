@@ -3,8 +3,8 @@
   "status": "full_fixed_map_fuel_short_gate_passed_full_coverage_pending",
   "generated_from": "Results/unreal_scene_mapping/factory_l2_flight_envelope_audit_20260703_014306/FACTORY_L2_FLIGHT_ENVELOPE_AUDIT.json",
   "scene_profile": "Config/gazebo/scene_profiles/factory_l2_static_sunray_scene_clean_candidate.json",
-  "world_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
-  "gazebo_model_path": "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models",
+  "world_path": "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf",
+  "gazebo_model_path": "Config/gazebo/models",
   "coordinate_contract": {
     "frame": "Gazebo world / MWORKS world",
     "units": "meters",

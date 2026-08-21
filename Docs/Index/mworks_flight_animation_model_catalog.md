@@ -58,7 +58,7 @@
 | 4 | `MoSimQuadrotorModel.Guidance.Planning.OpenBlocksLinearMPCVehicle` | 单机 OpenBlocks 静态障碍场 | LinearMPC 风格外环，规划参考 | 80.1247 s | `Results\planning\single_obstacle_astar_awff\sunray150_planning_open_blocks_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_open_blocks_linear_mpc_sysblock_20260515.jsonl` |
 | 5 | `MoSimQuadrotorModel.Guidance.Planning.Sunray150PlanningCorridorGateLinearMPCSysblockClosedLoop` | 单机走廊门控障碍场 | LinearMPC 风格外环，规划参考 | 23 s | `Results\planning\corridor_gate_astar_awff\sunray150_planning_corridor_gate_linear_mpc_sysblock\logs\sysplorer_sunray150_planning_corridor_gate_linear_mpc_sysblock_20260515.jsonl` |
 | 6 | `MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC` | 三机三角编队 8 字 | 三套 LinearMPC 风格 Sysblock | 80 s | `Results\formation\triangle_figure8\formation_triangle_figure8_linear_mpc_sysblock\logs\sysplorer_formation_triangle_figure8_linear_mpc_sysblock_20260515.jsonl` |
-| 7 | `MoSimQuadrotorModel.Guidance.Planning.ThreeUavOpenBlocksReconfigurableFormationLinearMPC` | 三机 OpenBlocks 可重构编队 | 三套 LinearMPC 风格外环，规划参考 | 304.8405 s | 本目录只确认该完整源码入口；长仿真先人工 Check Model |
+| 7 | `MoSimQuadrotorModel.Experiment.OpenBlocks.LinearMpc.Formation.ThreeUavOpenBlocksLinearMPCRunner` | 三机 OpenBlocks 可重构编队 | 三套 LinearMPC 风格外环，规划参考 | 304.8405 s | 本目录只确认该完整源码入口；长仿真先人工 Check Model |
 
 ## 3. 完整飞行入口总表
 

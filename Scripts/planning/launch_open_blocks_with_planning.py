@@ -23,7 +23,7 @@ CONTROLLERS = {
         "planning_script": ROOT / "Scripts/planning/plan_open_blocks_three_uav.py",
         "update_script": ROOT / "Scripts/planning/update_px4ctrl_references.py",
         "single_uav_model": "Models/MoSimQuadrotorModel/Guidance/Planning/Sunray150PlanningOpenBlocksPx4CtrlSysblockClosedLoop.mo",
-        "three_uav_model": "Models/MoSimQuadrotorModel/Experiment/Formation/Px4Ctrl/ThreeUavPx4CtrlOpenBlocksRunner.mo",
+        "three_uav_model": "Models/MoSimQuadrotorModel/Experiment/OpenBlocks/Px4Ctrl/Formation/ThreeUavPx4CtrlOpenBlocksRunner.mo",
     },
     "linear_mpc": {
         "planning_script": ROOT / "Scripts/planning/plan_open_blocks_three_uav.py",

@@ -325,6 +325,18 @@ def _project_map_task_paths(
         if not isinstance(path, dict):
             continue
         metadata = _path_metadata(path, run_id=run_id)
+        if path.get("status") == "cleared":
+            projected[kind] = {
+                **metadata,
+                "status": "cleared",
+                "frame_id": (
+                    coordinate_evidence["target_frame_id"]
+                    if coordinate_evidence is not None
+                    else str(path.get("frame_id") or "")
+                ),
+                "points": [],
+            }
+            continue
         if coordinate_evidence is None:
             projected[kind] = {
                 **metadata,
@@ -773,6 +785,16 @@ class RosRuntimeSidecar:
         points = self._bounded_points([pose.pose.position for pose in msg.poses])
         # Empty Path heartbeats must not erase a previously latched real plan.
         if len(points) < 2:
+            if getattr(self.args, "clear_empty_expected_path", False):
+                self.task_paths["expected"] = {
+                    "status": "cleared",
+                    "semantics": "interactive_target_segment",
+                    "vehicle_scope": "uav1" if len(self.vehicle_ids) == 1 else "all_vehicles",
+                    "source_topic": source_topic,
+                    "frame_id": str(msg.header.frame_id),
+                    "updated_at": time.time(),
+                    "points": [],
+                }
             return
         if self.profile_id == "factory_l2_three_uav_swarm_formation_v1":
             semantics = "formation_center_reference"
@@ -1170,6 +1192,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--actuator-command-topic", default="/uav1/mosim/ftc_actuator_command")
     parser.add_argument("--actuator-telemetry-topic", default="/uav1/mosim/ftc_actuator_telemetry")
     parser.add_argument("--expected-path-topic", default="")
+    parser.add_argument(
+        "--clear-empty-expected-path",
+        action="store_true",
+        help="Clear the expected display path when its subscribed Path publishes an empty heartbeat.",
+    )
     parser.add_argument("--future-marker-topic", default="")
     parser.add_argument("--future-polytraj-topic", default="")
     parser.add_argument("--future-polytraj-frame-id", default="world")

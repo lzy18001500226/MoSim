@@ -22,8 +22,8 @@ export GOAL4_EGO_TAKEOVER_TIMEOUT_S="${GOAL4_EGO_TAKEOVER_TIMEOUT_S:-90}"
 export GOAL4_TAKEOFF_TIMEOUT_S="${GOAL4_TAKEOFF_TIMEOUT_S:-90}"
 export PX4CTRL_CORE_PROFILE="${PX4CTRL_CORE_PROFILE:-l1_awff}"
 
-export WORLD_FILE="${WORLD_FILE:-${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf}"
-export FACTORY_MODEL_PATH="${FACTORY_MODEL_PATH:-${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models}"
+export WORLD_FILE="${WORLD_FILE:-${PROJECT_ROOT}/Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf}"
+export FACTORY_MODEL_PATH="${FACTORY_MODEL_PATH:-${PROJECT_ROOT}/Config/gazebo/models}"
 export SUNRAY_GAZEBO_LAUNCH_FILE="${SUNRAY_GAZEBO_LAUNCH_FILE:-${PROJECT_ROOT}/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch}"
 
 export SUNRAY_UAV_INIT_X="${SUNRAY_UAV_INIT_X:--10.575025}"

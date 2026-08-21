@@ -69,6 +69,43 @@ def test_diff_swarm_world_targets_are_split_between_mission_and_planner_frames(t
     assert contract["runtime_bridge"]["planner_position_cmd"] == "common_world_to_mavros_local"
 
 
+def test_diff_single_visual_path_and_pointcloud_contracts_are_explicit() -> None:
+    gate = (ROOT / "Scripts/sunray/run_px4ctrl_ego_single_gate.sh").read_text(encoding="utf-8")
+    mission = (ROOT / "Scripts/sunray/px4ctrl_ego_single_mission_node.py").read_text(encoding="utf-8")
+    pointcloud = (ROOT / "Scripts/sunray/goal4_pointcloud_to_world_node.py").read_text(encoding="utf-8")
+    safety_adapter = (ROOT / "Scripts/sunray/goal4_position_cmd_safety_adapter.py").read_text(encoding="utf-8")
+    launch = (ROOT / "Scripts/sunray/diff_planner_single_px4ctrl_goal4.launch").read_text(encoding="utf-8")
+    grid_rviz = (ROOT / "Config/rviz/sunray_ros1_goal4_diff_grid3d_review.rviz").read_text(encoding="utf-8")
+
+    assert '--path-command-offset-x "${PATH_COMMAND_OFFSET_X}"' in gate
+    assert '--path-command-offset-y "${PATH_COMMAND_OFFSET_Y}"' in gate
+    assert "--path-command-offset-x" in mission
+    assert "row[\"x\"] + self.args.path_command_offset_x" in mission
+    assert 'rospy.get_param("~min_sensor_range_m", 0.10)' in pointcloud
+    assert 'rospy.get_param("~max_sensor_range_m", 4.10)' in pointcloud
+    assert '<arg name="depth_filter_mindist" default="0.1"/>' in launch
+    assert '<arg name="depth_filter_maxdist" default="4.1"/>' in launch
+    assert 'DIFF_MAP_GUARD_ENABLE="${DIFF_MAP_GUARD_ENABLE:-true}"' in gate
+    assert '_map_guard_enabled:="${PLANNER_CMD_MAP_GUARD_ENABLED}"' in gate
+    assert '_map_guard_cloud_topic:="${PLANNER_CMD_MAP_GUARD_CLOUD_TOPIC}"' in gate
+    assert '_map_guard_occupancy_topic:="${PLANNER_CMD_MAP_GUARD_OCCUPANCY_TOPIC}"' in gate
+    assert "planner_map_not_ready" in safety_adapter
+    assert "planner_cloud_empty" in safety_adapter
+    assert "occupancy_inflate_empty" in safety_adapter
+    assert "PointCloud2" in safety_adapter
+    assert 'DIFF_MAP_READY_TIMEOUT_S="${DIFF_MAP_READY_TIMEOUT_S:-15.0}"' in gate
+    assert 'planner_cloud_ready.json' in gate
+    assert 'planner_occupancy_ready.json' in gate
+    assert "refusing to release the goal" in gate
+    pointcloud_rviz = (ROOT / "Config/rviz/sunray_ros1_goal4_diff_pointcloud_review.rviz").read_text(encoding="utf-8")
+    assert "Name: Live Inflated Occupancy Map\n" in pointcloud_rviz
+    assert "Topic: /drone_0_ego_planner_node/grid_map/occupancy_inflate\n" in pointcloud_rviz
+    assert "Name: Accumulated Occupancy Map Review\n" in pointcloud_rviz
+    assert "Topic: /mosim/goal4/occupancy_accumulated\n" in pointcloud_rviz
+    assert "Name: 3D Inflated Occupancy Diagnostic\n" in grid_rviz
+    assert "Topic: /drone_0_ego_planner_node/grid_map/occupancy_inflate\n" in grid_rviz
+
+
 def test_diff_swarm_common_world_mavros_keeps_fixed_targets_identical(tmp_path: Path) -> None:
     output = tmp_path / "coordinate_contract.json"
     result = subprocess.run(

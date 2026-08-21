@@ -57,17 +57,17 @@ print()
 
 # GraphicalRunner路径映射
 RUNNER_PATH_MAP = {
-    'cascade_pid': 'Models/MoSimQuadrotorModel/Experiment/PidFamily/CascadePidGraphicalRunner.mo',
-    'fuzzy_pid': 'Models/MoSimQuadrotorModel/Experiment/PidFamily/FuzzyPidGraphicalRunner.mo',
-    'gain_scheduled_pid': 'Models/MoSimQuadrotorModel/Experiment/PidFamily/GainScheduledPidGraphicalRunner.mo',
-    'official_pid': 'Models/MoSimQuadrotorModel/Experiment/PidFamily/OfficialPidGraphicalRunner.mo',
-    'ndi': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/NdiGraphicalRunner.mo',
-    'hinf_hover_wrench': 'Models/MoSimQuadrotorModel/Experiment/ClassicRobust/HinfHoverWrenchGraphicalRunner.mo',
-    'dfbc_smooth_robust_bodyrate': 'Models/MoSimQuadrotorModel/Experiment/GeometricFlatness/DfbcSmoothRobustBodyrateGraphicalRunner.mo',
-    'explicit_gain_scheduled_mpc': 'Models/MoSimQuadrotorModel/Experiment/Optimization/ExplicitGainScheduledMpcGraphicalRunner.mo',
-    'ilqr': 'Models/MoSimQuadrotorModel/Experiment/Optimization/IlqrGraphicalRunner.mo',
-    'super_twisting_smc': 'Models/MoSimQuadrotorModel/Experiment/SlidingMode/SuperTwistingSmcGraphicalRunner.mo',
-    'rl_gain_scheduler': 'Models/MoSimQuadrotorModel/Experiment/Learning/RlGainSchedulerGraphicalRunner.mo',
+    'cascade_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/PidFamily/CascadePidGraphicalRunner.mo',
+    'fuzzy_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/PidFamily/FuzzyPidGraphicalRunner.mo',
+    'gain_scheduled_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/PidFamily/GainScheduledPidGraphicalRunner.mo',
+    'official_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/PidFamily/OfficialPidGraphicalRunner.mo',
+    'ndi': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/NdiGraphicalRunner.mo',
+    'hinf_hover_wrench': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/HinfHoverWrenchGraphicalRunner.mo',
+    'dfbc_smooth_robust_bodyrate': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/GeometricFlatness/DfbcSmoothRobustBodyrateGraphicalRunner.mo',
+    'explicit_gain_scheduled_mpc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/ExplicitGainScheduledMpcGraphicalRunner.mo',
+    'ilqr': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/IlqrGraphicalRunner.mo',
+    'super_twisting_smc': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/SlidingMode/SuperTwistingSmcGraphicalRunner.mo',
+    'rl_gain_scheduler': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Learning/RlGainSchedulerGraphicalRunner.mo',
 }
 
 results = {}

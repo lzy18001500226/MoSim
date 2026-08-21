@@ -16,6 +16,9 @@
   <arg name="visualization_truncate_height" default="1.5"/>
   <arg name="enable_virtual_wall" default="true"/>
   <arg name="cloud_enable_raycast" default="true"/>
+  <arg name="max_ray_length" default="4.5"/>
+  <arg name="depth_filter_mindist" default="0.2"/>
+  <arg name="depth_filter_maxdist" default="5.0"/>
   <arg name="grid_init_x" default="0.0"/>
   <arg name="grid_init_y" default="0.0"/>
   <arg name="grid_init_z" default="0.0"/>
@@ -101,8 +104,8 @@
     <param name="grid_map/fy" value="387.229248046875" type="double"/>
     <param name="grid_map/use_depth_filter" value="true" type="bool"/>
     <param name="grid_map/depth_filter_tolerance" value="0.15" type="double"/>
-    <param name="grid_map/depth_filter_maxdist" value="5.0" type="double"/>
-    <param name="grid_map/depth_filter_mindist" value="0.2" type="double"/>
+    <param name="grid_map/depth_filter_maxdist" value="$(arg depth_filter_maxdist)" type="double"/>
+    <param name="grid_map/depth_filter_mindist" value="$(arg depth_filter_mindist)" type="double"/>
     <param name="grid_map/depth_filter_margin" value="2" type="int"/>
     <param name="grid_map/k_depth_scaling_factor" value="1000.0" type="double"/>
     <param name="grid_map/skip_pixel" value="2" type="int"/>
@@ -119,7 +122,7 @@
     <param name="grid_map/cloud_enable_raycast" value="$(arg cloud_enable_raycast)" type="bool"/>
     <param name="grid_map/fading_time" value="-1.0" type="double"/>
     <param name="grid_map/min_ray_length" value="0.1" type="double"/>
-    <param name="grid_map/max_ray_length" value="4.5" type="double"/>
+    <param name="grid_map/max_ray_length" value="$(arg max_ray_length)" type="double"/>
     <param name="grid_map/visualization_truncate_height" value="$(arg visualization_truncate_height)" type="double"/>
     <param name="grid_map/show_occ_time" value="false" type="bool"/>
     <param name="grid_map/init_x" value="$(arg grid_init_x)" type="double"/>

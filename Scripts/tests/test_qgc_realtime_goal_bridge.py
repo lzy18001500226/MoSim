@@ -860,6 +860,7 @@ def test_qgc_realtime_goal_profiles_are_bound_to_the_live_goal_wrapper() -> None
     assert "Copy and run the bridge command" not in wrapper
     assert '"$RUNTIME_RESULT_DIR/RUN_MANIFEST.json"' not in wrapper
     assert "--expected-path-topic /mosim/goal4/target_path" in wrapper
+    assert "--clear-empty-expected-path" in wrapper
     assert "--future-polytraj-topic /drone_0_planning/trajectory" in wrapper
     assert "--future-polytraj-frame-id world" in wrapper
     assert 'source "$GOAL4_DIFF_PLANNER_WS/devel/setup.bash"' in wrapper
@@ -885,7 +886,7 @@ def test_qgc_realtime_goal_profiles_are_bound_to_the_live_goal_wrapper() -> None
     assert "stop_owned_processes" in generic_runner
     assert 'pkill -f "rosmaster"' not in generic_runner
     assert 'pkill -f "rosout"' not in generic_runner
-    assert 'DIFF_GOAL4_COMMON_WORLD_FRAME="${DIFF_GOAL4_COMMON_WORLD_FRAME:-false}"' in generic_runner
+    assert 'DIFF_GOAL4_COMMON_WORLD_FRAME="${DIFF_GOAL4_COMMON_WORLD_FRAME:-true}"' in generic_runner
     assert 'DIFF_GOAL4_PLANNER_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC:-/uav1/mosim/diff_goal4/planner_odom_world}"' in generic_runner
     assert 'DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC="${DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC:-/uav1/mosim/diff_goal4/planner_position_cmd_world}"' in generic_runner
     assert 'DIFF_CMD_SMOOTH_ENABLE="${DIFF_CMD_SMOOTH_ENABLE:-false}"' in generic_runner
@@ -912,6 +913,8 @@ def test_qgc_realtime_goal_profiles_are_bound_to_the_live_goal_wrapper() -> None
     assert "target_x, target_y, target_z = self.display_path_target()" in mission
     assert "if self.last_path_odom is not None:" in mission
     assert "if self.last_forwarded_goal is not None:" in mission
+    publish_paths = mission.split("def publish_paths", 1)[1].split("def display_path_start", 1)[0]
+    assert "self.args.interactive_goal_review" in publish_paths
 
     sunray_launch = (ROOT / "src" / "simulation" / "gazebo" / "sunray" / "launch_basic" / "sunray_px4_basic.launch").read_text(encoding="utf-8")
     assert '<arg name="px4_sim_speed_factor" default="$(optenv PX4_SIM_SPEED_FACTOR 1.0)" />' in sunray_launch

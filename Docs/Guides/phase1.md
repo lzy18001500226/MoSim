@@ -19,6 +19,14 @@ runtime_profile_id: sunray_ros1_factory_l2_graphical_px4ctrl_c99_rviz_qgc_displa
 rviz_config: Config/rviz/sunray_ros1_goal4_diff_realtime_combined_review.rviz
 ```
 
+Factory L2 的物理场景输入已固定为版本化工程资产：
+
+```text
+world: Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf
+models: Config/gazebo/models/factory_chunk_0000 ... factory_chunk_0068
+QGC 2D map: apps/flight_console/mosim/custom/maps/factory_l2/v1/
+```
+
 不要先手工启动 Gazebo、PX4、MAVROS、规划器或 RViz，也不要直接把 `.rviz` 文件路径粘贴到 PowerShell。
 
 本教程需要使用 `Ubuntu-20.04 / ROS1 Noetic / Gazebo Classic`。不要替换成裸 `wsl`、Ubuntu-22.04 或 ROS2。

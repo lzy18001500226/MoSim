@@ -43,7 +43,12 @@ def read_pose_rows(csv_path: Path, max_points: int) -> list[dict]:
     return rows
 
 
-def read_path(csv_path: Path, frame_id: str, max_points: int) -> RosPath:
+def read_path(
+    csv_path: Path,
+    frame_id: str,
+    max_points: int,
+    offset_xyz: tuple[float, float, float] = (0.0, 0.0, 0.0),
+) -> RosPath:
     path = RosPath(header=Header(frame_id=frame_id))
     rows = read_pose_rows(csv_path, max_points)
     stamp = rospy.Time.now()
@@ -51,16 +56,19 @@ def read_path(csv_path: Path, frame_id: str, max_points: int) -> RosPath:
         pose = PoseStamped()
         pose.header.stamp = stamp
         pose.header.frame_id = frame_id
-        pose.pose.position.x = row["x"]
-        pose.pose.position.y = row["y"]
-        pose.pose.position.z = row["z"]
+        pose.pose.position.x = row["x"] + offset_xyz[0]
+        pose.pose.position.y = row["y"] + offset_xyz[1]
+        pose.pose.position.z = row["z"] + offset_xyz[2]
         pose.pose.orientation.w = 1.0
         path.poses.append(pose)
     path.header.stamp = stamp
     return path
 
 
-def read_last_pose(csv_path: Path) -> dict | None:
+def read_last_pose(
+    csv_path: Path,
+    offset_xyz: tuple[float, float, float] = (0.0, 0.0, 0.0),
+) -> dict | None:
     if not csv_path.exists():
         return None
     last = None
@@ -69,9 +77,9 @@ def read_last_pose(csv_path: Path) -> dict | None:
         for row in reader:
             try:
                 last = {
-                    "x": float(row["x"]),
-                    "y": float(row["y"]),
-                    "z": float(row["z"]),
+                    "x": float(row["x"]) + offset_xyz[0],
+                    "y": float(row["y"]) + offset_xyz[1],
+                    "z": float(row["z"]) + offset_xyz[2],
                     "roll": float(row.get("roll", 0.0)),
                     "pitch": float(row.get("pitch", 0.0)),
                     "yaw": float(row.get("yaw", 0.0)),
@@ -229,7 +237,11 @@ class LiveReviewState:
             self.last_truth_point = point
 
     def on_position_cmd(self, msg: PositionCommand) -> None:
-        point = (float(msg.position.x), float(msg.position.y), float(msg.position.z))
+        point = (
+            float(msg.position.x) + self.args.command_offset_xyz[0],
+            float(msg.position.y) + self.args.command_offset_xyz[1],
+            float(msg.position.z) + self.args.command_offset_xyz[2],
+        )
         self.last_cmd_wall = rospy.get_time()
         if moved_enough(self.last_cmd_point, point, self.args.min_path_step_m):
             append_pose(self.cmd_path, self.args.frame_id, point[0], point[1], point[2], self.args.max_points)
@@ -263,6 +275,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--live-timeout-s", type=float, default=2.0)
     parser.add_argument("--disable-live", action="store_true")
     parser.add_argument("--disable-static-target", action="store_true")
+    parser.add_argument("--command-offset-x", type=float, default=0.0)
+    parser.add_argument("--command-offset-y", type=float, default=0.0)
+    parser.add_argument("--command-offset-z", type=float, default=0.0)
     parser.add_argument("--body-axis-length-m", type=float, default=0.25)
     parser.add_argument("--body-axis-shaft-m", type=float, default=0.012)
     parser.add_argument("--body-axis-head-diameter-m", type=float, default=0.035)
@@ -284,6 +299,11 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    args.command_offset_xyz = (
+        args.command_offset_x,
+        args.command_offset_y,
+        args.command_offset_z,
+    )
     rospy.init_node("mosim_goal4_path_hold_from_csv", anonymous=False)
     result_dir = Path(args.result_dir)
     truth_pub = rospy.Publisher(args.truth_topic, RosPath, queue_size=1, latch=True)
@@ -300,8 +320,12 @@ def main() -> int:
     last_planner_cmd_path: RosPath | None = None
     while not rospy.is_shutdown():
         truth = live.truth_path if live.live_truth_available() else read_path(result_dir / "truth.csv", args.frame_id, args.max_points)
-        cmd = live.cmd_path if live.live_cmd_available() else read_path(result_dir / "position_cmd.csv", args.frame_id, args.max_points)
-        planner_cmd = read_path(result_dir / "planner_position_cmd_raw.csv", args.frame_id, args.max_points)
+        cmd = live.cmd_path if live.live_cmd_available() else read_path(
+            result_dir / "position_cmd.csv", args.frame_id, args.max_points, args.command_offset_xyz
+        )
+        planner_cmd = read_path(
+            result_dir / "planner_position_cmd_raw.csv", args.frame_id, args.max_points, args.command_offset_xyz
+        )
 
         # Do not replace a real path with an empty fallback while the mission
         # is still writing its CSVs or a live topic is momentarily quiet.
@@ -337,7 +361,12 @@ def main() -> int:
                     axes_pose = axes_rows[axes_replay_index % len(axes_rows)]
                     axes_replay_index += 1
             else:
-                axes_pose = read_last_pose(result_dir / csv_name)
+                offset = (
+                    args.command_offset_xyz
+                    if args.body_axes_source in {"cmd", "planner_cmd"}
+                    else (0.0, 0.0, 0.0)
+                )
+                axes_pose = read_last_pose(result_dir / csv_name, offset)
         if axes_pose is not None:
             axes_pub.publish(make_body_axes(axes_pose, args.frame_id, args))
         rate.sleep()

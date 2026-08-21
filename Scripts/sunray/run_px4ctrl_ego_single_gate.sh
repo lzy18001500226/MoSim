@@ -402,6 +402,17 @@ DIFF_CMD_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M="${DIFF_CMD_MAX_XY_TARGET_DISTANCE_F
 DIFF_CMD_ODOM_DISTANCE_POLICY="${DIFF_CMD_ODOM_DISTANCE_POLICY:-project_toward_raw}"
 DIFF_CMD_ODOM_GUARD_ZERO_DYNAMICS="${DIFF_CMD_ODOM_GUARD_ZERO_DYNAMICS:-true}"
 DIFF_CMD_SEED_FROM_ODOM_ON_ENABLE="${DIFF_CMD_SEED_FROM_ODOM_ON_ENABLE:-false}"
+DIFF_MAP_GUARD_ENABLE="${DIFF_MAP_GUARD_ENABLE:-true}"
+DIFF_MAP_GUARD_TIMEOUT_S="${DIFF_MAP_GUARD_TIMEOUT_S:-1.0}"
+DIFF_MAP_GUARD_MIN_CLOUD_POINTS="${DIFF_MAP_GUARD_MIN_CLOUD_POINTS:-1}"
+DIFF_MAP_GUARD_MIN_OCCUPANCY_POINTS="${DIFF_MAP_GUARD_MIN_OCCUPANCY_POINTS:-1}"
+DIFF_MAP_GUARD_SEED_FROM_ODOM="${DIFF_MAP_GUARD_SEED_FROM_ODOM:-true}"
+DIFF_MAP_COLLISION_GUARD_ENABLE="${DIFF_MAP_COLLISION_GUARD_ENABLE:-true}"
+DIFF_MAP_COLLISION_RADIUS_M="${DIFF_MAP_COLLISION_RADIUS_M:-0.30}"
+DIFF_MAP_COLLISION_Z_MARGIN_M="${DIFF_MAP_COLLISION_Z_MARGIN_M:-0.25}"
+DIFF_MAP_COLLISION_SAMPLE_STEP_M="${DIFF_MAP_COLLISION_SAMPLE_STEP_M:-0.06}"
+DIFF_MAP_COLLISION_MAX_POINTS="${DIFF_MAP_COLLISION_MAX_POINTS:-10000}"
+DIFF_MAP_READY_TIMEOUT_S="${DIFF_MAP_READY_TIMEOUT_S:-15.0}"
 PLANNER_CMD_ADAPTER_INITIAL_ENABLED="${PLANNER_CMD_ADAPTER_INITIAL_ENABLED:-true}"
 PLANNER_CMD_REQUIRE_FRESH_RAW_AFTER_ENABLE="${PLANNER_CMD_REQUIRE_FRESH_RAW_AFTER_ENABLE:-true}"
 PLANNER_CMD_ODOM_TARGET_GUARD_ENABLE="${PLANNER_CMD_ODOM_TARGET_GUARD_ENABLE:-false}"
@@ -520,8 +531,8 @@ UE_LIVE_MIRROR_PORT="${UE_LIVE_MIRROR_PORT:-5005}"
 UE_LIVE_MIRROR_ODOM_TOPIC="${UE_LIVE_MIRROR_ODOM_TOPIC:-/uav1/sunray/gazebo_pose}"
 UE_LIVE_MIRROR_RATE_HZ="${UE_LIVE_MIRROR_RATE_HZ:-100}"
 if [[ "${FACTORY_WORLD_MODE}" == "clean" ]]; then
-  WORLD_FILE="${WORLD_FILE:-${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf}"
-  FACTORY_MODEL_PATH="${FACTORY_MODEL_PATH:-${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models}"
+  WORLD_FILE="${WORLD_FILE:-${PROJECT_ROOT}/Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf}"
+  FACTORY_MODEL_PATH="${FACTORY_MODEL_PATH:-${PROJECT_ROOT}/Config/gazebo/models}"
   SUNRAY_GAZEBO_LAUNCH_FILE="${SUNRAY_GAZEBO_LAUNCH_FILE:-${PROJECT_ROOT}/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch}"
 else
   WORLD_FILE="${WORLD_FILE:-${SUNRAY_WS}/simulation/sunray_simulator/worlds/planning_test.world}"
@@ -533,7 +544,10 @@ SUNRAY_UAV_INIT_X="${SUNRAY_UAV_INIT_X:-0.0}"
 SUNRAY_UAV_INIT_Y="${SUNRAY_UAV_INIT_Y:-0.0}"
 SUNRAY_UAV_INIT_Z="${SUNRAY_UAV_INIT_Z:-0.2}"
 SUNRAY_UAV_INIT_YAW="${SUNRAY_UAV_INIT_YAW:-0.0}"
-DIFF_GOAL4_COMMON_WORLD_FRAME="${DIFF_GOAL4_COMMON_WORLD_FRAME:-false}"
+# Diff Planner consumes the world-frame cloud and world-frame goals. Keep its
+# planner-side odometry in that same frame by default; the inverse bridge
+# still restores PX4/MAVROS-local commands for px4ctrl.
+DIFF_GOAL4_COMMON_WORLD_FRAME="${DIFF_GOAL4_COMMON_WORLD_FRAME:-true}"
 DIFF_GOAL4_PLANNER_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC:-/uav1/mosim/diff_goal4/planner_odom_world}"
 DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC="${DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC:-/uav1/mosim/diff_goal4/planner_position_cmd_world}"
 DIFF_GOAL4_PATH_ODOM_TOPIC=""
@@ -709,6 +723,9 @@ esac
 EGO_MAX_VEL="${EGO_MAX_VEL:-0.8}"
 EGO_MAX_ACC="${EGO_MAX_ACC:-0.8}"
 EGO_MAX_JERK="${EGO_MAX_JERK:-4.0}"
+EGO_MAX_RAY_LENGTH="${EGO_MAX_RAY_LENGTH:-4.5}"
+EGO_DEPTH_FILTER_MIN_DIST="${EGO_DEPTH_FILTER_MIN_DIST:-0.2}"
+EGO_DEPTH_FILTER_MAX_DIST="${EGO_DEPTH_FILTER_MAX_DIST:-5.0}"
 EGO_PLANNING_HORIZON="${EGO_PLANNING_HORIZON:-5.0}"
 EGO_GRID_RESOLUTION="${EGO_GRID_RESOLUTION:-0.12}"
 EGO_OBSTACLES_INFLATION="${EGO_OBSTACLES_INFLATION:-0.20}"
@@ -732,6 +749,8 @@ EGO_LOCAL_UPDATE_RANGE_Z="${EGO_LOCAL_UPDATE_RANGE_Z:-2.0}"
 RAW_LIDAR_TOPIC="${RAW_LIDAR_TOPIC:-}"
 RAW_LIDAR_TOPIC_CANDIDATES="${RAW_LIDAR_TOPIC_CANDIDATES:-/uav1/livox/lidar /livox/lidar /uav1/lidar /livox/lidar/points}"
 WORLD_CLOUD_TOPIC="${WORLD_CLOUD_TOPIC:-/uav1/livox_world}"
+DIFF_MAP_GUARD_CLOUD_TOPIC="${DIFF_MAP_GUARD_CLOUD_TOPIC:-${WORLD_CLOUD_TOPIC}}"
+DIFF_MAP_GUARD_OCCUPANCY_TOPIC="${DIFF_MAP_GUARD_OCCUPANCY_TOPIC:-/drone_0_ego_planner_node/grid_map/occupancy_inflate}"
 WORLD_CLOUD_REVIEW_TOPIC="${WORLD_CLOUD_REVIEW_TOPIC:-/mosim/goal4/livox_world_accumulated}"
 ENABLE_POINTCLOUD_REVIEW_ACCUMULATION="${ENABLE_POINTCLOUD_REVIEW_ACCUMULATION:-true}"
 OCCUPANCY_TOPIC="${OCCUPANCY_TOPIC:-/drone_0_ego_planner_node/grid_map/occupancy_inflate}"
@@ -748,7 +767,16 @@ OCCUPANCY_REVIEW_MAX_ACCUMULATED_POINTS="${OCCUPANCY_REVIEW_MAX_ACCUMULATED_POIN
 OCCUPANCY_REVIEW_PUBLISH_RATE_HZ="${OCCUPANCY_REVIEW_PUBLISH_RATE_HZ:-2.0}"
 OCCUPANCY_REVIEW_MAX_RUNTIME_S="${OCCUPANCY_REVIEW_MAX_RUNTIME_S:-0}"
 ENABLE_OCCUPANCY_REVIEW_ACCUMULATION="${ENABLE_OCCUPANCY_REVIEW_ACCUMULATION:-true}"
-CONTINUOUS_OCCUPANCY_REVIEW_SOURCE_TOPIC="${CONTINUOUS_OCCUPANCY_REVIEW_SOURCE_TOPIC:-${WORLD_CLOUD_REVIEW_TOPIC}}"
+CONTINUOUS_OCCUPANCY_REVIEW_SOURCE_TOPIC="${CONTINUOUS_OCCUPANCY_REVIEW_SOURCE_TOPIC:-}"
+if [[ -z "${CONTINUOUS_OCCUPANCY_REVIEW_SOURCE_TOPIC}" ]]; then
+  if [[ "${PLANNER_VARIANT}" == "diff_planner" ]]; then
+    # Diff's review surface must remain live while the quality-gated
+    # accumulated review is intentionally allowed to pause during motion.
+    CONTINUOUS_OCCUPANCY_REVIEW_SOURCE_TOPIC="${WORLD_CLOUD_TOPIC}"
+  else
+    CONTINUOUS_OCCUPANCY_REVIEW_SOURCE_TOPIC="${WORLD_CLOUD_REVIEW_TOPIC}"
+  fi
+fi
 CONTINUOUS_OCCUPANCY_REVIEW_TOPIC="${CONTINUOUS_OCCUPANCY_REVIEW_TOPIC:-/mosim/goal4/occupancy_object_review}"
 CONTINUOUS_OCCUPANCY_REVIEW_VOXEL_SIZE_M="${CONTINUOUS_OCCUPANCY_REVIEW_VOXEL_SIZE_M:-0.20}"
 CONTINUOUS_OCCUPANCY_REVIEW_MIN_Z="${CONTINUOUS_OCCUPANCY_REVIEW_MIN_Z:-0.20}"
@@ -761,11 +789,17 @@ CONTINUOUS_OCCUPANCY_REVIEW_MAX_ACCUMULATED_VOXELS="${CONTINUOUS_OCCUPANCY_REVIE
 CONTINUOUS_OCCUPANCY_REVIEW_MAX_DENSE_VOXELS="${CONTINUOUS_OCCUPANCY_REVIEW_MAX_DENSE_VOXELS:-12000000}"
 CONTINUOUS_OCCUPANCY_REVIEW_PUBLISH_RATE_HZ="${CONTINUOUS_OCCUPANCY_REVIEW_PUBLISH_RATE_HZ:-1.0}"
 CONTINUOUS_OCCUPANCY_REVIEW_MAX_RUNTIME_S="${CONTINUOUS_OCCUPANCY_REVIEW_MAX_RUNTIME_S:-0}"
-ENABLE_CONTINUOUS_OCCUPANCY_REVIEW="${ENABLE_CONTINUOUS_OCCUPANCY_REVIEW:-false}"
+DIFF_ENABLE_CONTINUOUS_OCCUPANCY_REVIEW="${DIFF_ENABLE_CONTINUOUS_OCCUPANCY_REVIEW:-true}"
+if [[ "${PLANNER_VARIANT}" == "diff_planner" ]]; then
+  ENABLE_CONTINUOUS_OCCUPANCY_REVIEW="${DIFF_ENABLE_CONTINUOUS_OCCUPANCY_REVIEW}"
+else
+  ENABLE_CONTINUOUS_OCCUPANCY_REVIEW="${ENABLE_CONTINUOUS_OCCUPANCY_REVIEW:-false}"
+fi
 POINTCLOUD_MIN_WORLD_Z_M_USER_SET="${POINTCLOUD_MIN_WORLD_Z_M+x}"
 POINTCLOUD_MAX_WORLD_Z_M_USER_SET="${POINTCLOUD_MAX_WORLD_Z_M+x}"
 POINTCLOUD_MAX_SENSOR_RANGE_M_USER_SET="${POINTCLOUD_MAX_SENSOR_RANGE_M+x}"
 POINTCLOUD_MAX_ABS_ODOM_XY_M_USER_SET="${POINTCLOUD_MAX_ABS_ODOM_XY_M+x}"
+POINTCLOUD_ODOM_TOPIC_USER_SET="${POINTCLOUD_ODOM_TOPIC+x}"
 POINTCLOUD_ODOM_TOPIC="${POINTCLOUD_ODOM_TOPIC:-/uav1/sunray/gazebo_pose}"
 POINTCLOUD_MOUNT_MODE="${POINTCLOUD_MOUNT_MODE:-sensor_to_body}"
 POINTCLOUD_ROTATION_MODE="${POINTCLOUD_ROTATION_MODE:-full}"
@@ -774,8 +808,8 @@ POINTCLOUD_MOUNT_RPY="${POINTCLOUD_MOUNT_RPY:-0 0 4.712389}"
 POINTCLOUD_MIN_SENSOR_RANGE_M="${POINTCLOUD_MIN_SENSOR_RANGE_M:-0.25}"
 POINTCLOUD_MAX_SENSOR_RANGE_M="${POINTCLOUD_MAX_SENSOR_RANGE_M:-8.0}"
 POINTCLOUD_SELF_FILTER_RADIUS_M="${POINTCLOUD_SELF_FILTER_RADIUS_M:-0.35}"
-POINTCLOUD_MIN_WORLD_Z_M="${POINTCLOUD_MIN_WORLD_Z_M:-0.50}"
-POINTCLOUD_MAX_WORLD_Z_M="${POINTCLOUD_MAX_WORLD_Z_M:-2.20}"
+POINTCLOUD_MIN_WORLD_Z_M="${POINTCLOUD_MIN_WORLD_Z_M:-0.20}"
+POINTCLOUD_MAX_WORLD_Z_M="${POINTCLOUD_MAX_WORLD_Z_M:-4.20}"
 POINTCLOUD_MAX_ODOM_CLOUD_DT_S="${POINTCLOUD_MAX_ODOM_CLOUD_DT_S:-0.20}"
 POINTCLOUD_ODOM_SYNC_MODE="${POINTCLOUD_ODOM_SYNC_MODE:-nearest_stamp}"
 POINTCLOUD_OUTPUT_STAMP_MODE="${POINTCLOUD_OUTPUT_STAMP_MODE:-input}"
@@ -795,7 +829,7 @@ if [[ "${FACTORY_L2_MODEL_PATH_ACTIVE}" == "true" ]]; then
     POINTCLOUD_MIN_WORLD_Z_M="0.20"
   fi
   if [[ -z "${POINTCLOUD_MAX_WORLD_Z_M_USER_SET}" ]]; then
-    POINTCLOUD_MAX_WORLD_Z_M="4.00"
+    POINTCLOUD_MAX_WORLD_Z_M="4.20"
   fi
   if [[ -z "${POINTCLOUD_MAX_SENSOR_RANGE_M_USER_SET}" ]]; then
     POINTCLOUD_MAX_SENSOR_RANGE_M="35.0"
@@ -969,6 +1003,17 @@ PX4CTRL_ODOM_TOPIC="/uav1/mavros/local_position/odom"
 PX4CTRL_PATH_FRAME="${PX4CTRL_PATH_FRAME:-world}"
 PLANNER_RAW_POSITION_CMD_TOPIC=""
 PLANNER_ENABLE_CMD_SAFETY_ADAPTER="false"
+PLANNER_CMD_MAP_GUARD_ENABLED="false"
+PLANNER_CMD_MAP_GUARD_CLOUD_TOPIC=""
+PLANNER_CMD_MAP_GUARD_OCCUPANCY_TOPIC=""
+PLANNER_CMD_MAP_GUARD_TIMEOUT_S="1.0"
+PLANNER_CMD_MAP_GUARD_MIN_CLOUD_POINTS="1"
+PLANNER_CMD_MAP_GUARD_MIN_OCCUPANCY_POINTS="1"
+PLANNER_CMD_MAP_COLLISION_GUARD_ENABLED="false"
+PLANNER_CMD_MAP_COLLISION_RADIUS_M="0.30"
+PLANNER_CMD_MAP_COLLISION_Z_MARGIN_M="0.25"
+PLANNER_CMD_MAP_COLLISION_SAMPLE_STEP_M="0.06"
+PLANNER_CMD_MAP_COLLISION_MAX_POINTS="10000"
 REQUESTED_PLANNER_MISSION_MODE="${PLANNER_MISSION_MODE:-}"
 PLANNER_MISSION_MODE="fixed_goal"
 PLANNER_BSPLINE_MSG_PACKAGE="traj_utils"
@@ -1051,7 +1096,18 @@ case "${PLANNER_VARIANT}" in
     PLANNER_CMD_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M="${DIFF_CMD_MAX_XY_TARGET_DISTANCE_FROM_ODOM_M}"
     PLANNER_CMD_ODOM_DISTANCE_POLICY="${DIFF_CMD_ODOM_DISTANCE_POLICY}"
     PLANNER_CMD_ODOM_GUARD_ZERO_DYNAMICS="${DIFF_CMD_ODOM_GUARD_ZERO_DYNAMICS}"
-    PLANNER_CMD_SEED_FROM_ODOM_ON_ENABLE="${DIFF_CMD_SEED_FROM_ODOM_ON_ENABLE}"
+    PLANNER_CMD_SEED_FROM_ODOM_ON_ENABLE="${DIFF_MAP_GUARD_SEED_FROM_ODOM}"
+    PLANNER_CMD_MAP_GUARD_ENABLED="${DIFF_MAP_GUARD_ENABLE}"
+    PLANNER_CMD_MAP_GUARD_CLOUD_TOPIC="${DIFF_MAP_GUARD_CLOUD_TOPIC}"
+    PLANNER_CMD_MAP_GUARD_OCCUPANCY_TOPIC="${DIFF_MAP_GUARD_OCCUPANCY_TOPIC}"
+    PLANNER_CMD_MAP_GUARD_TIMEOUT_S="${DIFF_MAP_GUARD_TIMEOUT_S}"
+    PLANNER_CMD_MAP_GUARD_MIN_CLOUD_POINTS="${DIFF_MAP_GUARD_MIN_CLOUD_POINTS}"
+    PLANNER_CMD_MAP_GUARD_MIN_OCCUPANCY_POINTS="${DIFF_MAP_GUARD_MIN_OCCUPANCY_POINTS}"
+    PLANNER_CMD_MAP_COLLISION_GUARD_ENABLED="${DIFF_MAP_COLLISION_GUARD_ENABLE}"
+    PLANNER_CMD_MAP_COLLISION_RADIUS_M="${DIFF_MAP_COLLISION_RADIUS_M}"
+    PLANNER_CMD_MAP_COLLISION_Z_MARGIN_M="${DIFF_MAP_COLLISION_Z_MARGIN_M}"
+    PLANNER_CMD_MAP_COLLISION_SAMPLE_STEP_M="${DIFF_MAP_COLLISION_SAMPLE_STEP_M}"
+    PLANNER_CMD_MAP_COLLISION_MAX_POINTS="${DIFF_MAP_COLLISION_MAX_POINTS}"
     PLANNER_NAME="Diff-Planner multipoint planner/traj_server minimal overlay"
     ;;
   fuel|fuel_d3|fuel-d3)
@@ -1292,6 +1348,10 @@ if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME
   PLANNER_EFFECTIVE_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC}"
   PLANNER_POSITION_CMD_TOPIC="${DIFF_GOAL4_PLANNER_POSITION_CMD_WORLD_TOPIC}"
   DIFF_GOAL4_PATH_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC}"
+  if [[ -z "${POINTCLOUD_ODOM_TOPIC_USER_SET}" ]]; then
+    # The planner cloud and planner state must use the same odometry source.
+    POINTCLOUD_ODOM_TOPIC="${DIFF_GOAL4_PLANNER_ODOM_TOPIC}"
+  fi
 fi
 
 mkdir -p "${RESULT_DIR}"
@@ -2497,6 +2557,30 @@ roslaunch "${PX4CTRL_LAUNCH}" > "${RESULT_DIR}/px4ctrl.log" 2>&1 &
 PIDS+=("$!")
 sleep 5
 
+if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME}" == "true" ]]; then
+  # Start the world-frame planner odom before the cloud transformer so both
+  # use the same state source.
+  python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
+    _message_type:=odom \
+    _direction:=local_to_world \
+    _input_topic:=/uav1/mavros/local_position/odom \
+    _output_topic:="${DIFF_GOAL4_PLANNER_ODOM_TOPIC}" \
+    _offset_x:="${SUNRAY_UAV_INIT_X}" \
+    _offset_y:="${SUNRAY_UAV_INIT_Y}" \
+    _offset_z:=0.0 \
+    _output_frame_id:=world \
+    _diagnostics_path:="${RESULT_DIR}/diff_goal4_planner_odom_world_bridge.json" \
+    > "${RESULT_DIR}/diff_goal4_planner_odom_world_bridge.log" 2>&1 &
+  PIDS+=("$!")
+  if ! python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_topic_sample.py" \
+    --topic "${DIFF_GOAL4_PLANNER_ODOM_TOPIC}" \
+    --timeout-s "${ODOM_BRIDGE_READY_TIMEOUT_S}" \
+    --output "${RESULT_DIR}/diff_goal4_planner_odom_world_first.txt"; then
+    echo "Diff Goal4 planner world odometry bridge did not produce a sample" >&2
+    exit 64
+  fi
+fi
+
 python3 "${PROJECT_ROOT}/Scripts/sunray/goal4_pointcloud_to_world_node.py" \
   _input_point_topic:="${RAW_LIDAR_TOPIC}" \
   _output_point_topic:="${WORLD_CLOUD_TOPIC}" \
@@ -2525,30 +2609,6 @@ python3 "${PROJECT_ROOT}/Scripts/sunray/goal4_pointcloud_to_world_node.py" \
   _history_path:="${RESULT_DIR}/pointcloud_to_world_history.jsonl" \
   > "${RESULT_DIR}/pointcloud_to_world.log" 2>&1 &
 PIDS+=("$!")
-
-if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME}" == "true" ]]; then
-  # This bridge adds the Factory L2 spawn offset, so its numeric pose is in
-  # the same world frame as QGC goals and the planner cloud.
-  python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
-    _message_type:=odom \
-    _direction:=local_to_world \
-    _input_topic:=/uav1/mavros/local_position/odom \
-    _output_topic:="${DIFF_GOAL4_PLANNER_ODOM_TOPIC}" \
-    _offset_x:="${SUNRAY_UAV_INIT_X}" \
-    _offset_y:="${SUNRAY_UAV_INIT_Y}" \
-    _offset_z:=0.0 \
-    _output_frame_id:=world \
-    _diagnostics_path:="${RESULT_DIR}/diff_goal4_planner_odom_world_bridge.json" \
-    > "${RESULT_DIR}/diff_goal4_planner_odom_world_bridge.log" 2>&1 &
-  PIDS+=("$!")
-  if ! python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_topic_sample.py" \
-    --topic "${DIFF_GOAL4_PLANNER_ODOM_TOPIC}" \
-    --timeout-s "${ODOM_BRIDGE_READY_TIMEOUT_S}" \
-    --output "${RESULT_DIR}/diff_goal4_planner_odom_world_first.txt"; then
-    echo "Diff Goal4 planner world odometry bridge did not produce a sample" >&2
-    exit 64
-  fi
-fi
 
 if [[ "${PLANNER_VARIANT}" == "fuel" && "${FUEL_SENSOR_POSE_SOURCE}" == "fastlio" ]]; then
   start_fastlio_stack
@@ -2645,6 +2705,9 @@ if [[ "${PLANNER_VARIANT}" == "diff_planner" ]]; then
   PLANNER_EXTRA_LAUNCH_ARGS+=(local_update_range_x:="${EGO_LOCAL_UPDATE_RANGE_X}")
   PLANNER_EXTRA_LAUNCH_ARGS+=(local_update_range_y:="${EGO_LOCAL_UPDATE_RANGE_Y}")
   PLANNER_EXTRA_LAUNCH_ARGS+=(local_update_range_z:="${EGO_LOCAL_UPDATE_RANGE_Z}")
+  PLANNER_EXTRA_LAUNCH_ARGS+=(max_ray_length:="${EGO_MAX_RAY_LENGTH}")
+  PLANNER_EXTRA_LAUNCH_ARGS+=(depth_filter_mindist:="${EGO_DEPTH_FILTER_MIN_DIST}")
+  PLANNER_EXTRA_LAUNCH_ARGS+=(depth_filter_maxdist:="${EGO_DEPTH_FILTER_MAX_DIST}")
   PLANNER_EXTRA_LAUNCH_ARGS+=(multipoint_yaml:="${DIFF_MULTIPOINT_YAML}")
   PLANNER_EXTRA_LAUNCH_ARGS+=(multipoint_next_distance:="${DIFF_MULTIPOINT_NEXT_DISTANCE}")
   PLANNER_EXTRA_LAUNCH_ARGS+=(multipoint_flight_type:="${DIFF_MULTIPOINT_FLIGHT_TYPE}")
@@ -3185,6 +3248,26 @@ if [[ "${PLANNER_LAUNCH_STATUS}" != "started" ]]; then
   exit 63
 fi
 
+if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_MAP_GUARD_ENABLE}" == "true" ]]; then
+  # Do not release a goal while the planner has an empty local map. The
+  # command adapter remains the runtime collision hold, while this gate makes
+  # startup failures explicit before the mission node can publish a goal.
+  if ! python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_nonempty_pointcloud2.py" \
+    --topic "${DIFF_MAP_GUARD_CLOUD_TOPIC}" \
+    --timeout-s "${DIFF_MAP_READY_TIMEOUT_S}" \
+    --output "${RESULT_DIR}/planner_cloud_ready.json"; then
+    echo "Planner input cloud is empty or stale; refusing to release the goal" >&2
+    exit 65
+  fi
+  if ! python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_nonempty_pointcloud2.py" \
+    --topic "${DIFF_MAP_GUARD_OCCUPANCY_TOPIC}" \
+    --timeout-s "${DIFF_MAP_READY_TIMEOUT_S}" \
+    --output "${RESULT_DIR}/planner_occupancy_ready.json"; then
+    echo "Planner inflated occupancy map is empty or stale; refusing to release the goal" >&2
+    exit 66
+  fi
+fi
+
 if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME}" == "true" ]]; then
   # The inverse bridge restores PX4/MAVROS-local coordinates for px4ctrl.
   python3 "${PROJECT_ROOT}/Scripts/ros/ros1_coordinate_offset_bridge.py" \
@@ -3249,6 +3332,9 @@ if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_INTERACTIVE_CLICK_GOAL}"
     _min_y:="${DIFF_CLICK_TARGET_MIN_Y}" \
     _max_y:="${DIFF_CLICK_TARGET_MAX_Y}" \
     _max_goal_distance_xy:="${DIFF_CLICK_MAX_GOAL_DISTANCE_XY}" \
+    _target_reach_xy_radius_m:="${DIFF_INTERACTIVE_TARGET_REACHED_XY_M}" \
+    _target_reach_z_tolerance_m:="${DIFF_INTERACTIVE_TARGET_REACHED_Z_M}" \
+    _target_reach_required_stable_s:="${DIFF_INTERACTIVE_TARGET_HOLD_S}" \
     _static_obstacle_guard_enabled:="${DIFF_CLICK_STATIC_OBSTACLE_GUARD}" \
     _static_obstacle_world_file:="${WORLD_FILE}" \
     _static_obstacle_inflation_m:="${EGO_OBSTACLES_INFLATION}" \
@@ -3326,6 +3412,17 @@ if [[ "${PLANNER_ENABLE_CMD_SAFETY_ADAPTER}" == "true" ]]; then
     _odom_distance_policy:="${PLANNER_CMD_ODOM_DISTANCE_POLICY}" \
     _odom_guard_zero_dynamics:="${PLANNER_CMD_ODOM_GUARD_ZERO_DYNAMICS}" \
     _seed_from_odom_on_enable:="${PLANNER_CMD_SEED_FROM_ODOM_ON_ENABLE}" \
+    _map_guard_enabled:="${PLANNER_CMD_MAP_GUARD_ENABLED}" \
+    _map_guard_cloud_topic:="${PLANNER_CMD_MAP_GUARD_CLOUD_TOPIC}" \
+    _map_guard_occupancy_topic:="${PLANNER_CMD_MAP_GUARD_OCCUPANCY_TOPIC}" \
+    _map_guard_timeout_s:="${PLANNER_CMD_MAP_GUARD_TIMEOUT_S}" \
+    _map_guard_min_cloud_points:="${PLANNER_CMD_MAP_GUARD_MIN_CLOUD_POINTS}" \
+    _map_guard_min_occupancy_points:="${PLANNER_CMD_MAP_GUARD_MIN_OCCUPANCY_POINTS}" \
+    _map_collision_guard_enabled:="${PLANNER_CMD_MAP_COLLISION_GUARD_ENABLED}" \
+    _map_collision_radius_m:="${PLANNER_CMD_MAP_COLLISION_RADIUS_M}" \
+    _map_collision_z_margin_m:="${PLANNER_CMD_MAP_COLLISION_Z_MARGIN_M}" \
+    _map_collision_sample_step_m:="${PLANNER_CMD_MAP_COLLISION_SAMPLE_STEP_M}" \
+    _map_collision_max_points:="${PLANNER_CMD_MAP_COLLISION_MAX_POINTS}" \
     _diagnostics_path:="${RESULT_DIR}/position_cmd_safety_adapter.json" \
     > "${RESULT_DIR}/position_cmd_safety_adapter.log" 2>&1 &
   PIDS+=("$!")
@@ -3382,6 +3479,16 @@ if [[ "${OPEN_RVIZ}" == "true" ]]; then
     rviz -d "${GRID_RVIZ_CONFIG}" > "${RESULT_DIR}/rviz_ego_grid_trajectory.log" 2>&1 &
     PIDS+=("$!")
   fi
+fi
+
+PATH_COMMAND_OFFSET_X="0.0"
+PATH_COMMAND_OFFSET_Y="0.0"
+PATH_COMMAND_OFFSET_Z="0.0"
+if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME}" == "true" ]]; then
+  # The command sent to px4ctrl is local after the inverse bridge, but the
+  # displayed command path is published in the common world frame.
+  PATH_COMMAND_OFFSET_X="${SUNRAY_UAV_INIT_X}"
+  PATH_COMMAND_OFFSET_Y="${SUNRAY_UAV_INIT_Y}"
 fi
 
 MISSION_ADAPTER_ARGS=()
@@ -3522,6 +3629,9 @@ MISSION_CMD=(
   --result-dir "${RESULT_DIR}" \
   --target-x "${TARGET_X}" --target-y "${TARGET_Y}" --target-z "${TARGET_Z}" \
   --path-odom-topic "${DIFF_GOAL4_PATH_ODOM_TOPIC}" \
+  --path-command-offset-x "${PATH_COMMAND_OFFSET_X}" \
+  --path-command-offset-y "${PATH_COMMAND_OFFSET_Y}" \
+  --path-command-offset-z "${PATH_COMMAND_OFFSET_Z}" \
   --raw-lidar-topic "${RAW_LIDAR_TOPIC}" \
   --world-cloud-topic "${WORLD_CLOUD_TOPIC}" \
   --occupancy-topic "${OCCUPANCY_TOPIC}" \
@@ -4103,6 +4213,17 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "zero_all_dynamics": "${PLANNER_CMD_ZERO_ALL_DYNAMICS}",
     "raw_planner_max_position_jump_m": ${PLANNER_RAW_CMD_MAX_POSITION_JUMP_M},
     "raw_planner_max_position_jump_speed_mps": ${PLANNER_RAW_CMD_MAX_POSITION_JUMP_SPEED_MPS},
+    "map_guard_enabled": "${PLANNER_CMD_MAP_GUARD_ENABLED}",
+    "map_guard_cloud_topic": "${PLANNER_CMD_MAP_GUARD_CLOUD_TOPIC}",
+    "map_guard_occupancy_topic": "${PLANNER_CMD_MAP_GUARD_OCCUPANCY_TOPIC}",
+    "map_guard_timeout_s": ${PLANNER_CMD_MAP_GUARD_TIMEOUT_S},
+    "map_guard_min_cloud_points": ${PLANNER_CMD_MAP_GUARD_MIN_CLOUD_POINTS},
+    "map_guard_min_occupancy_points": ${PLANNER_CMD_MAP_GUARD_MIN_OCCUPANCY_POINTS},
+    "map_collision_guard_enabled": "${PLANNER_CMD_MAP_COLLISION_GUARD_ENABLED}",
+    "map_collision_radius_m": ${PLANNER_CMD_MAP_COLLISION_RADIUS_M},
+    "map_collision_z_margin_m": ${PLANNER_CMD_MAP_COLLISION_Z_MARGIN_M},
+    "map_collision_sample_step_m": ${PLANNER_CMD_MAP_COLLISION_SAMPLE_STEP_M},
+    "map_collision_max_points": ${PLANNER_CMD_MAP_COLLISION_MAX_POINTS},
     "enable_topic": "${DIFF_CMD_ADAPTER_ENABLE_TOPIC}",
     "disable_before_land": "${DIFF_DISABLE_ADAPTER_BEFORE_LAND}",
     "post_disable_wait_s": ${DIFF_POST_ADAPTER_DISABLE_WAIT_S}
@@ -4113,7 +4234,9 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "max_path_points": ${GOAL4_MAX_PATH_POINTS},
     "path_publish_hz": ${GOAL4_PATH_PUBLISH_HZ},
     "review_hold_path_publish_hz": ${GOAL4_REVIEW_HOLD_PATH_PUBLISH_HZ},
-    "cmd_path_segment_jump_m": ${GOAL4_CMD_PATH_SEGMENT_JUMP_M}
+    "cmd_path_segment_jump_m": ${GOAL4_CMD_PATH_SEGMENT_JUMP_M},
+    "command_path_frame": "${PX4CTRL_PATH_FRAME}",
+    "command_path_offset_xyz": [${PATH_COMMAND_OFFSET_X}, ${PATH_COMMAND_OFFSET_Y}, ${PATH_COMMAND_OFFSET_Z}]
   },
   "execute_safety_gate": {
     "min_truth_z_m": ${DIFF_EXECUTE_MIN_TRUTH_Z_M},
@@ -4129,6 +4252,7 @@ cat > "${RESULT_DIR}/RUN_MANIFEST.json" <<EOF
     "mount_rpy": "${POINTCLOUD_MOUNT_RPY}",
     "min_sensor_range_m": ${POINTCLOUD_MIN_SENSOR_RANGE_M},
     "max_sensor_range_m": ${POINTCLOUD_MAX_SENSOR_RANGE_M},
+    "sensor_range_contract_m": [${POINTCLOUD_MIN_SENSOR_RANGE_M}, ${POINTCLOUD_MAX_SENSOR_RANGE_M}],
     "self_filter_radius_m": ${POINTCLOUD_SELF_FILTER_RADIUS_M},
     "min_world_z_m": ${POINTCLOUD_MIN_WORLD_Z_M},
     "max_world_z_m": ${POINTCLOUD_MAX_WORLD_Z_M},
@@ -4353,19 +4477,34 @@ fi
 
 echo "${RESULT_DIR}"
 if [[ "${KEEP_ALIVE:-false}" == "true" ]]; then
-  python3 "${PROJECT_ROOT}/Scripts/sunray/goal4_path_hold_from_csv.py" \
-    --result-dir "${RESULT_DIR}" \
-    --frame-id "${PX4CTRL_PATH_FRAME}" \
-    --target-x "${TARGET_X}" \
-    --target-y "${TARGET_Y}" \
-    --target-z "${TARGET_Z}" \
-    --publish-hz "${GOAL4_REVIEW_HOLD_PATH_PUBLISH_HZ}" \
-    --max-points "${GOAL4_MAX_PATH_POINTS}" \
-    --body-axis-length-m "${GOAL4_BODY_AXIS_LENGTH_M}" \
-    --body-axis-shaft-m "${GOAL4_BODY_AXIS_SHAFT_M}" \
-    --body-axis-head-diameter-m "${GOAL4_BODY_AXIS_HEAD_DIAMETER_M}" \
-    --body-axis-head-length-m "${GOAL4_BODY_AXIS_HEAD_LENGTH_M}" \
-    --body-axis-lifetime-s "${GOAL4_BODY_AXIS_LIFETIME_S}" \
+  PATH_HOLD_ARGS=(
+    "${PROJECT_ROOT}/Scripts/sunray/goal4_path_hold_from_csv.py"
+    --result-dir "${RESULT_DIR}"
+    --frame-id "${PX4CTRL_PATH_FRAME}"
+    --target-x "${TARGET_X}"
+    --target-y "${TARGET_Y}"
+    --target-z "${TARGET_Z}"
+    --publish-hz "${GOAL4_REVIEW_HOLD_PATH_PUBLISH_HZ}"
+    --max-points "${GOAL4_MAX_PATH_POINTS}"
+    --body-axis-length-m "${GOAL4_BODY_AXIS_LENGTH_M}"
+    --body-axis-shaft-m "${GOAL4_BODY_AXIS_SHAFT_M}"
+    --body-axis-head-diameter-m "${GOAL4_BODY_AXIS_HEAD_DIAMETER_M}"
+    --body-axis-head-length-m "${GOAL4_BODY_AXIS_HEAD_LENGTH_M}"
+    --body-axis-lifetime-s "${GOAL4_BODY_AXIS_LIFETIME_S}"
+  )
+  if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_GOAL4_COMMON_WORLD_FRAME}" == "true" ]]; then
+    PATH_HOLD_ARGS+=(
+      --command-offset-x "${SUNRAY_UAV_INIT_X}"
+      --command-offset-y "${SUNRAY_UAV_INIT_Y}"
+      --command-offset-z "0.0"
+    )
+  fi
+  if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_INTERACTIVE_CLICK_GOAL}" == "true" ]]; then
+    # Interactive target_path is owned by the clicked-goal adapter. Do not
+    # overwrite its arrival clear with the fixed-goal review fallback.
+    PATH_HOLD_ARGS+=(--disable-static-target)
+  fi
+  python3 "${PATH_HOLD_ARGS[@]}" \
     > "${RESULT_DIR}/goal4_path_hold_from_csv.log" 2>&1 &
   PIDS+=("$!")
   echo "KEEP_ALIVE=true; holding ROS/Gazebo/RViz processes for Goal4 visual review after final exit ${FINAL_EXIT_CODE}" \

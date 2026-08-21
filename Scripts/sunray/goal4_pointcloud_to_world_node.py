@@ -43,8 +43,8 @@ class PointCloudToWorld:
         self.peer_filter_z_min_m = float(rospy.get_param("~peer_filter_z_min_m", -0.30))
         self.peer_filter_z_max_m = float(rospy.get_param("~peer_filter_z_max_m", 0.30))
         self.peer_odom_max_age_s = float(rospy.get_param("~peer_odom_max_age_s", 0.50))
-        self.min_world_z_m = float(rospy.get_param("~min_world_z_m", 0.50))
-        self.max_world_z_m = float(rospy.get_param("~max_world_z_m", 2.20))
+        self.min_world_z_m = float(rospy.get_param("~min_world_z_m", 0.20))
+        self.max_world_z_m = float(rospy.get_param("~max_world_z_m", 4.20))
         self.min_publish_points = int(rospy.get_param("~min_publish_points", 10))
         self.max_odom_cloud_dt_s = float(rospy.get_param("~max_odom_cloud_dt_s", 0.20))
         self.odom_sync_mode = str(rospy.get_param("~odom_sync_mode", "nearest_stamp")).strip().lower()
@@ -133,6 +133,10 @@ class PointCloudToWorld:
             "ros_time": rospy.Time.now().to_sec(),
             "received_clouds": self.received,
             "published_clouds": self.published,
+            "max_points": self.max_points,
+            "stride": self.stride,
+            "min_sensor_range_m": self.min_sensor_range_m,
+            "max_sensor_range_m": self.max_sensor_range_m,
             "input_points": 0,
             "stride_skipped": 0,
             "invalid": 0,

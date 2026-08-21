@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import sys
+import time
 import types
 from pathlib import Path
 
@@ -117,3 +118,84 @@ def test_second_manual_goal_is_forwarded_when_completion_reopens_mission_ready(m
     assert adapter.queued_goal is None
     assert adapter.queue_release_count == 1
     assert forwarded == [(5.0, -3.0, 1.0, "nav_goal", False)]
+
+
+def test_target_path_is_cleared_after_a_stable_arrival(monkeypatch) -> None:
+    module, _ = load_adapter_module(monkeypatch)
+
+    class Stamp:
+        def __init__(self, value: float) -> None:
+            self.value = value
+
+        def to_sec(self) -> float:
+            return self.value
+
+    class HeaderValue:
+        def __init__(self, stamp=None, frame_id="") -> None:
+            self.stamp = stamp
+            self.frame_id = frame_id
+
+    class PathValue:
+        def __init__(self, header=None) -> None:
+            self.header = header
+            self.poses = []
+
+    class PoseStampedValue:
+        def __init__(self) -> None:
+            self.header = None
+            self.pose = types.SimpleNamespace(
+                position=types.SimpleNamespace(x=0.0, y=0.0, z=0.0),
+                orientation=types.SimpleNamespace(x=0.0, y=0.0, z=0.0, w=0.0),
+            )
+
+    module.Header = HeaderValue
+    module.RosPath = PathValue
+    module.PoseStamped = PoseStampedValue
+    module.rospy.Time = types.SimpleNamespace(now=lambda: Stamp(time.time()))
+    module.rospy.loginfo = lambda *args, **kwargs: None
+
+    position = types.SimpleNamespace(x=4.02, y=-2.98, z=1.01)
+    pose = types.SimpleNamespace(
+        position=position,
+        orientation=types.SimpleNamespace(x=0.0, y=0.0, z=0.0, w=1.0),
+    )
+    adapter = module.ClickedGoalAdapter.__new__(module.ClickedGoalAdapter)
+    adapter.target_path_active = True
+    adapter.last_path_goal = (4.0, -3.0, 1.0)
+    adapter.last_path_odom = None
+    adapter.last_odom = types.SimpleNamespace(pose=types.SimpleNamespace(pose=pose))
+    adapter.target_reach_xy_radius_m = 0.35
+    adapter.target_reach_z_tolerance_m = 0.12
+    adapter.target_reach_required_stable_s = 0.5
+    adapter.target_reached_since_wall = time.time() - 1.0
+    published = []
+    adapter.path_pub = types.SimpleNamespace(publish=published.append)
+    adapter.frame_id = "world"
+
+    adapter.refresh_target_path()
+    assert len(published) == 1
+    assert len(published[0].poses) == 2
+
+    adapter.try_clear_target_path_on_arrival()
+
+    assert adapter.target_path_active is False
+    assert adapter.last_path_goal is None
+    assert len(published) == 2
+    assert published[1].poses == []
+
+
+def test_goal4_rviz_configs_enable_the_mission_target_segment() -> None:
+    for name in (
+        "sunray_ros1_goal4_diff_pointcloud_review.rviz",
+        "sunray_ros1_goal4_diff_grid3d_review.rviz",
+    ):
+        text = (ROOT / "Config" / "rviz" / name).read_text(encoding="utf-8")
+        segment = text.split("Name: Mission Target Segment", 1)[0].split("- Class: rviz/Path")[-1]
+        assert "Enabled: true" in segment
+        assert "Topic: /mosim/goal4/target_path" in text
+
+    grid_review = (ROOT / "Config" / "rviz" / "sunray_ros1_goal4_diff_grid3d_review.rviz").read_text(
+        encoding="utf-8"
+    )
+    assert "        Y: 0" in grid_review
+    assert "        Y: 120" not in grid_review

@@ -21,13 +21,11 @@ from src.orchestration.run_manifest_contract import validate_run_manifest_v2
 
 
 FACTORY_WORLD_RELATIVE = Path(
-    "Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/"
-    "factoryenvironmentcollect_l2_static_review_clean.sdf"
+    "Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
 )
 FACTORY_LAUNCH_RELATIVE = Path("Scripts/sunray/factory_l2_sunray_px4_gazebo.launch")
 FACTORY_FRAME_CONTRACT_RELATIVE = Path(
-    "Results/unreal_scene_mapping/factory_l2_calibration_rig_review_20260702_192443/"
-    "FACTORY_L2_CALIBRATION_FRAME_CONTRACT.json"
+    "Config/gazebo/scene_profiles/factory_l2_static_sunray_scene_clean_candidate.json"
 )
 FACTORY_MAP_ID = "factory_l2"
 FACTORY_WORLD_FRAME = "mworks_world"

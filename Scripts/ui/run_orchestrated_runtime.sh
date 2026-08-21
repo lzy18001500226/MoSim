@@ -465,7 +465,7 @@ PY
     FTC_PLUGIN_WS="${plugin_ws}" bash "${PROJECT_ROOT}/Scripts/sunray/build_p7_ftc_actuator_plugin.sh" \
       > "${ORCHESTRATOR_RUN_DIR}/ftc_plugin_build.log" 2>&1
   fi
-  local factory_root="${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean"
+  local factory_root="${PROJECT_ROOT}/Config/gazebo"
   export RUN_ID="${RUN_ID}"
   export RESULT_DIR="${ORCHESTRATOR_RUN_DIR}/runtime"
   export PLANNER_VARIANT="swarm_formation"

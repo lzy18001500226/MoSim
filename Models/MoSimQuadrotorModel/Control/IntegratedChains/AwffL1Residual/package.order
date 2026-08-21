@@ -1,1 +1,5 @@
-AwffL1ResidualCore
+AwffL1ResidualGraphicalController
+L1ResidualEquationController
+AwffL1ResidualOuterLoopGraphical
+AwffL1ResidualAttitudeGraphical
+AwffL1ResidualMotorMixerGraphical

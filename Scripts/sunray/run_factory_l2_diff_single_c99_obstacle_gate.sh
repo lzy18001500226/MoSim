@@ -41,8 +41,8 @@ FACTORY_TAKEOFF_HEIGHT_M="${FACTORY_TAKEOFF_HEIGHT_M:-0.75}"
 # required three-second simulation-time stability dwell can complete.
 FACTORY_TAKEOFF_TIMEOUT_S="${FACTORY_TAKEOFF_TIMEOUT_S:-75}"
 
-FACTORY_WORLD_FILE="${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
-FACTORY_MODEL_PATH="${PROJECT_ROOT}/Results/unreal_scene_mapping/factory_l2_static_import/gazebo_review_clean/models"
+FACTORY_WORLD_FILE="${PROJECT_ROOT}/Config/gazebo/worlds/factoryenvironmentcollect_l2_static_review_clean.sdf"
+FACTORY_MODEL_PATH="${PROJECT_ROOT}/Config/gazebo/models"
 FACTORY_GAZEBO_LAUNCH="${PROJECT_ROOT}/Scripts/sunray/factory_l2_sunray_px4_gazebo.launch"
 
 mkdir -p "${RESULT_DIR}"

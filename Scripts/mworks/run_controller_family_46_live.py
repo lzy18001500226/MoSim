@@ -143,6 +143,8 @@ def run_one(
     runner_file = ROOT / target["runner_file"]
     item_dir = output_dir / scheme_id
     item_dir.mkdir(parents=True, exist_ok=True)
+    native_result_dir = item_dir / "native_result"
+    native_result_dir.mkdir(parents=True, exist_ok=True)
     record: dict[str, Any] = {
         "scheme_id": scheme_id,
         "runner_class": runner_class,
@@ -151,6 +153,7 @@ def run_one(
         "requested_stop_time_s": STOP_TIME_S,
         "scenario": "scenario_mode=0",
         "source": "MWORKS_MCP",
+        "native_result_dir": project_relative(native_result_dir),
         "status": "failed",
         "started_at": now_iso(),
     }
@@ -187,7 +190,7 @@ def run_one(
             client,
             model_name=runner_class,
             target_time=[0.0, STOP_TIME_S],
-            native_result_dir=None,
+            native_result_dir=native_result_dir,
             verify_result_var="position_error_norm",
             verify_time_point="end",
             timeout_s=360,
@@ -196,8 +199,15 @@ def run_one(
         record["simulate_model_ok"] = bool(simulation_result.get("data"))
         if not record["simulate_model_ok"]:
             record["status"] = "simulate_model_failed"
+            verification = simulation_result.get("result_verification") or {}
+            probe = verification.get("result_probe") or {}
+            value_at = verification.get("get_var_value_at") or {}
             record["result_read_after_simulation_failure"] = bool(
-                (simulation_result.get("result_verification") or {}).get("result_probe", {}).get("ok")
+                probe.get("ok")
+                and probe.get("data")
+                and value_at.get("ok")
+                and isinstance(value_at.get("data"), (int, float))
+                and math.isfinite(float(value_at["data"]))
             )
             return record
 

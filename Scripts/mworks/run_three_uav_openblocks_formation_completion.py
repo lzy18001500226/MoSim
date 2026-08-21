@@ -23,7 +23,7 @@ import mworks.sysplorer as ModelingPy
 
 ROOT = Path(__file__).resolve().parents[2]
 ROOT_CLASS = "MoSimQuadrotorModel"
-MODEL_NAME = "MoSimQuadrotorModel.Guidance.Planning.ThreeUavOpenBlocksReconfigurableFormationLinearMPC"
+MODEL_NAME = "MoSimQuadrotorModel.Experiment.OpenBlocks.LinearMpc.Formation.ThreeUavOpenBlocksLinearMPCRunner"
 PACKAGE_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
 PLANNING_METRICS = (
     ROOT

@@ -193,6 +193,8 @@ def test_sidecar_exports_only_real_reference_and_future_path_sources() -> None:
     sidecar = Path("Scripts/ui/runtime_sidecar.py").read_text(encoding="utf-8")
     assert '"task_paths": self.task_paths' in sidecar
     assert "# Empty Path heartbeats must not erase a previously latched real plan." in sidecar
+    assert 'path.get("status") == "cleared"' in sidecar
+    assert '"--clear-empty-expected-path"' in sidecar
     assert "if len(points) < 2:" in sidecar
     assert 'semantics = "formation_center_reference"' in sidecar
     assert 'semantics = "exploration_target_sequence"' in sidecar
