@@ -510,6 +510,7 @@ DIFF_EXECUTE_MAX_ROLL_PITCH_DEG="${DIFF_EXECUTE_MAX_ROLL_PITCH_DEG:-45.0}"
 DIFF_EXECUTE_MAX_TRUTH_ODOM_Z_ERROR_M="${DIFF_EXECUTE_MAX_TRUTH_ODOM_Z_ERROR_M:-0.0}"
 LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS:-${PROJECT_ROOT}/Results/sunray_ros1/workspaces/sunray_livox_plugin_ws}"
 SUNRAY_STRIP_PX4_MODEL_PATH="${SUNRAY_STRIP_PX4_MODEL_PATH:-false}"
+SUNRAY_MID360_RAY_BACKEND="${SUNRAY_MID360_RAY_BACKEND:-ray}"
 SUNRAY_MID360_PLUGIN_DOWNSAMPLE="${SUNRAY_MID360_PLUGIN_DOWNSAMPLE:-4}"
 SUNRAY_LIVOX_PLUGIN_FILENAME="${SUNRAY_LIVOX_PLUGIN_FILENAME:-${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so}"
 SUNRAY_MID360_CSV_FILE_NAME="${SUNRAY_MID360_CSV_FILE_NAME:-mid360-real-centr.csv}"
@@ -2195,7 +2196,13 @@ if [[ ! -d "${PLANNER_WS}/devel" ]]; then
   echo "Planner workspace devel missing: ${PLANNER_WS}/devel; run the matching setup_goal4_ego*_overlay.sh" >&2
   exit 2
 fi
-if [[ ! -f "${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so" ]]; then
+if [[ "${SUNRAY_MID360_RAY_BACKEND}" == "gpu" ]]; then
+  if [[ "${SUNRAY_LIVOX_PLUGIN_FILENAME}" != */* || ! -f "${SUNRAY_LIVOX_PLUGIN_FILENAME}" ]]; then
+    echo "GPU MID360 backend requires the project-owned GPU plugin: ${SUNRAY_LIVOX_PLUGIN_FILENAME}" >&2
+    echo "Build it with Scripts/sunray/setup_sunray_gpu_livox_pointcloud_plugin.sh before starting the gate." >&2
+    exit 2
+  fi
+elif [[ ! -f "${LIVOX_PLUGIN_WS}/devel/lib/liblivox_laser_simulation.so" ]]; then
   LOG_PATH="${RESULT_DIR}/sunray_livox_plugin_build.log" \
     SUNRAY_WS="${SUNRAY_WS}" \
     LIVOX_PLUGIN_WS="${LIVOX_PLUGIN_WS}" \

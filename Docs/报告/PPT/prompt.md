@@ -517,6 +517,42 @@ Negative constraints:
 Do not use photo-realistic sensor hardware images. Do not use actual RViz point cloud screenshots. Do not use decorative sensor icons; keep them simple geometric symbols. Do not use curved arrows; only straight orthogonal connectors. Do not use gradient fills on fusion boxes. Keep algorithm boxes showing process steps as text lists, not flowcharts within boxes.
 ```
 
+---
+
+## PPT-16 Diff-Planner Differential Flatness Trajectory Optimization
+
+```text
+Figure Subject:
+Create a strict six-layer vertical pipeline showing Diff-Planner differential flatness trajectory optimization: FAST-LIO map input, ESDF distance field construction, B-spline trajectory parameterization, optimization objective with constraints, gradient descent solver, and optimized trajectory output. Include mathematical formulations, key advantages box, and Gazebo/ROS component warning. Use a white background, flat vector graphics, black text, pale green for ESDF, pale orange for parameterization, vibrant blue for optimization, and light yellow for advantages.
+
+Diagram type:
+Six-layer vertical optimization pipeline with mathematical formulations.
+
+Layout:
+Use a 16:9 horizontal canvas. Place six main layers vertically from top to bottom occupying the left 70% of canvas width. On the right 30%, place constraints box (aligned with optimization layer) and key advantages box stacked vertically. Bottom annotation shows Gazebo/ROS component warning. Use straight orthogonal connectors; no curves.
+
+Mandatory nodes:
+- Top layer input (pale blue): "FAST-LIO点云地图（实时更新）" showing sparse point cloud icon, update frequency 20Hz, map size 50m×50m×5m
+- Second layer ESDF (pale green): "可微距离场构建 (ESDF)" with algorithm details: Euclidean Signed Distance Field, 分辨率 0.2m, 更新频率 10Hz; mathematical representation: d(x) = min ||x - x_obs||, ∇d(x) = (x - x_nearest) / ||x - x_nearest||; key property: 可微特性 (距离梯度可计算, 梯度回传到轨迹参数, 加速收敛速度)
+- Third layer parameterization (pale orange): "轨迹参数化 (B样条/多项式)" with B-spline curve visualization; representation: r(t) = Σ Pᵢ·Bᵢ(t) (7阶多项式), where Pᵢ: 控制点 (优化变量), Bᵢ(t): B样条基函数
+- Fourth layer optimization (vibrant blue): "优化目标函数" with large prominent formulation: min J = ∫₀ᵀ (||snap||² + λ_obs·C_obs + λ_time·1) dt, where snap = d⁴r/dt⁴ (平滑性), C_obs = max(0, d_safe - d(r))² (障碍惩罚), T: 轨迹总时间 (时间最优)
+- Right-side constraints box (aligned with optimization): showing 动力学可行性约束 (||v(t)|| ≤ 3.0 m/s, ||a(t)|| ≤ 5.0 m/s²), 碰撞避免约束 (d(r(t)) ≥ 0.5 m), 时间约束 (T_min ≤ T ≤ T_max)
+- Fifth layer solver (deep blue): "梯度下降求解器" with algorithm L-BFGS or Adam, convergence criterion ||∇J|| < ε; performance metrics: 求解时间 <10ms, 优化频率 100Hz, 迭代次数 10-20次
+- Sixth layer output (purple): output bundle showing optimized trajectory r*(t), velocity v*(t), acceleration a*(t); arrow to "MWORKS控制器跟踪"
+- Right-side advantages box (light yellow): "可微框架优势" with three sections: 梯度信息直接回传 (障碍约束→轨迹参数, 避免盲目搜索, 收敛速度快1个数量级), 实时重规划 (求解时间<10ms, 在线调整轨迹, 遇障碍立即响应), 动力学保证 (速度/加速度约束, snap最小化平滑, 可执行性验证)
+- Bottom annotation (pale red with orange border): "注意: Diff-Planner是Gazebo/ROS组件 (非MWORKS，运行于WSL2/ROS环境)"
+
+Mandatory connections:
+- Solid arrows connecting main pipeline flow from top to bottom.
+- Dashed arrows showing gradient backpropagation from ESDF to trajectory parameterization.
+- Red arrows showing constraint violation feedback from constraints box to optimization layer.
+
+Negative constraints:
+Do not use photo-realistic RViz visualizations. Do not use actual trajectory animation frames. Do not use decorative optimization convergence plots. Do not use curved arrows; only straight orthogonal connectors. Do not use gradient fills on major boxes. Keep distance field as gradient heatmap, B-spline as smooth curve, and gradient vectors as small arrows.
+```
+
+---
+
 ## PPT-17 FUEL Autonomous Exploration Architecture
 
 ```text

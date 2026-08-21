@@ -35,6 +35,7 @@ ROUTES_PATH = ROOT / "Config" / "control_platform" / "model_studio_task_routes_v
 PACKAGE_PATH = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
 BASELINE_IDS = {"official_pid", "px4ctrl"}
 STOP_TIME_S = 50.0
+SIMULATION_INTERVAL_S = 0.01
 POSITION_ERROR_LIMIT_M = 5.0
 
 
@@ -193,6 +194,7 @@ def run_one(
             native_result_dir=native_result_dir,
             verify_result_var="position_error_norm",
             verify_time_point="end",
+            interval=SIMULATION_INTERVAL_S,
             timeout_s=360,
         )
         record["simulation"] = simulation_result
