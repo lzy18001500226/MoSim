@@ -642,44 +642,32 @@ Do not use actual UE/Blender/Gazebo screenshots. Do not use photo-realistic scen
 
 ```text
 Figure Subject:
-Create a strict six-layer vertical capability flow diagram showing MoSim full-chain capabilities on MWORKS platform: modeling capabilities (Blender mechanical modeling, MultiBody 6DOF dynamics, Sysblock graphical controllers, unified interface design), verification capabilities (ClimbPath 50s screening, seven-scenario comparison, three-UAV formation with ECBF safety, OpenBlocks autonomous obstacle avoidance, MoSim Studio online workspace), real-time capabilities (MWORKS Live real-time kernel, RT0 verification, ROS Bridge), code generation capabilities (Sysblock to ISO C99, SIL verification, three deployment paths), deployment capabilities (Gazebo physics simulation, FAST-LIO positioning + laser altimeter, UE to Gazebo high-fidelity rendering), and extension capabilities (Diff-Planner, FUEL, MoSim GroundControl). Include bottom summary metrics table. Use a white background, flat vector graphics, black text, pale blue for modeling, pale green for verification, pale orange for real-time, vibrant blue for generation, deep purple for deployment, light yellow for extension capabilities, and white with borders for metrics table.
+Create a strict six-layer vertical capability flow diagram showing MoSim full-chain capabilities on MWORKS platform: modeling capabilities (Blender mechanical modeling, MultiBody 6DOF dynamics, Sysblock graphical controllers, unified interface design), verification capabilities (ClimbPath 50s screening, seven-scenario comparison, three-UAV formation with ECBF safety, OpenBlocks autonomous obstacle avoidance, MoSim Studio online workspace), real-time capabilities (MWORKS Live real-time kernel, RT0 verification, ROS Bridge), code generation capabilities (Sysblock to ISO C99, SIL verification, three deployment paths), deployment capabilities (Gazebo physics simulation, FAST-LIO positioning + laser altimeter, UE to Gazebo high-fidelity rendering), and extension capabilities (Diff-Planner, FUEL, MoSim GroundControl). Use a white background, flat vector graphics, black text, muted pastel tones for all layers to maintain visual consistency.
 
 Diagram type:
 Six-layer vertical capability flow with downward arrows between layers.
 
 Layout:
-Use a 16:9 horizontal canvas. Place six large horizontal boxes vertically from top to bottom, each representing one capability layer. Each box contains bullet points listing specific capabilities. Connect layers with thick downward arrows. At bottom 20%, place a summary metrics table spanning full width. Use straight orthogonal connectors; no curves.
+Use a 16:9 horizontal canvas. Place six large horizontal boxes vertically from top to bottom, each representing one capability layer. Each box contains bullet points listing specific capabilities. Connect layers with thick downward arrows. Use straight orthogonal connectors; no curves.
 
 Mandatory nodes:
-- Layer 1 (pale blue): "建模能力" containing four items: Blender机械建模（自测参数）, MultiBody六自由度动力学, Sysblock图形化控制器（48个）, 统一接口设计（四接口共享Plant）
+- Layer 1 (soft sky blue #B8D4E8): "建模能力" containing four items: Blender机械建模（自测参数）, MultiBody六自由度动力学, Sysblock图形化控制器（48个）, 统一接口设计（四接口共享Plant）
 - Thick downward arrow
-- Layer 2 (pale green): "验证能力" containing five items: ClimbPath 50s标准筛查, 七场景深度对比, 三机编队与ECBF安全, OpenBlocks自主避障（7118障碍体）, MoSim Studio在线验证工作区
+- Layer 2 (soft sage green #C4D7C4): "验证能力" containing five items: ClimbPath 50s标准筛查, 七场景深度对比, 三机编队与ECBF安全, OpenBlocks自主避障（7118障碍体）, MoSim Studio在线验证工作区
 - Thick downward arrow
-- Layer 3 (pale orange): "实时能力" containing three items: MWORKS Live实时内核, RT0验证（200.02Hz，P99=5.71ms）, ROS Bridge（MWORKS外环 + PX4内环）
+- Layer 3 (soft peach #F2D7C4): "实时能力" containing three items: MWORKS Live实时内核, RT0验证（200.02Hz，P99=5.71ms）, ROS Bridge（MWORKS外环 + PX4内环）
 - Thick downward arrow
-- Layer 4 (vibrant blue): "生成能力" containing three items: Sysblock → ISO C99, SIL验证（RMSE 1.148e-13m）, 三条部署路径（SIL/ROS/嵌入式）
+- Layer 4 (soft lavender #D4C8E8): "生成能力" containing three items: Sysblock → ISO C99, SIL验证（RMSE 1.148e-13m）, 三条部署路径（SIL/ROS/嵌入式）
 - Thick downward arrow
-- Layer 5 (deep purple): "部署能力" containing three items: Gazebo物理仿真（五类任务100%成功）, FAST-LIO定位（XY）+ 激光定高（Z）, 工业场景高保真渲染（UE → Gazebo）
+- Layer 5 (soft rose #E8C8D4): "部署能力" containing three items: Gazebo物理仿真（五类任务100%成功）, FAST-LIO定位（XY）+ 激光定高（Z）, 工业场景高保真渲染（UE → Gazebo）
 - Thick downward arrow
-- Layer 6 (light yellow): "扩展能力（Gazebo/ROS组件）" containing three items: Diff-Planner局部轨迹优化, FUEL自主探索规划, MoSim GroundControl地面站
-- Bottom metrics table (white with light gray borders) labeled "数字总结" with seven rows:
-  ┌──────────────────┬────────────────────┐
-  │ 维度             │ 成果               │
-  ├──────────────────┼────────────────────┤
-  │ 控制器总数       │ 48个（7族算法）    │
-  │ 验证场景         │ 7个（标称+鲁棒性） │
-  │ 编队规模         │ 3架UAV             │
-  │ 障碍体数         │ 7118个             │
-  │ 实时频率         │ 200.02 Hz          │
-  │ SIL精度          │ 1.148e-13 m        │
-  │ Gazebo任务成功率 │ 100% (5/5)         │
-  └──────────────────┴────────────────────┘
+- Layer 6 (soft cream #F5EDD4): "扩展能力（Gazebo/ROS组件）" containing three items: Diff-Planner局部轨迹优化, FUEL自主探索规划, MoSim GroundControl地面站
 
 Mandatory connections:
 - Thick solid downward arrows connecting each capability layer vertically from top to bottom.
 
 Negative constraints:
-Do not use decorative platform logos or software screenshots. Do not use photo-realistic imagery. Do not use curved arrows; only straight orthogonal downward arrows. Do not use gradient fills on capability boxes. Keep bullet points as simple text lists with dashes or arrows, not decorated icons. Table must use monospace font (Consolas 9pt) with light gray borders, not heavy borders or colored cells. Do not add decorative checkmarks or badges on capability items; keep text plain and clean.
+Do not use decorative platform logos or software screenshots. Do not use photo-realistic imagery. Do not use curved arrows; only straight orthogonal downward arrows. Do not use gradient fills on capability boxes. Keep bullet points as simple text lists with dashes or arrows, not decorated icons. Do not add decorative checkmarks or badges on capability items; keep text plain and clean. Do not add any summary table or metrics box at the bottom.
 ```
 
 ---
