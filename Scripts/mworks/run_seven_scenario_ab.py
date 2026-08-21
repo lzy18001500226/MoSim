@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Run the authorized Official PID versus px4ctrl seven-scenario MWORKS A/B.
+"""Run the authorized 48-controller seven-scenario MWORKS A/B.
 
-Each invocation binds an existing FormalRunner to one versioned profile through
+Each invocation binds an existing whole-aircraft Runner to one versioned profile through
 an ephemeral Modelica harness.  The harness is stored with that run's evidence
 but is not added to the model library: it contains no controller logic and only
 records the profile-selected trajectory and Plant injection parameters.
@@ -26,6 +26,7 @@ import subprocess
 import sys
 import time
 import traceback
+import tomllib
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -34,25 +35,52 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_PROFILE_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_experiment_profiles.json"
-DEFAULT_CONTRACT_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_injection_contract.json"
+TASK_ROUTE_PATH = ROOT / "Config" / "control_platform" / "model_studio_task_routes_v1.toml"
+DEFAULT_PROFILE_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_experiment_profiles_v2.json"
+DEFAULT_CONTRACT_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_injection_contract_v2.json"
 PLANT_PATH = ROOT / "Models" / "MoSimQuadrotorModel" / "Vehicle" / "Sunray150Assembly.mo"
 RUNNER_SCRIPT = ROOT / "Scripts" / "mworks" / "run_sysplorer_mcp_smoke.py"
 CAPTURE_SCRIPT = ROOT / "Scripts" / "tools" / "capture_window_background.ps1"
-DEFAULT_RESULT_ROOT = ROOT / "Results" / "control_platform" / "seven_scenario_ab"
-DEFAULT_EVIDENCE_LEVEL = "formal_mworks_seven_scenario_ab_v1"
+DEFAULT_RESULT_ROOT = ROOT / "Results" / "control_platform" / "seven_scenario_ab_v2"
+DEFAULT_EVIDENCE_LEVEL = "formal_mworks_seven_scenario_ab_v2"
 DEFAULT_CASE_SIMULATION_TIMEOUT_S = 120.0
 
-CONTROLLERS: dict[str, dict[str, str]] = {
-    "official_pid": {
-        "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.OfficialPidFormalRunner",
-        "model_slug": "OfficialPid",
-    },
-    "px4ctrl": {
-        "runner_class": "MoSimQuadrotorModel.Experiment.Runners.Formal.Px4CtrlFormalRunner",
-        "model_slug": "Px4Ctrl",
-    },
-}
+
+def load_controller_routes() -> dict[str, dict[str, str]]:
+    with TASK_ROUTE_PATH.open("rb") as handle:
+        document = tomllib.load(handle)
+    if document.get("schema") != "mosim.model_studio_task_routes.v1":
+        raise ValueError("invalid_model_studio_task_route_schema")
+    routes: dict[str, dict[str, str]] = {}
+    for raw_route in document.get("route", []):
+        controller_id = str(raw_route.get("controller_id", ""))
+        if not controller_id:
+            raise ValueError("model_studio_task_route_controller_id_missing")
+        if not bool(raw_route.get("available")):
+            raise ValueError(f"seven_scenario_route_unavailable: {controller_id}")
+        runner_class = str(raw_route.get("runner_class", ""))
+        runner_file = str(raw_route.get("runner_file", ""))
+        boundary = str(raw_route.get("boundary", ""))
+        if not runner_class or not runner_file or not boundary:
+            raise ValueError(f"seven_scenario_route_incomplete: {controller_id}")
+        path = ROOT / runner_file
+        if not path.is_file():
+            raise FileNotFoundError(f"seven_scenario_runner_file_missing: {runner_file}")
+        model_slug = "".join(
+            part.capitalize() for part in re.split(r"[^A-Za-z0-9]+", controller_id) if part
+        )
+        routes[controller_id] = {
+            "runner_class": runner_class,
+            "runner_file": runner_file,
+            "boundary": boundary,
+            "model_slug": model_slug,
+        }
+    if len(routes) != 48:
+        raise ValueError(f"seven_scenario_route_count_mismatch: {len(routes)}")
+    return routes
+
+
+CONTROLLERS = load_controller_routes()
 
 CORE_COLUMNS = ("time", "x", "y", "z", "x_ref", "y_ref", "z_ref")
 INJECTION_SCENARIOS = frozenset({
@@ -84,13 +112,13 @@ INERTIA_COLUMNS = (
 def controller_execution_boundary(controller_id: str) -> dict[str, str]:
     if controller_id == "official_pid":
         return {
-            "boundary": "native_continuous_boundary",
+            "boundary": CONTROLLERS[controller_id]["boundary"],
             "reference_path": "direct",
             "measurement_path": "direct",
             "command_path": "direct",
         }
     return {
-        "boundary": "unified_100hz_discrete_boundary",
+        "boundary": CONTROLLERS[controller_id]["boundary"],
         "reference_path": "sampled_0.01s",
         "measurement_path": "sampled_0.01s",
         "command_path": "continuous_or_controller_declared",
@@ -114,6 +142,7 @@ class MworksBatchSession:
         spec.loader.exec_module(module)
         self.module = module
         self.result_root = result_root
+        self.result_root.mkdir(parents=True, exist_ok=True)
         self.session_log = result_root / "batch_session_mcp.jsonl"
         wrapper = module.resolve_wrapper(None)
         self.client = module.JsonlMcpClient(module.wrapper_command(wrapper), self.session_log)
@@ -245,12 +274,36 @@ def profile_trajectory_modification(profile: dict[str, Any]) -> str:
     return f"{trajectory_class}({modifications})"
 
 
+def scenario_mode_modifications(profile: dict[str, Any]) -> list[str]:
+    trajectory_class = str(profile["trajectory_class"])
+    trajectory_name = trajectory_class.rsplit(".", 1)[-1]
+    scenario_mode = {
+        "ClimbPath": 0,
+        "ClimbTrajectory": 0,
+        "HoverHold": 1,
+        "StepResponse": 2,
+        "Figure8": 3,
+        "SpiralAscent": 4,
+    }.get(trajectory_name)
+    if scenario_mode is None:
+        raise ValueError(f"unsupported_multimode_trajectory: {trajectory_class}")
+    parameters = profile.get("trajectory_parameter_overrides", {})
+    if not isinstance(parameters, dict):
+        raise ValueError(f"trajectory_parameter_overrides must be an object: {profile['scenario_id']}")
+    modifications = [f"scenario_mode = {scenario_mode}"]
+    if parameters:
+        nested = ", ".join(
+            f"{key} = {modelica_value(value)}" for key, value in parameters.items()
+        )
+        modifications.append(f"reference({nested})")
+    return modifications
+
+
 def render_harness(case: Case) -> str:
     runner_parameters = case.profile.get("runner_parameter_overrides", {})
     if not isinstance(runner_parameters, dict):
         raise ValueError(f"runner_parameter_overrides must be an object: {case.scenario_id}")
-    trajectory = profile_trajectory_modification(case.profile)
-    runner_modifications = [f"redeclare model Trajectory = {trajectory}"]
+    runner_modifications = scenario_mode_modifications(case.profile)
     runner_modifications.extend(
         f"{key} = {modelica_value(value)}" for key, value in runner_parameters.items()
     )
@@ -1044,10 +1097,7 @@ def write_run_record(
             "seven_scenario_profile_sha256": profile_hash,
             "seven_scenario_injection_contract_sha256": contract_hash,
             "harness_sha256": sha256_path(harness) if harness.is_file() else None,
-            "runner_source_sha256": sha256_path(
-                ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Runners" / "Formal"
-                / ("OfficialPidFormalRunner.mo" if case.controller_id == "official_pid" else "Px4CtrlFormalRunner.mo")
-            ),
+            "runner_source_sha256": sha256_path(ROOT / case.controller["runner_file"]),
             "plant_source_sha256": sha256_path(PLANT_PATH),
             "raw_csv_sha256": sha256_path(raw) if raw.is_file() else None,
         },
@@ -1237,7 +1287,7 @@ def parse_args() -> argparse.Namespace:
         "--controller",
         action="append",
         choices=sorted(CONTROLLERS),
-        help="Run only this controller; repeatable. Defaults to both authorized controllers.",
+        help="Run only this controller; repeatable. Defaults to all 48 registered controllers.",
     )
     parser.add_argument(
         "--scenario",
@@ -1248,7 +1298,7 @@ def parse_args() -> argparse.Namespace:
         "--profile-path",
         type=Path,
         default=DEFAULT_PROFILE_PATH,
-        help="Versioned seven-scenario Profile JSON; defaults to the preserved v1 document.",
+        help="Versioned seven-scenario Profile JSON; defaults to the v2 48-controller document.",
     )
     parser.add_argument(
         "--contract-path",

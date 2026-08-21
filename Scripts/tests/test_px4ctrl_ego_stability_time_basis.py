@@ -120,6 +120,21 @@ class Px4ctrlEgoStabilityTimeBasisTests(unittest.TestCase):
         self.assertIn('state.get("status") != "passed"', waiter)
         self.assertNotIn("rospy.signal_shutdown", waiter)
 
+    def test_interactive_diff_defers_map_admission_until_after_takeoff(self):
+        root = Path(__file__).resolve().parents[1]
+        gate = (root / "sunray" / "run_px4ctrl_ego_single_gate.sh").read_text(encoding="utf-8")
+        mission = (root / "sunray" / "px4ctrl_ego_single_mission_node.py").read_text(encoding="utf-8")
+
+        self.assertIn('"${DIFF_INTERACTIVE_CLICK_GOAL}" != "true"', gate)
+        self.assertIn("--interactive-map-ready-timeout-s", gate)
+        self.assertIn("def wait_for_interactive_map_ready", mission)
+        self.assertIn("interactive_map_ready_timeout", mission)
+        self.assertIn("self.wait_for_interactive_map_ready(rate, home_x, home_y)", mission)
+        self.assertLess(
+            mission.index("self.wait_for_interactive_map_ready(rate, home_x, home_y)"),
+            mission.index("self.set_interactive_goal_ready(True)"),
+        )
+
     def test_factory_formation_wrapper_keeps_early_hover_handoff_opt_in(self):
         source = (
             Path(__file__).resolve().parents[1]

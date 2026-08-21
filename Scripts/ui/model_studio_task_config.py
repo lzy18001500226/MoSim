@@ -54,7 +54,9 @@ SPECIAL_TASK_IDS = (
 )
 TASK_ORDER = FORMAL_TASK_IDS + LEGACY_INJECTION_TASK_IDS + SPECIAL_TASK_IDS
 V2_EVIDENCE_CONTROLLER_IDS = frozenset({"official_pid", "px4ctrl"})
-MOTHER_BUS_CONTROLLER_IDS = frozenset({"official_pid", "px4ctrl"})
+# These routes have a project-owned whole-aircraft Runner even when the
+# historical current-model map has not yet been promoted to runtime evidence.
+MOTHER_BUS_CONTROLLER_IDS = frozenset({"official_pid", "px4ctrl", "pid_awff_linear_eso"})
 MAP_IDS = frozenset({"blank", "openblocks"})
 EPSILON = 1e-9
 DEFAULT_INJECTION_START_S = 15.0
@@ -295,6 +297,8 @@ FORMAL_CONTROLLER_IDS = frozenset(
     for controller_id, route in FORMAL_CONTROLLER_ROUTES.items()
     if bool(route["available"])
 )
+SEVEN_SCENARIO_CONTROLLER_IDS = frozenset(FORMAL_CONTROLLER_ROUTES)
+SPECIAL_ROUTES["seven_scenario_ab"]["controller_ids"] = SEVEN_SCENARIO_CONTROLLER_IDS
 
 
 def controller_source_entry(controller_id: str) -> dict[str, Any] | None:
@@ -745,11 +749,9 @@ def write_task_config(
             route["batch_result_root"],
             "--evidence-level",
             route["batch_evidence_level"],
-            "--controller",
-            "official_pid",
-            "--controller",
-            "px4ctrl",
         ]
+        for batch_controller_id in sorted(SEVEN_SCENARIO_CONTROLLER_IDS):
+            batch_command.extend(["--controller", batch_controller_id])
 
     payload = {
         "schema": TASK_CONFIG_SCHEMA,
@@ -784,7 +786,7 @@ def write_task_config(
                 "driver": route["batch_driver_path"],
                 "profile": route["batch_profile_path"],
                 "contract": route["batch_contract_path"],
-                "controllers": ["official_pid", "px4ctrl"],
+                "controllers": sorted(SEVEN_SCENARIO_CONTROLLER_IDS),
                 "command": batch_command,
             } if batch_route else None
         ),

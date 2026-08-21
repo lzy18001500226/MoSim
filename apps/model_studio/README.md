@@ -46,7 +46,7 @@ The current source UI baseline includes:
 - `MoSim 助手` reads the current Profile/control-chain selections and provides
   local MWORKS, QGC, fault, and result-viewing guidance only; it does not start
   MWORKS, export code, or send flight/runtime commands;
-- a model-validation task selector with the frozen 2x7 Official PID/px4ctrl
+- a model-validation task selector with the frozen 48x7 all-controller
   batch, nominal ClimbPath/hover/step/Figure8/spiral tasks, single-UAV
   OpenBlocks avoidance, three-UAV OpenBlocks avoidance, and three-UAV Figure8
   formation; wind, parameter mismatch, and motor-effectiveness are independent
@@ -194,9 +194,11 @@ that frozen harness and runs native `CheckModel`; it does not start a solver.
 For `official_pid`, the frozen harness extends the checked current
 `MoSimQuadrotorModel.Experiment.Baselines.OfficialPidRunner`. This remains a
 manual MWORKS review route; opening it is not simulation evidence. `重置` restores the selected task's standard values. The frozen seven-scenario
-evidence set contains only `official_pid` and `px4ctrl`. This is an
-evidence-scope boundary, not a prohibition on a user manually opening another
-`available=true` whole-aircraft review runner with a compatible task/configuration. A
+evidence matrix includes all 48 registered controllers. A route marked
+`已接入/待验证` remains runnable for user-led MWORKS CheckModel/simulation and
+is not a passing evidence claim. This is an evidence-scope boundary, not a
+prohibition on a user manually opening another `available=true` whole-aircraft
+review runner with a compatible task/configuration. A
 user-created slider or scenario combination is recorded as a task parameter
 variant, not as pre-existing formal evidence.
 

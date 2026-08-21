@@ -57,6 +57,11 @@ def test_v2_profile_and_contract_match() -> None:
     assert [row["scenario_id"] for row in profiles["profiles"]] == SCENARIOS
     assert profiles["authority"]["injection_contract"] == "Config/control_platform/seven_scenario_injection_contract_v2.json"
     assert profiles["authority"]["result_root_template"].startswith("Results/control_platform/seven_scenario_ab_v2/")
+    expected_runner_classes = {
+        row["runner_class"] for row in driver_routes()
+    }
+    assert set(profiles["formal_runner_binding"]["allowed_runner_classes"]) == expected_runner_classes
+    assert set(contract["runner_binding_policy"]["authorized_runner_classes"]) == expected_runner_classes
 
     by_id = {row["scenario_id"]: row for row in profiles["profiles"]}
     assert by_id["wind_disturbance"]["trajectory_class"].endswith(".Figure8")
@@ -74,7 +79,12 @@ def test_v2_profile_and_contract_match() -> None:
         assert list(profile["runner_parameter_overrides"]) == RUNNER_PARAMETER_KEYS
 
 
-def test_v2_driver_stages_two_controller_figure8_and_spiral_harnesses() -> None:
+def driver_routes() -> list[dict[str, str]]:
+    driver = load_driver()
+    return list(driver.CONTROLLERS.values())
+
+
+def test_v2_driver_stages_all_48_controllers_across_seven_scenarios() -> None:
     driver = load_driver()
     document, _ = driver.read_profiles(PROFILES)
     contract, _ = driver.read_contract(CONTRACT)
@@ -82,27 +92,32 @@ def test_v2_driver_stages_two_controller_figure8_and_spiral_harnesses() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         cases = driver.selected_cases(
             document,
-            ["official_pid", "px4ctrl"],
+            sorted(driver.CONTROLLERS),
             None,
             Path(tmp),
         )
-    assert len(cases) == 14
-    by_scenario = {case.scenario_id: case for case in cases if case.controller_id == "px4ctrl"}
+    assert len(driver.CONTROLLERS) == 48
+    assert len(cases) == 48 * 7
+    by_scenario = {case.scenario_id: case for case in cases if case.controller_id == "pid_awff_linear_eso"}
     wind_harness = driver.render_harness(by_scenario["wind_disturbance"])
     mismatch_harness = driver.render_harness(by_scenario["parameter_mismatch"])
     fault_harness = driver.render_harness(by_scenario["motor_efficiency_fault"])
-    assert "Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.Figure8(" in wind_harness
+    assert "scenario_mode = 3" in wind_harness
+    assert "reference(" in wind_harness
     assert "gust_start_s = 15" in wind_harness
-    assert "Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.SpiralAscent(" in mismatch_harness
+    assert "scenario_mode = 4" in mismatch_harness
+    assert "reference(" in mismatch_harness
     assert "mass_scale = 1.2" in mismatch_harness
     assert "injection_plant_inertia_diagonal_kg_m2" in mismatch_harness
-    assert "Trajectory = MoSimQuadrotorModel.Guidance.Trajectories.Figure8(" in fault_harness
+    assert "scenario_mode = 3" in fault_harness
+    assert "reference(" in fault_harness
     assert "fault_rotor_effectiveness = 0.5" in fault_harness
+    assert "PidAwffLinearEsoGraphicalRunner" in fault_harness
 
 
 def main() -> int:
     test_v2_profile_and_contract_match()
-    test_v2_driver_stages_two_controller_figure8_and_spiral_harnesses()
+    test_v2_driver_stages_all_48_controllers_across_seven_scenarios()
     print("[OK] seven-scenario v2 profile contract")
     return 0
 

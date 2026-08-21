@@ -138,3 +138,33 @@ def test_project_mavros_profile_exposes_home_position_without_broadening_control
     assert home_position == {"blacklisted": False, "whitelisted": True}
     assert "- setpoint_raw" in whitelist
     assert "- setpoint_attitude" in whitelist
+
+
+def test_gpu_livox_promotes_ray_config_to_the_sensor(tmp_path: Path, monkeypatch) -> None:
+    sync = load_sync_module()
+    source = (
+        ROOT
+        / "src"
+        / "simulation"
+        / "gazebo"
+        / "sunray"
+        / "models"
+        / "sensor_models"
+        / "livox_mid360"
+        / "livox_mid360.sdf"
+    )
+    target = tmp_path / "livox_mid360.sdf"
+    target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+    monkeypatch.setattr(sync, "SUNRAY_MID360_RAY_BACKEND", "gpu")
+    monkeypatch.setattr(sync, "SUNRAY_LIVOX_PLUGIN_FILENAME", "/tmp/libmosim_gpu_livox_pointcloud.so")
+
+    replacements = sync.delete_default_livox_sensor_shell(target)
+    root = ET.parse(target).getroot()
+    sensor = root.find(".//sensor[@name='laser_livox']")
+    assert sensor is not None
+    assert sensor.attrib["type"] == "gpu_ray"
+    assert sensor.find("ray") is not None
+    plugin = sensor.find("plugin[@name='mosim_gpu_livox_pointcloud']")
+    assert plugin is not None
+    assert plugin.find("ray") is None
+    assert replacements["gpu_ray_config_promoted"] == 1

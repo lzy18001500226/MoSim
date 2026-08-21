@@ -95,9 +95,11 @@ class EgoSingleMission:
         self.lidar_last_points = 0
         self.world_cloud_count = 0
         self.world_cloud_last_points = 0
+        self.world_cloud_max_points = 0
         self.occupancy_count = 0
         self.occupancy_last_points = 0
         self.occupancy_max_points = 0
+        self.interactive_map_gate: dict | None = None
         self.frontier_count = 0
         self.frontier_marker_count = 0
         self.trajectory_vis_count = 0
@@ -468,6 +470,7 @@ class EgoSingleMission:
     def on_world_cloud(self, msg: PointCloud2) -> None:
         self.world_cloud_count += 1
         self.world_cloud_last_points = int(msg.width * msg.height)
+        self.world_cloud_max_points = max(self.world_cloud_max_points, self.world_cloud_last_points)
 
     def on_occupancy(self, msg: PointCloud2) -> None:
         self.occupancy_count += 1
@@ -1398,6 +1401,55 @@ class EgoSingleMission:
             blockers.append("takeoff_height_not_reached")
         return blockers or ["takeoff_height_not_reached"]
 
+    def wait_for_interactive_map_ready(self, rate: rospy.Rate, home_x: float, home_y: float) -> bool:
+        timeout_s = max(0.0, float(self.args.interactive_map_ready_timeout_s))
+        required_world_points = max(1, int(self.args.interactive_min_world_cloud_points))
+        required_occupancy_points = max(1, int(self.args.interactive_min_occupancy_points))
+        self.interactive_map_gate = {
+            "enabled": timeout_s > 0.0,
+            "timeout_s": timeout_s,
+            "required_world_cloud_points": required_world_points,
+            "required_occupancy_points": required_occupancy_points,
+            "status": "disabled" if timeout_s <= 0.0 else "waiting",
+        }
+        if timeout_s <= 0.0:
+            return True
+
+        deadline = time.time() + timeout_s
+        while not rospy.is_shutdown() and time.time() < deadline:
+            if self.safe_stop.requested():
+                self.interactive_map_gate["status"] = "safe_stop_requested"
+                return False
+            self.interactive_map_gate.update(
+                {
+                    "world_cloud_last_points": self.world_cloud_last_points,
+                    "world_cloud_max_points": self.world_cloud_max_points,
+                    "occupancy_last_points": self.occupancy_last_points,
+                    "occupancy_max_points": self.occupancy_max_points,
+                }
+            )
+            if (
+                self.world_cloud_max_points >= required_world_points
+                and self.occupancy_max_points >= required_occupancy_points
+            ):
+                self.interactive_map_gate["status"] = "passed"
+                return True
+            self.publish_hover_cmd(home_x, home_y, self.takeoff_target_z_m(), self.interactive_hover_yaw)
+            self.publish_paths()
+            rate.sleep()
+
+        if self.interactive_map_gate is not None:
+            self.interactive_map_gate.update(
+                {
+                    "status": "timeout",
+                    "world_cloud_last_points": self.world_cloud_last_points,
+                    "world_cloud_max_points": self.world_cloud_max_points,
+                    "occupancy_last_points": self.occupancy_last_points,
+                    "occupancy_max_points": self.occupancy_max_points,
+                }
+            )
+        return False
+
     def run(self) -> int:
         rate = rospy.Rate(self.args.hover_publish_hz)
         self.set_interactive_goal_ready(False, repeats=1)
@@ -1476,6 +1528,8 @@ class EgoSingleMission:
             initial_scan = self.run_interactive_yaw_scan("initial_ready")
             if not initial_scan.get("ok", False):
                 return self.abort_for_flight_safety(rate, list(initial_scan.get("blockers", [])))
+            if not self.wait_for_interactive_map_ready(rate, home_x, home_y):
+                return self.abort_for_flight_safety(rate, ["interactive_map_ready_timeout"])
             self.set_interactive_goal_ready(True)
             if self.args.publish_goal_in_interactive_review:
                 self.publish_trigger()
@@ -2210,6 +2264,7 @@ class EgoSingleMission:
                 "trigger_snapshot": self.pre_diff_trigger_snapshot,
                 "history_tail": self.pre_diff_gate_history[-20:],
             },
+            "interactive_map_gate": self.interactive_map_gate,
             "flight_safety_violation": self.flight_safety_violation,
             "claim_boundary": (
                 "Goal4 planner/traj_server to px4ctrl through MAVROS/PX4/Gazebo; "
@@ -2380,6 +2435,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--interactive-forwarded-goal-topic", default="/goal_with_id")
     parser.add_argument("--publish-goal-in-interactive-review", action="store_true")
     parser.add_argument("--interactive-review-hold-s", type=float, default=180.0)
+    parser.add_argument("--interactive-map-ready-timeout-s", type=float, default=0.0)
+    parser.add_argument("--interactive-min-world-cloud-points", type=int, default=1)
+    parser.add_argument("--interactive-min-occupancy-points", type=int, default=1)
     parser.add_argument("--interactive-target-reached-xy-m", type=float, default=0.35)
     parser.add_argument("--interactive-target-reached-z-m", type=float, default=0.12)
     parser.add_argument("--interactive-target-hold-s", type=float, default=1.5)

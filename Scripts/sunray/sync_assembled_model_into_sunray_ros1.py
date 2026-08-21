@@ -873,6 +873,44 @@ def delete_default_livox_sensor_shell(sensor_sdf_path: Path) -> dict[str, int]:
     )
     replacements["mid360_ray_backend_plugin"] = count
 
+    if SUNRAY_MID360_RAY_BACKEND == "gpu":
+        sensor_match = re.search(
+            r'(?P<sensor_open><sensor type="gpu_ray" name="laser_livox">)'
+            r'(?P<sensor_prefix>.*?)'
+            r'(?P<plugin_open><plugin name="mosim_gpu_livox_pointcloud" filename="[^"]+">)'
+            r'(?P<plugin_body>.*?)'
+            r'(?P<plugin_close></plugin>)'
+            r'(?P<sensor_close>\s*</sensor>)',
+            text,
+            flags=re.DOTALL,
+        )
+        if not sensor_match:
+            raise RuntimeError("GPU MID360 sensor/plugin block was not found")
+
+        sensor_prefix = sensor_match.group("sensor_prefix")
+        plugin_body = sensor_match.group("plugin_body")
+        if "<ray>" in sensor_prefix:
+            replacements["gpu_ray_config_promoted"] = 0
+        else:
+            ray_match = re.search(r"\s*<ray>.*?</ray>\s*", plugin_body, flags=re.DOTALL)
+            if not ray_match:
+                raise RuntimeError("GPU MID360 requires the Livox ray configuration")
+            ray_config = ray_match.group(0)
+            plugin_body = plugin_body[: ray_match.start()] + plugin_body[ray_match.end() :]
+            replacement = (
+                sensor_match.group("sensor_open")
+                + sensor_prefix
+                + ray_config
+                + sensor_match.group("plugin_open")
+                + plugin_body
+                + sensor_match.group("plugin_close")
+                + sensor_match.group("sensor_close")
+            )
+            text = text[: sensor_match.start()] + replacement + text[sensor_match.end() :]
+            replacements["gpu_ray_config_promoted"] = 1
+    else:
+        replacements["gpu_ray_config_promoted"] = 0
+
     text, count = re.subn(
         r"(<sensor name=\"imu_sensor\" type=\"imu\">.*?<update_rate>)\s*[^<]+\s*(</update_rate>)",
         rf"\g<1>{SUNRAY_MID360_IMU_UPDATE_RATE_HZ}\2",
@@ -914,6 +952,15 @@ def delete_default_livox_sensor_shell(sensor_sdf_path: Path) -> dict[str, int]:
     missing = [needle for needle in required if needle not in patched]
     if missing:
         raise RuntimeError(f"livox sensor patch removed required sensor/plugin entries: {missing}")
+    if SUNRAY_MID360_RAY_BACKEND == "gpu":
+        gpu_sensor = re.search(
+            r'<sensor type="gpu_ray" name="laser_livox">.*?<ray>.*?</ray>.*?'
+            r'<plugin name="mosim_gpu_livox_pointcloud"',
+            patched,
+            flags=re.DOTALL,
+        )
+        if not gpu_sensor:
+            raise RuntimeError("GPU MID360 ray configuration is not a sensor-level SDF element")
     if "model://livox_mid360/meshes/test2.dae" in patched:
         raise RuntimeError("default livox_mid360 mesh reference still exists after deletion patch")
     return replacements

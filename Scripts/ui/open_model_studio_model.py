@@ -31,8 +31,10 @@ THREE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Guidance" / "Forma
 THREE_MODEL_NAME = "MoSimQuadrotorModel.Guidance.Formation.TriangleFigure8LinearMPC"
 LIVE_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "package.mo"
 LIVE_MODEL_NAME = "MoSimQuadrotorModel.Deployment.RT1OfficialPidShadow50Hz"
-PX4CTRL_CODEGEN_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Control" / "Implementations" / "Sysblocks" / "PX4CTRL_Original_OuterLoop_Graphical_Sysblock.mo"
-PX4CTRL_CODEGEN_MODEL_NAME = "MoSimQuadrotorModel.Control.Implementations.Sysblocks.PX4CTRL_Original_OuterLoop_Graphical_Sysblock"
+PX4CTRL_CODEGEN_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "SingleUav" / "Px4Ctrl" / "Px4CtrlRunner.mo"
+PX4CTRL_CODEGEN_MODEL_NAME = "MoSimQuadrotorModel.Experiment.SingleUav.Px4Ctrl.Px4CtrlRunner"
+PID_AWFF_LINEAR_ESO_CODEGEN_MODEL_FILE = ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "SingleUav" / "AwffControllers" / "PidAwffLinearEsoGraphicalRunner.mo"
+PID_AWFF_LINEAR_ESO_CODEGEN_MODEL_NAME = "MoSimQuadrotorModel.Experiment.SingleUav.AwffControllers.PidAwffLinearEsoGraphicalRunner"
 MODEL_DECLARATION = re.compile(r"\bmodel\s+([A-Za-z_]\w*)")
 MODEL_NAME = re.compile(r"[A-Za-z_]\w*")
 DEFAULT_MWORKS_EXE = Path(r"D:\Program Files\MWORKS\Sysplorer 2026a\Bin64\mworks.exe")
@@ -82,6 +84,8 @@ def resolve_offline_model(profile_id: str, vehicle_count: int, output_variant: s
 def resolve_controller_model(controller_id: str) -> tuple[Path, str]:
     if controller_id == "px4ctrl":
         return PX4CTRL_CODEGEN_MODEL_FILE, PX4CTRL_CODEGEN_MODEL_NAME
+    if controller_id == "pid_awff_linear_eso":
+        return PID_AWFF_LINEAR_ESO_CODEGEN_MODEL_FILE, PID_AWFF_LINEAR_ESO_CODEGEN_MODEL_NAME
     entry_map = json.loads(CURRENT_MODEL_ENTRY_MAP.read_text(encoding="utf-8-sig"))
     entry = next(
         (item for item in entry_map.get("schemes", []) if item.get("scheme_id") == controller_id),

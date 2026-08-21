@@ -151,7 +151,7 @@ const CONTROLLER_CATALOG = [
     (id="awff_pid", family="PID 族", display="awff_pid [已实现]", status="已实现", openable=true),
     (id="awff_l1_residual", family="PID 族", display="awff_l1_residual [已实现]", status="已实现", openable=true),
     (id="awff_l1_indi", family="PID 族", display="awff_l1_indi [已实现]", status="已实现", openable=true),
-    (id="pid_awff_linear_eso", family="PID 族", display="pid_awff_linear_eso [待接入]", status="待接入", openable=false),
+    (id="pid_awff_linear_eso", family="PID 族", display="pid_awff_linear_eso [已接入/待验证]", status="已接入/待验证", openable=true),
 
     (id="lqr_baseline", family="线性鲁棒族", display="lqr_baseline [已实现]", status="已实现", openable=true),
     (id="lqi_baseline", family="线性鲁棒族", display="lqi_baseline [已实现]", status="已实现", openable=true),
@@ -238,7 +238,7 @@ const MODEL_TASKS = [
     (id="step_response", label="阶跃响应", duration_s=45.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true, handoff_kind="model"),
     (id="figure8", label="8 字轨迹", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true, handoff_kind="model"),
     (id="spiral", label="螺旋上升", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true, handoff_kind="model"),
-    (id="seven_scenario_ab", label="2×7 场景 A/B", duration_s=0.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=false, handoff_kind="batch"),
+    (id="seven_scenario_ab", label="48×7 场景 A/B", duration_s=0.0, vehicle_count=1, map_id="blank", controller_ids=sort(collect(keys(MODEL_TASK_ROUTES))), injection_supported=false, handoff_kind="batch"),
     (id="single_uav_autonomous_avoidance", label="单机自主避障", duration_s=80.0, vehicle_count=1, map_id="openblocks", controller_ids=["px4ctrl"], injection_supported=true, handoff_kind="model"),
     (id="three_uav_figure8", label="三机三角编队 8 字", duration_s=50.0, vehicle_count=3, map_id="blank", controller_ids=["px4ctrl"], injection_supported=true, handoff_kind="model"),
     (id="three_uav_autonomous_avoidance", label="三机自主避障", duration_s=360.0, vehicle_count=3, map_id="openblocks", controller_ids=["linear_mpc"], injection_supported=false, handoff_kind="model"),
@@ -2109,8 +2109,8 @@ const OFFLINE_PROFILES = Dict(
                 app.TaskConfigDirty = false
                 app.refresh_summary()
                 if task.handoff_kind == "batch"
-                    app.set_top_status("在线建模验证  |  2×7 批次计划已冻结  |  等待用户按批次命令执行"; state="正常")
-                    app.append_console("2×7 批次计划已冻结：" * config_path * "；未启动 MWORKS"; level="通过")
+                    app.set_top_status("在线建模验证  |  48×7 批次计划已冻结  |  等待用户按批次命令执行"; state="正常")
+                    app.append_console("48×7 批次计划已冻结：" * config_path * "；未启动 MWORKS"; level="通过")
                 else
                     app.set_top_status("在线建模验证  |  配置已冻结  |  等待用户在 MWORKS 中仿真"; state="正常")
                     app.append_console("配置已冻结：" * config_path * "；未启动仿真"; level="通过")

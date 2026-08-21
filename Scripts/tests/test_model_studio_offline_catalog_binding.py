@@ -327,8 +327,10 @@ def test_codegen_model_resolver_uses_current_graphical_model_map() -> None:
     assert model_file == module.PX4CTRL_CODEGEN_MODEL_FILE
     assert model_file.is_file()
     assert model_class == module.PX4CTRL_CODEGEN_MODEL_NAME
-    with pytest.raises(ValueError, match="controller_not_openable"):
-        module.resolve_controller_model("pid_awff_linear_eso")
+    model_file, model_class = module.resolve_controller_model("pid_awff_linear_eso")
+    assert model_file == module.PID_AWFF_LINEAR_ESO_CODEGEN_MODEL_FILE
+    assert model_file.is_file()
+    assert model_class == module.PID_AWFF_LINEAR_ESO_CODEGEN_MODEL_NAME
 
 
 def test_catalog_selector_still_contains_all_current_controller_entries() -> None:

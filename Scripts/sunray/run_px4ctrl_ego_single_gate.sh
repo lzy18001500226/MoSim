@@ -3256,10 +3256,10 @@ if [[ "${PLANNER_LAUNCH_STATUS}" != "started" ]]; then
   exit 63
 fi
 
-if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_MAP_GUARD_ENABLE}" == "true" ]]; then
-  # Do not release a goal while the planner has an empty local map. The
-  # command adapter remains the runtime collision hold, while this gate makes
-  # startup failures explicit before the mission node can publish a goal.
+if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_MAP_GUARD_ENABLE}" == "true" && "${DIFF_INTERACTIVE_CLICK_GOAL}" != "true" ]]; then
+  # Fixed-goal routes have no takeoff phase before their target is released.
+  # Interactive routes defer this same gate to the mission node, after it has
+  # reached the hover height that allows the planner map to populate.
   if ! python3 "${PROJECT_ROOT}/Scripts/sunray/wait_for_nonempty_pointcloud2.py" \
     --topic "${DIFF_MAP_GUARD_CLOUD_TOPIC}" \
     --timeout-s "${DIFF_MAP_READY_TIMEOUT_S}" \
@@ -3544,6 +3544,11 @@ if [[ "${PLANNER_VARIANT}" == "diff_planner" && "${DIFF_INTERACTIVE_CLICK_GOAL}"
   MISSION_ADAPTER_ARGS+=(--interactive-handoff-mode "${DIFF_INTERACTIVE_HANDOFF_MODE}")
   MISSION_ADAPTER_ARGS+=(--interactive-auto-pass-goal-count "${DIFF_INTERACTIVE_AUTO_PASS_GOAL_COUNT}")
   MISSION_ADAPTER_ARGS+=(--interactive-final-hover-hold-s "${DIFF_INTERACTIVE_FINAL_HOVER_HOLD_S}")
+  if [[ "${DIFF_MAP_GUARD_ENABLE}" == "true" ]]; then
+    MISSION_ADAPTER_ARGS+=(--interactive-map-ready-timeout-s "${DIFF_MAP_READY_TIMEOUT_S}")
+    MISSION_ADAPTER_ARGS+=(--interactive-min-world-cloud-points "${DIFF_MAP_GUARD_MIN_CLOUD_POINTS}")
+    MISSION_ADAPTER_ARGS+=(--interactive-min-occupancy-points "${DIFF_MAP_GUARD_MIN_OCCUPANCY_POINTS}")
+  fi
   MISSION_ADAPTER_ARGS+=(--interactive-yaw-scan-delta-rad "${DIFF_INTERACTIVE_YAW_SCAN_DELTA_RAD}")
   MISSION_ADAPTER_ARGS+=(--interactive-yaw-scan-duration-s "${DIFF_INTERACTIVE_YAW_SCAN_DURATION_S}")
   MISSION_ADAPTER_ARGS+=(--interactive-yaw-scan-settle-s "${DIFF_INTERACTIVE_YAW_SCAN_SETTLE_S}")

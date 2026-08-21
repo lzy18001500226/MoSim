@@ -11,7 +11,7 @@ model LqgGraphicalRunner
   parameter Real fault_start_s(unit = "s") = 1e9;
   parameter Integer fault_rotor_index(min = 1, max = 4) = 1;
   parameter Real fault_rotor_effectiveness(min = 0, max = 1) = 1;
-  parameter Real nominal_esc_limit_abs(unit = "rad/s", min = 0) = 110;
+  parameter Real nominal_esc_limit_abs(unit = "rad/s", min = 0) = 200;
   parameter Integer scenario_mode(min = 0, max = 4) = 0;
   Modelica.Blocks.Sources.Constant zero(k = 0) 
     annotation(Placement(transformation(origin = {-470, -180}, extent = {{-16, -16}, {16, 16}})));
