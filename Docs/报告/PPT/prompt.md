@@ -398,7 +398,7 @@ Mandatory nodes:
 - Callout 1 (top-right, light yellow): "OpenBlocks特点:" with three green checkmarks for "纯MWORKS实现", "无外部依赖", "状态机集成"
 - Callout 2 (middle-right, light yellow): "A*参数:" showing "搜索空间: 100×100×10", "启发函数: Euclidean"
 - Callout 3 (bottom-right, light yellow): "min-snap优化:" showing "多项式阶数: 7", "优化目标: 最小化snap", "约束: 速度≤3m/s, 加速度≤5m/s²"
-- Comparison table (below MWORKS box): three-column table with headers "规划组件", "运行环境", "本页说明", showing OpenBlocks (MWORKS, ✅本图), Diff-Planner (Gazebo, ❌P47页), FUEL (Gazebo, ❌P48页)
+- Comparison table (below MWORKS box): three-column table with headers "规划组件", "运行环境", "备注", rows: "OpenBlocks | MWORKS | 纯Modelica实现", "Diff-Planner | Gazebo | 需ROS环境", "FUEL | Gazebo | 需ROS环境"
 
 Mandatory connections:
 - Thick solid arrows connecting each stage left-to-right for main pipeline flow.
