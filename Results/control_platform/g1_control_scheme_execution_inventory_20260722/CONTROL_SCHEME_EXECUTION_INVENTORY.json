@@ -11,12 +11,12 @@
     "offline_composition_catalog": "Config/control_platform/offline_composition_catalog.json"
   },
   "source_sha256": {
-    "control_scheme_catalog": "07c5a36da6842a06e4b88d5f9b2d887a93c5bf99c36fb5465f17ff3024821f03",
+    "control_scheme_catalog": "682caf2440f742f87134891a6fbef274dd7664da2e4ac7ce3a7ae5bf990e9f12",
     "classic_controller_final_matrix": "9c16fd2f08ef3442f190bafeff150be906a4e78ddead46d485ab7d01b680dd5b",
     "control_module_registry": "2b6f7af423fa7a4f712eb2aa477fc34225c80204173d378f189cbe666830e182",
     "controller_document_evidence_inventory": "649ab7dde4674ab04bc09317df0e1c743b0e6ed881cb22b9ef869e6aee9ceac7",
-    "model_operation_catalog": "4572e2e4a5f497de0d879b621b44de70b6a0e98412c5eaa088acef52906d2ed4",
-    "offline_composition_catalog": "aaef90b321c59748d69145594d4c19a88995271ef01449c0b323a20f6d71759e"
+    "model_operation_catalog": "26695122fd14b5312cb111ea5434c9b6fb9da466152f39beea0b7c36f5c2ce0c",
+    "offline_composition_catalog": "cd608c8d3d879ac69841cb46cec4b4de3f9b65199c83e2ff8edadbb442411e87"
   },
   "summary": {
     "active_top_level_entry_count": 48,
@@ -497,7 +497,7 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "fixed_awff_pid",
+      "scheme_id": "awff_pid",
       "display_name_zh": "抗积分饱和与参考前馈 PID",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -569,7 +569,7 @@
       "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "fixed_awff_l1_residual",
+      "scheme_id": "awff_l1_residual",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -646,7 +646,7 @@
       "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "fixed_awff_l1_indi",
+      "scheme_id": "awff_l1_indi",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -2730,7 +2730,7 @@
       "next_gate": "G4 model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "scheme_id": "linear_mpc_l1_indi",
       "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
       "category": "optimization_predictive",
       "entry_type": "mworks_control_profile",
@@ -2809,7 +2809,7 @@
       "next_gate": "G4 full-profile source-to-current-model mapping, then G5 CheckModel and minimum MIL"
     },
     {
-      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "scheme_id": "qp_nmpc_l1_indi_cbf",
       "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
       "category": "optimization_predictive",
       "entry_type": "mworks_control_profile",

@@ -56,6 +56,40 @@ const MODEL_TASK_CONFIG_WRITER = joinpath(PROJECT_ROOT, "Scripts", "ui", "model_
 const MODEL_TASK_ROUTE_CATALOG = joinpath(PROJECT_ROOT, "Config", "control_platform", "model_studio_task_routes_v1.toml")
 const ASSISTANT_RUNTIME_LOG = joinpath(PROJECT_ROOT, "Results", "ui_platform", "model_studio_assistant_runtime.log")
 
+function declared_model_class(model_file)
+    source = read(model_file, String)
+    within_match = match(r"(?m)^within\s+([^;]+);", source)
+    model_match = match(r"(?m)^model\s+([A-Za-z_]\w*)", source)
+    within_match === nothing || model_match === nothing ? "" :
+        String(within_match.captures[1]) * "." * String(model_match.captures[1])
+end
+
+function validate_model_task_runner(row, controller_id)
+    runner_class = String(get(row, "runner_class", ""))
+    runner_file = String(get(row, "runner_file", ""))
+    isempty(runner_class) && error("模型任务路由缺少 Runner 类：" * controller_id)
+    isempty(runner_file) && error("模型任务路由缺少 Runner 文件：" * controller_id)
+    isabspath(runner_file) && error("模型任务 Runner 文件必须是项目相对路径：" * controller_id)
+    resolved_file = normpath(joinpath(PROJECT_ROOT, runner_file))
+    isfile(resolved_file) || error("模型任务 Runner 文件不存在：" * runner_file)
+    declared_model_class(resolved_file) == runner_class ||
+        error("模型任务 Runner 类与文件声明不一致：" * controller_id)
+    source = read(resolved_file, String)
+    occursin(r"(?m)^\s*parameter\s+Integer\s+scenario_mode\b", source) ||
+        error("模型任务 Runner 缺少 scenario_mode：" * controller_id)
+    occursin(r"MultiModeTrajectory\s+reference\s*\(\s*scenario_mode\s*=\s*scenario_mode\b", source) ||
+        error("模型任务 Runner 缺少当前参考轨迹绑定：" * controller_id)
+    for parameter_name in (
+        "gust_force", "gust_start_s", "gust_duration_s", "mass_scale",
+        "inertia_scale", "rotor_effectiveness", "fault_start_s",
+        "fault_rotor_index", "fault_rotor_effectiveness",
+    )
+        occursin(Regex("parameter\\s+(?:Real|Integer)\\s+" * parameter_name * "\\b"), source) ||
+            error("模型任务 Runner 缺少公共参数 " * parameter_name * "：" * controller_id)
+    end
+    return runner_file
+end
+
 function load_model_task_routes()
     isfile(MODEL_TASK_ROUTE_CATALOG) || error("模型任务路由表不存在：" * MODEL_TASK_ROUTE_CATALOG)
     document = TOML.parsefile(MODEL_TASK_ROUTE_CATALOG)
@@ -67,13 +101,19 @@ function load_model_task_routes()
     for row in get(document, "route", Any[])
         controller_id = String(row["controller_id"])
         haskey(routes, controller_id) && error("模型任务路由表存在重复控制器：" * controller_id)
+        available = Bool(get(row, "available", false))
+        available && validate_model_task_runner(row, controller_id)
+        !available && isempty(String(get(row, "reason", ""))) &&
+            error("不可用模型任务路由缺少原因：" * controller_id)
         routes[controller_id] = (
-            available=Bool(get(row, "available", false)),
+            available=available,
             runner_class=String(get(row, "runner_class", "")),
+            runner_file=String(get(row, "runner_file", "")),
             boundary=String(get(row, "boundary", "")),
             reason=String(get(row, "reason", "")),
         )
     end
+    length(routes) == 48 || error("模型任务路由表必须覆盖 48 个控制器")
     return formal_task_ids, routes
 end
 
@@ -108,9 +148,9 @@ const CONTROLLER_CATALOG = [
     (id="fuzzy_pid", family="PID 族", display="fuzzy_pid [已实现]", status="已实现", openable=true),
     (id="neural_pid", family="PID 族", display="neural_pid [已实现]", status="已实现", openable=true),
     (id="fopid", family="PID 族", display="fopid [已实现]", status="已实现", openable=true),
-    (id="fixed_awff_pid", family="PID 族", display="fixed_awff_pid [已实现]", status="已实现", openable=true),
-    (id="fixed_awff_l1_residual", family="PID 族", display="fixed_awff_l1_residual [已实现]", status="已实现", openable=true),
-    (id="fixed_awff_l1_indi", family="PID 族", display="fixed_awff_l1_indi [已实现]", status="已实现", openable=true),
+    (id="awff_pid", family="PID 族", display="awff_pid [已实现]", status="已实现", openable=true),
+    (id="awff_l1_residual", family="PID 族", display="awff_l1_residual [已实现]", status="已实现", openable=true),
+    (id="awff_l1_indi", family="PID 族", display="awff_l1_indi [已实现]", status="已实现", openable=true),
     (id="pid_awff_linear_eso", family="PID 族", display="pid_awff_linear_eso [待接入]", status="待接入", openable=false),
 
     (id="lqr_baseline", family="线性鲁棒族", display="lqr_baseline [已实现]", status="已实现", openable=true),
@@ -143,8 +183,8 @@ const CONTROLLER_CATALOG = [
     (id="ilqr", family="预测控制族", display="ilqr [已实现]", status="已实现", openable=true),
     (id="mppi", family="预测控制族", display="mppi [已实现]", status="已实现", openable=true),
     (id="nmpc_outer", family="预测控制族", display="nmpc_outer [已实现]", status="已实现", openable=true),
-    (id="fixed_linear_mpc_l1_indi", family="预测控制族", display="fixed_linear_mpc_l1_indi [已实现]", status="已实现", openable=true),
-    (id="fixed_qp_nmpc_l1_indi_cbf", family="预测控制族", display="fixed_qp_nmpc_l1_indi_cbf [已实现]", status="已实现", openable=true),
+    (id="linear_mpc_l1_indi", family="预测控制族", display="linear_mpc_l1_indi [已实现]", status="已实现", openable=true),
+    (id="qp_nmpc_l1_indi_cbf", family="预测控制族", display="qp_nmpc_l1_indi_cbf [已实现]", status="已实现", openable=true),
 
     (id="se3_basic", family="几何/平坦族", display="se3_basic [已实现]", status="已实现", openable=true),
     (id="dfbc_basic", family="几何/平坦族", display="dfbc_basic [已实现]", status="已实现", openable=true),
@@ -1242,13 +1282,13 @@ const OFFLINE_PROFILES = Dict(
             return "当前控制器不可写入：" * reason
         end
         if controller.id == "official_pid"
-            return "ROTOR_COMMAND / OfficialPidFormalRunner"
+            return "ROTOR_COMMAND / OfficialPidRunner"
         elseif controller.id == "px4ctrl"
             return task.vehicle_count == 3 ?
-                "ROTOR_COMMAND / Px4CtrlThreeUavFigure8Runner" :
-                "ATTITUDE_THRUST / Px4CtrlFormalRunner"
+                "ROTOR_COMMAND / ThreeUavPx4CtrlFormationRunner" :
+                "ATTITUDE_THRUST / OpenBlocksPx4Ctrl"
         elseif controller.id == "linear_mpc"
-            return "ROTOR_COMMAND / 已登记多机规划模型"
+            return "ROTOR_COMMAND / OpenBlocksThreeUavFormation"
         end
         return "当前任务未登记输出边界"
     end

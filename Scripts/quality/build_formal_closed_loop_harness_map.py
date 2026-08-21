@@ -323,16 +323,34 @@ def whole_aircraft_sysblock_load_prerequisites(source_path: Path, scheme_id: str
     """
     source_text = source_path.read_text(encoding="utf-8")
     type_matches = re.findall(
-        r"^\s*((?:[A-Za-z_]\w*\.)*[A-Za-z_]\w*)\s+controller3_2(?:\s*\([^;]*\))?\s*;",
+        r"^\s*((?:[A-Za-z_]\w*\.)*[A-Za-z_]\w*)\s+"
+        r"(controller3_2|controller_core|controller|core)"
+        r"(?:\s*\([^;]*\))?"
+        r"(?:\s+annotation\([^;]*\))?\s*;",
         source_text,
         flags=re.MULTILINE,
     )
     if len(type_matches) != 1:
         raise HarnessMapError(
-            f"{scheme_id}: expected exactly one unqualified controller3_2 type in {source_path.name}, found {type_matches}"
+            f"{scheme_id}: expected exactly one controller component type in {source_path.name}, found {type_matches}"
         )
-    declared_type = type_matches[0]
+    declared_type, source_component = type_matches[0]
     controller_type = declared_type.rsplit(".", 1)[-1]
+    if "." in declared_type and declared_type.startswith("MoSimQuadrotorModel."):
+        model_path = ROOT / "Models" / Path(*declared_type.split("."))
+        model_path = model_path.with_suffix(".mo")
+        if model_path.is_file():
+            model_class = declared_type
+            return [
+                {
+                    "role": "project_controller_definition",
+                    "source_component": source_component,
+                    "source_declared_type": declared_type,
+                    "model_file": str(model_path.relative_to(ROOT)).replace("\\", "/"),
+                    "model_class": model_class,
+                    "model_sha256": sha256_file(model_path),
+                }
+            ]
     if not SYSBLOCK_DEFINITION_ROOT.is_dir():
         raise HarnessMapError(f"{scheme_id}: Sysblock definition root is missing: {SYSBLOCK_DEFINITION_ROOT}")
     declaration = re.compile(rf"^\s*(?:model|block)\s+{re.escape(controller_type)}\b", re.MULTILINE)
@@ -354,7 +372,7 @@ def whole_aircraft_sysblock_load_prerequisites(source_path: Path, scheme_id: str
         )
     definition = {
         "role": "embedded_sysblock_definition",
-        "source_component": "controller3_2",
+        "source_component": source_component,
         "source_declared_type": declared_type,
         "model_file": str(model_path.relative_to(ROOT)).replace("\\", "/"),
         "model_class": model_class,
@@ -380,7 +398,7 @@ def whole_aircraft_sysblock_load_prerequisites(source_path: Path, scheme_id: str
         raise HarnessMapError(f"{scheme_id}: compatibility alias does not extend {model_class}: {alias_path}")
     alias = {
         "role": "namespace_compatibility_alias",
-        "source_component": "controller3_2",
+        "source_component": source_component,
         "source_declared_type": declared_type,
         "model_file": str(alias_path.relative_to(ROOT)).replace("\\", "/"),
         "model_class": f"{source_namespace}.{controller_type}",

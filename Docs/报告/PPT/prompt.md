@@ -379,30 +379,6 @@ Do not use photo-realistic chat interface screenshots. Do not use actual MWORKS 
 
 ---
 
-
-- Distillation process: pale green #A9DFBF
-- MCP server: orange #F8C471
-- Syslab engine: deep blue #2E86C1
-- AI Agent: purple #D7BDE2
-- Data flow pipeline: light gray #ECF0F1 with blue arrows
-- Benefits box: light yellow #FFF9E6 with green checkmarks
-
-**Typography**:
-- Layer titles: Arial Bold, 14pt
-- Code snippets: Consolas monospace, 9pt
-- Process labels: Arial, 11pt
-- Annotations: Arial, 10pt
-- Benefits text: Arial, 10pt
-
-**Negative constraints**:
-- No photo-realistic chat interface screenshots
-- No actual MWORKS documentation screenshots
-- No decorative AI/robot imagery
-- Arrows must be orthogonal or 45°, no curves
-- No gradient fills
-
----
-
 ## PPT-12 OpenBlocks Planning Pipeline
 
 ```text
@@ -433,134 +409,6 @@ Mandatory connections:
 Negative constraints:
 Do not use photo-realistic obstacle environment rendering. Do not use curved pipeline arrows; only straight orthogonal connectors. Do not use gradient fills on stage boxes. Do not use 3D perspective depth cueing on obstacles. Do not add decorative planning path animations. Do not show screenshots of actual MWORKS interface. Keep obstacle blocks as simple gray cubes.
 ```
-
----
-
-
-
-**Mandatory nodes and visual elements**:
-
-**Large bounding box — MWORKS Sysplorer environment**:
-- Dashed border encompassing entire pipeline
-- Label at top-left: "MWORKS Sysplorer 内部实现"
-
-**Pipeline stages (left to right within MWORKS box)**:
-
-**Stage 1 — Obstacle map**:
-- Grid map icon: "障碍地图"
-- Parameters displayed:
-  - 障碍体数量: 7118个
-  - 栅格分辨率: 0.5m
-  - 地图范围: 50m × 50m × 5m
-- 3D obstacle visualization (simple voxel grid representation)
-
-**Stage 2 — A* search**:
-- Algorithm box: "A*搜索"
-- Process details:
-  - Cost function: f(n) = g(n) + h(n)
-  - Heuristic: Euclidean distance
-  - 8-connectivity search
-- Arrow labeled: "离散航点 (waypoints)"
-- Output: Sequence of waypoints (24个点)
-
-**Stage 3 — min-snap smoothing**:
-- Algorithm box: "min-snap平滑"
-- Mathematical formulation:
-```
-min ∫ ||d⁴r/dt⁴||² dt
-s.t. r(t) passes through waypoints
-     ||v(t)|| ≤ v_max
-     ||a(t)|| ≤ a_max
-```
-- Polynomial degree: 7th order
-- Arrow labeled: "连续参考轨迹"
-
-**Stage 4 — Trajectory output**:
-- Output bundle:
-  - Position: r(t) = [x(t), y(t), z(t)]
-  - Velocity: v(t) = dr/dt
-  - Acceleration: a(t) = d²r/dt²
-- Time discretization: 50Hz (Δt = 0.02s)
-- Total duration: 50s
-
-**Stage 5 — MWORKS controller**:
-- Controller box: "MWORKS控制器 (px4ctrl)"
-- Reference tracking input
-- Arrow to Plant (outside MWORKS boundary)
-
-**Key annotation callouts**:
-
-**Callout 1 (top-right, star-burst)**:
-```
-✅ 纯MWORKS Sysplorer内完成
-   - 无需Gazebo
-   - 无需外部规划器
-   - 7118个障碍体实时规划
-```
-
-**Callout 2 (middle-right)**:
-```
-A*搜索参数:
-━━━━━━━━━━
-栅格分辨率: 0.5m
-搜索空间: 100×100×10
-启发函数: Euclidean
-```
-
-**Callout 3 (bottom-right)**:
-```
-min-snap优化:
-━━━━━━━━━━━━
-多项式阶数: 7
-优化目标: 最小化snap
-约束: 速度≤3m/s, 加速度≤5m/s²
-```
-
-**Comparison note (bottom, outside MWORKS box)**:
-- Small comparison table:
-```
-┌─────────────────┬──────────┬─────────────┐
-│ 规划组件        │ 运行环境 │ 本页说明    │
-├─────────────────┼──────────┼─────────────┤
-│ OpenBlocks      │ MWORKS   │ ✅ 本图     │
-│ Diff-Planner    │ Gazebo   │ ❌ P47页    │
-│ FUEL            │ Gazebo   │ ❌ P48页    │
-└─────────────────┴──────────┴─────────────┘
-```
-
-**Visual elements**:
-- Waypoints: small colored dots along A* path
-- Smooth trajectory: continuous curve overlaid on waypoints
-- Obstacles: gray cubic blocks in 3D space
-
-**Connections**:
-- Thick solid arrows: main pipeline flow
-- Thin dashed arrows: parameter/configuration inputs
-- Blue highlight: trajectory output
-
-**Color scheme**:
-- MWORKS boundary box: light blue dashed border #3498DB
-- Obstacle map: gray #95A5A6
-- A* search: pale green #A9DFBF
-- min-snap: pale orange #F8C471
-- Trajectory output: vibrant blue #3498DB
-- Controller: deep blue #2E86C1
-- Annotation boxes: light yellow #FFF9E6 with green checkmarks
-- Comparison table: white with light gray borders
-
-**Typography**:
-- Stage titles: Arial Bold, 13pt
-- Process labels: Arial, 11pt
-- Mathematical formulas: Computer Modern, 11pt
-- Parameters: Consolas monospace, 9pt
-- Annotations: Arial, 10pt
-
-**Negative constraints**:
-- No photo-realistic obstacle environment rendering
-- No curved pipeline arrows
-- No gradient fills on stage boxes
-- No 3D perspective depth cueing on obstacles
-- No decorative planning path animations
 
 ---
 
@@ -606,14 +454,6 @@ Do not use photo-realistic component screenshots. Do not use curved arrows; only
 
 ---
 
-
-- No decorative network cable imagery
-- No gradient backgrounds on tiers
-- Arrows must be straight orthogonal/45°, no curves
-- No drop shadows on component boxes
-
----
-
 ## PPT-14 C99 Code Package Structure and Deployment Paths
 
 ```text
@@ -642,35 +482,6 @@ Mandatory connections:
 Negative constraints:
 Do not use actual code screenshots. Do not use photo-realistic file explorer windows. Do not use decorative compiler logos or IDE screenshots. Do not use curved arrows; only straight orthogonal connectors. Do not use gradient fills on path boxes. File tree must use monospace font and proper indentation. Keep folder and file icons simple geometric symbols, not detailed illustrations.
 ```
-
----
-
-
-- Solid arrows: main deployment flow
-- Dashed arrows: build/compile processes
-- Branch points: from C99 package to three paths
-
-**Color scheme**:
-- File tree: pale blue #D6EAF8 with folder/file icons
-- Path 1 (SIL): pale green #A9DFBF
-- Path 2 (ROS): pale orange #F8C471
-- Path 3 (Embedded): pale purple #D7BDE2
-- Comparison table: white with light gray borders
-- Feature annotation: light yellow #FFF9E6 with green checkmarks
-
-**Typography**:
-- File tree: Consolas monospace, 10pt
-- Path labels: Arial Bold, 12pt
-- Process steps: Arial, 10pt
-- Table: Consolas monospace, 9pt
-- Annotations: Arial, 10pt
-
-**Negative constraints**:
-- No actual code screenshots
-- No photo-realistic file explorer windows
-- No decorative compiler logos
-- Arrows must be orthogonal, no curved connectors
-- No gradient fills on path boxes
 
 ---
 
@@ -708,49 +519,6 @@ Negative constraints:
 Do not use photo-realistic sensor hardware images. Do not use actual RViz point cloud screenshots. Do not use decorative sensor icons; keep them simple geometric symbols. Do not use curved arrows; only straight orthogonal connectors. Do not use gradient fills on fusion boxes. Keep algorithm boxes showing process steps as text lists, not flowcharts within boxes.
 ```
 
----
-
-
-
----
-
-## PPT-16 Diff-Planner Differential Flatness Trajectory Optimization
-
-```text
-Figure Subject:
-Create a strict six-layer vertical pipeline diagram showing Diff-Planner differential flatness trajectory optimization: FAST-LIO point cloud map input, ESDF distance field construction with gradient computation, B-spline trajectory parameterization, optimization objective with snap minimization and obstacle penalty, L-BFGS gradient descent solver, and optimized trajectory output. Include right-side constraints box, advantages box, and bottom warning label. Use a white background, flat vector graphics, black text, pale blue for input, pale green for ESDF, pale orange for parameterization, vibrant blue for optimization, deep blue for solver, and light yellow for advantages.
-
-Diagram type:
-Six-layer vertical optimization pipeline with mathematical formulations.
-
-Layout:
-Use a 16:9 horizontal canvas. Place six main layers vertically from top to bottom occupying the left 70% of canvas width. On the right 30%, place a constraints box at middle height and an advantages box below it. At the bottom outside main pipeline, place a warning annotation box. Use straight orthogonal connectors; no curves. Display mathematical formulas prominently in Computer Modern font.
-
-Mandatory nodes:
-- Top layer (pale blue): "FAST-LIO点云地图（实时更新）" with sparse point cloud icon, update frequency 20Hz, map size 50m×50m×5m
-- Second layer (pale green): "可微距离场构建 (ESDF)" showing Euclidean Signed Distance Field with resolution 0.2m, update frequency 10Hz, mathematical representation showing d(x) = min ||x - x_obs|| and gradient ∇d(x) = (x - x_nearest) / ||x - x_nearest||; include key property box "✅ 可微特性:" listing 距离梯度可计算, 梯度回传到轨迹参数, 加速收敛速度
-- Third layer (pale orange): "轨迹参数化 (B样条/多项式)" with B-spline curve visualization, representation showing r(t) = Σ Pᵢ · Bᵢ(t) for 7阶多项式, where Pᵢ are control points (optimization variables) and Bᵢ(t) are B-spline basis functions
-- Fourth layer (vibrant blue): "优化目标函数" with large prominent mathematical formulation: min J = ∫₀ᵀ (||snap||² + λ_obs·C_obs + λ_time·1) dt, where snap = d⁴r/dt⁴ (smoothness), C_obs = max(0, d_safe - d(r))² (obstacle penalty), T is total trajectory time (time optimal)
-- Fifth layer (deep blue): "梯度下降求解器" showing L-BFGS or Adam optimizer, convergence criterion ||∇J|| < ε, performance metrics: 求解时间 <10ms, 优化频率 100Hz, 迭代次数 10-20次
-- Sixth layer (purple): Output bundle showing optimized trajectory r*(t), velocity v*(t) = dr*/dt, acceleration a*(t) = d²r*/dt², with arrow to "MWORKS控制器跟踪"
-- Right-side constraints box (white with border): "动力学可行性约束:" showing ||v(t)|| ≤ v_max = 3.0 m/s, ||a(t)|| ≤ a_max = 5.0 m/s²; "碰撞避免约束:" showing d(r(t)) ≥ d_safe = 0.5 m; "时间约束:" showing T_min ≤ T ≤ T_max
-- Right-side advantages box (light yellow): "可微框架优势:" with three checkmarked items "✅ 梯度信息直接回传" (障碍约束→轨迹参数, 避免盲目搜索, 收敛速度快1个数量级), "✅ 实时重规划" (求解时间 <10ms, 在线调整轨迹, 遇障碍立即响应), "✅ 动力学保证" (速度/加速度约束, snap最小化平滑, 可执行性验证)
-- Bottom warning box (pale red with orange border): "⚠ 注意: Diff-Planner是Gazebo/ROS组件 (非MWORKS，运行于WSL2/ROS环境)"
-
-Mandatory connections:
-- Solid arrows connecting each layer vertically for main pipeline flow.
-- Dashed arrows for gradient backpropagation from solver to parameterization layer.
-- Red arrows for constraint violation feedback from optimization to constraints box.
-
-Negative constraints:
-Do not use photo-realistic RViz visualizations. Do not use actual trajectory animation frames. Do not use decorative optimization convergence plots. Do not use curved arrows; only straight orthogonal connectors. Do not use gradient fills on major boxes. Mathematical formulas must use Computer Modern font or similar serif math font, not Arial. Distance field visualization should be a simple gradient heatmap, not detailed 3D rendering.
-```
-
----
-
-
-
----
 
 ## PPT-17 FUEL Autonomous Exploration Architecture
 
@@ -788,83 +556,6 @@ Mandatory connections:
 Negative constraints:
 Do not use photo-realistic exploration screenshots. Do not use actual RViz frontier visualization. Do not use decorative robot or drone imagery. Do not use curved arrows; only straight orthogonal connectors. Do not use gradient fills on major boxes. Keep occupancy grid visualization simple with three distinct colors (white/gray/black), not complex shading. Frontier points should be simple colored markers, not detailed 3D visualizations.
 ```
-
----
-
-
-
-**分层决策优势**:
-```
-✅ 全局+局部解耦
-   - 全局层: 决策去哪里
-   - 局部层: 规划怎么去
-   - 互不干扰，职责清晰
-
-✅ 信息增益驱动
-   - 自主决策探索方向
-   - 最大化信息收集
-   - 无需预设路径
-
-✅ 探索效率接近最优
-   - 贪心策略+路径优化
-   - 避免重复探索
-   - 快速覆盖未知区域
-```
-
-**Exploration metrics box** (bottom-right):
-```
-典型探索性能:
-━━━━━━━━━━━━━━
-探索空间: 50m×50m×5m
-探索时长: 180s
-覆盖率: 95%
-Frontier总数: 28个
-平均信息增益: 11.3 m³
-```
-
-**Bottom annotation — Gazebo/ROS component label**:
-```
-⚠ 注意: FUEL是Gazebo/ROS组件
-         (非MWORKS，运行于WSL2/ROS环境)
-```
-
-**Visual elements**:
-- Frontier points: colored markers on occupancy grid
-- Information gain heatmap: gradient coloring for I(Fᵢ)
-- Selected target: highlighted with star icon
-- Planned path: smooth curve overlaid on grid
-
-**Connections**:
-- Solid arrows: main decision/planning flow
-- Dashed arrows: evaluation feedback
-- Thick arrows: target output and trajectory output
-
-**Color scheme**:
-- FAST-LIO input: pale blue #AED6F1
-- Global layer: pale green #A9DFBF
-- Local layer: pale orange #F8C471
-- Frontier extraction: light purple #D7BDE2
-- Information gain: gradient yellow-to-red
-- Path planning: vibrant blue #3498DB
-- Controller output: deep blue #2E86C1
-- Characteristics box: light yellow #FFF9E6 with green checkmarks
-- Metrics box: light cream #FFFACD
-- Warning box: pale red #F5B7B1 with orange border
-
-**Typography**:
-- Layer titles: Arial Bold, 14pt
-- Stage labels: Arial Bold, 12pt
-- Mathematical formulas: Computer Modern, 11pt
-- Process details: Arial, 10pt
-- Annotations: Arial, 10pt
-- Metrics: Consolas monospace, 10pt
-
-**Negative constraints**:
-- No photo-realistic exploration screenshots
-- No actual RViz frontier visualization
-- No decorative robot/drone imagery
-- Arrows must be orthogonal, no curved connectors
-- No gradient fills on major boxes
 
 ---
 

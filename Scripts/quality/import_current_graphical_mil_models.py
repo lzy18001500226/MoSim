@@ -20,6 +20,7 @@ if str(SCRIPT_DIR) not in sys.path:
 
 from current_model_entry_map_lib import (
     CATALOG_PATH,
+    CONTROL_ORDER_PATH,
     SINGLE_UAV_ORDER_PATH,
     INVENTORY_PATH,
     MappingError,
@@ -95,6 +96,21 @@ def ensure_integrated_chains_package_slot(apply: bool) -> str:
         return "missing"
     entries.append("IntegratedChains")
     write_utf8_lf(SINGLE_UAV_ORDER_PATH, "\n".join(entries) + "\n")
+    return "created"
+
+
+def ensure_implementations_package_slot(apply: bool) -> str:
+    """Ensure the generated graphical-import package is visible to Control."""
+
+    if not CONTROL_ORDER_PATH.is_file():
+        raise MappingError(f"Control package order is missing: {repo_path(CONTROL_ORDER_PATH)}")
+    entries = CONTROL_ORDER_PATH.read_text(encoding="utf-8").splitlines()
+    if "Implementations" in entries:
+        return "unchanged"
+    if not apply:
+        return "missing"
+    entries.append("Implementations")
+    write_utf8_lf(CONTROL_ORDER_PATH, "\n".join(entries) + "\n")
     return "created"
 
 
@@ -235,6 +251,7 @@ def run(
     full_profile_plan = [] if scoped_import else full_profile_runner_plan()
     statuses: dict[str, str] = {}
     if not scoped_import:
+        statuses[repo_path(CONTROL_ORDER_PATH)] = ensure_implementations_package_slot(apply)
         statuses[repo_path(SINGLE_UAV_ORDER_PATH)] = ensure_integrated_chains_package_slot(apply)
     previous_package_candidates = predecessor_package_file_texts(full_plan, full_support_plan)
     expected_package_files = package_file_texts(full_plan, full_support_plan)

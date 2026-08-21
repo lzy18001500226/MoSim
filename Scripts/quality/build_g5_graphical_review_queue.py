@@ -123,33 +123,33 @@ def static_indicators(path: Path, *, model_class_override: str | None = None) ->
 
 FULL_PROFILE_GRAPHICAL_TARGETS: dict[str, dict[str, str]] = {
     "awff_pid": {
-        "source_controller": "AWFF_FullControllerEquation_Sysblock",
-        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
-        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_FullControllerFlatGraphical_Sysblock",
+        "source_controller": "AwffPidFullGraphicalController",
+        "model_file": "Models/MoSimQuadrotorModel/Control/PidFamily/AwffPidFullGraphicalController.mo",
+        "model_class": "MoSimQuadrotorModel.Control.PidFamily.AwffPidFullGraphicalController",
         "target_kind": "native_flat_awff_graphical_controller_core",
     },
     "awff_l1_residual": {
-        "source_controller": "AWFF_L1ResidualControllerEquation_Sysblock",
-        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
-        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
+        "source_controller": "AwffL1ResidualGraphicalController",
+        "model_file": "Models/MoSimQuadrotorModel/Control/IntegratedChains/AwffL1Residual/AwffL1ResidualGraphicalController.mo",
+        "model_class": "MoSimQuadrotorModel.Control.IntegratedChains.AwffL1Residual.AwffL1ResidualGraphicalController",
         "target_kind": "nested_native_l1_residual_graphical_controller_core",
     },
     "awff_l1_indi": {
-        "source_controller": "AWFF_INDIControllerEquation_Sysblock",
-        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
-        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock",
+        "source_controller": "AwffL1IndiGraphicalController",
+        "model_file": "Models/MoSimQuadrotorModel/Control/IntegratedChains/AwffL1Indi/AwffL1IndiGraphicalController.mo",
+        "model_class": "MoSimQuadrotorModel.Control.IntegratedChains.AwffL1Indi.AwffL1IndiGraphicalController",
         "target_kind": "nested_native_l1_indi_graphical_controller_core",
     },
     "linear_mpc_l1_indi": {
-        "source_controller": "AWFF_LinearMPCOuterLoopControllerEquation_Sysblock",
-        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
-        "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
+        "source_controller": "LinearMpcL1IndiGraphicalController",
+        "model_file": "Models/MoSimQuadrotorModel/Control/IntegratedChains/LinearMpcL1Indi/LinearMpcL1IndiGraphicalController.mo",
+        "model_class": "MoSimQuadrotorModel.Control.IntegratedChains.LinearMpcL1Indi.LinearMpcL1IndiGraphicalController",
         "target_kind": "nested_native_linear_mpc_l1_indi_graphical_controller_core",
     },
     "qp_nmpc_l1_indi_cbf": {
-        "source_controller": "AWFF_QPNMPCSafetyController_Sysblock",
-        "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
-        "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL",
+        "source_controller": "QpNmpcL1IndiCbfCore",
+        "model_file": "Models/MoSimQuadrotorModel/Control/Optimization/QpNmpcL1IndiCbf/QpNmpcL1IndiCbfGraphicalController.mo",
+        "model_class": "MoSimQuadrotorModel.Control.Optimization.QpNmpcL1IndiCbf.QpNmpcL1IndiCbfGraphicalController",
         "target_kind": "native_direct_qp_nmpc_safety_graphical_controller_core",
     },
 }
@@ -160,10 +160,15 @@ def full_profile_internal_target(scheme_id: str, source_wrapper_path: Path) -> d
     if spec is None:
         raise QueueError(f"No full-profile graphical target is registered for {scheme_id}")
     text = source_wrapper_path.read_text(encoding="utf-8")
-    match = re.search(r"^\s*([A-Za-z_]\w*)\s+controller3_2\b", text, re.MULTILINE)
+    match = re.search(
+        r"^\s*((?:[A-Za-z_]\w*\.)*[A-Za-z_]\w*)\s+"
+        r"(?:controller3_2|controller_core|controller|core)\b",
+        text,
+        re.MULTILINE,
+    )
     if not match:
         raise QueueError(f"Cannot locate controller3_2 inside full-profile source wrapper: {source_wrapper_path}")
-    controller_name = match.group(1)
+    controller_name = match.group(1).rsplit(".", 1)[-1]
     if controller_name != spec["source_controller"]:
         raise QueueError(
             f"Full-profile source wrapper {source_wrapper_path} references {controller_name}, expected {spec['source_controller']}"

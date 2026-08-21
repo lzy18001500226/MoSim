@@ -87,79 +87,96 @@ SPECIAL_PRIMARY_SOURCES = {
     / "Models"
     / "MoSimQuadrotorModel"
     / "Control"
-    / "Implementations"
-    / "PidFamily"
-    / "AWFF_PID_Sysblock_Demo.mo",
+    / "PID"
+    / "OfficialPidGraphicalCore.mo",
     # These historical Wave-A entries were CFunction wrappers.  Their direct
     # graphical counterparts are generated through the official Sysplorer API
     # and become the current G5 review targets; the wrappers remain intact as
     # compatibility and formula-provenance artifacts.
     "lqr_baseline": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "wave_a"
-    / "MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "lqr_baseline"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_LQR_DIRECT_GRAPHICAL_MIL.mo",
     "lqi_baseline": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "wave_a"
-    / "MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "lqi_baseline"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_LQI_DIRECT_GRAPHICAL_MIL.mo",
     "backstepping_baseline": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "wave_a"
-    / "MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "backstepping_baseline"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_BACKSTEPPING_DIRECT_GRAPHICAL_MIL.mo",
     # The next classic batch follows the same direct graphical route. Each
     # source is built through the official Sysplorer API from its documented
     # current law, while the historical CFunction wrappers remain provenance.
     "pole_placement_luenberger": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "classic"
-    / "MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "pole_placement_luenberger"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_POLE_PLACEMENT_LUENBERGER_DIRECT_GRAPHICAL_MIL.mo",
     "mrac": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "classic"
-    / "MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "mrac"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_MRAC_DIRECT_GRAPHICAL_MIL.mo",
     "ndi": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "classic"
-    / "MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "ndi"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_NDI_DIRECT_GRAPHICAL_MIL.mo",
     "fopid": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "classic"
-    / "MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "fopid"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_FOPID_DIRECT_GRAPHICAL_MIL.mo",
     "h2_state_feedback": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "classic"
-    / "MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "h2_state_feedback"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_H2_STATE_FEEDBACK_DIRECT_GRAPHICAL_MIL.mo",
     "hinf_hover_wrench": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "classic"
-    / "MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "hinf_hover_wrench"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_HINF_HOVER_WRENCH_DIRECT_GRAPHICAL_MIL.mo",
     "terminal_smc": ROOT
     / "Results"
     / "control_platform"
@@ -174,32 +191,40 @@ SPECIAL_PRIMARY_SOURCES = {
     # wrappers remain compatibility and formula-provenance artifacts.
     "dfbc_high_order_attitude": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "dfbc"
-    / "MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "dfbc_high_order_attitude"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_DFBC_HIGH_ORDER_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
     "dfbc_high_order_bodyrate": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "dfbc"
-    / "MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "dfbc_high_order_bodyrate"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_DFBC_HIGH_ORDER_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
     "dfbc_smooth_robust_attitude": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "dfbc"
-    / "MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "dfbc_smooth_robust_attitude"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_DFBC_SMOOTH_ROBUST_ATTITUDE_DIRECT_GRAPHICAL_MIL.mo",
     "dfbc_smooth_robust_bodyrate": ROOT
     / "Results"
-    / "control_platform"
-    / "g5_graphical_structure_review_20260722"
-    / "direct_graphical_sources"
-    / "dfbc"
-    / "MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
+    / "model_library_refactor"
+    / "controller_route_execution_current"
+    / "runs"
+    / "dfbc_smooth_robust_bodyrate"
+    / "raw"
+    / "frozen_bound_sources"
+    / "01_MoSim_G5_DFBC_SMOOTH_ROBUST_BODYRATE_DIRECT_GRAPHICAL_MIL.mo",
 }
 
 DIRECT_GRAPHICAL_PRIMARY = frozenset(
@@ -301,9 +326,14 @@ GRAPHICAL_SUPPORT_SOURCES = (
         "source_file": ROOT
         / "Results"
         / "control_platform"
-        / "p10_mworks_gap_closeout_20260718"
-        / "hinf_hover_wrench"
-        / "models"
+        / "behavior_equivalence_20260814"
+        / "legacy_head_snapshot"
+        / "tree"
+        / "Models"
+        / "MoSimQuadrotorModel"
+        / "Control"
+        / "Implementations"
+        / "ClassicRobust"
         / "MoSim_P10_Hinf_WrenchAdapter_CFunction_Sysblock.mo",
         "purpose": "Shared CFunction bridge required by the P10 H-infinity hover-wrench graphical wrapper.",
         "required_by_scheme_ids": (
@@ -316,9 +346,14 @@ GRAPHICAL_SUPPORT_SOURCES = (
         "source_file": ROOT
         / "Results"
         / "control_platform"
-        / "p10_mworks_gap_closeout_20260718"
-        / "dfbc_family"
-        / "models"
+        / "behavior_equivalence_20260814"
+        / "legacy_head_snapshot"
+        / "tree"
+        / "Models"
+        / "MoSimQuadrotorModel"
+        / "Control"
+        / "Implementations"
+        / "GeometricFlatness"
         / "MoSim_P10_DFBC_Family_CFunction_Sysblock.mo",
         "purpose": "Shared executable DFBC bridge required by the four P10 high-order and smooth-robust DFBC wrappers. It restores model-check dependency resolution only; G5 still requires a separately readable internal control-law topology.",
         "required_by_scheme_ids": (
@@ -334,9 +369,14 @@ GRAPHICAL_SUPPORT_SOURCES = (
         "source_file": ROOT
         / "Results"
         / "control_platform"
-        / "g5_graphical_structure_review_20260722"
-        / "direct_graphical_sources"
-        / "fixed_chain"
+        / "behavior_equivalence_20260814"
+        / "legacy_head_snapshot"
+        / "tree"
+        / "Models"
+        / "MoSimQuadrotorModel"
+        / "Control"
+        / "Implementations"
+        / "Optimization"
         / "MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
         "purpose": "Readable native graphical QP/NMPC safety control-law core for the fixed QP/NMPC/L1/INDI/CBF chain. It replaces no whole-aircraft alias and is used only for G5 internal-topology review.",
         "required_by_scheme_ids": (
@@ -349,36 +389,46 @@ FULL_PROFILE_RUNNER_SPECS = {
         "runner_model": "AwffPidGraphicalRunner",
         "runner_file": INTEGRATED_CHAINS_ROOT / "AwffPidGraphicalRunner.mo",
         "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffPidGraphicalRunner",
-        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1AWFFSysblockClosedLoop.mo",
-        "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1AWFFSysblockClosedLoop",
+        "source_file": INTEGRATED_CHAINS_ROOT / "AwffPidGraphicalRunner.mo",
+        "source_model_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffPidGraphicalRunner",
+        "historical_source_file": ROOT / "Results" / "model_library_refactor" / "controller_route_execution_current" / "runs" / "fixed_awff_pid" / "raw" / "frozen_bound_sources" / "01_Example1AWFFSysblockClosedLoop.mo",
+        "historical_source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1AWFFSysblockClosedLoop",
     },
     "awff_l1_residual": {
         "runner_model": "AwffL1ResidualGraphicalRunner",
         "runner_file": INTEGRATED_CHAINS_ROOT / "AwffL1ResidualGraphicalRunner.mo",
         "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffL1ResidualGraphicalRunner",
-        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1L1SysblockClosedLoop.mo",
-        "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop",
+        "source_file": INTEGRATED_CHAINS_ROOT / "AwffL1ResidualGraphicalRunner.mo",
+        "source_model_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffL1ResidualGraphicalRunner",
+        "historical_source_file": ROOT / "Results" / "model_library_refactor" / "controller_route_execution_current" / "runs" / "fixed_awff_l1_residual" / "raw" / "frozen_bound_sources" / "01_Example1L1SysblockClosedLoop.mo",
+        "historical_source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop",
     },
     "awff_l1_indi": {
         "runner_model": "AwffL1IndiGraphicalRunner",
         "runner_file": INTEGRATED_CHAINS_ROOT / "AwffL1IndiGraphicalRunner.mo",
         "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffL1IndiGraphicalRunner",
-        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1INDISysblockClosedLoop.mo",
-        "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1INDISysblockClosedLoop",
+        "source_file": INTEGRATED_CHAINS_ROOT / "AwffL1IndiGraphicalRunner.mo",
+        "source_model_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffL1IndiGraphicalRunner",
+        "historical_source_file": ROOT / "Results" / "model_library_refactor" / "controller_route_execution_current" / "runs" / "fixed_awff_l1_indi" / "raw" / "frozen_bound_sources" / "01_Example1INDISysblockClosedLoop.mo",
+        "historical_source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1INDISysblockClosedLoop",
     },
     "linear_mpc_l1_indi": {
         "runner_model": "LinearMpcL1IndiGraphicalRunner",
         "runner_file": INTEGRATED_CHAINS_ROOT / "LinearMpcL1IndiGraphicalRunner.mo",
         "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.LinearMpcL1IndiGraphicalRunner",
-        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1LinearMPCSysblockClosedLoop.mo",
-        "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1LinearMPCSysblockClosedLoop",
+        "source_file": INTEGRATED_CHAINS_ROOT / "LinearMpcL1IndiGraphicalRunner.mo",
+        "source_model_class": f"{INTEGRATED_CHAINS_PACKAGE}.LinearMpcL1IndiGraphicalRunner",
+        "historical_source_file": ROOT / "Results" / "model_library_refactor" / "controller_route_execution_current" / "runs" / "fixed_linear_mpc_l1_indi" / "raw" / "frozen_bound_sources" / "01_Example1LinearMPCSysblockClosedLoop.mo",
+        "historical_source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1LinearMPCSysblockClosedLoop",
     },
     "qp_nmpc_l1_indi_cbf": {
         "runner_model": "QpNmpcL1IndiCbfGraphicalRunner",
         "runner_file": INTEGRATED_CHAINS_ROOT / "QpNmpcL1IndiCbfGraphicalRunner.mo",
         "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.QpNmpcL1IndiCbfGraphicalRunner",
-        "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Scenarios" / "Robustness" / "Example1QPNMPCSafetySysblockClosedLoop.mo",
-        "source_model_class": "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1QPNMPCSafetySysblockClosedLoop",
+        "source_file": INTEGRATED_CHAINS_ROOT / "QpNmpcL1IndiCbfGraphicalRunner.mo",
+        "source_model_class": f"{INTEGRATED_CHAINS_PACKAGE}.QpNmpcL1IndiCbfGraphicalRunner",
+        "historical_source_file": ROOT / "Results" / "model_library_refactor" / "controller_route_execution_current" / "runs" / "fixed_qp_nmpc_l1_indi_cbf" / "raw" / "frozen_bound_sources" / "01_Example1QPNMPCSafetySysblockClosedLoop.mo",
+        "historical_source_model_class": "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1QPNMPCSafetySysblockClosedLoop",
     },
 }
 
@@ -762,6 +812,12 @@ def full_profile_runner_plan() -> list[dict[str, Any]]:
             raise MappingError(
                 f"Current full-profile runner declaration mismatch: {target} declares {declared_class}, expected {target_class}"
             )
+        historical_source = spec.get("historical_source_file")
+        historical_class = str(spec.get("historical_source_model_class") or "")
+        if not isinstance(historical_source, Path) or not historical_source.is_file():
+            raise MappingError(f"Historical full-profile source is missing: {historical_source}")
+        if not historical_class:
+            raise MappingError(f"Historical full-profile source class is missing: {scheme_id}")
         plan.append(
             {
                 "scheme_id": scheme_id,
@@ -769,6 +825,9 @@ def full_profile_runner_plan() -> list[dict[str, Any]]:
                 "source_file": source,
                 "source_model_class": source_class,
                 "source_sha256": sha256_file(source),
+                "historical_source_file": historical_source,
+                "historical_source_model_class": historical_class,
+                "historical_source_sha256": sha256_file(historical_source),
                 "target_file": target,
                 "target_model_class": target_class,
                 "target_sha256": sha256_file(target),
@@ -788,9 +847,12 @@ def verify_full_profile_runners(plan: list[dict[str, Any]]) -> list[str]:
         errors.append("Experiment/SingleUav/package.order must list IntegratedChains")
     for item in plan:
         source = item["source_file"]
+        historical_source = item["historical_source_file"]
         target = item["target_file"]
         if sha256_file(source) != item["source_sha256"]:
             errors.append(f"Full-profile provenance source hash changed: {repo_path(source)}")
+        if sha256_file(historical_source) != item["historical_source_sha256"]:
+            errors.append(f"Historical full-profile source hash changed: {repo_path(historical_source)}")
         if not target.is_file():
             errors.append(f"Missing current full-profile runner: {repo_path(target)}")
             continue
@@ -1216,6 +1278,9 @@ def build_current_map(
                             "source_sha256": item["source_sha256"],
                             "source_model_class": item["source_model_class"],
                             "import_mode": "current_project_owned_runner_with_historical_source_provenance",
+                            "historical_source_file": repo_path(item["historical_source_file"]),
+                            "historical_source_sha256": item["historical_source_sha256"],
+                            "historical_source_model_class": item["historical_source_model_class"],
                         },
                         "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop.",
                     }

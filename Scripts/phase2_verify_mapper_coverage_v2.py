@@ -20,11 +20,11 @@ print(f"Total controllers: {len(schemes)}\n")
 # Manual mapping based on actual Adapter filenames
 ADAPTER_MAPPING = {
     # ROTOR_COMMAND boundary (5 controllers)
-    'fixed_awff_pid': 'AwffPidRotorCommandAdapter.mo',
-    'fixed_awff_l1_residual': 'AwffL1ResidualRotorCommandAdapter.mo',
-    'fixed_awff_l1_indi': 'AwffL1IndiRotorCommandAdapter.mo',
-    'fixed_linear_mpc_l1_indi': 'LinearMpcL1IndiRotorCommandAdapter.mo',
-    'fixed_qp_nmpc_l1_indi_cbf': 'QpNmpcL1IndiCbfRotorCommandAdapter.mo',
+    'awff_pid': 'AwffPidRotorCommandAdapter.mo',
+    'awff_l1_residual': 'AwffL1ResidualRotorCommandAdapter.mo',
+    'awff_l1_indi': 'AwffL1IndiRotorCommandAdapter.mo',
+    'linear_mpc_l1_indi': 'LinearMpcL1IndiRotorCommandAdapter.mo',
+    'qp_nmpc_l1_indi_cbf': 'QpNmpcL1IndiCbfRotorCommandAdapter.mo',
     'official_pid': 'OfficialPIDGraphicalRotorAdapter.mo',
 
     # BODY_RATE_THRUST boundary (2 controllers)

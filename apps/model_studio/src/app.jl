@@ -148,9 +148,9 @@ const CONTROLLER_CATALOG = [
     (id="fuzzy_pid", family="PID 族", display="fuzzy_pid [已实现]", status="已实现", openable=true),
     (id="neural_pid", family="PID 族", display="neural_pid [已实现]", status="已实现", openable=true),
     (id="fopid", family="PID 族", display="fopid [已实现]", status="已实现", openable=true),
-    (id="fixed_awff_pid", family="PID 族", display="fixed_awff_pid [已实现]", status="已实现", openable=true),
-    (id="fixed_awff_l1_residual", family="PID 族", display="fixed_awff_l1_residual [已实现]", status="已实现", openable=true),
-    (id="fixed_awff_l1_indi", family="PID 族", display="fixed_awff_l1_indi [已实现]", status="已实现", openable=true),
+    (id="awff_pid", family="PID 族", display="awff_pid [已实现]", status="已实现", openable=true),
+    (id="awff_l1_residual", family="PID 族", display="awff_l1_residual [已实现]", status="已实现", openable=true),
+    (id="awff_l1_indi", family="PID 族", display="awff_l1_indi [已实现]", status="已实现", openable=true),
     (id="pid_awff_linear_eso", family="PID 族", display="pid_awff_linear_eso [待接入]", status="待接入", openable=false),
 
     (id="lqr_baseline", family="线性鲁棒族", display="lqr_baseline [已实现]", status="已实现", openable=true),
@@ -183,8 +183,8 @@ const CONTROLLER_CATALOG = [
     (id="ilqr", family="预测控制族", display="ilqr [已实现]", status="已实现", openable=true),
     (id="mppi", family="预测控制族", display="mppi [已实现]", status="已实现", openable=true),
     (id="nmpc_outer", family="预测控制族", display="nmpc_outer [已实现]", status="已实现", openable=true),
-    (id="fixed_linear_mpc_l1_indi", family="预测控制族", display="fixed_linear_mpc_l1_indi [已实现]", status="已实现", openable=true),
-    (id="fixed_qp_nmpc_l1_indi_cbf", family="预测控制族", display="fixed_qp_nmpc_l1_indi_cbf [已实现]", status="已实现", openable=true),
+    (id="linear_mpc_l1_indi", family="预测控制族", display="linear_mpc_l1_indi [已实现]", status="已实现", openable=true),
+    (id="qp_nmpc_l1_indi_cbf", family="预测控制族", display="qp_nmpc_l1_indi_cbf [已实现]", status="已实现", openable=true),
 
     (id="se3_basic", family="几何/平坦族", display="se3_basic [已实现]", status="已实现", openable=true),
     (id="dfbc_basic", family="几何/平坦族", display="dfbc_basic [已实现]", status="已实现", openable=true),
