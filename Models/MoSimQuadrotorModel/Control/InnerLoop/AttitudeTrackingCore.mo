@@ -26,6 +26,12 @@ model AttitudeTrackingCore
     annotation(Placement(transformation(origin = {-110, -30}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Interfaces.RealInput thrust_baseline
     annotation(Placement(transformation(origin = {-110, -50}, extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Interfaces.RealInput roll_rate_mea
+    annotation(Placement(transformation(origin = {-110, -70}, extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Interfaces.RealInput pitch_rate_mea
+    annotation(Placement(transformation(origin = {-110, -90}, extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Interfaces.RealInput yaw_rate_mea
+    annotation(Placement(transformation(origin = {-110, -110}, extent = {{-10, -10}, {10, 10}})));
 
   // Output ports
   Modelica.Blocks.Interfaces.RealOutput amplitude_1
@@ -127,7 +133,7 @@ equation
   connect(desired_pitch_rad, pitch_error.u1);
   connect(pitch_mea, pitch_error.u2);
   connect(pitch_error.y, pitch_p.u);
-  connect(pitch_error.y, pitch_d.u);
+  connect(pitch_rate_mea, pitch_d.u);
   connect(pitch_p.y, pitch_pd.u1);
   connect(pitch_d.y, pitch_pd.u2);
   connect(pitch_pd.y, pitch_limit.u);
@@ -138,7 +144,7 @@ equation
   connect(desired_roll_rad, roll_error.u1);
   connect(roll_mea_sign.y, roll_error.u2);
   connect(roll_error.y, roll_p.u);
-  connect(roll_error.y, roll_d.u);
+  connect(roll_rate_mea, roll_d.u);
   connect(roll_p.y, roll_pd.u1);
   connect(roll_d.y, roll_pd.u2);
   connect(roll_pd.y, roll_limit.u);
