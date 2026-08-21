@@ -33,7 +33,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
 extent={{-92.5,-142.528},{92.5,142.528}})));
 
   // ── OpenBlocks map visualization ──────────────────────────────────────────────
-  MoSimQuadrotorModel.Guidance.Planning.OpenBlocksMapTruthDisplay navigationDisplay
+  MoSimQuadrotorModel.Environment.Maps.OpenBlocksMapTruthDisplay navigationDisplay
     "OpenBlocks environment map with obstacle walls; actual/reference positions from signals"
     annotation(Placement(transformation(origin={-380,105},
 extent={{-50,-35},{50,35}})));
