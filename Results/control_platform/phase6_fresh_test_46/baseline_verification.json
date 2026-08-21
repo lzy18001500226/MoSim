@@ -1,0 +1,57 @@
+{
+  "test_campaign": "Phase 6 Baseline Verification",
+  "test_date": "2026-08-22",
+  "purpose": "Verify that official_pid and px4_ctrl baselines pass 5m tracking threshold",
+  "acceptance_threshold_m": 5.0,
+  "trajectory": "50s ClimbPath (scenario_mode=0)",
+  "target_position": [10.0, 10.0, 15.0],
+  "results": {
+    "official_pid": {
+      "model_name": "MoSimQuadrotorModel.Experiment.Baselines.OfficialPidRunner",
+      "simulation_ok": true,
+      "position_final": [10.000661541385034, 9.99357099971414, 15.000000631375027],
+      "position_ref": [10.0, 10.0, 15.0],
+      "terminal_error_m": 0.0064629468571483365,
+      "status": "PASS",
+      "architecture_notes": {
+        "preprocessor": "WorldFramePassthrough",
+        "core": "OfficialPidGraphicalCore",
+        "router": "YawDampedAmplitudeRouter",
+        "mapper": "BaselineRotorMapper",
+        "esc_limit": 200,
+        "trajectory_params": {
+          "altitude_m": 2.0,
+          "takeoff_duration_s": 5.0,
+          "x_amplitude_m": 2.0,
+          "y_amplitude_m": 1.0,
+          "angular_rate_rad_s": 0.35
+        }
+      }
+    },
+    "px4_ctrl": {
+      "model_name": "MoSimQuadrotorModel.Experiment.SingleUav.Px4Ctrl.Px4CtrlRunner",
+      "simulation_ok": true,
+      "position_final": [10.000659240775947, 9.99914931863447, 15.000000064567155],
+      "position_ref": [10.0, 10.0, 15.0],
+      "terminal_error_m": 0.0010762235783047611,
+      "status": "PASS"
+    }
+  },
+  "summary": {
+    "total_baselines": 2,
+    "passed": 2,
+    "failed": 0,
+    "pass_rate": 1.0,
+    "official_pid_error_mm": 6.46,
+    "px4_ctrl_error_mm": 1.08,
+    "conclusion": "Both baselines confirmed working - error < 10mm vs 5m threshold",
+    "key_architectural_differences": [
+      "official_pid uses WorldFramePassthrough preprocessor before core",
+      "official_pid uses YawDampedAmplitudeRouter between core and mapper",
+      "official_pid uses BaselineRotorMapper (not GraphicalAttitudeThrustRotorPreview)",
+      "official_pid ESC limit is 200 rad/s (vs 110 in failing controllers)",
+      "official_pid has specific trajectory tuning parameters"
+    ],
+    "hypothesis_for_46_failures": "Missing preprocessor + wrong mapper + low ESC limit causing massive divergence"
+  }
+}
