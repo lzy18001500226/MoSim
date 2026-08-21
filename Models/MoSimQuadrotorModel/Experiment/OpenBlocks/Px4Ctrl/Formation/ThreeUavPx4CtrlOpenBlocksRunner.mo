@@ -79,7 +79,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
   MoSimQuadrotorModel.Experiment.Telemetry.RotorCommandChannel motor1_4(channel_index = 4) 
     annotation(Placement(transformation(origin = {431.25, -15.617}, extent = {{-28.75, -30}, {28.75, 30}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_1(
-    initial_position_m  = {-41, -26, 1.5},
+    initial_position_m  = {-41, -26, 2.28},
     rotor_effectiveness = rotor_effectiveness_1,
     gust_force          = gust_force,
     gust_start_s        = gust_start_s,
@@ -121,7 +121,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
   MoSimQuadrotorModel.Experiment.Telemetry.RotorCommandChannel motor2_4(channel_index = 4) 
     annotation(Placement(transformation(origin = {431.25, -410.617}, extent = {{-28.75, -30}, {28.75, 30}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_2(
-    initial_position_m  = {-43, -26, 1.5},
+    initial_position_m  = {-43, -26, 2.28},
     rotor_effectiveness = rotor_effectiveness_2,
     gust_force          = gust_force,
     gust_start_s        = gust_start_s,
@@ -163,7 +163,7 @@ extent={{-92.5,-142.528},{92.5,142.528}})));
   MoSimQuadrotorModel.Experiment.Telemetry.RotorCommandChannel motor3_4(channel_index = 4) 
     annotation(Placement(transformation(origin = {431.25, -805.617}, extent = {{-28.75, -30}, {28.75, 30}})));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_3(
-    initial_position_m  = {-41, -28, 1.32},
+    initial_position_m  = {-41, -28, 2.1},
     rotor_effectiveness = rotor_effectiveness_3,
     gust_force          = gust_force,
     gust_start_s        = gust_start_s,

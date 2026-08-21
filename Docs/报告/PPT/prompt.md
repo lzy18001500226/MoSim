@@ -218,7 +218,7 @@ Mandatory nodes:
 - Right section, upper: "MWORKS format\nq_MWORKS = [w, x, y, z]\n           ↑ scalar first"
 - Right section, below: "PX4 format\nq_PX4 = [x, y, z, w]\n        ↑ vector first"
 - Right section, center: Code snippet box "// Adapter layer code\nvoid convertQuaternion(\n    const double q_mworks[4],  // [w,x,y,z]\n    double q_px4[4]            // [x,y,z,w]\n) {\n    q_px4[0] = q_mworks[1];  // x\n    q_px4[1] = q_mworks[2];  // y\n    q_px4[2] = q_mworks[3];  // z\n    q_px4[3] = q_mworks[0];  // w\n}"
-- Right section, bottom-right: Warning box "⚠ Critical: Quaternion order mismatch\ncauses 180° attitude errors!\nAlways use Adapter layer conversion."
+- Right section, bottom-right: Warning box (pale yellow with red border) "⚠ 四元数顺序错误会导致180°姿态偏差\n必须通过Adapter层转换"
 
 Mandatory connections:
 - Bidirectional horizontal arrow between ENU/FLU and NED/FRD coordinate system boxes.
@@ -246,12 +246,12 @@ Use a 16:9 horizontal canvas. Stack five main layers vertically down the left 70
 
 Mandatory nodes:
 - Layer 1 (pale blue): "Profile Config\nTrajectory type: hover/climb/figure8/spiral\nController selection: 48 options\nFault injection settings\nEvaluation metrics"
-- Layer 2 (vibrant green): "Sysblock Controller Core\nPosition control block\nAttitude control block\nControl allocation block" with star-burst annotation callout "48个控制器全部改为Sysblock图形建模"
-- Layer 3 (orange): "Adapter\nENU/FLU ↔ NED/FRD" with four labeled output branches "ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"
-- Layer 4 (deep blue): "Sunray150 MultiBody Plant\n6-DOF dynamics\n共享Plant确保同条件对比"
-- Layer 5, left box (purple): "Output Collection\nPosition trajectory\nAttitude response\nControl inputs"
-- Layer 5, right box (purple): "Unified Evaluation Metrics\nRMSE (position tracking)\nResponse time\nOvershoot percentage"
-- Right panel, fault injection (red): "Fault Injection\nWind disturbance: 10 m/s\nParameter mismatch: ±30%\nMotor efficiency fault: 60%"
+- Layer 2 (pale green): "Sysblock Controller Core\nPosition control block\nAttitude control block\nControl allocation block" with star-burst annotation callout "48个控制器全部改为Sysblock图形建模"
+- Layer 3 (pale orange): "Adapter\nENU/FLU ↔ NED/FRD" with four labeled output branches "ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"
+- Layer 4 (light blue): "Sunray150 MultiBody Plant\n6-DOF dynamics\n共享Plant确保同条件对比"
+- Layer 5, left box (pale purple): "Output Collection\nPosition trajectory\nAttitude response\nControl inputs"
+- Layer 5, right box (pale purple): "Unified Evaluation Metrics\nRMSE (position tracking)\nResponse time\nOvershoot percentage"
+- Right panel, fault injection (pale red): "Fault Injection\nWind disturbance: 10 m/s\nParameter mismatch: ±30%\nMotor efficiency fault: 60%"
 - Right panel, annotation box 1: "✅ 核心架构:\nMoSimQuadrotorModel.Experiment.Baselines"
 - Right panel, annotation box 2: "✅ 统一验证条件:\n- 同一Plant模型\n- 同一评价指标\n- 同一扰动注入"
 - Right panel, numerical summary: "控制器总数: 48个\n有Runner: 46个\n缺失: 2个\n(fixed_awff_pid, pid_awff_linear_eso)"
@@ -284,7 +284,7 @@ Use a 16:9 horizontal canvas. Place one large root node at top center. Draw seve
 
 Mandatory nodes:
 - Root (deep blue): "控制算法族 (48个控制器)"
-- Family 1 (pale green): "PID改进族 (9个)" with controllers: "cascade_pid", "official_pid ★工程基线", "awff 前馈增强", "pid_linear_eso", "incremental_pid", "fuzzy_pid", "adaptive_pid", "pid_awff", "setpoint_prefilter_pid"
+- Family 1 (pale green): "PID改进族 (9个)" with controllers: "cascade_pid", "px4ctrl ★官方基线", "official_pid ★工程基线", "awff 前馈增强", "pid_linear_eso", "incremental_pid", "fuzzy_pid", "adaptive_pid", "setpoint_prefilter_pid"
 - Family 2 (pale blue): "线性/鲁棒控制 (4个)" with controllers: "lqr", "lqg", "h_infinity", "robust_pole_placement"
 - Family 3 (pale orange): "滑模控制 (6个)" with controllers: "smc 传统滑模", "stc Super-Twisting", "adaptive_smc", "terminal_smc", "integral_smc", "fast_terminal_smc"
 - Family 4 (pale purple): "最优/预测控制 (5个)" with controllers: "mpc 线性MPC", "nmpc 非线性MPC", "empc 经济MPC", "tube_mpc", "adaptive_mpc"
