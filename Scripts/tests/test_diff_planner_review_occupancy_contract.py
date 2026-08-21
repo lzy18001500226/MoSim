@@ -4,6 +4,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER = ROOT / "Scripts" / "sunray" / "run_px4ctrl_ego_single_gate.sh"
 GRID_CONFIG = ROOT / "Config" / "rviz" / "sunray_ros1_goal4_diff_grid3d_review.rviz"
+POINTCLOUD_CONFIG = ROOT / "Config" / "rviz" / "sunray_ros1_goal4_diff_pointcloud_review.rviz"
 CONTINUOUS_NODE = ROOT / "Scripts" / "ros" / "continuous_occupancy_review.py"
 
 
@@ -42,3 +43,11 @@ def test_goal4_grid_defaults_to_continuous_map_and_keeps_planner_empty_maps_diag
     for diagnostic in (raw, accumulated, inflated):
         assert "Enabled: false" in diagnostic
         assert "Value: false" in diagnostic
+
+
+def test_goal4_review_views_follow_the_uav_local_frame() -> None:
+    for config in (POINTCLOUD_CONFIG, GRID_CONFIG):
+        text = config.read_text(encoding="utf-8")
+
+        assert "Fixed Frame: world" in text
+        assert "Target Frame: uav1/base_link" in text

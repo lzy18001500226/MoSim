@@ -502,4 +502,4 @@ color={0,0,127}));
     Diagram(coordinateSystem(extent={{-650,-400},{830,280}},
   grid={5,5})),
     __MWORKS(version = "26.3.0"));
-end Px4CtrlRunner;
+end Px4CtrlOpenBlocksRunner;
