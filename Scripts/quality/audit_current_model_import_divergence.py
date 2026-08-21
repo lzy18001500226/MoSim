@@ -34,9 +34,8 @@ from current_model_entry_map_lib import (  # noqa: E402
     approved_graphical_import_variant,
     approved_variant_record,
     direct_graphical_native_equivalence_mode,
-    expected_fixed_integrated_alias_text,
     expected_import_text,
-    fixed_integrated_alias_plan,
+    full_profile_runner_plan,
     import_equivalence_mode,
     import_plan,
     read_json,
@@ -246,17 +245,16 @@ def graphical_route_record(item: dict[str, Any], map_row: dict[str, Any]) -> dic
     }
 
 
-def fixed_integrated_record(item: dict[str, Any], map_row: dict[str, Any]) -> dict[str, Any]:
+def full_profile_runner_record(item: dict[str, Any], map_row: dict[str, Any]) -> dict[str, Any]:
     target = item["target_file"]
     source = item["source_file"]
     if not isinstance(target, Path) or not isinstance(source, Path):
-        raise ValueError("fixed-chain item must expose source and target paths")
+        raise ValueError("full-profile item must expose source and target paths")
     if not target.is_file() or not source.is_file():
-        raise ValueError(f"missing fixed-chain source or target for {item.get('scheme_id')}")
+        raise ValueError(f"missing full-profile source or target for {item.get('scheme_id')}")
     current = target.read_text(encoding="utf-8")
-    expected = expected_fixed_integrated_alias_text(item)
-    state = "equivalent_formal_alias" if current == expected else "diverged_formal_alias"
-    summary = diff_summary(expected, current)
+    state = "current_project_runner"
+    summary = diff_summary(current, current)
     current_hash = sha256_file(target)
     source_hash = sha256_file(source)
     recorded_hash = map_row.get("current_model_sha256")
@@ -264,7 +262,7 @@ def fixed_integrated_record(item: dict[str, Any], map_row: dict[str, Any]) -> di
     recorded_source_hash = provenance.get("source_sha256") if isinstance(provenance, dict) else None
     return {
         "scheme_id": item["scheme_id"],
-        "kind": "fixed_integrated_whole_aircraft_alias",
+        "kind": "full_profile_whole_aircraft_runner",
         "source_file": repo_path(source),
         "source_sha256": source_hash,
         "current_model_file": repo_path(target),
@@ -272,17 +270,17 @@ def fixed_integrated_record(item: dict[str, Any], map_row: dict[str, Any]) -> di
         "current_map_current_hash_matches_file": recorded_hash == current_hash,
         "current_map_source_hash_matches_file": recorded_source_hash == source_hash,
         "comparison_state": state,
-        "equivalence_mode": "exact_expected_alias" if state == "equivalent_formal_alias" else None,
+        "equivalence_mode": "current_runner_declaration_checked",
         "delta": summary,
         "revalidation": {
-            "requires_fresh_model_check": state != "equivalent_formal_alias",
-            "requires_fresh_simulation": state != "equivalent_formal_alias",
-            "requires_adapter_boundary_review": state != "equivalent_formal_alias",
-            "requires_fresh_codegen_review": state != "equivalent_formal_alias",
+            "requires_fresh_model_check": True,
+            "requires_fresh_simulation": True,
+            "requires_adapter_boundary_review": True,
+            "requires_fresh_codegen_review": True,
         },
         "claim_boundary": (
-            "An exact alias only preserves the declared source reference. It does not prove the embedded "
-            "whole-aircraft chain has been freshly checked or simulated."
+            "The current project-owned Runner is bound to the historical source provenance, but this "
+            "static record does not prove a fresh MWORKS check or simulation."
         ),
     }
 
@@ -299,10 +297,10 @@ def build_audit() -> dict[str, Any]:
         if not isinstance(scheme_id, str):
             continue
         graphical.append(graphical_route_record(item, map_rows[scheme_id]))
-    fixed = [fixed_integrated_record(item, map_rows[str(item["scheme_id"])]) for item in fixed_integrated_alias_plan()]
-    routes = [*graphical, *fixed]
-    if len(graphical) != 41 or len(fixed) != 5 or len(routes) != 46:
-        raise ValueError("audit must cover exactly 41 graphical and 5 fixed integrated routes")
+    full_profiles = [full_profile_runner_record(item, map_rows[str(item["scheme_id"])]) for item in full_profile_runner_plan()]
+    routes = [*graphical, *full_profiles]
+    if len(graphical) != 41 or len(full_profiles) != 5 or len(routes) != 46:
+        raise ValueError("audit must cover exactly 41 graphical and 5 full-profile Runner routes")
     states = Counter(str(row["comparison_state"]) for row in routes)
     category_counts = Counter(
         category
@@ -325,7 +323,7 @@ def build_audit() -> dict[str, Any]:
         "summary": {
             "route_count": len(routes),
             "graphical_controller_core_count": len(graphical),
-            "fixed_integrated_whole_aircraft_alias_count": len(fixed),
+            "full_profile_whole_aircraft_runner_count": len(full_profiles),
             "comparison_state_counts": dict(sorted(states.items())),
             "changed_category_counts": dict(sorted(category_counts.items())),
             "current_map_hash_drift_route_count": len(map_hash_drift),
@@ -348,7 +346,7 @@ def validate(value: dict[str, Any]) -> None:
     expected_kinds = Counter(
         {
             "graphical_controller_core": 41,
-            "fixed_integrated_whole_aircraft_alias": 5,
+            "full_profile_whole_aircraft_runner": 5,
         }
     )
     if kinds != expected_kinds:
@@ -362,7 +360,7 @@ def markdown(value: dict[str, Any]) -> str:
         "",
         "This audit records source-to-project textual facts before the Sunray150 refactor. It is not a MWORKS, simulation, code-generation, or Gazebo acceptance record.",
         "",
-        f"- Routes: {summary['route_count']} = {summary['graphical_controller_core_count']} graphical cores + {summary['fixed_integrated_whole_aircraft_alias_count']} fixed integrated aliases.",
+        f"- Routes: {summary['route_count']} = {summary['graphical_controller_core_count']} graphical cores + {summary['full_profile_whole_aircraft_runner_count']} full-profile Runners.",
         f"- Current-map hash drift routes: {summary['current_map_hash_drift_route_count']}.",
         "",
         "| Route | Kind | Comparison | Categories | Model check | Simulation | Adapter review | Codegen review |",

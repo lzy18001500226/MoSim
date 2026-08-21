@@ -23,7 +23,7 @@ FAMILY_DIRS = {
 }
 
 SPECIAL_PATHS = {
-    "awff_pid": "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo",
+    "awff_pid": "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffPidGraphicalRunner.mo",
     "awff_l1_residual": "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1ResidualGraphicalRunner.mo",
     "awff_l1_indi": "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1IndiGraphicalRunner.mo",
     "linear_mpc_l1_indi": "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/LinearMpcL1IndiGraphicalRunner.mo",

@@ -451,7 +451,7 @@ def build(*, force: bool) -> dict[str, Any]:
         text = render_alias(
             package_dir,
             runner_name,
-            f"MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.{source_name}",
+            f"MoSimQuadrotorModel.Experiment.SingleUav.IntegratedChains.{source_name}",
             f"{scheme_id} family entry reusing the canonical integrated Sysblock chain",
         )
         target = EXPERIMENT_ROOT / package_dir / f"{runner_name}.mo"

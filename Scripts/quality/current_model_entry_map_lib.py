@@ -43,13 +43,13 @@ CONTROL_ROOT = ROOT / "Models" / "MoSimQuadrotorModel" / "Control"
 GRAPHICAL_ROOT = CONTROL_ROOT / "Implementations"
 GRAPHICAL_PACKAGE = "MoSimQuadrotorModel.Control.Implementations"
 CONTROL_ORDER_PATH = CONTROL_ROOT / "package.order"
-TEMPLATES_ORDER_PATH = (
-    ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "package.order"
+SINGLE_UAV_ORDER_PATH = (
+    ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "SingleUav" / "package.order"
 )
 INTEGRATED_CHAINS_ROOT = (
-    ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "IntegratedChains"
+    ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "SingleUav" / "IntegratedChains"
 )
-INTEGRATED_CHAINS_PACKAGE = "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains"
+INTEGRATED_CHAINS_PACKAGE = "MoSimQuadrotorModel.Experiment.SingleUav.IntegratedChains"
 MWORKS_MODEL_VERSION = "26.3.0"
 
 FAMILY_PACKAGES = {
@@ -344,29 +344,39 @@ GRAPHICAL_SUPPORT_SOURCES = (
         ),
     },
 )
-FIXED_INTEGRATED_SPECS = {
+FULL_PROFILE_RUNNER_SPECS = {
     "awff_pid": {
-        "alias_model": "FixedAwffPid",
+        "runner_model": "AwffPidGraphicalRunner",
+        "runner_file": INTEGRATED_CHAINS_ROOT / "AwffPidGraphicalRunner.mo",
+        "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffPidGraphicalRunner",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1AWFFSysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1AWFFSysblockClosedLoop",
     },
     "awff_l1_residual": {
-        "alias_model": "FixedAwffL1Residual",
+        "runner_model": "AwffL1ResidualGraphicalRunner",
+        "runner_file": INTEGRATED_CHAINS_ROOT / "AwffL1ResidualGraphicalRunner.mo",
+        "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffL1ResidualGraphicalRunner",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1L1SysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop",
     },
     "awff_l1_indi": {
-        "alias_model": "FixedAwffL1Indi",
+        "runner_model": "AwffL1IndiGraphicalRunner",
+        "runner_file": INTEGRATED_CHAINS_ROOT / "AwffL1IndiGraphicalRunner.mo",
+        "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.AwffL1IndiGraphicalRunner",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1INDISysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1INDISysblockClosedLoop",
     },
     "linear_mpc_l1_indi": {
-        "alias_model": "FixedLinearMpcL1Indi",
+        "runner_model": "LinearMpcL1IndiGraphicalRunner",
+        "runner_file": INTEGRATED_CHAINS_ROOT / "LinearMpcL1IndiGraphicalRunner.mo",
+        "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.LinearMpcL1IndiGraphicalRunner",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1LinearMPCSysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1LinearMPCSysblockClosedLoop",
     },
     "qp_nmpc_l1_indi_cbf": {
-        "alias_model": "FixedQpNmpcL1IndiCbf",
+        "runner_model": "QpNmpcL1IndiCbfGraphicalRunner",
+        "runner_file": INTEGRATED_CHAINS_ROOT / "QpNmpcL1IndiCbfGraphicalRunner.mo",
+        "runner_class": f"{INTEGRATED_CHAINS_PACKAGE}.QpNmpcL1IndiCbfGraphicalRunner",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Scenarios" / "Robustness" / "Example1QPNMPCSafetySysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1QPNMPCSafetySysblockClosedLoop",
     },
@@ -733,84 +743,61 @@ def support_import_plan() -> list[dict[str, Any]]:
     if len(support_ids) != len(set(support_ids)) or len(target_paths) != len(set(target_paths)):
         raise MappingError("Graphical support import plan has duplicate IDs or target files")
     return plan
-def fixed_integrated_alias_plan() -> list[dict[str, Any]]:
-    """Plan non-destructive formal aliases for the five fixed integrated chains."""
+def full_profile_runner_plan() -> list[dict[str, Any]]:
+    """Plan the five current whole-aircraft runners using their public names."""
 
     plan: list[dict[str, Any]] = []
-    for scheme_id, spec in FIXED_INTEGRATED_SPECS.items():
+    for scheme_id, spec in FULL_PROFILE_RUNNER_SPECS.items():
         source = spec["source_file"]
-        alias_model = str(spec["alias_model"])
+        target = spec["runner_file"]
         source_class = str(spec["source_model_class"])
+        target_class = str(spec["runner_class"])
         if not isinstance(source, Path) or not source.is_file():
-            raise MappingError(f"Fixed integrated source is missing: {source}")
-        declared_within, declared_name = model_declaration(source.read_text(encoding="utf-8"))
+            raise MappingError(f"Full-profile provenance source is missing: {source}")
+        if not isinstance(target, Path) or not target.is_file():
+            raise MappingError(f"Current full-profile runner is missing: {target}")
+        declared_within, declared_name = model_declaration(target.read_text(encoding="utf-8"))
         declared_class = f"{declared_within}.{declared_name}" if declared_within else declared_name
-        if declared_class != source_class:
-            raise MappingError(f"Fixed integrated source declaration mismatch: {source}")
+        if declared_class != target_class:
+            raise MappingError(
+                f"Current full-profile runner declaration mismatch: {target} declares {declared_class}, expected {target_class}"
+            )
         plan.append(
             {
                 "scheme_id": scheme_id,
-                "alias_model": alias_model,
+                "runner_model": str(spec["runner_model"]),
                 "source_file": source,
                 "source_model_class": source_class,
                 "source_sha256": sha256_file(source),
-                "target_file": INTEGRATED_CHAINS_ROOT / f"{alias_model}.mo",
-                "target_model_class": f"{INTEGRATED_CHAINS_PACKAGE}.{alias_model}",
+                "target_file": target,
+                "target_model_class": target_class,
+                "target_sha256": sha256_file(target),
             }
         )
 
     target_paths = [item["target_file"] for item in plan]
     if len(target_paths) != len(set(target_paths)):
-        raise MappingError("Fixed integrated alias plan has duplicate target files")
+        raise MappingError("Full-profile runner plan has duplicate target files")
     return plan
 
 
-def expected_fixed_integrated_alias_text(item: dict[str, Any]) -> str:
-    # Sysplorer normalizes generated aliases after opening them: no blank line
-    # follows ``within`` and the file has no terminal newline. Keep the
-    # deterministic expectation in that native on-disk form.
-    return (
-        f"within {INTEGRATED_CHAINS_PACKAGE};\n"
-        f"model {item['alias_model']}\n"
-        '  "Formal public alias for a canonical whole-aircraft controller chain"\n'
-        f"  extends {item['source_model_class']};\n"
-        f"  annotation(__MWORKS(hide=false,version=\"{MWORKS_MODEL_VERSION}\"));\n"
-        f"end {item['alias_model']};"
-    )
-def fixed_integrated_package_file_texts(plan: list[dict[str, Any]]) -> dict[Path, str]:
-    names = [str(item["alias_model"]) for item in plan]
-    return {
-        INTEGRATED_CHAINS_ROOT / "package.mo": (
-            "within MoSimQuadrotorModel.Experiment.Templates;\n"
-            "package IntegratedChains\n"
-            '  "Formal aliases for fixed whole-aircraft controller chains"\n'
-            "  extends Modelica.Icons.Package;\n"
-            f"  annotation(__MWORKS(version=\"{MWORKS_MODEL_VERSION}\"));\n"
-            "end IntegratedChains;"
-        ),
-        INTEGRATED_CHAINS_ROOT / "package.order": "\n".join(names) + "\n",
-    }
-
-
-def verify_fixed_integrated_aliases(plan: list[dict[str, Any]]) -> list[str]:
+def verify_full_profile_runners(plan: list[dict[str, Any]]) -> list[str]:
     errors: list[str] = []
-    order = TEMPLATES_ORDER_PATH.read_text(encoding="utf-8").splitlines() if TEMPLATES_ORDER_PATH.is_file() else []
+    order = SINGLE_UAV_ORDER_PATH.read_text(encoding="utf-8").splitlines() if SINGLE_UAV_ORDER_PATH.is_file() else []
     if "IntegratedChains" not in order:
-        errors.append("Experiment/Templates/package.order must list IntegratedChains")
-    for path, expected in fixed_integrated_package_file_texts(plan).items():
-        if not path.is_file():
-            errors.append(f"Missing fixed-chain package file: {repo_path(path)}")
-        elif canonical_package_file_text(path.read_text(encoding="utf-8")) != canonical_package_file_text(expected):
-            errors.append(f"Unexpected fixed-chain package file contents: {repo_path(path)}")
+        errors.append("Experiment/SingleUav/package.order must list IntegratedChains")
     for item in plan:
         source = item["source_file"]
         target = item["target_file"]
         if sha256_file(source) != item["source_sha256"]:
-            errors.append(f"Fixed-chain source hash changed while planning: {repo_path(source)}")
+            errors.append(f"Full-profile provenance source hash changed: {repo_path(source)}")
         if not target.is_file():
-            errors.append(f"Missing fixed-chain formal alias: {repo_path(target)}")
-        elif canonical_package_file_text(target.read_text(encoding="utf-8")) != canonical_package_file_text(expected_fixed_integrated_alias_text(item)):
-            errors.append(f"Fixed-chain formal alias differs from its expected text: {repo_path(target)}")
+            errors.append(f"Missing current full-profile runner: {repo_path(target)}")
+            continue
+        declared_within, declared_name = model_declaration(target.read_text(encoding="utf-8"))
+        declared_class = f"{declared_within}.{declared_name}" if declared_within else declared_name
+        if declared_class != item["target_model_class"]:
+            errors.append(f"Full-profile runner declaration differs: {repo_path(target)}")
     return errors
 
 
@@ -1023,7 +1010,7 @@ def verify_imported_files(
     plan: list[dict[str, Any]],
     *,
     support_plan: list[dict[str, Any]] | None = None,
-    fixed_plan: list[dict[str, Any]] | None = None,
+    full_profile_plan: list[dict[str, Any]] | None = None,
     expected_package_files: dict[Path, str] | None = None,
     require_control_order: bool = True,
 ) -> list[str]:
@@ -1031,13 +1018,13 @@ def verify_imported_files(
 
     The default retains the complete G4 validation contract.  A caller that is
     adding a bounded G5 batch may provide its exact dependency, metadata, and
-    fixed-chain scope so a pre-existing unrelated import cannot block or be
+    full-profile scope so a pre-existing unrelated import cannot block or be
     modified by the new batch.
     """
 
     errors: list[str] = []
     support_plan = support_import_plan() if support_plan is None else support_plan
-    fixed_plan = fixed_integrated_alias_plan() if fixed_plan is None else fixed_plan
+    full_profile_plan = full_profile_runner_plan() if full_profile_plan is None else full_profile_plan
     expected_package_files = (
         package_file_texts(plan, support_plan)
         if expected_package_files is None
@@ -1096,8 +1083,8 @@ def verify_imported_files(
                 )
             else:
                 errors.append(f"Imported current model differs from its exact source copy: {repo_path(target)}")
-    if fixed_plan:
-        errors.extend(verify_fixed_integrated_aliases(fixed_plan))
+    if full_profile_plan:
+        errors.extend(verify_full_profile_runners(full_profile_plan))
     return errors
 
 
@@ -1139,14 +1126,14 @@ def build_current_map(
 
     plan = import_plan(catalog, inventory)
     support_plan = support_import_plan()
-    fixed_plan = fixed_integrated_alias_plan()
+    full_profile_plan = full_profile_runner_plan()
     approved_variants = read_approved_graphical_import_variants()
     if require_imports:
-        import_errors = verify_imported_files(plan)
+        import_errors = verify_imported_files(plan, full_profile_plan=full_profile_plan)
         if import_errors:
             raise MappingError("; ".join(import_errors))
     plan_by_scheme = {item["scheme_id"]: item for item in plan}
-    fixed_by_scheme = {item["scheme_id"]: item for item in fixed_plan}
+    full_profile_by_scheme = {item["scheme_id"]: item for item in full_profile_plan}
     rows: list[dict[str, Any]] = []
 
     for scheme in catalog_rows:
@@ -1213,7 +1200,7 @@ def build_current_map(
                     }
                 )
             elif execution_kind == "full_profile_whole_aircraft":
-                item = fixed_by_scheme.get(scheme_id)
+                item = full_profile_by_scheme.get(scheme_id)
                 if item is None:
                     raise MappingError(f"Full profile lacks current model decision: {scheme_id}")
                 target = item["target_file"]
@@ -1222,13 +1209,13 @@ def build_current_map(
                         "mapping_state": "resolved_current_model",
                         **project_model_record(target, item["target_model_class"]),
                         "current_model_role": "full_profile_whole_aircraft_closed_loop",
-                        "compatibility_decision": "g4_non_destructive_formal_alias_of_existing_full_profile",
+                        "compatibility_decision": "current_project_owned_full_profile_runner",
                         "source_provenance": {
                             "source_config": inventory_row.get("model_entry", {}).get("source_config"),
                             "source_file": repo_path(item["source_file"]),
                             "source_sha256": item["source_sha256"],
                             "source_model_class": item["source_model_class"],
-                            "import_mode": "formal_alias_extends_existing_project_model",
+                            "import_mode": "current_project_owned_runner_with_historical_source_provenance",
                         },
                         "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop.",
                     }
@@ -1291,7 +1278,7 @@ def build_current_map(
             "mapping_state_counts": dict(sorted(states.items())),
             "graphical_controller_core_import_count": len(plan),
             "graphical_support_import_count": len(support_plan),
-            "full_profile_whole_aircraft_count": len(fixed_plan),
+                "full_profile_whole_aircraft_count": len(full_profile_plan),
             "planned_mworks_profile_count": sum(
                 row["mapping_state"] == "planned_profile_no_model" for row in rows
             ),

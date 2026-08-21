@@ -1,5 +1,5 @@
 within MoSimQuadrotorModel.Control.PidFamily;
-model FixedAwffPidFullGraphicalController "MWORKS.Sysblock composed AWFF PID controller"
+model AwffPidFullGraphicalController "MWORKS.Sysblock composed AWFF PID controller"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;
   import BaseWorkspace.*;
@@ -70,4 +70,4 @@ equation
     annotation(Line(points={{202,-46},{220,-46},{220,-50},{240,-50}},color={0,0,0}));
   connect(motor_mixer.y3, y3) 
     annotation(Line(points={{202,-69},{225,-69},{225,-150},{240,-150}},color={0,0,0}));
-end FixedAwffPidFullGraphicalController;
+end AwffPidFullGraphicalController;

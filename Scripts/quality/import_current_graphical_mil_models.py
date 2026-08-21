@@ -20,15 +20,13 @@ if str(SCRIPT_DIR) not in sys.path:
 
 from current_model_entry_map_lib import (
     CATALOG_PATH,
-    TEMPLATES_ORDER_PATH,
+    SINGLE_UAV_ORDER_PATH,
     INVENTORY_PATH,
     MappingError,
     approved_graphical_import_variant,
-    expected_fixed_integrated_alias_text,
     expected_import_text,
     direct_graphical_native_equivalence_mode,
-    fixed_integrated_alias_plan,
-    fixed_integrated_package_file_texts,
+    full_profile_runner_plan,
     import_equivalence_mode,
     import_plan,
     package_file_texts,
@@ -86,17 +84,17 @@ def indentation_only_import_equivalence(current: str, expected: str) -> bool:
 
 
 def ensure_integrated_chains_package_slot(apply: bool) -> str:
-    """Ensure the fixed-chain package is registered under Experiment.Templates."""
+    """Ensure the current integrated-chain package is registered under SingleUav."""
 
-    if not TEMPLATES_ORDER_PATH.is_file():
-        raise MappingError(f"Experiment templates order is missing: {repo_path(TEMPLATES_ORDER_PATH)}")
-    entries = TEMPLATES_ORDER_PATH.read_text(encoding="utf-8").splitlines()
+    if not SINGLE_UAV_ORDER_PATH.is_file():
+        raise MappingError(f"Experiment SingleUav order is missing: {repo_path(SINGLE_UAV_ORDER_PATH)}")
+    entries = SINGLE_UAV_ORDER_PATH.read_text(encoding="utf-8").splitlines()
     if "IntegratedChains" in entries:
         return "unchanged"
     if not apply:
         return "missing"
     entries.append("IntegratedChains")
-    write_utf8_lf(TEMPLATES_ORDER_PATH, "\n".join(entries) + "\n")
+    write_utf8_lf(SINGLE_UAV_ORDER_PATH, "\n".join(entries) + "\n")
     return "created"
 
 
@@ -234,10 +232,10 @@ def run(
         if scoped_import
         else full_support_plan
     )
-    fixed_plan = [] if scoped_import else fixed_integrated_alias_plan()
+    full_profile_plan = [] if scoped_import else full_profile_runner_plan()
     statuses: dict[str, str] = {}
     if not scoped_import:
-        statuses[repo_path(TEMPLATES_ORDER_PATH)] = ensure_integrated_chains_package_slot(apply)
+        statuses[repo_path(SINGLE_UAV_ORDER_PATH)] = ensure_integrated_chains_package_slot(apply)
     previous_package_candidates = predecessor_package_file_texts(full_plan, full_support_plan)
     expected_package_files = package_file_texts(full_plan, full_support_plan)
     if scoped_import:
@@ -264,18 +262,10 @@ def run(
         statuses[repo_path(target)] = write_new_or_identical(
             target, expected_import_text(item), apply, item
         )
-    if fixed_plan:
-        for path, expected in fixed_integrated_package_file_texts(fixed_plan).items():
-            statuses[repo_path(path)] = write_new_or_identical(path, expected, apply)
-        for item in fixed_plan:
-            target = item["target_file"]
-            statuses[repo_path(target)] = write_new_or_identical(
-                target, expected_fixed_integrated_alias_text(item), apply
-            )
     errors = verify_imported_files(
         plan,
         support_plan=support_plan,
-        fixed_plan=fixed_plan,
+        full_profile_plan=full_profile_plan,
         expected_package_files=expected_package_files,
         require_control_order=not scoped_import,
     )
@@ -304,7 +294,7 @@ def run(
         "available_primary_import_count": len(full_plan),
         "primary_import_count": len(plan),
         "support_import_count": len(support_plan),
-        "fixed_integrated_alias_count": len(fixed_plan),
+        "full_profile_runner_count": len(full_profile_plan),
         "import_count": len(plan) + len(support_plan),
         "file_statuses": statuses,
         "errors": errors,

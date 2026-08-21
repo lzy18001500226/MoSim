@@ -68,11 +68,11 @@ runner_map = {
     'rl_gain_scheduler': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/Learning/RlGainSchedulerGraphicalRunner.mo',
 
     # IntegratedChains (cleaned scheme_ids without fixed_ prefix)
-    'awff_pid': 'Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo',
-    'awff_l1_indi': 'Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Indi.mo',
-    'awff_l1_residual': 'Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffL1Residual.mo',
-    'linear_mpc_l1_indi': 'Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedLinearMpcL1Indi.mo',
-    'qp_nmpc_l1_indi_cbf': 'Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedQpNmpcL1IndiCbf.mo',
+    'awff_pid': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffPidGraphicalRunner.mo',
+    'awff_l1_indi': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1IndiGraphicalRunner.mo',
+    'awff_l1_residual': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1ResidualGraphicalRunner.mo',
+    'linear_mpc_l1_indi': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/LinearMpcL1IndiGraphicalRunner.mo',
+    'qp_nmpc_l1_indi_cbf': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/QpNmpcL1IndiCbfGraphicalRunner.mo',
 
     # AwffControllers
     'pid_awff_linear_eso': 'Models/MoSimQuadrotorModel/Experiment/SingleUav/AwffControllers/PidAwffLinearEsoGraphicalRunner.mo',

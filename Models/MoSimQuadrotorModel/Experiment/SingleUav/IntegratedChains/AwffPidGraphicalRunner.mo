@@ -1,6 +1,6 @@
-within MoSimQuadrotorModel.Experiment.Templates.IntegratedChains;
-model FixedAwffPid
-  "Formal public alias for fixed AWFF PID canonical whole-aircraft controller chain"
+within MoSimQuadrotorModel.Experiment.SingleUav.IntegratedChains;
+model AwffPidGraphicalRunner
+  "AWFF PID graphical whole-aircraft controller chain"
   parameter Real gust_force[3](each unit = "N") = {0, 0, 0};
   parameter Real gust_start_s(unit = "s") = 0;
   parameter Real gust_duration_s(unit = "s") = 0;
@@ -15,7 +15,7 @@ model FixedAwffPid
 
   MoSimQuadrotorModel.Guidance.Trajectories.MultiModeTrajectory reference(scenario_mode = scenario_mode)
     annotation(Placement(transformation(origin = {-380, 185}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.PidFamily.FixedAwffPidFullGraphicalController controller_core
+  MoSimQuadrotorModel.Control.PidFamily.AwffPidFullGraphicalController controller_core
     annotation(Placement(transformation(origin = {-65, 185}, extent = {{-80, -65}, {80, 65}})),
     __MWORKS(SECInstance=true, PortLabels(labelType="PortName")));
   MoSimQuadrotorModel.Experiment.Baselines.ScheduledRotorEfficiencyCompensator fault_compensator(
@@ -169,4 +169,4 @@ equation
     experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Interval = 0.01),
     Diagram(coordinateSystem(extent = {{-520, -400}, {830, 300}}, grid = {2, 2})),
     __MWORKS(version = "26.3.0"));
-end FixedAwffPid;
+end AwffPidGraphicalRunner;

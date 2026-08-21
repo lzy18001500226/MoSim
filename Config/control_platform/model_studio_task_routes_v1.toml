@@ -48,8 +48,8 @@ boundary = "ATTITUDE_THRUST"
 [[route]]
 controller_id = "awff_pid"
 available = true
-runner_class = "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffPid"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo"
+runner_class = "MoSimQuadrotorModel.Experiment.SingleUav.IntegratedChains.AwffPidGraphicalRunner"
+runner_file = "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffPidGraphicalRunner.mo"
 boundary = "ROTOR_COMMAND"
 runner_alias = "awff"
 
