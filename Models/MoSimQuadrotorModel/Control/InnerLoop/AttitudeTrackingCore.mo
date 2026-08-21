@@ -51,8 +51,6 @@ model AttitudeTrackingCore
     annotation(Placement(transformation(origin = {110, -20}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Interfaces.RealOutput amplitude_4
     annotation(Placement(transformation(origin = {110, -60}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput amplitude_4
-    annotation(Placement(transformation(origin = {110, -60}, extent = {{-10, -10}, {10, 10}})));
 
   // Pitch channel
   Modelica.Blocks.Math.Add pitch_error(k1 = 1, k2 = -1)
