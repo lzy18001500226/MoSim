@@ -2278,6 +2278,7 @@ export SUNRAY_GAZEBO_REAL_TIME_UPDATE_RATE_HZ
 python3 "${PROJECT_ROOT}/Scripts/sunray/sync_assembled_model_into_sunray_ros1.py" \
   --project-root "${PROJECT_ROOT}" \
   --sunray-ws "${SUNRAY_WS}" \
+  --local-ros1-ws "${LIVOX_PLUGIN_WS}" \
   --manifest "${RESULT_DIR}/assembled_model_sync.json" \
   > "${RESULT_DIR}/assembled_model_sync.log" 2>&1
 

@@ -18,6 +18,12 @@ def test_factory_world_runtime_overlay_is_opt_in_and_records_its_manifest() -> N
     assert '"factory_world_runtime_overlay": "${SUNRAY_FACTORY_WORLD_RUNTIME_OVERLAY}"' in source
 
 
+def test_single_diff_gate_syncs_against_the_selected_livox_plugin_workspace() -> None:
+    source = RUNNER.read_text(encoding="utf-8")
+
+    assert '--local-ros1-ws "${LIVOX_PLUGIN_WS}"' in source
+
+
 def test_factory_launch_prefers_generated_drone_models_for_vehicle_resolution() -> None:
     source = FACTORY_LAUNCH.read_text(encoding="utf-8")
 
