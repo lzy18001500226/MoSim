@@ -48,7 +48,7 @@ model AttitudeTrackingCore
     annotation(Placement(transformation(origin = {-80, 50}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Math.Gain pitch_p(k = 14.142)
     annotation(Placement(transformation(origin = {-50, 60}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Math.Gain pitch_d(k = 1.414)
+  Modelica.Blocks.Math.Gain pitch_d(k = -1.414)
     annotation(Placement(transformation(origin = {-50, 40}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Math.Add pitch_pd(k1 = 1, k2 = 1)
     annotation(Placement(transformation(origin = {-20, 50}, extent = {{-10, -10}, {10, 10}})));
@@ -64,7 +64,7 @@ model AttitudeTrackingCore
     annotation(Placement(transformation(origin = {-80, 10}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Math.Gain roll_p(k = 14.142)
     annotation(Placement(transformation(origin = {-50, 20}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Math.Gain roll_d(k = 1.414)
+  Modelica.Blocks.Math.Gain roll_d(k = -1.414)
     annotation(Placement(transformation(origin = {-50, 0}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Math.Add roll_pd(k1 = 1, k2 = 1)
     annotation(Placement(transformation(origin = {-20, 10}, extent = {{-10, -10}, {10, 10}})));
