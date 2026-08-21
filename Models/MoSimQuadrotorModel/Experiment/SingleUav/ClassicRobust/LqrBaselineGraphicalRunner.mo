@@ -112,9 +112,6 @@ equation
   connect(plant.attitude[1], attitude_adapter.roll_mea) annotation(Line(points={{650,-47.5},{-20,320},{-20,169},{50,169}}, color={0,0,127}));
   connect(plant.attitude[2], attitude_adapter.pitch_mea) annotation(Line(points={{650,-47.5},{-10,310},{-10,163},{50,163}}, color={0,0,127}));
   connect(plant.attitude[3], attitude_adapter.yaw_mea) annotation(Line(points={{650,-47.5},{0,300},{0,157},{50,157}}, color={0,0,127}));
-  connect(plant.BodyRateMea[1], attitude_adapter.roll_rate_mea) annotation(Line(points={{650,-47.5},{10,290},{10,151},{50,151}}, color={0,0,127}));
-  connect(plant.BodyRateMea[2], attitude_adapter.pitch_rate_mea) annotation(Line(points={{650,-47.5},{20,280},{20,145},{50,145}}, color={0,0,127}));
-  connect(plant.BodyRateMea[3], attitude_adapter.yaw_rate_mea) annotation(Line(points={{650,-47.5},{30,270},{30,139},{50,139}}, color={0,0,127}));
   connect(attitude_adapter.desired_roll_rad_out, inner_loop.desired_roll_rad) annotation(Line(points={{130,211},{160,245}}, color={0,0,127}));
   connect(attitude_adapter.desired_pitch_rad_out, inner_loop.desired_pitch_rad) annotation(Line(points={{130,201},{160,231}}, color={0,0,127}));
   connect(attitude_adapter.desired_yaw_rad_out, inner_loop.desired_yaw_rad) annotation(Line(points={{130,195},{160,217}}, color={0,0,127}));
@@ -122,9 +119,6 @@ equation
   connect(attitude_adapter.roll_mea_out, inner_loop.roll_mea) annotation(Line(points={{130,169},{160,175}}, color={0,0,127}));
   connect(attitude_adapter.pitch_mea_out, inner_loop.pitch_mea) annotation(Line(points={{130,163},{160,161}}, color={0,0,127}));
   connect(attitude_adapter.yaw_mea_out, inner_loop.yaw_mea) annotation(Line(points={{130,157},{160,147}}, color={0,0,127}));
-  connect(attitude_adapter.roll_rate_mea_out, inner_loop.roll_rate_mea) annotation(Line(points={{130,151},{160,133}}, color={0,0,127}));
-  connect(attitude_adapter.pitch_rate_mea_out, inner_loop.pitch_rate_mea) annotation(Line(points={{130,145},{160,119}}, color={0,0,127}));
-  connect(attitude_adapter.yaw_rate_mea_out, inner_loop.yaw_rate_mea) annotation(Line(points={{130,139},{160,105}}, color={0,0,127}));
   connect(inner_loop.amplitude_1, fault_compensator.command_in[1]) annotation(Line(points={{280,221},{270,-30}}, color={0,0,127}));
   connect(inner_loop.amplitude_2, fault_compensator.command_in[2]) annotation(Line(points={{280,197},{270,-40}}, color={0,0,127}));
   connect(inner_loop.amplitude_3, fault_compensator.command_in[3]) annotation(Line(points={{280,173},{270,-50}}, color={0,0,127}));
