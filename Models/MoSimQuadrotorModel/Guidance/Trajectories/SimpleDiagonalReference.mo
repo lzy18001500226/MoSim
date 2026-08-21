@@ -12,13 +12,13 @@ model SimpleDiagonalReference
   parameter Real z_end(unit = "m") = 5;
 
   Modelica.Blocks.Interfaces.RealOutput position_command[3](each unit = "m")
-    "Reference position [x, y, z]"
+    "Reference position [x, y, z]" 
     annotation(Placement(transformation(origin = {100, 60}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Interfaces.RealOutput velocity_command[3](each unit = "m/s")
-    "Reference velocity [vx, vy, vz]"
+    "Reference velocity [vx, vy, vz]" 
     annotation(Placement(transformation(origin = {100, 0}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Interfaces.RealOutput yaw_command(unit = "rad")
-    "Reference yaw angle"
+    "Reference yaw angle" 
     annotation(Placement(transformation(origin = {100, -60}, extent = {{-10, -10}, {10, 10}})));
 
 protected
@@ -38,11 +38,11 @@ equation
 
   // Smoothstep interpolation: s(tau) = 3*tau^2 - 2*tau^3
   s = 3 * tau^2 - 2 * tau^3;
-  ds_dt = if time < start_time then
-            0
-          elseif time < start_time + duration then
-            (6 * tau - 6 * tau^2) / duration
-          else
+  ds_dt = if time < start_time then 
+            0 
+          else if time < start_time + duration then 
+            (6 * tau - 6 * tau^2) / duration 
+          else 
             0;
 
   // Position: linear interpolation with smoothstep

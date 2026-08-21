@@ -13,13 +13,13 @@ model OpenBlocksUav2DynamicReference
     extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint,
     verboseRead = true);
 
-  Modelica.Blocks.Interfaces.RealOutput position_command[3]
+  Modelica.Blocks.Interfaces.RealOutput position_command[3] 
     annotation(Placement(transformation(origin = {100, 60}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput velocity_command[3]
+  Modelica.Blocks.Interfaces.RealOutput velocity_command[3] 
     annotation(Placement(transformation(origin = {100, 20}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput acceleration_command[3]
+  Modelica.Blocks.Interfaces.RealOutput acceleration_command[3] 
     annotation(Placement(transformation(origin = {100, -20}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput yaw_command
+  Modelica.Blocks.Interfaces.RealOutput yaw_command 
     annotation(Placement(transformation(origin = {100, -60}, extent = {{-10, -10}, {10, 10}})));
 
 equation

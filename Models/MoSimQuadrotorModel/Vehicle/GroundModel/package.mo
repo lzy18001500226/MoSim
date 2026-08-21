@@ -65,7 +65,7 @@ package GroundModel "地面模型"
         extent = {{100.0, -35.0}, {-100.0, 35.0}},
         textString = "点面接触模型",
         textStyle = {TextStyle.None},
-        textColor = {0, 0, 0})}));
+        textColor = {0, 0, 0})}),__MWORKS(version="26.3.0"));
     Modelica.Mechanics.MultiBody.Sensors.RelativePosition R_p(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameAB.frame_a)
       "相对位置矢量" annotation (Placement(transformation(origin = {0.0, 40.0},
         extent = {{-10.0, 10.0}, {10.0, -10.0}})));

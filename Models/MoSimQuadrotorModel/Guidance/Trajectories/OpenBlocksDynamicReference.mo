@@ -16,19 +16,19 @@ model OpenBlocksDynamicReference
     "Read [time, x_ref, y_ref, z_ref, yaw_ref] from CSV file (columns 2-4, 14)";
 
   Modelica.Blocks.Interfaces.RealOutput position_command[3]
-    "Reference position [x, y, z] in meters"
+    "Reference position [x, y, z] in meters" 
     annotation(Placement(transformation(origin = {100, 60}, extent = {{-10, -10}, {10, 10}})));
 
   Modelica.Blocks.Interfaces.RealOutput velocity_command[3]
-    "Reference velocity [vx, vy, vz] in m/s (zero, controller computes from position error)"
+    "Reference velocity [vx, vy, vz] in m/s (zero, controller computes from position error)" 
     annotation(Placement(transformation(origin = {100, 20}, extent = {{-10, -10}, {10, 10}})));
 
   Modelica.Blocks.Interfaces.RealOutput acceleration_command[3]
-    "Reference acceleration [ax, ay, az] in m/s^2 (zero, no feedforward)"
+    "Reference acceleration [ax, ay, az] in m/s^2 (zero, no feedforward)" 
     annotation(Placement(transformation(origin = {100, -20}, extent = {{-10, -10}, {10, 10}})));
 
   Modelica.Blocks.Interfaces.RealOutput yaw_command
-    "Reference yaw angle in radians"
+    "Reference yaw angle in radians" 
     annotation(Placement(transformation(origin = {100, -60}, extent = {{-10, -10}, {10, 10}})));
 
 equation

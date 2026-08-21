@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Control.Implementations.Optimization;
-
 model MoSim_G9_NMPC_OUTER_GRAPHICAL_OVERVIEW "NMPC_OUTER readable algorithm topology"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

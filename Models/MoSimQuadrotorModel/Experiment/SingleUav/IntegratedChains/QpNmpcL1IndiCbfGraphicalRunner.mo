@@ -20,7 +20,7 @@ model QpNmpcL1IndiCbfGraphicalRunner
     annotation(Placement(transformation(origin = {-470, -220}, extent = {{-16, -16}, {16, 16}})));
   Modelica.Blocks.Sources.Constant enable(k = 1) 
     annotation(Placement(transformation(origin = {-470, -260}, extent = {{-16, -16}, {16, 16}})));
-  Modelica.Blocks.Sources.RealExpression elapsed_time_source(y = time)
+  Modelica.Blocks.Sources.RealExpression elapsed_time_source(y = time) 
     annotation(Placement(transformation(origin = {-470, -300}, extent = {{-16, -16}, {16, 16}})));
   MoSimQuadrotorModel.Guidance.Trajectories.MultiModeTrajectory reference(scenario_mode = scenario_mode) 
     annotation(Placement(transformation(origin = {-380, 185}, extent = {{-50, -65}, {50, 65}})));
@@ -55,13 +55,13 @@ model QpNmpcL1IndiCbfGraphicalRunner
     annotation(Placement(transformation(origin = {-380, 5}, extent = {{-50, -50}, {50, 50}})));
   MoSimQuadrotorModel.Vehicle.BaseModules.FlightController flight_controller 
     annotation(Placement(transformation(origin = {-95, 5}, extent = {{-50, -50}, {50, 50}})));
-  MoSimQuadrotorModel.Vehicle.BaseModules.MissionComputer mission_computer
+  MoSimQuadrotorModel.Vehicle.BaseModules.MissionComputer mission_computer 
     annotation(Placement(transformation(origin = {-235, 5}, extent = {{-50, -50}, {50, 50}})));
-  Modelica.Blocks.Math.Sum position_error_x(nin = 2)
+  Modelica.Blocks.Math.Sum position_error_x(nin = 2) 
     annotation(Placement(transformation(origin = {-230, 300}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Math.Sum position_error_y(nin = 2)
+  Modelica.Blocks.Math.Sum position_error_y(nin = 2) 
     annotation(Placement(transformation(origin = {-170, 300}, extent = {{-12, -12}, {12, 12}})));
-  Modelica.Blocks.Math.Sum position_error_z(nin = 2)
+  Modelica.Blocks.Math.Sum position_error_z(nin = 2) 
     annotation(Placement(transformation(origin = {-110, 300}, extent = {{-12, -12}, {12, 12}})));
 
   Real position_ref[3];

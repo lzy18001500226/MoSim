@@ -17,7 +17,7 @@ model Px4CtrlOpenBlocksRunner
     "Sample period for the 100 Hz px4ctrl discrete controller";
 
   // ---- Top row: trajectory source (x=-380, y=185) ----
-  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksDynamicReference reference
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksDynamicReference reference 
     annotation(Placement(transformation(origin={-380,185},
   extent={{-50,-65},{50,65}})));
 

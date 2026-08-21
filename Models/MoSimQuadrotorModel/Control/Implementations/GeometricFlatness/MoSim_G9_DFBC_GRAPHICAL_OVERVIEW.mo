@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Control.Implementations.GeometricFlatness;
-
 model MoSim_G9_DFBC_GRAPHICAL_OVERVIEW "DFBC readable algorithm topology"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

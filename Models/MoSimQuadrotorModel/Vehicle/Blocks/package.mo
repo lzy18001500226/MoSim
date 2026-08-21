@@ -59,7 +59,7 @@ package Blocks "控制系统"
         textString = "PID",
         fontName = "Times New Roman",
         textStyle = {TextStyle.None},
-        textColor = {120, 120, 120})}));
+        textColor = {120, 120, 120})}),__MWORKS(version="26.3.0"));
       extends Modelica.Blocks.Interfaces.SISO;
       Modelica.Blocks.Math.Gain gain3 
         annotation (Placement(transformation(origin = {73.99999999999999, 0.0},
@@ -106,6 +106,7 @@ package Blocks "控制系统"
           points = {{-13.000000000000014, 0.0}, {12.0, 0.0}},
           color = {0, 0, 127}));
     end PID;
+    annotation(__MWORKS(version="26.3.0"));
   end ControlMethod;
 
   package Controller "控制器"
@@ -245,7 +246,7 @@ package Blocks "控制系统"
           textString = "PIDController",
           fontName = "Times New Roman",
           textStyle = {TextStyle.None},
-          textColor = {136, 136, 136})}));
+          textColor = {136, 136, 136})}),__MWORKS(version="26.3.0"));
       Modelica.Blocks.Math.Gain gain7(k = 1) 
         annotation (Placement(transformation(origin = {-212.36366062876286, 22.765560154234876},
           extent = {{10.0, -10.0}, {-10.0, 10.0}},
@@ -562,6 +563,7 @@ package Blocks "控制系统"
           points = {{-51.0, 121.0}, {-5.0, 121.0}, {-5.0, -118.0}, {50.0, -118.0}},
           color = {0, 0, 127}));
     end Controller;
+    annotation(__MWORKS(version="26.3.0"));
   end Controller;
   annotation(__MWORKS(hide=true,version="26.3.0"));
 end Blocks;

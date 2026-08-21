@@ -15,6 +15,7 @@ package Utilities "附件"
       input Real x_1 "自变量的STEP函数结束值，可以是常数或函数表达式或设计变量";
       input Real h_1 "STEP函数的最终值，可以是常数或函数表达式或设计变量";
       output Real y "函数输出值";
+      annotation(__MWORKS(version="26.3.0"));
     algorithm
       y := if x <= x_0 then h_0 else if x > x_0 and x < x_1 then h_0 + ((h_1 - h_0) * ((x - x_0) / (x_1 - x_0)) ^ 2) * (3 - 2 * ((x - x_0) / (x_1 - x_0))) else h_1;
     end Step;
@@ -29,10 +30,12 @@ package Utilities "附件"
       input Modelica.Units.SI.Velocity Vtr "动摩擦对应的相对滑移速度";
       input Modelica.Units.SI.CoefficientOfFriction Cdy "动摩擦系数";
       output Modelica.Units.SI.Force F_f "摩擦力";
+      annotation(__MWORKS(version="26.3.0"));
       //中间变量
     algorithm
       F_f := N * MoSimQuadrotorModel.Vehicle.Utilities.Functions.Step(V, -V_s, -1, V_s, 1) * MoSimQuadrotorModel.Vehicle.Utilities.Functions.Step(abs(V), V_s, Cst, Vtr, Cdy);
     end Friction;
+    annotation(__MWORKS(version="26.3.0"));
   end Functions;
   annotation(__MWORKS(hide=true,version="26.3.0"));
 end Utilities;

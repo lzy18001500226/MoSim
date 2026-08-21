@@ -2,19 +2,19 @@ within MoSimQuadrotorModel.Guidance.Trajectories;
 model ClimbPath "阶梯爬升模型"
   extends PartialTrajectory;
   Modelica.Blocks.Sources.Ramp ramp(startTime = 10, duration = 3,
-    height = 5)
+    height = 5) 
     annotation (Placement(transformation(origin = {-52.0, -28.0},
       extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-  Modelica.Blocks.Sources.Ramp ramp1(offset = 0, startTime = 0, height = 10, duration = 5)
+  Modelica.Blocks.Sources.Ramp ramp1(offset = 0, startTime = 0, height = 10, duration = 5) 
     annotation (Placement(transformation(origin = {-52.0, -72.0},
       extent = {{-10.0, -10.0}, {10.0, 10.0}})));
 
 
 
-  Modelica.Blocks.Math.Add add
+  Modelica.Blocks.Math.Add add 
     annotation (Placement(transformation(origin = {6.0, -50.0},
       extent = {{-10.0, -10.0}, {10.0, 10.0}})));
-  Modelica.Blocks.Math.Gain gain(k = 1)
+  Modelica.Blocks.Math.Gain gain(k = 1) 
     annotation (Placement(transformation(origin = {46.0, -50.0},
       extent = {{-10.0, -10.0}, {10.0, 10.0}})));
   annotation (experiment(Algorithm = Dassl, Interval = 0.001, StartTime = 0, StopTime = 20, Tolerance = 0.0001),
@@ -34,37 +34,37 @@ model ClimbPath "阶梯爬升模型"
       pattern = LinePattern.Dash,
       arrow = {Arrow.None, Arrow.Filled},
       arrowSize = 4.0,
-      __MWorks_Manhattanize = true)}));
+      __MWorks_Manhattanize = true)}),__MWORKS(version="26.3.0"));
   Modelica.Blocks.Sources.Ramp ramp3(startTime = 30, duration = 10,
-    height = 10)
+    height = 10) 
     annotation (Placement(transformation(origin = {6.0, 0.0},
       extent = {{-10.0, -10.0}, {10.0, 10.0}})));
   Modelica.Blocks.Sources.Ramp ramp5(startTime = 20, duration = 10,
-    height = 10)
+    height = 10) 
     annotation (Placement(transformation(origin = {6.0, 44.0},
       extent = {{-10.0, -10.0}, {10.0, 10.0}})));
 equation
-  connect(ramp.y, add.u1)
+  connect(ramp.y, add.u1) 
     annotation (Line(origin = {-21.999999999999996, -35.0},
       points = {{-19.0, 7.0}, {4.0, 7.0}, {4.0, -9.0}, {16.0, -9.0}},
       color = {0, 0, 127}));
-  connect(ramp1.y, add.u2)
+  connect(ramp1.y, add.u2) 
     annotation (Line(origin = {-21.999999999999996, -63.0},
       points = {{-19.0, -9.0}, {4.0, -9.0}, {4.0, 7.0}, {16.0, 7.0}},
       color = {0, 0, 127}));
-  connect(add.y, gain.u)
+  connect(add.y, gain.u) 
     annotation (Line(origin = {13.0, -50.0},
       points = {{4.0, 0.0}, {21.0, 0.0}},
       color = {0, 0, 127}));
-  connect(gain.y, position_command[3])
+  connect(gain.y, position_command[3]) 
     annotation (Line(origin = {84.0, -25.0},
       points = {{-27.0, -25.0}, {-22.0, -25.0}, {-22.0, 25.0}, {26.0, 25.0}},
       color = {0, 0, 127}));
-  connect(ramp3.y, position_command[2])
+  connect(ramp3.y, position_command[2]) 
     annotation (Line(origin = {64.0, 0.0},
       points = {{-47.0, 0.0}, {46.0, 0.0}},
       color = {0, 0, 127}));
-  connect(ramp5.y, position_command[1])
+  connect(ramp5.y, position_command[1]) 
     annotation (Line(origin = {64.0, 22.0},
       points = {{-47.0, 22.0}, {-2.0, 22.0}, {-2.0, -22.0}, {46.0, -22.0}},
       color = {0, 0, 127}));

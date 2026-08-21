@@ -3,3 +3,9 @@ FuzzyPid
 GainScheduledPid
 NeuralPid
 OfficialPid
+AwffPidAttitudeInnerLoopGraphical
+AwffPidFullGraphicalController
+AwffPidMotorMixerGraphical
+AwffPidPositionOuterLoopGraphical
+PidAwffLinearEsoEquationController
+PidAwffLinearEsoGraphicalController

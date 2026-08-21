@@ -48,7 +48,7 @@ package Sensors "传感器系统"
       extent = {{-68.0, 60.0}, {68.0, -60.0}},
       textString = "Sensors",
       textStyle = {TextStyle.None},
-      textColor = {136, 136, 136})}));
+      textColor = {136, 136, 136})}),__MWORKS(version="26.3.0"));
     AbsolutePosition absolutePosition1(
       resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world) annotation (Placement(transformation(origin = {0.0, -23.974440894568694},
         extent = {{10.0, 10.0}, {-10.0, -10.0}},
@@ -172,7 +172,7 @@ sequence = <strong>{1,2,3}</strong>  // Cardan or Tait-Bryan angle sequence
          = <strong>{3,1,3}</strong>  // Euler angle sequence
          = <strong>{3,2,1}</strong>
 </pre>
-</html>"));
+</html>"),__MWORKS(version="26.3.0"));
   end AbsoluteAngles;
   model AbsolutePosition
     "Measure absolute position vector of the origin of a frame connector"
@@ -276,7 +276,7 @@ computed as:
 <blockquote><pre>
 r = MultiBody.Frames.resolve2(frame_a.R, frame_b.r_0);
 </pre></blockquote>
-</html>"));
+</html>"),__MWORKS(version="26.3.0"));
   end AbsolutePosition;
   model SpeedSensor
     "Ideal sensor to measure the absolute flange angular velocity"
@@ -298,7 +298,7 @@ way and provides the result as output signal <strong>w</strong>
         preserveAspectRatio = true,
         extent = {{-100, -100}, {100, 100}}), graphics = {Text(
         extent = {{70, -30}, {120, -70}},
-        textString = "w")}));
+        textString = "w")}),__MWORKS(version="26.3.0"));
   end SpeedSensor;
   annotation(__MWORKS(hide=true,version="26.3.0"));
 end Sensors;

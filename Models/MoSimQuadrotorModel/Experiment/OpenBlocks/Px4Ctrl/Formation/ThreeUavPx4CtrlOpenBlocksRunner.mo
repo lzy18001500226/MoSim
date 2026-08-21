@@ -22,19 +22,19 @@ model ThreeUavPx4CtrlOpenBlocksRunner
   parameter Real pair_activation_distance_m(unit = "m") = 1.5;
 
   // ── Separate OpenBlocks A* trajectory references for each UAV (DYNAMIC MAT) ──
-  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksDynamicReference uav1_ref
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksDynamicReference uav1_ref 
     annotation(Placement(transformation(origin={-827.5,-105.853},
 extent={{-92.5,-142.528},{92.5,142.528}})));
-  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav2DynamicReference uav2_ref
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav2DynamicReference uav2_ref 
     annotation(Placement(transformation(origin={-827.5,-305.853},
 extent={{-92.5,-142.528},{92.5,142.528}})));
-  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav3DynamicReference uav3_ref
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksUav3DynamicReference uav3_ref 
     annotation(Placement(transformation(origin={-827.5,-505.853},
 extent={{-92.5,-142.528},{92.5,142.528}})));
 
   // ── OpenBlocks map visualization ──────────────────────────────────────────────
   MoSimQuadrotorModel.Environment.Maps.OpenBlocksMapTruthDisplay navigationDisplay
-    "OpenBlocks environment map with obstacle walls; actual/reference positions from signals"
+    "OpenBlocks environment map with obstacle walls; actual/reference positions from signals" 
     annotation(Placement(transformation(origin={-380,105},
 extent={{-50,-35},{50,35}})));
 

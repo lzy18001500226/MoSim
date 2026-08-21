@@ -16,7 +16,7 @@ model PidAwffLinearEsoGraphicalRunner
 
   MoSimQuadrotorModel.Guidance.Trajectories.MultiModeTrajectory reference(scenario_mode = scenario_mode) 
     annotation(Placement(transformation(origin = {-380, 185}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.PidFamily.PidAwffLinearEsoGraphicalController controller_core
+  MoSimQuadrotorModel.Control.PidFamily.PidAwffLinearEsoGraphicalController controller_core 
     annotation(Placement(transformation(origin = {-65, 185}, extent = {{-80, -65}, {80, 65}})),
     __MWORKS(SECInstance=true, PortLabels(labelType="PortName")));
   MoSimQuadrotorModel.Experiment.Baselines.ScheduledRotorEfficiencyCompensator fault_compensator(

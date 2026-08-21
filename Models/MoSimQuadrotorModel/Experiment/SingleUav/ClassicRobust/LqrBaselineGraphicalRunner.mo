@@ -19,16 +19,16 @@ model LqrBaselineGraphicalRunner
     annotation(Placement(transformation(origin = {-470, -220}, extent = {{-16, -16}, {16, 16}})));
   Modelica.Blocks.Sources.Constant enable(k = 1) 
     annotation(Placement(transformation(origin = {-470, -260}, extent = {{-16, -16}, {16, 16}})));
-  MoSimQuadrotorModel.Guidance.Trajectories.MultiModeTrajectory reference(scenario_mode = scenario_mode)
+  MoSimQuadrotorModel.Guidance.Trajectories.MultiModeTrajectory reference(scenario_mode = scenario_mode) 
     annotation(Placement(transformation(origin = {-380, 185}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.Adapters.LqrSignalAdapter adapter
+  MoSimQuadrotorModel.Control.Adapters.LqrSignalAdapter adapter 
     annotation(Placement(transformation(origin = {-220, 185}, extent = {{-50, -120}, {50, 120}})));
-  MoSimQuadrotorModel.Control.ClassicRobust.LqrBaseline.LqrBaselineCore core
+  MoSimQuadrotorModel.Control.ClassicRobust.LqrBaseline.LqrBaselineCore core 
     annotation(Placement(transformation(origin = {-65, 185}, extent = {{-80, -65}, {80, 65}})), __MWORKS(SECInstance = true));
-  MoSimQuadrotorModel.Control.Adapters.AttitudeSignalAdapter attitude_adapter
+  MoSimQuadrotorModel.Control.Adapters.AttitudeSignalAdapter attitude_adapter 
     annotation(Placement(transformation(origin = {90, 185}, extent = {{-40, -40}, {40, 40}})));
   MoSimQuadrotorModel.Control.InnerLoop.AttitudeTrackingCore inner_loop
-    annotation(Placement(transformation(origin = {220, 185}, extent = {{-60, -60}, {60, 60}})), __MWORKS(SECInstance = true));
+    annotation(Placement(transformation(origin = {220, 185}, extent = {{-60, -60}, {60, 60}})));
   MoSimQuadrotorModel.Experiment.Baselines.ScheduledRotorEfficiencyCompensator fault_compensator(
     rotor_effectiveness = rotor_effectiveness, fault_start_s = fault_start_s,
     fault_rotor_index = fault_rotor_index, fault_rotor_effectiveness = fault_rotor_effectiveness) 

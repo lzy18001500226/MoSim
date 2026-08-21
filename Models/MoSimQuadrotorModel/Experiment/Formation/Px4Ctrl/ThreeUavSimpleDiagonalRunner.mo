@@ -4,30 +4,30 @@ model ThreeUavSimpleDiagonalRunner
 
   // ── Observable outputs ────────────────────────────────────────────────────────
   Modelica.Blocks.Interfaces.RealOutput pos_1[3](each unit = "m")
-    "UAV 1 position [x, y, z]"
+    "UAV 1 position [x, y, z]" 
     annotation(Placement(transformation(origin={800,220.5}, extent={{-15,-15},{15,15}})));
   Modelica.Blocks.Interfaces.RealOutput att_1[3](each unit = "rad")
-    "UAV 1 attitude [roll, pitch, yaw]"
+    "UAV 1 attitude [roll, pitch, yaw]" 
     annotation(Placement(transformation(origin={800,191}, extent={{-15,-15},{15,15}})));
   Modelica.Blocks.Interfaces.RealOutput pos_2[3](each unit = "m")
-    "UAV 2 position [x, y, z]"
+    "UAV 2 position [x, y, z]" 
     annotation(Placement(transformation(origin={800,-174.5}, extent={{-15,-15},{15,15}})));
   Modelica.Blocks.Interfaces.RealOutput att_2[3](each unit = "rad")
-    "UAV 2 attitude [roll, pitch, yaw]"
+    "UAV 2 attitude [roll, pitch, yaw]" 
     annotation(Placement(transformation(origin={800,-204}, extent={{-15,-15},{15,15}})));
   Modelica.Blocks.Interfaces.RealOutput pos_3[3](each unit = "m")
-    "UAV 3 position [x, y, z]"
+    "UAV 3 position [x, y, z]" 
     annotation(Placement(transformation(origin={800,-569.5}, extent={{-15,-15},{15,15}})));
   Modelica.Blocks.Interfaces.RealOutput att_3[3](each unit = "rad")
-    "UAV 3 attitude [roll, pitch, yaw]"
+    "UAV 3 attitude [roll, pitch, yaw]" 
     annotation(Placement(transformation(origin={800,-599}, extent={{-15,-15},{15,15}})));
 
   // ── Diagnostic metrics ────────────────────────────────────────────────────────
   Modelica.Blocks.Interfaces.RealOutput minimum_pair_distance_m(unit = "m")
-    "Minimum pairwise distance among all three UAVs"
+    "Minimum pairwise distance among all three UAVs" 
     annotation(Placement(transformation(origin={800,-700}, extent={{-15,-15},{15,15}})));
   Modelica.Blocks.Interfaces.RealOutput max_position_error_norm(unit = "m")
-    "Maximum position error among all three UAVs"
+    "Maximum position error among all three UAVs" 
     annotation(Placement(transformation(origin={800,-740}, extent={{-15,-15},{15,15}})));
 
   // ── Shared parameters ─────────────────────────────────────────────────────────
@@ -47,32 +47,32 @@ model ThreeUavSimpleDiagonalRunner
     start_time = 0,
     x_start = 0, y_start = 0, z_start = 1,
     x_end = 10, y_end = 10, z_end = 5,
-    duration = 60)
+    duration = 60) 
     annotation(Placement(transformation(origin={-827.5,-40}, extent={{-92.5,-142.528},{92.5,142.528}})));
 
   MoSimQuadrotorModel.Guidance.Trajectories.SimpleDiagonalReference ref_2(
     start_time = 5,
     x_start = 0, y_start = 0, z_start = 1,
     x_end = 10, y_end = 10, z_end = 5,
-    duration = 60)
+    duration = 60) 
     annotation(Placement(transformation(origin={-827.5,-170}, extent={{-92.5,-142.528},{92.5,142.528}})));
 
   MoSimQuadrotorModel.Guidance.Trajectories.SimpleDiagonalReference ref_3(
     start_time = 10,
     x_start = 0, y_start = 0, z_start = 1,
     x_end = 10, y_end = 10, z_end = 5,
-    duration = 60)
+    duration = 60) 
     annotation(Placement(transformation(origin={-827.5,-300}, extent={{-92.5,-142.528},{92.5,142.528}})));
 
   // ══ UAV 1 control chain ═══════════════════════════════════════════════════════
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlInputSampler input_sampler_1
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlInputSampler input_sampler_1 
     annotation(Placement(transformation(origin = {-237.5, 185}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlBaselineCore  controller_core_1
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlBaselineCore  controller_core_1 
     annotation(Placement(transformation(origin = {-65, 185}, extent = {{-80, -65}, {80, 65}})),
     __MWORKS(SECInstance=true, PortLabels(labelType="PortName")));
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlOutputBridge  output_bridge_1
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlOutputBridge  output_bridge_1 
     annotation(Placement(transformation(origin = {107.5, 185}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.PID.BaselineRotorMapper       mapper_1
+  MoSimQuadrotorModel.Control.PID.BaselineRotorMapper       mapper_1 
     annotation(Placement(transformation(origin = {280, 185}, extent = {{-80, -65}, {80, 65}})),
     __MWORKS(SECInstance=true, PortLabels(labelType="PortName")));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_1(
@@ -82,18 +82,18 @@ model ThreeUavSimpleDiagonalRunner
     gust_start_s        = gust_start_s,
     gust_duration_s     = gust_duration_s,
     mass_scale          = mass_scale,
-    inertia_scale       = inertia_scale)
+    inertia_scale       = inertia_scale) 
     annotation(Placement(transformation(origin = {627.5, 102.5}, extent = {{-127.5, -147.5}, {127.5, 147.5}})));
 
   // ══ UAV 2 control chain ═══════════════════════════════════════════════════════
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlInputSampler input_sampler_2
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlInputSampler input_sampler_2 
     annotation(Placement(transformation(origin = {-237.5, -210}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlBaselineCore  controller_core_2
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlBaselineCore  controller_core_2 
     annotation(Placement(transformation(origin = {-65, -210}, extent = {{-80, -65}, {80, 65}})),
     __MWORKS(SECInstance=true, PortLabels(labelType="PortName")));
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlOutputBridge  output_bridge_2
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlOutputBridge  output_bridge_2 
     annotation(Placement(transformation(origin = {107.5, -210}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.PID.BaselineRotorMapper       mapper_2
+  MoSimQuadrotorModel.Control.PID.BaselineRotorMapper       mapper_2 
     annotation(Placement(transformation(origin = {280, -210}, extent = {{-80, -65}, {80, 65}})),
     __MWORKS(SECInstance=true, PortLabels(labelType="PortName")));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_2(
@@ -103,18 +103,18 @@ model ThreeUavSimpleDiagonalRunner
     gust_start_s        = gust_start_s,
     gust_duration_s     = gust_duration_s,
     mass_scale          = mass_scale,
-    inertia_scale       = inertia_scale)
+    inertia_scale       = inertia_scale) 
     annotation(Placement(transformation(origin = {627.5, -292.5}, extent = {{-127.5, -147.5}, {127.5, 147.5}})));
 
   // ══ UAV 3 control chain ═══════════════════════════════════════════════════════
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlInputSampler input_sampler_3
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlInputSampler input_sampler_3 
     annotation(Placement(transformation(origin = {-237.5, -605}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlBaselineCore  controller_core_3
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlBaselineCore  controller_core_3 
     annotation(Placement(transformation(origin = {-65, -605}, extent = {{-80, -65}, {80, 65}})),
     __MWORKS(SECInstance=true, PortLabels(labelType="PortName")));
-  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlOutputBridge  output_bridge_3
+  MoSimQuadrotorModel.Control.Px4Ctrl.Px4CtrlOutputBridge  output_bridge_3 
     annotation(Placement(transformation(origin = {107.5, -605}, extent = {{-50, -65}, {50, 65}})));
-  MoSimQuadrotorModel.Control.PID.BaselineRotorMapper       mapper_3
+  MoSimQuadrotorModel.Control.PID.BaselineRotorMapper       mapper_3 
     annotation(Placement(transformation(origin = {280, -605}, extent = {{-80, -65}, {80, 65}})),
     __MWORKS(SECInstance=true, PortLabels(labelType="PortName")));
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant_3(
@@ -124,7 +124,7 @@ model ThreeUavSimpleDiagonalRunner
     gust_start_s        = gust_start_s,
     gust_duration_s     = gust_duration_s,
     mass_scale          = mass_scale,
-    inertia_scale       = inertia_scale)
+    inertia_scale       = inertia_scale) 
     annotation(Placement(transformation(origin = {627.5, -687.5}, extent = {{-127.5, -147.5}, {127.5, 147.5}})));
 
 protected

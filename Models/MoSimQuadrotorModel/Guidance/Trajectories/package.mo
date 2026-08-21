@@ -46,7 +46,7 @@ package Trajectories "Reference trajectories"
       pattern = LinePattern.Dash,
       arrow = {Arrow.None, Arrow.Filled},
       arrowSize = 4.0,
-      __MWorks_Manhattanize = true)}));
+      __MWorks_Manhattanize = true)}),__MWORKS(version="26.3.0"));
   equation
     connect(gain1.y, position_command[1]) 
       annotation (Line(origin = {89.0, 21.0},
@@ -118,7 +118,7 @@ package Trajectories "Reference trajectories"
       pattern = LinePattern.Dash,
       arrow = {Arrow.None, Arrow.Filled},
       smooth = Smooth.Bezier)}),Diagram(coordinateSystem(extent={{-100,-100},{100,100}},
-  grid={2,2})));
+  grid={2,2})),__MWORKS(version="26.3.0"));
     equation
     if time<=0 then
     x=0;

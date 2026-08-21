@@ -8,3 +8,4 @@ Px4CtrlAttitudeThrustSysblockAdapter
 Px4CtrlRotorAllocator
 Px4CtrlAttitudeThrustSysblockRt1Smoke
 Px4CtrlReferenceCompensator
+Px4CtrlCoreEquationBridge

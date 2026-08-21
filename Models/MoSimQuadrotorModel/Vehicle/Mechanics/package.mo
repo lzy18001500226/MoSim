@@ -54,6 +54,7 @@ package Mechanics "机械多体库"
       specularCoefficient = 1,
       r_0(fixed = false),
       enforceStates = true) annotation (Placement(transformation(extent = {{10.0, -10.0}, {-10.0, 10.0}})));
+    annotation(__MWORKS(version="26.3.0"));
   equation
     connect(frame_a, body.frame_b) 
       annotation (Line(origin = {-55.0, 0.0},
@@ -104,6 +105,7 @@ package Mechanics "机械多体库"
     Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_b 
       annotation (Placement(transformation(origin = {101.0, 0.0},
         extent = {{-16.0, -16.0}, {16.0, 16.0}})));
+    annotation(__MWORKS(version="26.3.0"));
   equation
     connect(propellers1.frame_a, revolute1.frame_b) 
       annotation (Line(origin = {-4.0, -0.5},
@@ -168,6 +170,7 @@ package Mechanics "机械多体库"
     Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_a3 
       annotation (Placement(transformation(origin = {-100.0, -76.0},
         extent = {{-16.0, -16.0}, {16.0, 16.0}})));
+    annotation(__MWORKS(version="26.3.0"));
   equation
     connect(Dronefixed1.frame_a, frame_b) 
       annotation (Line(origin = {64.0, 77.0},
@@ -299,7 +302,7 @@ package Mechanics "机械多体库"
       textColor = {136, 136, 136})}),
       Diagram(coordinateSystem(extent = {{-200.0, -200.0}, {200.0, 200.0}},
         grid = {2.0, 2.0})),
-      experiment(Algorithm = Dassl, Interval = 0.001, StartTime = 0, StopTime = 30, Tolerance = 1e-10));
+      experiment(Algorithm = Dassl, Interval = 0.001, StartTime = 0, StopTime = 30, Tolerance = 1e-10),__MWORKS(version="26.3.0"));
     parameter MoSimQuadrotorModel.Parameters.Sunray150VirtualPx4Classic profile
       "Source-labeled virtual plant profile; not identified real-aircraft truth";
     inner Modelica.Mechanics.MultiBody.World world(

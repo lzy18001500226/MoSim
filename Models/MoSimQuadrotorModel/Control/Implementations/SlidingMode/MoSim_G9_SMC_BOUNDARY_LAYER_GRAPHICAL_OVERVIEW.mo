@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Control.Implementations.SlidingMode;
-
 model MoSim_G9_SMC_BOUNDARY_LAYER_GRAPHICAL_OVERVIEW "SMC_BOUNDARY_LAYER readable algorithm topology"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

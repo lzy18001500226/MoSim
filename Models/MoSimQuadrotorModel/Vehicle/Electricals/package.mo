@@ -101,7 +101,7 @@ package Electricals "电气系统"
       fillPattern = FillPattern.HorizontalCylinder,
       extent = {{-30.0, -10.0}, {30.0, 10.0}})}),
       Diagram(coordinateSystem(extent = {{-120.0, -100.0}, {120.0, 100.0}},
-        grid = {2.0, 2.0})));
+        grid = {2.0, 2.0})),__MWORKS(version="26.3.0"));
     Modelica.Blocks.Interfaces.RealInput u 
       annotation (Placement(transformation(origin = {-119.688, 5.68798},
         extent = {{-4.31202, -4.31202}, {4.31202, 4.31202}}),

@@ -12,7 +12,7 @@ package Examples "示例模型库"
       Icon(coordinateSystem(extent = {{-100.0, -100.0}, {100.0, 100.0}},
         preserveAspectRatio = false,
         grid = {2.0, 2.0})),
-      experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+      experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01),__MWORKS(version="26.3.0"));
     Mechanics.QuadChassis quadChassisTest17_1 annotation (Placement(transformation(origin = {86.00000000000001, 8.499999999999986},
       extent = {{-34.0, -33.99999999999999}, {34.0, 34.00000000000001}})));
     Electricals.Actuator actuator1_1 
@@ -144,7 +144,7 @@ package Examples "示例模型库"
       Icon(coordinateSystem(extent = {{-100.0, -100.0}, {100.0, 100.0}},
         preserveAspectRatio = false,
         grid = {2.0, 2.0})),
-      experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01));
+      experiment(Algorithm = Dassl, StartTime = 0, StopTime = 50, Tolerance = 0.0001, Interval = 0.01),__MWORKS(version="26.3.0"));
     extends Modelica.Icons.Example;
     Blocks.Controller.Controller controller3_2 
       annotation (Placement(transformation(origin = {-76.00000000000001, 16.0},
@@ -262,7 +262,7 @@ package Examples "示例模型库"
       Icon(coordinateSystem(extent = {{-100.0, -100.0}, {100.0, 100.0}},
         preserveAspectRatio = false,
         grid = {2.0, 2.0})),
-      experiment(Algorithm = Dassl, StartTime = 0, StopTime = 120, Tolerance = 0.0001, Interval = 0.01));
+      experiment(Algorithm = Dassl, StartTime = 0, StopTime = 120, Tolerance = 0.0001, Interval = 0.01),__MWORKS(version="26.3.0"));
     extends Modelica.Icons.Example;
     Blocks.Controller.Controller controller3_2 
       annotation (Placement(transformation(origin = {-84.00000000000003, 12.0},

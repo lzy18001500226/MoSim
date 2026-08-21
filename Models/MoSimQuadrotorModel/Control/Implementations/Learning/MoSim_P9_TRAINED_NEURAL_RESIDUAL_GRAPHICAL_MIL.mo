@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Control.Implementations.Learning;
-
 model MoSim_P9_TRAINED_NEURAL_RESIDUAL_GRAPHICAL_MIL "P9 trained neural residual learning-control signal chain"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

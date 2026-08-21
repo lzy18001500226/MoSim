@@ -330,5 +330,5 @@ equation
   formation_mode = if time < transit_start_s then 1 else if time < arrival_phase_s then 2 else 3;
 
   annotation(experiment(Algorithm = Dassl, StartTime = 0, StopTime = 304.840532932, Tolerance = 0.0001, Interval = 0.05));
-  annotation(__MWORKS(hide=false));
+  annotation(__MWORKS(hide=false,version="26.3.0"));
 end ThreeUavOpenBlocksReconfigurableFormationLinearMPC;

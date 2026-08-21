@@ -18,6 +18,7 @@ model ReportBaselineSensors
     resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world);
   Modelica.Mechanics.MultiBody.Sensors.AbsoluteAngularVelocity absoluteAngularVelocity(
     resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.frame_a);
+  annotation(__MWORKS(version="26.3.0"));
 
 equation
   connect(frame_a, absoluteAngles.frame_a);

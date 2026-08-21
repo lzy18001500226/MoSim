@@ -3,85 +3,85 @@ model LqrSignalAdapter
   "Signal adapter for LQR-family controllers: passes plant/reference signals to Sysblock core"
 
   // Input ports (from plant and trajectory)
-  Modelica.Blocks.Interfaces.RealInput position_x(unit = "m")
+  Modelica.Blocks.Interfaces.RealInput position_x(unit = "m") 
     annotation(Placement(transformation(origin = {-110, 90}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput position_y(unit = "m")
+  Modelica.Blocks.Interfaces.RealInput position_y(unit = "m") 
     annotation(Placement(transformation(origin = {-110, 70}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput position_z(unit = "m")
+  Modelica.Blocks.Interfaces.RealInput position_z(unit = "m") 
     annotation(Placement(transformation(origin = {-110, 50}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealInput velocity_x(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealInput velocity_x(unit = "m/s") 
     annotation(Placement(transformation(origin = {-110, 30}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput velocity_y(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealInput velocity_y(unit = "m/s") 
     annotation(Placement(transformation(origin = {-110, 10}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput velocity_z(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealInput velocity_z(unit = "m/s") 
     annotation(Placement(transformation(origin = {-110, -10}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealInput reference_position_x(unit = "m")
+  Modelica.Blocks.Interfaces.RealInput reference_position_x(unit = "m") 
     annotation(Placement(transformation(origin = {-110, -30}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput reference_position_y(unit = "m")
+  Modelica.Blocks.Interfaces.RealInput reference_position_y(unit = "m") 
     annotation(Placement(transformation(origin = {-110, -50}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput reference_position_z(unit = "m")
+  Modelica.Blocks.Interfaces.RealInput reference_position_z(unit = "m") 
     annotation(Placement(transformation(origin = {-110, -70}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealInput reference_velocity_x(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealInput reference_velocity_x(unit = "m/s") 
     annotation(Placement(transformation(origin = {-110, -90}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput reference_velocity_y(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealInput reference_velocity_y(unit = "m/s") 
     annotation(Placement(transformation(origin = {-110, -110}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput reference_velocity_z(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealInput reference_velocity_z(unit = "m/s") 
     annotation(Placement(transformation(origin = {-110, -130}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealInput reference_acceleration_x(unit = "m/s2")
+  Modelica.Blocks.Interfaces.RealInput reference_acceleration_x(unit = "m/s2") 
     annotation(Placement(transformation(origin = {-110, -150}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput reference_acceleration_y(unit = "m/s2")
+  Modelica.Blocks.Interfaces.RealInput reference_acceleration_y(unit = "m/s2") 
     annotation(Placement(transformation(origin = {-110, -170}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput reference_acceleration_z(unit = "m/s2")
+  Modelica.Blocks.Interfaces.RealInput reference_acceleration_z(unit = "m/s2") 
     annotation(Placement(transformation(origin = {-110, -190}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealInput dt(unit = "s")
+  Modelica.Blocks.Interfaces.RealInput dt(unit = "s") 
     annotation(Placement(transformation(origin = {-110, -210}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealInput enable
+  Modelica.Blocks.Interfaces.RealInput enable 
     annotation(Placement(transformation(origin = {-110, -230}, extent = {{-10, -10}, {10, 10}})));
 
   // Output ports (to Sysblock core)
-  Modelica.Blocks.Interfaces.RealOutput position_x_out(unit = "m")
+  Modelica.Blocks.Interfaces.RealOutput position_x_out(unit = "m") 
     annotation(Placement(transformation(origin = {110, 90}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput position_y_out(unit = "m")
+  Modelica.Blocks.Interfaces.RealOutput position_y_out(unit = "m") 
     annotation(Placement(transformation(origin = {110, 70}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput position_z_out(unit = "m")
+  Modelica.Blocks.Interfaces.RealOutput position_z_out(unit = "m") 
     annotation(Placement(transformation(origin = {110, 50}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealOutput velocity_x_out(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealOutput velocity_x_out(unit = "m/s") 
     annotation(Placement(transformation(origin = {110, 30}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput velocity_y_out(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealOutput velocity_y_out(unit = "m/s") 
     annotation(Placement(transformation(origin = {110, 10}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput velocity_z_out(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealOutput velocity_z_out(unit = "m/s") 
     annotation(Placement(transformation(origin = {110, -10}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealOutput reference_position_x_out(unit = "m")
+  Modelica.Blocks.Interfaces.RealOutput reference_position_x_out(unit = "m") 
     annotation(Placement(transformation(origin = {110, -30}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput reference_position_y_out(unit = "m")
+  Modelica.Blocks.Interfaces.RealOutput reference_position_y_out(unit = "m") 
     annotation(Placement(transformation(origin = {110, -50}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput reference_position_z_out(unit = "m")
+  Modelica.Blocks.Interfaces.RealOutput reference_position_z_out(unit = "m") 
     annotation(Placement(transformation(origin = {110, -70}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealOutput reference_velocity_x_out(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealOutput reference_velocity_x_out(unit = "m/s") 
     annotation(Placement(transformation(origin = {110, -90}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput reference_velocity_y_out(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealOutput reference_velocity_y_out(unit = "m/s") 
     annotation(Placement(transformation(origin = {110, -110}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput reference_velocity_z_out(unit = "m/s")
+  Modelica.Blocks.Interfaces.RealOutput reference_velocity_z_out(unit = "m/s") 
     annotation(Placement(transformation(origin = {110, -130}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealOutput reference_acceleration_x_out(unit = "m/s2")
+  Modelica.Blocks.Interfaces.RealOutput reference_acceleration_x_out(unit = "m/s2") 
     annotation(Placement(transformation(origin = {110, -150}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput reference_acceleration_y_out(unit = "m/s2")
+  Modelica.Blocks.Interfaces.RealOutput reference_acceleration_y_out(unit = "m/s2") 
     annotation(Placement(transformation(origin = {110, -170}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput reference_acceleration_z_out(unit = "m/s2")
+  Modelica.Blocks.Interfaces.RealOutput reference_acceleration_z_out(unit = "m/s2") 
     annotation(Placement(transformation(origin = {110, -190}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Interfaces.RealOutput dt_out(unit = "s")
+  Modelica.Blocks.Interfaces.RealOutput dt_out(unit = "s") 
     annotation(Placement(transformation(origin = {110, -210}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Interfaces.RealOutput enable_out
+  Modelica.Blocks.Interfaces.RealOutput enable_out 
     annotation(Placement(transformation(origin = {110, -230}, extent = {{-10, -10}, {10, 10}})));
 
 equation
@@ -110,5 +110,5 @@ equation
       Text(origin = {0, 20}, extent = {{-80, 20}, {80, -20}}, textString = "LQR Signal", textColor = {0, 100, 150}),
       Text(origin = {0, -20}, extent = {{-80, 20}, {80, -20}}, textString = "Adapter", textColor = {0, 100, 150}),
       Line(points = {{-60, 0}, {60, 0}}, color = {0, 100, 150})}),
-    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -240}, {100, 100}})));
+    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -240}, {100, 100}})),__MWORKS(version="26.3.0"));
 end LqrSignalAdapter;

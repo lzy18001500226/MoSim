@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Control.Implementations.Learning;
-
 model MoSim_P9_RL_GAIN_SCHEDULER_GRAPHICAL_MIL "P9 rl gain scheduler learning-control signal chain"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

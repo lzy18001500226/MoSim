@@ -1,5 +1,4 @@
 within MoSimQuadrotorModel.Control.Implementations.GeometricFlatness;
-
 model MoSim_G9_SE3_GRAPHICAL_OVERVIEW "SE3 readable algorithm topology"
   extends ModelWorkspace;
   import SysplorerEmbeddedCoder.Types.*;

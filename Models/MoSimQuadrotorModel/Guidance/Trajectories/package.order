@@ -1,1 +1,17 @@
 ClimbPath
+ClimbTrajectory
+Figure8
+HoverHold
+MultiModeTrajectory
+OpenBlocksDynamicReference
+OpenBlocksPx4CtrlReference
+OpenBlocksUav2DynamicReference
+OpenBlocksUav2Reference
+OpenBlocksUav3DynamicReference
+OpenBlocksUav3Reference
+PartialTrajectory
+PlannedQuinticPx4CtrlReference
+PlannedQuinticReference
+SimpleDiagonalReference
+SpiralAscent
+StepResponse
