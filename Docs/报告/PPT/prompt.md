@@ -1184,28 +1184,27 @@ Figure Subject:
 Create a five-layer vertical stack architecture diagram for the MoSim platform showing that the first four layers are entirely inside MWORKS and only the fifth layer belongs to WSL2. Each layer is a full-width horizontal band. Use a white background, flat vector graphics, black text, and one distinct pale color per layer. Keep all connectors strictly vertical between adjacent layers; no diagonal lines.
 
 Diagram type:
-Five-layer vertical architecture stack with a right-side annotation column and a left-side tool-label column.
+Five-layer vertical architecture stack with integrated tool labels and scope brackets.
 
 Layout:
-Use a 16:9 horizontal canvas. Stack five equal-height bands top to bottom. Put a tool-label strip on the left edge of each band (tool names only). Put node names inside each band. Put a right-side annotation column with one short note per layer. Keep all inter-layer arrows as short vertical drops centered on the band border. Draw a single pale blue bracket spanning layers 1–4 on the left margin labeled "纯 MWORKS 内部" and a separate pale orange bracket spanning layer 5 labeled "WSL2 运行层".
+Use a 16:9 horizontal canvas. Stack five equal-height bands top to bottom. Put tool names and layer content inside each band as compact inline text, not as separate columns. Draw a single pale blue bracket spanning layers 1–4 on the left margin labeled "纯 MWORKS 内部" and a separate pale orange bracket spanning layer 5 labeled "WSL2 运行层". Keep all inter-layer arrows as short vertical drops centered on the band border.
 
-Mandatory nodes (top to bottom):
-- Layer 1 (pale blue, "建模层"): "MWORKS.Sysplorer（MultiBody机体 · 6DOF）", "MWORKS.Sysblock（控制器图形化 · 46路）", "MWORKS.Syslab（数据分析 · Julia）"
+Mandatory nodes (top to bottom, all content inside each band):
+- Layer 1 (pale blue, "建模层"): "MWORKS.Sysplorer (MultiBody机体·6DOF) | Sysblock (控制器图形化·46路) | Syslab (数据分析·Julia)"
 - Layer 2 (pale green, "生成层"): "GenerateModelCode → ISO C99 源码（无Runtime依赖）"
-- Layer 3 (pale yellow, "验证层"): "CFunction SIL夹具（RMSE 1.148e-13 m）", "FormalRunner（ClimbPath 50s · 30/48 通过）"
-- Layer 4 (pale cyan, "MWORKS扩展层"): "三机编队 TriangleFigure8（MWORKS Sysplorer）", "OpenBlocks 轨迹（A*冻结参数·Modelica）", "ECBF 安全层（Modelica·全MWORKS内）"
-- Layer 5 (pale orange, "WSL2运行层"): "自研ROS Bridge · PX4 SITL · Gazebo Classic", "FAST-LIO 感知节点（Ubuntu 20.04 / ROS1 Noetic）"
-- Right annotation col: "MWORKS主线 ←" beside layers 1–3; "MWORKS内扩展 ←" beside layer 4; "WSL2链路 ←" beside layer 5
+- Layer 3 (pale yellow, "验证层"): "CFunction SIL夹具 (RMSE 1.148e-13 m) | FormalRunner (ClimbPath 50s·30/48 通过)"
+- Layer 4 (pale cyan, "MWORKS扩展层"): "三机编队 TriangleFigure8 (MWORKS Sysplorer) | OpenBlocks 轨迹 (A*冻结参数·Modelica) | ECBF 安全层 (Modelica·全MWORKS内)"
+- Layer 5 (pale orange, "WSL2运行层"): "自研ROS Bridge·PX4 SITL·Gazebo Classic | FAST-LIO 感知节点 (Ubuntu 20.04/ROS1 Noetic)"
 
 Mandatory connections:
 - One centered vertical arrow from Layer 1 bottom edge to Layer 2 top edge.
 - One centered vertical arrow from Layer 2 to Layer 3.
 - One centered vertical arrow from Layer 3 to Layer 4.
-- One centered vertical arrow from Layer 4 to Layer 5, labeled "C99导出 → ROS Bridge" on the arrow.
+- One centered vertical arrow from Layer 4 to Layer 5, labeled "C99导出" on the arrow.
 - A thin dashed gray upward arrow from Layer 5 back to Layer 3 labeled "运行时证据回传" on the right margin, not crossing any band content.
 
 Negative constraints:
-Do not place OpenBlocks, ECBF, or three-UAV formation in Layer 5 (WSL2). OpenBlocks and ECBF are pure Modelica models running inside MWORKS; they have no Gazebo dependency. Do not merge layers or draw horizontal connectors between nodes inside the same layer. Do not label WSL2 as Docker. No 3D, gradients, shadows, screenshots, decorative icons, curved lines, crossed connectors, or floating text.
+Do not use separate left tool-label column or right annotation column; put all info inside bands. Do not place OpenBlocks, ECBF, or three-UAV formation in Layer 5. They run inside MWORKS. Do not merge layers or draw horizontal connectors within layers. Do not label WSL2 as Docker. No 3D, gradients, shadows, screenshots, decorative icons, curved lines, crossed connectors, or floating text.
 ```
 
 ---
@@ -1254,26 +1253,26 @@ Diagram type:
 Top-down fan-out hierarchy with three independent lanes and one optional ECBF layer, all inside a labeled MWORKS boundary box.
 
 Layout:
-Use a 16:9 horizontal canvas. Draw a pale blue dashed outer boundary box labeled "纯 MWORKS Sysplorer 仿真（不含 Gazebo / ROS）" that encloses the entire diagram. Inside, place four horizontal rows top to bottom: (1) formation goal, (2) Guidance layer with ECBF sublayer (dashed pale red, pluggable), (3) three parallel controller nodes, (4) three parallel Plant nodes. Add an optional ECBF row between rows 2 and 3, shown in pale red with a dashed border to indicate it is pluggable. Below row 4, add a metrics strip outside the MWORKS box. Keep all connectors strictly vertical within each of the three lanes; cross-lane comparison outputs belong only in the bottom metrics row.
+Use a 16:9 horizontal canvas. Draw a pale blue dashed outer boundary box labeled "纯 MWORKS Sysplorer 仿真（不含 Gazebo / ROS）" enclosing the entire diagram. Inside, place four horizontal rows top to bottom: (1) formation goal, (2) Guidance layer with ECBF sublayer (dashed pale red, optional/pluggable), (3) three parallel controller nodes, (4) three parallel Plant nodes. Add metrics text at the bottom outside MWORKS box. Keep all connectors strictly vertical within each lane.
 
 Mandatory nodes:
-- Row 1: "编队任务目标（等边三角形 Figure8）"
-- Row 2: "Guidance 层\nTriangleFigure8Reference.mo\n（MWORKS Modelica 模型）"
-- ECBF row (dashed pale red): "ECBF 安全层（可插拔）\nThreeUavPairwiseEcbfReferenceSafetyFilter.mo\nh(x)≥0，ḣ+γh≥0"
-- Row 3 (three equal nodes): "px4ctrl × UAV1", "px4ctrl × UAV2", "px4ctrl × UAV3"
-- Row 4 (three equal nodes): "Plant × UAV1\n（云纵150 MultiBody）", "Plant × UAV2\n（云纵150 MultiBody）", "Plant × UAV3\n（云纵150 MultiBody）"
-- Metrics strip (below MWORKS box): "协同指标：编队RMSE = 2.2855e-13 m｜最近距离 = 2.0785 m（MIL仿真，非实飞）"
+- Row 1: "编队任务目标\n等边三角形 Figure8"
+- Row 2: "Guidance 层\nTriangleFigure8Reference.mo\nMWORKS Modelica 模型"
+- ECBF row (dashed pale red border): "ECBF 安全层（可插拔）\nThreeUavPairwiseEcbfReferenceSafetyFilter.mo\nh(x)≥0, ḣ+γh≥0"
+- Row 3 (three equal nodes): "px4ctrl\nUAV1", "px4ctrl\nUAV2", "px4ctrl\nUAV3"
+- Row 4 (three equal nodes): "Plant UAV1\n云纵150 MultiBody", "Plant UAV2\n云纵150 MultiBody", "Plant UAV3\n云纵150 MultiBody"
+- Metrics text (below MWORKS box): "协同指标：编队RMSE = 2.2855e-13 m | 最近距离 = 2.0785 m（MIL仿真，非实飞）"
 
 Mandatory connections:
 - "编队任务目标" → "Guidance 层" by one centered vertical arrow.
-- "Guidance 层" → three equal vertical drops into the ECBF row (or directly into the controller row if ECBF is bypassed).
+- "Guidance 层" → three equal vertical drops into ECBF row (or directly into controller row if ECBF bypassed).
 - ECBF row → three vertical arrows into the three controller nodes.
 - Each controller → its matching Plant by one vertical arrow.
-- Each Plant → metrics strip by one short downward arrow.
-- A thin dashed gray bidirectional lateral arrow between Plant×UAV1 and Plant×UAV2 and between Plant×UAV2 and Plant×UAV3 labeled "协同状态采集" only, not a command wire.
+- Each Plant → metrics text by one short downward arrow.
+- Thin dashed gray bidirectional lateral arrows between Plant×UAV1 ↔ Plant×UAV2 and Plant×UAV2 ↔ Plant×UAV3 labeled "协同状态采集" only.
 
 Negative constraints:
-Do not draw any Gazebo, ROS, or WSL2 node inside this diagram. Do not draw a command wire from any Plant to a different UAV's controller. Do not draw the ECBF node as a mandatory pass-through in the main chain; keep its dashed border to show it is optional. Do not present the formation RMSE as a physical-hardware or Gazebo measurement. The MWORKS outer boundary box must be visible and labeled. No 3D, gradients, shadows, screenshots, decorative icons, curved lines, crossed connectors, or floating text.
+Do not draw any Gazebo, ROS, or WSL2 node inside this diagram. Do not draw command wire from any Plant to different UAV's controller. Keep ECBF dashed border to show it's optional. Do not present formation RMSE as physical-hardware or Gazebo measurement. MWORKS boundary box must be visible and labeled. No 3D, gradients, shadows, screenshots, decorative icons, curved lines, crossed connectors, or floating text.
 ```
 
 ---
@@ -1288,26 +1287,23 @@ Diagram type:
 Nested vertical layer stack inside a dashed WSL2 boundary box.
 
 Layout:
-Use a 16:9 horizontal canvas. Draw a pale gray host strip at the very bottom labeled "Windows 11 宿主机（MWORKS GUI · UE · 显卡）". Above it draw a large dashed-border rectangle labeled "WSL2 隔离边界". Inside the rectangle stack five horizontal bands from bottom to top. Add a right-side annotation column outside the WSL2 box explaining why WSL2 is preferred over Docker.
+Use a 16:9 horizontal canvas. Draw a pale gray host strip at the very bottom labeled "Windows 11 宿主机（MWORKS GUI·UE·显卡·授权）". Above it draw a large dashed-border rectangle labeled "WSL2 隔离边界". Inside the rectangle stack five horizontal bands from bottom to top. Put explanatory text inside the boundary box at top-right corner as a compact note, not as external annotation column.
 
 Mandatory nodes (bottom to top inside WSL2 box):
 - Band 1 (pale blue): "Ubuntu 20.04 LTS"
 - Band 2 (pale blue): "ROS1 Noetic"
-- Band 3 (pale orange): "MAVROS · rosbridge · 自研ROS Bridge"
-- Band 4 (pale green): "PX4 SITL · Gazebo Classic · RViz"
-- Band 5 (pale green): "FAST-LIO 感知节点 · MoSim ROS Bridge节点"
-- Host strip (pale gray, below dashed box): "Windows 11 宿主机（MWORKS · UE · 显卡 · 授权）"
-- Right annotation col:
-  - "WSL2 vs Docker"
-  - "MWORKS/UE 需本机 GUI 和显卡 →\nDocker 无法承载"
-  - "WSL2 共享宿主 GPU 和授权 →\n完整演示链路"
+- Band 3 (pale orange): "MAVROS·rosbridge·自研ROS Bridge"
+- Band 4 (pale green): "PX4 SITL·Gazebo Classic·RViz"
+- Band 5 (pale green): "FAST-LIO 感知节点·MoSim ROS Bridge节点"
+- Host strip (pale gray, below dashed box): "Windows 11 宿主机（MWORKS·UE·显卡·授权）"
+- Inside WSL2 box at top-right corner: "WSL2 vs Docker\nMWORKS/UE 需本机 GUI 和显卡\nDocker 无法承载\nWSL2 共享宿主 GPU 和授权"
 
 Mandatory connections:
 - Short upward arrows between each adjacent band pair inside the WSL2 box, one per band boundary, centered.
-- One bidirectional horizontal arrow crossing the dashed WSL2 boundary labeled "X11 / WSLg 图形透传" connecting Band 4 to the host strip area.
+- One bidirectional horizontal arrow crossing the dashed WSL2 boundary labeled "X11/WSLg 图形透传" connecting Band 4 to the host strip area.
 
 Negative constraints:
-Do not place OpenBlocks or ECBF or any formation controller inside the WSL2 box. OpenBlocks and ECBF are pure Modelica models that run inside MWORKS, not in WSL2. Do not label WSL2 as Docker or mention Docker anywhere inside the figure. Do not imply the host strip runs the ROS stack. Do not show a separate Docker layer. No 3D, gradients, shadows, screenshots, decorative icons, curved lines, or floating text.
+Do not place OpenBlocks or ECBF or any formation controller inside WSL2 box. They are pure Modelica models that run inside MWORKS, not in WSL2. Do not use external right annotation column; put explanation inside boundary box. Do not label WSL2 as Docker or mention Docker inside figure. Do not imply host strip runs ROS stack. Do not show separate Docker layer. No 3D, gradients, shadows, screenshots, decorative icons, curved lines, or floating text.
 ```
 
 ---
