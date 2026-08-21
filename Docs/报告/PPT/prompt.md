@@ -713,10 +713,10 @@ Middle layer — ECBF safety supervisor (main component):
   - Math block: "控制障碍函数 (CBF)"
   - Barrier function:
     h(x) = d_ij - d_safe
-    
+  
     Safety constraint:
     ḣ(x) + α·h(x) ≥ 0
-    
+  
     where:
       d_safe = 2.5m  (安全阈值)
       α = 0.5        (衰减系数)
@@ -726,7 +726,7 @@ Middle layer — ECBF safety supervisor (main component):
   - Calculation block: "排斥力计算"
   - If violation detected:
     Δr_i = k_repel · (r_i - r_j) / ||r_i - r_j||
-    
+  
     where:
       k_repel = 0.2  (排斥增益)
       ||Δr_i|| ≤ 0.5m (最大修正量)
