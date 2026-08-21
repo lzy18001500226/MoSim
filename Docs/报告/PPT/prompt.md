@@ -356,7 +356,7 @@ Diagram type:
 Five-layer vertical architecture with side data pipeline and benefits box.
 
 Layout:
-Use a 16:9 horizontal canvas. Place five main layers vertically from top to bottom occupying the left 70% of canvas width. On the right 30%, draw a vertical data flow pipeline from top to bottom. Place a benefits annotation box at bottom-right corner. Use straight orthogonal connectors between layers; no diagonals. Each layer is a horizontal band with icons, text, and sample content boxes.
+Use a 16:9 horizontal canvas. Place five main layers vertically from top to bottom occupying the left 70% of canvas width. On the right 30%, draw a vertical data flow pipeline from top to bottom. Use straight orthogonal connectors between layers; no diagonals. Each layer is a horizontal band with icons, text, and sample content boxes.
 
 Mandatory nodes:
 - Top layer (pale blue): "MWORKS官方文档" with document stack icon, listing sub-items: "API函数签名", "参数类型约束", "返回值规范", "使用示例"
@@ -365,7 +365,6 @@ Mandatory nodes:
 - Fourth layer (deep blue): "Syslab Julia引擎" large box containing components "Code interpreter", "TyPlot visualization", "Data I/O handler", with sample Julia code snippet in monospace font showing readResult and plot commands
 - Fifth layer (purple): "AI Agent interaction" with chat interface mockup showing user input "分析px4ctrl与官方PID的seven场景对比" and agent response workflow numbered 1-5
 - Right side vertical pipeline (light gray background): "仿真结果文件 (.mat)" → "助手调用MCP工具" → "Syslab读取数据" → "Julia计算指标" → "TyPlot生成图表" → "返回图表给用户", connected by blue arrows
-- Bottom-right benefits box (light yellow): three checkmarked items "✅ 领域知识固化", "✅ 自动化分析流程", "✅ 零学习门槛", each with two bullet sub-points
 
 Mandatory connections:
 - Solid thick arrows connecting each layer top-to-bottom for main knowledge flow.
