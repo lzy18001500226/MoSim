@@ -1,6 +1,6 @@
-within MoSimQuadrotorModel.Experiment.SingleUav.Px4Ctrl;
-model Px4CtrlRunner
-  "Single-UAV px4ctrl baseline — two clean rows, core directly in runner"
+within MoSimQuadrotorModel.Experiment.OpenBlocks.Px4Ctrl.SingleUav;
+model Px4CtrlOpenBlocksRunner
+  "Single-UAV Px4Ctrl OpenBlocks obstacle avoidance with dynamic MAT reference"
 
   parameter Real gust_force[3](each unit = "N") = {0, 0, 0};
   parameter Real gust_start_s(unit = "s") = 0;
@@ -15,17 +15,9 @@ model Px4CtrlRunner
     "Sunray150 virtual-plant rotor-speed safety boundary";
   parameter Real controller_sample_period_s(unit = "s") = 0.01
     "Sample period for the 100 Hz px4ctrl discrete controller";
-  parameter Integer scenario_mode(min = 0, max = 5) = 0
-    "Active trajectory: 0 Climb 1 Hover 2 Step 3 Fig8 4 Spiral 5 OpenBlocks";
 
   // ---- Top row: trajectory source (x=-380, y=185) ----
-  MoSimQuadrotorModel.Guidance.Trajectories.MultiModeTrajectory reference(
-    scenario_mode = scenario_mode,
-    altitude_m = 2.0,
-    takeoff_duration_s = 5.0,
-    x_amplitude_m = 2.0,
-    y_amplitude_m = 1.0,
-    angular_rate_rad_s = 0.35) 
+  MoSimQuadrotorModel.Guidance.Trajectories.OpenBlocksDynamicReference reference
     annotation(Placement(transformation(origin={-380,185},
   extent={{-50,-65},{50,65}})));
 
@@ -95,10 +87,9 @@ extent={{-80,-65},{80,65}})),
     annotation(Placement(transformation(origin={431.25,-15.617},
   extent={{-28.75,-30},{28.75,30}})));
 
-  // initial position: mode 5 (OpenBlocks) starts at trajectory entry point
-  parameter Real initial_position_m[3](each unit = "m") =
-    if scenario_mode == 5 then {-41.0, -26.0, 0.0} else {0.0, 0.0, 0.0}
-    "Ground start position; auto-set for OpenBlocks (mode 5)";
+  // initial position: OpenBlocks starts at trajectory entry point
+  parameter Real initial_position_m[3](each unit = "m") = {-41.0, -26.0, 1.5}
+    "Ground start position for OpenBlocks scenario";
 
   MoSimQuadrotorModel.Vehicle.Sunray150Assembly plant(
     initial_position_m = initial_position_m,

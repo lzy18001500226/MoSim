@@ -3349,7 +3349,206 @@ Gazebo任务:     5类
 
 ---
 
-## 完成！14个AI生图prompt已全部编写
+## PPT-20: ECBF Safety Supervisor and Degradation Handling (P28页)
+
+**Figure Subject**: ECBF安全监督器与降级处置流程：实时碰撞检测与参考修正
+
+**Diagram type**: Safety architecture flowchart (A类：架构/流程图)
+
+**Layout**: 16:9 landscape, left-to-right safety monitoring pipeline
+
+**Mandatory nodes and visual elements**:
+
+**Top layer — Formation reference generator**:
+- Box: "编队参考生成器"
+- Inputs:
+  - Leader trajectory: r_leader(t)
+  - Formation pattern: Triangle (3m edge)
+- Outputs:
+  - UAV1 reference: r_1_ref(t)
+  - UAV2 reference: r_2_ref(t)
+  - UAV3 reference: r_3_ref(t)
+- Arrow labeled: "初始参考轨迹"
+
+**Middle layer — ECBF safety supervisor** (main component):
+- Large central box: "ECBF安全监督器"
+- Three parallel monitoring channels inside:
+
+  **Channel 1 — Distance monitoring**:
+  - Monitor block: "机间距离检测"
+  - Calculate:
+    ```
+    d₁₂ = ||r₁ - r₂||
+    d₂₃ = ||r₂ - r₃||
+    d₃₁ = ||r₃ - r₁||
+    ```
+  - Threshold check: d_ij < d_trigger = 2.8m ?
+
+  **Channel 2 — CBF constraint evaluation**:
+  - Math block: "控制障碍函数 (CBF)"
+  - Barrier function:
+    ```
+    h(x) = d_ij - d_safe
+    
+    Safety constraint:
+    ḣ(x) + α·h(x) ≥ 0
+    
+    where:
+      d_safe = 2.5m  (安全阈值)
+      α = 0.5        (衰减系数)
+    ```
+  - Output: Safety violation flag
+
+  **Channel 3 — Repulsive force calculation**:
+  - Calculation block: "排斥力计算"
+  - If violation detected:
+    ```
+    Δr_i = k_repel · (r_i - r_j) / ||r_i - r_j||
+    
+    where:
+      k_repel = 0.2  (排斥增益)
+      ||Δr_i|| ≤ 0.5m (最大修正量)
+    ```
+  - Output: Position offset Δr_i
+
+**Decision diamond** (below safety supervisor):
+- Diamond shape: "触发安全修正？"
+- Two branches:
+  - YES (red path): "机间距离 < 2.8m"
+  - NO (green path): "保持原参考"
+
+**YES branch — Reference correction**:
+- Process box: "参考位置修正"
+- Operation:
+  ```
+  r_i_corrected = r_i_ref + Δr_i
+  ```
+- Annotation: "施加排斥力，远离冲突"
+- Output: Modified reference
+
+**NO branch — Direct pass-through**:
+- Direct arrow bypass
+- Annotation: "无冲突，保持原轨迹"
+- Output: Original reference
+
+**Bottom layer — Individual controllers**:
+- Three controller boxes:
+  - UAV1 controller (px4ctrl)
+  - UAV2 controller (px4ctrl)
+  - UAV3 controller (px4ctrl)
+- Input: Corrected/original reference
+- Output: Control commands to each UAV
+
+**Right side — Key characteristics**:
+
+**ECBF特性**:
+```
+✅ 实时修正
+   - 检测频率: 200Hz
+   - 修正延迟: <5ms
+   - 无需离线规划
+
+✅ 保证安全又不破坏队形
+   - 最大修正量: 0.5m
+   - 触发阈值: 2.8m
+   - 安全距离: 2.5m
+
+✅ 纯MWORKS实现
+   - Guidance层实现
+   - 无需外部规划器
+   - 与控制层解耦
+```
+
+**Performance metrics box** (bottom-right):
+```
+实际运行数据:
+━━━━━━━━━━━━━━
+触发时刻: t=12s, 25s, 38s
+最大修正量: 0.48m
+修正持续时间: ~2s
+最小机间距: 2.52m
+碰撞事件: 0
+```
+
+**Timing diagram** (top-right, small inset):
+- Time axis showing:
+  - Normal state (green): d > 2.8m, no correction
+  - Warning state (yellow): 2.8m > d > 2.5m, ECBF active
+  - Violation state (red): d < 2.5m, emergency (never reached)
+
+**Visual elements**:
+- Three UAV icons showing formation positions
+- Distance lines d₁₂, d₂₃, d₃₁ between UAVs
+- Repulsive force vectors (red arrows) when ECBF triggers
+- Safety boundary circle (dashed, 2.5m radius) around each UAV
+
+**Connections**:
+- Solid thick arrows: main reference flow
+- Dashed arrows: monitoring/feedback signals
+- Red arrows: safety correction paths
+- Green arrows: normal pass-through
+
+**Color scheme**:
+- Formation generator: pale blue #AED6F1
+- ECBF supervisor box: vibrant orange #F8C471 (safety color)
+- Distance monitoring: pale green #A9DFBF
+- CBF evaluation: pale yellow #FFF9E6
+- Repulsive force: pale red #F5B7B1
+- Decision diamond: white with bold orange border
+- YES branch: red path #E74C3C
+- NO branch: green path #27AE60
+- Controllers: deep blue #2E86C1
+- Characteristics box: light yellow #FFF9E6 with green checkmarks
+- Metrics box: light cream #FFFACD
+- Timing diagram: green/yellow/red segments
+
+**Typography**:
+- Main box titles: Arial Bold, 14pt
+- Process labels: Arial Bold, 12pt
+- Mathematical formulas: Computer Modern, 11pt
+- Decision text: Arial Bold, 11pt
+- Annotations: Arial, 10pt
+- Metrics: Consolas monospace, 10pt
+
+**Negative constraints**:
+- No photo-realistic UAV models
+- No actual flight trajectory plots
+- No decorative safety icons (shields, warning signs)
+- Arrows must be orthogonal or 45°, no curves
+- No gradient fills on major boxes
+- No drop shadows on decision diamond
+
+---
+
+## 完成！所有AI生图prompt已补充完毕
+
+### 最终Prompt清单（共20个）：
+
+**原有5个**：
+1. PPT-01: 全链路管道
+2. PPT-02: 五层架构
+3. PPT-03: 四接口共享Plant
+4. PPT-04: 三机Guidance架构（已废弃）
+5. PPT-05: WSL2部署栈（已废弃）
+
+**新增15个**：
+6. PPT-06: 四旋翼动力学模型 (P07)
+7. PPT-07: Adapter坐标转换 (P08)
+8. PPT-08: 统一实验框架 (P08)
+9. PPT-09: 七族算法分类树 (P10)
+10. PPT-10: px4ctrl三层架构 (P17)
+11. PPT-11: AI Agent知识注入 (P21)
+12. PPT-12: OpenBlocks规划链路 (P29)
+13. PPT-13: MWORKS实时外环与WSL2数据流 (P35)
+14. PPT-14: C99代码包结构与部署路径 (P40)
+15. PPT-15: Gazebo状态反馈通路设计 (P43)
+16. PPT-16: Diff-Planner微分平坦轨迹优化 (P47)
+17. PPT-17: FUEL自主探索架构 (P48)
+18. PPT-18: UE → Gazebo mesh导出链路 (P49)
+19. PPT-19: MWORKS全链路能力地图 (P50)
+20. **PPT-20: ECBF安全监督器与降级处置流程 (P28)**
+
+**全部完成！可以开始根据prompt生成图了。**
 
 ### 新增Prompt清单总结：
 
