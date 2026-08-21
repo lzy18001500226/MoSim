@@ -303,102 +303,46 @@ Do not use decorative leaf or tree imagery. Do not use gradient fills. Do not us
 
 ---
 
-## PPT-10: px4ctrl Three-Layer Architecture (P17页)
+## PPT-10 px4ctrl Three-Layer Architecture
 
-**Figure Subject**: px4ctrl分层控制器架构：外环位置/中环速度/内环姿态
+```text
+Figure Subject:
+Create a strict three-layer vertical stack architecture diagram showing px4ctrl cascade control loops: outer loop position control with three-axis PID generating velocity commands, mid loop velocity control with three-axis PID and attitude conversion generating attitude setpoints and thrust, inner loop attitude control with three-axis PD generating body rate commands. Include right-side parameter annotation boxes for each layer and bottom-right performance metrics card. Use a white background, flat vector graphics, black text, pale green for outer loop, pale blue for mid loop, pale orange for inner loop, and light yellow for annotation boxes.
 
-**Diagram type**: Layered control architecture diagram (A类：架构/流程图)
+Diagram type:
+Three-layer vertical cascade control architecture with parameter annotations.
 
-**Layout**: 16:9 landscape, vertical three-layer stack with data flow
+Layout:
+Use a 16:9 horizontal canvas. Stack three equal-height horizontal bands from top to bottom, each representing one control loop. Inside each band, arrange components left-to-right: input variables on left edge, PID/PD controller blocks in center-left, conversion/calculation blocks in center-right, output variables on right edge. On the right 25% of canvas, place three annotation boxes aligned with their corresponding layers. At bottom-right corner, place a performance metrics card. Use straight orthogonal connectors only; no diagonal lines. Keep all PID blocks vertically aligned in a single column, all outputs vertically aligned in another column.
 
-**Mandatory nodes and visual elements**:
+Mandatory nodes:
+- Outer loop band (pale green) labeled "外环：位置控制 (Outer Loop: Position Control)":
+  - Left inputs: Position reference (x_ref, y_ref, z_ref, yaw_ref) + Current position (x, y, z, yaw)
+  - Center PID blocks vertically stacked: X-axis PID (P=1.5, I=0.1, D=0.8), Y-axis PID (P=1.5, I=0.1, D=0.8), Z-axis PID (P=1.5, I=0.1, D=0.8)
+  - Right outputs: Desired velocity (v_x_des, v_y_des, v_z_des) + Desired yaw (yaw_des)
+- Mid loop band (pale blue) labeled "中环：速度控制 (Mid Loop: Velocity Control)":
+  - Left inputs: Velocity error (v_err_x, v_err_y, v_err_z) from outer loop
+  - Center PID blocks vertically stacked: V_x PID (P=2.0, I=0.5, D=0.3), V_y PID (P=2.0, I=0.5, D=0.3), V_z PID (P=2.0, I=0.5, D=0.3)
+  - Center-right conversion block: "姿态转换\nroll_des, pitch_des\nT = m·(a_z_des + g)"
+  - Right outputs: Desired attitude (roll_des, pitch_des, yaw_des) + Thrust T
+- Inner loop band (pale orange) labeled "内环：姿态控制 (Inner Loop: Attitude Control)":
+  - Left inputs: Attitude error (roll_err, pitch_err, yaw_err) from mid loop
+  - Center PD blocks vertically stacked: Roll PD (P=6.0, D=0.5), Pitch PD (P=6.0, D=0.5), Yaw PD (P=4.5, D=0.3)
+  - Right outputs: Body rate command (p, q, r) [rad/s] + Output format label "BODY_RATE_THRUST"
+- Right annotation box 1 (light yellow, beside outer loop): "快速跟踪 + 消除静差 + 阻尼振荡"
+- Right annotation box 2 (light yellow, beside mid loop): "姿态响应 + 抗风扰 + 推力补偿"
+- Right annotation box 3 (light yellow, beside inner loop): "快速姿态 + 抑制抖振 + 偏航稳定"
+- Performance metrics card (bottom-right, light cream): "px4ctrl性能指标:\nClimbPath RMSE: 1.42m\nvs Official PID: ↓32%\n抗风扰能力: ↑45%\n电机故障: 稳定飞行"
 
-**Top layer — Outer Loop (Position Control)**:
-- Large box labeled: "外环：位置控制 (Outer Loop: Position Control)"
-- Inputs (left side):
-  - Position reference: (x_ref, y_ref, z_ref, yaw_ref)
-  - Current position: (x, y, z, yaw)
-- PID controller blocks:
-  - X-axis PID: P=1.5, I=0.1, D=0.8
-  - Y-axis PID: P=1.5, I=0.1, D=0.8
-  - Z-axis PID: P=1.5, I=0.1, D=0.8
-- Outputs (right side):
-  - Desired velocity: (v_x_des, v_y_des, v_z_des)
-  - Desired yaw: yaw_des
+Mandatory connections:
+- Thick solid vertical arrows connecting layers top-to-bottom: outer loop outputs → mid loop inputs, mid loop outputs → inner loop inputs.
+- Thin solid horizontal arrows within each layer: inputs → PID blocks → conversion blocks → outputs.
+- Thin dashed vertical arrows on the left margin showing feedback paths from each layer back to its reference comparator.
+- Thin arrows from annotation boxes pointing to their corresponding layer bands.
 
-**Middle layer — Mid Loop (Velocity Control)**:
-- Large box labeled: "中环：速度控制 (Mid Loop: Velocity Control)"
-- Inputs (from outer loop):
-  - Velocity error: (v_err_x, v_err_y, v_err_z)
-- PID controller blocks:
-  - V_x PID: P=2.0, I=0.5, D=0.3
-  - V_y PID: P=2.0, I=0.5, D=0.3
-  - V_z PID: P=2.0, I=0.5, D=0.3
-- Attitude conversion block:
-  - Converts velocity commands to desired attitude (roll_des, pitch_des)
-  - Thrust calculation: T = m·(a_z_des + g)
-- Outputs (right side):
-  - Desired attitude: (roll_des, pitch_des, yaw_des)
-  - Thrust: T
-
-**Bottom layer — Inner Loop (Attitude Control)**:
-- Large box labeled: "内环：姿态控制 (Inner Loop: Attitude Control)"
-- Inputs (from mid loop):
-  - Attitude error: (roll_err, pitch_err, yaw_err)
-- PD controller blocks:
-  - Roll PD: P=6.0, D=0.5
-  - Pitch PD: P=6.0, D=0.5
-  - Yaw PD: P=4.5, D=0.3
-- Outputs (right side):
-  - Body rate command: (p, q, r) [rad/s]
-  - Final output format: BODY_RATE_THRUST
-
-**Data flow arrows**:
-- Solid thick arrows: primary control signal flow (top to bottom)
-- Dashed arrows: reference inputs from external sources
-- Thin solid arrows: internal block connections
-
-**Parameter annotation boxes** (beside each layer):
-- Outer loop: "快速跟踪 + 消除静差 + 阻尼振荡"
-- Mid loop: "姿态响应 + 抗风扰 + 推力补偿"
-- Inner loop: "快速姿态 + 抑制抖振 + 偏航稳定"
-
-**Performance metrics card (bottom-right)**:
+Negative constraints:
+Do not use Sysblock screenshot overlays. Do not use decorative control system icons or flowchart symbols. Do not use gradient backgrounds on layer bands. Do not use curved arrows or diagonal connectors; only straight horizontal and vertical lines. Do not add drop shadows on boxes. Do not scatter PID blocks randomly; keep them vertically aligned in one column per layer. Do not use photo-realistic controller imagery.
 ```
-px4ctrl性能指标:
-━━━━━━━━━━━━━━━
-ClimbPath RMSE: 1.42m
-vs Official PID: ↓32%
-抗风扰能力: ↑45%
-电机故障: 稳定飞行
-```
-
-**Connections**:
-- Outer loop output → Mid loop input
-- Mid loop output → Inner loop input
-- Feedback paths (dotted lines) from each layer back to reference comparator
-
-**Color scheme**:
-- Outer loop: pale green #A9DFBF
-- Mid loop: pale blue #AED6F1
-- Inner loop: pale orange #F8C471
-- PID blocks: white fill with layer-colored border
-- Parameter boxes: light yellow #FFF9E6
-- Performance card: light cream #FFFACD with green text for improvements
-
-**Typography**:
-- Layer titles: Arial Bold, 14pt
-- PID parameters: Consolas monospace, 11pt
-- Input/output labels: Arial, 10pt
-- Annotation text: Arial, 9pt
-- Performance metrics: Arial Bold, 11pt for numbers, Arial 9pt for labels
-
-**Negative constraints**:
-- No Sysblock screenshot overlays
-- No decorative control system icons
-- No gradient backgrounds on layers
-- Arrows must be straight, no curved connectors
-- No drop shadows on boxes
 
 ---
 
