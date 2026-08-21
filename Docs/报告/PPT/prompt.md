@@ -252,8 +252,8 @@ Mandatory nodes:
 - Layer 5, left box (pale purple): "Output Collection\nPosition trajectory\nAttitude response\nControl inputs"
 - Layer 5, right box (pale purple): "Unified Evaluation Metrics\nRMSE (position tracking)\nResponse time\nOvershoot percentage"
 - Right panel, fault injection (pale red): "Fault Injection\nWind disturbance: 10 m/s\nParameter mismatch: ±30%\nMotor efficiency fault: 60%"
-- Right panel, annotation box 1: "✅ 核心架构:\nMoSimQuadrotorModel.Experiment.Baselines"
-- Right panel, annotation box 2: "✅ 统一验证条件:\n- 同一Plant模型\n- 同一评价指标\n- 同一扰动注入"
+- Right panel, annotation box 1: "核心架构:\nMoSimQuadrotorModel.Experiment.Baselines"
+- Right panel, annotation box 2: "统一验证条件:\n- 同一Plant模型\n- 同一评价指标\n- 同一扰动注入"
 - Right panel, numerical summary: "48个控制器全部验证通过\n7大算法族全覆盖\n统一Sysblock图形建模架构"
 
 Mandatory connections:
