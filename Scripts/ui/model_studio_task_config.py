@@ -30,6 +30,7 @@ CONTRACT_PATH = ROOT / "Config" / "control_platform" / "seven_scenario_injection
 DRIVER_PATH = ROOT / "Scripts" / "mworks" / "run_seven_scenario_ab.py"
 TASK_ROUTE_PATH = ROOT / "Config" / "control_platform" / "model_studio_task_routes_v1.toml"
 CONTROL_SCHEME_CATALOG_PATH = ROOT / "Config" / "control_platform" / "control_scheme_catalog.json"
+CURRENT_MODEL_ENTRY_MAP_PATH = ROOT / "Config" / "control_platform" / "current_model_entry_map.json"
 DEFAULT_OUTPUT = ROOT / "Results" / "ui_platform" / "model_studio_task_handoffs" / "latest.json"
 TASK_CONFIG_SCHEMA = "mosim.model_studio.task_config.v1"
 TASK_ROUTE_SCHEMA = "mosim.model_studio_task_routes.v1"
@@ -53,6 +54,7 @@ SPECIAL_TASK_IDS = (
 )
 TASK_ORDER = FORMAL_TASK_IDS + LEGACY_INJECTION_TASK_IDS + SPECIAL_TASK_IDS
 V2_EVIDENCE_CONTROLLER_IDS = frozenset({"official_pid", "px4ctrl"})
+MOTHER_BUS_CONTROLLER_IDS = frozenset({"official_pid", "px4ctrl"})
 MAP_IDS = frozenset({"blank", "openblocks"})
 EPSILON = 1e-9
 DEFAULT_INJECTION_START_S = 15.0
@@ -181,6 +183,27 @@ def active_controller_ids() -> frozenset[str]:
     return frozenset(controller_ids)
 
 
+def load_current_model_entries() -> dict[str, dict[str, Any]]:
+    document = json.loads(CURRENT_MODEL_ENTRY_MAP_PATH.read_text(encoding="utf-8-sig"))
+    if document.get("schema") != "mosim.current_model_entry_map.v1":
+        raise ValueError("current_model_entry_map_schema_invalid")
+    rows = document.get("schemes")
+    if not isinstance(rows, list):
+        raise ValueError("current_model_entry_map_schemes_invalid")
+    entries: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("scheme_id"), str):
+            raise ValueError("current_model_entry_map_scheme_invalid")
+        scheme_id = str(row["scheme_id"])
+        if scheme_id in entries:
+            raise ValueError(f"current_model_entry_map_scheme_duplicate: {scheme_id}")
+        entries[scheme_id] = row
+    return entries
+
+
+CURRENT_MODEL_ENTRIES = load_current_model_entries()
+
+
 def load_manual_formal_routes() -> dict[str, dict[str, Any]]:
     with TASK_ROUTE_PATH.open("rb") as handle:
         document = tomllib.load(handle)
@@ -216,6 +239,15 @@ def load_manual_formal_routes() -> dict[str, dict[str, Any]]:
                 raise ValueError(f"model_studio_task_route_runner_file_outside_project: {controller_id}") from exc
             if not runner_file.is_file():
                 raise ValueError(f"model_studio_task_route_runner_file_missing: {controller_id}")
+            current_entry = CURRENT_MODEL_ENTRIES.get(controller_id)
+            if controller_id not in MOTHER_BUS_CONTROLLER_IDS:
+                if current_entry is None:
+                    raise ValueError(f"model_studio_task_route_current_model_missing: {controller_id}")
+                if current_entry.get("mapping_state") != "resolved_current_model":
+                    raise ValueError(
+                        f"model_studio_task_route_current_model_not_resolved: {controller_id}: "
+                        f"{current_entry.get('mapping_state')}"
+                    )
             runner_source = runner_file.read_text(encoding="utf-8")
             within_match = re.search(r"^within\s+([^;]+);", runner_source, re.MULTILINE)
             model_match = MODEL_DECLARATION_PATTERN.search(runner_source)
@@ -263,6 +295,21 @@ FORMAL_CONTROLLER_IDS = frozenset(
     for controller_id, route in FORMAL_CONTROLLER_ROUTES.items()
     if bool(route["available"])
 )
+
+
+def controller_source_entry(controller_id: str) -> dict[str, Any] | None:
+    entry = CURRENT_MODEL_ENTRIES.get(controller_id)
+    if entry is None:
+        return None
+    return {
+        "scheme_id": controller_id,
+        "mapping_state": entry.get("mapping_state"),
+        "current_model_file": entry.get("current_model_file"),
+        "current_model_class": entry.get("current_model_class"),
+        "current_model_sha256": entry.get("current_model_sha256"),
+        "current_model_role": entry.get("current_model_role"),
+        "next_gate": entry.get("next_gate"),
+    }
 
 
 def load_driver() -> Any:
@@ -725,6 +772,7 @@ def write_task_config(
         "contract_source_sha256": contract_hash,
         "task_route_source": project_path_text(TASK_ROUTE_PATH) if route_kind == "formal" else None,
         "task_route_source_sha256": sha256_path(TASK_ROUTE_PATH) if route_kind == "formal" else None,
+        "controller_source": controller_source_entry(controller_id) if route_kind == "formal" else None,
         "task_route": {
             "boundary": route["boundary"],
             "runner_alias": route.get("runner_alias"),

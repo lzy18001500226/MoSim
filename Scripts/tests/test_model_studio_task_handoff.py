@@ -161,16 +161,20 @@ def test_registered_formal_route_writes_a_manual_task_for_any_controller(tmp_pat
 def test_manual_route_catalog_covers_the_controller_catalog_without_evidence_gating() -> None:
     writer = load_module(WRITER_PATH, "model_studio_task_writer_route_catalog")
     assert len(writer.FORMAL_CONTROLLER_ROUTES) == 48
-    assert len(writer.FORMAL_CONTROLLER_IDS) == 48
+    assert len(writer.FORMAL_CONTROLLER_IDS) == 47
+    assert not writer.FORMAL_CONTROLLER_ROUTES["pid_awff_linear_eso"]["available"]
     for controller_id in ("adaptive_backstepping", "awff_pid", "linear_mpc_l1_indi", "px4ctrl"):
         assert controller_id in writer.FORMAL_CONTROLLER_IDS
-    for controller_id in ("pid_awff_linear_eso", "smc_boundary_layer", "nmpc_outer", "qp_nmpc_l1_indi_cbf"):
+    assert "pid_awff_linear_eso" not in writer.FORMAL_CONTROLLER_IDS
+    for controller_id in ("smc_boundary_layer", "nmpc_outer", "qp_nmpc_l1_indi_cbf"):
         assert controller_id in writer.FORMAL_CONTROLLER_IDS
 
 
 def test_every_registered_route_renders_its_current_runner_and_reference_binding(tmp_path: Path) -> None:
     writer = load_module(WRITER_PATH, "model_studio_task_writer_all_routes")
     for controller_id, route in sorted(writer.FORMAL_CONTROLLER_ROUTES.items()):
+        if not route["available"]:
+            continue
         payload = write_config(
             writer,
             tmp_path / controller_id,
@@ -182,9 +186,28 @@ def test_every_registered_route_renders_its_current_runner_and_reference_binding
         )
         assert payload["runner_class"] == route["runner_class"]
         assert payload["task_route"]["runner_file"] == route["runner_file"]
+        assert payload["controller_source"]["scheme_id"] == controller_id
+        assert payload["controller_source"]["mapping_state"] in {"resolved_current_model", "pending_mworks_equivalent_core"}
+        current_model_file = payload["controller_source"]["current_model_file"]
+        if current_model_file is not None:
+            assert (ROOT / current_model_file).is_file()
         harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
         assert f"extends {route['runner_class']}(" in harness
         assert "scenario_mode = 3" in harness
+
+
+def test_planned_profile_is_fail_closed_until_its_current_model_is_registered(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_planned_profile")
+    with pytest.raises(ValueError, match="formal_task_controller_has_no_registered_runner"):
+        write_config(
+            writer,
+            tmp_path,
+            task_id="figure8",
+            controller_id="pid_awff_linear_eso",
+            gust_force_x_n=0.0,
+            mass_inertia_scale=1.0,
+            motor_effectiveness=[1.0, 1.0, 1.0, 1.0],
+        )
 
 
 def test_baseline_is_a_separate_climbpath_handoff(tmp_path: Path) -> None:

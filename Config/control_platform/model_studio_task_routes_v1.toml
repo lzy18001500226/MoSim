@@ -71,10 +71,8 @@ runner_alias = "indi"
 
 [[route]]
 controller_id = "pid_awff_linear_eso"
-available = true
-runner_class = "MoSimQuadrotorModel.Experiment.SingleUav.AwffControllers.PidAwffLinearEsoGraphicalRunner"
-runner_file = "Models/MoSimQuadrotorModel/Experiment/SingleUav/AwffControllers/PidAwffLinearEsoGraphicalRunner.mo"
-boundary = "ROTOR_COMMAND"
+available = false
+reason = "current_model_entry_map 将该 Profile 标为 planned_profile_no_model；缺少权威当前模型、Adapter 和闭环证据"
 
 [[route]]
 controller_id = "lqr_baseline"
