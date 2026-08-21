@@ -25,8 +25,10 @@ model LqrBaselineGraphicalRunner
     annotation(Placement(transformation(origin = {-220, 185}, extent = {{-50, -120}, {50, 120}})));
   MoSimQuadrotorModel.Control.ClassicRobust.LqrBaseline.LqrBaselineCore core
     annotation(Placement(transformation(origin = {-65, 185}, extent = {{-80, -65}, {80, 65}})), __MWORKS(SECInstance = true));
-  MoSimQuadrotorModel.Experiment.Adapters.GraphicalAttitudeThrustRotorPreview output_adapter 
-    annotation(Placement(transformation(origin = {108, 185}, extent = {{-50, -50}, {50, 50}})));
+  MoSimQuadrotorModel.Control.Adapters.AttitudeSignalAdapter attitude_adapter
+    annotation(Placement(transformation(origin = {90, 185}, extent = {{-40, -40}, {40, 40}})));
+  MoSimQuadrotorModel.Control.InnerLoop.AttitudeTrackingCore inner_loop
+    annotation(Placement(transformation(origin = {220, 185}, extent = {{-60, -60}, {60, 60}})), __MWORKS(SECInstance = true));
   MoSimQuadrotorModel.Experiment.Baselines.ScheduledRotorEfficiencyCompensator fault_compensator(
     rotor_effectiveness = rotor_effectiveness, fault_start_s = fault_start_s,
     fault_rotor_index = fault_rotor_index, fault_rotor_effectiveness = fault_rotor_effectiveness) 
@@ -103,14 +105,24 @@ equation
   connect(adapter.reference_acceleration_z_out, core.reference_acceleration_z) annotation(Line(points={{-170,137},{-145,110}}, color={0,0,127}));
   connect(adapter.dt_out, core.dt) annotation(Line(points={{-170,125},{-145,100}}, color={0,0,127}));
   connect(adapter.enable_out, core.enable) annotation(Line(points={{-170,113},{-145,90}}, color={0,0,127}));
-  connect(core.desired_roll_rad_out, output_adapter.roll_ref) annotation(Line(points={{-440,2},{-120,20}}, color={0,0,127}));
-  connect(core.desired_pitch_rad_out, output_adapter.pitch_ref) annotation(Line(points={{-440,-12},{-120,6}}, color={0,0,127}));
-  connect(zero.y, output_adapter.yaw_ref) annotation(Line(points={{-440,-26},{-120,-8}}, color={0,0,127}));
-  connect(core.collective_thrust_n_out, output_adapter.collective_thrust) annotation(Line(points={{-440,-40},{-120,-22}}, color={0,0,127}));
-  connect(output_adapter.rotor_command[1], fault_compensator.command_in[1]) annotation(Line(points={{-440,-54},{-120,-36}}, color={0,0,127}));
-  connect(output_adapter.rotor_command[2], fault_compensator.command_in[2]) annotation(Line(points={{-440,-68},{-120,-50}}, color={0,0,127}));
-  connect(output_adapter.rotor_command[3], fault_compensator.command_in[3]) annotation(Line(points={{-440,-82},{-120,-64}}, color={0,0,127}));
-  connect(output_adapter.rotor_command[4], fault_compensator.command_in[4]) annotation(Line(points={{-440,-96},{-120,-78}}, color={0,0,127}));
+  connect(core.desired_roll_rad_out, attitude_adapter.desired_roll_rad) annotation(Line(points={{15,250},{50,211}}, color={0,0,127}));
+  connect(core.desired_pitch_rad_out, attitude_adapter.desired_pitch_rad) annotation(Line(points={{15,240},{50,201}}, color={0,0,127}));
+  connect(zero.y, attitude_adapter.desired_yaw_rad) annotation(Line(points={{-454,-180},{30,-180},{30,195},{50,195}}, color={0,0,127}));
+  connect(core.collective_thrust_n_out, attitude_adapter.collective_thrust_n) annotation(Line(points={{15,220},{50,189}}, color={0,0,127}));
+  connect(plant.attitude[1], attitude_adapter.roll_mea) annotation(Line(points={{650,-47.5},{-20,320},{-20,169},{50,169}}, color={0,0,127}));
+  connect(plant.attitude[2], attitude_adapter.pitch_mea) annotation(Line(points={{650,-47.5},{-10,310},{-10,163},{50,163}}, color={0,0,127}));
+  connect(plant.attitude[3], attitude_adapter.yaw_mea) annotation(Line(points={{650,-47.5},{0,300},{0,157},{50,157}}, color={0,0,127}));
+  connect(attitude_adapter.desired_roll_rad_out, inner_loop.desired_roll_rad) annotation(Line(points={{130,211},{160,245}}, color={0,0,127}));
+  connect(attitude_adapter.desired_pitch_rad_out, inner_loop.desired_pitch_rad) annotation(Line(points={{130,201},{160,231}}, color={0,0,127}));
+  connect(attitude_adapter.desired_yaw_rad_out, inner_loop.desired_yaw_rad) annotation(Line(points={{130,195},{160,217}}, color={0,0,127}));
+  connect(attitude_adapter.thrust_baseline_out, inner_loop.thrust_baseline) annotation(Line(points={{130,189},{160,189}}, color={0,0,127}));
+  connect(attitude_adapter.roll_mea_out, inner_loop.roll_mea) annotation(Line(points={{130,169},{160,175}}, color={0,0,127}));
+  connect(attitude_adapter.pitch_mea_out, inner_loop.pitch_mea) annotation(Line(points={{130,163},{160,161}}, color={0,0,127}));
+  connect(attitude_adapter.yaw_mea_out, inner_loop.yaw_mea) annotation(Line(points={{130,157},{160,147}}, color={0,0,127}));
+  connect(inner_loop.amplitude_1, fault_compensator.command_in[1]) annotation(Line(points={{280,221},{270,-30}}, color={0,0,127}));
+  connect(inner_loop.amplitude_2, fault_compensator.command_in[2]) annotation(Line(points={{280,197},{270,-40}}, color={0,0,127}));
+  connect(inner_loop.amplitude_3, fault_compensator.command_in[3]) annotation(Line(points={{280,173},{270,-50}}, color={0,0,127}));
+  connect(inner_loop.amplitude_4, fault_compensator.command_in[4]) annotation(Line(points={{280,149},{270,-60}}, color={0,0,127}));
   connect(fault_compensator.command_out[1], esc.motor_command_raw[1]) annotation(Line(points={{-440,-110},{-120,-92}}, color={0,0,127}));
   connect(fault_compensator.command_out[2], esc.motor_command_raw[2]) annotation(Line(points={{-440,-124},{-120,-106}}, color={0,0,127}));
   connect(fault_compensator.command_out[3], esc.motor_command_raw[3]) annotation(Line(points={{-440,-138},{-120,-120}}, color={0,0,127}));
@@ -142,7 +154,10 @@ equation
   position_ref = reference.position_command;
   position = plant.position;
   attitude = plant.attitude;
-  rotor_command = output_adapter.rotor_command;
+  rotor_command[1] = inner_loop.amplitude_1;
+  rotor_command[2] = inner_loop.amplitude_2;
+  rotor_command[3] = inner_loop.amplitude_3;
+  rotor_command[4] = inner_loop.amplitude_4;
   esc_motor_command = esc.motor_command;
   rotor_speed[1] = motor1.speed_telemetry;
   rotor_speed[2] = motor2.speed_telemetry;
