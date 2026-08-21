@@ -49,12 +49,12 @@
   },
   "post_freeze_current_catalog_records": [
     {
-      "scheme_id": "fixed_awff_l1_residual",
+      "scheme_id": "awff_l1_residual",
       "status": "fail",
       "terminal_position_error_norm_m": 10628.468304322492
     },
     {
-      "scheme_id": "fixed_awff_l1_indi",
+      "scheme_id": "awff_l1_indi",
       "status": "pass",
       "terminal_position_error_norm_m": 0.00047656188464517224
     },
@@ -69,12 +69,12 @@
       "terminal_position_error_norm_m": 0.142974149482056
     },
     {
-      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "scheme_id": "linear_mpc_l1_indi",
       "status": "pass",
       "terminal_position_error_norm_m": 0.0004726003753151066
     },
     {
-      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "scheme_id": "qp_nmpc_l1_indi_cbf",
       "status": "fail",
       "terminal_position_error_norm_m": 12455.228659768618
     },

@@ -23,7 +23,7 @@ current_graphical_active_controller_ids = [
   "dfbc_high_order_bodyrate",
   "dfbc_smooth_robust_attitude",
   "dfbc_smooth_robust_bodyrate",
-  "fixed_awff_pid",
+  "awff_pid",
   "fuzzy_pid",
   "fuzzy_smc",
   "gain_scheduled_pid",

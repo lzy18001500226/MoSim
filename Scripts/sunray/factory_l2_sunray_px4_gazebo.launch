@@ -38,7 +38,7 @@
   <!-- The generated Sunray overlay owns the nested MID360 and camera models.
        Keep them in the launch environment so the Factory entry does not rely
        on a caller manually reconstructing every Gazebo model directory. -->
-  <env name="GAZEBO_MODEL_PATH" value="$(arg factory_model_path):$(arg project_root)/Config/gazebo/models:$(arg sunray_model_path)/scence_models:$(arg sunray_model_path)/drone_models:$(arg sunray_model_path)/sensor_models:$(arg sunray_model_path)/fake_models:$(arg sunray_model_path)/ugv_models:$(arg sunray_model_path)/aws_models:$(arg sunray_model_path)/aws_vins_models:$(optenv GAZEBO_MODEL_PATH)"/>
+  <env name="GAZEBO_MODEL_PATH" value="$(arg sunray_model_path)/scence_models:$(arg sunray_model_path)/drone_models:$(arg sunray_model_path)/sensor_models:$(arg sunray_model_path)/fake_models:$(arg sunray_model_path)/ugv_models:$(arg sunray_model_path)/aws_models:$(arg sunray_model_path)/aws_vins_models:$(arg factory_model_path):$(arg project_root)/Config/gazebo/models:$(optenv GAZEBO_MODEL_PATH)"/>
 
   <include file="$(arg project_root)/Scripts/sunray/goal5_swarm_px4_gazebo.launch">
     <arg name="uav_num" value="$(arg uav_num)"/>

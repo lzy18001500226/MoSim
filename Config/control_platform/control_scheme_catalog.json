@@ -207,7 +207,7 @@
       "implementation_package": "ClassicRobust"
     },
     {
-      "scheme_id": "fixed_awff_pid",
+      "scheme_id": "awff_pid",
       "profile_id": "PidAwff",
       "display_name_zh": "抗积分饱和与参考前馈 PID",
       "display_name_en": "Anti-Windup and Reference-Feedforward PID",
@@ -228,7 +228,7 @@
       "profile_topology_note": "This is a project-owned full controller component, not the generic awff_v1 augmentation profile."
     },
     {
-      "scheme_id": "fixed_awff_l1_residual",
+      "scheme_id": "awff_l1_residual",
       "profile_id": "PidAwffL1Residual",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
       "display_name_en": "Anti-Windup Feedforward PID with L1-Inspired Residual Compensation",
@@ -248,7 +248,7 @@
       "profile_topology_note": "The L1 residual is fixed inside this Sysblock chain; it is not an arbitrary attachment to all 43 primary routes."
     },
     {
-      "scheme_id": "fixed_awff_l1_indi",
+      "scheme_id": "awff_l1_indi",
       "profile_id": "PidAwffL1Indi",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
       "display_name_en": "Anti-Windup Feedforward PID with L1 Residual and INDI-Like Attitude Correction",
@@ -653,7 +653,7 @@
       "implementation_package": "Optimization"
     },
     {
-      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "scheme_id": "linear_mpc_l1_indi",
       "profile_id": "LinearMpcL1Indi",
       "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
       "display_name_en": "Linear MPC Outer Loop with L1 Residual and INDI-Like Attitude Correction",
@@ -674,7 +674,7 @@
       "profile_topology_note": "Distinct from the P4 matrix linear_mpc generated-C route: this Sysblock chain has an explicit L1 residual and INDI-like inner layer."
     },
     {
-      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "scheme_id": "qp_nmpc_l1_indi_cbf",
       "profile_id": "QpNmpcL1IndiCbf",
       "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
       "display_name_en": "QP/NMPC Outer Loop with L1, INDI, and CBF-Style Safety Projection",

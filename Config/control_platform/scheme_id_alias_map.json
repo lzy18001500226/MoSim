@@ -76,7 +76,7 @@
       "confidence": "confirmed"
     },
     {
-      "catalog_scheme_id": "fixed_awff_pid",
+      "catalog_scheme_id": "awff_pid",
       "g3_controller_id": "awff",
       "runner_class": "AwffFormalRunner",
       "evidence": "catalog source_controller_id is awff_pid; only AwffFormalRunner.mo exists, no FixedAwffPidFormalRunner.mo",
@@ -106,28 +106,28 @@
       "claim_boundary": "Post-freeze experimental whole-aircraft evidence. It enters only the current catalog-48 reconciliation and does not rewrite the historical G3 matrix."
     },
     {
-      "catalog_scheme_id": "fixed_awff_l1_residual",
+      "catalog_scheme_id": "awff_l1_residual",
       "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_residual/RUN_RECORD.json",
       "expected_status": "fail",
       "evidence": "The new thin FormalRunner passed native CheckModel and completed a native 50 s ClimbPath result with 25001 samples. Terminal position_error_norm is 10628.468304322492 m, above the 5 m gate.",
       "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
-      "catalog_scheme_id": "fixed_awff_l1_indi",
+      "catalog_scheme_id": "awff_l1_indi",
       "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_awff_l1_indi/RUN_RECORD.json",
       "expected_status": "pass",
       "evidence": "The new thin FormalRunner passed native CheckModel and completed a native 50 s ClimbPath result with 25001 samples. Terminal position_error_norm is 0.00047656188464517224 m, below the 5 m gate.",
       "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
-      "catalog_scheme_id": "fixed_linear_mpc_l1_indi",
+      "catalog_scheme_id": "linear_mpc_l1_indi",
       "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_linear_mpc_l1_indi/RUN_RECORD.json",
       "expected_status": "pass",
       "evidence": "The new thin FormalRunner passed native CheckModel and completed a native 50 s ClimbPath result with 25001 samples. Terminal position_error_norm is 0.0004726003753151066 m, below the 5 m gate.",
       "claim_boundary": "Direct user-authorized post-freeze nominal FormalRunner evidence. It enters only the current catalog-48 reconciliation and does not rewrite the immutable historical G3 matrix."
     },
     {
-      "catalog_scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "catalog_scheme_id": "qp_nmpc_l1_indi_cbf",
       "run_record": "Results/control_platform/phase2_full_48_climbpath/g3_repair/catalog_missing_formal_runners_20260801/runs/fixed_qp_nmpc_l1_indi_cbf/RUN_RECORD.json",
       "expected_status": "fail",
       "evidence": "The new thin FormalRunner passed native CheckModel. The outer MCP call timed out, but native MWORKS then reported exit state 0, Idle, simulation time 50.0 s, and a readable 25001-sample result. Terminal position_error_norm is 12455.228659768618 m, above the 5 m gate.",
@@ -157,12 +157,12 @@
     {
       "g3_controller_id": "l_1",
       "runner_class": "L1FormalRunner",
-      "note": "standalone L1 runner; the catalog only carries composite fixed_awff_l1_* variants, so no direct catalog id exists"
+      "note": "standalone L1 runner; the catalog only carries composite awff_l1_* variants, so no direct catalog id exists"
     },
     {
       "g3_controller_id": "indi",
       "runner_class": "IndiFormalRunner",
-      "note": "standalone INDI runner; the catalog only carries composite fixed_awff_l1_indi, so no direct catalog id exists"
+      "note": "standalone INDI runner; the catalog only carries composite awff_l1_indi, so no direct catalog id exists"
     },
     {
       "g3_controller_id": "improved_pid",

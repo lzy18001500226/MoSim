@@ -51,14 +51,14 @@ def fixed_map_config(planner: Any, config: dict[str, Any]) -> dict[str, Any]:
     random_spec = expanded["map"].get("random_obstacles")
     if isinstance(random_spec, dict):
         random_spec["enabled"] = False
-    expanded["map"]["planning_safety_margin"] = 0.55
+    expanded["map"]["planning_safety_margin"] = 0.4
     expanded["local_planning"]["enabled"] = False
     expanded["limits"].update({
-        "velocity_reference_m_s": 1.2,
-        "velocity_max_m_s": 1.5,
-        "acceleration_max_m_s2": 2.0,
-        "jerk_max_m_s3": 8.0,
-        "tilt_max_rad": 0.40,
+        "velocity_reference_m_s": 2.5,
+        "velocity_max_m_s": 3.5,
+        "acceleration_max_m_s2": 4.0,
+        "jerk_max_m_s3": 12.0,
+        "tilt_max_rad": 0.55,
     })
     return expanded
 

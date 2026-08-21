@@ -329,7 +329,7 @@ GRAPHICAL_SUPPORT_SOURCES = (
         ),
     },
     {
-        "support_id": "fixed_qp_nmpc_safety_graphical_review_core",
+        "support_id": "qp_nmpc_safety_graphical_review_core",
         "family_package": "Optimization",
         "source_file": ROOT
         / "Results"
@@ -340,32 +340,32 @@ GRAPHICAL_SUPPORT_SOURCES = (
         / "MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
         "purpose": "Readable native graphical QP/NMPC safety control-law core for the fixed QP/NMPC/L1/INDI/CBF chain. It replaces no whole-aircraft alias and is used only for G5 internal-topology review.",
         "required_by_scheme_ids": (
-            "fixed_qp_nmpc_l1_indi_cbf",
+            "qp_nmpc_l1_indi_cbf",
         ),
     },
 )
 FIXED_INTEGRATED_SPECS = {
-    "fixed_awff_pid": {
+    "awff_pid": {
         "alias_model": "FixedAwffPid",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1AWFFSysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1AWFFSysblockClosedLoop",
     },
-    "fixed_awff_l1_residual": {
+    "awff_l1_residual": {
         "alias_model": "FixedAwffL1Residual",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1L1SysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1L1SysblockClosedLoop",
     },
-    "fixed_awff_l1_indi": {
+    "awff_l1_indi": {
         "alias_model": "FixedAwffL1Indi",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1INDISysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1INDISysblockClosedLoop",
     },
-    "fixed_linear_mpc_l1_indi": {
+    "linear_mpc_l1_indi": {
         "alias_model": "FixedLinearMpcL1Indi",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Templates" / "Official" / "Example1LinearMPCSysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Templates.Official.Example1LinearMPCSysblockClosedLoop",
     },
-    "fixed_qp_nmpc_l1_indi_cbf": {
+    "qp_nmpc_l1_indi_cbf": {
         "alias_model": "FixedQpNmpcL1IndiCbf",
         "source_file": ROOT / "Models" / "MoSimQuadrotorModel" / "Experiment" / "Scenarios" / "Robustness" / "Example1QPNMPCSafetySysblockClosedLoop.mo",
         "source_model_class": "MoSimQuadrotorModel.Experiment.Scenarios.Robustness.Example1QPNMPCSafetySysblockClosedLoop",
@@ -956,7 +956,7 @@ def direct_graphical_native_equivalence_mode(item: dict[str, Any], target: Path)
     """Accept audited source-to-package serialization changes for direct graphs."""
 
     direct_id = str(item.get("scheme_id") or item.get("support_id") or "")
-    if direct_id not in (*DIRECT_GRAPHICAL_PRIMARY, "fixed_qp_nmpc_safety_graphical_review_core"):
+    if direct_id not in (*DIRECT_GRAPHICAL_PRIMARY, "qp_nmpc_safety_graphical_review_core"):
         return None
     source = item.get("source_file")
     if not isinstance(source, Path) or not source.is_file() or not target.is_file():

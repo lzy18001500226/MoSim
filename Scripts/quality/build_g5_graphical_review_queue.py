@@ -122,31 +122,31 @@ def static_indicators(path: Path, *, model_class_override: str | None = None) ->
 
 
 FULL_PROFILE_GRAPHICAL_TARGETS: dict[str, dict[str, str]] = {
-    "fixed_awff_pid": {
+    "awff_pid": {
         "source_controller": "AWFF_FullControllerEquation_Sysblock",
         "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_FullControllerFlatGraphical_Sysblock.mo",
         "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_FullControllerFlatGraphical_Sysblock",
         "target_kind": "native_flat_awff_graphical_controller_core",
     },
-    "fixed_awff_l1_residual": {
+    "awff_l1_residual": {
         "source_controller": "AWFF_L1ResidualControllerEquation_Sysblock",
         "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_L1ResidualControllerGraphical_Sysblock",
         "target_kind": "nested_native_l1_residual_graphical_controller_core",
     },
-    "fixed_awff_l1_indi": {
+    "awff_l1_indi": {
         "source_controller": "AWFF_INDIControllerEquation_Sysblock",
         "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_INDIControllerGraphical_Sysblock",
         "target_kind": "nested_native_l1_indi_graphical_controller_core",
     },
-    "fixed_linear_mpc_l1_indi": {
+    "linear_mpc_l1_indi": {
         "source_controller": "AWFF_LinearMPCOuterLoopControllerEquation_Sysblock",
         "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Sysblocks/AWFF_InnovationGraphicalControllers.mo",
         "model_class": "MoSimQuadrotorModel.Control.Implementations.Sysblocks.AWFF_InnovationGraphicalControllers.AWFF_LinearMPCControllerGraphical_Sysblock",
         "target_kind": "nested_native_linear_mpc_l1_indi_graphical_controller_core",
     },
-    "fixed_qp_nmpc_l1_indi_cbf": {
+    "qp_nmpc_l1_indi_cbf": {
         "source_controller": "AWFF_QPNMPCSafetyController_Sysblock",
         "model_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
         "model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL",

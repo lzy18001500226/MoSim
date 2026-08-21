@@ -1578,7 +1578,6 @@ class EgoSingleMission:
                                     "max_abs_roll_pitch_deg": 0.0,
                                     "stability_reset_count": 0,
                                 }
-                                final_metric["time_basis"] = "ros_sim_time"
                                 self.set_interactive_goal_ready(False)
                                 if self.args.interactive_yaw_scan_after_goal:
                                     scan = self.run_interactive_yaw_scan(f"after_goal_{active_goal_seq}")

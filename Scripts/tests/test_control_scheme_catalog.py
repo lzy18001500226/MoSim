@@ -67,8 +67,8 @@ def test_frozen_count_cannot_drift() -> None:
 def test_full_profile_must_match_its_source_controller_id() -> None:
     catalog, matrix, registry = load_authorities()
     catalog = copy.deepcopy(catalog)
-    fixed = next(item for item in catalog["schemes"] if item["scheme_id"] == "fixed_awff_l1_indi")
-    fixed["source_controller_id"] = "wrong_controller"
+    awff_indi = next(item for item in catalog["schemes"] if item["scheme_id"] == "awff_l1_indi")
+    awff_indi["source_controller_id"] = "wrong_controller"
     codes = error_codes(catalog, matrix, registry)
     assert "CSC-FULL-02" in codes
     assert "CSC-FULL-04" in codes

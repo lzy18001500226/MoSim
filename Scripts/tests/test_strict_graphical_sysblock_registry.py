@@ -27,12 +27,12 @@ def test_registry_covers_active_catalog_and_preserves_explicit_boundaries() -> N
     assert schemes["official_pid"]["strict_targets"]["strict_core_class"].endswith(
         ".OfficialPidNativeSysblockCore"
     )
-    assert schemes["fixed_awff_pid"]["strict_graphical_status"] == "blocked_mworks_compiler_internal_error"
-    assert schemes["fixed_awff_l1_residual"]["strict_graphical_status"] == "strict_core_rebuild_required"
-    assert schemes["fixed_awff_l1_indi"]["strict_graphical_status"] == "strict_core_rebuild_required"
-    assert schemes["fixed_linear_mpc_l1_indi"]["strict_graphical_status"] == "strict_core_rebuild_required"
-    assert schemes["fixed_qp_nmpc_l1_indi_cbf"]["strict_graphical_status"] == "strict_core_rebuild_required"
+    assert schemes["awff_pid"]["strict_graphical_status"] == "blocked_mworks_compiler_internal_error"
+    assert schemes["awff_l1_residual"]["strict_graphical_status"] == "strict_core_rebuild_required"
+    assert schemes["awff_l1_indi"]["strict_graphical_status"] == "strict_core_rebuild_required"
+    assert schemes["linear_mpc_l1_indi"]["strict_graphical_status"] == "strict_core_rebuild_required"
+    assert schemes["qp_nmpc_l1_indi_cbf"]["strict_graphical_status"] == "strict_core_rebuild_required"
     assert schemes["px4ctrl"]["strict_graphical_status"] == "explicit_exception_pending_mworks_equivalent_core"
-    assert schemes["fixed_awff_l1_residual"]["strict_targets"]["owner_directory"].endswith(
+    assert schemes["awff_l1_residual"]["strict_targets"]["owner_directory"].endswith(
         "/Graphical/ProjectOwned"
     )

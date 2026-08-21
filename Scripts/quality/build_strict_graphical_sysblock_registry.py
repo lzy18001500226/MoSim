@@ -29,17 +29,17 @@ ACTIVE_ENTRY_COUNT = 48
 SCHEMA = "mosim.strict_graphical_sysblock_registry.v1"
 
 GOLDEN_ROUTE = "official_pid"
-AWFF_ROUTE = "fixed_awff_pid"
-L1_RESIDUAL_ROUTE = "fixed_awff_l1_residual"
-L1_INDI_ROUTE = "fixed_awff_l1_indi"
-LINEAR_MPC_ROUTE = "fixed_linear_mpc_l1_indi"
-QP_NMPC_ROUTE = "fixed_qp_nmpc_l1_indi_cbf"
+AWFF_ROUTE = "awff_pid"
+L1_RESIDUAL_ROUTE = "awff_l1_residual"
+L1_INDI_ROUTE = "awff_l1_indi"
+LINEAR_MPC_ROUTE = "linear_mpc_l1_indi"
+QP_NMPC_ROUTE = "qp_nmpc_l1_indi_cbf"
 PROJECT_OWNED_SEQUENCE = (
-    "fixed_awff_pid",
-    "fixed_awff_l1_residual",
-    "fixed_awff_l1_indi",
-    "fixed_linear_mpc_l1_indi",
-    "fixed_qp_nmpc_l1_indi_cbf",
+    "awff_pid",
+    "awff_l1_residual",
+    "awff_l1_indi",
+    "linear_mpc_l1_indi",
+    "qp_nmpc_l1_indi_cbf",
     "pid_awff_linear_eso",
     "px4ctrl",
 )

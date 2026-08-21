@@ -162,9 +162,9 @@ def test_manual_route_catalog_covers_the_controller_catalog_without_evidence_gat
     writer = load_module(WRITER_PATH, "model_studio_task_writer_route_catalog")
     assert len(writer.FORMAL_CONTROLLER_ROUTES) == 48
     assert len(writer.FORMAL_CONTROLLER_IDS) == 48
-    for controller_id in ("adaptive_backstepping", "fixed_awff_pid", "fixed_linear_mpc_l1_indi", "px4ctrl"):
+    for controller_id in ("adaptive_backstepping", "awff_pid", "linear_mpc_l1_indi", "px4ctrl"):
         assert controller_id in writer.FORMAL_CONTROLLER_IDS
-    for controller_id in ("pid_awff_linear_eso", "smc_boundary_layer", "nmpc_outer", "fixed_qp_nmpc_l1_indi_cbf"):
+    for controller_id in ("pid_awff_linear_eso", "smc_boundary_layer", "nmpc_outer", "qp_nmpc_l1_indi_cbf"):
         assert controller_id in writer.FORMAL_CONTROLLER_IDS
 
 
@@ -250,12 +250,35 @@ def test_single_uav_autonomous_avoidance_uses_the_registered_px4ctrl_route(tmp_p
         "fault_target_uav": 1,
     }
     harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
-    assert "extends MoSimQuadrotorModel.Guidance.Planning.OpenBlocksPx4Ctrl(" in harness
+    assert "extends MoSimQuadrotorModel.Experiment.OpenBlocks.Px4Ctrl.SingleUav.Px4CtrlOpenBlocksRunner(" in harness
     assert "gust_start_s = 20" in harness
     gust_duration = re.search(r"gust_duration_s = ([0-9.eE+-]+)", harness)
     assert gust_duration is not None
     assert float(gust_duration.group(1)) == pytest.approx(80.1247340259 - 20.0)
     assert "fault_rotor_index = 3" in harness
+
+
+def test_three_uav_autonomous_avoidance_uses_the_experiment_openblocks_runner(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_three_avoidance")
+    payload = write_config(
+        writer,
+        tmp_path,
+        task_id="three_uav_autonomous_avoidance",
+        controller_id="linear_mpc",
+        gust_force_x_n=0.0,
+        mass_inertia_scale=1.0,
+        motor_effectiveness=[1.0, 1.0, 1.0, 1.0],
+        vehicle_count=3,
+        map_id="openblocks",
+    )
+    expected_runner = (
+        "MoSimQuadrotorModel.Experiment.OpenBlocks.Px4Ctrl.Formation."
+        "ThreeUavPx4CtrlOpenBlocksRunner"
+    )
+    assert payload["configuration_kind"] == "three_uav_planning_route"
+    assert payload["runner_class"] == expected_runner
+    harness = Path(payload["harness_file"]).read_text(encoding="utf-8")
+    assert f"extends {expected_runner};" in harness
 
 
 def test_three_uav_figure8_targets_the_selected_plant(tmp_path: Path) -> None:

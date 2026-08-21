@@ -2,7 +2,7 @@ within MoSimQuadrotorModel.Guidance.Trajectories;
 model OpenBlocksDynamicReference
   "Dynamic OpenBlocks reference that reads from MAT file at simulation time"
 
-  parameter String matFilePath = "C:/Users/HP/Desktop/MoSim/Results/planning/three_uav_open_blocks_mworks_20260720/mat/uav1_reference.mat"
+  parameter String matFilePath = "C:/Users/HP/Desktop/MoSim/Results/planning/single_uav_openblocks_highspeed/mat/uav1_reference.mat"
     "Absolute path to MAT file containing planning results";
   parameter String tableName = "uav1_ref"
     "Table name in MAT file";

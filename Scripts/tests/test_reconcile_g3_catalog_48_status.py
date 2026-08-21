@@ -46,11 +46,11 @@ def main() -> int:
         assert rows["nmpc_outer"]["status"] == "pass"
         assert rows["smc_boundary_layer"]["status"] == "fail"
         assert rows["pid_awff_linear_eso"]["status"] == "fail"
-        assert rows["fixed_awff_l1_residual"]["status"] == "fail"
-        assert rows["fixed_awff_l1_indi"]["status"] == "pass"
-        assert rows["fixed_linear_mpc_l1_indi"]["status"] == "pass"
-        assert rows["fixed_qp_nmpc_l1_indi_cbf"]["status"] == "fail"
-        assert rows["fixed_qp_nmpc_l1_indi_cbf"]["check_model_status"] == (
+        assert rows["awff_l1_residual"]["status"] == "fail"
+        assert rows["awff_l1_indi"]["status"] == "pass"
+        assert rows["linear_mpc_l1_indi"]["status"] == "pass"
+        assert rows["qp_nmpc_l1_indi_cbf"]["status"] == "fail"
+        assert rows["qp_nmpc_l1_indi_cbf"]["check_model_status"] == (
             "formal_runner_passed_mcp_timeout_native_completion_verified"
         )
         assert rows["pole_placement_luenberger"]["evidence_origin"] == "post_freeze_current_override_record"

@@ -401,7 +401,7 @@ def build_qp_nmpc_safety(replace: bool) -> dict[str, Any]:
     checked = ModelingPy.CheckModel(model)
     text = str(ModelingPy.GetModelText(model))
     return {
-        "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+        "scheme_id": "qp_nmpc_l1_indi_cbf",
         "model": model,
         "source_file": repo_path(target),
         "saved": bool(saved),
@@ -418,10 +418,10 @@ def build_qp_nmpc_safety(replace: bool) -> dict[str, Any]:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=49152)
-    parser.add_argument("--scheme-id", action="append", choices=(*DFBC_VARIANTS, "fixed_qp_nmpc_l1_indi_cbf"))
+    parser.add_argument("--scheme-id", action="append", choices=(*DFBC_VARIANTS, "qp_nmpc_l1_indi_cbf"))
     parser.add_argument("--replace", action="store_true", help="Replace an existing direct graphical source only after regenerating it through the official API.")
     args = parser.parse_args(argv)
-    selected = args.scheme_id or [*DFBC_VARIANTS, "fixed_qp_nmpc_l1_indi_cbf"]
+    selected = args.scheme_id or [*DFBC_VARIANTS, "qp_nmpc_l1_indi_cbf"]
     SOURCE_ROOT.mkdir(parents=True, exist_ok=True)
     report: dict[str, Any] = {
         "schema": "mosim.g5.dfbc_qp_nmpc_direct_graphical_build.v1",
@@ -433,7 +433,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         ModelingPy.ConnectSysplorer("127.0.0.1", args.port)
         for scheme_id in selected:
-            row = build_qp_nmpc_safety(args.replace) if scheme_id == "fixed_qp_nmpc_l1_indi_cbf" else build_dfbc_variant(scheme_id, args.replace)
+            row = build_qp_nmpc_safety(args.replace) if scheme_id == "qp_nmpc_l1_indi_cbf" else build_dfbc_variant(scheme_id, args.replace)
             report["schemes"].append(row)
         report["ok"] = all(bool(row["ok"]) for row in report["schemes"])
     except Exception as exc:

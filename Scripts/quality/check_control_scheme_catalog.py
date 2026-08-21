@@ -50,35 +50,35 @@ FAMILY_SPECS = {
     "learning": {"target_profile_count": 2, "current_route_count": 2},
 }
 FULL_PROFILE_SPECS = {
-    "fixed_awff_pid": {
+    "awff_pid": {
         "profile_id": "PidAwff",
         "category": "pid_family",
         "source_config": "Config/controllers/awff_pid/default.yaml",
         "source_controller_id": "awff_pid",
         "role": "candidate",
     },
-    "fixed_awff_l1_residual": {
+    "awff_l1_residual": {
         "profile_id": "PidAwffL1Residual",
         "category": "pid_family",
         "source_config": "Config/controllers/l1_residual_sysblock/default.yaml",
         "source_controller_id": "l1_residual_sysblock",
         "role": "candidate",
     },
-    "fixed_awff_l1_indi": {
+    "awff_l1_indi": {
         "profile_id": "PidAwffL1Indi",
         "category": "pid_family",
         "source_config": "Config/controllers/awff_indi_sysblock/default.yaml",
         "source_controller_id": "awff_indi_sysblock",
         "role": "candidate",
     },
-    "fixed_linear_mpc_l1_indi": {
+    "linear_mpc_l1_indi": {
         "profile_id": "LinearMpcL1Indi",
         "category": "optimization_predictive",
         "source_config": "Config/controllers/linear_mpc_sysblock/default.yaml",
         "source_controller_id": "linear_mpc_sysblock",
         "role": "candidate",
     },
-    "fixed_qp_nmpc_l1_indi_cbf": {
+    "qp_nmpc_l1_indi_cbf": {
         "profile_id": "QpNmpcL1IndiCbf",
         "category": "optimization_predictive",
         "source_config": "Config/controllers/nmpc_indi_l1/default.yaml",

@@ -37,15 +37,15 @@ def test_g1_inventory_covers_exactly_the_active_48_profiles() -> None:
     assert checker.validate(inventory, catalog, matrix, registry, document_inventory) == []
 
 
-def test_fixed_qp_profile_is_a_screening_candidate_in_its_optimization_family() -> None:
-    builder = load_module(BUILDER, "build_control_scheme_execution_inventory_fixed_qp")
+def test_qp_profile_is_a_screening_candidate_in_its_optimization_family() -> None:
+    builder = load_module(BUILDER, "build_control_scheme_execution_inventory_qp")
     inventory = builder.build_inventory()
-    fixed_qp = next(row for row in inventory["schemes"] if row["scheme_id"] == "fixed_qp_nmpc_l1_indi_cbf")
+    qp_profile = next(row for row in inventory["schemes"] if row["scheme_id"] == "qp_nmpc_l1_indi_cbf")
 
-    assert fixed_qp["category"] == "optimization_predictive"
-    assert fixed_qp["profile_role"] == "candidate"
-    assert fixed_qp["selection_eligibility"] == "family_screening"
-    assert fixed_qp["execution_kind"] == "full_profile_whole_aircraft"
+    assert qp_profile["category"] == "optimization_predictive"
+    assert qp_profile["profile_role"] == "candidate"
+    assert qp_profile["selection_eligibility"] == "family_screening"
+    assert qp_profile["execution_kind"] == "full_profile_whole_aircraft"
 
 
 def test_inventory_cannot_authorize_mworks_execution() -> None:

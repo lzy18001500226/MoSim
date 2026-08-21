@@ -33,7 +33,7 @@ def test_phase1_has_named_runner_and_fixed_integrated_targets() -> None:
     rows = {row["scheme_id"]: row for row in matrix["rows"]}
     assert rows["official_pid"]["target_boundary"] == "ROTOR_COMMAND"
     assert rows["cascade_pid"]["execution_kind"] == "adapter_backed_whole_aircraft"
-    assert rows["fixed_awff_pid"]["execution_kind"] == "fixed_integrated_whole_aircraft"
+    assert rows["awff_pid"]["execution_kind"] == "fixed_integrated_whole_aircraft"
 
 
 def test_champion_adapters_use_qualified_bridge_types() -> None:

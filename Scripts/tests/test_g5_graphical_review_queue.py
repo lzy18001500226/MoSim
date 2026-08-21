@@ -37,9 +37,9 @@ def test_g5_queue_keeps_wrappers_and_blockers_honest() -> None:
     assert rows["pid_awff_linear_eso"]["review_disposition"] == "planned_profile_no_live_review"
     assert "mu_synthesis" not in rows
     assert "neural_smc" not in rows
-    assert rows["fixed_awff_pid"]["review_target_kind"] == "native_flat_awff_graphical_controller_core"
-    assert rows["fixed_awff_pid"]["review_target"]["model_file"].endswith(
+    assert rows["awff_pid"]["review_target_kind"] == "native_flat_awff_graphical_controller_core"
+    assert rows["awff_pid"]["review_target"]["model_file"].endswith(
         "AWFF_FullControllerFlatGraphical_Sysblock.mo"
     )
-    assert rows["fixed_awff_pid"]["wrapper_static_indicators"]["model_file"].endswith("FixedAwffPid.mo")
-    assert rows["fixed_awff_pid"]["source_wrapper_static_indicators"]["model_file"].endswith("Example1AWFFSysblockClosedLoop.mo")
+    assert rows["awff_pid"]["wrapper_static_indicators"]["model_file"].endswith("FixedAwffPid.mo")
+    assert rows["awff_pid"]["source_wrapper_static_indicators"]["model_file"].endswith("Example1AWFFSysblockClosedLoop.mo")

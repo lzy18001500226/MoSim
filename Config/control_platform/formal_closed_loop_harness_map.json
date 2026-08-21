@@ -114,9 +114,9 @@
         "category": "pid_family",
         "candidate_scheme_ids": [
           "cascade_pid",
-          "fixed_awff_l1_indi",
-          "fixed_awff_l1_residual",
-          "fixed_awff_pid",
+          "awff_l1_indi",
+          "awff_l1_residual",
+          "awff_pid",
           "fopid",
           "fuzzy_pid",
           "gain_scheduled_pid",
@@ -173,8 +173,8 @@
         "candidate_scheme_ids": [
           "adaptive_mpc",
           "explicit_gain_scheduled_mpc",
-          "fixed_linear_mpc_l1_indi",
-          "fixed_qp_nmpc_l1_indi_cbf",
+          "linear_mpc_l1_indi",
+          "qp_nmpc_l1_indi_cbf",
           "ilqr",
           "linear_mpc",
           "mppi",
@@ -482,7 +482,7 @@
       "reason": "The formal current model is a graphical controller core and does not implement an ExperimentRunner controller interface or name a canonical whole-aircraft harness."
     },
     {
-      "scheme_id": "fixed_awff_pid",
+      "scheme_id": "awff_pid",
       "display_name_zh": "抗积分饱和与参考前馈 PID",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -549,7 +549,7 @@
       "internal_probe": null
     },
     {
-      "scheme_id": "fixed_awff_l1_residual",
+      "scheme_id": "awff_l1_residual",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -616,7 +616,7 @@
       "internal_probe": null
     },
     {
-      "scheme_id": "fixed_awff_l1_indi",
+      "scheme_id": "awff_l1_indi",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -1844,7 +1844,7 @@
       "reason": "The formal current model is a graphical controller core and does not implement an ExperimentRunner controller interface or name a canonical whole-aircraft harness."
     },
     {
-      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "scheme_id": "linear_mpc_l1_indi",
       "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
       "category": "optimization_predictive",
       "entry_type": "mworks_control_profile",
@@ -1911,7 +1911,7 @@
       "internal_probe": null
     },
     {
-      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "scheme_id": "qp_nmpc_l1_indi_cbf",
       "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
       "category": "optimization_predictive",
       "entry_type": "mworks_control_profile",

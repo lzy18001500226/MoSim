@@ -5,6 +5,7 @@ ROOT = Path(__file__).resolve().parents[2]
 RUNNER = ROOT / "Scripts" / "sunray" / "run_px4ctrl_ego_single_gate.sh"
 PREFLIGHT = ROOT / "Scripts" / "sunray" / "check_sunray_ros1_runtime_preflight.sh"
 QGC_WRAPPER = ROOT / "Scripts" / "sunray" / "run_qgc_diff_realtime_goal_gate.sh"
+FACTORY_LAUNCH = ROOT / "Scripts" / "sunray" / "factory_l2_sunray_px4_gazebo.launch"
 
 
 def test_factory_world_runtime_overlay_is_opt_in_and_records_its_manifest() -> None:
@@ -15,6 +16,17 @@ def test_factory_world_runtime_overlay_is_opt_in_and_records_its_manifest() -> N
     assert 'SUNRAY_GAZEBO_LAUNCH_FILE}" != *"factory_l2_sunray_px4_gazebo.launch"' in source
     assert 'WORLD_FILE="${RUNTIME_WORLD_FILE}"' in source
     assert '"factory_world_runtime_overlay": "${SUNRAY_FACTORY_WORLD_RUNTIME_OVERLAY}"' in source
+
+
+def test_factory_launch_prefers_generated_drone_models_for_vehicle_resolution() -> None:
+    source = FACTORY_LAUNCH.read_text(encoding="utf-8")
+
+    assert source.index("$(arg sunray_model_path)/drone_models") < source.index(
+        "$(arg factory_model_path)"
+    )
+    assert source.index("$(arg sunray_model_path)/sensor_models") < source.index(
+        "$(arg factory_model_path)"
+    )
 
 
 def test_factory_ab_runner_keeps_gpu_build_and_runtime_workspace_identical() -> None:

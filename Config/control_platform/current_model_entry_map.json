@@ -57,13 +57,13 @@
         ]
       },
       {
-        "support_id": "fixed_qp_nmpc_safety_graphical_review_core",
+        "support_id": "qp_nmpc_safety_graphical_review_core",
         "source_file": "Results/control_platform/g5_graphical_structure_review_20260722/direct_graphical_sources/fixed_chain/MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
         "target_file": "Models/MoSimQuadrotorModel/Control/Implementations/Optimization/MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL.mo",
         "target_model_class": "MoSimQuadrotorModel.Control.Implementations.Optimization.MoSim_G5_QPNMPC_SAFETY_DIRECT_GRAPHICAL_MIL",
         "purpose": "Readable native graphical QP/NMPC safety control-law core for the fixed QP/NMPC/L1/INDI/CBF chain. It replaces no whole-aircraft alias and is used only for G5 internal-topology review.",
         "required_by_scheme_ids": [
-          "fixed_qp_nmpc_l1_indi_cbf"
+          "qp_nmpc_l1_indi_cbf"
         ]
       }
     ]
@@ -76,7 +76,7 @@
       "classic_cfunction_sysblock": "0da89e2eaa78572ba26161979689f712cfb9f4a68ae30046363c492b00011212",
       "hinf_wrench_adapter_cfunction_sysblock": "1e83f534231a9029e1dbb019aa5c026e3df9b5b80e5850089348eb01c418e0b9",
       "dfbc_family_cfunction_sysblock": "1d654db917faff3dd85abbcc8747cf8cfa76bb513ca64e936d4d4373a7038db5",
-      "fixed_qp_nmpc_safety_graphical_review_core": "078170a30db0b509b594bba21aba0c2121affbd34239556d7cec425ee483b7cc"
+      "qp_nmpc_safety_graphical_review_core": "078170a30db0b509b594bba21aba0c2121affbd34239556d7cec425ee483b7cc"
     }
   },
   "summary": {
@@ -277,7 +277,7 @@
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
     {
-      "scheme_id": "fixed_awff_pid",
+      "scheme_id": "awff_pid",
       "profile_id": "PidAwff",
       "display_name_zh": "抗积分饱和与参考前馈 PID",
       "category": "pid_family",
@@ -304,7 +304,7 @@
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop."
     },
     {
-      "scheme_id": "fixed_awff_l1_residual",
+      "scheme_id": "awff_l1_residual",
       "profile_id": "PidAwffL1Residual",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
       "category": "pid_family",
@@ -331,7 +331,7 @@
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop."
     },
     {
-      "scheme_id": "fixed_awff_l1_indi",
+      "scheme_id": "awff_l1_indi",
       "profile_id": "PidAwffL1Indi",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
       "category": "pid_family",
@@ -1254,7 +1254,7 @@
       "next_gate": "G5 topology review and minimum MWORKS closed-loop gate; this core alone is not a whole-aircraft result."
     },
     {
-      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "scheme_id": "linear_mpc_l1_indi",
       "profile_id": "LinearMpcL1Indi",
       "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
       "category": "optimization_predictive",
@@ -1281,7 +1281,7 @@
       "next_gate": "G5 reviews the source wrapper's referenced internal controller first, then validates this full profile's minimum MWORKS closed loop."
     },
     {
-      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "scheme_id": "qp_nmpc_l1_indi_cbf",
       "profile_id": "QpNmpcL1IndiCbf",
       "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
       "category": "optimization_predictive",

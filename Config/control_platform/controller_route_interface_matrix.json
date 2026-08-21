@@ -2076,7 +2076,7 @@
       "claim_boundary": "This row is a source/interface migration plan. It does not prove CheckModel, graphical review, minimum aircraft closure, scenario performance, code generation, Gazebo deployment, or report acceptance."
     },
     {
-      "scheme_id": "fixed_awff_l1_indi",
+      "scheme_id": "awff_l1_indi",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 残差与 INDI 姿态校正",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -2200,7 +2200,7 @@
       "claim_boundary": "This row is a source/interface migration plan. It does not prove CheckModel, graphical review, minimum aircraft closure, scenario performance, code generation, Gazebo deployment, or report acceptance."
     },
     {
-      "scheme_id": "fixed_awff_l1_residual",
+      "scheme_id": "awff_l1_residual",
       "display_name_zh": "抗积分饱和前馈 PID 加 L1 启发式残差补偿",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -2324,7 +2324,7 @@
       "claim_boundary": "This row is a source/interface migration plan. It does not prove CheckModel, graphical review, minimum aircraft closure, scenario performance, code generation, Gazebo deployment, or report acceptance."
     },
     {
-      "scheme_id": "fixed_awff_pid",
+      "scheme_id": "awff_pid",
       "display_name_zh": "抗积分饱和与参考前馈 PID",
       "category": "pid_family",
       "entry_type": "mworks_control_profile",
@@ -2448,7 +2448,7 @@
       "claim_boundary": "This row is a source/interface migration plan. It does not prove CheckModel, graphical review, minimum aircraft closure, scenario performance, code generation, Gazebo deployment, or report acceptance."
     },
     {
-      "scheme_id": "fixed_linear_mpc_l1_indi",
+      "scheme_id": "linear_mpc_l1_indi",
       "display_name_zh": "线性 MPC 外环加 L1 残差与 INDI 姿态校正",
       "category": "optimization_predictive",
       "entry_type": "mworks_control_profile",
@@ -2572,7 +2572,7 @@
       "claim_boundary": "This row is a source/interface migration plan. It does not prove CheckModel, graphical review, minimum aircraft closure, scenario performance, code generation, Gazebo deployment, or report acceptance."
     },
     {
-      "scheme_id": "fixed_qp_nmpc_l1_indi_cbf",
+      "scheme_id": "qp_nmpc_l1_indi_cbf",
       "display_name_zh": "QP/NMPC 外环加 L1、INDI 与 CBF 安全投影",
       "category": "optimization_predictive",
       "entry_type": "mworks_control_profile",

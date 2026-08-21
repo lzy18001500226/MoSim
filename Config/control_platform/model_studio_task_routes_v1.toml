@@ -46,7 +46,7 @@ runner_file = "Models/MoSimQuadrotorModel/Experiment/SingleUav/ClassicRobust/Fop
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
-controller_id = "fixed_awff_pid"
+controller_id = "awff_pid"
 available = true
 runner_class = "MoSimQuadrotorModel.Experiment.Templates.IntegratedChains.FixedAwffPid"
 runner_file = "Models/MoSimQuadrotorModel/Experiment/Templates/IntegratedChains/FixedAwffPid.mo"
@@ -54,7 +54,7 @@ boundary = "ROTOR_COMMAND"
 runner_alias = "awff"
 
 [[route]]
-controller_id = "fixed_awff_l1_residual"
+controller_id = "awff_l1_residual"
 available = true
 runner_class = "MoSimQuadrotorModel.Experiment.SingleUav.IntegratedChains.AwffL1ResidualGraphicalRunner"
 runner_file = "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1ResidualGraphicalRunner.mo"
@@ -62,7 +62,7 @@ boundary = "ROTOR_COMMAND"
 runner_alias = "l_1"
 
 [[route]]
-controller_id = "fixed_awff_l1_indi"
+controller_id = "awff_l1_indi"
 available = true
 runner_class = "MoSimQuadrotorModel.Experiment.SingleUav.IntegratedChains.AwffL1IndiGraphicalRunner"
 runner_file = "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/AwffL1IndiGraphicalRunner.mo"
@@ -268,7 +268,7 @@ runner_file = "Models/MoSimQuadrotorModel/Experiment/SingleUav/Optimization/Nmpc
 boundary = "ATTITUDE_THRUST"
 
 [[route]]
-controller_id = "fixed_linear_mpc_l1_indi"
+controller_id = "linear_mpc_l1_indi"
 available = true
 runner_class = "MoSimQuadrotorModel.Experiment.SingleUav.IntegratedChains.LinearMpcL1IndiGraphicalRunner"
 runner_file = "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/LinearMpcL1IndiGraphicalRunner.mo"
@@ -276,7 +276,7 @@ boundary = "ROTOR_COMMAND"
 runner_alias = "linear_mpc_rotor"
 
 [[route]]
-controller_id = "fixed_qp_nmpc_l1_indi_cbf"
+controller_id = "qp_nmpc_l1_indi_cbf"
 available = true
 runner_class = "MoSimQuadrotorModel.Experiment.SingleUav.IntegratedChains.QpNmpcL1IndiCbfGraphicalRunner"
 runner_file = "Models/MoSimQuadrotorModel/Experiment/SingleUav/IntegratedChains/QpNmpcL1IndiCbfGraphicalRunner.mo"

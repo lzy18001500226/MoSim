@@ -43,6 +43,17 @@ class Px4ctrlEgoStabilityTimeBasisTests(unittest.TestCase):
         self.assertIn("return self.perform_safe_stop(rate, safety_blockers=list(blockers))", source)
         self.assertIn("status=\"blocked\" if final_blockers else \"safe_stopped\"", source)
 
+    def test_interactive_final_hover_metric_is_not_used_before_assignment(self):
+        source = (
+            Path(__file__).resolve().parents[1]
+            / "sunray"
+            / "px4ctrl_ego_single_mission_node.py"
+        ).read_text(encoding="utf-8")
+        self.assertNotIn(
+            '                                final_metric["time_basis"] = "ros_sim_time"',
+            source,
+        )
+
     def test_factory_fuel_wrapper_enables_absolute_hover_takeoff_handoff(self):
         source = (
             Path(__file__).resolve().parents[1]
