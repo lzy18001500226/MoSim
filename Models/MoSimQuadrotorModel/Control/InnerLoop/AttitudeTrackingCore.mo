@@ -3,21 +3,6 @@ model AttitudeTrackingCore
   "Inner-loop attitude tracking controller extracted from OfficialPid - tracks desired roll/pitch/yaw and converts to rotor amplitude commands"
 
   annotation(
-    __MWORKS(
-      SECInstance = true,
-      version = "26.3.0",
-      PortArrangement(
-        Left(desired_roll_rad, desired_pitch_rad, desired_yaw_rad, roll_mea, pitch_mea, yaw_mea, thrust_baseline),
-        Right(amplitude_1, amplitude_2, amplitude_3, amplitude_4)
-      ),
-      modelType = Control,
-      BlockSystem(
-        blockKind = BlockKind.userModel,
-        SampleTime(auto=true, group = "")=0.01,
-        OutputInterval=0.01
-      ),
-      SysblockVersion = "1.0"
-    ),
     Icon(coordinateSystem(preserveAspectRatio = false), graphics = {
       Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 100, 150}, fillColor = {255, 240, 245}, fillPattern = FillPattern.Solid),
       Text(origin = {0, 30}, extent = {{-90, 18}, {90, -18}}, textString = "Attitude", textColor = {0, 100, 150}),
