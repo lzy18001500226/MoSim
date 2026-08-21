@@ -233,15 +233,16 @@ const MODEL_OUTPUT_OPTIONS = [
     "WRENCH [平台已验证]",
 ]
 const MODEL_TASKS = [
-    (id="climb_path_50s", label="基准：ClimbPath 50 s", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
-    (id="hover", label="悬停保持", duration_s=35.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
-    (id="step_response", label="阶跃响应", duration_s=45.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
-    (id="figure8", label="8 字轨迹", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
-    (id="spiral", label="螺旋上升", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true),
-    (id="single_uav_autonomous_avoidance", label="单机自主避障", duration_s=80.0, vehicle_count=1, map_id="openblocks", controller_ids=["px4ctrl"], injection_supported=true),
-    (id="three_uav_figure8", label="三机三角编队 8 字", duration_s=50.0, vehicle_count=3, map_id="blank", controller_ids=["px4ctrl"], injection_supported=true),
-    (id="three_uav_autonomous_avoidance", label="三机自主避障", duration_s=360.0, vehicle_count=3, map_id="openblocks", controller_ids=["linear_mpc"], injection_supported=false),
-    (id="multi_uav_route_unavailable", label="多机任务（当前无已登记模型入口）", duration_s=0.0, vehicle_count=0, map_id="blank", controller_ids=String[], injection_supported=false),
+    (id="climb_path_50s", label="基准：ClimbPath 50 s", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true, handoff_kind="model"),
+    (id="hover", label="悬停保持", duration_s=35.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true, handoff_kind="model"),
+    (id="step_response", label="阶跃响应", duration_s=45.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true, handoff_kind="model"),
+    (id="figure8", label="8 字轨迹", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true, handoff_kind="model"),
+    (id="spiral", label="螺旋上升", duration_s=50.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=true, handoff_kind="model"),
+    (id="seven_scenario_ab", label="2×7 场景 A/B", duration_s=0.0, vehicle_count=1, map_id="blank", controller_ids=["official_pid", "px4ctrl"], injection_supported=false, handoff_kind="batch"),
+    (id="single_uav_autonomous_avoidance", label="单机自主避障", duration_s=80.0, vehicle_count=1, map_id="openblocks", controller_ids=["px4ctrl"], injection_supported=true, handoff_kind="model"),
+    (id="three_uav_figure8", label="三机三角编队 8 字", duration_s=50.0, vehicle_count=3, map_id="blank", controller_ids=["px4ctrl"], injection_supported=true, handoff_kind="model"),
+    (id="three_uav_autonomous_avoidance", label="三机自主避障", duration_s=360.0, vehicle_count=3, map_id="openblocks", controller_ids=["linear_mpc"], injection_supported=false, handoff_kind="model"),
+    (id="multi_uav_route_unavailable", label="多机任务（当前无已登记模型入口）", duration_s=0.0, vehicle_count=0, map_id="blank", controller_ids=String[], injection_supported=false, handoff_kind="unavailable"),
 ]
 const MODEL_TASK_LABELS = [task.label for task in MODEL_TASKS if task.vehicle_count == 1]
 
@@ -1273,6 +1274,7 @@ const OFFLINE_PROFILES = Dict(
         task = app.selected_model_task()
         controller = app.selected_controller_entry()
         task.vehicle_count == 0 && return "当前数量无已登记模型入口"
+        task.handoff_kind == "batch" && return "批量任务 / run_seven_scenario_ab.py"
         controller === nothing && return "由当前任务模型决定"
         if task.id in MODEL_FORMAL_TASK_IDS
             boundary = app.model_task_route_boundary(controller.id)
@@ -1671,7 +1673,8 @@ const OFFLINE_PROFILES = Dict(
         elseif app.CurrentMode == "model"
             supported = app.model_task_controller_supported()
             app.ApplyInjectionButton.Enable = supported
-            app.OpenModelButton.Enable = supported && !app.TaskConfigDirty && isfile(app.TaskConfigPath)
+            task = app.selected_model_task()
+            app.OpenModelButton.Enable = supported && task.handoff_kind == "model" && !app.TaskConfigDirty && isfile(app.TaskConfigPath)
             return
         elseif app.CurrentMode == "live"
             app.ValidateButton.Enable = true
@@ -2105,8 +2108,13 @@ const OFFLINE_PROFILES = Dict(
                 app.TaskConfigPath = config_path
                 app.TaskConfigDirty = false
                 app.refresh_summary()
-                app.set_top_status("在线建模验证  |  配置已冻结  |  等待用户在 MWORKS 中仿真"; state="正常")
-                app.append_console("配置已冻结：" * config_path * "；未启动仿真"; level="通过")
+                if task.handoff_kind == "batch"
+                    app.set_top_status("在线建模验证  |  2×7 批次计划已冻结  |  等待用户按批次命令执行"; state="正常")
+                    app.append_console("2×7 批次计划已冻结：" * config_path * "；未启动 MWORKS"; level="通过")
+                else
+                    app.set_top_status("在线建模验证  |  配置已冻结  |  等待用户在 MWORKS 中仿真"; state="正常")
+                    app.append_console("配置已冻结：" * config_path * "；未启动仿真"; level="通过")
+                end
             catch error
                 app.TaskConfigPath = ""
                 app.TaskConfigDirty = true
@@ -2286,6 +2294,10 @@ const OFFLINE_PROFILES = Dict(
             return
         end
         if mode == "model"
+            if app.selected_model_task().handoff_kind != "model"
+                app.append_console("当前任务是批量执行入口，不生成单一 MWORKS 模型；请使用冻结配置中的批次命令"; level="提示")
+                return
+            end
             if !app.model_task_controller_supported()
                 app.append_console("当前数量、任务与控制器组合没有已登记的 MWORKS 模型入口；未打开模型"; level="阻断")
                 return

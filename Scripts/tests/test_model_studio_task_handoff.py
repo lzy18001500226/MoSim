@@ -203,6 +203,32 @@ def test_baseline_is_a_separate_climbpath_handoff(tmp_path: Path) -> None:
     assert payload["profile"]["trajectory_class"].endswith(".ClimbPath")
 
 
+def test_two_by_seven_task_writes_a_hash_bound_batch_plan_without_harness(tmp_path: Path) -> None:
+    writer = load_module(WRITER_PATH, "model_studio_task_writer_seven_scenario_batch")
+    payload = write_config(
+        writer,
+        tmp_path,
+        task_id="seven_scenario_ab",
+        controller_id="px4ctrl",
+        gust_force_x_n=0.0,
+        mass_inertia_scale=1.0,
+        motor_effectiveness=[1.0, 1.0, 1.0, 1.0],
+        vehicle_count=1,
+        map_id="blank",
+    )
+    assert payload["configuration_kind"] == "seven_scenario_ab_batch"
+    assert payload["harness_file"] is None
+    assert payload["harness_sha256"] is None
+    assert payload["profile_source"].endswith("seven_scenario_experiment_profiles_v2.json")
+    assert payload["contract_source"].endswith("seven_scenario_injection_contract_v2.json")
+    assert payload["task_route"]["controllers"] == ["official_pid", "px4ctrl"]
+    command = payload["task_route"]["command"]
+    assert "Results/control_platform/seven_scenario_ab_v2" in command
+    assert "formal_mworks_seven_scenario_ab_v2" in command
+    assert command[-2:] == ["--controller", "px4ctrl"]
+    assert payload["claim_boundary"].startswith("Manual MWORKS configuration")
+
+
 def test_formal_task_accepts_composed_wind_mismatch_and_motor_fault(tmp_path: Path) -> None:
     writer = load_module(WRITER_PATH, "model_studio_task_writer_composed")
     payload = write_config(

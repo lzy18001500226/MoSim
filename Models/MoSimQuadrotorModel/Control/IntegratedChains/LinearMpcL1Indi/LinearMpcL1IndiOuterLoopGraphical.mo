@@ -7,7 +7,7 @@ model LinearMpcL1IndiOuterLoopGraphical
   model ModelWorkspace
     annotation(__MWORKS(hide=true,BlockSystem(blockKind=BlockKind.modelWorkspace),version="26.3.0"));
   end ModelWorkspace;
-  annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error,z_error,z_ref_rate),Right(pitch_ref,roll_ref,thrust_ref)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.01),SysblockVersion="1.0"),
+  annotation(__MWORKS(version="26.3.0",modelType=Control,PortArrangement(Left(x_error,y_error,z_error,z_ref_rate),Right(pitch_ref,roll_ref,thrust_ref)),BlockSystem(blockKind=BlockKind.userModel,SampleTime(auto=true,group="")=0.01,OutputInterval=0.02),SysblockVersion="1.0"),
     Icon(coordinateSystem(preserveAspectRatio=false),graphics={
       Rectangle(extent={{-100,-100},{100,100}},lineColor={35,95,145},fillColor={236,246,255},fillPattern=FillPattern.Solid,radius=8),
       Text(extent={{-90,28},{90,-6}},textString="Linear MPC",lineColor={20,55,95}),

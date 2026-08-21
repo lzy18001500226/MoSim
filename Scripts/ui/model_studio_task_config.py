@@ -2,9 +2,10 @@
 """Freeze one Model Studio task without starting MWORKS.
 
 The resulting JSON describes an existing single- or three-UAV MWORKS model
-plus a temporary Modelica harness. The harness adds no controller logic. It is
-an input for the manual MWORKS opening path only; this script never starts a
-solver, opens a Sysplorer session, or records simulation evidence.
+plus a temporary Modelica harness, or a hash-bound batch execution plan for
+the seven-scenario route. The harness adds no controller logic. This script
+never starts a solver, opens a Sysplorer session, or records simulation
+evidence.
 """
 
 from __future__ import annotations
@@ -45,6 +46,7 @@ LEGACY_INJECTION_TASK_IDS = (
     "motor_efficiency_fault",
 )
 SPECIAL_TASK_IDS = (
+    "seven_scenario_ab",
     "single_uav_autonomous_avoidance",
     "three_uav_figure8",
     "three_uav_autonomous_avoidance",
@@ -84,6 +86,19 @@ SCENARIO_MODE_BY_TRAJECTORY = {
 }
 
 SPECIAL_ROUTES: dict[str, dict[str, Any]] = {
+    "seven_scenario_ab": {
+        "vehicle_count": 1,
+        "map_id": "blank",
+        "controller_ids": frozenset({"official_pid", "px4ctrl"}),
+        "duration_s": 50.0,
+        "injection_supported": False,
+        "configuration_kind": "seven_scenario_ab_batch",
+        "batch_profile_path": "Config/control_platform/seven_scenario_experiment_profiles_v2.json",
+        "batch_contract_path": "Config/control_platform/seven_scenario_injection_contract_v2.json",
+        "batch_driver_path": "Scripts/mworks/run_seven_scenario_ab.py",
+        "batch_result_root": "Results/control_platform/seven_scenario_ab_v2",
+        "batch_evidence_level": "formal_mworks_seven_scenario_ab_v2",
+    },
     "single_uav_autonomous_avoidance": {
         "vehicle_count": 1,
         "map_id": "openblocks",
@@ -592,6 +607,9 @@ def write_task_config(
         profile, profile_hash, contract_hash = selected_profile(driver, task_id)
         source_profile = copy.deepcopy(profile)
         duration_s = float(profile["duration_s"])
+    elif route.get("configuration_kind") == "seven_scenario_ab_batch":
+        _, profile_hash = driver.read_profiles(PROFILE_PATH)
+        _, contract_hash = driver.read_contract(CONTRACT_PATH)
 
     injection = normalized_injection(
         gust_force_x_n=gust_force_x_n,
@@ -616,7 +634,8 @@ def write_task_config(
         apply_independent_parameters(profile, injection)
     name = model_name(driver, controller_id, task_id, selection, profile, route)
     resolved_output = output.resolve()
-    harness_path = resolved_output.parent / "harness" / name / f"{name}.mo"
+    batch_route = route_kind == "special" and route.get("configuration_kind") == "seven_scenario_ab_batch"
+    harness_path = None if batch_route else resolved_output.parent / "harness" / name / f"{name}.mo"
     if route_kind == "formal":
         if controller_id == "official_pid":
             # The graphical golden runner is the App review surface. The unchanged
@@ -647,6 +666,10 @@ def write_task_config(
             )
             kind = "manual_formal_task"
         runner_class = str(route["runner_class"])
+    elif batch_route:
+        harness_text = None
+        runner_class = str(route["batch_driver_path"])
+        kind = str(route["configuration_kind"])
     else:
         harness_text = rendered_special_harness(
             driver,
@@ -658,8 +681,28 @@ def write_task_config(
         )
         runner_class = str(route["base_model"])
         kind = str(route["configuration_kind"])
-    harness_path.parent.mkdir(parents=True, exist_ok=True)
-    harness_path.write_text(harness_text, encoding="utf-8", newline="\n")
+    if harness_path is not None and harness_text is not None:
+        harness_path.parent.mkdir(parents=True, exist_ok=True)
+        harness_path.write_text(harness_text, encoding="utf-8", newline="\n")
+
+    batch_command = None
+    if batch_route:
+        batch_command = [
+            "python",
+            route["batch_driver_path"],
+            "--profile-path",
+            route["batch_profile_path"],
+            "--contract-path",
+            route["batch_contract_path"],
+            "--result-root",
+            route["batch_result_root"],
+            "--evidence-level",
+            route["batch_evidence_level"],
+            "--controller",
+            "official_pid",
+            "--controller",
+            "px4ctrl",
+        ]
 
     payload = {
         "schema": TASK_CONFIG_SCHEMA,
@@ -672,8 +715,8 @@ def write_task_config(
         "configuration_kind": kind,
         "selection": selection,
         "model_name": name,
-        "harness_file": project_path_text(harness_path),
-        "harness_sha256": sha256_path(harness_path),
+        "harness_file": project_path_text(harness_path) if harness_path is not None else None,
+        "harness_sha256": sha256_path(harness_path) if harness_path is not None else None,
         "profile": profile,
         "task_parameters": injection,
         "profile_source": project_path_text(PROFILE_PATH) if profile_hash is not None else None,
@@ -687,8 +730,21 @@ def write_task_config(
             "runner_alias": route.get("runner_alias"),
             "runner_class": route["runner_class"],
             "runner_file": route["runner_file"],
-        } if route_kind == "formal" else None,
-        "claim_boundary": "Manual MWORKS configuration and generated harness only; no MWORKS simulation has been started and no evidence verdict is recorded.",
+        } if route_kind == "formal" else (
+            {
+                "configuration_kind": route["configuration_kind"],
+                "driver": route["batch_driver_path"],
+                "profile": route["batch_profile_path"],
+                "contract": route["batch_contract_path"],
+                "controllers": ["official_pid", "px4ctrl"],
+                "command": batch_command,
+            } if batch_route else None
+        ),
+        "claim_boundary": (
+            "Manual MWORKS configuration or batch execution plan only; no MWORKS simulation has been started and no evidence verdict is recorded."
+            if batch_route else
+            "Manual MWORKS configuration and generated harness only; no MWORKS simulation has been started and no evidence verdict is recorded."
+        ),
     }
     resolved_output.parent.mkdir(parents=True, exist_ok=True)
     resolved_output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")

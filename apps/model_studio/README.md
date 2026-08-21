@@ -46,10 +46,11 @@ The current source UI baseline includes:
 - `MoSim 助手` reads the current Profile/control-chain selections and provides
   local MWORKS, QGC, fault, and result-viewing guidance only; it does not start
   MWORKS, export code, or send flight/runtime commands;
-- a model-validation task selector with nominal ClimbPath, hover, step,
-  Figure8, spiral, and registered multi-UAV routes; wind, parameter mismatch,
-  and motor-effectiveness are independent scene parameters rather than a
-  second controller catalog;
+- a model-validation task selector with the frozen 2x7 Official PID/px4ctrl
+  batch, nominal ClimbPath/hover/step/Figure8/spiral tasks, single-UAV
+  OpenBlocks avoidance, three-UAV OpenBlocks avoidance, and three-UAV Figure8
+  formation; wind, parameter mismatch, and motor-effectiveness are independent
+  scene parameters rather than a second controller catalog;
 - dynamic controller-family and controller-instance selection, with fixed
   FormalRunner interface layers shown as read-only on the model page;
 - a fixed +X external-force slider, synchronized mass/all-inertia mismatch

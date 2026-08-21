@@ -50,6 +50,7 @@ def test_model_workspace_separates_tasks_from_independent_scene_parameters() -> 
         "step_response",
         "figure8",
         "spiral",
+        "seven_scenario_ab",
         "single_uav_autonomous_avoidance",
         "three_uav_figure8",
         "three_uav_autonomous_avoidance",
@@ -191,6 +192,10 @@ def test_model_task_scope_uses_registered_single_and_three_uav_routes() -> None:
     assert "ATTITUDE_THRUST / OpenBlocksPx4Ctrl" in source
     assert "ROTOR_COMMAND / ThreeUavPx4CtrlFormationRunner" in source
     assert "ROTOR_COMMAND / OpenBlocksThreeUavFormation" in source
+    assert 'id="seven_scenario_ab"' in source
+    assert 'handoff_kind="batch"' in source
+    assert 'task.handoff_kind == "batch"' in source
+    assert "run_seven_scenario_ab.py" in source
 
 
 def test_live_workspace_uses_the_same_task_and_scene_configuration_shape() -> None:
