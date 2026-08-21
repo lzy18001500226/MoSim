@@ -36,13 +36,12 @@ Rules:
 
 ## Active Redraw Set
 
-Use the six replacement blocks below for the current redraw pass. They replace
+Use the four replacement blocks below for the current redraw pass. They replace
 the earlier versions of the corresponding hand-drawn figures; the other
 hand-drawn figures are not regenerated in this pass.
 
 | Report figure | Prompt block | Required change |
 |---|---|---|
-| `12_Profile配置与状态注入链路.png` | 03 | Split the MWORKS formal Plant from the independent ROS1/PX4 lane and preserve command/event authority. |
 | `16_MWORKS建模仿真代码生成反馈闭环.png` | 02 | Replace the single deployment loop with separate formal-evidence, code-delivery, and runtime-evidence lanes. |
 | `19_四旋翼动力学与控制分配模型.png` | 05 | Use the source-aligned signed X allocation, actuator lag, rotor order, and principal inertia. |
 | `20_实验平台分层与故障反馈链路.png` | 01 | Show the actual motor/ESC/airframe graphical review and distinguish it from FormalRunner evidence. |
@@ -180,73 +179,6 @@ Mandatory connections:
 
 Negative constraints:
 Do not draw any arrow from generated C/C++ code into the ROS1 runtime lane. Do not draw an arrow from the runtime lane back into MWORKS, code generation, controller tuning, or the formal Plant. Do not claim that code generation, SIL, ROS1, Gazebo, or a display record proves the other lane. No 3D, perspective, gradients, shadows, screenshots, decorative scenery, curved arrows, crossed lines, floating labels, unboxed text, appendix labels, or deployment-success claims.
-```
-
----
-
-## 03 Figure 12: Profile Configuration, State Sources, Event Injection, and Evidence Boundary
-
-```text
-Figure Subject:
-Create a formal 2D data-flow diagram defining Profile configuration, reference/state/command authority, fault event application, and metrics collection for the MWORKS FormalRunner path. Keep the independent ROS1/PX4 runtime record visibly outside the high-frequency loop. Use a pure white background, flat vector graphics, black text, solid black node borders, pale blue data nodes, pale green control nodes, pale red event nodes, pale yellow metrics nodes, and pale gray read-only or independent-runtime nodes.
-
-Diagram type:
-Directed data-flow and authority-boundary diagram.
-
-Layout:
-Use a 16:9 horizontal canvas with three aligned horizontal bands plus a narrow gray independent-runtime box at the far right. The top band contains Profile-driven reference and parameter authority. The middle band is the only high-frequency MWORKS FormalRunner loop. The bottom band contains event injection, diagnostics, metrics, and read-only evidence. Keep all high-frequency signal flow strictly left-to-right; draw the Plant-to-state return on one lower outer rail of the middle band.
-
-Place the fault route below the command route in red. It must show that the fault is a Profile-declared parameter frozen at translation time and then applied deterministically inside the rotor actuator, not a runtime request that waits for an acknowledgement. Do not merge the formal Plant with the runtime stack in a single node. Keep "MWORKS Formal Plant" and "独立ROS1/PX4运行时记录" as separate nodes with no command wire between them. Use only orthogonal connectors, aligned ports, and no crossings.
-
-Mandatory nodes:
-- "Profile配置"
-- "任务与场景配置"
-- "任务参考源"
-- "ReferenceFrame"
-- "参考权威"
-- "状态源"
-- "StateFrame"
-- "状态权威"
-- "FormalRunner"
-- "控制器"
-- "CommandFrame"
-- "命令权威"
-- "Adapter"
-- "MWORKS Formal Plant"
-- "传感器反馈"
-- "故障注入参数"
-- "fault_start_s / fault_rotor_index / fault_rotor_effectiveness"
-- "翻译期参数冻结"
-- "RotorActuatorCore"
-- "fault_effectiveness[i]"
-- "DiagnosticsFrame"
-- "MetricsFrame"
-- "证据存储"
-- "只读显示"
-- "独立ROS1/PX4运行时记录"
-- Annotation: "故障注入为翻译期参数，按时间确定性生效"
-- Annotation: "单一发布权威"
-- Annotation: "运行时记录不进入MWORKS高频环"
-
-Mandatory connections:
-- "Profile配置" -> "任务与场景配置" -> "任务参考源" -> "ReferenceFrame" -> "参考权威" -> "FormalRunner" -> "控制器".
-- "MWORKS Formal Plant" -> "传感器反馈" -> "状态源" -> "StateFrame" -> "状态权威" -> "FormalRunner" by the lower outer return rail of the middle band.
-- "控制器" -> "CommandFrame" -> "命令权威" -> "Adapter" -> "MWORKS Formal Plant".
-- "Profile配置" -> "故障注入参数" -> "fault_start_s / fault_rotor_index / fault_rotor_effectiveness" -> "翻译期参数冻结" -> "RotorActuatorCore".
-- "RotorActuatorCore" -> "fault_effectiveness[i]" -> "MWORKS Formal Plant".
-- "fault_effectiveness[i]" -> "MetricsFrame"
-- "控制器" -> "DiagnosticsFrame" -> "MetricsFrame"
-- "StateFrame" -> "MetricsFrame"
-- "ReferenceFrame" -> "MetricsFrame"
-- "CommandFrame" -> "MetricsFrame"
-- "MetricsFrame" -> "证据存储" -> "只读显示"
-- "独立ROS1/PX4运行时记录" -> "证据存储" using one thin dashed gray factual-reference arrow only.
-- Bind the red annotation label "故障注入为翻译期参数，按时间确定性生效" to the route from "故障注入参数" through "翻译期参数冻结" to "RotorActuatorCore".
-- Bind the green annotation label "单一发布权威" to the route from "CommandFrame" through "命令权威" to "Adapter".
-- Bind "运行时记录不进入MWORKS高频环" to "独立ROS1/PX4运行时记录".
-
-Negative constraints:
-Do not connect the read-only display node or the independent-runtime node to the controller, command-authority node, Adapter, FormalRunner, or MWORKS Formal Plant. Do not show a file queue inside the high-frequency loop. Do not draw an injection request node, an acknowledgement node, a request-versus-applied pair, or any command-plane handshake on the MWORKS fault route; that handshake exists only in the ROS1 sidecar path and is out of scope for this figure. Do not invent Frame names: use only ReferenceFrame, StateFrame, CommandFrame, DiagnosticsFrame, and MetricsFrame. No 3D, shadows, gradients, screenshots, decorative icons, curved lines, connector crossings, floating text, appendix labels, or unlabeled authority changes.
 ```
 
 ---
@@ -887,62 +819,6 @@ Mandatory connections:
 
 Negative constraints:
 Do not draw a rigid triangular formation through the narrow corridor. Do not claim unknown-map autonomous exploration. Do not merge the three UAV paths. No 3D, perspective, terrain texture, photorealism, decorative scenery, curved callout connectors, trajectory intersections, unlabeled obstacles, or floating prose.
-```
-
----
-
-## 16 MWORKS Real-Time Co-Simulation Control, ROS1 Data, and MAVLink Flight Planes
-
-```text
-Figure Subject:
-Create a strict 2D three-plane communication architecture for MWORKS real-time co-simulation with Model Studio, QGC, Orchestrator, ROS1, MAVROS, PX4, and Gazebo. Clearly separate low-frequency control-plane traffic, high-frequency real-time data, and standard MAVLink flight operations. Use a white background, black borders, flat vector graphics, and a distinct pale color for each plane. Use only the exact in-figure labels listed below.
-
-Diagram type:
-Three-plane communication and authority architecture.
-
-Layout:
-Use a 16:9 horizontal canvas with three horizontal bands. Place the GUI control plane at the top, the ROS1 real-time data plane in the middle, and the MAVLink flight plane at the bottom. Place Orchestrator at the left boundary between planes but outside the 100 Hz loop. Use orthogonal connectors only. Use thicker arrows for the real-time loop and thinner arrows for control-plane requests.
-Keep the middle plane widest because it is the only plane that carries the high-frequency loop.
-
-Mandatory nodes:
-- Plane label: "GUI控制面"
-- "Model Studio"
-- "QGC"
-- "Orchestrator"
-- "Profile发布与prepare_run"
-- "任务与故障命令"
-- "异步ACK"
-- Plane label: "ROS1实时数据面"
-- "MWORKS实时Adapter"
-- "StateFrame"
-- "ReferenceFrame"
-- "AttitudeThrustCommand"
-- "ControllerDiagnostics"
-- "InjectionCommand / AppliedEvent"
-- "px4ctrl"
-- "Gazebo插件"
-- Plane label: "MAVLink飞行面"
-- "MAVROS"
-- "PX4"
-- "连接与模式"
-- "解锁、起飞、任务与降落"
-- "标准遥测与COMMAND_ACK"
-- "候选能力，需RT0门禁验证"
-- "高频控制链不经过GUI或文件队列"
-
-Mandatory connections:
-- "Model Studio" <-> "Orchestrator" through "Profile发布与prepare_run" and "异步ACK".
-- "QGC" <-> "Orchestrator" through "任务与故障命令" and "异步ACK".
-- "MWORKS实时Adapter" <-> "StateFrame", "ReferenceFrame", "AttitudeThrustCommand", and "ControllerDiagnostics".
-- "AttitudeThrustCommand" -> one command authority -> "px4ctrl" or "MAVROS".
-- "InjectionCommand / AppliedEvent" <-> "Gazebo插件".
-- "QGC" <-> "MAVROS" <-> "PX4" through the standard flight-plane nodes.
-- "PX4" <-> "Gazebo插件".
-- Place "高频控制链不经过GUI或文件队列" directly beside the middle band.
-- Bind "候选能力，需RT0门禁验证" to "MWORKS实时Adapter".
-
-Negative constraints:
-Do not route 100 Hz control through QGC, Orchestrator, HTTP, or a file queue. Do not give Model Studio arm or takeoff authority. Do not show concurrent MWORKS and px4ctrl setpoint publishers. No 3D, gradients, shadows, screenshots, curved lines, crossed planes, floating labels, or decorative network clouds.
 ```
 
 ---
