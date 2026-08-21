@@ -1334,6 +1334,140 @@ Send PPT blocks in this order:
 
 ---
 
+## Restored Prompts for Hand-Drawn Figures Used in PPT
+
+The two prompts below correspond to hand-drawn figures 11 and 15 that are currently used in the PPT outline. If AI regeneration is needed, use these prompts.
+
+---
+
+## PPT-03 (Replaces Hand-Drawn Figure 11): Four Output Interfaces with Runner and Adapter Boundary
+
+```text
+Figure Subject:
+Create a strict 2D four-lane parallel architecture diagram showing the four controller output interfaces used in MoSim, each with its own Runner, unit conversion, saturation check, and allocator/inner-loop path, all converging on one shared Plant. Use a white background, flat vector graphics, black borders, and four distinct pale colors for the lanes.
+
+Diagram type:
+Four-lane parallel pipeline with shared Plant sink.
+
+Layout:
+Use a 16:9 horizontal canvas with four equal-height horizontal lanes stacked vertically. Each lane flows strictly left-to-right. Align equivalent stages (Runner, unit conversion, saturation check, allocator) vertically across all lanes. Place one shared Plant node at the far right that all four lanes feed into. Below the Plant, add one Animation output node. Use orthogonal connectors only; no diagonal lines or lane crossings.
+
+Mandatory nodes:
+- Lane 1 label: "ATTITUDE_THRUST接口"
+- "姿态推力控制器核心"
+- "ATTITUDE_THRUST Runner"
+- "单位转换 (deg→rad, N→kg·m/s²)"
+- "限幅检查"
+- "姿态内环 + Allocator"
+- Lane 2 label: "BODY_RATE_THRUST接口"
+- "体轴角速度推力控制器核心"
+- "BODY_RATE_THRUST Runner"
+- "单位转换 (deg/s→rad/s)"
+- "限幅检查"
+- "角速度内环 + Allocator"
+- Lane 3 label: "WRENCH接口"
+- "力矩控制器核心"
+- "WRENCH Runner"
+- "单位转换 (N·m→kg·m²/s²)"
+- "限幅检查"
+- "控制分配器"
+- Lane 4 label: "ROTOR_COMMAND接口"
+- "电机指令控制器核心"
+- "ROTOR_COMMAND Runner"
+- "单位转换 (RPM→rad/s)"
+- "限幅检查"
+- "执行器模型"
+- Shared right column: "统一Plant (云纵150 MultiBody)", "Animation输出"
+- Annotation: "48个控制器通过四接口之一输出，共享Plant确保同条件对比"
+
+Mandatory connections:
+- Each lane: 控制器核心 → Runner → 单位转换 → 限幅检查 → allocator/inner-loop → Plant.
+- All four allocator/inner-loop outputs must converge into the single shared Plant node using four equal horizontal arrows.
+- Plant → Animation by one downward arrow.
+- Bind annotation to the bottom of the diagram.
+
+Negative constraints:
+Do not duplicate the Plant for each lane. Do not merge lanes before reaching the Plant. Do not use diagonal connectors. Do not imply automatic interface conversion between lanes. No 3D, gradients, shadows, screenshots, curved lines, crossed lanes, or floating labels.
+```
+
+---
+
+## PPT-13 (Replaces Hand-Drawn Figure 15): MWORKS Real-Time Outer Loop with WSL2 ROS Bridge Data Flow
+
+```text
+Figure Subject:
+Create a strict 2D two-tier architecture diagram showing MWORKS real-time outer-loop controller (200Hz) on Windows host communicating via UDP with PX4 SITL inner-loop controller running in WSL2 Ubuntu, with Gazebo physics simulation and state feedback path. Use a white background, flat vector graphics, black borders, pale blue for Windows tier, pale green for WSL2 tier, and frequency badges.
+
+Diagram type:
+Two-tier system architecture with bidirectional data flow and frequency annotations.
+
+Layout:
+Use a 16:9 horizontal canvas. Draw two large horizontal bounding boxes: top box labeled "Windows 主机 (MWORKS实时环境)", bottom box labeled "WSL2 Ubuntu 20.04 (ROS1 Noetic)". Inside each box, place components in left-to-right flow. Between boxes, draw thick bidirectional network arrows with frequency labels. Use orthogonal connectors only.
+
+Mandatory nodes:
+
+**Windows tier (top box)**:
+- "MWORKS Sysblock控制器 (sim_mode=2)"
+  - Internal: "位置控制外环", "速度控制中环", "姿态期望生成"
+  - Output: "AttitudeThrustCommand"
+  - Frequency badge: "200 Hz"
+- "UDP非阻塞发送"
+  - Properties: "单向 | 无等待 | 零拷贝"
+- "vEthernet (WSL) 虚拟网卡"
+  - IP: "172.x.x.x"
+
+**Network layer (between tiers)**:
+- Downlink arrow (Windows → WSL2): "AttitudeThrustCommand (200Hz) | quaternion [w,x,y,z] + thrust"
+- Uplink arrow (WSL2 → Windows): "StateFrame (100Hz) | position [x,y,z] + velocity + attitude"
+
+**WSL2 tier (bottom box)**:
+- "ROS Bridge节点 (C++)"
+  - Function: "UDP接收 + 解析"
+- "MAVROS"
+  - ROS topic: "/mavros/setpoint_attitude/thrust"
+  - Protocol: "MAVLink"
+  - Frequency: "200Hz publish"
+- "PX4 SITL"
+  - Components: "姿态率控制内环 | 电机混合 | failsafe"
+  - Output: "Motor PWM (4通道)"
+  - Frequency badge: "250 Hz"
+- "Gazebo物理引擎"
+  - Physics: "ODE求解器 | 1000Hz"
+  - Sensors: "IMU 200Hz | GPS 5Hz"
+  - Upward arrow labeled: "状态反馈"
+
+**Feedback path** (dashed):
+- Gazebo → PX4 → MAVROS → ROS Bridge → UDP → MWORKS
+- Label: "状态反馈 (100Hz)"
+
+**Frequency table** (right side outside boxes):
+```
+┌─────────────┬────────┐
+│ 层级        │ 频率   │
+├─────────────┼────────┤
+│ MWORKS外环  │ 200 Hz │
+│ PX4内环     │ 250 Hz │
+│ Gazebo物理  │ 1000Hz │
+│ 状态反馈    │ 100 Hz │
+└─────────────┴────────┘
+```
+
+Mandatory connections:
+- Windows tier: MWORKS控制器 → UDP发送 → vEthernet.
+- Network: vEthernet ↔ WSL2 network stack (bidirectional).
+- WSL2 tier: ROS Bridge → MAVROS → PX4 → Gazebo → (feedback) → PX4 → MAVROS → ROS Bridge.
+- Feedback path crosses network boundary upward back to MWORKS.
+
+Annotations:
+- "✅ 外环(MWORKS): 位置控制 | 速度控制 | 姿态期望" (top-right)
+- "✅ 内环(PX4): 姿态率控制 | 电机分配 | failsafe保护" (bottom-right)
+
+Negative constraints:
+Do not place OpenBlocks, ECBF, or formation controller in WSL2 tier; they run in MWORKS Modelica. Do not use curved network arrows. Do not merge Windows and WSL2 boxes. Do not imply Docker; this is WSL2. No 3D, gradients, shadows, screenshots, decorative icons, or floating text.
+```
+
+---
+
 ## PPT-06: Quadrotor Dynamics Model (P07页)
 
 **Figure Subject**: 四旋翼六自由度动力学模型与控制分配矩阵
