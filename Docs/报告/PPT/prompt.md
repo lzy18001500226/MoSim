@@ -388,16 +388,15 @@ Diagram type:
 Four-stage left-to-right pipeline enclosed in MWORKS boundary box.
 
 Layout:
-Use a 16:9 horizontal canvas. Draw a large light blue dashed boundary box covering 80% of canvas labeled "MWORKS" at top-left. Inside this box, arrange four stages horizontally from left to right: 3D obstacle map → A* search → min-snap optimization → controller. Place three annotation callout boxes at top-right, middle-right, and bottom-right inside boundary. Below the MWORKS box, place a small comparison table showing OpenBlocks vs Diff-Planner vs FUEL. Use straight orthogonal connectors between stages; no curves.
+Use a 16:9 horizontal canvas. Draw a large light blue dashed boundary box covering 80% of canvas labeled "MWORKS" at top-left. Inside this box, arrange four stages horizontally from left to right: 3D obstacle map → A* search → min-snap optimization → controller. Place two annotation callout boxes at middle-right and bottom-right inside boundary. Below the MWORKS box, place a small comparison table showing OpenBlocks vs Diff-Planner vs FUEL. Use straight orthogonal connectors between stages; no curves.
 
 Mandatory nodes:
 - Stage 1 (gray): "3D障碍物地图" with cubic obstacle blocks shown
 - Stage 2 (pale green): "A*搜索" box showing waypoint path through obstacles
 - Stage 3 (pale orange): "min-snap轨迹优化" box with smooth trajectory curve overlaid on waypoints
 - Stage 4 (deep blue): "控制器 (px4ctrl)" receiving optimized trajectory
-- Callout 1 (top-right, light yellow): "OpenBlocks特点:" with three green checkmarks for "纯MWORKS实现", "无外部依赖", "状态机集成"
-- Callout 2 (middle-right, light yellow): "A*参数:" showing "搜索空间: 100×100×10", "启发函数: Euclidean"
-- Callout 3 (bottom-right, light yellow): "min-snap优化:" showing "多项式阶数: 7", "优化目标: 最小化snap", "约束: 速度≤3m/s, 加速度≤5m/s²"
+- Callout 1 (middle-right, light yellow): "A*参数:" showing "搜索空间: 100×100×10", "启发函数: Euclidean"
+- Callout 2 (bottom-right, light yellow): "min-snap优化:" showing "多项式阶数: 7", "优化目标: 最小化snap", "约束: 速度≤3m/s, 加速度≤5m/s²"
 - Comparison table (below MWORKS box): three-column table with headers "规划组件", "运行环境", "备注", rows: "OpenBlocks | MWORKS | 纯Modelica实现", "Diff-Planner | Gazebo | 需ROS环境", "FUEL | Gazebo | 需ROS环境"
 
 Mandatory connections:
@@ -437,8 +436,8 @@ Mandatory nodes:
   - "PX4 SITL (姿态率控制 + failsafe)" showing inner loop: Attitude tracking, Body rate control, Motor mixing; failsafe logic: Geofence, RC loss, Battery monitoring; output: Motor PWM (4 channels)
   - "Gazebo物理引擎" with simulation frequency 1000Hz, ODE solver, sensor simulation: IMU (200Hz), GPS (5Hz), Optical flow (30Hz); upward arrow: State feedback (position, velocity, attitude)
 - Right-side frequency table (white with borders): four rows showing MWORKS外环 (200 Hz), PX4内环 (250 Hz), Gazebo物理 (1000 Hz), 状态反馈 (100 Hz)
-- Annotation 1 (top-right, light yellow): "✅ 外环（MWORKS）:" with three bullets: 位置控制, 速度控制, 姿态期望生成
-- Annotation 2 (middle-right, light yellow): "✅ 内环（PX4）:" with three bullets: 姿态率控制, 电机分配, failsafe保护
+- Annotation 1 (top-right, light yellow): "外环（MWORKS）:" with three bullets: 位置控制, 速度控制, 姿态期望生成
+- Annotation 2 (middle-right, light yellow): "内环（PX4）:" with three bullets: 姿态率控制, 电机分配, failsafe保护
 - Annotation 3 (bottom-left, light yellow): "通信频率:" showing MWORKS → PX4: 200Hz, PX4 → MWORKS: 100Hz
 
 Mandatory connections:
@@ -471,7 +470,7 @@ Mandatory nodes:
 - Right panel Path 2 (pale orange): "ROS Bridge节点 (Gazebo运行时)" showing flow: C99代码包 → 集成到ROS节点工程 (CMakeLists.txt ROS, package.xml, px4ctrl_node.cpp wrapper) → catkin build编译 → ROS可执行节点 (订阅 /mavros/state, 调用 controller_step(), 发布 /mavros/setpoint_attitude) → Gazebo闭环运行
 - Right panel Path 3 (pale purple): "独立嵌入式编译 (真机部署)" showing flow: C99代码包 → ARM交叉编译 (arm-none-eabi-gcc, 优化等级 -O2, 浮点 -mfpu=fpv5-sp-d16) → 嵌入式二进制 (Flash ~20 KB, RAM ~8 KB) → 烧录到飞控板 (PX4固件集成, 自定义控制模块) → 真机飞行测试
 - Bottom comparison table (white with borders): five columns showing 部署路径, 编译器, 运行环境, 验证目标, 实时性; three rows for SIL验证 (GCC/MSVC, MWORKS, 算法一致性, 非实时), ROS Bridge (GCC, WSL2/ROS, 闭环性能, 软实时), 嵌入式 (ARM-GCC, 飞控板, 真机飞行, 硬实时)
-- Top-right features box (light yellow): three checkmarked items "✅ ISO C99标准" (无外部依赖, 仅依赖math.h), "✅ 双输出格式" (静态库.a用于嵌入式, 共享库.so/.dll用于SIL/ROS), "✅ 跨平台兼容" (Windows MSVC, Linux GCC, ARM arm-none-eabi-gcc)
+- Top-right features box (light yellow): three items "ISO C99标准" (无外部依赖, 仅依赖math.h), "双输出格式" (静态库.a用于嵌入式, 共享库.so/.dll用于SIL/ROS), "跨平台兼容" (Windows MSVC, Linux GCC, ARM arm-none-eabi-gcc)
 
 Mandatory connections:
 - Solid arrows connecting process boxes within each deployment path vertically.
@@ -504,8 +503,8 @@ Mandatory nodes:
 - Third layer fusion (orange): "PX4 EKF2状态估计器 (100Hz)" receiving inputs: XY位置 from FAST-LIO (20Hz), Z高度 from laser altimeter (50Hz), 姿态 from FAST-LIO+IMU (200Hz); fusion algorithm: Extended Kalman Filter, multi-rate sensor fusion, outlier rejection; output fused state: position [x,y,z], velocity [vx,vy,vz], attitude quaternion [w,x,y,z]
 - Fourth layer broadcast (light purple): "MAVROS (100Hz状态广播)" publishing ROS topics: /mavros/local_position/pose, /mavros/local_position/velocity, /mavros/imu/data
 - Fifth layer controller (vibrant blue): "MWORKS控制器 (200Hz位置/速度控制)" with note "插值补偿频率差 (100Hz → 200Hz)"
-- Right-side XY design rationale box (light yellow): "XY定位设计 (FAST-LIO)" with two checkmarked sections: "✅ 激光雷达+IMU紧耦合" (互补传感器特性, 高频IMU预测 200Hz, 点云低频修正 20Hz), "✅ 无GPS环境定位" (室内/GPS拒止环境, 相对定位精度高, 在线构建环境地图)
-- Right-side Z design rationale box (light yellow): "Z轴定位设计 (激光定高)" with two checkmarked sections: "✅ 独立Z轴反馈" (避免FAST-LIO Z轴漂移, 直接测距精度高, 低延迟 50Hz高频), "✅ 两路互补设计" (XY: FAST-LIO, Z: 激光定高, 三轴高质量反馈)
+- Right-side XY design rationale box (light yellow): "XY定位设计 (FAST-LIO)" with two sections: "激光雷达+IMU紧耦合" (互补传感器特性, 高频IMU预测 200Hz, 点云低频修正 20Hz), "无GPS环境定位" (室内/GPS拒止环境, 相对定位精度高, 在线构建环境地图)
+- Right-side Z design rationale box (light yellow): "Z轴定位设计 (激光定高)" with two sections: "独立Z轴反馈" (避免FAST-LIO Z轴漂移, 直接测距精度高, 低延迟 50Hz高频), "两路互补设计" (XY: FAST-LIO, Z: 激光定高, 三轴高质量反馈)
 - Bottom-right benefits box (light yellow): showing 融合频率 PX4 EKF2 100Hz, 控制器输入 MWORKS 200Hz (插值), XY定位精度 <0.1m (FAST-LIO), Z定位精度 <0.05m (激光定高)
 
 Mandatory connections:
@@ -542,7 +541,7 @@ Mandatory nodes:
   - Stage 2: "B样条轨迹优化" with optimization objective min J = ∫ (||snap||² + λ·C_collision) dt, collision penalty soft constraint, output smooth trajectory
   - Stage 3: "动力学可行性验证" checking constraints ||v(t)|| ≤ v_max and ||a(t)|| ≤ a_max, output feasible safe trajectory
 - Output layer (deep blue): "MWORKS控制器跟踪" with arrow from local layer
-- Right-side characteristics box 1 (light yellow): "分层决策优势:" with three checkmarked items "✅ 全局信息引导" (避免局部最优, 探索效率高, 覆盖未知区域最大化), "✅ 局部路径安全" (障碍物实时避让, 动力学约束满足, 可执行性保证), "✅ 解耦设计" (全局决策独立, 局部规划响应快, 模块化易扩展)
+- Right-side characteristics box 1 (light yellow): "分层决策优势:" with three items "全局信息引导" (避免局部最优, 探索效率高, 覆盖未知区域最大化), "局部路径安全" (障碍物实时避让, 动力学约束满足, 可执行性保证), "解耦设计" (全局决策独立, 局部规划响应快, 模块化易扩展)
 - Right-side metrics box 2 (light cream): "性能指标:" showing 探索效率 >85%, 地图覆盖率 >90%, 规划频率 10Hz, 平均速度 2.5m/s
 - Bottom warning box (pale red with orange border): "⚠ 注意: FUEL是Gazebo/ROS组件 (非MWORKS，运行于WSL2/ROS环境)"
 
@@ -590,7 +589,7 @@ Mandatory nodes:
   │ Gazebo视觉   │ ~50k     │ 18 MB    │ 渲染显示 │
   │ Gazebo碰撞   │ ~16k     │ 3 MB     │ 物理检测 │
   └──────────────┴──────────┴──────────┴──────────┘
-- Right-side strategies box (light yellow with green checkmarks): "关键优化策略:" with three items "✅ LOD层级生成" (远景低面数, 近景高细节, 自动切换), "✅ 面数简化" (保持轮廓特征, 减少75%面数, 视觉质量可接受), "✅ 碰撞体分离" (视觉网格: 细节, 碰撞网格: 简化, 物理性能提升10×)
+- Right-side strategies box (light yellow): "关键优化策略:" with three items "LOD层级生成" (远景低面数, 近景高细节, 自动切换), "面数简化" (保持轮廓特征, 减少75%面数, 视觉质量可接受), "碰撞体分离" (视觉网格: 细节, 碰撞网格: 简化, 物理性能提升10×)
 
 Mandatory connections:
 - Thick solid arrows connecting main pipeline flow horizontally through all six stages.
