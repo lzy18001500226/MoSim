@@ -37,8 +37,8 @@ model AttitudeSignalAdapter
     annotation(Placement(transformation(origin = {110, -60}, extent = {{-10, -10}, {10, 10}})));
 
   // Unit conversion parameters
-  parameter Real thrust_n_to_amplitude = 0.01543
-    "Conversion from Newtons to dimensionless amplitude (calibrated from OfficialPid: nominal hover ~64.79 rad/s at ~10N thrust)";
+  parameter Real thrust_n_to_amplitude = 6.4
+    "Conversion from Newtons to amplitude (nominal hover: 10N thrust → 64 amplitude, matching OfficialPid z_pid output range)";
 
 equation
   // Direct passthrough for angles
