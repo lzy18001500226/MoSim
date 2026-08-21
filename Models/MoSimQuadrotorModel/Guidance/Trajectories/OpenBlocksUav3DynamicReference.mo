@@ -2,7 +2,7 @@ within MoSimQuadrotorModel.Guidance.Trajectories;
 model OpenBlocksUav3DynamicReference
   "UAV3 dynamic reference that reads from MAT file at simulation time"
 
-  parameter String csvFilePath = "C:/Users/HP/Desktop/MoSim/Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav3_reference.csv";
+  parameter String csvFilePath = "C:/Users/HP/Desktop/MoSim/Results/planning/three_uav_open_blocks_mworks_20260720/sysplorer/uav3_reference.csv";
 
   Modelica.Blocks.Sources.CombiTimeTable referenceTable(
     tableOnFile = true,
