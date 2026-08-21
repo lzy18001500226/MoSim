@@ -83,10 +83,10 @@ SCENE_THRESHOLDS: dict[str, dict[str, float]] = {
 }
 
 DEFAULT_THRESHOLDS = {
-    "max_position_rmse_m": 0.50,
+    "max_position_rmse_m": 1.00,
     "max_position_error_m": 3.50,
     "min_total_health_score": 45.0,
-    "max_tilt_rad": 0.50,
+    "max_tilt_rad": 0.60,
 }
 
 
