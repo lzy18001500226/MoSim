@@ -114,12 +114,6 @@ extent={{-80,-65},{80,65}})),
     annotation(Placement(transformation(origin={627.5,102.5},
   extent={{-127.5,-147.5},{127.5,147.5}})));
 
-  MoSimQuadrotorModel.Environment.Maps.OpenBlocksMapTruthDisplay nav_display 
-    annotation(
-      Placement(transformation(origin={-380,84.8458},
-extent={{-50,-20.1542},{50,20.1542}})),
-      __MWORKS(hide=true));
-
   // ---- Observable variables ----
   Real position_ref[3];
   Real position[3];
@@ -460,32 +454,6 @@ color={0,100,150}));
     annotation(Line(origin={152.5,-0.867},
   points={{-302.5,-27.25},{-317.5,-27.25},{-317.5,-54.133},{-462.5,-54.133},{-462.5,-22.25},{-445,-22.25}},
   color={100,70,20}));
-
-  // ── Reference + Plant → Map Display ───────────────────────────────────────────
-  connect(plant.position[1], nav_display.actual_position[1]) 
-    annotation(Line(origin={152.5,-0.867},
-points={{602.5,221.367},{622.5,221.367},{622.5,-55.25},{-604.5,-55.25},{-604.5,91.759},{-592.5,91.759}},
-color={0,100,150}));
-  connect(plant.position[2], nav_display.actual_position[2]) 
-    annotation(Line(origin={152.5,-0.867},
-points={{602.5,221.367},{622.5,221.367},{622.5,-55.25},{-604.5,-55.25},{-604.5,91.759},{-592.5,91.759}},
-color={0,100,150}));
-  connect(plant.position[3], nav_display.actual_position[3]) 
-    annotation(Line(origin={152.5,-0.867},
-points={{602.5,221.367},{622.5,221.367},{622.5,-55.25},{-604.5,-55.25},{-604.5,91.759},{-592.5,91.759}},
-color={0,100,150}));
-  connect(reference.position_command[1], nav_display.reference_position[1]) 
-    annotation(Line(origin={0,0},
-points={{-330,224},{-310,224},{-310,-55},{-452,-55},{-452,78.7995},{-440,78.7995}},
-color={0,0,127}));
-  connect(reference.position_command[2], nav_display.reference_position[2]) 
-    annotation(Line(origin={0,0},
-points={{-330,224},{-310,224},{-310,-55},{-452,-55},{-452,78.7995},{-440,78.7995}},
-color={0,0,127}));
-  connect(reference.position_command[3], nav_display.reference_position[3]) 
-    annotation(Line(origin={0,0},
-points={{-330,224},{-310,224},{-310,-55},{-452,-55},{-452,78.7995},{-440,78.7995}},
-color={0,0,127}));
 
   // ── Observable exports ────────────────────────────────────────────────────────
   rotor_command            = esc.motor_command_raw;

@@ -1155,29 +1155,24 @@ Diagram type:
 Horizontal five-stage pipeline with one evidence column at the far right.
 
 Layout:
-Use a 16:9 horizontal canvas with five equal-width vertical stages and one narrow shared evidence column. Place one primary node per stage in a single center row. Add a short annotation band below each stage node. Keep all connectors strictly horizontal; no diagonal lines. Add a thin dashed gray comparison row at the very bottom labeled "等效路径（仅供参考）" with "Simulink → Embedded Coder → PX4 SITL" nodes in light gray to show the equivalent MATLAB toolchain.
+Use a 16:9 horizontal canvas with five equal-width vertical stages and one narrow shared evidence column. Place one primary node per stage in a single center row. Put key technical details inside each stage node as compact text, not as separate annotation boxes below. Keep all connectors strictly horizontal; no diagonal lines. Add a thin dashed gray comparison row at the very bottom labeled "等效路径（仅供参考）" with "Simulink → Embedded Coder → PX4 SITL" nodes in light gray.
 
 Mandatory nodes:
-- Stage 1 (pale blue): "MWORKS.Sysblock\n图形化控制器建模"
-- Stage 2 (pale green): "GenerateModelCode\n→ ISO C99 源码\n（无Runtime依赖）"
+- Stage 1 (pale blue): "MWORKS.Sysblock\n图形化控制器建模\n可生成代码"
+- Stage 2 (pale green): "GenerateModelCode\nISO C99 源码\nGCC 直接编译\n无 Runtime 依赖"
 - Stage 3 (pale green): "CFunction SIL 夹具\n数值一致性验证\nRMSE 1.148e-13 m"
-- Stage 4 (pale orange): "自研ROS Bridge\n四接口统一接入\nMAVROS · PX4 SITL"
-- Stage 5 (pale orange): "Gazebo Classic\n全链路联通\n（rosbag + RViz 录屏）"
-- Evidence column (pale gray): "Result.msr / rosbag\nRViz截图 / 指标CSV"
+- Stage 4 (pale orange): "自研ROS Bridge\n四接口统一接入\nATTITUDE/BODY_RATE/\nWRENCH/ROTOR"
+- Stage 5 (pale orange): "Gazebo Classic\nUbuntu 20.04\nROS1 Noetic\nrosbag 录屏"
+- Evidence column (pale gray): "Result.msr\nrosbag\nRViz截图\n指标CSV"
 - Comparison row: light gray nodes "Simulink", "Embedded Coder", "PX4 SITL" with label "等效路径（仅供参考）"
-- Annotation below Stage 1: "Sysblock 图形 = 可生成代码的控制模型"
-- Annotation below Stage 2: "ISO C99，GCC 直接编译，无 Runtime 依赖"
-- Annotation below Stage 3: "MIL/SIL 双精度量级一致，已通过"
-- Annotation below Stage 4: "ATTITUDE_THRUST / BODY_RATE_THRUST\nWRENCH / ROTOR_COMMAND"
-- Annotation below Stage 5: "Ubuntu 20.04 / ROS1 Noetic / Gazebo Classic / WSL2"
 
 Mandatory connections:
 - Stage 1 → Stage 2 → Stage 3 → Stage 4 → Stage 5, all as solid black horizontal arrows.
 - Stage 5 → Evidence column as one solid black arrow.
-- The comparison row runs below the five stage annotations with light gray arrows Simulink → Embedded Coder → PX4 SITL and a bracket or brace connecting it to the main pipeline to indicate equivalence only, not a data flow.
+- The comparison row runs below the main pipeline with light gray arrows Simulink → Embedded Coder → PX4 SITL and a bracket connecting it to the main pipeline to indicate equivalence only.
 
 Negative constraints:
-Do not label Stage 5 as "Figure8验证通过" or imply a formal tracking performance pass in Gazebo. Do not imply that the generated code has been deployed to a physical drone. Do not merge the SIL node with the Gazebo node. Do not draw the comparison row as a data path into or out of the main pipeline. No 3D, gradients, shadows, screenshots, decorative icons, curved lines, or floating text outside bordered nodes.
+Do not use separate annotation boxes below nodes; put all key info inside the node boxes. Do not label Stage 5 as "Figure8验证通过". Do not imply deployment to physical drone. Do not merge SIL node with Gazebo node. Do not draw comparison row as a data path. No 3D, gradients, shadows, screenshots, decorative icons, curved lines, or floating text outside bordered nodes.
 ```
 
 ---
