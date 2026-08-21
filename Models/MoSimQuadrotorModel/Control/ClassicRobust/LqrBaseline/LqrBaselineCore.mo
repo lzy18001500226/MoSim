@@ -47,9 +47,9 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {-510, 297}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum velocity_error_x(inputs="+-") 
     annotation (Placement(transformation(origin = {-510, 213}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_x(k=0.8)
+  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_x(k=1.0)
     annotation (Placement(transformation(origin = {-400, 297}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_x(k=1.0)
+  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_x(k=1.2)
     annotation (Placement(transformation(origin = {-400, 213}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pv_feedback_x(inputs="++") 
     annotation (Placement(transformation(origin = {-300, 255}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
@@ -61,9 +61,9 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {-510, 87}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum velocity_error_y(inputs="+-") 
     annotation (Placement(transformation(origin = {-510, 3}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_y(k=0.8)
+  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_y(k=1.0)
     annotation (Placement(transformation(origin = {-400, 87}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_y(k=1.0)
+  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_y(k=1.2)
     annotation (Placement(transformation(origin = {-400, 3}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pv_feedback_y(inputs="++") 
     annotation (Placement(transformation(origin = {-300, 45}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
@@ -75,9 +75,9 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {-510, -123}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum velocity_error_z(inputs="+-") 
     annotation (Placement(transformation(origin = {-510, -207}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_z(k=1.1)
+  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_z(k=1.5)
     annotation (Placement(transformation(origin = {-400, -123}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_z(k=1.0)
+  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_z(k=1.4)
     annotation (Placement(transformation(origin = {-400, -207}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pv_feedback_z(inputs="++") 
     annotation (Placement(transformation(origin = {-300, -165}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
