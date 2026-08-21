@@ -6,7 +6,7 @@ model OpenBlocksUav2DynamicReference
 
   Modelica.Blocks.Sources.CombiTimeTable referenceTable(
     tableOnFile = true,
-    tableName = "#1#",
+    tableName = "tab1",
     fileName = csvFilePath,
     columns = {2, 3, 4, 14},
     smoothness = Modelica.Blocks.Types.Smoothness.LinearSegments,

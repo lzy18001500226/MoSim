@@ -246,7 +246,7 @@ Use a 16:9 horizontal canvas. Stack five main layers vertically down the left 70
 
 Mandatory nodes:
 - Layer 1 (pale blue): "Profile Config\nTrajectory type: hover/climb/figure8/spiral\nController selection: 48 options\nFault injection settings\nEvaluation metrics"
-- Layer 2 (pale green): "Sysblock Controller Core\nPosition control block\nAttitude control block\nControl allocation block" with star-burst annotation callout "48个控制器全部改为Sysblock图形建模"
+- Layer 2 (pale green): "Sysblock Controller Core\nPosition control block\nAttitude control block\nControl allocation block" with star-burst annotation callout "48个控制器全部是Sysblock图形建模"
 - Layer 3 (pale orange): "Adapter\nENU/FLU ↔ NED/FRD" with four labeled output branches "ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"
 - Layer 4 (light blue): "Sunray150 MultiBody Plant\n6-DOF dynamics\n共享Plant确保同条件对比"
 - Layer 5, left box (pale purple): "Output Collection\nPosition trajectory\nAttitude response\nControl inputs"
@@ -254,7 +254,7 @@ Mandatory nodes:
 - Right panel, fault injection (pale red): "Fault Injection\nWind disturbance: 10 m/s\nParameter mismatch: ±30%\nMotor efficiency fault: 60%"
 - Right panel, annotation box 1: "✅ 核心架构:\nMoSimQuadrotorModel.Experiment.Baselines"
 - Right panel, annotation box 2: "✅ 统一验证条件:\n- 同一Plant模型\n- 同一评价指标\n- 同一扰动注入"
-- Right panel, numerical summary: "控制器总数: 48个\n有Runner: 46个\n缺失: 2个\n(fixed_awff_pid, pid_awff_linear_eso)"
+- Right panel, numerical summary: "控制器总数: 48个\nCheckModel验证: 46个通过\n缺失: 2个\n(fixed_awff_pid, pid_awff_linear_eso)"
 
 Mandatory connections:
 - Profile → Controller by one centered vertical arrow.
@@ -519,7 +519,6 @@ Negative constraints:
 Do not use photo-realistic sensor hardware images. Do not use actual RViz point cloud screenshots. Do not use decorative sensor icons; keep them simple geometric symbols. Do not use curved arrows; only straight orthogonal connectors. Do not use gradient fills on fusion boxes. Keep algorithm boxes showing process steps as text lists, not flowcharts within boxes.
 ```
 
-
 ## PPT-17 FUEL Autonomous Exploration Architecture
 
 ```text
@@ -605,7 +604,6 @@ Do not use actual UE/Blender/Gazebo screenshots. Do not use photo-realistic scen
 
 ---
 
-
 ## PPT-19 MWORKS Full-Chain Capability Map
 
 ```text
@@ -649,5 +647,3 @@ Mandatory connections:
 Negative constraints:
 Do not use decorative platform logos or software screenshots. Do not use photo-realistic imagery. Do not use curved arrows; only straight orthogonal downward arrows. Do not use gradient fills on capability boxes. Keep bullet points as simple text lists with dashes or arrows, not decorated icons. Table must use monospace font (Consolas 9pt) with light gray borders, not heavy borders or colored cells. Do not add decorative checkmarks or badges on capability items; keep text plain and clean.
 ```
-
-
