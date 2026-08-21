@@ -2,6 +2,14 @@
 
 > Purpose: run one MWORKS quadrotor simulation through Sysplorer MCP, export results, and prepare data for metrics and figures.
 
+> **Current model entry rule (2026-08-21):** load only
+> `Models/MoSimQuadrotorModel/package.mo`. Use current `Experiment/SingleUav`,
+> `Experiment/Baselines`, `Experiment/Formation`, or `Experiment/OpenBlocks`
+> entries and their `Control` cores. Any `Experiment.Runners.*` path appearing
+> in older examples is historical provenance only; do not restore it from an
+> archive. The current structural CheckModel batch is recorded in
+> `Results/architecture_verification_20260821/CHECKMODEL_MWORKS_MCP.json`.
+
 ---
 
 ## Current Phase 1 Minimum Closure

@@ -152,28 +152,34 @@ MoSim 当前最成熟的项目侧替换点是“位置/平动外环”。因此�
 ## 3.1 模型库边界与入口
 
 控制责任和文件位置必须同时说明。当前正式 Modelica 实现只有一个根，审查和复现只加载
-这个根的 `package.mo`：
+这个根的 `package.mo`。当前源树已经完成新架构接入，入口分层如下：
 
 ```text
 Models/MoSimQuadrotorModel/
-  唯一活动实现与正式加载入口：Baseline、Controllers、Dynamics、
-  ExperimentRunner、LiveIntegration、Formation、Missions、Parameters、
-  Planning、Robustness、SceneTrace、Support、System、Plant
+  Control/<family>/<controller>/       可复用控制核心与类型边界
+  Experiment/SingleUav/<family>/      46 条单机图形审查 Runner
+  Experiment/Baselines/               官方基线入口
+  Experiment/Formation/               三机/编队入口
+  Experiment/OpenBlocks/              OpenBlocks 审查入口
+  Guidance/                           轨迹、规划与编队参考
+  Vehicle/                            Sunray150 整机与动力学
 ```
 
-离线 Profile 的推荐打开链路是：
+单机 Profile 的推荐打开链路是：
 
 ```text
 Model Studio
-  -> MoSimQuadrotorModel.Experiment.Runners.*
-  -> typed Adapter
-  -> controller wrapper/source
-  -> shared plant/result contract
+  -> MoSimQuadrotorModel.Experiment.SingleUav.<Family>.<Runner>
+  -> MoSimQuadrotorModel.Control.<Family>.<Controller>
+  -> typed Adapter / command boundary
+  -> shared Sunray150Assembly plant and result contract
 ```
 
-活动 Profile、脚本、配置和人工打开操作必须使用 `MoSimQuadrotorModel.*`。历史 Results、
-旧运行记录和已归档证据中的旧全限定名保留其原样作为当时的 provenance，但不能重新作为
-当前正式加载入口。
+`Experiment/<Family>/<Runner>` 下与 `SingleUav` 同名的文件只是兼容壳，不能被当作
+第二份控制实现。`Experiment.Runners.*` 只允许在历史 Results 或归档 provenance 中
+原样出现；它不是当前正式加载入口，不能从归档复制回 `Models`。当前代表性入口的
+MWORKS CheckModel 证据见
+`Results/architecture_verification_20260821/CHECKMODEL_MWORKS_MCP.json`。
 
 ## 4. 当前 Model Studio 与统一目标
 

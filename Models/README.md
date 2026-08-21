@@ -4,15 +4,38 @@
 `Models/MoSimQuadrotorModel/package.mo`; no other directory under `Models/` is
 a second project or a required dependency root.
 
+## Current Architecture Lock (2026-08-21)
+
+The current source tree is already on the new architecture. This section is the
+source-navigation rule for new work:
+
+- `Control/<family>/<controller>/` owns the reusable controller core and its
+  typed interface boundary.
+- `Experiment/SingleUav/<family>/` owns the 46 single-aircraft graphical
+  review runners. The runner-to-core mapping is recorded in
+  `Results/architecture_verification_20260821/preflight/singleuav_runner_control_map.md`.
+- The parallel `Experiment/<Family>/` runner files are thin compatibility
+  shells that extend the `SingleUav` runners; they are not a second controller
+  implementation and must not be rebuilt as independent routes.
+- `Experiment/Baselines`, `Experiment/Formation`, and `Experiment/OpenBlocks`
+  are separate current entry families with their own boundaries.
+- `Experiment/Runners` is not part of the current package tree. Do not restore
+  or copy archived `Experiment.Runners.*` sources into the active tree.
+
+The structural CheckModel evidence for the current representative routes is in
+`Results/architecture_verification_20260821/CHECKMODEL_MWORKS_MCP.json`.
+It proves model structure only; it does not prove simulation, closed-loop,
+planner, or robotics-runtime success.
+
 ## Normal Entry Points
 
 | Need | Open this class | Purpose |
 |---|---|---|
 | Physical airframe | `MoSimQuadrotorModel.Vehicle.Sunray150Assembly` | Sunray150 whole-aircraft plant assembly |
 | Graphical system review | `MoSimQuadrotorModel.Experiment.Templates.Architecture.CompleteSystemGraphical` | Direct graphical whole-system architecture entry |
-| Controller closed loop | `MoSimQuadrotorModel.Experiment.SingleUav.<Family>.<Controller>GraphicalRunner` | Current single-aircraft review Runner; legacy family paths remain compatibility aliases |
+| Controller closed loop | `MoSimQuadrotorModel.Experiment.SingleUav.<Family>.<Controller>GraphicalRunner` | Current single-aircraft review Runner; top-level family wrappers only preserve FQN compatibility |
 | PID legacy example review | `MoSimQuadrotorModel.Control.LegacyExamples.PidVariants.<Example>` | Original Example1/2/3 PID variants retained for report and demo review |
-| Reference trajectory | `MoSimQuadrotorModel.Guidance.Trajectories.<Trajectory>` | Replaceable reference used by formal runners |
+| Reference trajectory | `MoSimQuadrotorModel.Guidance.Trajectories.<Trajectory>` | Replaceable reference used by current review runners |
 | Three-aircraft formation prototype | `MoSimQuadrotorModel.Experiment.Formation.Px4Ctrl.ThreeUavPx4CtrlFormationRunner` | MWORKS prototype only; separate from the ROS/Gazebo deployment route |
 | OpenBlocks single-aircraft route | `MoSimQuadrotorModel.Experiment.OpenBlocks.Px4Ctrl.SingleUav.Sunray150OpenBlocksStaticRunner` | Frozen OpenBlocks reference review entry |
 | OpenBlocks formation route | `MoSimQuadrotorModel.Experiment.OpenBlocks.Px4Ctrl.Formation.ThreeUavPx4CtrlOpenBlocksRunner` | Dynamic OpenBlocks formation review entry |
@@ -63,9 +86,9 @@ public classes, but they are not primary model-library entry points:
 and physical-wrench package. `Vehicle.Examples` also remains visible so the
 original graphical examples can be opened directly for report and demo review.
 
-The formal seven-scenario work is composed through a formal runner plus a
-trajectory and injection parameters. It does not require selecting one of the
-hidden historical scenario graphs.
+The formal seven-scenario work is composed through a current review runner plus
+a trajectory and injection parameters. It does not require selecting one of the
+hidden historical scenario graphs or restoring an archived Runner package.
 
 ## Maintenance Rules
 

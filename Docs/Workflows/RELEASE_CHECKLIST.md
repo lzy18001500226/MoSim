@@ -3,6 +3,14 @@
 > 版本：2026-07-31 P0 证据收敛批次。本文是交付前检查表，不替代原始结果。
 > 共同数字总账见 `Docs/Design/报告手册交付证据总账_P0_20260731.md`。
 
+> **Current architecture lock (2026-08-21):** the formal Runner table below is
+> retained as historical checklist/provenance and is not a source-restoration
+> instruction. Current model navigation is defined by `Models/README.md` and
+> `Docs/Design/架构/01_控制器平台/MWORKS控制器关系与组合架构.md`; do not copy
+> archived `Experiment.Runners.*` sources back into the active package. Current
+> structural CheckModel evidence is in
+> `Results/architecture_verification_20260821/CHECKMODEL_MWORKS_MCP.json`.
+
 ## 1. 环境核对
 
 | 组件 | 当前交付依据/最低需要 | 核对方法 |
@@ -85,10 +93,12 @@ Config/control_platform/model_studio_task_routes_v1.toml
 `apps/model_studio/src/app.jl` 和 `Scripts/ui/model_studio_task_config.py` 的实际
 读取路径确认。
 
-## 4. 48 条 FormalRunner 手动入口索引
+## 4. 历史 48 条 FormalRunner 手动入口索引
 
-下表来自权威 TOML 的 `available=true` 路由。它们的含义是“可以写配置并手动
-打开”，不表示每条已经通过性能门限、七场景或代码生成。
+下表来自历史版本权威 TOML 的 `available=true` 路由，仅保留为交付记录和
+provenance。它们不是当前活动包的打开路径，也不是归档源码恢复清单；不表示每条
+已经通过性能门限、七场景或代码生成。当前模型入口必须以 `Models/README.md`
+和架构锁定证据为准，禁止按下表把 `Experiment.Runners.*` 搬回活动包。
 
 46 条 MWORKS 实现模块的逐项 `current_model_file` 存在性清单见
 `Docs/Design/架构/03_测试调参与证据/交付与审计/控制器实现和Studio入口计数依据_P0_20260731.md`。

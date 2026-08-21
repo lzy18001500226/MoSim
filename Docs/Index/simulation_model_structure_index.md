@@ -1,6 +1,13 @@
 # Simulation Model Structure Index
 
-> Status: canonical single-root model map, 2026-07-25 CST.
+> Status: canonical single-root model map; current architecture lock, 2026-08-21 CST.
+
+> **Current architecture lock:** reusable controller cores are under
+> `Control/<family>/<controller>/`; current single-aircraft review runners are
+> under `Experiment/SingleUav/<family>/`; top-level same-name family paths are
+> thin compatibility shells. `Experiment/Runners` is not part of the active
+> package tree. Older `Experiment.Runners.*` names remain historical
+> provenance only and must not be restored from an archive.
 
 ## 1. One Formal Entry
 
@@ -45,7 +52,9 @@ MoSimQuadrotorModel
 | `MoSimQuadrotorModel.Parameters.*` | 参数来源、版本和虚拟 PX4/Gazebo 对齐记录 | 参数已由实物飞行辨识确认。 |
 | `MoSimQuadrotorModel.Vehicle.Examples.*` | 官方机体/任务基线和资源审查 | 已完成控制器优化或部署验证。 |
 | `MoSimQuadrotorModel.Control.*` | 控制器源、Sysblock、图形化核心、接口、分配器与适配器 | 图形化核心已具备整机闭环。 |
-| `MoSimQuadrotorModel.Experiment.Runners.*` | 输出边界和正式测试壳 | 与 PX4 运行时 owner 等价。 |
+| `MoSimQuadrotorModel.Control.<Family>.<Controller>` | 可复用控制核心与类型边界 | 只凭核心加载不能宣称整机闭环。 |
+| `MoSimQuadrotorModel.Experiment.SingleUav.<Family>.*` | 当前单机图形化审查 Runner | 不等价于 PX4/ROS 运行时验收。 |
+| `MoSimQuadrotorModel.Experiment.<Family>.*` | 当前同名族兼容壳 | 不能复制成第二份控制实现。 |
 | `MoSimQuadrotorModel.Experiment.Templates.*` | 单机正式任务模板 | 其他场景的性能结论。 |
 | `MoSimQuadrotorModel.Experiment.SingleUav.*` | 单机非避障控制器 runner | OpenBlocks 避障或多机编队结论。 |
 | `MoSimQuadrotorModel.Experiment.Formation.*` | 非避障多机编队 runner | 避障编队或 ROS/Gazebo 运行时成功。 |

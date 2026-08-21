@@ -1,6 +1,6 @@
 # MoSim架构专题文档树
 
-> 状态：当前专题入口，2026-06-24。
+> 状态：当前专题入口；模型结构锁定于 2026-08-21。
 
 本目录是 `Docs/Design/` 下唯一正式专题文档树。根入口仍是：
 
@@ -52,3 +52,12 @@ G12+    UE真值地图/渲染、QGC二次开发和报告展示，后置于控制
 
 旧草案、迁移方案和被吸收材料位于 `Docs/Cache/design/`。这些文档只供追溯，
 不能作为当前执行入口。
+
+## 当前模型结构锁定
+
+当前 Modelica 结构以 `Models/README.md` 和
+`Results/architecture_verification_20260821/ARCHITECTURE_LOCKED_REPORT.md`
+为入口：只有 `Models/MoSimQuadrotorModel/package.mo` 是正式加载根；控制器核心
+位于 `Control`，单机审查 Runner 位于 `Experiment/SingleUav`，顶层同名族目录
+只保留薄兼容壳。`Experiment/Runners` 及其归档副本不是当前入口，任何新任务都
+不得从归档恢复这些源码。

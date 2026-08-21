@@ -4,6 +4,13 @@
 状态：已完成（当前源 MWORKS 验收通过）
 范围：MWORKS / Sysplorer 单机 Official PID 图形化入口
 
+> **当前架构覆盖（2026-08-21）**：本文保留为 Official PID 黄金入口的历史设计记录。
+> 当前源树已经完成新架构接入；活动入口、控制核心和兼容壳以
+> `Models/README.md`、`Config/control_platform/model_studio_task_routes_v1.toml`
+> 及 `Results/architecture_verification_20260821/ARCHITECTURE_LOCKED_REPORT.md`
+> 为准。本文出现的 `Experiment.Runners.*` 路径是当时的规划/provenance，不能从归档
+> 恢复到活动包树。
+
 ## 1. 目标与边界
 
 本次工作的目标是建立一个可在 Sysplorer 中逐层展开、可检查、可仿真的
@@ -323,10 +330,11 @@ Diagram Placement 与物理帧/转速遥测连接线标注；这些改动只影�
 `MWORKS_MCP` `post_yaw_fix` 50 s 导出可作为布局前回归证据，但不能代替当前
 源的 `CheckModel`。本轮对可复用 MCP 会话的只读 `probe` 与带最终源重载的
 有界 `CheckModel` 均超时，未返回模型错误或授权错误，因此不得将本轮静态通过
-或历史结果写成当前源的 live 验收。MCP 会话恢复后，下一步只允许针对
-`MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner`
-执行一次有界 `CheckModel`，再按原 `ClimbPath` 50 s / 0.01 s 设置生成独立黄金证据，
-并与 `OfficialPidFormalRunner` 做四路命令、位置、姿态和终端误差的只读比较。
+或历史结果写成当前源的 live 验收。以下“会话恢复后的下一步”是当时的历史行动项，
+已经被 2026-08-21 架构锁定取代，不得再针对归档的
+`MoSimQuadrotorModel.Experiment.Runners.Golden.*` 或 `Formal.*` 路径执行、恢复或复制
+源码。当前入口和结构证据以 `Models/README.md` 与
+`Results/architecture_verification_20260821/CHECKMODEL_MWORKS_MCP.json` 为准。
 
 补充审计，2026-08-03：历史 `MWORKS_MCP` 结果包
 `Results/mworks_live_gate/official_pid_golden_20260803/live_attempt_20260803_1911/`
@@ -336,7 +344,7 @@ Diagram Placement 与物理帧/转速遥测连接线标注；这些改动只影�
 只证明该结果包的数值一致性；本轮对 MCP 的只读 `probe` 已有界超时，且随后图形
 注解发生了布局改进，因此它不替代最终当前源的 `CheckModel`、图形截图或重新仿真。
 
-2026-08-04 当前源验收补充：通过官方 Sysplorer MCP 对当前工作区源执行
+2026-08-04 历史源验收记录：当时通过官方 Sysplorer MCP 对工作区源执行
 `MoSimQuadrotorModel.Experiment.Runners.Golden.OfficialPidSingleUavGoldenRunner`
 的强制重载与 `CheckModel`，结果为 `true`；随后按 `0..50 s` 运行当前 Golden
 仿真并通过 `GetVarTimes` / `GetVarsValues` 读回 5001 个样本。未修改的
@@ -345,6 +353,9 @@ Diagram Placement 与物理帧/转速遥测连接线标注；这些改动只影�
 等价检查通过：时间轴抽样步长为 5，位置/姿态字段最大差异均小于 `0.001`，
 四路旋翼命令/转速最大差异均小于 `0.02`；Golden 终端位置误差为
 `0.0065053545 m`，Formal 为 `0.0065070764 m`。
+
+上述类名、文件路径和结果只保留为历史 provenance，不代表当前活动源仍有这些类；
+不得据此把归档 Runner 搬回 `Models`。
 
 本轮 MCP 导出的图形审阅文件位于
 `Results/mworks_live_gate/official_pid_golden_20260803/direct_api_49152/current_turn_20260804/screenshots/`，
