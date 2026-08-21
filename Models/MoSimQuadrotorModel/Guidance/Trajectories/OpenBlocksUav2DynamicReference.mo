@@ -23,32 +23,15 @@ model OpenBlocksUav2DynamicReference
   Modelica.Blocks.Interfaces.RealOutput yaw_command
     annotation(Placement(transformation(origin = {100, -60}, extent = {{-10, -10}, {10, 10}})));
 
-  Modelica.Blocks.Continuous.Der velocityX;
-  Modelica.Blocks.Continuous.Der velocityY;
-  Modelica.Blocks.Continuous.Der velocityZ;
-  Modelica.Blocks.Continuous.Der accelerationX;
-  Modelica.Blocks.Continuous.Der accelerationY;
-  Modelica.Blocks.Continuous.Der accelerationZ;
-
 equation
   position_command[1] = referenceTable.y[1];
   position_command[2] = referenceTable.y[2];
   position_command[3] = referenceTable.y[3];
   yaw_command = referenceTable.y[4];
 
-  connect(referenceTable.y[1], velocityX.u);
-  connect(referenceTable.y[2], velocityY.u);
-  connect(referenceTable.y[3], velocityZ.u);
-  velocity_command[1] = velocityX.y;
-  velocity_command[2] = velocityY.y;
-  velocity_command[3] = velocityZ.y;
-
-  connect(velocityX.y, accelerationX.u);
-  connect(velocityY.y, accelerationY.u);
-  connect(velocityZ.y, accelerationZ.u);
-  acceleration_command[1] = accelerationX.y;
-  acceleration_command[2] = accelerationY.y;
-  acceleration_command[3] = accelerationZ.y;
+  // Velocity and acceleration set to zero (controller uses position feedback only)
+  velocity_command = {0, 0, 0};
+  acceleration_command = {0, 0, 0};
 
   annotation(
     Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {

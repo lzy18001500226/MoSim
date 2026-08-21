@@ -22,23 +22,16 @@ model OpenBlocksDynamicReference
     annotation(Placement(transformation(origin = {100, 60}, extent = {{-10, -10}, {10, 10}})));
 
   Modelica.Blocks.Interfaces.RealOutput velocity_command[3]
-    "Reference velocity [vx, vy, vz] in m/s (numerical derivative)"
+    "Reference velocity [vx, vy, vz] in m/s (zero, controller computes from position error)"
     annotation(Placement(transformation(origin = {100, 20}, extent = {{-10, -10}, {10, 10}})));
 
   Modelica.Blocks.Interfaces.RealOutput acceleration_command[3]
-    "Reference acceleration [ax, ay, az] in m/s^2 (numerical derivative)"
+    "Reference acceleration [ax, ay, az] in m/s^2 (zero, no feedforward)"
     annotation(Placement(transformation(origin = {100, -20}, extent = {{-10, -10}, {10, 10}})));
 
   Modelica.Blocks.Interfaces.RealOutput yaw_command
     "Reference yaw angle in radians"
     annotation(Placement(transformation(origin = {100, -60}, extent = {{-10, -10}, {10, 10}})));
-
-  Modelica.Blocks.Continuous.Der velocityX "Velocity = d(position)/dt";
-  Modelica.Blocks.Continuous.Der velocityY;
-  Modelica.Blocks.Continuous.Der velocityZ;
-  Modelica.Blocks.Continuous.Der accelerationX "Acceleration = d(velocity)/dt";
-  Modelica.Blocks.Continuous.Der accelerationY;
-  Modelica.Blocks.Continuous.Der accelerationZ;
 
 equation
   // Position output directly from table
@@ -47,21 +40,10 @@ equation
   position_command[3] = referenceTable.y[3];
   yaw_command = referenceTable.y[4];
 
-  // Velocity via numerical derivative
-  connect(referenceTable.y[1], velocityX.u);
-  connect(referenceTable.y[2], velocityY.u);
-  connect(referenceTable.y[3], velocityZ.u);
-  velocity_command[1] = velocityX.y;
-  velocity_command[2] = velocityY.y;
-  velocity_command[3] = velocityZ.y;
-
-  // Acceleration via second derivative
-  connect(velocityX.y, accelerationX.u);
-  connect(velocityY.y, accelerationY.u);
-  connect(velocityZ.y, accelerationZ.u);
-  acceleration_command[1] = accelerationX.y;
-  acceleration_command[2] = accelerationY.y;
-  acceleration_command[3] = accelerationZ.y;
+  // Velocity and acceleration set to zero (controller uses position feedback only)
+  // Avoids Sysplorer symbolic differentiation limitation with CombiTimeTable
+  velocity_command = {0, 0, 0};
+  acceleration_command = {0, 0, 0};
 
   annotation(
     Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}), graphics = {
