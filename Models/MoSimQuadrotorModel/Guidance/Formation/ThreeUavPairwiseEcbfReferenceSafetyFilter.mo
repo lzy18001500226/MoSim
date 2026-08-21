@@ -20,7 +20,8 @@ model ThreeUavPairwiseEcbfReferenceSafetyFilter
     "Per-vehicle correction limit; nominal A*/EGO acceleration is not clipped";
   parameter Integer projection_passes(min = 1) = 2
     "Fixed sequential half-space projection passes for the three pair constraints";
-  parameter Real epsilon = 1e-8;
+  parameter Real epsilon = 1e-6
+    "Numerical guard for distance/distanceSquared division (increased from 1e-8 to avoid overflow)";
 
   Modelica.Blocks.Interfaces.RealInput nominal_position_1[3] 
     annotation(Placement(transformation(origin = {-140, 84}, extent = {{-12, -12}, {12, 12}})));
