@@ -47,9 +47,9 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {-510, 297}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum velocity_error_x(inputs="+-") 
     annotation (Placement(transformation(origin = {-510, 213}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_x(k=1.6) 
+  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_x(k=0.8)
     annotation (Placement(transformation(origin = {-400, 297}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_x(k=1.8) 
+  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_x(k=1.0)
     annotation (Placement(transformation(origin = {-400, 213}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pv_feedback_x(inputs="++") 
     annotation (Placement(transformation(origin = {-300, 255}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
@@ -61,9 +61,9 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {-510, 87}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum velocity_error_y(inputs="+-") 
     annotation (Placement(transformation(origin = {-510, 3}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_y(k=1.6) 
+  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_y(k=0.8)
     annotation (Placement(transformation(origin = {-400, 87}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_y(k=1.8) 
+  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_y(k=1.0)
     annotation (Placement(transformation(origin = {-400, 3}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pv_feedback_y(inputs="++") 
     annotation (Placement(transformation(origin = {-300, 45}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
@@ -75,9 +75,9 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {-510, -123}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum velocity_error_z(inputs="+-") 
     annotation (Placement(transformation(origin = {-510, -207}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_z(k=2.2) 
+  SysplorerEmbeddedCoder.MathOperation.Gain position_gain_z(k=1.1)
     annotation (Placement(transformation(origin = {-400, -123}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_z(k=2.0) 
+  SysplorerEmbeddedCoder.MathOperation.Gain velocity_gain_z(k=1.0)
     annotation (Placement(transformation(origin = {-400, -207}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum pv_feedback_z(inputs="++") 
     annotation (Placement(transformation(origin = {-300, -165}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
@@ -87,19 +87,19 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {35, -95}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum desired_acceleration_z(inputs="++") 
     annotation (Placement(transformation(origin = {125, -165}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
-  SysplorerEmbeddedCoder.MathOperation.Gain roll_from_lateral_acceleration(k=-0.10197162129779283) 
+  SysplorerEmbeddedCoder.MathOperation.Gain roll_from_lateral_acceleration(k=-0.010197162129779283)
     annotation (Placement(transformation(origin = {240, 55}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Discontinuities.Saturation roll_tilt_limit(lowLimit=-0.5235987755982988,upLimit=0.5235987755982988)
-    "Attitude adapter roll limit from lateral acceleration" annotation (Placement(transformation(origin = {325, 55}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain pitch_from_lateral_acceleration(k=0.10197162129779283) 
+  SysplorerEmbeddedCoder.Discontinuities.Saturation roll_tilt_limit(lowLimit=-0.2617993877991494,upLimit=0.2617993877991494)
+    "Attitude adapter roll limit from lateral acceleration (15 deg, matching OfficialPid)" annotation (Placement(transformation(origin = {325, 55}, extent = {{-14, -11}, {14, 11}})));
+  SysplorerEmbeddedCoder.MathOperation.Gain pitch_from_lateral_acceleration(k=0.010197162129779283) 
     annotation (Placement(transformation(origin = {240, 120}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Discontinuities.Saturation pitch_tilt_limit(lowLimit=-0.5235987755982988,upLimit=0.5235987755982988)
-    "Attitude adapter pitch limit from lateral acceleration" annotation (Placement(transformation(origin = {325, 120}, extent = {{-14, -11}, {14, 11}})));
+  SysplorerEmbeddedCoder.Discontinuities.Saturation pitch_tilt_limit(lowLimit=-0.2617993877991494,upLimit=0.2617993877991494)
+    "Attitude adapter pitch limit from lateral acceleration (15 deg, matching OfficialPid)" annotation (Placement(transformation(origin = {325, 120}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Gain normalized_thrust_pre_limit(k=0.03772949988018335) 
     annotation (Placement(transformation(origin = {240, -55}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.Discontinuities.Saturation normalized_thrust_limit(lowLimit=0.0,upLimit=1.0)
     "Normalized thrust saturation [0, 1]" annotation (Placement(transformation(origin = {325, -55}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.MathOperation.Gain collective_thrust_from_normalized(k=17.745945945945948)
+  SysplorerEmbeddedCoder.MathOperation.Gain collective_thrust_from_normalized(k=17.746)
     "Collective thrust allocation from normalized thrust" annotation (Placement(transformation(origin = {410, -55}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.SignalRouting.Switch enable_position_error_x(threshold=0.5) 
     annotation (Placement(transformation(origin = {525, 330}, extent = {{-14, -11}, {14, 11}})));
