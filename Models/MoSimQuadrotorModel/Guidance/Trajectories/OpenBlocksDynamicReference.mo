@@ -2,20 +2,18 @@ within MoSimQuadrotorModel.Guidance.Trajectories;
 model OpenBlocksDynamicReference
   "Dynamic OpenBlocks reference that reads from MAT file at simulation time"
 
-  parameter String matFilePath = "C:/Users/HP/Desktop/MoSim/Results/planning/single_uav_openblocks_highspeed/mat/uav1_reference.mat"
-    "Absolute path to MAT file containing planning results";
-  parameter String tableName = "uav1_ref"
-    "Table name in MAT file";
+  parameter String csvFilePath = "C:/Users/HP/Desktop/MoSim/Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav1_reference.csv"
+    "Absolute path to CSV file containing planning results";
 
   Modelica.Blocks.Sources.CombiTimeTable referenceTable(
     tableOnFile = true,
-    tableName = tableName,
-    fileName = matFilePath,
-    columns = {2, 3, 4, 5},
+    tableName = "NoName",
+    fileName = csvFilePath,
+    columns = {2, 3, 4, 14},
     smoothness = Modelica.Blocks.Types.Smoothness.LinearSegments,
     extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint,
-    verboseRead = false)
-    "Read [time, x_ref, y_ref, z_ref, yaw_ref] from MAT file";
+    verboseRead = true)
+    "Read [time, x_ref, y_ref, z_ref, yaw_ref] from CSV file (columns 2-4, 14)";
 
   Modelica.Blocks.Interfaces.RealOutput position_command[3]
     "Reference position [x, y, z] in meters"

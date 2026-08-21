@@ -2,17 +2,16 @@ within MoSimQuadrotorModel.Guidance.Trajectories;
 model OpenBlocksUav2DynamicReference
   "UAV2 dynamic reference that reads from MAT file at simulation time"
 
-  parameter String matFilePath = "C:/Users/HP/Desktop/MoSim/Results/planning/three_uav_open_blocks_mworks_20260720/mat/uav2_reference.mat";
-  parameter String tableName = "uav2_ref";
+  parameter String csvFilePath = "C:/Users/HP/Desktop/MoSim/Results/planning/three_uav_open_blocks_mworks_20260720/raw/uav2_reference.csv";
 
   Modelica.Blocks.Sources.CombiTimeTable referenceTable(
     tableOnFile = true,
-    tableName = tableName,
-    fileName = matFilePath,
-    columns = {2, 3, 4, 5},
+    tableName = "NoName",
+    fileName = csvFilePath,
+    columns = {2, 3, 4, 14},
     smoothness = Modelica.Blocks.Types.Smoothness.LinearSegments,
     extrapolation = Modelica.Blocks.Types.Extrapolation.HoldLastPoint,
-    verboseRead = false);
+    verboseRead = true);
 
   Modelica.Blocks.Interfaces.RealOutput position_command[3]
     annotation(Placement(transformation(origin = {100, 60}, extent = {{-10, -10}, {10, 10}})));
