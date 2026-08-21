@@ -584,7 +584,6 @@ Mandatory nodes:
   - Component B: "碰撞网格（简化）" with 用途 物理碰撞, 几何体 32个凸包 (convex hulls), 面数 ~500 faces per hull, 简化比例 原始的1%
 - Stage 6 (pale orange): "Gazebo物理仿真 + 渲染" with Performance metrics 加载时间 <5s, 渲染帧率 60 FPS, 物理更新 1000 Hz, 碰撞检测 <1ms per frame
 - Bottom table (white with light gray borders) labeled "性能对比":
-  ```
   ┌──────────────┬──────────┬──────────┬──────────┐
   │ 阶段         │ 面数     │ 文件大小 │ 用途     │
   ├──────────────┼──────────┼──────────┼──────────┤
@@ -593,7 +592,6 @@ Mandatory nodes:
   │ Gazebo视觉   │ ~50k     │ 18 MB    │ 渲染显示 │
   │ Gazebo碰撞   │ ~16k     │ 3 MB     │ 物理检测 │
   └──────────────┴──────────┴──────────┴──────────┘
-  ```
 - Right-side strategies box (light yellow with green checkmarks): "关键优化策略:" with three items "✅ LOD层级生成" (远景低面数, 近景高细节, 自动切换), "✅ 面数简化" (保持轮廓特征, 减少75%面数, 视觉质量可接受), "✅ 碰撞体分离" (视觉网格: 细节, 碰撞网格: 简化, 物理性能提升10×)
 
 Mandatory connections:
@@ -633,7 +631,6 @@ Mandatory nodes:
 - Thick downward arrow
 - Layer 6 (light yellow): "扩展能力（Gazebo/ROS组件）" containing three items: Diff-Planner局部轨迹优化, FUEL自主探索规划, MoSim GroundControl地面站
 - Bottom metrics table (white with light gray borders) labeled "数字总结" with seven rows:
-  ```
   ┌──────────────────┬────────────────────┐
   │ 维度             │ 成果               │
   ├──────────────────┼────────────────────┤
@@ -645,7 +642,6 @@ Mandatory nodes:
   │ SIL精度          │ 1.148e-13 m        │
   │ Gazebo任务成功率 │ 100% (5/5)         │
   └──────────────────┴────────────────────┘
-  ```
 
 Mandatory connections:
 - Thick solid downward arrows connecting each capability layer vertically from top to bottom.
