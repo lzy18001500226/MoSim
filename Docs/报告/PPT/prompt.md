@@ -236,7 +236,7 @@ Do not render 3D mesh of quadrotor. Do not use curved transformation arrows. Do 
 
 ```text
 Figure Subject:
-Create a strict top-to-bottom flow diagram showing the MoSim unified experiment framework with Profile configuration, Sysblock controller core, four-interface Adapter, shared Plant, parallel fault injection panel, output collection, and unified evaluation metrics. Use a white background, flat vector graphics, black text, deep navy #1E2761 for config, forest green #2C5F2D for controller, terracotta #B85042 for Adapter, deep teal #065A82 for Plant, deep red #990011 for fault injection, and deep berry #6D2E46 for evaluation nodes.
+Create a strict top-to-bottom flow diagram showing the MoSim unified experiment framework with Profile configuration, Sysblock controller core, four-interface Adapter, shared Plant, parallel fault injection panel, output collection, and unified evaluation metrics. Use a white background, flat vector graphics, black text, pale blue for config, vibrant green for controller, orange for Adapter, deep blue for Plant, red for fault injection, and purple for evaluation nodes.
 
 Diagram type:
 Top-to-bottom vertical flow with parallel fault injection branch on the right side.
@@ -245,13 +245,13 @@ Layout:
 Use a 16:9 horizontal canvas. Stack five main layers vertically down the left 70% of the canvas: (1) Profile config, (2) Sysblock controller core with annotation callout, (3) Adapter with four output branches, (4) unified Plant, (5) output and evaluation. Place a fault injection panel on the right 30% parallel to layers 2-4 with dashed injection arrows into the Plant. Add two annotation boxes and one numerical summary card on the right margin below the fault panel. Keep all connectors strictly vertical in the main flow; fault injection uses horizontal dashed arrows.
 
 Mandatory nodes:
-- Layer 1 (deep navy #1E2761): "Profile Config\nTrajectory type: hover/climb/figure8/spiral\nController selection: 48 options\nFault injection settings\nEvaluation metrics"
-- Layer 2 (forest green #2C5F2D): "Sysblock Controller Core\nPosition control block\nAttitude control block\nControl allocation block" with star-burst annotation callout "48个控制器全部是Sysblock图形建模"
-- Layer 3 (terracotta #B85042): "Adapter\nENU/FLU ↔ NED/FRD" with four labeled output branches "ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"
-- Layer 4 (deep teal #065A82): "Sunray150 MultiBody Plant\n6-DOF dynamics\n共享Plant确保同条件对比"
-- Layer 5, left box (deep berry #6D2E46): "Output Collection\nPosition trajectory\nAttitude response\nControl inputs"
-- Layer 5, right box (deep berry #6D2E46): "Unified Evaluation Metrics\nRMSE (position tracking)\nResponse time\nOvershoot percentage"
-- Right panel, fault injection (deep red #990011): "Fault Injection\nWind disturbance: 10 m/s\nParameter mismatch: ±30%\nMotor efficiency fault: 60%"
+- Layer 1 (pale blue): "Profile Config\nTrajectory type: hover/climb/figure8/spiral\nController selection: 48 options\nFault injection settings\nEvaluation metrics"
+- Layer 2 (pale green): "Sysblock Controller Core\nPosition control block\nAttitude control block\nControl allocation block" with star-burst annotation callout "48个控制器全部是Sysblock图形建模"
+- Layer 3 (pale orange): "Adapter\nENU/FLU ↔ NED/FRD" with four labeled output branches "ATTITUDE_THRUST", "BODY_RATE_THRUST", "WRENCH", "ROTOR_COMMAND"
+- Layer 4 (light blue): "Sunray150 MultiBody Plant\n6-DOF dynamics\n共享Plant确保同条件对比"
+- Layer 5, left box (pale purple): "Output Collection\nPosition trajectory\nAttitude response\nControl inputs"
+- Layer 5, right box (pale purple): "Unified Evaluation Metrics\nRMSE (position tracking)\nResponse time\nOvershoot percentage"
+- Right panel, fault injection (pale red): "Fault Injection\nWind disturbance: 10 m/s\nParameter mismatch: ±30%\nMotor efficiency fault: 60%"
 - Right panel, annotation box 1: "核心架构:\nMoSimQuadrotorModel.Experiment.Baselines"
 - Right panel, annotation box 2: "统一验证条件:\n- 同一Plant模型\n- 同一评价指标\n- 同一扰动注入"
 - Right panel, numerical summary: "48个控制器全部验证通过\n7大算法族全覆盖\n统一Sysblock图形建模架构"
@@ -274,7 +274,7 @@ Do not use photo-realistic Sysblock screenshots. Do not show detailed controller
 
 ```text
 Figure Subject:
-Create a strict top-down hierarchical tree diagram showing 48 controllers organized into seven algorithm families: PID improvements (9), Linear/Robust (4), Sliding Mode (6), Optimal/Predictive (5), Geometric (3), Intelligent (5), and Learning/Adaptive (12). Use a white background, flat vector graphics, black text, deep navy #1E2761 for the root node, seven distinct deep professional colors for family nodes, and white fill with colored borders for controller leaf nodes.
+Create a strict top-down hierarchical tree diagram showing 48 controllers organized into seven algorithm families: PID improvements (9), Linear/Robust (4), Sliding Mode (6), Optimal/Predictive (5), Geometric (3), Intelligent (5), and Learning/Adaptive (12). Use a white background, flat vector graphics, black text, deep blue for the root node, seven distinct pastel colors for family nodes, and white fill with colored borders for controller leaf nodes.
 
 Diagram type:
 Two-level hierarchical tree: root → seven family branches → controller leaf nodes.
@@ -283,14 +283,14 @@ Layout:
 Use a 16:9 horizontal canvas. Place one large root node at top center. Draw seven branches downward to seven evenly-spaced family nodes across the width. Under each family node, arrange its controller names in a compact vertical column with small bordered boxes. Keep tree depth strictly at 2 levels (family → controller). Use straight orthogonal or angled branch lines; no curves. Annotate key controllers with small star markers or inline labels inside their boxes.
 
 Mandatory nodes:
-- Root (deep navy #1E2761): "控制算法族 (48个控制器)"
-- Family 1 (forest green #2C5F2D): "PID改进族 (9个)" with controllers: "cascade_pid", "px4ctrl ★官方基线", "official_pid ★工程基线", "awff 前馈增强", "pid_linear_eso", "incremental_pid", "fuzzy_pid", "adaptive_pid", "setpoint_prefilter_pid"
-- Family 2 (deep teal #065A82): "线性/鲁棒控制 (4个)" with controllers: "lqr", "lqg", "h_infinity", "robust_pole_placement"
-- Family 3 (terracotta #B85042): "滑模控制 (6个)" with controllers: "smc 传统滑模", "stc Super-Twisting", "adaptive_smc", "terminal_smc", "integral_smc", "fast_terminal_smc"
-- Family 4 (deep berry #6D2E46): "最优/预测控制 (5个)" with controllers: "mpc 线性MPC", "nmpc 非线性MPC", "empc 经济MPC", "tube_mpc", "adaptive_mpc"
-- Family 5 (charcoal #36454F): "几何控制 (3个)" with controllers: "se3_control SE(3)流形", "quaternion_control", "geometric_tracking"
-- Family 6 (deep red #990011): "智能算法 (5个)" with controllers: "fuzzy_logic", "neural_pid", "anfis_control", "expert_system", "rule_based"
-- Family 7 (slate blue #4A5F7F): "学习/自适应 (12个)" with controllers: "adaptive_backstepping", "mrac 模型参考自适应", "l1_adaptive", "gain_scheduling", "iterative_learning", "reinforcement_learning", "neural_network_adaptive", "online_optimization", "self_tuning", "adaptive_sliding_mode", "adaptive_robust", "dual_adaptive"
+- Root (deep blue): "控制算法族 (48个控制器)"
+- Family 1 (pale green): "PID改进族 (9个)" with controllers: "cascade_pid", "px4ctrl ★官方基线", "official_pid ★工程基线", "awff 前馈增强", "pid_linear_eso", "incremental_pid", "fuzzy_pid", "adaptive_pid", "setpoint_prefilter_pid"
+- Family 2 (pale blue): "线性/鲁棒控制 (4个)" with controllers: "lqr", "lqg", "h_infinity", "robust_pole_placement"
+- Family 3 (pale orange): "滑模控制 (6个)" with controllers: "smc 传统滑模", "stc Super-Twisting", "adaptive_smc", "terminal_smc", "integral_smc", "fast_terminal_smc"
+- Family 4 (pale purple): "最优/预测控制 (5个)" with controllers: "mpc 线性MPC", "nmpc 非线性MPC", "empc 经济MPC", "tube_mpc", "adaptive_mpc"
+- Family 5 (pale teal): "几何控制 (3个)" with controllers: "se3_control SE(3)流形", "quaternion_control", "geometric_tracking"
+- Family 6 (pale pink): "智能算法 (5个)" with controllers: "fuzzy_logic", "neural_pid", "anfis_control", "expert_system", "rule_based"
+- Family 7 (pale yellow): "学习/自适应 (12个)" with controllers: "adaptive_backstepping", "mrac 模型参考自适应", "l1_adaptive", "gain_scheduling", "iterative_learning", "reinforcement_learning", "neural_network_adaptive", "online_optimization", "self_tuning", "adaptive_sliding_mode", "adaptive_robust", "dual_adaptive"
 
 Mandatory connections:
 - Root → each of the seven family nodes by thick straight branch lines radiating downward and outward.
@@ -350,7 +350,7 @@ Do not use Sysblock screenshot overlays. Do not use decorative control system ic
 
 ```text
 Figure Subject:
-Create a strict five-layer vertical architecture diagram showing AI agent knowledge injection flow from MWORKS documentation through rule distillation, MCP server configuration, Syslab execution engine, to AI agent interaction. Include a right-side vertical data flow pipeline and a bottom-right benefits annotation box. Use a white background, flat vector graphics, black text, deep navy #1E2761 for knowledge source, forest green #2C5F2D for distillation, terracotta #B85042 for MCP, deep teal #065A82 for Syslab, deep berry #6D2E46 for AI agent, and light gray with blue arrows for data flow.
+Create a strict five-layer vertical architecture diagram showing AI agent knowledge injection flow from MWORKS documentation through rule distillation, MCP server configuration, Syslab execution engine, to AI agent interaction. Include a right-side vertical data flow pipeline and a bottom-right benefits annotation box. Use a white background, flat vector graphics, black text, pale blue for knowledge source, pale green for distillation, orange for MCP, deep blue for Syslab, purple for AI agent, and light gray with blue arrows for data flow.
 
 Diagram type:
 Five-layer vertical architecture with side data pipeline and benefits box.
@@ -359,11 +359,11 @@ Layout:
 Use a 16:9 horizontal canvas. Place five main layers vertically from top to bottom occupying the left 70% of canvas width. On the right 30%, draw a vertical data flow pipeline from top to bottom. Use straight orthogonal connectors between layers; no diagonals. Each layer is a horizontal band with icons, text, and sample content boxes.
 
 Mandatory nodes:
-- Top layer (deep navy #1E2761): "MWORKS官方文档" with document stack icon, listing sub-items: "API函数签名", "参数类型约束", "返回值规范", "使用示例"
-- Second layer (forest green #2C5F2D): "结构化规则蒸馏" process box with arrow labeled "人工标注 + 自动解析" → "规则库 (JSON/YAML)", show sample rule card in monospace JSON format for SimulateModel function
-- Third layer (terracotta #B85042): "MCP服务器" with server icon, configuration panel showing "Tool registration", "Schema validation", "Execution sandbox", bidirectional connection to Syslab layer below
-- Fourth layer (deep teal #065A82): "Syslab Julia引擎" large box containing components "Code interpreter", "TyPlot visualization", "Data I/O handler", with sample Julia code snippet in monospace font showing readResult and plot commands
-- Fifth layer (deep berry #6D2E46): "AI Agent interaction" with chat interface mockup showing user input "分析px4ctrl与官方PID的seven场景对比" and agent response workflow numbered 1-5
+- Top layer (pale blue): "MWORKS官方文档" with document stack icon, listing sub-items: "API函数签名", "参数类型约束", "返回值规范", "使用示例"
+- Second layer (pale green): "结构化规则蒸馏" process box with arrow labeled "人工标注 + 自动解析" → "规则库 (JSON/YAML)", show sample rule card in monospace JSON format for SimulateModel function
+- Third layer (orange): "MCP服务器" with server icon, configuration panel showing "Tool registration", "Schema validation", "Execution sandbox", bidirectional connection to Syslab layer below
+- Fourth layer (deep blue): "Syslab Julia引擎" large box containing components "Code interpreter", "TyPlot visualization", "Data I/O handler", with sample Julia code snippet in monospace font showing readResult and plot commands
+- Fifth layer (purple): "AI Agent interaction" with chat interface mockup showing user input "分析px4ctrl与官方PID的seven场景对比" and agent response workflow numbered 1-5
 - Right side vertical pipeline (light gray background): "仿真结果文件 (.mat)" → "助手调用MCP工具" → "Syslab读取数据" → "Julia计算指标" → "TyPlot生成图表" → "返回图表给用户", connected by blue arrows
 
 Mandatory connections:
@@ -414,7 +414,7 @@ Do not use photo-realistic obstacle environment rendering. Do not use curved pip
 
 ```text
 Figure Subject:
-Create a strict vertical two-tier architecture diagram showing MWORKS real-time outer loop with WSL2 data flow: 200Hz Sysblock controller on Windows host, UDP non-blocking communication through vEthernet WSL adapter, ROS Bridge node receiving commands, MAVROS publishing to PX4 SITL inner loop, Gazebo physics engine with sensor simulation, and 100Hz state feedback path returning upward. Include a right-side frequency annotation table and three annotation boxes. Use a white background, flat vector graphics, black text, deep navy #1E2761 for Windows tier, forest green #2C5F2D for WSL2 tier, and yellow circular badges for frequency labels.
+Create a strict vertical two-tier architecture diagram showing MWORKS real-time outer loop with WSL2 data flow: 200Hz Sysblock controller on Windows host, UDP non-blocking communication through vEthernet WSL adapter, ROS Bridge node receiving commands, MAVROS publishing to PX4 SITL inner loop, Gazebo physics engine with sensor simulation, and 100Hz state feedback path returning upward. Include a right-side frequency annotation table and three annotation boxes. Use a white background, flat vector graphics, black text, pale blue for Windows tier, pale green for WSL2 tier, and yellow circular badges for frequency labels.
 
 Diagram type:
 Two-tier vertical architecture with bidirectional data flow and frequency annotations.
@@ -423,14 +423,14 @@ Layout:
 Use a 16:9 horizontal canvas. Draw two large horizontal bounding boxes: top box for Windows host (occupying upper 40% of height), bottom box for WSL2 Ubuntu (occupying lower 50% of height). Between them, draw a thick bidirectional network arrow spanning the gap. Inside each tier, arrange components vertically with clear spacing. On the right side, place a frequency table. Place three annotation boxes: top-right, middle-right, and bottom-left. Use straight orthogonal connectors within each tier; no curves.
 
 Mandatory nodes:
-- Windows tier (deep navy #1E2761 box) labeled "Windows主机 (MWORKS实时环境)":
+- Windows tier (pale blue box) labeled "Windows主机 (MWORKS实时环境)":
   - "Sysblock控制器 (sim_mode=2)" with yellow "200 Hz" badge, showing three-layer structure: Position control (outer), Velocity control (mid), Attitude setpoint generation
   - "UDP非阻塞发送" node showing properties: 单向, 无等待, 零拷贝, with buffer icon
   - "vEthernet (WSL)" virtual adapter with IP addressing 172.x.x.x
 - Network layer (middle): thick bidirectional arrow with two labels:
   - Uplink (down arrow): "AttitudeThrustCommand (200Hz)" with packet structure: quaternion [w,x,y,z] + thrust
   - Downlink (up arrow): "StateFrame (100Hz)" with packet structure: position [x,y,z] + velocity [vx,vy,vz] + attitude [quaternion]
-- WSL2 tier (forest green #2C5F2D box) labeled "WSL2 Ubuntu 20.04 (ROS1 Noetic)":
+- WSL2 tier (pale green box) labeled "WSL2 Ubuntu 20.04 (ROS1 Noetic)":
   - "ROS Bridge节点 (C++)" with function: UDP接收 + 解析
   - "MAVROS" with ROS topic `/mavros/setpoint_attitude/thrust`, MAVLink protocol, 200Hz publish
   - "PX4 SITL (姿态率控制 + failsafe)" showing inner loop: Attitude tracking, Body rate control, Motor mixing; failsafe logic: Geofence, RC loss, Battery monitoring; output: Motor PWM (4 channels)
@@ -487,7 +487,7 @@ Do not use actual code screenshots. Do not use photo-realistic file explorer win
 
 ```text
 Figure Subject:
-Create a strict five-layer vertical architecture diagram showing Gazebo state feedback pathway: two parallel sensor branches (MID360 LiDAR+IMU for XY via FAST-LIO, laser altimeter for Z), multi-rate fusion in PX4 EKF2, MAVROS broadcasting, and MWORKS controller input with interpolation. Include right-side design rationale boxes and a bottom-right benefits box. Use a white background, flat vector graphics, black text, deep teal #065A82 for XY branch, forest green #2C5F2D for Z branch, terracotta #B85042 for EKF2, and light yellow for rationale boxes.
+Create a strict five-layer vertical architecture diagram showing Gazebo state feedback pathway: two parallel sensor branches (MID360 LiDAR+IMU for XY via FAST-LIO, laser altimeter for Z), multi-rate fusion in PX4 EKF2, MAVROS broadcasting, and MWORKS controller input with interpolation. Include right-side design rationale boxes and a bottom-right benefits box. Use a white background, flat vector graphics, black text, pale blue for XY branch, pale green for Z branch, orange for EKF2, and light yellow for rationale boxes.
 
 Diagram type:
 Five-layer vertical architecture with two parallel sensor branches merging at fusion layer.
@@ -497,12 +497,12 @@ Use a 16:9 horizontal canvas. Place five main layers vertically from top to bott
 
 Mandatory nodes:
 - Top layer Gazebo environment box (pale gray) containing two sensor branches:
-  - Left branch (deep teal #065A82): MID360 LiDAR icon (20Hz点云, ~100k点/帧) + IMU icon (200Hz加速度+角速度)
-  - Right branch (forest green #2C5F2D): Laser altimeter icon with downward laser beam (50Hz高度测量, 0-30m量程)
-- Second layer XY branch (deep teal #065A82): "FAST-LIO (增量EKF + ikd-Tree)" showing point cloud preprocessing, incremental ikd-Tree insertion, IMU pre-integration, tightly-coupled EKF update; output XY position + attitude (20Hz) with performance: 定位精度 <0.1m, 建图范围 50m×50m, 计算延迟 <50ms
-- Third layer fusion (terracotta #B85042): "PX4 EKF2状态估计器 (100Hz)" receiving inputs: XY位置 from FAST-LIO (20Hz), Z高度 from laser altimeter (50Hz), 姿态 from FAST-LIO+IMU (200Hz); fusion algorithm: Extended Kalman Filter, multi-rate sensor fusion, outlier rejection; output fused state: position [x,y,z], velocity [vx,vy,vz], attitude quaternion [w,x,y,z]
-- Fourth layer broadcast (deep berry #6D2E46): "MAVROS (100Hz状态广播)" publishing ROS topics: /mavros/local_position/pose, /mavros/local_position/velocity, /mavros/imu/data
-- Fifth layer controller (deep navy #1E2761): "MWORKS控制器 (200Hz位置/速度控制)" with note "插值补偿频率差 (100Hz → 200Hz)"
+  - Left branch (pale blue): MID360 LiDAR icon (20Hz点云, ~100k点/帧) + IMU icon (200Hz加速度+角速度)
+  - Right branch (pale green): Laser altimeter icon with downward laser beam (50Hz高度测量, 0-30m量程)
+- Second layer XY branch (pale blue): "FAST-LIO (增量EKF + ikd-Tree)" showing point cloud preprocessing, incremental ikd-Tree insertion, IMU pre-integration, tightly-coupled EKF update; output XY position + attitude (20Hz) with performance: 定位精度 <0.1m, 建图范围 50m×50m, 计算延迟 <50ms
+- Third layer fusion (orange): "PX4 EKF2状态估计器 (100Hz)" receiving inputs: XY位置 from FAST-LIO (20Hz), Z高度 from laser altimeter (50Hz), 姿态 from FAST-LIO+IMU (200Hz); fusion algorithm: Extended Kalman Filter, multi-rate sensor fusion, outlier rejection; output fused state: position [x,y,z], velocity [vx,vy,vz], attitude quaternion [w,x,y,z]
+- Fourth layer broadcast (light purple): "MAVROS (100Hz状态广播)" publishing ROS topics: /mavros/local_position/pose, /mavros/local_position/velocity, /mavros/imu/data
+- Fifth layer controller (vibrant blue): "MWORKS控制器 (200Hz位置/速度控制)" with note "插值补偿频率差 (100Hz → 200Hz)"
 - Right-side XY design rationale box (light yellow): "XY定位设计 (FAST-LIO)" with two sections: "激光雷达+IMU紧耦合" (互补传感器特性, 高频IMU预测 200Hz, 点云低频修正 20Hz), "无GPS环境定位" (室内/GPS拒止环境, 相对定位精度高, 在线构建环境地图)
 - Right-side Z design rationale box (light yellow): "Z轴定位设计 (激光定高)" with two sections: "独立Z轴反馈" (避免FAST-LIO Z轴漂移, 直接测距精度高, 低延迟 50Hz高频), "两路互补设计" (XY: FAST-LIO, Z: 激光定高, 三轴高质量反馈)
 - Bottom-right benefits box (light yellow): showing 融合频率 PX4 EKF2 100Hz, 控制器输入 MWORKS 200Hz (插值), XY定位精度 <0.1m (FAST-LIO), Z定位精度 <0.05m (激光定高)
@@ -557,7 +557,7 @@ Do not use photo-realistic RViz visualizations. Do not use actual trajectory ani
 
 ```text
 Figure Subject:
-Create a strict two-tier hierarchical architecture diagram showing FUEL autonomous exploration: global layer with frontier detection, information gain evaluation, and target selection; local layer with A* search, B-spline trajectory optimization, and dynamics feasibility verification. Include FAST-LIO point cloud map input at top, MWORKS controller output at bottom, right-side characteristics boxes, and bottom warning label. Use a white background, flat vector graphics, black text, forest green #2C5F2D for global layer, terracotta #B85042 for local layer, and light yellow for characteristics.
+Create a strict two-tier hierarchical architecture diagram showing FUEL autonomous exploration: global layer with frontier detection, information gain evaluation, and target selection; local layer with A* search, B-spline trajectory optimization, and dynamics feasibility verification. Include FAST-LIO point cloud map input at top, MWORKS controller output at bottom, right-side characteristics boxes, and bottom warning label. Use a white background, flat vector graphics, black text, pale green for global layer, pale orange for local layer, and light yellow for characteristics.
 
 Diagram type:
 Two-tier hierarchical architecture: global decision layer + local planning layer.
@@ -566,17 +566,17 @@ Layout:
 Use a 16:9 horizontal canvas. Place input layer at top (10% height). Draw two large horizontal bounding boxes: global layer (30% height) and local layer (30% height) stacked vertically. Place output layer at bottom (10% height). On the right 30%, place two characteristics boxes stacked vertically, plus a warning box at bottom. Use straight orthogonal connectors; no curves. Show occupancy grid visualization with frontier points and planned path overlaid.
 
 Mandatory nodes:
-- Input layer (deep teal #065A82): "FAST-LIO点云地图（实时更新）" with occupancy grid representation showing 已知区域 (white), 未知区域 (gray), 障碍物 (black)
-- Global layer box (forest green #2C5F2D) labeled "全局层：Frontier检测与评估" containing three stages:
+- Input layer (pale blue): "FAST-LIO点云地图（实时更新）" with occupancy grid representation showing 已知区域 (white), 未知区域 (gray), 障碍物 (black)
+- Global layer box (pale green) labeled "全局层：Frontier检测与评估" containing three stages:
   - Stage 1: "Frontier提取（未知边界）" showing 已知/未知栅格边界检测, output Frontier候选点集合 (F₁, F₂, ..., Fₙ), with colored boundary points on map visualization
   - Stage 2: "信息增益评估" with mathematical formula I(Fᵢ) = V_unknown(Fᵢ) / (d(Fᵢ) + ε), where V_unknown is observable unknown volume (m³), d(Fᵢ) is distance to Fᵢ (m), ε is regularization constant (0.1); showing evaluation: ray casting for visible volume, path length estimation, information gain scoring
   - Stage 3: "目标选择" with decision rule F* = argmax I(Fᵢ), output next exploration target F*
 - Thick arrow down labeled "下一个探索目标 F*"
-- Local layer box (terracotta #B85042) labeled "局部层：安全路径规划" containing three stages:
+- Local layer box (pale orange) labeled "局部层：安全路径规划" containing three stages:
   - Stage 1: "A*搜索（粗路径）" with grid resolution 0.2m, cost function distance + obstacle penalty, output waypoint sequence
   - Stage 2: "B样条轨迹优化" with optimization objective min J = ∫ (||snap||² + λ·C_collision) dt, collision penalty soft constraint, output smooth trajectory
   - Stage 3: "动力学可行性验证" checking constraints ||v(t)|| ≤ v_max and ||a(t)|| ≤ a_max, output feasible safe trajectory
-- Output layer (deep navy #1E2761): "MWORKS控制器跟踪" with arrow from local layer
+- Output layer (deep blue): "MWORKS控制器跟踪" with arrow from local layer
 - Right-side characteristics box 1 (light yellow): "分层决策优势:" with three items "全局信息引导" (避免局部最优, 探索效率高, 覆盖未知区域最大化), "局部路径安全" (障碍物实时避让, 动力学约束满足, 可执行性保证), "解耦设计" (全局决策独立, 局部规划响应快, 模块化易扩展)
 - Right-side metrics box 2 (light cream): "性能指标:" showing 探索效率 >85%, 地图覆盖率 >90%, 规划频率 10Hz, 平均速度 2.5m/s
 - Bottom warning box (pale red with orange border): "⚠ 注意: FUEL是Gazebo/ROS组件 (非MWORKS，运行于WSL2/ROS环境)"
