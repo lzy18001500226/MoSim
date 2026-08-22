@@ -547,6 +547,157 @@ def scenario_mode_modifications(profile: dict[str, Any]) -> list[str]:
     return modifications
 
 
+TRAJECTORY_COMPONENT_TYPE = "MoSimQuadrotorModel.Guidance.Trajectories.MultiModeTrajectory"
+
+
+def _skip_modelica_token(text: str, index: int) -> int:
+    """Advance past a string literal or comment starting at index; else index + 1."""
+    if text.startswith('"', index):
+        index += 1
+        while index < len(text):
+            if text[index] == "\\":
+                index += 2
+                continue
+            if text[index] == '"':
+                return index + 1
+            index += 1
+        raise ValueError("unterminated_modelica_string")
+    if text.startswith("//", index):
+        end = text.find("\n", index)
+        return len(text) if end < 0 else end
+    if text.startswith("/*", index):
+        end = text.find("*/", index + 2)
+        if end < 0:
+            raise ValueError("unterminated_modelica_comment")
+        return end + 2
+    return index + 1
+
+
+def _match_paren(text: str, open_index: int) -> int:
+    """Return the index just past the ')' that closes text[open_index] == '('."""
+    if text[open_index] != "(":
+        raise ValueError("expected_open_parenthesis")
+    depth = 0
+    index = open_index
+    while index < len(text):
+        char = text[index]
+        if char in '"/':
+            moved = _skip_modelica_token(text, index)
+            if moved != index + 1:
+                index = moved
+                continue
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+            if depth == 0:
+                return index + 1
+        index = _skip_modelica_token(text, index)
+    raise ValueError("unbalanced_parenthesis")
+
+
+def _split_modifier_items(body: str) -> list[str]:
+    """Split a modifier body on top-level commas, ignoring nested brackets."""
+    items: list[str] = []
+    depth = 0
+    start = 0
+    index = 0
+    while index < len(body):
+        char = body[index]
+        if char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth -= 1
+        elif char == "," and depth == 0:
+            items.append(body[start:index])
+            start = index + 1
+        index = _skip_modelica_token(body, index)
+    tail = body[start:]
+    if tail.strip():
+        items.append(tail)
+    return items
+
+
+def patched_parameter_default(text: str, parameter_name: str, value: str) -> str:
+    """Rewrite the default binding of one top-level parameter declaration."""
+    declaration = re.search(
+        rf"(?m)^[ \t]*parameter[ \t]+[A-Za-z_][\w.]*[ \t]+{re.escape(parameter_name)}(?![\w])",
+        text,
+    )
+    if declaration is None:
+        raise ValueError(f"runner_parameter_not_declared: {parameter_name}")
+
+    depth = 0
+    index = declaration.end()
+    equals_index: int | None = None
+    while index < len(text):
+        char = text[index]
+        if char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth -= 1
+        elif depth == 0 and char == "=":
+            equals_index = index
+            break
+        elif depth == 0 and char in ';"':
+            break
+        index = _skip_modelica_token(text, index)
+
+    if equals_index is None:
+        # No default binding yet; insert one right after the declared type.
+        return f"{text[:index].rstrip()} = {value}{text[index:]}"
+
+    depth = 0
+    index = equals_index + 1
+    while index < len(text):
+        char = text[index]
+        if char in "([{":
+            depth += 1
+        elif char in ")]}":
+            depth -= 1
+        elif depth == 0 and char in ';"':
+            break
+        index = _skip_modelica_token(text, index)
+    return f"{text[:equals_index]}= {value}{'' if text[index] == ';' else ' '}{text[index:]}"
+
+
+def patched_component_modifiers(
+    text: str,
+    component_type: str,
+    overrides: dict[str, str],
+) -> str:
+    """Upsert modifiers on the first component declared with component_type."""
+    if not overrides:
+        return text
+    declaration = re.search(
+        rf"{re.escape(component_type)}[ \t\r\n]+([A-Za-z_]\w*)",
+        text,
+    )
+    if declaration is None:
+        raise ValueError(f"runner_component_not_declared: {component_type}")
+
+    cursor = declaration.end()
+    while cursor < len(text) and text[cursor] in " \t\r\n":
+        cursor += 1
+    if cursor < len(text) and text[cursor] == "(":
+        close = _match_paren(text, cursor)
+        items = _split_modifier_items(text[cursor + 1 : close - 1])
+    else:
+        close = cursor
+        items = []
+
+    remaining = dict(overrides)
+    rewritten: list[str] = []
+    for item in items:
+        key = re.match(r"\s*([A-Za-z_]\w*)\s*(?:\(|=)", item)
+        if key is not None and key.group(1) in remaining:
+            rewritten.append(f"{key.group(1)} = {remaining.pop(key.group(1))}")
+        else:
+            rewritten.append(item.strip())
+    rewritten.extend(f"{key} = {value}" for key, value in remaining.items())
+    return f"{text[:cursor]}({', '.join(rewritten)}){text[close:]}"
+
+
 def rendered_generic_formal_harness(
     *,
     task_id: str,
@@ -554,21 +705,64 @@ def rendered_generic_formal_harness(
     profile: dict[str, Any],
     name: str,
 ) -> str:
+    """Freeze the task as a renamed copy of the Runner with patched defaults.
+
+    MWORKS 2026a raises "编译器错误(2000): Internal Error, code 1" when it
+    instantiates a subclass of these whole-aircraft Runners, so the harness
+    cannot use `extends`. Copying the Runner source and rewriting the parameter
+    defaults keeps both the graphical diagram and the flat result-variable names
+    (`position[1]`, not `runner.position[1]`) that the App review surface needs.
+    """
     runner_parameters = profile.get("runner_parameter_overrides", {})
     if not isinstance(runner_parameters, dict):
         raise ValueError(f"runner_parameter_overrides_invalid: {task_id}")
-    runner_modifications = scenario_mode_modifications(profile)
-    runner_modifications.extend(
-        f"{key} = {modelica_value(value)}" for key, value in runner_parameters.items()
+    trajectory_parameters = profile.get("trajectory_parameter_overrides", {})
+    if not isinstance(trajectory_parameters, dict):
+        raise ValueError(f"trajectory_parameter_overrides_invalid: {task_id}")
+
+    runner_class = str(route["runner_class"])
+    runner_source = ROOT / str(route["runner_file"])
+    if not runner_source.is_file():
+        raise ValueError(f"runner_file_missing: {route['runner_file']}")
+    source_name = runner_class.rsplit(".", 1)[-1]
+    text = runner_source.read_text(encoding="utf-8")
+
+    header = re.match(r"\s*within[^;]*;", text)
+    if header is None:
+        raise ValueError(f"runner_within_clause_missing: {route['runner_file']}")
+    text = f"within ;{text[header.end():]}"
+
+    class_declaration = re.search(rf"(?m)^\s*model[ \t]+{re.escape(source_name)}(?![\w])", text)
+    class_terminator = re.search(rf"(?m)^\s*end[ \t]+{re.escape(source_name)}[ \t]*;", text)
+    if class_declaration is None or class_terminator is None:
+        raise ValueError(f"runner_class_not_found: {runner_class}")
+    text = f"{text[:class_terminator.start()]}end {name};\n"
+
+    banner = (
+        f'model {name}\n'
+        f'  "Frozen Model Studio task for {task_id}; no simulation evidence is recorded"\n'
+        f'  // Copied from {runner_class} with parameter defaults patched in place.\n'
+        f'  // MWORKS 2026a internal-errors when instantiating a subclass of this\n'
+        f'  // Runner, so this harness is a renamed copy rather than an extends.\n'
     )
-    modification_text = ",\n    ".join(runner_modifications)
-    return f'''within ;
-model {name}
-  "Manual Model Studio task for {task_id}; no simulation evidence is recorded"
-  extends {route["runner_class"]}(
-    {modification_text});
-end {name};
-'''
+    body_start = class_declaration.end()
+    description = re.match(r'[ \t\r\n]*"(?:[^"\\]|\\.)*"', text[body_start:])
+    if description is not None:
+        body_start += description.end()
+    text = text[: class_declaration.start()] + "\n" + banner + text[body_start:]
+
+    text = patched_parameter_default(
+        text, "scenario_mode", str(scenario_mode_for_profile(profile))
+    )
+    for key, value in runner_parameters.items():
+        text = patched_parameter_default(text, key, modelica_value(value))
+    text = patched_component_modifiers(
+        text,
+        TRAJECTORY_COMPONENT_TYPE,
+        {key: modelica_value(value) for key, value in trajectory_parameters.items()},
+    )
+    return text
+
 
 
 def injection_modifications(
