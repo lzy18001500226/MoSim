@@ -41,7 +41,6 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     annotation (Placement(transformation(origin = {-650, -245}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.Port.Inport enable 
     annotation (Placement(transformation(origin = {-650, -285}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {510, -270}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Sum position_error_x(inputs="+-") 
     annotation (Placement(transformation(origin = {-510, 297}, extent = {{-14, -11}, {14, 11}})),__MWORKS(BlockSystem(Instance(u(u1,u2)))));
   SysplorerEmbeddedCoder.MathOperation.Sum velocity_error_x(inputs="+-") 
@@ -100,44 +99,31 @@ model LqrBaselineCore "LQR outer-loop direct graphical core"
     "Normalized thrust saturation [0, 1]" annotation (Placement(transformation(origin = {325, -55}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.MathOperation.Gain collective_thrust_from_normalized(k=17.746)
     "Collective thrust allocation from normalized thrust" annotation (Placement(transformation(origin = {410, -55}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 330}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport position_error_x_out 
+  SysplorerEmbeddedCoder.Port.Outport position_error_x_out
     annotation (Placement(transformation(origin = {675, 330}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 292}, extent = {{-14, -11}, {14, 11}})));
   SysplorerEmbeddedCoder.Port.Outport position_error_y_out 
     annotation (Placement(transformation(origin = {675, 292}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 254}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport position_error_z_out 
+  SysplorerEmbeddedCoder.Port.Outport position_error_z_out
     annotation (Placement(transformation(origin = {675, 254}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 216}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport velocity_error_x_out 
+  SysplorerEmbeddedCoder.Port.Outport velocity_error_x_out
     annotation (Placement(transformation(origin = {675, 216}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 178}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport velocity_error_y_out 
+  SysplorerEmbeddedCoder.Port.Outport velocity_error_y_out
     annotation (Placement(transformation(origin = {675, 178}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 140}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport velocity_error_z_out 
+  SysplorerEmbeddedCoder.Port.Outport velocity_error_z_out
     annotation (Placement(transformation(origin = {675, 140}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 102}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_x_out 
+  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_x_out
     annotation (Placement(transformation(origin = {675, 102}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 64}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_y_out 
+  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_y_out
     annotation (Placement(transformation(origin = {675, 64}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, 26}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_z_out 
+  SysplorerEmbeddedCoder.Port.Outport desired_acceleration_z_out
     annotation (Placement(transformation(origin = {675, 26}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, -12}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport desired_roll_rad_out 
+  SysplorerEmbeddedCoder.Port.Outport desired_roll_rad_out
     annotation (Placement(transformation(origin = {675, -12}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, -50}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport desired_pitch_rad_out 
+  SysplorerEmbeddedCoder.Port.Outport desired_pitch_rad_out
     annotation (Placement(transformation(origin = {675, -50}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, -88}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport normalized_thrust_out 
+  SysplorerEmbeddedCoder.Port.Outport normalized_thrust_out
     annotation (Placement(transformation(origin = {675, -88}, extent = {{-14, -11}, {14, 11}})));
-    annotation (Placement(transformation(origin = {525, -126}, extent = {{-14, -11}, {14, 11}})));
-  SysplorerEmbeddedCoder.Port.Outport collective_thrust_n_out 
+  SysplorerEmbeddedCoder.Port.Outport collective_thrust_n_out
     annotation (Placement(transformation(origin = {675, -126}, extent = {{-14, -11}, {14, 11}})));
 equation
   connect(reference_position_x, position_error_x.u1) 
@@ -220,62 +206,10 @@ equation
     annotation(Line(points = {{139, -165}, {182.5, -165}, {182.5, -55}, {226, -55}}, color = {0, 0, 127}));
   connect(normalized_thrust_pre_limit.y, normalized_thrust_limit.u) 
     annotation(Line(points = {{254, -55}, {311, -55}}, color = {0, 0, 127}));
-  connect(normalized_thrust_limit.y, collective_thrust_from_normalized.u) 
+  connect(normalized_thrust_limit.y, collective_thrust_from_normalized.u)
     annotation(Line(points = {{339, -55}, {396, -55}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-496, 297}, {7.5, 297}, {7.5, 330}, {511, 330}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 330}, {511, 330}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, 30}, {525, 30}, {525, 319}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 330}, {661, 330}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-496, 87}, {7.5, 87}, {7.5, 292}, {511, 292}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 292}, {511, 292}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, 11}, {525, 11}, {525, 281}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 292}, {661, 292}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-496, -123}, {7.5, -123}, {7.5, 254}, {511, 254}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 254}, {511, 254}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -8}, {525, -8}, {525, 243}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 254}, {661, 254}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-496, 213}, {7.5, 213}, {7.5, 216}, {511, 216}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 216}, {511, 216}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -27}, {525, -27}, {525, 205}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 216}, {661, 216}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-496, 3}, {7.5, 3}, {7.5, 178}, {511, 178}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 178}, {511, 178}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -46}, {525, -46}, {525, 167}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 178}, {661, 178}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-496, -207}, {7.5, -207}, {7.5, 140}, {511, 140}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 140}, {511, 140}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -65}, {525, -65}, {525, 129}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 140}, {661, 140}}, color = {0, 0, 127}));
-    annotation(Line(points = {{139, 255}, {325, 255}, {325, 102}, {511, 102}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 102}, {511, 102}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -84}, {525, -84}, {525, 91}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 102}, {661, 102}}, color = {0, 0, 127}));
-    annotation(Line(points = {{139, 45}, {325, 45}, {325, 64}, {511, 64}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 64}, {511, 64}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -103}, {525, -103}, {525, 53}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 64}, {661, 64}}, color = {0, 0, 127}));
-    annotation(Line(points = {{139, -165}, {325, -165}, {325, 26}, {511, 26}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, 26}, {511, 26}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -122}, {525, -122}, {525, 15}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, 26}, {661, 26}}, color = {0, 0, 127}));
-    annotation(Line(points = {{339, 55}, {425, 55}, {425, -12}, {511, -12}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, -12}, {511, -12}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -141}, {525, -141}, {525, -23}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, -12}, {661, -12}}, color = {0, 0, 127}));
-    annotation(Line(points = {{339, 120}, {425, 120}, {425, -50}, {511, -50}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, -50}, {511, -50}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -160}, {525, -160}, {525, -61}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, -50}, {661, -50}}, color = {0, 0, 127}));
-    annotation(Line(points = {{339, -55}, {425, -55}, {425, -88}, {511, -88}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, -88}, {511, -88}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -179}, {525, -179}, {525, -99}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, -88}, {661, -88}}, color = {0, 0, 127}));
-    annotation(Line(points = {{424, -55}, {467.5, -55}, {467.5, -126}, {511, -126}}, color = {0, 0, 127}));
-    annotation(Line(points = {{-636, -285}, {-62.5, -285}, {-62.5, -126}, {511, -126}}, color = {0, 0, 127}));
-    annotation(Line(points = {{510, -259}, {510, -198}, {525, -198}, {525, -137}}, color = {0, 0, 127}));
-    annotation(Line(points = {{539, -126}, {661, -126}}, color = {0, 0, 127}));
 
-  // Direct output connections (enable switches removed)
+  // Direct output connections (enable switches removed for OfficialPid compatibility)
   connect(position_error_x.y, position_error_x_out)
     annotation(Line(points = {{-496, 297}, {661, 330}}, color = {0, 0, 127}));
   connect(position_error_y.y, position_error_y_out)
