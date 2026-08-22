@@ -36,9 +36,11 @@ model AttitudeSignalAdapter
   Modelica.Blocks.Interfaces.RealOutput yaw_mea_out(unit = "rad") 
     annotation(Placement(transformation(origin = {110, -60}, extent = {{-10, -10}, {10, 10}})));
 
-  // Unit conversion parameters
-  parameter Real thrust_n_to_amplitude = 6.4
-    "Conversion from Newtons to amplitude (nominal hover: 10N thrust → 64 amplitude, matching OfficialPid z_pid output range)";
+  // Physical parameters for nonlinear thrust-to-speed conversion
+  parameter Real lift_coefficient(unit = "N.s2/rad2") = 0.000584
+    "Sunray150 rotor thrust coefficient: thrust = Ct * omega^2";
+  parameter Real num_rotors = 4
+    "Number of rotors for thrust distribution";
 
 equation
   // Direct passthrough for angles
@@ -49,8 +51,10 @@ equation
   pitch_mea_out = pitch_mea;
   yaw_mea_out = yaw_mea;
 
-  // Unit conversion: thrust (N) → dimensionless amplitude
-  thrust_baseline_out = collective_thrust_n * thrust_n_to_amplitude;
+  // Nonlinear unit conversion: collective thrust (N) → rotor speed (rad/s)
+  // Physical relationship: total_thrust = num_rotors * Ct * omega^2
+  // Solving for omega: omega = sqrt(total_thrust / (num_rotors * Ct))
+  thrust_baseline_out = sqrt(abs(collective_thrust_n) / (num_rotors * lift_coefficient)) * sign(collective_thrust_n);
 
   annotation(
     Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -80}, {100, 80}}), graphics = {
