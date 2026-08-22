@@ -1,0 +1,26 @@
+// Direct Sysplorer script to test LQR controller
+OpenModel("MoSimQuadrotorModel.Experiment.SingleUav.ClassicRobust.LqrBaselineGraphicalRunner");
+SimulateModel("MoSimQuadrotorModel.Experiment.SingleUav.ClassicRobust.LqrBaselineGraphicalRunner", stopTime=50.0, numberOfIntervals=5000);
+
+// Extract terminal error
+pos_x_50 = GetVarValue("position[1]", 50.0);
+pos_y_50 = GetVarValue("position[2]", 50.0);
+pos_z_50 = GetVarValue("position[3]", 50.0);
+ref_x_50 = GetVarValue("position_ref[1]", 50.0);
+ref_y_50 = GetVarValue("position_ref[2]", 50.0);
+ref_z_50 = GetVarValue("position_ref[3]", 50.0);
+
+error_norm = sqrt((pos_x_50 - ref_x_50)^2 + (pos_y_50 - ref_y_50)^2 + (pos_z_50 - ref_z_50)^2);
+
+print("=== LQR Test Results ===");
+print("Position at t=50s: [" + String(pos_x_50) + ", " + String(pos_y_50) + ", " + String(pos_z_50) + "]");
+print("Reference at t=50s: [" + String(ref_x_50) + ", " + String(ref_y_50) + ", " + String(ref_z_50) + "]");
+print("Terminal error: " + String(error_norm) + " m");
+
+if error_norm < 5.0 then
+  print("RESULT: PASS");
+else
+  print("RESULT: FAIL");
+end if;
+
+exit();
