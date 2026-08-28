@@ -3,4 +3,5 @@ RT0RealtimeProbe200Hz
 RT0RealtimeProbe50Hz
 RT1OfficialPidShadow200Hz
 RT1OfficialPidShadow50Hz
+RT1OfficialPidSysblockShadow50Hz
 RTTelemetryScope50Hz

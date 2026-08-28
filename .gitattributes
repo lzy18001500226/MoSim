@@ -64,3 +64,7 @@ Results/g9/dfbc_smooth_robust_attitude_thrust_v1/g96_static_gate_20260630_082713
 /Docs/报告/审计/公式审核_20260805/build_v2/pandoc_content.docx filter=lfs diff=lfs merge=lfs -text
 /Docs/报告/审计/公式审核_20260805/build_v3/pandoc_content.docx filter=lfs diff=lfs merge=lfs -text
 /Docs/报告/审计/公式审核_20260805/pandoc_content.docx filter=lfs diff=lfs merge=lfs -text
+/Docs/报告/MoSim_仿真分析报告_重构版.docx filter=lfs diff=lfs merge=lfs -text
+/Docs/报告/MoSim_仿真分析报告_重构版_同步审计副本.docx filter=lfs diff=lfs merge=lfs -text
+/Docs/报告/MoSim_仿真分析报告_重构版_补齐候选.docx filter=lfs diff=lfs merge=lfs -text
+/Docs/报告/报告图.rar filter=lfs diff=lfs merge=lfs -text
